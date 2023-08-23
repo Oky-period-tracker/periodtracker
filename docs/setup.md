@@ -3,15 +3,15 @@
 Clone the repository:
 
 ```bash
-git clone git@github.com:amitchellunicef/periodtracker-core.git
+git clone REPO_SSH_URL
 ```
 
-<strong>Note:</strong> The url will be different for different repositories, to find the url, go to this repository on github, click on the green _Code_ button, select SSH and copy paste the url
+<strong>Note:</strong> Replace `REPO_SSH_URL` with the url for this repository. On github, click on the green _Code_ button, select SSH and copy paste the url
 
 Go to the root directory of the project:
 
 ```bash
-cd periodtracker-core
+cd periodtracker
 ```
 
 Install the dependencies:
@@ -86,9 +86,9 @@ Different keys have been used depending upon platform (Android/iOS) and applicat
 
 For firebase to run, you need 3 files
 
-- /packages/mobile/ios/GoogleService-Info.plist
-- /packages/mobile/android/app/google-services.json
 - /packages/cms/firebase-config.json
+- /packages/mobile/android/app/google-services.json
+- /packages/mobile/ios/GoogleService-Info.plist
 - /.k8s/firebase-config.yaml
 
 These files are untracked so each country change these without needing to make changes to this core repo, and to keep the firebase details private.

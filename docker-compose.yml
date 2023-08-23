@@ -33,8 +33,8 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=oky
-      - POSTGRES_USER=oky
-      - POSTGRES_PASSWORD=oky
+      - POSTGRES_DB=periodtracker
+      - POSTGRES_USER=periodtracker
+      - POSTGRES_PASSWORD=periodtracker
 volumes:
   db-data: {}

@@ -1,4 +1,4 @@
-version: "3.4"
+version: '3.4'
 services:
   base:
     image: oky/base
@@ -21,17 +21,12 @@ services:
     env_file: packages/cms/.env
     depends_on:
       - base
-  website:
-    build:
-      context: packages/website/.
-    ports:
-      - 4000:80
   postgres:
     image: postgres:10-alpine
     volumes:
       - db-data:/var/lib/postgresql/data:rw
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       - POSTGRES_DB=periodtracker
       - POSTGRES_USER=periodtracker

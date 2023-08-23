@@ -72,5 +72,5 @@ ios/debug.xcconfig
 android/gradle.properties
 
 # assets
-ios/periodtracker/Images.xcassets
+ios/oky/Images.xcassets
 ic_launcher.png

@@ -75,10 +75,17 @@ Check the values in `/packages/mobile/.env` file are correct.
 Add to `packages/mobile/android/local.properties`:
 
 ```
+sdk.dir=/Users/dev/Library/Android/sdk
 STORE_FILE=periodtracker.keystore
 STORE_PASSWORD=**(NotPublic)**
 KEY_ALIAS=periodtracker
 KEY_PASSWORD=**(NotPublic)**
+```
+
+User this command to find your sdk.dir path:
+
+```bash
+echo $ANDROID_HOME
 ```
 
 <strong>Note:</strong> Add your own key alias and key passwords with your own key store to release your own variant. `**(NotPublic)**` should be replaced. For releases to the main application request the appropriate information/ keystore files.

@@ -12,7 +12,7 @@
     "copy-modules-urls": "cp bin/modules/urls.sh.dist bin/modules/urls.sh",
     "copy-assets": "ts-node copyAssets.ts",
     "copy-env:ios": "cp packages/mobile/ios/xcconfig.dist packages/mobile/ios/release.xcconfig && cp packages/mobile/ios/xcconfig.dist packages/mobile/ios/debug.xcconfig",
-    "copy-env:android": "cp packages/mobile/android/gradle.properties.dist packages/mobile/android/gradle.properties",
+    "copy-env:android": "cp packages/mobile/android/gradle.properties.dist packages/mobile/android/gradle.properties && cp packages/mobile/android/local.properties.dist packages/mobile/android/local.properties",
     "copy-env:api": "cp packages/api/.env.dist packages/api/.env",
     "copy-env:cms": "cp packages/cms/.env.dist packages/cms/.env",
     "copy-env:mobile": "cp packages/mobile/.env.dist packages/mobile/.env && cp packages/mobile/.env.dist packages/mobile/.env.production",

@@ -1,3 +1,7 @@
+<% if(currentUser?.type !== 'contentManager') {%>
+    <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
+<% } %>
+<a href="/data"><h6><%= __('Data Management')%></h6></a>    
 <a href="/avatar-message-management"><h6><%= __('Avatar Messages')%></h6></a>    
 <a href="/didyouknow-management"><h6><%= __('Did you knows')%></h6></a>
 <a href="/encyclopedia"><h6><%= __('Encyclopedia')%></h6></a>

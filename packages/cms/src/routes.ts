@@ -16,6 +16,7 @@ import { AboutController } from './controller/AboutController'
 import { AboutBannerController } from './controller/AboutBannerController'
 import { TermsAndConditionsController } from './controller/TermsAndConditionsController'
 import { PrivacyPolicyController } from './controller/PrivacyPolicyController'
+import { DataController } from './controller/DataController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -668,5 +669,36 @@ export const Routes = [
     route: '/notification/:id',
     controller: NotificationController,
     action: 'remove',
+  },
+  // ------- Data api -------
+  {
+    method: 'get',
+    route: '/data',
+    controller: RenderController,
+    action: 'renderDataManagement',
+  },
+  {
+    method: 'get',
+    route: '/data/generate-content-ts',
+    controller: DataController,
+    action: 'generateContentTs',
+  },
+  {
+    method: 'get',
+    route: '/data/generate-content-sheet',
+    controller: DataController,
+    action: 'generateContentSheet',
+  },
+  {
+    method: 'get',
+    route: '/data/generate-app-translations-sheet',
+    controller: DataController,
+    action: 'generateAppTranslationsSheet',
+  },
+  {
+    method: 'get',
+    route: '/data/generate-cms-translations-sheet',
+    controller: DataController,
+    action: 'generateCmsTranslationsSheet',
   },
 ]

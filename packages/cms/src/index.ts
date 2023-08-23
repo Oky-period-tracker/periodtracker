@@ -14,8 +14,9 @@ import { Authentication } from './access/authentication'
 import * as admin from 'firebase-admin'
 import { env } from './env'
 import ormconfig from '../ormconfig'
-
-//
+import { DataController } from './controller/DataController'
+import multer from 'multer'
+import { cmsTranslations, defaultLocale } from '@oky/core'
 
 createConnection(ormconfig)
   .then(() => {
@@ -23,13 +24,19 @@ createConnection(ormconfig)
     app.set('view engine', 'ejs')
     app.set('views', __dirname + '/views')
     app.use(bodyParser.json({ limit: '50mb' }))
-    app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }))
+    app.use(
+      bodyParser.urlencoded({
+        limit: '50mb',
+        extended: true,
+        parameterLimit: 50000,
+      }),
+    )
     app.use(express.static(__dirname + '/public'))
     i18n.configure({
-      locales: ['en', 'id', 'mn'],
-      directory: __dirname + '/i18n/translations',
-      defaultLocale: 'en',
+      locales: Object.keys(cmsTranslations),
+      defaultLocale,
       cookie: 'i18n',
+      resources: cmsTranslations,
     })
 
     app.use(i18n.init)
@@ -55,7 +62,7 @@ createConnection(ormconfig)
       // @ts-ignore
       res.locals.globalErrors = req.flash('error')
       res.locals.currentUser = req.user
-      i18n.setLocale(req, req.user ? req.user.lang : 'en')
+      i18n.setLocale(req, req.user ? req.user.lang : defaultLocale)
       next()
     })
 
@@ -63,6 +70,7 @@ createConnection(ormconfig)
 
     app.use('/quizzes', Authentication.isLoggedIn)
     app.use('/encyclopedia', Authentication.isLoggedIn)
+    app.use('/data', Authentication.isLoggedIn)
     app.use('/articles', Authentication.isLoggedIn)
     app.use('/user', Authentication.isLoggedIn)
     app.use('/quiz-management', Authentication.isLoggedIn)
@@ -83,6 +91,26 @@ createConnection(ormconfig)
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
     })
+    // ============================ Upload  =======================================
+
+    const upload = multer({ storage: multer.memoryStorage() })
+    const dataController = new DataController()
+    app.post(
+      '/data/upload-content-sheet',
+      upload.single('spreadsheet'),
+      dataController.uploadContentSheet,
+    )
+    app.post(
+      '/data/upload-app-translations-sheet',
+      upload.single('spreadsheet'),
+      dataController.uploadAppTranslationsSheet,
+    )
+    app.post(
+      '/data/upload-cms-translations-sheet',
+      upload.single('spreadsheet'),
+      dataController.uploadCmsTranslationsSheet,
+    )
+
     // ============================ Routes  =======================================
     Routes.forEach((route) => {
       ;(app as any)[route.method](route.route, (req: Request, res: Response, next: any) => {

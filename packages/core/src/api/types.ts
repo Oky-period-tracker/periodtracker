@@ -1,4 +1,4 @@
-interface EncyclopediaResponseItem {
+export interface EncyclopediaResponseItem {
   id: string
   cat_id: string
   category_title: string
@@ -9,6 +9,7 @@ interface EncyclopediaResponseItem {
   primary_emoji: string
   primary_emoji_name: string
   lang: string
+  live: boolean
 }
 export interface EncyclopediaResponse extends Array<EncyclopediaResponseItem> {}
 
@@ -24,6 +25,7 @@ interface QuizResponseItem {
   wrong_answer_response: string
   right_answer_response: string
   lang: string
+  live: boolean
 }
 export interface QuizzesResponse extends Array<QuizResponseItem> {}
 
@@ -44,6 +46,7 @@ interface AvatarMessagesResponseItem {
   id: string
   content: string
   lang: string
+  live: boolean
 }
 export interface AvatarMessagesResponse extends Array<AvatarMessagesResponseItem> {}
 
@@ -53,6 +56,7 @@ interface DidYouKnowResponseItem {
   title: string
   content: string
   lang: string
+  live: boolean
 }
 export interface DidYouKnowsResponse extends Array<DidYouKnowResponseItem> {}
 

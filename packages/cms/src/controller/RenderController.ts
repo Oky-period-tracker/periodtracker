@@ -180,7 +180,10 @@ export class RenderController {
       moment,
       surveys,
       answeredSurveys,
-      query: { ...request.query, age: `${request.query.start_age}_${request.query.end_age}` },
+      query: {
+        ...request.query,
+        age: `${request.query.start_age}_${request.query.end_age}`,
+      },
     })
   }
 
@@ -222,7 +225,9 @@ export class RenderController {
       WHERE ar.lang = $1`,
       [request.user.lang],
     )
-    const categories = await this.categoryRepository.find({ where: { lang: request.user.lang } })
+    const categories = await this.categoryRepository.find({
+      where: { lang: request.user.lang },
+    })
     const subcategories = await this.subcategoryRepository.find({
       where: { lang: request.user.lang },
     })
@@ -230,7 +235,9 @@ export class RenderController {
   }
 
   async renderCatSubcatManagement(request: Request, response: Response, next: NextFunction) {
-    const categories = await this.categoryRepository.find({ where: { lang: request.user.lang } })
+    const categories = await this.categoryRepository.find({
+      where: { lang: request.user.lang },
+    })
     const subcategories = await this.subcategoryRepository.query(
       `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id
       FROM ${env.db.schema}.subcategory sc
@@ -317,7 +324,11 @@ export class RenderController {
         id: 'ASC',
       },
     })
-    response.render('Notification', { notifications, permanentNotifications, moment })
+    response.render('Notification', {
+      notifications,
+      permanentNotifications,
+      moment,
+    })
   }
 
   async renderAvatarMessages(request: Request, response: Response, next: NextFunction) {
@@ -331,5 +342,9 @@ export class RenderController {
     })
 
     response.render('AvatarMessages', { avatarMessages })
+  }
+
+  async renderDataManagement(request: Request, response: Response, next: NextFunction) {
+    response.render('DataManagement')
   }
 }

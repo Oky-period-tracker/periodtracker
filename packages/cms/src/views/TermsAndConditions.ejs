@@ -1,9 +1,6 @@
 <%- include('partials/Header') %> 
 <div class="homePageContainer">
   <div class="sideBar">
-    <% if(currentUser.type !== 'contentManager') {%>
-      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
-    <% } %>
     <%- include('partials/SideTab') %> 
   </div>
   <div class="mainContentContainer">

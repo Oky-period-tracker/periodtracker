@@ -2,9 +2,6 @@
 <%- include('modals/DynamicModal', {headings: [ __('Title'), __('Caption'), __('Contact 1'), __('Contact 2'), __('Address'), __('Website')], errors: []})%>
 <div class="homePageContainer">
   <div class="sideBar">
-    <% if(currentUser.type !== 'contentManager') {%>
-      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
-    <% } %>
     <%- include('partials/SideTab') %> 
   </div>
   <div class="mainContentContainer">

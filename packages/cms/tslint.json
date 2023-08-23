@@ -10,6 +10,7 @@
       "allow-pascal-case",
       "ban-keywords",
       "check-format"
-    ]
+    ],
+    "no-string-literal": false
   }
 }

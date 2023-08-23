@@ -1,0 +1,102 @@
+<%- include('modals/InfoModal') %>
+
+<%- include('partials/Header') %> 
+<div class="homePageContainer">
+  <div class="sideBar">
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer">
+      <h2><%= __('Data Management')%></h2>
+    </div>
+    <div class="dataManagementRows">
+      <!-- ---------------------------------------------------------------------- -->
+      <hr>
+      <h2>Initial setup</h2>
+      <p>Make sure you have selected the language that you wish to add content</p>
+
+      <div class="dataManagementRow">
+        <div class="dataManagementCol">
+          <p>Upload content (articles, quizzes etc)</p>
+          <form action="/data/upload-content-sheet" method="post" enctype="multipart/form-data">
+            <input type="file" name="spreadsheet" accept=".xlsx">
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </form>
+        </div>  
+      </div>  
+
+      <div class="dataManagementRow">
+        <div class="dataManagementCol">
+          <p>Upload app translations</p>
+          <form action="/data/upload-app-translations-sheet" method="post" enctype="multipart/form-data">
+            <input type="file" name="spreadsheet" accept=".xlsx">
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </form>
+        </div>  
+      </div>  
+
+      <div class="dataManagementRow">
+        <div class="dataManagementCol">
+          <p>Upload CMS translations</p>
+          <form action="/data/upload-cms-translations-sheet" method="post" enctype="multipart/form-data">
+            <input type="file" name="spreadsheet" accept=".xlsx">
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </form>
+        </div>  
+      </div>  
+
+
+      <!-- ---------------------------------------------------------------------- -->
+      <hr>
+      <h2>Updating content</h2>
+
+      <div class="dataManagementRow">
+        <p>Download (NEW ONLY) database content as a spreadsheet</p>
+        <button type="button" class="btn btn-primary  mr-1">
+          <a class="nav-link" href="/data/generate-content-sheet?filter=new">Download NEW Content sheet</a>
+        </button>
+      </div>
+
+      <div class="dataManagementRow">
+        <p>This button will generate a .ts file containing content from the database, articles quizzes etc</p>
+        <button type="button" class="btn btn-primary mr-1">
+          <a class="nav-link" href="/data/generate-content-ts">Download TS</a>
+        </button>
+      </div>
+
+      <!-- ---------------------------------------------------------------------- -->
+      <hr>
+      <h2>Other useful operations</h2>
+
+      <div class="dataManagementRow">
+        <p>This button will generate a .ts file containing content from the database, articles quizzes etc (LIVE only)</p>
+        <button type="button" class="btn btn-primary mr-1">
+          <a class="nav-link" href="/data/generate-content-ts?live=true">Download LIVE TS</a>
+        </button>
+      </div>
+      
+      <div class="dataManagementRow">
+        <p>Download database content as a spreadsheet</p>
+        <button type="button" class="btn btn-primary  mr-1">
+          <a class="nav-link" href="/data/generate-content-sheet">Download Content sheet</a>
+        </button>
+      </div>
+
+      <div class="dataManagementRow">
+        <p>Download app translations as a spreadsheet</p>
+        <button type="button" class="btn btn-primary  mr-1">
+          <a class="nav-link" href="/data/generate-app-translations-sheet">App translations sheet</a>
+        </button>
+      </div>
+
+      <div class="dataManagementRow">
+        <p>Download cms translations as a spreadsheet</p>
+        <button type="button" class="btn btn-primary  mr-1">
+          <a class="nav-link" href="/data/generate-cms-translations-sheet">CMS translations sheet</a>
+        </button>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+<%- include('partials/Footer') %>

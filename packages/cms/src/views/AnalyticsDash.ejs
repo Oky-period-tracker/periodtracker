@@ -5,18 +5,7 @@
 
 <div class="homePageContainer">
   <div class="sideBar">
-    <% if(currentUser.type !== 'contentManager') {%>
-      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
-    <% } %>    
-    <a href="/avatar-message-management"><h6><%= __('Avatar Messages')%></h6></a>
-    <a href="/didyouknow-management"><h6><%= __('Did you knows')%></h6></a>
-    <a href="/encyclopedia"><h6><%= __('Encyclopedia')%></h6></a>
-    <a href="/help-center-management"><h6><%= __('Help centers')%></h6></a>
-    <a href="/notifications-management"><h6><%= __('Notifications')%></h6></a>
-    <a href="/quiz-management"><h6><%= __('Quiz')%></h6></a>    
-    <a href="/survey-management"><h6><%= __('Survey')%></h6></a>
-    <a href="/analytics-management"><h6><%= __('User analytics')%></h6></a>
-    <a href="/suggestions-management" class="special"><h6><%= __('User Messages')%></h6></a>
+    <%- include('partials/SideTab') %> 
   </div>
   <div class="mainContentContainer">
     <div class="homeTopTextContainer">

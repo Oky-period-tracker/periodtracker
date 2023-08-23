@@ -4,9 +4,6 @@
 <%- include('modals/DynamicModal', {headings: [__('Title'), __('Content')], errors: ['max 40 characters', 'max 150 characters']})%>
 <div class="homePageContainer">
   <div class="sideBar">
-    <% if(currentUser.type !== 'contentManager') {%>
-      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
-    <% } %>    
     <%- include('partials/SideTab') %> 
   </div>
   <div class="mainContentContainer">

@@ -6,12 +6,12 @@
       <div class="row">
         <h5>Username</h5>
       </div>
-      <input type="text" name="username" required />
+      <input type="text" name="username" required value=""/>
       <div class="row">
         <h5>Password</h5>
         <i id="pass-status" class="fas fa-eye-slash" aria-hidden="true" onClick="viewPassword()"></i>
       </div>
-      <input id="password-field" type="password" name="password" pattern=".{5,10}" required />
+      <input id="password-field" type="password" name="password" pattern=".{5,10}" required value=""/>
       <button type="submit">login</button>
       <% if(globalErrors.length > 0) { %>
         <p id="loginError">

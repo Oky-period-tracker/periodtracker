@@ -3,8 +3,8 @@
 How install packages:
 
 ```bash
-yarn workspace @periodtracker/mobile add react-native-linear-gradient
-yarn workspace @periodtracker/components add redux
+yarn workspace @oky/mobile add react-native-linear-gradient
+yarn workspace @oky/components add redux
 ```
 
 How run the backend in production mode:

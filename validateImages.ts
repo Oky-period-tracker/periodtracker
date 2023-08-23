@@ -21,7 +21,7 @@ async function generatePathsMapping() {
 
   content = content.replace(/require\((['"])(.+?)\1\)/g, "'$2'")
 
-  const importStatement = `import { AppAssets } from '@periodtracker/core'`
+  const importStatement = `import { AppAssets } from '@oky/core'`
   const exportStatement = `export const assets: AppAssets`
 
   content = content.replace(

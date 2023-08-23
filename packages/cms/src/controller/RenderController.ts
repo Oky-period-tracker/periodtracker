@@ -22,7 +22,7 @@ import { TermsAndConditions } from '../entity/TermsAndConditions'
 import { PrivacyPolicy } from '../entity/PrivacyPolicy'
 import { AboutBanner } from '../entity/AboutBanner'
 import { Question } from '../entity/Question'
-import { env } from 'env'
+import { env } from '../env'
 
 export class RenderController {
   private articleRepository = getRepository(Article)

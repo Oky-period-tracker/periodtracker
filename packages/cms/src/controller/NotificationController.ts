@@ -4,7 +4,7 @@ import { Notification } from '../entity/Notification'
 import { PermanentNotification } from '../entity/PermanentNotification'
 // @ts-ignore
 import * as admin from 'firebase-admin'
-import { env } from 'env'
+import { env } from '../env'
 
 export class NotificationController {
   private notificationRepository = getRepository(Notification)

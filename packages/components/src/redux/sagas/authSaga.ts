@@ -1,7 +1,7 @@
 import { all, call, put, select, takeLatest, delay } from 'redux-saga/effects'
 import { REHYDRATE } from 'redux-persist'
 import { Alert } from 'react-native'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
 import { exportReducerNames } from '../reducers'

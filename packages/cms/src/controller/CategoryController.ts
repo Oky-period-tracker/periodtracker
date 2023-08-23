@@ -4,7 +4,7 @@ import { Category } from '../entity/Category'
 import { Subcategory } from '../entity/Subcategory'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
-import { env } from 'env'
+import { env } from '../env'
 
 export class CategoryController {
   private categoryRepository = getRepository(Category)

@@ -2,7 +2,7 @@ import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
-import { env } from 'env'
+import { env } from '../env'
 
 export class ArticleController {
   private articleRepository = getRepository(Article)

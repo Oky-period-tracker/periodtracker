@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express'
 import { Survey } from '../entity/Survey'
 import { Question } from '../entity/Question'
 import { v4 as uuid } from 'uuid'
-import { env } from 'env'
+import { env } from '../env'
 
 const reformatSurveyData = (res: any) => {
   return res.map((sur) => ({

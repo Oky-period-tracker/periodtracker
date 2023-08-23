@@ -1,5 +1,5 @@
 import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import { httpClient } from '../../services/HttpClient'

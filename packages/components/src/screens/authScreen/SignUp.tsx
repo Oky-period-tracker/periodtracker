@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 import { MultiStepForm } from '../../components/common/MultiStepForm'
 import { AskUserInformation } from './signUp/AskUserInformation'
 import { AskPassword } from './signUp/AskPassword'

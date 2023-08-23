@@ -154,12 +154,12 @@ android {
     // }
 
     defaultConfig {
-        applicationId "com.oky"
+        applicationId project.APPLICATION_ID
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 68
-        versionName "7.4"
-
+        versionName project.VERSION
+        resValue "string", "app_display_name", APP_DISPLAY_NAME
     }
     signingConfigs {
         debug {

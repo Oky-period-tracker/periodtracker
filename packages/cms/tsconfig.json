@@ -16,6 +16,7 @@
     "typeRoots": ["../../node_modules/@types", "./@types"]
   },
   "include": ["src/**/*", "@types/*.d.ts", "ormconfig.ts", "src/migrations/.ts"],
+  "references": [{ "path": "../core" }],
   "exclude": ["node_modules"],
   "compileOnSave": false
 }

@@ -4,6 +4,7 @@ import { Notification } from '../entity/Notification'
 import { PermanentNotification } from '../entity/PermanentNotification'
 // @ts-ignore
 import * as admin from 'firebase-admin'
+import { env } from 'env'
 
 export class NotificationController {
   private notificationRepository = getRepository(Notification)
@@ -21,7 +22,7 @@ export class NotificationController {
   async mobilePermanentNotifications(request: Request, response: Response, next: NextFunction) {
     // LIKE checks if versions string contains the request param version
     const entry = await this.permanentNotificationRepository.query(
-      `SELECT * from oky_en.permanent_notification WHERE versions LIKE '%%' || $1 || '%%' AND live = TRUE AND lang = $2`,
+      `SELECT * from ${env.db.schema}.permanent_notification WHERE versions LIKE '%%' || $1 || '%%' AND live = TRUE AND lang = $2`,
       [request.params.ver, request.params.lang],
     )
 
@@ -98,11 +99,11 @@ export class NotificationController {
     admin
       .messaging()
       .send(message)
-      .then(response => {
+      .then((response) => {
         // Response is a message ID string.
         console.log('Successfully sent message:', response)
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('Error sending message:', error)
       })
   }

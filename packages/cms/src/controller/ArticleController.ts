@@ -2,6 +2,7 @@ import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
+import { env } from 'env'
 
 export class ArticleController {
   private articleRepository = getRepository(Article)
@@ -19,10 +20,10 @@ export class ArticleController {
       ca.primary_emoji,
       ca.primary_emoji_name,
       ar.lang 
-      FROM oky_en.article ar 
-      INNER JOIN oky_en.category ca 
+      FROM ${env.db.schema}.article ar 
+      INNER JOIN ${env.db.schema}.category ca 
       ON ar.category = CAST(ca.id as CHAR(50))
-      INNER JOIN oky_en.subcategory sc  
+      INNER JOIN ${env.db.schema}.subcategory sc  
       ON ar.subcategory = CAST(sc.id as CHAR(50))
       WHERE ar.lang = $1
       AND ar.live = true

@@ -4,6 +4,7 @@ import { Category } from '../entity/Category'
 import { Subcategory } from '../entity/Subcategory'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
+import { env } from 'env'
 
 export class CategoryController {
   private categoryRepository = getRepository(Category)
@@ -20,7 +21,7 @@ export class CategoryController {
 
   async save(request: Request, response: Response, next: NextFunction) {
     const category = await this.categoryRepository.query(
-      'SELECT * FROM oky_en.category WHERE title = $1 or primary_emoji = $2',
+      `SELECT * FROM ${env.db.schema}.category WHERE title = $1 or primary_emoji = $2`,
       [request.body.title, request.body.primary_emoji],
     )
     if (category && category.length)
@@ -37,7 +38,7 @@ export class CategoryController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     const category = await this.categoryRepository.query(
-      'SELECT * FROM oky_en.category WHERE title = $1 or primary_emoji = $2',
+      `SELECT * FROM ${env.db.schema}.category WHERE title = $1 or primary_emoji = $2`,
       [request.body.title, request.body.primary_emoji],
     )
     if (category && category.length && category[0].id !== request.params.id)

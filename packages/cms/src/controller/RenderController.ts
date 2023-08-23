@@ -22,6 +22,7 @@ import { TermsAndConditions } from '../entity/TermsAndConditions'
 import { PrivacyPolicy } from '../entity/PrivacyPolicy'
 import { AboutBanner } from '../entity/AboutBanner'
 import { Question } from '../entity/Question'
+import { env } from 'env'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -213,10 +214,10 @@ export class RenderController {
   async renderEncyclopedia(request: Request, response: Response, next: NextFunction) {
     const articles = await this.articleRepository.query(
       `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created 
-      FROM oky_en.article ar 
-      INNER JOIN oky_en.category ca 
+      FROM ${env.db.schema}.article ar 
+      INNER JOIN ${env.db.schema}.category ca 
       ON ar.category = CAST(ca.id as CHAR(50))
-      INNER JOIN oky_en.subcategory sc  
+      INNER JOIN ${env.db.schema}.subcategory sc  
       ON ar.subcategory = CAST(sc.id as CHAR(50))
       WHERE ar.lang = $1`,
       [request.user.lang],
@@ -232,8 +233,8 @@ export class RenderController {
     const categories = await this.categoryRepository.find({ where: { lang: request.user.lang } })
     const subcategories = await this.subcategoryRepository.query(
       `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id
-      FROM oky_en.subcategory sc
-      INNER JOIN oky_en.category ca
+      FROM ${env.db.schema}.subcategory sc
+      INNER JOIN ${env.db.schema}.category ca
       ON sc.parent_category = CAST(ca.id as CHAR(50))
       WHERE sc.lang = $1`,
       [request.user.lang],

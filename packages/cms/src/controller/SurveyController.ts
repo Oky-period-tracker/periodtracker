@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express'
 import { Survey } from '../entity/Survey'
 import { Question } from '../entity/Question'
 import { v4 as uuid } from 'uuid'
+import { env } from 'env'
 
 const reformatSurveyData = (res: any) => {
   return res.map((sur) => ({
@@ -37,7 +38,7 @@ export class SurveyController {
   async newMobileSurveysByLanguage(request: Request, response: Response, next: NextFunction) {
     const entityManager = getManager()
     const completedSurveys = await entityManager.query(
-      'SELECT id FROM oky_en.answered_surveys where user_id = $1 GROUP BY answered_surveys.id',
+      `SELECT id FROM ${env.db.schema}.answered_surveys where user_id = $1 GROUP BY answered_surveys.id`,
       [request.query.user_id],
     )
     const ids =

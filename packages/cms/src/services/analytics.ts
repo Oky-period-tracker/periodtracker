@@ -1,16 +1,18 @@
+import { env } from 'env'
+
 export const analyticsQueries = {
   usersLocations: `
     SELECT 
     COUNT(CASE location WHEN 'Urban' then 1 else null end) as total_urban,
     COUNT(CASE location WHEN 'Rural' then 1 else null end) as total_rural
-    FROM oky_en.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
+    FROM ${env.db.schema}.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
     `,
   usersGender: `
     SELECT 
     COUNT(CASE gender WHEN 'Female' then 1 else null end) as total_female, 
     COUNT(CASE gender WHEN 'Male' then 1 else null end) as total_male,
     COUNT(CASE gender WHEN 'Other' then 1 else null end) as total_other
-    FROM oky_en.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
+    FROM ${env.db.schema}.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
     `,
   usersAgeGroups: `
     SELECT SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) < 10 THEN 1 ELSE 0 END) AS under_10,
@@ -21,13 +23,13 @@ export const analyticsQueries = {
     SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) BETWEEN 18 AND 19 THEN 1 ELSE 0 END) AS between_18_19,
     SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) BETWEEN 20 AND 21 THEN 1 ELSE 0 END) AS between_20_21,
     SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) > 22 THEN 1 ELSE 0 END) AS greater_than_22
-    FROM oky_en.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
+    FROM ${env.db.schema}.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
     `,
   usersCountries: `
     SELECT
     country,
     COUNT(*) as value
-    FROM oky_en.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
+    FROM ${env.db.schema}.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
     GROUP BY country
   `,
   usersProvince: `
@@ -35,7 +37,7 @@ export const analyticsQueries = {
     country,
     province,
     COUNT(*) as value
-    FROM oky_en.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
+    FROM ${env.db.schema}.oky_user WHERE (gender = $1 OR $1 IS NULL) AND (location= $2 OR $2 IS NULL)
     GROUP BY province, country
   `,
   answeredQuizzesByID: `
@@ -46,14 +48,14 @@ export const analyticsQueries = {
     COUNT(CASE answerID WHEN '1' then 1 else null end) as total_option1,
     COUNT(CASE answerID WHEN '2' then 1 else null end) as total_option2,
     COUNT(CASE answerID WHEN '3' then 1 else null end) as total_option3
-    FROM oky_en.answered_quizzes
+    FROM ${env.db.schema}.answered_quizzes
     GROUP BY id
     `,
 
   answeredSurveysByID: `
     SELECT answered_surveys.id,answered_surveys.questions, answered_surveys.user_id
-    FROM oky_en.answered_surveys
-    left outer join oky_en.oky_user 
+    FROM ${env.db.schema}.answered_surveys
+    left outer join ${env.db.schema}.oky_user 
     ON oky_user.id = answered_surveys.user_id::uuid 
     WHERE
       (oky_user.id = answered_surveys.user_id::uuid AND answered_surveys.isSurveyAnswered = 'true')
@@ -63,7 +65,7 @@ export const analyticsQueries = {
     SELECT
     DATE_TRUNC('day', created_at) AS date,
     COUNT(*) as value
-    FROM oky_en.app_event
+    FROM ${env.db.schema}.app_event
     WHERE type = 'SHARE_APP'
     GROUP BY DATE_TRUNC('day', created_at)
     ORDER BY date
@@ -72,7 +74,7 @@ export const analyticsQueries = {
     SELECT
     DATE_TRUNC('day', date_created) AS date,
     COUNT(*) as value
-    FROM oky_en.analytics
+    FROM ${env.db.schema}.analytics
     WHERE type = 'DIRECT_DOWNLOAD'
     GROUP BY DATE_TRUNC('day', date_created)
     ORDER BY date
@@ -89,8 +91,8 @@ export const analyticsQueries = {
     SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) BETWEEN 20 AND 21 THEN 1 ELSE 0 END) AS between_20_21,
     SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) > 22 THEN 1 ELSE 0 END) AS greater_than_22,
     STRING_AGG(questions, ' ,')
-    FROM oky_en.answered_surveys
-    full outer join oky_en.oky_user 
+    FROM ${env.db.schema}.answered_surveys
+    full outer join ${env.db.schema}.oky_user 
     ON oky_user.id = answered_surveys.user_id::uuid 
     WHERE
       (oky_user.id = answered_surveys.user_id::uuid)

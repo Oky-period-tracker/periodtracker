@@ -1,0 +1,85 @@
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="dynamicModal" tabindex="-1" role="dialog"
+  aria-labelledby="dynamicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content survey_form">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dynamicModalLabel">New message</h5>
+        <button type="button" class="btn add__question btn-primary ml-3" style="padding: 3px"><i class="fa fa-plus"></i> Add More Question</button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-borderless modal-table">
+          <thead>
+            <tr>
+              <% headings.forEach((heading, index)=>{ %>
+                <% if(heading =='Actions' ) { %>
+                  <th style="width: 20%">
+                    <%= heading %>
+                  </th>
+                <% } %>
+                <% if(heading !='Actions' ) { %>
+                  <th >
+                    <%= heading %>
+                  </th>
+                <% } %>
+              <% }) %>
+            </tr>
+          </thead>
+          <tbody id="surveyTbody"  class="survey_tbody" style="overflow-y: scroll">
+            <tr class="question_parent d-none" style="border-bottom: solid 5px #eee;">              
+              <% headings.forEach((item, index)=>{ %>
+                <% if(item=='S.No' ) { %>
+                  <td>1</td>
+                <% } %>  
+                <% if(item=='Actions' ) { %>
+                  <td style="width: 20%">
+                    <input name="id" class="id_input" hidden/>
+                    <div id="surveyResponseTypeBtn" style="display: inline-block;">
+                      <span class="mr-1">Text</span>
+                      <label class="switch">
+                        <input class='isMultipleCheckbox input_field' name="is_multiple" type="checkbox" />
+                        <span class="slider round"></span>
+                      </label><span class="ml-1">Multiple</span>
+                    </div>
+                    <button class="btn d-none remove__question" style="padding: 0 5px"><i class="fas fa-trash"></i></button>
+                    <button class="btn handle-sort" style="padding: 0 3px;"><i class="fas fa-sort"></i></button>
+                  </td>
+                <% } %>
+                <% if(item !='S.No' && item !='Actions' && item !='Next que' ) { %>
+                  <td >
+                    <textarea class="form-control input_field validate__input <%= item =='Question' ? 'textarea__input' : 'option__input' %>" data-length="<%= item== 'Question' ? 65 : 20 %>" name="<%= item %>" required="<%= item =='Question' ? true : false%>" rows="2" id="<%= 'col'+index+'TableModal' %>"></textarea>
+                    <% if(errors && errors.length !==0){ %>
+                      <p id="error<%=index%>" style="display: none;">
+                        <%= errors[index] %>
+                      </p>
+                    <% } %>
+                    <p class="countdown-warning" id="countdown<%=index %>" style="display: none;">remaining</p>
+                    <% if(item !='Question' && item !='Response' ) { %>
+                      <small>Next Question <i class="fa fa-down-arrow"></i></small><input  min="0" type="number" class="validate__input form-control next_question_field" data-name="<%= item %>" name="next_question" id="<%= 'col'+index+'TableModal' %>" />
+                    <% } %>                    
+                  </td>
+                <% } %>
+              <% }) %>
+            </tr>
+          </tbody>
+        </table>
+        <p class="option_validations text-danger" style="visibility: hidden;">Please add atleast 1 option.</p>
+        <p class="text-danger error__message" style="visibility: hidden;">Please fill the  highlighted fields.</p>
+        <p class="next_error__message text-danger" style="visibility: hidden;">Please enter valid input in highlighted fields.</p>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          <%= __('Close')%>
+        </button>
+        <button type="submit" class="btn btn-primary" id="btnEditConfirm">
+          <%= __('Confirm')%>
+        </button>
+      </div>
+    </div>
+  </div>
+  <span id="itemID" hidden></span>
+</div>

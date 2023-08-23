@@ -1,0 +1,219 @@
+import { Actions } from '../types'
+import { DailyCard } from '../../types'
+import { combineReducers } from 'redux'
+import { toShortISO } from '../../services/dateUtils'
+
+export interface AnswerForUserState {
+  surveys: {
+    [id: string]: {
+      id: string
+      user_id: string
+      isCompleted: boolean
+      isSurveyAnswered: boolean
+      questions: any
+      utcDateTime: string
+      inProgress: boolean
+    }
+  }
+  quizzes: {
+    [id: string]: {
+      id: string
+      question: string
+      emoji: string
+      answer: string
+      isCorrect: boolean
+      response: string
+      utcDateTime: string
+    }
+  }
+  cards: {
+    [utcShortISO: string]: DailyCard
+  }
+  verifiedDates: {
+    [utcShortISO: string]: {
+      periodDay: null | boolean
+      utcDateTime: string
+    }
+  }
+  notes: {
+    [utcShortISO: string]: {
+      notes: string
+      utcDateTime: string
+    }
+  }
+}
+
+export interface AnswerState {
+  [userId: string]: AnswerForUserState
+}
+
+function surveysReducer(state = {}, action: Actions): AnswerForUserState['surveys'] {
+  if (action.type === 'ANSWER_SURVEY') {
+    return {
+      ...state,
+      [action.payload.id]: {
+        id: action.payload.id,
+        user_id: action.payload.user_id,
+        isCompleted: action.payload.isCompleted,
+        isSurveyAnswered: action.payload.isSurveyAnswered,
+        questions: action.payload.questions,
+        utcDateTime: action.payload.utcDateTime.toISOString(),
+      },
+    }
+  }
+  if (action.type === 'UPDATE_SURVEY_WITH_ANSWER') {
+    return {
+      ...state,
+      [action.payload.id]: {
+        id: action.payload.id,
+        user_id: action.payload.user_id,
+        isCompleted: action.payload.isCompleted,
+        isSurveyAnswered: action.payload.isSurveyAnswered,
+        questions: action.payload.questions,
+        utcDateTime: action.payload.utcDateTime.toISOString(),
+        inProgress: action.payload.inProgress,
+      },
+    }
+  }
+
+  return state
+}
+
+function quizzesReducer(state = {}, action: Actions): AnswerForUserState['quizzes'] {
+  if (action.type === 'ANSWER_QUIZ') {
+    return {
+      ...state,
+      [action.payload.id]: {
+        id: action.payload.id,
+        question: action.payload.question,
+        answerID: action.payload.answerID,
+        emoji: action.payload.emoji,
+        answer: action.payload.answer,
+        isCorrect: action.payload.isCorrect,
+        response: action.payload.response,
+        utcDateTime: action.payload.utcDateTime.toISOString(),
+      },
+    }
+  }
+
+  return state
+}
+
+function cardsReducer(state = {}, action: Actions): AnswerForUserState['cards'] {
+  if (action.type === 'ANSWER_DAILY_CARD') {
+    const keyCard = toShortISO(action.payload.utcDateTime)
+    let answersToInsert = []
+    // Added as a way of handling multiple selections and to account for the initial release of single selections (Painful, I know)
+
+    if (
+      state[keyCard] !== undefined &&
+      state[keyCard][action.payload.cardName] &&
+      !action.payload.mutuallyExclusive &&
+      action.payload.cardName !== 'periodDay'
+    ) {
+      if (typeof state[keyCard][action.payload.cardName] === 'string') {
+        // This is to account for old data that used to just be a string and now we need to have multiple
+        // we put that string as part of an array before concatenating the new answers
+        answersToInsert = [state[keyCard][action.payload.cardName]].concat(action.payload.answer)
+      } else {
+        if (state[keyCard][action.payload.cardName].includes(action.payload.answer)) {
+          // Remove if already contained (toggle ability)
+          answersToInsert = state[keyCard][action.payload.cardName].filter(
+            (item) => item !== action.payload.answer,
+          )
+        } else {
+          answersToInsert = state[keyCard][action.payload.cardName].concat(action.payload.answer)
+        }
+      }
+    } else {
+      answersToInsert = [action.payload.answer]
+    }
+
+    return {
+      ...state,
+      [keyCard]: {
+        ...(state[keyCard] || {}),
+        [action.payload.cardName]: answersToInsert,
+      },
+    }
+  }
+  return state
+}
+function periodVerifyReducer(state = {}, action: Actions): AnswerForUserState['verifiedDates'] {
+  if (action.type === 'ANSWER_VERIFY_DATES') {
+    const keyCard = toShortISO(action.payload.utcDateTime)
+    const answersToInsert = []
+    // Added as a way of handling multiple selections and to account for the initial release of single selections (Painful, I know)
+    return {
+      ...state,
+      [keyCard]: {
+        ...(state[keyCard] || {}),
+        periodDay: action.payload.periodDay,
+      },
+    }
+  }
+  return state
+}
+
+function notesReducer(state = {}, action: Actions): AnswerForUserState['notes'] {
+  if (action.type === 'ANSWER_NOTES_CARD') {
+    const keyCard = toShortISO(action.payload.utcDateTime)
+    return {
+      ...state,
+      [keyCard]: {
+        title: action.payload.title,
+        notes: action.payload.notes,
+        utcDateTime: action.payload.utcDateTime,
+      },
+    }
+  }
+  return state
+}
+
+const answerForUserReducer = combineReducers<AnswerForUserState, Actions>({
+  surveys: surveysReducer,
+  quizzes: quizzesReducer,
+  cards: cardsReducer,
+  notes: notesReducer,
+  verifiedDates: periodVerifyReducer,
+})
+
+export function answerReducer(state: AnswerState = {}, action: Actions): AnswerState {
+  if (action.type === 'ANSWER_SURVEY') {
+    return {
+      ...state,
+      // [action.payload.user_id]: answerForUserReducer(state[action.payload.userID], action),
+    }
+  }
+  if (action.type === 'UPDATE_SURVEY_WITH_ANSWER') {
+    return {
+      ...state,
+    }
+  }
+  if (action.type === 'ANSWER_QUIZ') {
+    return {
+      ...state,
+      [action.payload.userID]: answerForUserReducer(state[action.payload.userID], action),
+    }
+  }
+  if (action.type === 'ANSWER_DAILY_CARD') {
+    return {
+      ...state,
+      [action.payload.userID]: answerForUserReducer(state[action.payload.userID], action),
+    }
+  }
+  if (action.type === 'ANSWER_VERIFY_DATES') {
+    return {
+      ...state,
+      [action.payload.userID]: answerForUserReducer(state[action.payload.userID], action),
+    }
+  }
+  if (action.type === 'ANSWER_NOTES_CARD') {
+    return {
+      ...state,
+      [action.payload.userID]: answerForUserReducer(state[action.payload.userID], action),
+    }
+  }
+
+  return state
+}

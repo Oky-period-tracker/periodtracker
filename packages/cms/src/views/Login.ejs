@@ -1,0 +1,42 @@
+<%- include('partials/Header') %>
+<div class="login-page">
+  <div class="form">
+    <form action="/login" method="POST" class="login-form">
+      <h2>Login</h2>
+      <div class="row">
+        <h5>Username</h5>
+      </div>
+      <input type="text" name="username" required />
+      <div class="row">
+        <h5>Password</h5>
+        <i id="pass-status" class="fas fa-eye-slash" aria-hidden="true" onClick="viewPassword()"></i>
+      </div>
+      <input id="password-field" type="password" name="password" pattern=".{5,10}" required />
+      <button type="submit">login</button>
+      <% if(globalErrors.length > 0) { %>
+        <p id="loginError">
+          <%= globalErrors.join(' ') %>
+        </p>
+      <% } %>
+    </form>
+  </div>
+</div>
+<div class="bottom-bar"></div>
+<script>
+  function viewPassword()
+    {
+      var passwordInput = document.getElementById('password-field');
+      var passStatus = document.getElementById('pass-status');
+    
+      if (passwordInput.type == 'password'){
+        passwordInput.type='text';
+        passStatus.className='fa fa-eye';
+      }
+      else{
+        passwordInput.type='password';
+        passStatus.className='fa fa-eye-slash';
+      }
+    }
+</script>
+<%- include('partials/Footer') %>
+

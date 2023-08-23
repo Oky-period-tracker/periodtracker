@@ -1,0 +1,40 @@
+version: "3.4"
+services:
+  base:
+    image: oky/base
+    build:
+      context: .
+    command: /bin/true
+  api:
+    build:
+      context: packages/api/.
+    ports:
+      - 3000:3000
+    env_file: packages/api/.env
+    depends_on:
+      - base
+  cms:
+    build:
+      context: packages/cms/.
+    ports:
+      - 5000:5000
+    env_file: packages/cms/.env
+    depends_on:
+      - base
+  website:
+    build:
+      context: packages/website/.
+    ports:
+      - 4000:80
+  postgres:
+    image: postgres:10-alpine
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=oky
+      - POSTGRES_USER=oky
+      - POSTGRES_PASSWORD=oky
+volumes:
+  db-data: {}

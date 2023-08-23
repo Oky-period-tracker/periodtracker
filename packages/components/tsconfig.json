@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "allowJs": false,
+    "noEmit": false,
+    "composite": true,
+    "outDir": "dist/",
+    "rootDirs": ["src/"],
+    "typeRoots": ["../../node_modules/@types", "./@types"]
+  },
+  "include": ["./src/", "./@types/*.d.ts", "__tests__/saga.tests.ts"],
+  "references": [{ "path": "../core" }]
+}

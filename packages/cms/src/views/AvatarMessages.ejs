@@ -1,0 +1,77 @@
+<%- include('modals/InfoModal') %>
+
+<%- include('partials/Header') %> 
+<%- include('modals/DynamicModal', {headings: [__('Content')], errors: ['max 40 characters']})%>
+<div class="homePageContainer">
+  <div class="sideBar">
+    <% if(currentUser.type !== 'contentManager') {%>
+      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
+    <% } %>    
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer">
+      <h2><%= __('Avatar Messages')%></h2>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#dynamicModal"
+        data-value="0"
+      >
+      <%= __('Add Avatar Message')%>
+      </button>
+    </div>
+    <div class="homeButtonContainer"></div>
+    <div class="homeTableContainer">
+      <table class="table table-striped table-borderless tableFixHead table-responsive">
+        <thead>
+          <tr>
+            <th style="width: 55%" class="pointer" id="avatarMessageContent"><%= __('Content')%></th>
+            <th style="width: 5%"><%= __('Edit')%></th>
+            <th style="width: 5%"><%= __('Delete')%></th>
+            <th style="width: 5%"><%= __('Live')%></th>
+          </tr>
+        </thead>
+        <tbody id="avatarMessageContainer"  style="overflow-y: scroll">
+          <% avatarMessages.forEach((item) =>{ %>
+          <tr>
+            <td><%= item.content %></td>
+            <td>
+              <button
+                type="button"
+                class="btn"
+                data-toggle="modal"
+                data-target="#dynamicModal"
+                data-value="<%= item.id %>"
+              >
+              <i class="fas fa-edit" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn deleteAvatarMessage" data-value="<%= item.id %>">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <label class="switch">
+                <input data-value="<%= item.id %>" class='liveCheckbox' type="checkbox" 
+                <%if(item.live) {%>
+                  checked
+                <% }%>
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <span id="avatarMessagesJSON" hidden>
+    <%= JSON.stringify(avatarMessages); %>
+  </span>
+  <script type="application/javascript" src="/scripts/avatarMessagesViewScript.js"></script>
+</div>
+<%- include('partials/Footer') %>

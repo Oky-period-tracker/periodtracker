@@ -1,0 +1,31 @@
+{
+    "folders": [
+      {
+        "path": "packages/api"
+      },
+      {
+        "path": "packages/cms"
+      },
+  
+      {
+        "path": "packages/components"
+      },
+      {
+        "path": "packages/core"
+      },
+      {
+        "path": "packages/mobile"
+      },
+      {
+        "path": "packages/components/src/assets"
+      },
+      {
+        "path": "packages/core/src/modules/translations"
+      },
+      {
+        "path": "./"
+      }
+    ],
+    "settings": {}
+  }
+  

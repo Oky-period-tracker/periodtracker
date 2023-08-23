@@ -1,0 +1,48 @@
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<div
+  class="modal fade bd-example-modal-lg"
+  id="graphModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="graphModal"
+  aria-hidden="true"
+>
+  <!-- HTML -->
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dynamicModalLabel">User Analytics</h5>
+        <div class="ml-2"><button id="downloadSigleCsvData" class="d-none btn btn-primary float-right">Download Data</button></div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="chartDiv"></div>
+        <div class="mt-2 mb-2 survey-data-table">
+          <table class="table table-striped tableFixHead table-responsive" style="height: 35vh;">
+            <thead>
+              <tr>
+                <th width="50%" class="pointer" id="surveyQuestion"><%= __('Question')%></th>
+                <th width="20%"><%= __('Answer')%></th>
+                <th width="5%"><%= __('Answer ID')%></th>
+                <th width="20%"><%= __('Response')%></th>
+              </tr>
+            </thead>
+            <tbody id="surveyAnswerContainer" style="overflow-y: scroll">
+              <tr class="d-none">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

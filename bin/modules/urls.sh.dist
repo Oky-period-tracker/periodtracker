@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Required
+k8s_url="git@github.com:Oky-period-tracker/periodtracker_k8s-whitelabelled.git"
+assets_url="git@github.com:Oky-period-tracker/periodtracker_assets-whitelabelled.git"
+translations_url="git@github.com:Oky-period-tracker/periodtracker_translations-whitelabelled.git"
+
+# Optional
+# flower_url="git@github.com:Oky-period-tracker/periodtracker_flower.git"

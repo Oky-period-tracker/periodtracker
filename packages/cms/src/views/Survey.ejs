@@ -1,0 +1,196 @@
+<%- include('partials/Header') %> 
+<%- include('modals/SurveyModal', {headings: [__('S.No'),__('Question'), __('Option 1'),__('Option 2'),__('Option 3'),__('Option 4'),__('Option 5'), __('Actions') ], errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20 characters','max 20 characters','max 20 characters']}) %>
+<%- include('modals/GraphModal') %>
+<div class="homePageContainer">
+  <div class="sideBar">
+    <% if(currentUser.type !== 'contentManager') {%>
+      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
+    <% } %>
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer">
+      <h2><%= __('Survey')%></h2>
+      <select class="custom-select filter-select filter__form_select" id="currentGender" aria-placeholder="Gender">
+        <option value="">Gender</option>
+        <% ['Male', 'Female', 'Other'].forEach((item, index) =>{ %>
+        <option value="<%= item %>" <%= item == query.gender ? "selected" : '' %>><%= item %></option>
+        <% }) %>
+      </select>
+      <select class="custom-select filter-select filter__form_select" id="currentLoc" title="Location">
+        <option value="">Location</option>
+        <% ['Rural', 'Urban'].forEach((item, index) =>{ %>
+        <option value="<%= item %>" <%= item == query.location ? "selected" : '' %>><%= item %></option>
+        <% }) %>
+      </select>
+      <select class="custom-select filter-select filter__form_select" id="currentAge" aria-placeholder="Gender">
+        <option value="">Age</option>
+        <% [{
+          'Under 10':  'under_10'},
+          {'10 to 11': 'between_10_11'},
+          {'12 - 13':  'between_12_13'},
+          {'14 - 15':  'between_14_15'},
+          {'16 - 17':  'between_16_17'},
+          {'18 - 19':  'between_18_19'},
+          {'20 - 21':  'between_20_21'},
+          {'Over 22':  'greater_than_22'}].forEach((item, index) =>{ %>
+        <option value="<%= Object.values(item)[0] %>" <%= Object.values(item)[0] == query.age ? "selected" : '' %>><%= Object.keys(item) %></option>
+        <% }) %>
+      </select>
+      <button
+        type="button"
+        class="btn btn-primary"
+        id="dateSort"
+      >
+        <%= __('Sort by Date') %>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#dynamicModal"
+        data-value="0"
+      >
+      <%= __('Add Survey')%>
+      </button>
+      <button id="downloadCsv" disabled class="btn btn-primary isAnsweredDataLoaded"><%= __('Download Results')%></button>
+    </div>
+    <div class="homeButtonContainer"></div>
+    <div class="homeTableContainer">
+      <table class="table tableFixHead table-responsive">
+        <thead>
+          <tr>
+            <th style="width: 1%"><%= __('S.No')%></th>
+            <th style="width: 2.5%"><%= __('Survey ID')%></th>
+            <th style="width: 2%" class="pointer" id="surveyQuestion"><%= __('Question Count')%></th>
+            <th style="width: 2.5%"><%= __('Created At')%></th>
+            <th style="width: 2.5%"><%= __('Valid Till')%></th>
+            <th style="width: 2%"><%= __('Data')%></th>
+            <th style="width: 2.5%"><%= __('Response')%></th>
+            <th style="width: 1%"><%= __('View')%></th>
+            <th style="width: 1%"><%= __('Edit')%></th>
+            <th style="width: 1%"><%= __('Delete')%></th>
+            <th style="width: 1%"><%= __('Live')%></th>
+            <th style="width: 2.5%"><%= __('Age Restricted')%></th>
+          </tr>
+        </thead>
+        <tbody id="surveyContainer" style="overflow-y: scroll">
+          <% surveys.forEach((item, index) =>{ %>
+          <tr class="surveyDataRow" id="surveyData__<%=item.id %>">
+            <td><%= index+1 %></td>
+            <td><%= item.id %></td>
+            <td>
+              <%= item.questions.length %>
+            </td>
+            <td><%= moment(item.date_created).format("DD/MM/YYYY") %></td>
+            <td><%= moment(item.date_created).add(1, 'months').format("DD/MM/YYYY") %></td>
+            <td>
+              <button
+                type="button"
+                disabled
+                class="btn isAnsweredDataLoaded"
+                id="downloadSurveySigleCsvData"
+                data-value="<%= item.id %>"
+              >
+              <i class="fas fa-chart-pie" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td><%= answeredSurveys.filter(su => su.id == item.id).length %></td>
+            <td>
+              <button class="btn show__questions" type="button" data-id="#survey<%=item.id %>">
+                <i class="fas fa-eye" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <button
+                type="button"
+                class="btn"
+                data-toggle="modal"
+                data-target="#dynamicModal"
+                data-value="<%= item.id %>"
+              >
+              <i class="fas fa-edit" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn delete" data-value="<%= item.id %>">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <label class="switch">
+                <input data-value="<%= item.id %>" data-name="live" class='liveCheckbox' type="checkbox" 
+                <%if(item.live) {%>
+                  checked
+                <% }%>
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td>
+              <label class="switch">
+                <input data-value="<%= item.id %>" data-name="isAgeRestricted" class='ageRestrictionCheckbox' type="checkbox" 
+                <%if(item.isAgeRestricted) {%>
+                  checked
+                <% }%>
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td hidden><%= item.date_created %></td>
+          </tr>
+          <tr>
+            <td  colspan="12" class="collapse" id="survey<%= item.id %>">
+                <table class="table table-striped table-borderless table-responsive">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th style="width: 1%"></th>
+                      <th style="width: 20%" class="pointer" id="surveyQuestion"><%= __('Question')%></th>
+                      <th style="width: 2.5%"><%= __('Option 1')%></th>
+                      <th style="width: 2.5%"><%= __('Option 2')%></th>
+                      <th style="width: 2.5%"><%= __('Option 3')%></th>
+                      <th style="width: 2.5%"><%= __('Option 4')%></th>
+                      <th style="width: 2.5%"><%= __('Option 5')%></th>
+                      <th style="width: 5%"><%= __('Is Multiple  Choice')%></th>
+                    </tr>
+                  </thead>
+                  <tbody id="questionContainer">
+                    <% item.questions.forEach((que, index) =>{ %>
+                    <tr >
+                      <td><%= index+1 %></td>
+                      <td><%= que.question %></td>
+                      <td><%= que.option1 %></td>
+                      <td><%= que.option2 %></td>
+                      <td><%= que.option3 %></td>
+                      <td><%= que.option4 %></td>
+                      <td><%= que.option5 %></td>
+                      <td><label class="disabled">
+                        <input disabled="true" data-value="<%= item.id %>" class='livemultiple' type="checkbox" 
+                        <%if(que.is_multiple) {%>
+                          checked
+                        <% }%>
+                        />
+                        
+                      </label></td>
+                    </tr>
+                    <% }) %>
+                  </tbody>
+                  </table>
+                </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <span id="surveysJSON" hidden>
+    <%= JSON.stringify(surveys); %>
+  </span>
+  <span id="answeredSurveysJSON" hidden>
+    <%= JSON.stringify(answeredSurveys); %>
+  </span>
+  <script type="application/javascript" src="/scripts/surveyViewScript.js"></script>
+</div>
+<%- include('partials/Footer') %>
+

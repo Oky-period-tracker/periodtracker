@@ -1,0 +1,15 @@
+{
+  "extends": ["../../tslint.json"],
+  "rules": {
+    "no-console": false,
+    "member-ordering": false,
+    "variable-name": [
+      true,
+      "allow-snake-case",
+      "allow-leading-underscore",
+      "allow-pascal-case",
+      "ban-keywords",
+      "check-format"
+    ]
+  }
+}

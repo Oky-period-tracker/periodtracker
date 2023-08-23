@@ -1,0 +1,166 @@
+<%- include('partials/Header') %>
+<%- include('modals/GraphModal') %>
+<script src="//www.amcharts.com/lib/4/themes/material.js"></script>
+
+
+<div class="homePageContainer">
+  <div class="sideBar">
+    <% if(currentUser.type !== 'contentManager') {%>
+      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
+    <% } %>    
+    <a href="/avatar-message-management"><h6><%= __('Avatar Messages')%></h6></a>
+    <a href="/didyouknow-management"><h6><%= __('Did you knows')%></h6></a>
+    <a href="/encyclopedia"><h6><%= __('Encyclopedia')%></h6></a>
+    <a href="/help-center-management"><h6><%= __('Help centers')%></h6></a>
+    <a href="/notifications-management"><h6><%= __('Notifications')%></h6></a>
+    <a href="/quiz-management"><h6><%= __('Quiz')%></h6></a>    
+    <a href="/survey-management"><h6><%= __('Survey')%></h6></a>
+    <a href="/analytics-management"><h6><%= __('User analytics')%></h6></a>
+    <a href="/suggestions-management" class="special"><h6><%= __('User Messages')%></h6></a>
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer">
+      <h2><%= __('Analytics Dashboard')%></h2>
+      <select class="custom-select filter-select" id="currentGender" aria-placeholder="Gender">
+        <option value="">Gender</option>
+        <% ['Male', 'Female', 'Other'].forEach((item, index) =>{ %>
+        <option value="<%= item %>" <%= item == query.gender ? "selected" : '' %>><%= item %></option>
+        <% }) %>
+      </select>
+      <select class="custom-select filter-select" id="currentLoc" title="Location">
+        <option value="">Location</option>
+        <% ['Rural', 'Urban'].forEach((item, index) =>{ %>
+        <option value="<%= item %>" <%= item == query.location ? "selected" : '' %>><%= item %></option>
+        <% }) %>
+      </select>
+      <button id="downloadCSV" class="btn btn-primary">
+        <%= __('Download Results')%>
+    </button>
+    </div>
+    <div style="flex-direction: column; justify-content: center;"  class="homeTableContainer">
+        <div class="row">
+          <div class="col-lg-6">
+              <div class="panel panel-primary">
+                  <div class="panel-heading"><%= __('Users Gender')%></div>
+                  <div  class="panel-body">
+                    <div class="graphContainer" id="userGenderGraph" ></div>
+                    <a href="#" class="fill-div"         
+                    data-toggle="modal"
+                    data-target="#graphModal"
+                    data-value="userGender"
+                    ></a>
+                  </div>
+              </div>
+            </div>
+       
+          <div class="col-lg-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading"><a class= "linkspecial"><%= __('Users Location')%></a></div>
+                <div class="panel-body">
+                    <div class="graphContainer" id="userLocationGraph" ></div>
+                    <a href="#" class="fill-div"         
+                    data-toggle="modal"
+                    data-target="#graphModal"
+                    data-value="userLocation"
+                    ></a>
+                </div>
+            </div>
+          </div>	
+        </div>
+        <div style="height: 310px;" class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+                  <div class="panel-heading"><%= __('User Ages')%></div>
+                    <div class="panel-body">
+                        <div class="graphContainer" id="userAgeGroupsGraph" ></div>
+                        <a href="#" class="fill-div"         
+                        data-toggle="modal"
+                        data-target="#graphModal"
+                        data-value="usersAgeGroups"
+                        ></a>
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div style="height: 310px;" class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+                  <div class="panel-heading"><%= __('User Countries')%></div>
+                    <div class="panel-body">
+                        <div class="graphContainer" id="userCountriesGraph" ></div>
+                        <a href="#" class="fill-div"         
+                        data-toggle="modal"
+                        data-target="#graphModal"
+                        data-value="usersCountries"
+                        ></a>
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div style="height: 310px;" class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+                  <div class="panel-heading" style="display: flex; flex-direction: row; align-items: center; justify-content: center;"><%= __('User Provinces')%>
+                    <select class="custom-select" id="currentCountry">
+                      <% Object.keys(usersCountries).sort().forEach((item, index) =>{ %>
+                      <option value="<%= item %>"><%= item %></option>
+                      <% }) %>
+                    </select>
+                  </div>
+                    <div class="panel-body">
+                        <div class="graphContainer" id="usersProvincesGraph" ></div>
+                        <a href="#" class="fill-div"         
+                        data-toggle="modal"
+                        data-target="#graphModal"
+                        data-value="usersProvinces"
+                        ></a>
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div style="height: 310px;" class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+                  <div class="panel-heading"><%= __('Share Analytics')%></div>
+                    <div class="panel-body">
+                        <div class="graphContainer" id="userShareGraph" ></div>
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div style="height: 310px;" class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-primary">
+                  <div class="panel-heading"><%= __('Direct Downloads')%></div>
+                    <div class="panel-body">
+                        <div class="graphContainer" id="directDownloadsGraph" ></div>
+                    </div>
+                </div>
+              </div>
+        </div>
+    </div>
+  </div>
+</div>
+<span id="userLocationsJSON" hidden>
+    <%= JSON.stringify(usersLocations); %>
+</span>
+<span id="userGendersJSON" hidden>
+    <%= JSON.stringify(usersGenders); %>
+</span>
+<span id="usersAgeGroupsJSON" hidden>
+    <%= JSON.stringify(usersAgeGroups); %>
+</span>
+<span id="usersCountriesJSON" hidden>
+    <%= JSON.stringify(usersCountries); %>
+</span>
+<span id="usersProvincesJSON" hidden>
+    <%= JSON.stringify(usersProvinces); %>
+</span>
+<span id="usersSharesJSON" hidden>
+    <%= JSON.stringify(usersShares); %>
+</span>
+<span id="directDownloadsJSON" hidden>
+    <%= JSON.stringify(directDownloads); %>
+</span>
+<script type="application/javascript" src="/scripts/analyticsScript.js"></script>
+<%- include('partials/Footer') %>

@@ -1,0 +1,196 @@
+<%- include('partials/Header') %> 
+<%- include('modals/NotificationModal', {headings: [__('Title'),__('Content')]}) %>
+<%- include('modals/PermanentNotificationModal') %>
+<div class="homePageContainer">
+  <div class="sideBar">
+    <% if(currentUser.type !== 'contentManager') {%>
+      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
+    <% } %>
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer">
+      <h2><%= __('Notifications')%></h2>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#permanentNotification"
+        data-value="0"
+      >
+      <%= __('Add Permanent Alert')%>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#dynamicModal"
+        data-value="0"
+      >
+      <%= __('Add Notification')%>
+      </button>
+    </div>
+    
+    <div class="homeTableContainer">
+      <table style="height: 270px;" class="table table-borderless table-striped tableFixHead table-responsive">
+        <thead >
+            <tr>
+                <th class="pointer"style="width: 15%"><%= __('Date pushed')%></th>
+                <th style="width: 40%"><%= __('Title')%></th>
+                <th style="width: 40%"><%= __('Content')%></th>
+                <th style="width: 15%"><%= __('Remove')%></th>
+            </tr>
+        </thead>
+        <tbody style="overflow-y: scroll" id="notifications-table-body">
+          <% notifications.forEach((notification, index) => { %>
+          <tr>
+            <td><%= notification.date_sent ? moment(parseInt(notification.date_sent)).format('D/M/YY') : ''%></td>
+            <td><%= notification.title %></td>
+            <td><%= notification.content %></td>
+            <td>
+              <button type="button" class="btn deleteNotification" data-value="<%= notification.id %>">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <div class="homeTableContainer">
+      <table style="height: 270px;" class="table table-borderless table-striped tableFixHead table-responsive">
+        <thead >
+            <tr>
+                <th style="width: 40%"><%= __('Message')%></th>
+                <th style="width: 40%"><%= __('Versions')%></th>
+                <th style="width: 15%"><%= __('Remove')%></th>
+                <th style="width: 15%"><%= __('Permanently Displayed')%></th>
+                <th style="width: 15%"><%= __('Live')%></th>
+            </tr>
+        </thead>
+        <tbody style="overflow-y: scroll" id="notifications-table-body">
+          <% permanentNotifications.forEach((permanentNotification, index) => { %>
+          <tr>
+            <td><%= permanentNotification.message %></td>
+            <td><%= permanentNotification.versions %></td>
+            <td>
+              <button type="button" class="btn deletePermanentNotification" data-value="<%= permanentNotification.id %>">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <label class="switch">
+                <input data-value="<%= permanentNotification.id %>" class='permanentCheckbox' type="checkbox" 
+                <%if(permanentNotification.isPermanent) {%>
+                  checked
+                <% }%>
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td>
+              <label class="switch">
+                <input data-value="<%= permanentNotification.id %>" class='liveCheckbox' type="checkbox" 
+                <%if(permanentNotification.live) {%>
+                  checked
+                <% }%>
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <span id="permanentAlertsJSON" hidden>
+    <%= JSON.stringify(permanentNotifications); %>
+  </span>
+  <script>
+    $('#btnAddConfirm').on('click', function (e) {
+        e.preventDefault();
+        var titleInput = $('#col0TableModal');
+        var contentInput = $('#col1TableModal')
+        var title = titleInput.val();
+        var content = contentInput.val();
+        var result = confirm('This notification will be sent out to all users immediately, do you wish to proceed?')
+        if (result) {
+          $.ajax({
+              url: '/notification',
+              method: 'POST',
+              data: {
+                  title: title,
+                  content: content
+              },
+              success: function () {
+                  location.reload()
+              }
+          })
+        }
+    })
+    $('.deleteNotification').on('click', (event) => {
+      var button = $(event.currentTarget) // currentTarget is the outer
+      var notificationId = button.data('value') // Extract info from data-* attributes
+      var result = confirm('Are you sure? This will permanently delete the notification')
+      if (result) {
+        $.ajax({
+          url: '/notification/' + notificationId,
+          type: 'DELETE',
+          success: result => {
+            location.reload()
+          },
+          error: error => {
+            console.log(error)
+          },
+        })
+      }
+    })
+    //================= Sorting =======================================
+    var filterList = $('#notifications-table-body')
+    var items = filterList.children()
+    var sortDateStatus = false
+    var filteredItems = false
+    var sortDate = function({ column }) {
+      filteredItems = filteredItems ? filteredItems : items
+
+      if (!sortDateStatus) {
+        var sortList = Array.prototype.sort.bind(filteredItems)
+        sortList(function(a, b) {
+
+          var aText = new Date(a.children[column].innerHTML)
+          var bText = new Date(b.children[column].innerHTML)
+          if (aText < bText) {
+            return -1
+          }
+          if (aText > bText) {
+            return 1
+          }
+          return 0
+        })
+        sortDateStatus = true
+      } else {
+        var sortList = Array.prototype.sort.bind(filteredItems)
+        sortList(function(a, b) {
+          var aText = new Date(a.children[column].innerHTML)
+          var bText = new Date(b.children[column].innerHTML)
+          if (aText > bText) {
+            return -1
+          }
+          if (aText < bText) {
+            return 1
+          }
+          return 0
+        })
+        sortDateStatus = false
+      }
+      filterList.append(filteredItems)
+    }
+
+    $('.pointer').click(() => sortDate({ column: 0 }))
+
+  </script>
+  <script type="application/javascript" src="/scripts/notificationScript.js"></script>
+
+</div>
+<%- include('partials/Footer') %>

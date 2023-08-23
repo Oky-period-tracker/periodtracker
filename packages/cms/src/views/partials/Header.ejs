@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Period tracker CMS</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/assets/images/favicon-16x16.png" sizes="16x16" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/main.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js" integrity="sha512-zYXldzJsDrNKV+odAwFYiDXV2Cy37cwizT+NkuiPGsa9X1dOz04eHvUWVuxaJ299GvcJT31ug2zO4itXBjFx4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">
+            <img class="header-logo" src="/assets/images/logo.png" />
+          </a>
+        </div>
+        <% if(currentUser){ %>
+        <h5><%= __('Welcome') %> <%=currentUser.username%></h5>
+        <% }%>
+        <ul class="nav navbar-nav">
+          <% if(currentUser){ %>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout"><%= __('Logout') %></a>
+          </li>
+          <% }%>
+          <li class="nav-item">
+            <button 
+              <% if(!currentUser){ %>
+              disabled
+              <% }%> 
+              <% if(currentUser){ %>
+              <% if(currentUser.type!=="superAdmin" ){ %> 
+                disabled 
+              <% }}%> 
+              style="border: none;"
+              type="button" data-toggle="collapse" data-target="#collapseExample"
+              aria-expanded="false" aria-controls="collapseExample" >
+              <img
+                class="flag-logo"
+                style="height: 60px;
+                width: 67px;"
+                src="<%= currentUser ? `/assets/images/`+currentUser.lang+`-flag.png` : `/assets/images/en-flag.png` %>"
+              />
+            </button>
+            <div class="collapse" id="collapseExample">
+              <div class="card card-body">
+                <button type="button" class="languageChange" data-value="en">
+                  <img class="flag-logo" src=" /assets/images/en-flag.png" />
+                </button>
+                <button type="button" class="languageChange" data-value="fr">
+                  <img
+                    style="margin-top: 10px; margin-bottom: 10px;height: 60px;
+                    width: 67px;"
+                    class="flag-logo"
+                    src=" /assets/images/fr-flag.png"
+                  />
+                </button>
+                <button type="button" class="languageChange" data-value="pt">
+                  <img
+                    style="margin-top: 10px; margin-bottom: 10px;height: 60px;
+                    width: 67px;"
+                    class="flag-logo"
+                    src=" /assets/images/pt-flag.png"
+                  />
+                </button>
+                <button type="button" class="languageChange" data-value="ru">
+                  <img
+                    style="margin-top: 10px; margin-bottom: 10px;height: 60px;
+                    width: 67px;"
+                    class="flag-logo"
+                    src=" /assets/images/ru-flag.png"
+                  />
+                </button>
+              </div>
+            </div>
+          </li>
+          <!-- <li class="nav-item">
+            <button 
+              disabled
+              style="border: none;"
+              type="button" data-toggle="collapse" data-target="#collapseExample"
+              aria-expanded="false" aria-controls="collapseExample" >
+              <img
+                class="flag-logo"
+                src="<%= currentUser ? `/assets/images/`+currentUser.lang+`-flag.png` : `/assets/images/en-flag.png` %>"
+              />
+            </button>
+          </li> -->
+        </ul>
+      </div>
+    </nav>
+  </head>
+  <body>

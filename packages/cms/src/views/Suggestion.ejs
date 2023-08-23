@@ -1,0 +1,132 @@
+<%- include('partials/Header') %> 
+<div class="homePageContainer">
+  <div class="sideBar">
+    <% if(currentUser.type !== 'contentManager') {%>
+      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
+    <% } %>
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer mb-2">
+      <h2><%= __('User messages')%></h2>
+      <form method="GET" id="filter_form" class="pr-3">
+          <div class="form-group float-right mr-3">
+            <select class="form-control" id="reason_filter" name="reason">
+              <option value="">All</option>
+              <% Object.keys(reasons).forEach(reason => {%>
+                <option <%-reasonFilter === reason ? "selected=\"selected\"" : ""%> value="<%-reason%>"><%=reasons[reason]%></option>
+              <%})%>
+            </select>
+          </div>
+          <input type="hidden" name="order_key" value="" id="order_key"/>
+          <input type="hidden" name="order_sequence" value="" id="order_sequence">
+      </form>
+    </div>
+    <div class="homeTableContainer mt-3">
+      <table class="table table-borderless table-striped tableFixHead table-responsive">
+        <thead>
+            <tr>
+                <th style="width: 5%;"><%= __('Name')%></th>
+                <th style="width: 20%;">
+                    <a href="#" data-order_key="dateRec" class="js-set-order text-white" style="text-decoration: none;">Date received&nbsp;
+                      <%- orderKey === 'dateRec' && orderSequence === 'ASC' ?  '<i class="fa fa-caret-up"></i>' : 
+                          orderKey === 'dateRec' && orderSequence === 'DESC' ? '<i class="fa fa-caret-down"></i>' : 
+                          '-' 
+                        %>
+                    </a>
+                </th>
+                <th style="width: 5%;"><%= __('Mob/Web') %></th>
+                <th style="width: 15%"><%= __('Reason')%></th>
+                <th style="width: 20%"><%= __('Description')%></th>
+                <th style="width: 20%"><%= __('Email')%></th>
+                <th style="width: 40%;">
+                    <a href="#" data-order_key="status" class="js-set-order text-white" style="text-decoration: none;"><%= __('Status')%>&nbsp;
+                      <%- orderKey === 'status' && orderSequence === 'ASC' ?  '<i class="fa fa-caret-up"></i>' : 
+                          orderKey === 'status' && orderSequence === 'DESC' ? '<i class="fa fa-caret-down"></i>' : 
+                          '-' 
+                        %>
+                    </a>
+                </th>
+                <th style="width: 2.5%"><%= __('Delete') %></th>
+              </tr>
+        </thead>
+        <tbody style="overflow-y: scroll">
+          <% suggestions.forEach((suggestion, index) => { %>
+          <tr>
+            <td><%= suggestion.name %></td>
+            <td><%= moment(suggestion.dateRec).format('D/M/YY')%></td>
+            <td style="text-transform: capitalize">
+              <%= suggestion.platform %>
+            </td>
+            <td><%= reasons[suggestion.reason] %></td>
+            <td><%= suggestion.content%></td>
+            <td><%= suggestion.email %></td>
+            <td>
+              <label><input type="radio" name="suggestion_<%=suggestion.id%>" <%-suggestion.status == 'open' ? 'checked="checked"' : ''%> value="1" data-suggestion_id="<%=suggestion.id%>">&nbsp;Open</label>
+              <label><input type="radio" name="suggestion_<%=suggestion.id%>" <%-suggestion.status == 'close' ? 'checked="checked"' : ''%> value="0" data-suggestion_id="<%=suggestion.id%>">&nbsp;Closed</label>
+            </td>
+            <td>
+              <button type="button" class="btn deleteSuggestion" data-value="<%= suggestion.id %>">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    $('#reason_filter').on('change', function () {
+      $('#filter_form').submit()
+    })
+    $('.js-set-order').on('click', function (e) {
+      e.preventDefault();
+      var chosenOrderKey = $(this).attr('data-order_key');
+      var currentOrderKey = '<%=orderKey%>';
+      var currentOrderSequence = '<%=orderSequence%>';
+      $('#order_key').val(chosenOrderKey);
+      var chosenOrderSequence = chosenOrderKey === currentOrderKey && currentOrderSequence === 'ASC' ? 'DESC' : 'ASC';
+      $('#order_sequence').val(chosenOrderSequence);
+      $('#filter_form').submit()
+    })
+    $('input[type="radio"]').on('change', function() {
+      var _this = $(this);
+      $.ajax({
+        url: '/toggle-suggestions-status',
+        method: 'POST',
+        data: {
+          id: $(this).attr('data-suggestion_id'),
+          status: $(this).val(),
+        },
+        beforeSend: function () {
+          $('input[type="radio"][name="suggestion_' + _this.attr('data-suggestion_id') + '"]').attr('disabled', 'disabled')
+        },
+        success: function (r) {
+          $('input[type="radio"][name="suggestion_' + _this.attr('data-suggestion_id') + '"]').removeAttr('disabled')
+        }
+      })
+    })
+    $('.deleteSuggestion').on('click', event => {
+      var button = $(event.currentTarget) // currentTarget is the outer
+      var suggestionID = button.data('value') // Extract info from data-* attributes
+      var result = confirm('Are you sure? This will permanently delete the item')
+      if (result) {
+        $.ajax({
+          url: '/suggestions/' + suggestionID,
+          type: 'DELETE',
+          success: result => {
+            location.reload()
+          },
+          error: error => {
+            console.log(error)
+          },
+        })
+      }
+    })
+
+  
+  
+  </script>
+</div>
+<%- include('partials/Footer') %>

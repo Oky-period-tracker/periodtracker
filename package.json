@@ -1,0 +1,51 @@
+{
+  "name": "oky",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "clean": "yarn workspaces run clean",
+    "compile": "yarn workspaces run compile",
+    "dev": "yarn run clean && yarn run compile && concurrently --kill-others \"docker-compose up\" \"yarn workspace @oky/mobile compile -w\" \"yarn workspace @oky/mobile start\"",
+    "dev:mobile": "yarn run clean && yarn run compile && concurrently --kill-others \"yarn workspace @oky/mobile compile -w\" \"yarn workspace @oky/mobile start\"",
+    "prod:web": "docker-compose -f docker-compose.yml build && docker-compose -f docker-compose.yml up",
+    "format": "yarn workspaces run format",
+    "lint": "yarn workspaces run lint",
+    "devtools": "yarn workspace @oky/mobile react-devtools",
+    "test:all": "yarn run test:saga && yarn run test:prediction-engine",
+    "test:saga": "yarn workspace @oky/components run test",
+    "test:prediction-engine": "yarn workspace @oky/core run test",
+    "reverse:all-ports": "adb reverse tcp:3000 tcp:3000 && adb reverse tcp:5000 tcp:5000 && adb reverse tcp:8000 tcp:8000 && adb reverse tcp:8080 tcp:8080 && adb reverse tcp:8081 tcp:8081",
+    "postinstall": "test -n \"$NOYARNPOSTINSTALL\" || (patch-package && jetifier && sed -e 's:node ./node_modules/react-native/cli.js config:yarn run --silent react-native config:g' -i.bak node_modules/@react-native-community/cli-platform-android/native_modules.gradle)",
+    "nuke": "yarn workspaces run nuke"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": []
+  },
+  "devDependencies": {
+    "husky": "^2.3.0",
+    "lint-staged": "^8.1.7",
+    "patch-package": "^6.1.4",
+    "postinstall-postinstall": "^2.0.0",
+    "prettier": "2.0.5",
+    "tslint": "^5.17.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-react": "^4.0.0",
+    "typescript": "^3.5.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "tslint --fix",
+      "prettier --write",
+      "git add"
+    ]
+  }
+}

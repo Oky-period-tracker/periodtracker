@@ -1,0 +1,25 @@
+version: "3.4"
+services:
+  api:
+    build:
+      target: development
+    volumes:
+      - ./packages/api:/usr/src/app/packages/api
+      - ./package.json:/usr/src/app/package.json
+      - ./yarn.lock:/usr/src/app/yarn.lock
+      - /usr/src/app/node_modules
+      - /usr/src/app/packages/api/node_modules
+  cms:
+    build:
+      target: development
+    volumes:
+      - ./packages/cms:/usr/src/app/packages/cms
+      - ./package.json:/usr/src/app/package.json
+      - ./yarn.lock:/usr/src/app/yarn.lock
+      - /usr/src/app/node_modules
+      - /usr/src/app/packages/cms/node_modules
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

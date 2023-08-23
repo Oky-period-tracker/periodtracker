@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "es6",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "declaration": false,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "pretty": true,
+    "outDir": "dist/",
+    "baseUrl": "./src/",
+    "listFiles": false,
+    "typeRoots": ["../../node_modules/@types", "./@types"]
+  },
+  "include": ["src/**/*", "@types/*.d.ts", "ormconfig.ts", "src/migrations/.ts"],
+  "exclude": ["node_modules"],
+  "compileOnSave": false
+}

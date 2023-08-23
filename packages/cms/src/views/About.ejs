@@ -1,0 +1,35 @@
+<%- include('partials/Header') %> 
+<div class="homePageContainer">
+  <div class="sideBar">
+    <% if(currentUser.type !== 'contentManager') {%>
+      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
+    <% } %>
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer">
+      <h2><%= __('About')%></h2>
+      <button
+        type="button"
+        class="btn btn-primary "
+        style="display: none; background-color: indianred;"
+        id="cancelButton"
+      >
+      <%= __('Cancel')%>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary btnEditMode"
+        id="btnEditMode"
+      >
+      <%= __('Edit')%>
+      </button>
+    </div>
+    <div role="button" id="aboutBannerContainer">
+      <img id="aboutBanner" alt="Image failed to load" name="aboutBanner" src=<%- image%>>
+      <input id="file-input" type="file" name="name" style="display: none;" />
+    </div>
+    <%- include('partials/TextEditor', { documents: aboutVersions } );%>
+  <script type="application/javascript" src="/scripts/aboutViewScript.js"></script>
+</div>
+<%- include('partials/Footer') %>

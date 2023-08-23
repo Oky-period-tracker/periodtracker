@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="/stylesheets/textEditor.css" />
+
+<div class='container'>
+    <span id="data-dump" hidden>
+        <%= JSON.stringify(documents); %>
+      </span>
+    <div style='color: black'> </div>
+
+    <div class="toolbar" >
+      <div class="tooltip"><%= __('Text editor help')%>
+        <span class="tooltiptext"><%= __('Text editor content')%></span>
+      </div>
+    </div>  
+    <div class="editor-container" id="sampleeditor">
+</div>
+
+<script type="application/javascript" src="/scripts/textEditor.js"></script>

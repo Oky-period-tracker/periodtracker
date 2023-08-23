@@ -1,0 +1,31 @@
+<%- include('partials/Header') %> 
+<div class="homePageContainer">
+  <div class="sideBar">
+    <% if(currentUser.type !== 'contentManager') {%>
+      <a href="/user-management" class="special"><h6><%= __('Add a new user')%></h6></a>
+    <% } %>
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer">
+      <h2><%= __('Terms and Conditions')%></h2>
+      <button
+        type="button"
+        class="btn btn-primary "
+        style="display: none; background-color: indianred;"
+        id="cancelButton"
+      >
+      <%= __('Cancel')%>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary btnEditMode"
+        id="btnEditMode"
+      >
+      <%= __('Edit')%>
+      </button>
+    </div>
+    <%- include('partials/TextEditor', { documents: termsAndConditionsVersions } );%>
+  <script type="application/javascript" src="/scripts/termsAndConditionsViewScript.js"></script>
+</div>
+<%- include('partials/Footer') %>

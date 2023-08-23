@@ -1,0 +1,101 @@
+<!-- Modal -->
+<div
+  class="modal fade bd-example-modal-lg"
+  id="dynamicModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dynamicModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dynamicModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-borderless modal-table">
+          <thead>
+            <tr>
+              <th style="width: 15%"><%= __('Topic')%></th>
+              <th style="width: 15%"><%= __('Question')%></th>
+              <th style="width: 8%"><%= __('Option 1')%></th>
+              <th style="width: 8%"><%= __('Option 2')%></th>
+              <th style="width: 8%"><%= __('Option 3')%></th>
+              <th style="width: 5%"><%= __('Right Answer')%></th>
+              <th style="width: 20%"><%= __('Wrong Answer Response')%></th>
+              <th style="width: 20%"><%= __('Right Answer Response')%></th>
+              <th style="width: 5%"><%= __('Age Restricted')%></th>
+              <th style="width: 5%"><%= __('Live')%></th>
+            </tr>
+          </thead>
+          <tbody style="overflow-y: scroll">
+              <td >
+                <textarea class="form-control" rows="7" id="col0TableModal"></textarea> 
+                <p id="error1" style="display: none;">required field</p>
+              </td>
+              <td >
+                <textarea class="form-control" rows="7" id="col1TableModal"></textarea> 
+                <p id="error2" style="display: none;">max 65 characters</p>
+                <p id="countdown1">remaining</p>
+              </td>
+              <td >
+                <textarea rows="5" class="form-control" id="col2TableModal" ></textarea>
+                <p id="error3" style="display: none;">max 20 characters</p>
+                <p id="countdown2">remaining</p>
+              </td>
+              <td >
+                <textarea  rows="5"class="form-control" id="col3TableModal" ></textarea>
+                <p id="error4" style="display: none;">max 20 characters</p>
+                <p id="countdown3">remaining</p>
+              </td>
+              <td >
+                <textarea  rows="5"class="form-control" id="col4TableModal" ></textarea>
+                <p id="error5" style="display: none;">max 20 characters</p>
+                <p id="countdown4">remaining</p>
+              </td>
+              <td >
+                <select class="custom-select" id="col5TableModal">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+                <p id="error6" style="display: none;">required field</p>
+              </td>
+              <td >
+                <textarea class="form-control" rows="11" id="col6TableModal"></textarea>
+                <p id="error7" style="display: none;">max 160 characters</p>
+                <p id="countdown5">remaining</p>
+              </td>
+              <td >
+                <textarea class="form-control" rows="11" id="col7TableModal"></textarea>
+                <p id="error8" style="display: none;">max 160 characters</p>
+                <p id="countdown6">remaining</p>
+              </td>
+              <td >
+                <label class="switch">
+                  <input id="col8TableModal" type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+              <td >
+                <label class="switch">
+                  <input id="col9TableModal" type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </td>
+            </td>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="btnEditConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+  <span id="itemID" hidden></span>
+</div>

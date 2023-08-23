@@ -18,6 +18,7 @@
     "copy-env:mobile": "cp packages/mobile/.env.dist packages/mobile/.env && cp packages/mobile/.env.dist packages/mobile/.env.production",
     "copy-env:all": "yarn copy-env:api && yarn copy-env:cms && yarn copy-env:mobile && yarn copy-env:ios && yarn copy-env:android",
     "copy-redux-config": "cp packages/components/src/redux/config.ts.dist packages/components/src/redux/config.ts",
+    "copy-all": "yarn copy-modules-urls && yarn copy-redux-config && yarn copy-env:all",
     "database-sync:enable": "ts-node setDatabaseSync.ts --enable",
     "database-sync:disable": "ts-node setDatabaseSync.ts --disable",
     "install:pods": "if [ -z \"$DOCKER_ENV\" ]; then cd packages/mobile/ios && pod install; fi",

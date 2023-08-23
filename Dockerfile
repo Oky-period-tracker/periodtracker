@@ -2,6 +2,8 @@ FROM node:16.13.1
 
 WORKDIR /usr/src/app
 
+ENV DOCKER_ENV=true
+
 # Dependencies
 COPY package.json yarn.lock ./
 COPY packages/core/package.json ./packages/core/ 

@@ -169,12 +169,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-//        release {
-//            storeFile file(keystoreProperties['STORE_FILE'])
-//            storePassword keystoreProperties['STORE_PASSWORD']
-//            keyAlias keystoreProperties['KEY_ALIAS']
-//            keyPassword keystoreProperties['KEY_PASSWORD']
-//        }
+       release {
+           storeFile file(keystoreProperties['STORE_FILE'])
+           storePassword keystoreProperties['STORE_PASSWORD']
+           keyAlias keystoreProperties['KEY_ALIAS']
+           keyPassword keystoreProperties['KEY_PASSWORD']
+       }
     }
     splits {
         abi {
@@ -188,11 +188,11 @@ android {
         debug {
             signingConfig signingConfigs.debug
         }
-    //    release {
-    //        minifyEnabled enableProguardInReleaseBuilds   
-    //        proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-    //        signingConfig signingConfigs.release
-    //    }
+       release {
+           minifyEnabled enableProguardInReleaseBuilds   
+           proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+           signingConfig signingConfigs.release
+       }
     }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->

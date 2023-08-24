@@ -265,7 +265,6 @@ export interface AppTranslations {
   remember: string
   // find help
   'find help': string
-  chat: string
   'contact name': string
   card_address: string
   card_phone_number: string

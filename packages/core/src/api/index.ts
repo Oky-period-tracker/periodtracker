@@ -2,11 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
 import * as types from './types'
 
-export function createHttpClient(
-  endpoint: string,
-  cmsEndpoint: string,
-  { rapidProEndpoint, rapidProChannel, rapidProToken, predictionEndpoint },
-) {
+export function createHttpClient(endpoint: string, cmsEndpoint: string, { predictionEndpoint }) {
   return {
     login: async ({ name, password }: any) => {
       const response: AxiosResponse<types.LoginResponse> = await axios.post(
@@ -215,83 +211,6 @@ export function createHttpClient(
         `${cmsEndpoint}/mobile/suggestions`,
         payload,
       )
-      return response.data
-    },
-    registerContact: async ({ urn, fcmToken, name }) => {
-      const api = `${rapidProEndpoint}/c/fcm/${rapidProChannel}/register`
-
-      const response = await axios.post(
-        api,
-        qs.stringify({
-          urn,
-          fcm_token: fcmToken,
-          name,
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      )
-
-      return {
-        contact: response.data.contact_uuid,
-      }
-    },
-    receiveIncomingMessage: async ({ from, msg, fcmToken }) => {
-      const api = `${rapidProEndpoint}/c/fcm/${rapidProChannel}/receive`
-
-      await axios.post(
-        api,
-        qs.stringify({
-          channel: rapidProChannel,
-          fcm_token: fcmToken,
-          from,
-          msg,
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      )
-    },
-    getMessages: async (contact) => {
-      const api = `${rapidProEndpoint}/api/v2/messages.json?contact=${contact}`
-
-      const response = await axios.get(api, {
-        headers: {
-          Authorization: `Token ${rapidProToken}`,
-        },
-      })
-
-      return response.data.results.map((message) => ({
-        id: message.id,
-        direction: message.direction,
-        text: message.text,
-        sentAt: message.sent_on,
-      }))
-    },
-    getRuns: async (contact) => {
-      const api = `${rapidProEndpoint}/api/v2/runs.json?contact=${contact}`
-
-      const response = await axios.get(api, {
-        headers: {
-          Authorization: `Token ${rapidProToken}`,
-        },
-      })
-
-      return response.data
-    },
-    getDefinitions: async (flow) => {
-      const api = `${rapidProEndpoint}/api/v2/definitions.json?flow=${flow}`
-
-      const response = await axios.get(api, {
-        headers: {
-          Authorization: `Token ${rapidProToken}`,
-        },
-      })
-
       return response.data
     },
     getPeriodCycles: async ({ cycle_lengths, period_lengths, age }: any) => {

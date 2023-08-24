@@ -77,10 +77,9 @@ yarn copy-redux-config
 
 This file is untraced. It is for redux persist encryption on the local device
 
-The REDUX_ENCRYPT_KEY should be requested from the relevant body/person.
+If you are taking over the project from another team, REDUX_ENCRYPT_KEY should be requested from the relevant body/person.
 
 Replace 'Example_Encryption_Key' in `packages/components/src/redux/config.ts` with the appropriate key.
-Different keys have been used depending upon platform (Android/iOS) and application languages (EN/ID/MN).
 
 ## Firebase
 

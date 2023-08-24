@@ -146,17 +146,13 @@ export function AskAge({ step, heightInner }) {
 
               <Confirm
                 onPress={() => {
-                  if (flag) {
-                    if (monthSelected === '') {
-                      setMonthSelected(monthRange[0])
-                    }
-                  } else if (yearSelected === '') {
-                    setYearSelected(yearRange[0])
-                  }
+                  const month = monthSelected ?? monthRange[0]
+                  const year = yearSelected ?? yearRange[0]
+
                   dispatch({
                     type: 'change-form-data',
                     inputName: 'dateOfBirth',
-                    value: moment(monthSelected + ' ' + yearSelected, 'MMMM YYYY'),
+                    value: moment(month + ' ' + year, 'MMMM YYYY').toISOString(),
                   })
                   setIsVisible(false)
                 }}

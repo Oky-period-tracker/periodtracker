@@ -12,7 +12,8 @@
     "remotedev": "remotedev --hostname=0.0.0.0 --port=8000",
     "start": "react-native start --projectRoot=../../",
     "test": "jest",
-    "nuke": "cd ios && shx rm -rf Pods"
+    "nuke": "cd ios && shx rm -rf Pods",
+    "deploy:android": "cd android && ./gradlew clean && ./gradlew assembleRelease && cd .."
   },
   "dependencies": {
     "@oky/components": "*",

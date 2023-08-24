@@ -7,7 +7,6 @@ import { analyticsReducer } from './analyticsReducer'
 import { answerReducer } from './answerReducer'
 import { appReducer } from './appReducer'
 import { authReducer } from './authReducer'
-import { chatReducer } from './chatReducer'
 import { contentReducer } from './contentReducer'
 import { predictionReducer } from './predictionReducer'
 
@@ -20,7 +19,6 @@ const reducer = combineReducers(
       answer: answerReducer,
       app: appReducer,
       auth: authReducer,
-      chat: chatReducer,
       content: contentReducer,
       prediction: predictionReducer,
     },

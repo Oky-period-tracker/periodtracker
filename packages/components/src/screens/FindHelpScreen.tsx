@@ -74,7 +74,6 @@ export function FindHelpScreen({ navigation }) {
               isProgressVisible={false}
             />
           </AvatarSection>
-          {/* <PrimaryButton onPress={() => navigate('Chat', null)}>chat</PrimaryButton> */}
         </MiddleSection>
         <CarouselSection>
           <SwiperContainer pagingEnabled={true} scrollEnabled={true} ref={null}>

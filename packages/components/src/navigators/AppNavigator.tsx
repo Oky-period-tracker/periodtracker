@@ -25,7 +25,6 @@ import { ArticlesScreen } from '../screens/ArticlesScreen'
 import { AvatarAndThemeScreen } from '../screens/AvatarAndThemeScreen'
 import { JourneyScreen } from '../screens/JourneyScreen'
 import { FindHelpScreen } from '../screens/FindHelpScreen'
-import { ChatScreen } from '../screens/ChatScreen'
 import { PasswordRequestScreen } from '../screens/PasswordRequestScreen'
 
 const TutorialFirstStack = createStackNavigator(
@@ -69,7 +68,6 @@ const EncyclopediaStack = createStackNavigator(
     Encyclopedia: EncyclopediaScreen,
     Articles: ArticlesScreen,
     FindHelp: FindHelpScreen,
-    Chat: ChatScreen,
   },
   { headerMode: 'none', initialRouteName: 'Encyclopedia' },
 )

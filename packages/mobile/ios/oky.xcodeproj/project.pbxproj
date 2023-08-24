@@ -20,6 +20,8 @@
 		56F8C4CF7738667F076CE3DD /* libPods-oky.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA36F29F2AE91EE9C4261234 /* libPods-oky.a */; };
 		84B201C428A4CFB700B0AA06 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84B201C328A4CFB700B0AA06 /* GoogleService-Info.plist */; };
 		CD9DA4513F2BE12734BAA327 /* libPods-oky-okyTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 927B89721510997584870855 /* libPods-oky-okyTests.a */; };
+		D7BBBCA22A9736C6002F9A69 /* debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = D7BBBCA02A9736C6002F9A69 /* debug.xcconfig */; };
+		D7BBBCA32A9736C6002F9A69 /* release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = D7BBBCA12A9736C6002F9A69 /* release.xcconfig */; };
 		E8362019255A97AB00FDAFEC /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8362018255A97AB00FDAFEC /* Roboto-Black.ttf */; };
 		E836201F255A98B200FDAFEC /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E836201E255A98B100FDAFEC /* Roboto-Medium.ttf */; };
 		E8362025255A99A200FDAFEC /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8362024255A99A200FDAFEC /* Roboto-Regular.ttf */; };
@@ -66,6 +68,8 @@
 		9F4556845352D0CF7BEEA59A /* Pods-oky-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-oky-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-oky-tvOSTests/Pods-oky-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9FCAA0574E25D404C8EC6A50 /* Pods-oky-okyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-oky-okyTests.debug.xcconfig"; path = "Target Support Files/Pods-oky-okyTests/Pods-oky-okyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		BA468FC23E5F574582BC70D1 /* Pods-oky-okyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-oky-okyTests.release.xcconfig"; path = "Target Support Files/Pods-oky-okyTests/Pods-oky-okyTests.release.xcconfig"; sourceTree = "<group>"; };
+		D7BBBCA02A9736C6002F9A69 /* debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = debug.xcconfig; sourceTree = "<group>"; };
+		D7BBBCA12A9736C6002F9A69 /* release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = release.xcconfig; sourceTree = "<group>"; };
 		DB20C56E2748D67EADF439E5 /* Pods-oky.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-oky.release.xcconfig"; path = "Target Support Files/Pods-oky/Pods-oky.release.xcconfig"; sourceTree = "<group>"; };
 		E8362018255A97AB00FDAFEC /* Roboto-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Black.ttf"; sourceTree = "<group>"; };
 		E836201E255A98B100FDAFEC /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
@@ -169,6 +173,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				D7BBBCA02A9736C6002F9A69 /* debug.xcconfig */,
+				D7BBBCA12A9736C6002F9A69 /* release.xcconfig */,
 				E8362016255A975400FDAFEC /* Resources */,
 				13B07FAE1A68108700A75B9A /* oky */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -377,9 +383,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7BBBCA32A9736C6002F9A69 /* release.xcconfig in Resources */,
 				E8362025255A99A200FDAFEC /* Roboto-Regular.ttf in Resources */,
 				E836201F255A98B200FDAFEC /* Roboto-Medium.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				D7BBBCA22A9736C6002F9A69 /* debug.xcconfig in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				84B201C428A4CFB700B0AA06 /* GoogleService-Info.plist in Resources */,
 				E8362019255A97AB00FDAFEC /* Roboto-Black.ttf in Resources */,
@@ -779,7 +787,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.unicef.oky;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = oky;
 				PROVISIONING_PROFILE_SPECIFIER = "GC Distribution";
 				SWIFT_OBJC_BRIDGING_HEADER = "oky-Bridging-Header.h";
@@ -812,7 +820,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.unicef.oky;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_BUNDLE_IDENTIFIER)";
 				PRODUCT_NAME = oky;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "GC Distribution";
@@ -934,6 +942,7 @@
 		};
 		83CBBA201A601CBA00E9B192 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D7BBBCA02A9736C6002F9A69 /* debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -988,6 +997,7 @@
 		};
 		83CBBA211A601CBA00E9B192 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D7BBBCA12A9736C6002F9A69 /* release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";

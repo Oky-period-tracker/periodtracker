@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "clean": "cd .",
+    "android": "npx react-native run-android",
+    "ios": "npx react-native run-ios",
+    "clean": "cd android && ./gradlew clean && cd ..",
     "compile": "tsc -b",
     "format": "prettier --write '{.,src/**}/*.{js,jsx,ts,tsx}'",
     "lint": "tslint -p .",

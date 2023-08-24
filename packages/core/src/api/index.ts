@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
 import * as types from './types'
+export * from './types'
 
 export function createHttpClient(endpoint: string, cmsEndpoint: string, { predictionEndpoint }) {
   return {

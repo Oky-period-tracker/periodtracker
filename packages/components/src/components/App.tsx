@@ -1,3 +1,4 @@
+import 'react-native-get-random-values' // Required for uuid package
 import React from 'react'
 import { AppProvider } from './AppProvider'
 import AppNavigator from '../navigators/AppNavigator'

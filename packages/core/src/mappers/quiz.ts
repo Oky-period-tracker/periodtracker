@@ -1,5 +1,4 @@
 import { QuizzesResponse } from '../api/types'
-import { v4 as uuidv4 } from 'uuid'
 
 export interface Quizzes {
   byId: {

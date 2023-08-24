@@ -44,7 +44,8 @@
     "tslint": "^5.17.0",
     "tslint-react": "^4.0.0",
     "typescript": "4.7.4",
-    "uuid": "9.0.0"
+    "uuid": "9.0.0",
+    "react-native-get-random-values": "1.9.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.136",

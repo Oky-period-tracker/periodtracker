@@ -1,3 +1,4 @@
+import 'react-native-get-random-values'
 import { DidYouKnowsResponse } from '../api/types'
 import { v4 as uuidv4 } from 'uuid'
 

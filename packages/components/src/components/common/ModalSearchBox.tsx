@@ -8,10 +8,10 @@ import { TextInput } from './TextInput'
 import _ from 'lodash'
 import { FlatList } from 'react-native-gesture-handler'
 import { translate } from '../../i18n'
-import { countries, provinces } from '@oky/core'
+import { countries, defaultLocale, provinces } from '@oky/core'
 
 export const ModalSearchBox = ({
-  lang = 'en',
+  lang = defaultLocale,
   hasError = false,
   containerStyle = null,
   itemStyle = null,

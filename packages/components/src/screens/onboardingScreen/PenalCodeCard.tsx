@@ -4,8 +4,9 @@ import { Text } from '../../components/common/Text'
 import { VerticalSelectBox } from '../../components/common/VerticalSelectBox'
 import { assets } from '../../assets'
 import { Dimensions } from 'react-native'
+import { availableAppLocales } from '@oky/core'
 
-const locales = ['lang_select', 'en', 'fr', 'pt', 'ru']
+const locales = ['lang_select', ...availableAppLocales]
 const width = Dimensions.get('window').width
 
 export const PenalCodeCard = ({ onConfirm = (args) => null }) => {

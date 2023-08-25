@@ -8,6 +8,7 @@ import { useDispatch } from 'react-redux'
 import { PrimaryButton } from './buttons/PrimaryButton'
 import { ThemedModal } from './ThemedModal'
 import { Text } from './Text'
+import { availableAppLocales } from '@oky/core'
 
 export const LanguageSelect = ({ style = null, textStyle = null, onPress = null }) => {
   const [modalVisible, setModalVisible] = React.useState(false)
@@ -32,7 +33,7 @@ export const LanguageSelect = ({ style = null, textStyle = null, onPress = null 
         isVisible={modalVisible}
       >
         <Container>
-          {['en', 'fr', 'pt', 'ru'].map((langItem, index) => {
+          {availableAppLocales.map((langItem, index) => {
             return (
               <Column
                 key={index}

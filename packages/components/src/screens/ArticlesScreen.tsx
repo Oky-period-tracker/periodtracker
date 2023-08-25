@@ -11,6 +11,11 @@ import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 
 const ArticleItem = ({ article, index, articles }) => {
   const articleObject = useSelector((state) => selectors.articleByIDSelector(state, article))
+
+  if (!articleObject) {
+    return null
+  }
+
   return (
     <ArticleContainer
       style={{
@@ -39,6 +44,9 @@ export function ArticlesScreen({ navigation }) {
   const articles = subCategoryObject.articles
   const articlesTextArray = articles.reduce((acc, item) => {
     const selectedArticle = allArticlesByIDObject[item]
+    if (!selectedArticle) {
+      return acc
+    }
     return acc.concat([selectedArticle.subCategory, selectedArticle.title, selectedArticle.content])
   }, [])
 

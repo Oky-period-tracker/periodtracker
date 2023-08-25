@@ -11,7 +11,7 @@ import { translate } from '../../i18n'
 import { countries, defaultLocale, provinces } from '@oky/core'
 
 export const ModalSearchBox = ({
-  lang = defaultLocale,
+  lang = defaultLocale as string, // TODO: FIXME
   hasError = false,
   containerStyle = null,
   itemStyle = null,

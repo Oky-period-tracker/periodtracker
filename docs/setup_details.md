@@ -1,8 +1,23 @@
 ## Copy-env
 
-To run the project you need .env files in /cms, /api and /mobile
+This creates several files. They contain default values for running in development environment, but of these need to be updated before deploying to production.
 
-This command creates all three .env files for from their respective templates
+These files are for development, when deploying to production the values defined in these files are instead defined in the /.k8s yaml files.
+
+- /packages/api/.env
+- /packages/cms/.env
+- /packages/mobile/.env
+
+These files need to contain the correct values before deploying to production
+
+- /packages/mobile/.env.production
+- /packages/mobile/android/gradle.properties
+- /packages/mobile/android/local.properties
+- /packages/mobile/ios/release.xcconfig
+
+This command creates all these files for from their respective `.dist` files
+
+The `.env.production` file is automatically used when you build the app for release.
 
 > Please note that if you already have .env files, running this command will undo any manual changes you have made to them
 

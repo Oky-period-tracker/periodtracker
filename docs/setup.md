@@ -49,20 +49,12 @@ To use different modules, remove any modules you currently have using the comman
 
 ## Environment configuration
 
-Copy across env files for cms, api and mobile with one command
+Create .env, .properties and .xcconfig files for cms, api and mobile with one command
 
-> Please note that if you already have .env files, running these commands will undo any manual changes you have made to them
-
-For development:
+> Please note that if you already have already created and edited these files, running this command overwrite those changes
 
 ```bash
-yarn copy-env:all-dev
-```
-
-For Production:
-
-```bash
-yarn copy-env:all-prod
+yarn copy-env:all
 ```
 
 > For an explanation of this command, go [here](./setup_details.md#copy-env)

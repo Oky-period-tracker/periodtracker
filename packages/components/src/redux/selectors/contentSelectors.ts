@@ -48,6 +48,7 @@ export const completedSurveys = (state: ReduxState) => s(state).completedSurveys
 export const aboutBanner = (state: ReduxState) => s(state).aboutBanner
 
 export const allQuizzesSelectors = (state: ReduxState) => {
+  // TODO: FIXME
   const isUserYoungerThan15 = true
   // moment()
   //   .utc()
@@ -79,13 +80,14 @@ export const allQuizzesSelectors = (state: ReduxState) => {
 }
 
 export const allDidYouKnowsSelectors = (state: ReduxState) => {
+  // TODO: FIXME
   const isUserYoungerThan15 = true
   // moment()
   //   .utc()
   //   .diff(state.auth.user.dateOfBirth) < 15
   const filteredArray = s(state).didYouKnows.allIds.reduce((acc, id) => {
     if (
-      (!s(state).didYouKnows.byId[id].isAgeRestricted && isUserYoungerThan15) ||
+      (!s(state).didYouKnows.byId[id]?.isAgeRestricted && isUserYoungerThan15) ||
       !isUserYoungerThan15
     ) {
       acc.push(s(state).didYouKnows.byId[id])

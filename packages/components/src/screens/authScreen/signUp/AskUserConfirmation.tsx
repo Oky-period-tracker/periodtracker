@@ -7,10 +7,11 @@ import { useMultiStepForm, formActions } from '../../../components/common/MultiS
 import { navigate } from '../../../services/navigationService'
 import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
+import { FAST_SIGN_UP } from '../../../config'
 export function AskUserConfirmation({ step, heightInner }) {
   const [, dispatch] = useMultiStepForm()
   const [loading, setLoading] = React.useState(false)
-  const [isAgreed, setIsAgreed] = React.useState(false)
+  const [isAgreed, setIsAgreed] = React.useState(FAST_SIGN_UP)
 
   if (loading) {
     return null

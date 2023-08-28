@@ -13,6 +13,7 @@ import { TouchableOpacity, Animated, Platform } from 'react-native'
 import { ThemedModal } from '../../../components/common/ThemedModal'
 import { formHeights } from './FormHeights'
 import { Picker } from '@react-native-picker/picker'
+import { FAST_SIGN_UP } from '../../../config'
 
 const now = moment()
 const currentYear = now.year()
@@ -24,8 +25,8 @@ export function AskAge({ step, heightInner }) {
   const { location, dateOfBirth } = state
   const [notValid, setNotValid] = React.useState(false)
   const [flag, setFlag] = React.useState(false)
-  const [monthSelected, setMonthSelected] = React.useState('')
-  const [yearSelected, setYearSelected] = React.useState('')
+  const [monthSelected, setMonthSelected] = React.useState(FAST_SIGN_UP ? 'January' : '')
+  const [yearSelected, setYearSelected] = React.useState(FAST_SIGN_UP ? '2016' : '')
   const [selectedItem] = React.useState(0)
   const [isVisible, setIsVisible] = React.useState(false)
   const [infoDisplay, setInfoDisplay] = React.useState(false)

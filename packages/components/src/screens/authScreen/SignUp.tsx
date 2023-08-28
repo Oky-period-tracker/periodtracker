@@ -10,8 +10,31 @@ import { AskUserConfirmation } from './signUp/AskUserConfirmation'
 import { navigate } from '../../services/navigationService'
 import * as actions from '../../redux/actions'
 import _ from 'lodash'
+import { FAST_SIGN_UP } from '../../config'
 
-const initialState = {
+const randomLetters = () => {
+  const letters = 'abcdefghijklmnopqrstuvwxyz'
+  return `${letters[Math.floor(Math.random() * letters.length)]}${
+    letters[Math.floor(Math.random() * letters.length)]
+  }${letters[Math.floor(Math.random() * letters.length)]}${
+    letters[Math.floor(Math.random() * letters.length)]
+  }`
+}
+
+const fastSignUpInitialState = {
+  name: randomLetters(),
+  password: 'aaa',
+  passwordConfirm: 'aaa',
+  selectedQuestion: 'favourite_actor',
+  answer: 'a',
+  gender: 'Female',
+  location: 'Urban',
+  country: 'AF',
+  province: '0',
+  dateOfBirth: '2015-12-31T17:00:00.000Z',
+}
+
+const defaultState = {
   name: '',
   password: '',
   passwordConfirm: '',
@@ -23,6 +46,8 @@ const initialState = {
   province: null,
   dateOfBirth: '',
 }
+
+const initialState = FAST_SIGN_UP ? fastSignUpInitialState : defaultState
 
 export function SignUp({ heightInner }) {
   const dispatch = useDispatch()

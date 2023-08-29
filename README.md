@@ -1,5 +1,7 @@
 # Period tracker
 
+This is a period tracker application monorepo, consisting of a React Native app, a CMS and an API.
+
 [Install Software Dependencies](./docs/dependencies/index.md)
 
 [Set Up the Project](./docs/setup.md)

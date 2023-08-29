@@ -94,6 +94,7 @@ export function SplashScreen() {
     requestUserPermission()
     createNotificationChannel()
     syncAllNotifications()
+    // TODO_ALEX
     messaging().unsubscribeFromTopic('oky_en_notifications')
     messaging().unsubscribeFromTopic('oky_id_notifications')
     messaging().unsubscribeFromTopic('oky_mn_notifications')

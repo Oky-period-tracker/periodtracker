@@ -123,7 +123,6 @@ export function AskUserInformation({ step, heightInner }) {
           label="password"
           secureTextEntry={true}
           showInfoButton={true}
-          infoAccessibilityLabel={translate('password_info_label')}
           isValid={password.length >= minPasswordLength}
           hasError={notValid && !(password.length >= minPasswordLength)}
           value={password}

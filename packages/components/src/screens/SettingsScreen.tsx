@@ -82,19 +82,6 @@ export function SettingsScreen({ navigation }) {
               />
             )}
           />
-          {/* <ListItem
-            title="password_request"
-            renderControls={() => (
-              <Switcher
-                value={hasPasswordRequestOn}
-                onSwitch={(val) => {
-                  dispatch(actions.setLoginPassword(val))
-                }}
-              />
-            )}
-            description="password_request_info"
-            style={{ borderBottomWidth: 0 }}
-          /> */}
         </Container>
         <Row style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
           <PrimaryButton

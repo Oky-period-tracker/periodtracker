@@ -7,9 +7,6 @@ import { OnboardingCard } from './onboardingScreen/OnboardingCard'
 import { assets } from '../assets/index'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { navigateAndReset } from '../services/navigationService'
-import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/selectors'
-import { PenalCodeCard } from './onboardingScreen/PenalCodeCard'
 import * as actions from '../redux/actions'
 import { useDispatch } from 'react-redux'
 import { Animated } from 'react-native'
@@ -45,8 +42,6 @@ export function OnboardingScreen() {
             pagingEnabled={true}
             ref={ref}
           >
-            {/* // @TODO: LANGUAGES This is commented in case the client wants multiple languages */}
-            {/* {region === '' && <PenalCodeCard onConfirm={onPenalCodeComplete} />} */}
             <OnboardingCard
               image={assets.static.icons.calendar}
               heading="calendar"

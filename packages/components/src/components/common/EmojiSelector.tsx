@@ -2,7 +2,6 @@ import React from 'react'
 import { assets } from '../../assets/index'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation } from './Text'
-import { getAccessibilityLabel } from '../../services/textToSpeech'
 
 // @TODO: provide the rights interface
 interface Props {

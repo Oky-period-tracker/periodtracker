@@ -23,6 +23,7 @@ import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import Tts from 'react-native-tts'
 import { translate } from '../i18n'
+import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 
 const screenHeight = Dimensions.get('screen').height
 const screenWidth = Dimensions.get('screen').width
@@ -256,6 +257,17 @@ export function TutorialFirstScreen() {
     outputRange: ['0deg', '-360deg'],
   })
 
+  const skip = () => {
+    flag.current = true
+    dispatch(actions.setTutorialOneActive(false))
+    setLoading(true)
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        navigateAndReset('MainStack', null)
+      }, 2000)
+    })
+  }
+
   return (
     <BackgroundTheme>
       <Container>
@@ -358,6 +370,12 @@ export function TutorialFirstScreen() {
             <TutorialText>{step <= 9 ? stepInfo[step].text : null}</TutorialText>
           </TutorialInformation>
         )}
+        <PrimaryButton
+          onPress={skip}
+          style={{ position: 'absolute', top: 12, left: 12, padding: 12 }}
+        >
+          skip
+        </PrimaryButton>
       </TouchableContinueOverlay>
       <SpinLoader
         backdropOpacity={0}

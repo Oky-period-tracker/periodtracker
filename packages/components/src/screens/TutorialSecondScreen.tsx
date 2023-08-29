@@ -24,6 +24,7 @@ import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import Tts from 'react-native-tts'
 import { translate } from '../i18n'
+import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 
 const screenHeight = Dimensions.get('screen').height
 const screenWidth = Dimensions.get('screen').width
@@ -259,6 +260,17 @@ export function TutorialSecondScreen({ navigation }) {
     )
     return cardData
   }
+
+  const skip = () => {
+    dispatch(actions.setTutorialTwoActive(false))
+    setLoading(true)
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        navigateAndReset('MainStack', null)
+      }, 1000)
+    })
+  }
+
   return (
     <BackgroundTheme>
       <Container>
@@ -365,6 +377,16 @@ export function TutorialSecondScreen({ navigation }) {
           </TutorialInformation>
         )}
       </TouchableContinueOverlay>
+      <SkipContainer>
+        <PrimaryButton
+          onPress={skip}
+          style={{
+            paddingHorizontal: 12,
+          }}
+        >
+          skip
+        </PrimaryButton>
+      </SkipContainer>
       <SpinLoader
         backdropOpacity={0}
         isVisible={loading}
@@ -480,12 +502,12 @@ const TutorialText = styled(Text)`
   font-size: 16;
   margin-bottom: 10;
 `
-const TutorialLeavingText = styled(Text)`
-  width: 70%;
-  color: #f49200;
+const SkipContainer = styled.View<{ step: number }>`
+  width: 85%;
+  position: absolute;
+  bottom: 10;
+  align-items: flex-end;
+  justify-content: flex-end;
   align-self: center;
-  font-size: 20;
-  font-family: Roboto-Black;
-  top: -30%;
-  text-align: center;
+  z-index: 9999;
 `

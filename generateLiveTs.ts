@@ -1,6 +1,5 @@
 import fs from 'fs'
-import { content as staleContent } from '@oky/core'
-import { StaticContent } from './packages/components/src/types' // TODO_ALEX use core types
+import { content as staleContent, StaticContent } from '@oky/core'
 
 const removeDeadContent = (content: StaticContent) => {
   // ===== Articles ===== //
@@ -9,9 +8,7 @@ const removeDeadContent = (content: StaticContent) => {
     .map((item) => item.id)
 
   const articles = {
-    allIds: content.articles.allIds.filter((item) =>
-      articlesToDelete.includes(item),
-    ),
+    allIds: content.articles.allIds.filter((item) => !articlesToDelete.includes(item)),
     byId: { ...content.articles.byId },
   }
 
@@ -27,9 +24,7 @@ const removeDeadContent = (content: StaticContent) => {
 
   // Remove deleted articles from subcategories
   Object.values(subCategories.byId).forEach((item) => {
-    const arts = item.articles.filter(
-      (artId) => !articlesToDelete.includes(artId),
-    )
+    const arts = item.articles.filter((artId) => !articlesToDelete.includes(artId))
     subCategories.byId[item.id] = {
       ...item,
       articles: arts,
@@ -45,8 +40,8 @@ const removeDeadContent = (content: StaticContent) => {
     })
     .map((item) => item.id)
 
-  subCategories.allIds = subCategories.allIds.filter((item) =>
-    subCategoriesToDelete.includes(item),
+  subCategories.allIds = subCategories.allIds.filter(
+    (item) => !subCategoriesToDelete.includes(item),
   )
   subCategoriesToDelete.forEach((id) => {
     delete subCategories.byId[id]
@@ -75,9 +70,7 @@ const removeDeadContent = (content: StaticContent) => {
     })
     .map((item) => item.id)
 
-  categories.allIds = categories.allIds.filter((item) =>
-    categoriesToDelete.includes(item),
-  )
+  categories.allIds = categories.allIds.filter((item) => !categoriesToDelete.includes(item))
   categoriesToDelete.forEach((id) => {
     delete categories.byId[id]
   })
@@ -88,9 +81,7 @@ const removeDeadContent = (content: StaticContent) => {
     .map((item) => item.id)
 
   const didYouKnows = {
-    allIds: content.didYouKnows.allIds.filter((item) =>
-      didYouKnowsToDelete.includes(item),
-    ),
+    allIds: content.didYouKnows.allIds.filter((item) => !didYouKnowsToDelete.includes(item)),
     byId: { ...content.didYouKnows.byId },
   }
 

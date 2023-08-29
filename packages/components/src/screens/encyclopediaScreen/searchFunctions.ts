@@ -1,12 +1,15 @@
 export const handleSearchResult = (searchStr, categories, subCategories, articles, locale) => {
   if (searchStr === '') return []
   const lowerCaseSearchStr = searchStr.toLocaleLowerCase(locale)
-  const searchResultCategories = categories.filter(category => {
-    const doesSubCategoryOrArticlesContainString = category.subCategories.some(subCatId => {
-      const relevantSubCategory = subCategories.find(item => item.id === subCatId)
+  const searchResultCategories = categories.filter((category) => {
+    const doesSubCategoryOrArticlesContainString = category.subCategories.some((subCatId) => {
+      const relevantSubCategory = subCategories.find((item) => item.id === subCatId)
 
-      const doesArticleContainString = relevantSubCategory.articles.some(articleId => {
-        const articleWithinSubCategory = articles.find(item => item.id === articleId)
+      const doesArticleContainString = relevantSubCategory.articles.some((articleId) => {
+        const articleWithinSubCategory = articles.find((item) => item?.id && item.id === articleId)
+        if (!articleWithinSubCategory) {
+          return false
+        }
         return articleWithinSubCategory.content
           .toLocaleLowerCase(locale)
           .includes(lowerCaseSearchStr)
@@ -35,7 +38,7 @@ export function handleCategoriesFilter(
   locale,
 ) {
   return mood.length
-    ? categories.filter(category => {
+    ? categories.filter((category) => {
         return mood.indexOf(category.tags.primary.emoji) !== -1
       })
     : handleSearchResult(searchStr, categories, subCategories, articles, locale)

@@ -157,8 +157,8 @@ android {
         applicationId project.APPLICATION_ID
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 68
-        versionName project.VERSION
+        versionCode project.VERSION_CODE.toInteger()
+        versionName project.VERSION_NAME
         resValue "string", "app_display_name", APP_DISPLAY_NAME
     }
     signingConfigs {

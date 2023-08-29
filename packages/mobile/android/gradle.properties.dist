@@ -29,4 +29,5 @@ org.gradle.jvmargs=-Xmx4g -XX:MaxPermSize=2048m -XX:+HeapDumpOnOutOfMemoryError 
 
 APPLICATION_ID=com.oky
 APP_DISPLAY_NAME=Oky
-VERSION=7.5
+VERSION_CODE=70
+VERSION_NAME=8.0

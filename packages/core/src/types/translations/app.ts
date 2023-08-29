@@ -2,7 +2,6 @@ export interface AppTranslations {
   empty: string
   info: string
   Day: string
-  header: string
   terms: string
   share: string
   skip: string
@@ -12,8 +11,6 @@ export interface AppTranslations {
   confirm_and_delete: string
   forgot_password_completed: string
   delete_account_completed: string
-  email: string
-  request_sent: string
   request_fail: string
   sign_up: string
   log_in: string
@@ -40,27 +37,21 @@ export interface AppTranslations {
   // survey: string,
   survey: string
   didYouKnow: string
-  quiz_question: string
   birth_info_heading: string
-  birth_year_info_heading: string
   birth_info: string
   birth_month_and_year: string
   name: string
   enter_name: string
   name_info_label: string
   correct: string
-  not_correct: string
   profile: string
   profile_edit: string
-  passcode_description: string
   password: string
   new_password: string
   confirm_password: string
-  password_info_label: string
   secret_question: string
   secret_answer: string
   old_secret_answer: string
-  splash_text: string
   accessibility_prompt: string
   // user_input_instructions: string,
   user_input_instructions: string
@@ -71,23 +62,12 @@ export interface AppTranslations {
   mosaic: string
   village: string
   desert: string
-  lang_select: string
-  penal_code_text1: string
-  penal_code_heading: string
   accept_conditions_1: string
   accept_conditions_2: string
   accept_conditions_3: string
   accept_conditions_4: string
   accept_conditions_5: string
   // ------------------------- Emojis ----------------------------------
-  boys: string
-  care: string
-  family: string
-  feelings: string
-  growing: string
-  health: string
-  life: string
-  periods: string
   mood: string
   body: string
   flow: string
@@ -115,7 +95,6 @@ export interface AppTranslations {
   medium: string
   heavy: string
   spotting: string
-  start_new: string
   no_day: string
 
   // ------------------------- Notifications ----------------------------
@@ -205,20 +184,18 @@ export interface AppTranslations {
   tutorial_14_content: string
   tutorial_launch_label: string
   location: string
-  location_subtitle: string
   share_qr_description: string
   privacy_policy: string
   text_to_speech: string
   text_to_speech_info: string
+  future_prediciton: string
+  future_prediciton_info: string
   password_request: string
-  password_request_info: string
   please_wait_tutorial: string
   please_wait_back: string
   launch: string
   to_daily_card: string
   change_period: string
-  period_day: string
-  new_cycle: string
 
   share_period_details_heading: string
   // ------------------------------------------------------------------
@@ -238,8 +215,6 @@ export interface AppTranslations {
   cycle_length: string
   period_length: string
   contact_us: string
-  journey_heading: string
-  journey_content: string
   cycle: string
   days: string
   day_cycle: string
@@ -265,26 +240,11 @@ export interface AppTranslations {
   remember: string
   // find help
   'find help': string
-  'contact name': string
   card_address: string
   card_phone_number: string
   card_website: string
   description: string
 
-  contact_name_1: string
-  contact_address_1: string
-  contact_phone_number_1: string
-  contact_website_1: string
-
-  contact_name_2: string
-  contact_address_2: string
-  contact_phone_number_2: string
-  contact_website_2: string
-
-  contact_name_3: string
-  contact_address_3: string
-  contact_phone_number_3: string
-  contact_website_3: string
   left: string
   to_go: string
 
@@ -332,13 +292,11 @@ export interface AppTranslations {
   search_province: string
   country: string
   province: string
-  contact_details: string
   are_you_on_period: string
   will_you_answer_survey_questions: string
   thank_you_msg: string
   anonymous_answer: string
   submit: string
-  thanks_for_response: string
   type_answer_placeholder: string
   info_button_survey: string
   // -------------------------Months-----------------------------
@@ -397,8 +355,6 @@ export interface AppTranslations {
   internet_error: string
   login_failed: string
   password_incorrect: string
-  penal_code_warning: string
-  penal_code_restriction: string
   something_went_wrong: string
   change_secret_success: string
   could_not_change_secret: string

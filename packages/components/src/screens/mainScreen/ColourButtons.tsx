@@ -369,7 +369,7 @@ export function ColourButtons({
                 fontFamily: 'Roboto-Black',
               }}
             >
-              no_day
+              No
             </Text>
           </ImageBackground>
         </TouchableOpacity>

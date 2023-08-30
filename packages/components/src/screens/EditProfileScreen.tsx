@@ -126,7 +126,7 @@ export function EditProfileScreen() {
         }),
       )
     } catch (err) {
-      throw new Error(translate('could_not_edit'))
+      throw new Error(translate('could_not_edit')) // TODO_ALEX: this is not displayed
     }
   }
 
@@ -155,11 +155,11 @@ export function EditProfileScreen() {
         if (err.response.data.name === 'BadRequestError') {
           if (err.response.data.message === 'wrong_previous_secret_answer') {
             const message = translate('wrong_old_secret_answer')
-            throw new Error(message)
+            throw new Error(message) // TODO_ALEX: this is not displayed
           }
         }
       }
-      throw new Error(translate('could_not_change_secret'))
+      throw new Error(translate('could_not_change_secret')) // TODO_ALEX: this is not displayed
     }
   }
 
@@ -188,7 +188,7 @@ export function EditProfileScreen() {
       )
     } catch (err) {
       setSecretAnswer('')
-      throw new Error('could_not_change_password')
+      throw new Error('could_not_change_password') // TODO_ALEX: this is not displayed
     }
   }
 

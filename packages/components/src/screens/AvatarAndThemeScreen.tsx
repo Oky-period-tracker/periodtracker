@@ -17,6 +17,7 @@ import styled from 'styled-components/native'
 import { Text } from '../components/common/Text'
 import { ScrollView } from 'react-native-gesture-handler'
 
+// TODO_ALEX move
 const avatars = ['ari', 'nur', 'julia', 'oky', 'pihu', 'shiko', 'kuku']
 const themes: ThemeName[] = ['hills', 'village', 'mosaic', 'desert']
 

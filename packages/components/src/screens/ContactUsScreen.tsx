@@ -64,15 +64,6 @@ export function ContactUsScreen({ navigation }) {
         <Header screenTitle="contact_us" />
         <KeyboardAwareAvoidance>
           <MiddleSection>
-            {/* @TODO: No contact details available */}
-            {/* <TextInput
-              label="contact_details"
-              value={email}
-              onChange={text => setEmail(text)}
-              inputStyle={{ fontSize: 16 }}
-              errorHeading="password_confirm_error_heading"
-              errorContent="password_confirm_error_content"
-            /> */}
             <VerticalSelectBox
               containerStyle={{
                 height: 45,
@@ -95,7 +86,7 @@ export function ContactUsScreen({ navigation }) {
               inputStyle={{ fontSize: 16, textAlignVertical: 'top', height: 200 }}
               style={{ height: 200 }}
               isValid={message.length >= 3}
-              errorHeading="password_confirm_error_heading"
+              errorHeading="password_error_heading"
               errorContent="password_confirm_error_content"
             />
             {error && <ErrorText>request_error</ErrorText>}

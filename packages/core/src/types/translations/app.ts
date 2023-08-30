@@ -5,7 +5,6 @@ export interface AppTranslations {
   terms: string
   share: string
   skip: string
-  hi: string
   auth_welcome: string
   auth_catchphrase: string
   confirm_and_delete: string
@@ -95,21 +94,6 @@ export interface AppTranslations {
   medium: string
   heavy: string
   spotting: string
-  no_day: string
-
-  // ------------------------- Notifications ----------------------------
-  notification_1_title: string
-  notification_1_body: string
-  notification_2_title: string
-  notification_2_body: string
-  notification_3_title: string
-  notification_3_body: string
-  notification_4_title: string
-  notification_4_body: string
-  notification_5_title: string
-  notification_5_body: string
-  notification_6_title: string
-  notification_6_body: string
 
   // ------------------------- Avatar ----------------------------
   ari: string
@@ -144,7 +128,6 @@ export interface AppTranslations {
   privacy_info: string
   share_setting: string
   language: string
-  choose_language: string
   language_subtitle: string
   // TODO_ALEX move
   en: string
@@ -206,7 +189,6 @@ export interface AppTranslations {
   period: string
   non_period: string
   ovulation: string
-  start_early_button: string
   unverified_button: string
   too_far_behind: string
   too_far_ahead: string
@@ -227,7 +209,6 @@ export interface AppTranslations {
   Other: string
   month_of_birth: string
   year_of_birth: string
-  safe_word: string
   alert: string
   guest_mode_user_alert: string
   delete_account_description: string
@@ -243,7 +224,6 @@ export interface AppTranslations {
   card_address: string
   card_phone_number: string
   card_website: string
-  description: string
 
   left: string
   to_go: string
@@ -275,10 +255,6 @@ export interface AppTranslations {
   survey_label_3: string
   survey_label_4: string
   change: string
-  survey_option_unit_day: string
-  survey_option_unit_days: string
-  survey_option_unit_week: string
-  survey_option_unit_weeks: string
   yes: string
   no: string
   Yes: string
@@ -334,11 +310,9 @@ export interface AppTranslations {
   secret_error_content: string
   password_error_heading: string
   password_error_content: string
-  password_confirm_error_heading: string
   password_confirm_error_content: string
   login_name_error_heading: string
   login_name_error_content: string
-  login_password_error_heading: string
   login_password_error_content: string
   request_error: string
   thank_you: string

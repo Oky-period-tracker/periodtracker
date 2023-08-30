@@ -8,14 +8,7 @@ import * as selectors from '../redux/selectors'
 import * as actions from '../redux/actions'
 import { navigateAndReset } from '../services/navigationService'
 import { Animated, Easing } from 'react-native'
-import {
-  createNotificationChannel,
-  setScheduledNotification,
-  cancelAllScheduledNotifications,
-  requestUserPermission,
-} from '../services/notifications'
-import moment from 'moment'
-import { translate } from '../i18n'
+import { createNotificationChannel, requestUserPermission } from '../services/notifications'
 import analytics from '@react-native-firebase/analytics'
 import DeviceInfo from 'react-native-device-info'
 import { useAlert } from '../components/context/AlertContext'
@@ -34,41 +27,6 @@ export function SplashScreen() {
   const currentFirebaseToken = useSelector(selectors.currentFirebaseToken)
   const hasPasswordRequestOn = useSelector(selectors.isLoginPasswordActiveSelector)
   const [animatedValue] = React.useState(new Animated.Value(0))
-
-  async function syncAllNotifications() {
-    const now = moment()
-    await cancelAllScheduledNotifications()
-    await setScheduledNotification({
-      time: now.clone().add(7, 'days'),
-      title: translate('notification_1_title'),
-      body: translate('notification_1_body'),
-    })
-    await setScheduledNotification({
-      time: now.clone().add(14, 'days'),
-      title: translate('notification_2_title'),
-      body: translate('notification_2_body'),
-    })
-    await setScheduledNotification({
-      time: now.clone().add(21, 'days'),
-      title: translate('notification_3_title'),
-      body: translate('notification_3_body'),
-    })
-    await setScheduledNotification({
-      time: now.clone().add(30, 'days'),
-      title: translate('notification_4_title'),
-      body: translate('notification_4_body'),
-    })
-    await setScheduledNotification({
-      time: now.clone().add(60, 'days'),
-      title: translate('notification_5_title'),
-      body: translate('notification_5_body'),
-    })
-    await setScheduledNotification({
-      time: now.clone().add(90, 'days'),
-      title: translate('notification_6_title'),
-      body: translate('notification_6_body'),
-    })
-  }
 
   async function checkForPermanentAlerts() {
     const versionName = DeviceInfo.getVersion()
@@ -93,7 +51,6 @@ export function SplashScreen() {
     checkForPermanentAlerts()
     requestUserPermission()
     createNotificationChannel()
-    syncAllNotifications()
     // TODO_ALEX
     messaging().unsubscribeFromTopic('oky_en_notifications')
     messaging().unsubscribeFromTopic('oky_id_notifications')

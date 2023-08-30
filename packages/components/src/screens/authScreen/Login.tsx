@@ -45,7 +45,7 @@ export function Login() {
           label="password"
           secureTextEntry={true}
           value={password}
-          errorHeading="login_password_error_heading"
+          errorHeading="password_error_heading"
           errorContent="login_password_error_content"
         />
         {loginError && <ErrorMessage>{loginError}</ErrorMessage>}

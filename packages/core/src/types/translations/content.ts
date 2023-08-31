@@ -169,7 +169,7 @@ interface PrivacyPolicy extends Array<ContentItem> {}
 interface TermsAndConditions extends Array<ContentItem> {}
 interface About extends Array<ContentItem> {}
 
-// TODO_SURVEY fix type overlap with /components !
+// TODO_ALEX: survey fix type overlap with /components !
 
 export interface StaticContent {
   locale: string

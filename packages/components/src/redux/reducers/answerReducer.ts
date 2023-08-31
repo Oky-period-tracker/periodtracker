@@ -165,6 +165,7 @@ const answerForUserReducer = combineReducers<AnswerForUserState, Actions>({
 })
 
 export function answerReducer(state: AnswerState = {}, action: Actions): AnswerState {
+  // TODO_ALEX: survey
   if (action.type === 'ANSWER_SURVEY') {
     return {
       ...state,

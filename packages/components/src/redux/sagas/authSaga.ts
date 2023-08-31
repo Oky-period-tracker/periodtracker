@@ -233,12 +233,12 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
       name,
       password,
     })
-    yield put(actions.updateAllSurveyContent([]))
-    yield put(actions.updateCompletedSurveys([]))
+    yield put(actions.updateAllSurveyContent([])) // TODO_ALEX
+    yield put(actions.updateCompletedSurveys([])) // TODO_ALEX
     yield put(
       actions.fetchSurveyContentSuccess({
         surveys: null,
-      }),
+      }), // TODO_ALEX
     )
     yield call(navigateAndReset, 'LoginStack', null)
 
@@ -257,15 +257,15 @@ function* onLogoutRequest() {
   if (isTtsActive) {
     yield call(closeOutTTs)
     yield put(actions.setTtsActive(false))
-    yield put(actions.verifyPeriodDayByUser([]))
+    yield put(actions.verifyPeriodDayByUser([])) // TODO_ALEX: survey
   }
-  yield put(actions.updateAllSurveyContent([]))
+  yield put(actions.updateAllSurveyContent([])) // TODO_ALEX: survey
   yield put(
     actions.fetchSurveyContentSuccess({
       surveys: null,
     }),
   )
-  yield put(actions.updateCompletedSurveys([]))
+  yield put(actions.updateCompletedSurveys([])) // TODO_ALEX: survey
   yield call(navigateAndReset, 'LoginStack', null)
   yield put(actions.logout())
 }

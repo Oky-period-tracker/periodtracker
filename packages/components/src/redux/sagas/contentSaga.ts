@@ -29,6 +29,7 @@ function* onRehydrate(action: RehydrateAction) {
   yield put(actions.fetchContentRequest(locale))
 }
 
+// TODO_ALEX: survey
 function* onFetchSurveyContent(
   action: ExtractActionFromActionType<'FETCH_SURVEY_CONTENT_REQUEST'>,
 ) {

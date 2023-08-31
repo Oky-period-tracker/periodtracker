@@ -18,7 +18,7 @@ import { SpinLoader } from '../../components/common/SpinLoader'
 import { navigateAndReset } from '../../services/navigationService'
 
 const screenWidth = Dimensions.get('window').width
-// TODO_SURVEY
+// TODO_ALEX: survey
 export function DayCarousel({ navigation, dataEntry }) {
   const dispatch = useDispatch()
   const [textToSpeak, setTextToSpeak] = React.useState([])

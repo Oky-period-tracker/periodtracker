@@ -14,10 +14,10 @@ import { SurveyInformationButton } from '../../components/common/SurveyInformati
 
 const { width } = Dimensions.get('window')
 
-// TODO_SURVEY
+// TODO_ALEX: survey
 
 const fetchOptionKey = (data, dataIndex) => {
-  // TODO_SURVEY temp key not used ?
+  // TODO_ALEX: survey temp key not used ?
   const tempKey = `${data.option}${dataIndex + 1}`
   const value = Object.values(data)
 

@@ -59,6 +59,7 @@ const MainScreenContainer = ({ navigation }) => {
 
 const MainScreenActual = React.memo(() => {
   const { data, index, isActive, currentIndex, absoluteIndex } = useInfiniteScroll()
+  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
   const renamedUseSelector = useSelector
   const allCardsData = renamedUseSelector((state) => selectors.allCardAnswersSelector(state))
   const getCardAnswersValues = (inputDay: any) => {

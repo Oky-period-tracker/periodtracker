@@ -547,7 +547,7 @@ export class DataController {
         privacyPolicy: ${JSON.stringify(otherJson['Privacy'])},
         termsAndConditions: ${JSON.stringify(otherJson['Terms'])},
         about: ${JSON.stringify(otherJson['About'])},
-        aboutBanner: null // TODO_ALEX ?
+        aboutBanner: null // TODO_ALEX
       }
       `
 

@@ -3,6 +3,7 @@ import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
 import { Text } from './Text'
 
+// TODO_ALEX rename this component because its used for things besides gender
 export const GenderSelectItem = ({ gender, onPress, isActive = false }) => {
   const opacity = 0.4 + Number(isActive) * 0.6
   return (

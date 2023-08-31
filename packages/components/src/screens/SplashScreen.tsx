@@ -51,7 +51,7 @@ export function SplashScreen() {
     checkForPermanentAlerts()
     requestUserPermission()
     createNotificationChannel()
-    // TODO_ALEX
+    // TODO_ALEX dynamic locale names for all?
     messaging().unsubscribeFromTopic('oky_en_notifications')
     messaging().unsubscribeFromTopic('oky_id_notifications')
     messaging().unsubscribeFromTopic('oky_mn_notifications')

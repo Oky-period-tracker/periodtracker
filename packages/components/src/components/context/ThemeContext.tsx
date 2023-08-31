@@ -5,7 +5,7 @@ import * as selectors from '../../redux/selectors'
 import { themes } from '../../themes'
 
 export function ThemeProvider({ children }) {
-  const themeName = useSelector(state => state.app.theme)
+  const themeName = useSelector((state) => state.app.theme)
   const locale = useSelector(selectors.currentLocaleSelector)
   return (
     <StyledThemeProvider
@@ -25,6 +25,7 @@ export function useTheme() {
   return themeContext
 }
 
+// TODO_ALEX apply this to more languages, have a config file for it?
 export const moderateScale = (fontSize, locale) => {
   // why have this? Because everything said in 1 word in english takes 4 words at triple the length in mongolian so lets reduce the size for neatening up
   if (locale === 'mn') {

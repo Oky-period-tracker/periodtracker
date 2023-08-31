@@ -175,10 +175,12 @@ function* onSetLocale(action: ExtractActionFromActionType<'SET_LOCALE'>) {
   const { locale } = action.payload
   const isTtsActive = yield select(selectors.isTtsActiveSelector)
   if (isTtsActive) {
+    // TODO_ALEX why?
     yield call(closeOutTTs)
     yield put(actions.setTtsActive(false))
   }
   // unsubscribe from topic
+  // TODO_ALEX: use locales from submodule
   messaging().unsubscribeFromTopic('oky_en_notifications')
   messaging().unsubscribeFromTopic('oky_id_notifications')
   messaging().unsubscribeFromTopic('oky_mn_notifications')

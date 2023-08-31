@@ -80,7 +80,7 @@ export const allQuizzesSelectors = (state: ReduxState) => {
 }
 
 export const allDidYouKnowsSelectors = (state: ReduxState) => {
-  // TODO: FIXME
+  // TODO_ALEX: FIXME
   const isUserYoungerThan15 = true
   // moment()
   //   .utc()

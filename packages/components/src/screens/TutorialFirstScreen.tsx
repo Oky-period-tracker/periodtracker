@@ -48,6 +48,7 @@ export function TutorialFirstScreen() {
   const normalizePosition = (percentage, dimension) => {
     return percentage * dimension - arrowSize / 2
   }
+  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
   const renamedUseSelector = useSelector
 
   const getCardAnswersValues = (inputDay) => {

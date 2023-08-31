@@ -47,6 +47,7 @@ export function TutorialSecondScreen({ navigation }) {
   const [completedStep, setCompletedStep] = React.useState(0)
   const flag = React.useRef(false)
   const dispatch = useDispatch()
+  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
   const renamedUseSelector = useSelector
   const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
 

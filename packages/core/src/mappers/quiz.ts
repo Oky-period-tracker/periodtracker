@@ -19,6 +19,7 @@ export interface Quizzes {
   allIds: string[]
 }
 
+// TODO_ALEX: FIXME conflict with components type Quiz
 export type Quiz = ReturnType<typeof fromQuizzes>
 
 export function fromQuizzes(response: QuizzesResponse) {

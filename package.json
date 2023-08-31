@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "docs": "ts-node generateApiDocs.ts",
     "validate:lotties": "ts-node validateLotties.ts",
     "validate:images": "yarn add sharp@0.28.3 && ts-node validateImages.ts",
     "remove-unused-assets": "ts-node removeUnusedAssets.ts",

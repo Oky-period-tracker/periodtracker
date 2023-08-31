@@ -1,4 +1,5 @@
 # Development stage
+# FROM --platform=linux/amd64 periodtracker/base as development
 FROM oky/base as development
 
 ENV NODE_ENV=development
@@ -7,6 +8,7 @@ WORKDIR /usr/src/app/packages/api
 CMD [ "yarn", "run", "watch" ]
 
 # Production stage
+# FROM --platform=linux/amd64 node:16.13.1 as production
 FROM node:16.13.1 as production
 
 ENV NODE_ENV=production

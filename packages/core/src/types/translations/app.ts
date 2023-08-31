@@ -118,7 +118,7 @@ export interface AppTranslations {
 
   // ------------------------- Settings ----------------------------
   settings: string
-  join_message: string
+  join_oky_message: string
   settings_info: string
   access_setting: string
   about: string

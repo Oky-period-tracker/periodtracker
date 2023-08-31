@@ -31,7 +31,7 @@ export function AccessScreen({ navigation }) {
     dispatch(actions.shareApp())
     const options = {
       url: WEBSITE_URL,
-      message: translate('join_message'),
+      message: translate('join_oky_message'),
     }
     Share.open(options)
       .then((res) => null)

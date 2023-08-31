@@ -11,6 +11,7 @@ import { navigateAndReset } from '../../services/navigationService'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
 
+// TODO_ALEX: refactor
 export const FinalJourneyCard = ({ cards, questionAnswers, goToQuestion }) => {
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
@@ -25,9 +26,7 @@ export const FinalJourneyCard = ({ cards, questionAnswers, goToQuestion }) => {
             questionAnswer = translate(questionAnswers.data[index].answer)
           } else if (card.answerType === 'numeric') {
             questionAnswer = `${questionAnswers.data[index].answer + 1} ${translate(
-              questionAnswers.data[index].answer === 0
-                ? 'survey_option_unit_' + card.optionsUnit[0]
-                : 'survey_option_unit_' + card.optionsUnit[1],
+              questionAnswers.data[index].answer === 0 ? card.optionsUnit[0] : card.optionsUnit[1],
             )}`
           } else {
             questionAnswer =

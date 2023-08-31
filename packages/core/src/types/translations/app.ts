@@ -46,7 +46,6 @@ export interface AppTranslations {
   profile: string
   profile_edit: string
   password: string
-  new_password: string
   confirm_password: string
   secret_question: string
   secret_answer: string
@@ -129,10 +128,7 @@ export interface AppTranslations {
   share_setting: string
   language: string
   language_subtitle: string
-  // TODO_ALEX move
-  en: string
-  id: string
-  mn: string
+
   tutorial: string
   tutorial_subtitle: string
   tutorial_0: string
@@ -318,11 +314,8 @@ export interface AppTranslations {
   thank_you: string
   thank_you_content: string
   reset_secret_question: string
-  reset_password: string
   reset_password_question: string
   change_secret: string
-  change_password: string
-  edit_profile_success: string
   error_connect_guest: string
   error_same_name: string
   no_user_in_database: string
@@ -330,7 +323,6 @@ export interface AppTranslations {
   login_failed: string
   password_incorrect: string
   something_went_wrong: string
-  change_secret_success: string
   could_not_change_secret: string
   wrong_old_secret_answer: string
   close_try_again: string

@@ -47,6 +47,14 @@ To use different modules, remove any modules you currently have using the comman
 
 > [Here](./modules.md) you will find instructions on setting up your own module repositories
 
+The iOS/Android app icons are kept in the /assets repository but they need to be copied into the correct places. Do this by running this command:
+
+```bash
+yarn copy-assets
+```
+
+> If you change your assets repo, you will need to run this command again
+
 ## Environment configuration
 
 Create .env, .properties and .xcconfig files for cms, api and mobile with one command

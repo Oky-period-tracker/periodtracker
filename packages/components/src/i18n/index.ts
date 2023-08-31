@@ -2,12 +2,14 @@ import { I18nManager } from 'react-native'
 import * as RNLocalize from 'react-native-localize'
 import Tts from 'react-native-tts'
 import i18n from 'i18n-js'
-import { AppTranslations, appTranslations, defaultLocale } from '@oky/core'
+import { Locale, appTranslations, defaultLocale, localeTranslations } from '@oky/core'
 // TODO_ALEX flower submodule
 // import { flowerTranslations } from '../moduleImports'
 import _ from 'lodash'
 
-const combineTranslations = (translations: Array<Record<'en', AppTranslations>>) => {
+type TranslationObject = Record<Locale, Record<string, string>>
+
+const combineTranslations = (translations: TranslationObject[]) => {
   return translations.reduce((acc, translation) => {
     if (translation) {
       for (const locale in translation) {
@@ -24,7 +26,13 @@ const combineTranslations = (translations: Array<Record<'en', AppTranslations>>)
   }, {})
 }
 
-export const allTranslations = combineTranslations([appTranslations /* , flowerTranslations */])
+// TODO_ALEX fix typecasting
+export const allTranslations = combineTranslations([
+  (appTranslations as unknown) as TranslationObject,
+  (localeTranslations as unknown) as TranslationObject,
+  /* , flowerTranslations */
+  ,
+])
 
 export function translate(key) {
   return i18n.t(key)

@@ -7,7 +7,6 @@ import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import * as actions from '../redux/actions/index'
-import { ThemeName } from '../types/index'
 import { Header } from '../components/common/Header'
 import { useTheme } from '../components/context/ThemeContext'
 import { BackOneScreen, navigate } from '../services/navigationService'
@@ -16,10 +15,7 @@ import * as selectors from '../redux/selectors'
 import styled from 'styled-components/native'
 import { Text } from '../components/common/Text'
 import { ScrollView } from 'react-native-gesture-handler'
-
-// TODO_ALEX move
-const avatars = ['ari', 'nur', 'julia', 'oky', 'pihu', 'shiko', 'kuku']
-const themes: ThemeName[] = ['hills', 'village', 'mosaic', 'desert']
+import { themeNames, avatarNames } from '@oky/core'
 
 export function AvatarAndThemeScreen({ navigation }) {
   const signingUp = navigation.getParam('signingUp')
@@ -58,12 +54,12 @@ export function AvatarAndThemeScreen({ navigation }) {
             </Text>
           )}
           <AvatarSelect
-            avatars={avatars}
+            avatars={avatarNames}
             value={selectedAvatar}
             onSelect={(avatar) => dispatch(actions.setAvatar(avatar))}
           />
           <ThemeSelect
-            themes={themes}
+            themes={themeNames}
             value={useTheme().id}
             onSelect={(theme) => {
               if (theme !== id) {

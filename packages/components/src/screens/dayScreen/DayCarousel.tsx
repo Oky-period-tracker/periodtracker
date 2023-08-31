@@ -18,7 +18,7 @@ import { SpinLoader } from '../../components/common/SpinLoader'
 import { navigateAndReset } from '../../services/navigationService'
 
 const screenWidth = Dimensions.get('window').width
-
+// TODO_SURVEY
 export function DayCarousel({ navigation, dataEntry }) {
   const dispatch = useDispatch()
   const [textToSpeak, setTextToSpeak] = React.useState([])
@@ -73,10 +73,9 @@ export function DayCarousel({ navigation, dataEntry }) {
     notes: null,
   }
 
-  const [startSurvey, setStartSurvey] = React.useState(false)
   const [endSurvey, setEndSurvey] = React.useState(false)
-  const [surveryTempQuestions, setSurveyTempQuestions] = React.useState(null)
-  const [currentSurveryQuestionIndex, setCurrentQuestionIndex] = React.useState(null)
+  const [surveyTempQuestions, setSurveyTempQuestions] = React.useState(null)
+  const [currentSurveyQuestionIndex, setCurrentQuestionIndex] = React.useState(null)
   const [answeredSurvey, setAnsweredSurveyQuestions] = React.useState(null)
   const lastQuestion = {
     question: translate('thank_you_msg'),
@@ -123,36 +122,41 @@ export function DayCarousel({ navigation, dataEntry }) {
   }, [])
 
   const updateSurveyQuestion = () => {
-    if (newSurveys?.questions?.length) {
-      if (newSurveys?.inProgress) {
-        const { currentQuestionIndex, questions } = newSurveys
-        let currentQuestion = null
-        questions.forEach((element, index) => {
-          if (index === currentQuestionIndex) {
-            currentQuestion = element
-          }
-        })
-        setSurveyTempQuestions(currentQuestion)
-        setCurrentQuestionIndex(currentQuestionIndex)
-        setAnsweredSurveyQuestions(newSurveys.answeredQuestion)
-      } else {
-        setSurveyTempQuestions({
-          question: translate('will_you_answer_survey_questions'),
-          options: [{ option1: translate('Yes') }, { option2: translate('not_now') }],
-          response: 'response',
-          is_multiple: true,
-          next_question: {
-            option1: '2',
-          },
-          thankYouMsg: translate('thank_you_msg'),
-          sort_number: '1',
-          utcDateTime: dataEntry.date,
-          surveyId: newSurveys?.id,
-        })
-      }
-    } else {
+    // No new surveys
+    if (!newSurveys?.questions?.length) {
       setEndSurvey(true)
+      return
     }
+
+    // Survey in progress
+    if (newSurveys?.inProgress) {
+      const { currentQuestionIndex, questions } = newSurveys
+      let currentQuestion = null
+      questions.forEach((element, index) => {
+        if (index === currentQuestionIndex) {
+          currentQuestion = element
+        }
+      })
+      setSurveyTempQuestions(currentQuestion)
+      setCurrentQuestionIndex(currentQuestionIndex)
+      setAnsweredSurveyQuestions(newSurveys.answeredQuestion)
+      return
+    }
+
+    // Start new survey
+    setSurveyTempQuestions({
+      question: translate('will_you_answer_survey_questions'),
+      options: [{ option1: translate('Yes') }, { option2: translate('not_now') }],
+      response: 'response',
+      is_multiple: true,
+      next_question: {
+        option1: '2',
+      },
+      thankYouMsg: translate('thank_you_msg'),
+      sort_number: '1',
+      utcDateTime: dataEntry.date,
+      surveyId: newSurveys?.id,
+    })
   }
 
   useTextToSpeechHook({ navigation, text: textToSpeak })
@@ -167,7 +171,7 @@ export function DayCarousel({ navigation, dataEntry }) {
     setEndSurvey(true)
   }
   const onOpenAnswer = (openAnswer) => {
-    const currQuestion = surveryTempQuestions
+    const currQuestion = surveyTempQuestions
     const tempAnswer = answeredSurvey ? answeredSurvey : []
     // prettier-ignore
     tempAnswer.push({
@@ -183,12 +187,11 @@ export function DayCarousel({ navigation, dataEntry }) {
   }
   const onSelectSurvey = (isProcced, selectedOption, selectedOptionIndex) => {
     if (isProcced) {
-      const currQuestion = surveryTempQuestions
-      if (isProcced && currentSurveryQuestionIndex === null) {
+      const currQuestion = surveyTempQuestions
+      if (isProcced && currentSurveyQuestionIndex === null) {
         setCurrentQuestionIndex(0)
         // prettier-ignore
         setSurveyTempQuestions(newSurveys?.questions[0])
-        setStartSurvey(isProcced)
       } else {
         getNextQuestion(currQuestion, isProcced, selectedOptionIndex, null)
       }
@@ -250,7 +253,6 @@ export function DayCarousel({ navigation, dataEntry }) {
 
         // prettier-ignore
         const currentQuestion = newSurveys?.questions[nextQuestionIndex - 1]
-        setStartSurvey(isProcced)
         setCurrentQuestionIndex(nextQuestionIndex)
         setSurveyTempQuestions(currentQuestion)
         const currentSurvey = allSurveys[0]
@@ -273,8 +275,8 @@ export function DayCarousel({ navigation, dataEntry }) {
           snapToInterval={0.9 * screenWidth + 15}
           snapToAlignment={'center'}
           pagingEnabled={true}
-          data={[surveryTempQuestions]}
-          extraData={[surveryTempQuestions]}
+          data={[surveyTempQuestions]}
+          extraData={[surveyTempQuestions]}
           keyExtractor={(_ignore, index) => index.toString()}
           viewabilityConfig={viewConfigRef.current}
           renderItem={({ item, index }) => {
@@ -282,9 +284,8 @@ export function DayCarousel({ navigation, dataEntry }) {
               <SurveyCard
                 dataEntry={item}
                 index={index}
-                // prettier-ignore
                 selectAnswer={item?.is_multiple ? onSelectSurvey : onOpenAnswer}
-                startSurveyQuestion={currentSurveryQuestionIndex === null ? false : true}
+                startSurveyQuestion={currentSurveyQuestionIndex === null ? false : true}
                 endSurvey={onEndSurvey}
               />
             )

@@ -58,7 +58,7 @@ function* onFetchSurveyContent(
 
     yield put(actions.updateAllSurveyContent(finalArr))
   } catch (error) {
-    yield put(actions.fetchSurveyContentFailure())
+    //
   }
 }
 

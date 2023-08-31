@@ -15,27 +15,11 @@ import {
   CompletedSurveys,
 } from '../../types'
 
-export function initStaleContent({
-  articles,
-  avatarMessages,
-  categories,
-  subCategories,
-  surveys,
-  quizzes,
-  didYouKnows,
-  helpCenters,
-  privacyPolicy,
-  termsAndConditions,
-  about,
-  aboutBanner,
-  allSurveys,
-  completedSurveys,
-}: {
+export function initStaleContent(payload: {
   articles: Articles
   avatarMessages: AvatarMessages
   categories: Categories
   subCategories: SubCategories
-  surveys: Surveys
   quizzes: Quizzes
   didYouKnows: DidYouKnows
   helpCenters: HelpCenters
@@ -43,25 +27,8 @@ export function initStaleContent({
   termsAndConditions: TermsAndConditions
   about: About
   aboutBanner: string
-  allSurveys: AllSurveys
-  completedSurveys: CompletedSurveys
 }) {
-  return createAction('INIT_STALE_CONTENT', {
-    articles,
-    avatarMessages,
-    categories,
-    subCategories,
-    surveys,
-    allSurveys,
-    quizzes,
-    didYouKnows,
-    helpCenters,
-    privacyPolicy,
-    termsAndConditions,
-    about,
-    aboutBanner,
-    completedSurveys,
-  })
+  return createAction('INIT_STALE_CONTENT', payload)
 }
 
 export function fetchSurveyContentRequest(userID: string) {
@@ -84,27 +51,11 @@ export function updateCompletedSurveys(completedSurveys: CompletedSurveys) {
   })
 }
 
-export function fetchSurveyContentFailure() {
-  return createAction('FETCH_SURVEY_CONTENT_FAILURE')
-}
-
 export function fetchContentRequest(locale: string) {
   return createAction('FETCH_CONTENT_REQUEST', { locale })
 }
 
-export function fetchContentSuccess({
-  articles,
-  avatarMessages,
-  categories,
-  subCategories,
-  quizzes,
-  didYouKnows,
-  helpCenters,
-  privacyPolicy,
-  termsAndConditions,
-  about,
-  aboutBanner,
-}: {
+export function fetchContentSuccess(payload: {
   articles: Articles
   avatarMessages: AvatarMessages
   categories: Categories
@@ -117,19 +68,7 @@ export function fetchContentSuccess({
   about: About
   aboutBanner: string
 }) {
-  return createAction('FETCH_CONTENT_SUCCESS', {
-    articles,
-    avatarMessages,
-    categories,
-    subCategories,
-    quizzes,
-    didYouKnows,
-    helpCenters,
-    privacyPolicy,
-    termsAndConditions,
-    about,
-    aboutBanner,
-  })
+  return createAction('FETCH_CONTENT_SUCCESS', payload)
 }
 
 export function fetchContentFailure() {

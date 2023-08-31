@@ -1,15 +1,10 @@
 import { createAction } from '../helpers'
 import { Moment } from 'moment'
 import { CardName, DailyCard } from '../../types'
+import { AnswerForUserState } from '../reducers/answerReducer'
+import { User } from '../reducers/authReducer'
 
-export function answerSurvey({
-  id,
-  user_id,
-  isCompleted,
-  isSurveyAnswered,
-  questions,
-  utcDateTime,
-}: {
+export function answerSurvey(payload: {
   id: string
   user_id: string
   isCompleted: boolean
@@ -17,54 +12,10 @@ export function answerSurvey({
   questions: any
   utcDateTime: Moment
 }) {
-  return createAction('ANSWER_SURVEY', {
-    id,
-    user_id,
-    isCompleted,
-    isSurveyAnswered,
-    questions,
-    utcDateTime,
-  })
-}
-export function updateSurveyWithAnswer({
-  id,
-  user_id,
-  isCompleted,
-  isSurveyAnswered,
-  questions,
-  utcDateTime,
-  inProgress,
-}: {
-  id: string
-  user_id: string
-  isCompleted: boolean
-  isSurveyAnswered: boolean
-  questions: any
-  utcDateTime: Moment
-  inProgress: boolean
-}) {
-  return createAction('UPDATE_SURVEY_WITH_ANSWER', {
-    id,
-    user_id,
-    isCompleted,
-    isSurveyAnswered,
-    questions,
-    utcDateTime,
-    inProgress,
-  })
+  return createAction('ANSWER_SURVEY', payload)
 }
 
-export function answerQuiz({
-  id,
-  question,
-  answerID,
-  emoji,
-  answer,
-  isCorrect,
-  response,
-  userID,
-  utcDateTime,
-}: {
+export function answerQuiz(payload: {
   id: string
   question: string
   answerID: number
@@ -75,17 +26,7 @@ export function answerQuiz({
   userID: string
   utcDateTime: Moment
 }) {
-  return createAction('ANSWER_QUIZ', {
-    id,
-    question,
-    answerID,
-    emoji,
-    answer,
-    isCorrect,
-    response,
-    userID,
-    utcDateTime,
-  })
+  return createAction('ANSWER_QUIZ', payload)
 }
 
 export function answerDailyCard<T extends CardName>({
@@ -129,20 +70,23 @@ export function answerVerifyDates({
   })
 }
 
-export function answerNotesCard({
-  title,
-  notes,
-  userID,
-  utcDateTime,
-}: {
+export function answerNotesCard(payload: {
   title: string
   notes: string
   userID: string
   utcDateTime: Moment
 }) {
-  return createAction('ANSWER_NOTES_CARD', { title, notes, userID, utcDateTime })
+  return createAction('ANSWER_NOTES_CARD', payload)
 }
 
 export function shareApp() {
   return createAction('SHARE_APP')
+}
+
+export function migrateAnswerData(payload: {
+  userId: User['id']
+  key: string
+  data: AnswerForUserState
+}) {
+  return createAction('MIGRATE_ANSWER_DATA', payload)
 }

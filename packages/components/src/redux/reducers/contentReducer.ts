@@ -82,18 +82,17 @@ const initialState: ContentState = {
 export function contentReducer(state = initialState, action: Actions): ContentState {
   switch (action.type) {
     case 'INIT_STALE_CONTENT':
-      return { ...action.payload }
+      return {
+        ...state,
+        ...action.payload,
+      }
+
     case 'FETCH_CONTENT_SUCCESS':
       return {
         ...state,
         articles: action.payload.articles,
         categories: action.payload.categories,
         subCategories: action.payload.subCategories,
-        // surveys: {
-        //   byId: {},
-        //   allIds: [],
-        // },
-        // surveys:[],
         quizzes: action.payload.quizzes,
         didYouKnows: action.payload.didYouKnows,
         helpCenters: action.payload.helpCenters,
@@ -103,21 +102,25 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
         about: action.payload.about,
         aboutBanner: action.payload.aboutBanner,
       }
+
     case 'FETCH_SURVEY_CONTENT_SUCCESS':
       return {
         ...state,
         surveys: action.payload.surveys,
       }
+
     case 'UPDATE_ALL_SURVEYS_CONTENT':
       return {
         ...state,
         allSurveys: action.payload.allSurveys,
       }
+
     case 'UPDATE_COMPLETED_SURVEYS':
       return {
         ...state,
         completedSurveys: action.payload.completedSurveys,
       }
+
     default:
       return state
   }

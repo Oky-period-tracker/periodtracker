@@ -12,14 +12,18 @@ import { useDispatch } from 'react-redux'
 import { TextInput } from '../../components/common/TextInput'
 import { SurveyInformationButton } from '../../components/common/SurveyInformationButton'
 
-const { width, height } = Dimensions.get('window')
+const { width } = Dimensions.get('window')
+
+// TODO_SURVEY
 
 const fetchOptionKey = (data, dataIndex) => {
+  // TODO_SURVEY temp key not used ?
   const tempKey = `${data.option}${dataIndex + 1}`
   const value = Object.values(data)
 
   return value
 }
+
 export const SurveyCard = React.memo<{
   dataEntry: any
   index: number
@@ -50,6 +54,8 @@ export const SurveyCard = React.memo<{
         setTimeout(() => {
           endSurvey()
         }, 5000)
+
+        // TODO_ALEX: Does this do anything?
         dispatch(
           actions.answerSurvey({
             id: dataEntry.surveyId,
@@ -163,7 +169,13 @@ export const SurveyCard = React.memo<{
         marginTop: 10,
       }}
     >
-      <Row style={{ height: '20%', justifyContent: 'flex-start', flexDirection: 'column' }}>
+      <Row
+        style={{
+          height: '20%',
+          justifyContent: 'flex-start',
+          flexDirection: 'column',
+        }}
+      >
         <Row style={{ justifyContent: 'flex-start' }}>
           <TitleText size={26} style={{ width: 150, height: 50 }}>
             survey
@@ -179,7 +191,13 @@ export const SurveyCard = React.memo<{
 
         <ContentText>anonymous_answer</ContentText>
       </Row>
-      <Row style={{ flexDirection: 'column', height: '85%', justifyContent: 'center' }}>
+      <Row
+        style={{
+          flexDirection: 'column',
+          height: '85%',
+          justifyContent: 'center',
+        }}
+      >
         <Row style={{ marginBottom: 10 }}>
           <InnerTitleText>{dataEntry?.question}</InnerTitleText>
         </Row>
@@ -213,7 +231,13 @@ export const SurveyCard = React.memo<{
           </UpperContent>
         )}
         {dataEntry?.is_multiple && !dataEntry?.endSurvey && (
-          <Row style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <Row
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
             {dataEntry?.options && <SurveyContent />}
           </Row>
         )}
@@ -244,7 +268,6 @@ export const SurveyCard = React.memo<{
           </Row>
         )}
       </Row>
-      {/* </ScrollView> */}
     </SurveyCardContainer>
   )
 })

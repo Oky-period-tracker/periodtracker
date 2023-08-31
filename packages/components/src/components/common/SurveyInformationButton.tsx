@@ -5,12 +5,18 @@ import { Icon } from './Icon'
 import { assets } from '../../assets'
 import { ThemedModal } from './ThemedModal'
 import { getAccessibilityLabel } from '../../services/textToSpeech'
+import { ImageProps, ViewProps } from 'react-native'
 
 export const SurveyInformationButton = ({
-  onPress = null,
-  style = null,
+  onPress,
+  style,
   icon = assets.static.icons.infoPink,
-  iconStyle = null,
+  iconStyle,
+}: {
+  onPress?: () => void
+  style?: ViewProps['style']
+  icon?: ImageProps['source']
+  iconStyle?: ImageProps['style']
 }) => {
   const [isVisible, setIsVisible] = React.useState(false)
   return (

@@ -61,20 +61,6 @@ function surveysReducer(state = {}, action: Actions): AnswerForUserState['survey
       },
     }
   }
-  if (action.type === 'UPDATE_SURVEY_WITH_ANSWER') {
-    return {
-      ...state,
-      [action.payload.id]: {
-        id: action.payload.id,
-        user_id: action.payload.user_id,
-        isCompleted: action.payload.isCompleted,
-        isSurveyAnswered: action.payload.isSurveyAnswered,
-        questions: action.payload.questions,
-        utcDateTime: action.payload.utcDateTime.toISOString(),
-        inProgress: action.payload.inProgress,
-      },
-    }
-  }
 
   return state
 }
@@ -183,11 +169,6 @@ export function answerReducer(state: AnswerState = {}, action: Actions): AnswerS
     return {
       ...state,
       // [action.payload.user_id]: answerForUserReducer(state[action.payload.userID], action),
-    }
-  }
-  if (action.type === 'UPDATE_SURVEY_WITH_ANSWER') {
-    return {
-      ...state,
     }
   }
   if (action.type === 'ANSWER_QUIZ') {

@@ -7,35 +7,39 @@ import * as actions from '../../redux/actions/index'
 import { useDispatch } from 'react-redux'
 import moment from 'moment'
 import { SpinLoader } from '../../components/common/SpinLoader'
-import { navigateAndReset } from '../../services/navigationService'
-import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/selectors'
 
-// TODO_ALEX: refactor
-export const FinalJourneyCard = ({ cards, questionAnswers, goToQuestion }) => {
+const getQuestionAnswer = ({ card, index, questionAnswers }) => {
+  if (card.answerType === 'string') {
+    return translate(questionAnswers.data[index].answer)
+  }
+
+  if (card.answerType === 'numeric') {
+    const answer = questionAnswers.data[index].answer
+    const unit = answer === 0 ? card.optionsUnit[0] : card.optionsUnit[1]
+    return `${answer + 1} ${translate(unit)}`
+  }
+
+  const answerDate = moment(questionAnswers.data[index].answer, 'DD-MMM-YYYY')
+  const day = answerDate.format('DD')
+  const month = translate(answerDate.format('MMM'))
+  const year = answerDate.format('YYYY')
+
+  return `${day} - ${month} ${year}`
+}
+
+export function FinalJourneyCard({ cards, questionAnswers, goToQuestion }) {
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
-  const currentUser = useSelector(selectors.currentUserSelector)
-
   return (
     <FinalSurveyCard>
       <WhiteContainer>
         {cards.map((card, index) => {
-          let questionAnswer = null
-          if (card.answerType === 'string') {
-            questionAnswer = translate(questionAnswers.data[index].answer)
-          } else if (card.answerType === 'numeric') {
-            questionAnswer = `${questionAnswers.data[index].answer + 1} ${translate(
-              questionAnswers.data[index].answer === 0 ? card.optionsUnit[0] : card.optionsUnit[1],
-            )}`
-          } else {
-            questionAnswer =
-              moment(questionAnswers.data[index].answer, 'DD-MMM-YYYY').format('DD') +
-              ' - ' +
-              translate(moment(questionAnswers.data[index].answer, 'DD-MMM-YYYY').format('MMM')) +
-              ' ' +
-              moment(questionAnswers.data[index].answer, 'DD-MMM-YYYY').format('YYYY')
-          }
+          const questionAnswer = getQuestionAnswer({
+            card,
+            index,
+            questionAnswers,
+          })
+
           return (
             <ItemContainer key={index}>
               <ItemRow
@@ -47,7 +51,11 @@ export const FinalJourneyCard = ({ cards, questionAnswers, goToQuestion }) => {
                 <QuestionIcon source={card.image} />
                 <QuestionArea>
                   <Question>{card.question}</Question>
-                  <Answer style={{ opacity: questionAnswers.data[0].answer === 'No' ? 0.8 : 1 }}>
+                  <Answer
+                    style={{
+                      opacity: questionAnswers.data[0].answer === 'No' ? 0.8 : 1,
+                    }}
+                  >
                     {questionAnswers.data[0].answer === 'No' && index !== 0
                       ? 'N/A'
                       : questionAnswer}

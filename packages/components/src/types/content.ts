@@ -6,6 +6,7 @@ export interface Articles {
       content: string
       category: string
       subCategory: string
+      live?: boolean
     }
   }
   allIds: string[]
@@ -14,6 +15,7 @@ export interface Articles {
 interface AvatarMessageItem {
   id: string
   content: string
+  live?: boolean
 }
 export interface AvatarMessages extends Array<AvatarMessageItem> {}
 
@@ -27,7 +29,7 @@ export interface Categories {
           name: string
           emoji: string
         }
-        secondary: {
+        secondary?: {
           name: string
           emoji: string
         }
@@ -56,27 +58,32 @@ export interface DidYouKnows {
       isAgeRestricted: boolean
       title: string
       content: string
+      live?: boolean
     }
   }
   allIds: string[]
 }
 
+export interface Quiz {
+  id: string
+  isAgeRestricted: boolean
+  topic: string
+  question: string
+  answers: Array<{
+    text: string
+    emoji: string
+    isCorrect: boolean
+  }>
+  response: {
+    correct: string
+    in_correct: string
+  }
+  live?: boolean
+}
+
 export interface Quizzes {
   byId: {
-    [id: string]: {
-      id: string
-      isAgeRestricted: boolean
-      question: string
-      answers: Array<{
-        text: string
-        emoji: string
-        isCorrect: boolean
-      }>
-      response: {
-        correct: string
-        in_correct: string
-      }
-    }
+    [id: string]: Quiz
   }
   allIds: string[]
 }
@@ -146,7 +153,7 @@ interface HelpCenterItem {
   title: string
   caption: string
   contactOne: string
-  contactTwo: string
+  contactTwo?: string
   address: string
   website: string
   lang: string
@@ -161,3 +168,20 @@ interface ContentItem {
 export interface PrivacyPolicy extends Array<ContentItem> {}
 export interface TermsAndConditions extends Array<ContentItem> {}
 export interface About extends Array<ContentItem> {}
+
+export interface StaticContent {
+  locale: string
+  articles: Articles
+  categories: Categories
+  subCategories: SubCategories
+  surveys: Surveys
+  quizzes: Quizzes
+  didYouKnows: DidYouKnows
+  helpCenters: HelpCenters
+  avatarMessages: AvatarMessages
+  privacyPolicy: PrivacyPolicy
+  termsAndConditions: TermsAndConditions
+  about: About
+  allSurveys: AllSurveys
+  completedSurveys: CompletedSurveys
+}

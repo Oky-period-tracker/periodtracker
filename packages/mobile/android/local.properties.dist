@@ -6,9 +6,9 @@
 # header note.
 #Tue May 09 17:47:35 BST 2023
 
-sdk.dir=
+sdk.dir=/Users/dev/Library/Android/sdk
 
-STORE_FILE=
-STORE_PASSWORD=
-KEY_ALIAS=
-KEY_PASSWORD=
+STORE_FILE=/Users/dev/keys/filename.keystore
+STORE_PASSWORD=!ChangeMe!
+KEY_ALIAS=!ChangeMe!
+KEY_PASSWORD=!ChangeMe!

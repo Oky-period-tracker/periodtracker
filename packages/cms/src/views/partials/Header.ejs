@@ -50,71 +50,30 @@
           <li class="nav-item">
             <a class="nav-link" href="/logout"><%= __('Logout') %></a>
           </li>
-          <% }%>
-          <li class="nav-item">
+
+          <li class="nav-item" style="display: flex;">
             <button 
-              <% if(!currentUser){ %>
-              disabled
-              <% }%> 
-              <% if(currentUser){ %>
               <% if(currentUser.type!=="superAdmin" ){ %> 
                 disabled 
-              <% }}%> 
-              style="border: none;"
+              <% }%> 
+              style="border: none; margin-top: auto; margin-bottom: auto;"
               type="button" data-toggle="collapse" data-target="#collapseExample"
               aria-expanded="false" aria-controls="collapseExample" >
-              <img
-                class="flag-logo"
-                style="height: 60px;
-                width: 67px;"
-                src="<%= currentUser ? `/assets/images/`+currentUser.lang+`-flag.png` : `/assets/images/en-flag.png` %>"
-              />
+              <%=localeTranslations[currentUser.lang][currentUser.lang]%>
             </button>
+
             <div class="collapse" id="collapseExample">
-              <!-- TODO_ALEX -->
               <div class="card card-body">
-                <button type="button" class="languageChange" data-value="en">
-                  <img class="flag-logo" src=" /assets/images/en-flag.png" />
-                </button>
-                <button type="button" class="languageChange" data-value="fr">
-                  <img
-                    style="margin-top: 10px; margin-bottom: 10px;height: 60px;
-                    width: 67px;"
-                    class="flag-logo"
-                    src=" /assets/images/fr-flag.png"
-                  />
-                </button>
-                <button type="button" class="languageChange" data-value="pt">
-                  <img
-                    style="margin-top: 10px; margin-bottom: 10px;height: 60px;
-                    width: 67px;"
-                    class="flag-logo"
-                    src=" /assets/images/pt-flag.png"
-                  />
-                </button>
-                <button type="button" class="languageChange" data-value="ru">
-                  <img
-                    style="margin-top: 10px; margin-bottom: 10px;height: 60px;
-                    width: 67px;"
-                    class="flag-logo"
-                    src=" /assets/images/ru-flag.png"
-                  />
-                </button>
+                <% for(var i=0; i < availableAppLocales.length; i++) { %>
+                  <button type="button" class="languageChange" data-value="en">
+                    <%=localeTranslations[currentUser.lang][availableAppLocales[i]]%>
+                  </button>
+               <% } %>
               </div>
             </div>
+            
           </li>
-          <!-- <li class="nav-item">
-            <button 
-              disabled
-              style="border: none;"
-              type="button" data-toggle="collapse" data-target="#collapseExample"
-              aria-expanded="false" aria-controls="collapseExample" >
-              <img
-                class="flag-logo"
-                src="<%= currentUser ? `/assets/images/`+currentUser.lang+`-flag.png` : `/assets/images/en-flag.png` %>"
-              />
-            </button>
-          </li> -->
+          <% }%> 
         </ul>
       </div>
     </nav>

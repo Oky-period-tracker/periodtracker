@@ -16,7 +16,7 @@ import { HelpCenter } from '../entity/HelpCenter'
 import { About } from '../entity/About'
 import { AvatarMessages } from '../entity/AvatarMessages'
 import { PermanentNotification } from '../entity/PermanentNotification'
-import { provinces, countries } from '@oky/core'
+import { provinces, countries, availableAppLocales, localeTranslations } from '@oky/core'
 import { TermsAndConditions } from '../entity/TermsAndConditions'
 import { PrivacyPolicy } from '../entity/PrivacyPolicy'
 import { AboutBanner } from '../entity/AboutBanner'
@@ -40,8 +40,23 @@ export class RenderController {
   private permanentNotificationRepository = getRepository(PermanentNotification)
   private avatarMessagesRepository = getRepository(AvatarMessages)
 
+  // Apply global render options to all views here
+  globalRenderOptions = {
+    availableAppLocales,
+    localeTranslations,
+  }
+
+  async render(
+    response: Response,
+    view: string,
+    options?: object,
+    callback?: (err: Error, html: string) => void,
+  ) {
+    response.render(view, { ...this.globalRenderOptions, ...options }, callback)
+  }
+
   async renderLogin(request: Request, response: Response, next: NextFunction) {
-    response.render('Login')
+    this.render(response, 'Login')
   }
 
   async renderAnalytics(request: Request, response: Response, next: NextFunction) {
@@ -106,7 +121,7 @@ export class RenderController {
       }
     }
 
-    return response.render('AnalyticsDash', {
+    return this.render(response, 'AnalyticsDash', {
       query: request.query,
       usersLocations,
       usersGenders,
@@ -127,14 +142,14 @@ export class RenderController {
       },
     })
     const answeredQuizzes = await entityManager.query(analyticsQueries.answeredQuizzesByID)
-    response.render('Quiz', { quizzes, answeredQuizzes })
+    this.render(response, 'Quiz', { quizzes, answeredQuizzes })
   }
 
   async renderHelpCenter(request: Request, response: Response, next: NextFunction) {
     const helpCenters = await this.helpCenterRepository.find({
       where: { lang: request.user.lang },
     })
-    response.render('HelpCenter', { helpCenters })
+    this.render(response, 'HelpCenter', { helpCenters })
   }
 
   async renderAbout(request: Request, response: Response, next: NextFunction) {
@@ -144,7 +159,7 @@ export class RenderController {
     const aboutBannerItem = await this.aboutBannerRepository.findOne({
       where: { lang: request.user.lang },
     })
-    response.render('About', {
+    this.render(response, 'About', {
       aboutVersions,
       image: aboutBannerItem ? aboutBannerItem.image : null,
     })
@@ -154,14 +169,14 @@ export class RenderController {
     const privacyPolicyVersions = await this.privacyPolicyRepository.find({
       where: { lang: request.user.lang },
     })
-    response.render('PrivacyPolicy', { privacyPolicyVersions })
+    this.render(response, 'PrivacyPolicy', { privacyPolicyVersions })
   }
 
   async renderTermsAndConditions(request: Request, response: Response, next: NextFunction) {
     const termsAndConditionsVersions = await this.termsAndConditionsRepository.find({
       where: { lang: request.user.lang },
     })
-    response.render('TermsAndConditions', { termsAndConditionsVersions })
+    this.render(response, 'TermsAndConditions', { termsAndConditionsVersions })
   }
 
   async renderSurvey(request: Request, response: Response, next: NextFunction) {
@@ -175,7 +190,7 @@ export class RenderController {
       .addOrderBy('question.sort_number ', 'ASC')
       .select(['survey', 'question'])
       .getMany()
-    response.render('Survey', {
+    this.render(response, 'Survey', {
       moment,
       surveys,
       answeredSurveys,
@@ -210,7 +225,7 @@ export class RenderController {
         title: 'ASC',
       },
     })
-    response.render('DidYouKnow', { didYouKnows })
+    this.render(response, 'DidYouKnow', { didYouKnows })
   }
 
   async renderEncyclopedia(request: Request, response: Response, next: NextFunction) {
@@ -230,7 +245,7 @@ export class RenderController {
     const subcategories = await this.subcategoryRepository.find({
       where: { lang: request.user.lang },
     })
-    response.render('Encyclopedia', { articles, categories, subcategories })
+    this.render(response, 'Encyclopedia', { articles, categories, subcategories })
   }
 
   async renderCatSubcatManagement(request: Request, response: Response, next: NextFunction) {
@@ -245,7 +260,7 @@ export class RenderController {
       WHERE sc.lang = $1`,
       [request.user.lang],
     )
-    response.render('CatSubcat', { categories, subcategories })
+    this.render(response, 'CatSubcat', { categories, subcategories })
   }
 
   async renderUserManagement(request: Request, response: Response, next: NextFunction) {
@@ -269,7 +284,7 @@ export class RenderController {
       select: ['id', 'username', 'type', 'lang', 'date_created'],
       where: viewableItems,
     })
-    response.render('UserManagement', { users, moment })
+    this.render(response, 'UserManagement', { users, moment })
   }
 
   async renderSuggestion(request: Request, response: Response, next: NextFunction) {
@@ -296,7 +311,7 @@ export class RenderController {
         [orderKey || 'id']: orderSequence || 'ASC',
       },
     })
-    response.render('Suggestion', {
+    this.render(response, 'Suggestion', {
       suggestions,
       moment,
       reasons,
@@ -323,7 +338,7 @@ export class RenderController {
         id: 'ASC',
       },
     })
-    response.render('Notification', {
+    this.render(response, 'Notification', {
       notifications,
       permanentNotifications,
       moment,
@@ -340,10 +355,10 @@ export class RenderController {
       },
     })
 
-    response.render('AvatarMessages', { avatarMessages })
+    this.render(response, 'AvatarMessages', { avatarMessages })
   }
 
   async renderDataManagement(request: Request, response: Response, next: NextFunction) {
-    response.render('DataManagement')
+    this.render(response, 'DataManagement')
   }
 }

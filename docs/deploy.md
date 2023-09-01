@@ -70,7 +70,7 @@ Check that the APPLICATION_ID in `app/build.gradle` is correct.
 
 Ensure that your google-services.json file in /packages/mobile/android/app/ is correct and is registered with the correct APPLICATION_ID
 
-Check the values in `/packages/mobile/.env` file are correct.
+Check the values in `/packages/mobile/.env.production` file are correct.
 
 Add to `packages/mobile/android/local.properties`:
 

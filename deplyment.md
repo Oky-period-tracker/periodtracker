@@ -64,7 +64,7 @@ You may get a message saying that you should restart the server, if so run the f
 sudo reboot
 ```
 
-This will disconnect you from the droplet, reconnect again using the same command as before.
+This will disconnect you from the droplet, wait for it to reboot then reconnect using the same command as before.
 
 Switch to the PostgreSQL user
 
@@ -82,10 +82,13 @@ psql
 CREATE USER periodtracker WITH PASSWORD 'periodtracker';
 ```
 
-if successful you should see:
+if successful you should see:`CREATE ROLE`
 
-Output
-CREATE ROLE
+```sql
+CREATE DATABASE periodtracker OWNER periodtracker;
+```
+
+If successful you should see: `CREATE DATABASE`
 
 You can now exit the PostgreSQL prompt
 
@@ -93,13 +96,13 @@ You can now exit the PostgreSQL prompt
 \q
 ```
 
-You can then exit the postgres user
+and then exit the postgres user
 
 ```bash
 exit
 ```
 
-You can find your IP address by visiting this website whatismyipaddress.com, or running this command:
+Find your IP address by running this command
 
 ```bash
 curl ifconfig.me
@@ -111,6 +114,12 @@ Allow access to the PostgreSQL server from your IP address
 sudo ufw allow from your_IP_address to any port 5432
 ```
 
+Allow connections to the droplet via SSH
+
+```bash
+sudo ufw allow OpenSSH
+```
+
 Check the firewall status
 
 ```bash
@@ -119,11 +128,13 @@ sudo ufw status
 
 If it is inactive, enable it
 
+> Make sure you have allowed access to the droplet via SSH before enabling the firewall, otherwise you will be locked out of the droplet. If that happens you will need to destroy the droplet and create a new one.
+
 ```bash
 sudo ufw enable
 ```
 
-If you check the status again, you should see that your IP address is listed and is allowed via port 5432.
+If you check the status again, you should see a list showing that the droplet is accessible via OpenSSH and port 5432 via your IP address.
 
 Changing postgres config files
 

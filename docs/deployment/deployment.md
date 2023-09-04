@@ -1,3 +1,23 @@
+# Deploy
+
+1. Create a digital ocean account
+
+In order to create an account you will need to provide a payment method. You can use a credit card or paypal. You will not be charged until you create a droplet.
+
+2. Create a Project
+
+3. [Create a droplet for the database](./database_droplet.md)
+
+4. Create a cluster
+
+5. Create a k8s submodule
+
+---
+
+---
+
+---
+
 ## Deploy the backend (CMS / API)
 
 - Build the docker containers for production:

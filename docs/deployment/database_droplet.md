@@ -1,16 +1,6 @@
-# Deployment
+# Database droplet
 
-1. Create a digital ocean Account
-
-In order to create an account you will need to provide a payment method. You can use a credit card or paypal. You will not be charged until you create a droplet.
-
-2. Create a Project
-
-3. Create a Kubernetes cluster
-
-4. Create a Droplet
-
-This droplet is for the database.
+Go to Digital Ocean and create a droplet
 
 When selecting the region for the droplet, bear in mind that this region is where data will be stored, so there may be legal implications. For example, if you are in the EU, you may want to select a region in the EU. Also the closer the region the better the performance.
 
@@ -156,8 +146,7 @@ sudo nano pg_hba.conf
 
 Scroll down to find this section
 
-`
-
+```conf
 # Put your actual configuration here
 
 # ----------------------------------
@@ -171,8 +160,7 @@ Scroll down to find this section
 # listen on a non-local interface via the listen_addresses
 
 # configuration parameter, or via the -i or -h command line switches.
-
-`
+```
 
 Enter the following below this section
 
@@ -189,7 +177,8 @@ sudo nano postgresql.conf
 ```
 
 Look for this section:
-`
+
+```conf
 #------------------------------------------------------------------------------
 
 # CONNECTIONS AND AUTHENTICATION
@@ -199,7 +188,7 @@ Look for this section:
 # - Connection Settings -
 
 #listen_addresses = 'localhost' # what IP address(es) to listen on;
-`
+```
 
 Underneath this line, add the following:
 (replace droplet_ip_address with the actual IP address of your droplet)
@@ -208,7 +197,7 @@ Underneath this line, add the following:
 
 As before, use `control x` to exit, then `y` to save and `enter` to confirm the file name.
 
-Restart the postgres Daemon for the file changes to take effect:
+Restart the postgres daemon for the file changes to take effect:
 
 ```bash
 sudo systemctl restart postgresql
@@ -219,9 +208,3 @@ Check that the postgres server is active:
 ```bash
 sudo systemctl status postgresql
 ```
-
-## Create a droplet
-
-## Create a cluster
-
-## Create a k8s submodule

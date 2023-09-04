@@ -1,6 +1,8 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
+//
+
 const sources = [
   {
     name: 'iOS',
@@ -14,10 +16,7 @@ const sources = [
   },
 ]
 
-async function getFiles(
-  dirPath: string,
-  parentPath: string = '',
-): Promise<string[]> {
+async function getFiles(dirPath: string, parentPath: string = ''): Promise<string[]> {
   const entries = await fs.readdir(dirPath, { withFileTypes: true })
 
   const files = entries

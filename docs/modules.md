@@ -88,11 +88,11 @@ To pull changes to your submodules, rerun the pull command
 ## Recommended naming
 
 For clarity I recommend naming your submodules using the following pattern
-`periodtracker_purpose-locale`
+`periodtracker_purpose-label`
 
 For example:
 `periodtracker_translations-en`
 `periodtracker_assets-fr`
 
-Locale may not always be required:
+Label may not always be required:
 `periodtracker_flower`

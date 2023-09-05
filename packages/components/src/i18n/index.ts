@@ -2,7 +2,13 @@ import { I18nManager } from 'react-native'
 import * as RNLocalize from 'react-native-localize'
 import Tts from 'react-native-tts'
 import i18n from 'i18n-js'
-import { Locale, appTranslations, defaultLocale, localeTranslations } from '@oky/core'
+import {
+  Locale,
+  appTranslations,
+  defaultLocale,
+  localeTranslations,
+  themeTranslations,
+} from '@oky/core'
 // TODO_ALEX flower submodule
 // import { flowerTranslations } from '../moduleImports'
 import _ from 'lodash'
@@ -30,6 +36,7 @@ const combineTranslations = (translations: TranslationObject[]) => {
 export const allTranslations = combineTranslations([
   (appTranslations as unknown) as TranslationObject,
   (localeTranslations as unknown) as TranslationObject,
+  (themeTranslations as unknown) as TranslationObject,
   /* , flowerTranslations */
   ,
 ])

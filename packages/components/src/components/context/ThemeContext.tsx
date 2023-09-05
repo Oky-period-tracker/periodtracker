@@ -2,7 +2,7 @@ import React from 'react'
 import { ThemeContext, ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
-import { themes } from '../../themes'
+import { themes } from '@oky/core'
 
 export function ThemeProvider({ children }) {
   const themeName = useSelector((state) => state.app.theme)

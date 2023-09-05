@@ -3,8 +3,8 @@ import styled from 'styled-components/native'
 import { useTheme } from '../../components/context/ThemeContext'
 import { useTodayPrediction } from '../../components/context/PredictionProvider'
 import { assets } from '../../assets/index'
-import { ThemeName } from '../../types/index'
 import FastImage from 'react-native-fast-image'
+import { ThemeName } from '@oky/core'
 
 function getBackgroundImage(theme: ThemeName, onPeriod: boolean) {
   const background = assets.backgrounds[theme]

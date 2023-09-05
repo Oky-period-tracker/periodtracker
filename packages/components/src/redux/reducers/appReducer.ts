@@ -1,9 +1,8 @@
-import { defaultTheme, defaultAvatar } from '../../themes'
 import _ from 'lodash'
 import { Actions } from '../types'
-import { ThemeName, AvatarName } from '../../types'
 import { currentLocale } from '../../i18n'
 import DeviceInfo from 'react-native-device-info'
+import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from '@oky/core'
 
 export interface AppState {
   appLocale: string

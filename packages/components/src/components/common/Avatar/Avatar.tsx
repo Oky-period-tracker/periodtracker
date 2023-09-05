@@ -137,6 +137,8 @@ export function Avatar({
           setAnimatedHearts(animatedHearts + 1)
         }}
       >
+        {/* TODO_ALEX */}
+        {/* @ts-ignore */}
         {!stationary && selectedAvatar !== 'oky' && (
           <LottieView
             resizeMode="contain"
@@ -149,6 +151,8 @@ export function Avatar({
             progress={animatedProgress}
           />
         )}
+        {/* TODO_ALEX */}
+        {/* @ts-ignore */}
         {(stationary || selectedAvatar === 'oky') && (
           <Image source={assets.avatars[selectedAvatar].stationary_colour} />
         )}
@@ -157,6 +161,8 @@ export function Avatar({
         <OverallProgressContainer
           style={{
             position: 'absolute',
+            // TODO_ALEX
+            // @ts-ignore
             bottom: selectedAvatar === 'oky' ? 10 : 115,
           }}
         >

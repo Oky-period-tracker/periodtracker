@@ -3,7 +3,7 @@ import styled from 'styled-components/native'
 import { useTheme } from '../context/ThemeContext'
 import { useTodayPrediction } from '../context/PredictionProvider'
 import { assets } from '../../assets'
-import { ThemeName } from '../../types'
+import { ThemeName } from '@oky/core'
 
 function getBackgroundImage(theme: ThemeName, onPeriod: boolean) {
   const background = assets.backgrounds[theme]

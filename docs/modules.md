@@ -67,18 +67,12 @@ Return to the root directory
 cd ../../../../
 ```
 
-Next we will run the remove command, because we need to reset the modules in the core .git directory.
+Next we will run the command to replace the modules.
 
 > Make sure you have committed all your changes to your new repository before running this command otherwise your changes will be lost
 
 ```bash
-./bin/modules/remove.sh
-```
-
-Now run the pull command to clone your repository again
-
-```bash
-./bin/modules/pull.sh
+yarn modules
 ```
 
 Anytime you make changes to your repository in future, you can simply commit and push your changes normally.

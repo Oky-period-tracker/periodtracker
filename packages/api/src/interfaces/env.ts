@@ -15,6 +15,7 @@ function toBool(value: string): boolean {
 export const env = {
   isProduction: process.env.NODE_ENV === 'production',
   isDevelopment: process.env.NODE_ENV === 'development',
+  deleteAccountUrl: process.env.DELETE_ACCOUNT_URL,
   app: {
     secret: process.env.APPLICATION_SECRET,
   },

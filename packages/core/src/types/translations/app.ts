@@ -314,7 +314,6 @@ export interface AppTranslations {
   could_not_change_secret: string
   wrong_old_secret_answer: string
   close_try_again: string
-  could_not_change_password: string
   user_not_found: string
   fertile_popup_heading: string
   fertile_popup: string

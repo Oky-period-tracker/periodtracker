@@ -12,6 +12,7 @@ fi
 git submodule add $k8s_url $k8s_path
 git submodule add $assets_url $assets_path
 git submodule add $translations_url $translations_path
+git submodule add $delete_account_url $delete_account_path
 
 # Optional modules
 [ -n "$flower_url" ] && git submodule add $flower_url $flower_path

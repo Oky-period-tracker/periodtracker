@@ -209,7 +209,7 @@ export function ColourButtons({
         onPress={() => minimizeToTutorial()}
       />
       <InstructionText>share_period_details_heading</InstructionText>
-      <HeadingText>{isDayCard ? 'are_you_on_period' : 'user_input_instructions'}</HeadingText>
+      <HeadingText>{'user_input_instructions'}</HeadingText>
       <View
         style={{
           width: '80%',

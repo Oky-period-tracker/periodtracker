@@ -30,8 +30,8 @@ export const predictionChangeScreenSpeech = () => [
   translate('tutorial_launch_label'),
   translate('share_period_details_heading'),
   translate('user_input_instructions'),
-  translate('prediction_change'),
-  translate('period_start_cloud'),
+  // translate('prediction_change'),
+  // translate('period_start_cloud'),
   translate('period_day_cloud'),
   translate('no_period_day_cloud'),
 ]
@@ -97,9 +97,9 @@ export const profileScreenSpeech = ({
   todayInfo.cycleLength.toString() + translate('days'),
   translate('period_length'),
   todayInfo?.periodLength?.toString() + translate('days'),
-  translate(`selected_avatar`),
+  // translate(`selected_avatar`),
   translate(selectedAvatar),
-  translate('selected_theme'),
+  // translate('selected_theme'),
   translate(theme),
 ]
 

@@ -599,7 +599,10 @@ export class DataController {
     // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
     import { AppTranslations } from '../../../types'
 
-    export const ${request.user.lang}: AppTranslations = ${JSON.stringify(sheetData)}
+    export const ${request.user.lang}: AppTranslations = ${JSON.stringify({
+      empty: '',
+      ...sheetData,
+    })}
     `
 
     const fileName = `${request.user.lang}.ts`

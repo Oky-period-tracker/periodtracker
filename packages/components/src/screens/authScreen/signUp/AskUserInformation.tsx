@@ -101,8 +101,8 @@ export function AskUserInformation({ step, heightInner }) {
           showInfoButton={true}
           infoAccessibilityLabel={translate('name_info_label')}
           value={name}
-          errorHeading="name_error_heading"
-          errorContent="name_error_content"
+          errorHeading="name"
+          errorContent="name_info_label"
         />
 
         <GenderText>your_gender</GenderText>

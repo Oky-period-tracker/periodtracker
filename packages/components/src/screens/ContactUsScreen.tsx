@@ -86,8 +86,6 @@ export function ContactUsScreen({ navigation }) {
               inputStyle={{ fontSize: 16, textAlignVertical: 'top', height: 200 }}
               style={{ height: 200 }}
               isValid={message.length >= 3}
-              errorHeading="password_error_heading"
-              errorContent="password_confirm_error_content"
             />
             {error && <ErrorText>request_error</ErrorText>}
           </MiddleSection>

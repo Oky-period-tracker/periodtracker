@@ -398,8 +398,8 @@ const contentText = {
   body: 'daily_body_content',
   activity: 'daily_activity_content',
   flow: 'daily_flow_content',
-  survey: 'daily_survey_content',
-  notes: 'daily_notes_content',
+  // survey: 'daily_survey_content',
+  // notes: 'daily_notes_content',
 }
 const headingText = {
   mood: 'daily_mood_heading',

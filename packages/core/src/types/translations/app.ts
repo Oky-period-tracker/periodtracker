@@ -23,7 +23,6 @@ export interface AppTranslations {
   connect_account_info: string
   forgot_password: string
   back_to_signup: string
-  undo: string
   carousel_no_access: string
   confirm: string
   calendar: string
@@ -102,8 +101,6 @@ export interface AppTranslations {
   shiko: string
   avatar_amp_themes: string
   avatar_amp_themes_login: string
-  selected_avatar: string
-  selected_theme: string
 
   // ------------------------- Onboard ----------------------------
   calendar_onboard: string
@@ -264,7 +261,6 @@ export interface AppTranslations {
   search_province: string
   country: string
   province: string
-  are_you_on_period: string
   will_you_answer_survey_questions: string
   thank_you_msg: string
   anonymous_answer: string
@@ -298,18 +294,12 @@ export interface AppTranslations {
   // -------------------------Error messages-----------------------------
   username_too_short: string
   passcodes_mismatch: string
-  name_error_heading: string
-  name_error_content: string
   secret_q_error_heading: string
   secret_que_info: string
   secret_error_heading: string
   secret_error_content: string
   password_error_heading: string
   password_error_content: string
-  password_confirm_error_content: string
-  login_name_error_heading: string
-  login_name_error_content: string
-  login_password_error_content: string
   request_error: string
   thank_you: string
   thank_you_content: string
@@ -319,14 +309,11 @@ export interface AppTranslations {
   error_connect_guest: string
   error_same_name: string
   no_user_in_database: string
-  internet_error: string
-  login_failed: string
   password_incorrect: string
   something_went_wrong: string
   could_not_change_secret: string
   wrong_old_secret_answer: string
   close_try_again: string
-  could_not_edit: string
   could_not_change_password: string
   user_not_found: string
   fertile_popup_heading: string
@@ -338,8 +325,6 @@ export interface AppTranslations {
   daily_activity_content: string
   daily_body_content: string
   daily_quiz_content: string
-  daily_survey_content: string
-  daily_notes_content: string
   daily_didYouKnow_content: string
   daily_mood_heading: string
   daily_flow_heading: string
@@ -462,8 +447,6 @@ export interface AppTranslations {
   text_input: string
   // prediction change
   daily_card_and_period_info: string
-  prediction_change: string
-  period_start_cloud: string
   period_day_cloud: string
   no_period_day_cloud: string
   green_btn_with_two_arrows: string

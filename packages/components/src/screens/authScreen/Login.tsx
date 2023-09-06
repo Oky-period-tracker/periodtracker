@@ -33,20 +33,12 @@ export function Login() {
           overflow: 'hidden',
         }}
       >
-        <TextInput
-          onChange={(text) => setName(text)}
-          label="name"
-          value={name}
-          errorHeading="login_name_error_heading"
-          errorContent="login_name_error_content"
-        />
+        <TextInput onChange={(text) => setName(text)} label="name" value={name} />
         <TextInput
           onChange={(text) => setPassword(text)}
           label="password"
           secureTextEntry={true}
           value={password}
-          errorHeading="password_error_heading"
-          errorContent="login_password_error_content"
         />
         {loginError && <ErrorMessage>{loginError}</ErrorMessage>}
       </Container>

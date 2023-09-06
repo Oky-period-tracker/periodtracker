@@ -6,3 +6,4 @@ yarn-error.log
 .gitmodules
 /bin/modules/urls.sh
 *.env
+/packages/delete-account

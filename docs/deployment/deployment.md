@@ -8,7 +8,7 @@ In order to create an account you will need to provide a payment method. You can
 
 3. [Create a droplet for the database](./database_droplet.md)
 
-4. Create a cluster
+4. [Create a cluster](./cluster.md)
 
 5. Create a k8s submodule
 

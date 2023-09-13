@@ -9,6 +9,8 @@
     "generate-sql": "ts-node generateSQL.ts",
     "generate-live-ts": "ts-node generateLiveTs.ts",
     "generate-content-files": "yarn generate-sql && yarn generate-live-ts",
+    "provinces": "ts-node merge-provinces.ts",
+    "countries": "ts-node merge-countries.ts",
     "copy-modules-urls": "cp bin/modules/urls.sh.dist bin/modules/urls.sh",
     "copy-assets": "ts-node copyAssets.ts",
     "copy-env:ios": "cp packages/mobile/ios/xcconfig.dist packages/mobile/ios/release.xcconfig && cp packages/mobile/ios/xcconfig.dist packages/mobile/ios/debug.xcconfig",

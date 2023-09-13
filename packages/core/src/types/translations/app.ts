@@ -55,10 +55,7 @@ export interface AppTranslations {
   logout: string
   on: string
   off: string
-  hills: string
-  mosaic: string
-  village: string
-  desert: string
+
   accept_conditions_1: string
   accept_conditions_2: string
   accept_conditions_3: string
@@ -94,11 +91,7 @@ export interface AppTranslations {
   spotting: string
 
   // ------------------------- Avatar ----------------------------
-  ari: string
-  nur: string
-  julia: string
-  pihu: string
-  shiko: string
+
   avatar_amp_themes: string
   avatar_amp_themes_login: string
 

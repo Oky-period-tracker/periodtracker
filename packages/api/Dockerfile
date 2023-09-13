@@ -1,5 +1,5 @@
 # Development stage
-# FROM --platform=linux/amd64 periodtracker/base as development
+# FROM --platform=linux/amd64 oky/base as development
 FROM oky/base as development
 
 ENV NODE_ENV=development

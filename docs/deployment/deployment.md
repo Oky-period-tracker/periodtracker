@@ -1,5 +1,15 @@
 # Deploy
 
+Deploy the CMS and API
+
+Create Android release build
+
+iOS ?
+
+Deploy the delete-account website
+
+---
+
 1. Create a digital ocean account
 
 In order to create an account you will need to provide a payment method. You can use a credit card or paypal. You will not be charged until you create a droplet.
@@ -11,6 +21,8 @@ In order to create an account you will need to provide a payment method. You can
 4. [Create a cluster](./cluster.md)
 
 5. Create a k8s submodule
+
+Deploy the delete-account website
 
 ---
 

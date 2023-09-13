@@ -5,15 +5,7 @@ import { Quiz, StaticContent } from './packages/components/src/types' // TODO_AL
 const columnNames = {
   category: ['id', 'title', 'primary_emoji', 'primary_emoji_name', 'lang'],
   subcategory: ['id', 'title', 'parent_category', 'lang'],
-  article: [
-    'id',
-    'category',
-    'subcategory',
-    'article_heading',
-    'article_text',
-    'live',
-    'lang',
-  ],
+  article: ['id', 'category', 'subcategory', 'article_heading', 'article_text', 'live', 'lang'],
   quiz: [
     'id',
     'topic',
@@ -29,16 +21,7 @@ const columnNames = {
     'lang',
   ],
   did_you_know: ['id', 'title', 'content', 'isAgeRestricted', 'live', 'lang'],
-  help_center: [
-    'id',
-    'title',
-    'caption',
-    'contactOne',
-    'contactTwo',
-    'address',
-    'website',
-    'lang',
-  ],
+  help_center: ['id', 'title', 'caption', 'contactOne', 'contactTwo', 'address', 'website', 'lang'],
   avatar_messages: ['id', 'content', 'live', 'lang'],
   privacy_policy: ['json_dump', 'timestamp', 'lang'],
   terms_and_conditions: ['json_dump', 'timestamp', 'lang'],
@@ -50,7 +33,7 @@ const toColumnsString = (columns: string[]) => {
   return columns.map((col) => `"${col}"`).join(', ')
 }
 
-const toValuesString = (values: (string | number)[][]) => {
+const toValuesString = (values: Array<Array<string | number>>) => {
   return values
     .map((valuesArray) => {
       return `(${valuesArray
@@ -61,6 +44,7 @@ const toValuesString = (values: (string | number)[][]) => {
 }
 
 const escapeSingleQuotes = (str: string) => {
+  if (!str) return str
   return str.replace(/(?<!')'(?!')/g, "''")
 }
 
@@ -71,7 +55,7 @@ const generateSql = ({
 }: {
   name: string
   columns: string[]
-  values: (string | number)[][]
+  values: Array<Array<string | number>>
 }) => {
   const columnsString = toColumnsString(columns)
   const valueString = toValuesString(values)
@@ -95,47 +79,33 @@ const getEncyclopedia = (content: StaticContent) => {
         content.locale,
       ]
 
-      const {
-        subCategoryValuesArray,
-        articleValuesArray,
-      } = category.subCategories.reduce<{
+      const { subCategoryValuesArray, articleValuesArray } = category.subCategories.reduce<{
         subCategoryValuesArray: string[][]
         articleValuesArray: string[][]
       }>(
         (subAcc, subCategoryId) => {
           const subCategory = content.subCategories.byId[subCategoryId]
 
-          const articles = subCategory.articles.reduce<string[][]>(
-            (articlesAcc, articleId) => {
-              const article = content.articles.byId[articleId]
+          const articles = subCategory.articles.reduce<string[][]>((articlesAcc, articleId) => {
+            const article = content.articles.byId[articleId]
 
-              const values = [
-                article.id,
-                category.id,
-                subCategory.id,
-                article.title,
-                article.content,
-                article.live ? '1' : '0',
-                content.locale,
-              ]
+            const values = [
+              article.id,
+              category.id,
+              subCategory.id,
+              article.title,
+              article.content,
+              article.live ? '1' : '0',
+              content.locale,
+            ]
 
-              return [...articlesAcc, values]
-            },
-            [],
-          )
+            return [...articlesAcc, values]
+          }, [])
 
-          const subCategories = [
-            subCategory.id,
-            subCategory.name,
-            category.id,
-            content.locale,
-          ]
+          const subCategories = [subCategory.id, subCategory.name, category.id, content.locale]
 
           return {
-            subCategoryValuesArray: [
-              ...subAcc.subCategoryValuesArray,
-              subCategories,
-            ],
+            subCategoryValuesArray: [...subAcc.subCategoryValuesArray, subCategories],
             articleValuesArray: [...subAcc.articleValuesArray, ...articles],
           }
         },
@@ -147,10 +117,7 @@ const getEncyclopedia = (content: StaticContent) => {
 
       return {
         categoryValues: [...acc.categoryValues, categoryValuesArray],
-        subCategoryValues: [
-          ...acc.subCategoryValues,
-          ...subCategoryValuesArray,
-        ],
+        subCategoryValues: [...acc.subCategoryValues, ...subCategoryValuesArray],
         articleValues: [...acc.articleValues, ...articleValuesArray],
       }
     },
@@ -195,21 +162,18 @@ const getQuiz = (content: StaticContent) => {
 }
 
 const getDidYouKnows = (content: StaticContent) => {
-  return Object.values(content.didYouKnows.byId).reduce<string[][]>(
-    (acc, entry) => {
-      const valuesArray = [
-        entry.id,
-        entry.title,
-        entry.content,
-        entry.isAgeRestricted ? '1' : '0',
-        entry.live ? '1' : '0',
-        content.locale,
-      ]
+  return Object.values(content.didYouKnows.byId).reduce<string[][]>((acc, entry) => {
+    const valuesArray = [
+      entry.id,
+      entry.title,
+      entry.content,
+      entry.isAgeRestricted ? '1' : '0',
+      entry.live ? '1' : '0',
+      content.locale,
+    ]
 
-      return [...acc, valuesArray]
-    },
-    [],
-  )
+    return [...acc, valuesArray]
+  }, [])
 }
 
 const getHelpCenters = (content: StaticContent) => {
@@ -269,9 +233,7 @@ const locales = Object.keys(staleContent)
 locales.forEach((locale) => {
   const contentData = staleContent[locale]
 
-  const { categoryValues, subCategoryValues, articleValues } = getEncyclopedia(
-    contentData,
-  )
+  const { categoryValues, subCategoryValues, articleValues } = getEncyclopedia(contentData)
 
   const values = {
     category: categoryValues,

@@ -118,7 +118,6 @@ export interface AppAssets {
         fertile: ImageSourcePropType
         period: ImageSourcePropType
       }
-      locales: Record<Locale, ImageSourcePropType>
     }
     dayBadge: {
       notVerifiedDay: ImageSourcePropType

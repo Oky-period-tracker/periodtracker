@@ -181,8 +181,10 @@ Tick the checkbox to integrate the registry with your cluster
 
 Build the docker containers
 
+> If you are using an M1 Mac, before building you need to use the `--platform linux/amd64` flag. Edit all 3 of the `Dockerfile`s, comment out the `FROM` line(s) and uncomment the `FROM --platform linux/amd64` line(s), above it.
+
 ```bash
-docker-compose build
+docker-compose build --no-cache
 ```
 
 Tag each container:
@@ -240,17 +242,13 @@ Do the same for the passport secret
 kubectl create secret generic passport --from-literal=secret=<YOUR_PASSPORT_SECRET>
 ```
 
-Make sure that the container image URL is correct, this should be the same as the one you pushed earlier. eg registry.digitalocean.com/periodtracker/api:v1
-
-Add your registry credentials
+You can check what secrets you have by running this command
 
 ```bash
-kubectl create secret docker-registry periodtracker-registry \
-  --docker-server=registry.digitalocean.com \
-  --docker-username=<YOUR_USERNAME> \
-  --docker-password=<YOUR_PASSWORD> \
-  --docker-email=<YOUR_EMAIL>
+kubectl get secrets
 ```
+
+Make sure that the container image URL is correct, this should be the same as the one you pushed earlier. eg registry.digitalocean.com/periodtracker/api:v1
 
 Next edit the `api.yaml` file, the changes here will be similar to the `cms.yaml` file. This file also requires a value for `DELETE_ACCOUNT_URL`, if you have not set up the `delete-account` website yet don't worry, you can do this later, but I recommend putting in a value for this URL anyway, so that you don't need to come back and edit this again after setting that up. eg `delete-account.yourdomain.com`
 
@@ -287,11 +285,53 @@ This will give you more information about the pod, and hopefully give you some c
 Check the logs of a container:
 
 ```bash
-kubectl logs <pod_name> -c <container_name> --previous
+kubectl logs <POD_NAME>
+```
+
+If you include the `-f` flag you can follow the logs in real time
+
+```bash
+kubectl logs -f <POD_NAME>
 ```
 
 Sometimes you may need to delete a pod, and let it restart. You can do this with the following command
 
 ```bash
-kubectl delete pod <pod_name>
+kubectl delete pod <POD_NAME>
+```
+
+If you want to actually delete the pods, and you do NOT want them to restart, you can do this with the following command
+
+```bash
+kubectl delete deployment adminer --namespace=default
+kubectl delete deployment api --namespace=default
+kubectl delete deployment cms --namespace=default
+```
+
+---
+
+Create config map for CMS firebase
+
+I dont think I need the firebase yaml then ???
+
+```bash
+kubectl create configmap firebase-config --from-file=firebase.conf=./packages/cms/firebase-config.json --namespace=default
+```
+
+OR KUBECTL APPLY THE FIREBASE YAML FILE !!!!!!!!!!!!! ???????????
+
+---
+
+Get the IP of your cluster:
+
+```bash
+kubectl get nodes -o wide
+```
+
+Copy paste the EXTERNAL IP
+
+Allow access to the droplet
+
+```bash
+sudo ufw allow from 146.190.210.36 to any port 5432
 ```

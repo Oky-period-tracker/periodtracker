@@ -71,8 +71,8 @@ interface Quiz {
   question: string
   answers: Array<{
     text: string
-    emoji: string
     isCorrect: boolean
+    emoji?: string
   }>
   response: {
     correct: string

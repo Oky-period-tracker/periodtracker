@@ -16,6 +16,8 @@ In order to create an account you will need to provide a payment method. You can
 
 2. Create a Project
 
+create the cluster first so that you know the external IP and can add that to the droplet firewall
+
 3. [Create a droplet for the database](./database_droplet.md)
 
 4. [Create a cluster](./cluster.md)

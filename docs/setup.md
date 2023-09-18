@@ -94,7 +94,6 @@ For firebase to run, you need 3 files
 - /packages/cms/firebase-config.json
 - /packages/mobile/android/app/google-services.json
 - /packages/mobile/ios/GoogleService-Info.plist
-- /.k8s/firebase-config.yaml
 
 These files are untracked so each country change these without needing to make changes to this core repo, and to keep the firebase details private.
 
@@ -105,4 +104,4 @@ You will need to have 2 apps via the [firebase console](https://console.firebase
 For the CMS, go to:
 `Project settings > Service accounts > Firebase Admin SDK > Generate new private key`
 
-This will automatically download a json file, rename this as `firebase-config.json` and save it in the /cms folder as listed above. Use this same json file to fill in the `.k8s/firebase-config.yaml` file.
+This will automatically download a json file, rename this as `firebase-config.json` and save it in the /cms folder as listed above.

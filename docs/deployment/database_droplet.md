@@ -4,9 +4,10 @@ Go to Digital Ocean and create a droplet
 
 When selecting the region for the droplet, bear in mind that this region is where data will be stored, so there may be legal implications. For example, if you are in the EU, you may want to select a region in the EU. Also the closer the region the better the performance.
 
-Chose Ubuntu
-
 The following options are suggested as a minimum for getting started, you may need to increase these depending on your needs.
+
+```
+Ubuntu
 
 Droplet type: Basic
 
@@ -16,18 +17,21 @@ Regular, Disk type: SSD
 2 GB / 1 CPU
 50 GB SSD Disk
 2 TB transfer
+```
 
 For authentication, I recommend setting up SSH keys because this is more secure than using a password.
 
 `Add improved metrics monitoring and alerting (free)` - since this option is free it is recommended to select it.
 
-`Enable backups` - this is highly recommended if you are intending to use this droplet for production.
+`Enable backups` - this is recommended if you are intending to use this droplet for production.
 
-Hostname
-Give your droplet a name so that to avoid confusion in future, for example `periodtracker-database-droplet`
+Give your droplet a name for example `periodtracker-database-droplet`
+
+---
+
+## Set up the droplet
 
 Connect to your Droplet:
-via your terminal:
 
 ```bash
 ssh root@your_droplet_ip
@@ -68,11 +72,14 @@ Access the PostgreSQL prompt
 psql
 ```
 
+Create a user for your database
 ```sql
 CREATE USER periodtracker WITH PASSWORD 'periodtracker';
 ```
 
-if successful you should see:`CREATE ROLE`
+If successful you should see:`CREATE ROLE`
+
+Next create a database 
 
 ```sql
 CREATE DATABASE periodtracker OWNER periodtracker;
@@ -92,16 +99,21 @@ and then exit the postgres user
 exit
 ```
 
-Find your IP address by running this command
+
+From another terminal window that isn't connected to the droplet, get the IP of your cluster:
 
 ```bash
-curl ifconfig.me
+kubectl get nodes -o wide
 ```
 
-Allow access to the PostgreSQL server from your IP address
+Copy paste the EXTERNAL IP
+
+Return to the droplet terminal
+
+Allow access to the droplet from this IP address
 
 ```bash
-sudo ufw allow from your_IP_address to any port 5432
+sudo ufw allow from YOUR_CLUSTER_IP to any port 5432
 ```
 
 Allow connections to the droplet via SSH
@@ -124,11 +136,13 @@ If it is inactive, enable it
 sudo ufw enable
 ```
 
-If you check the status again, you should see a list showing that the droplet is accessible via OpenSSH and port 5432 via your IP address.
+If you check the status again, you should see a list showing that the droplet is accessible via OpenSSH and port 5432 via your cluster IP address.
 
-Changing postgres config files
+---
 
-In order to allow access to the postgres server we need to change some of the postgres config files, the 2 files we will change are postgresql.conf and pg_hba.conf, these files will be located in /etc/postgresql/9.5/main/
+## Changing postgres config files
+
+In order to allow access to the postgres server we need to change 2 config files, these files will be located in /etc/postgresql/<VERSION_NUMBER>/main/
 
 First, change directory, this will vary depending on the version of postgres you have installed, for example, if you have version 14 installed, you would run:
 
@@ -136,9 +150,9 @@ First, change directory, this will vary depending on the version of postgres you
 cd /etc/postgresql/14/main
 ```
 
-If you are not sure which version you have installed, go to `/etc/postgresql` and run `ls`
+> If you are not sure which version you have installed, go to `/etc/postgresql` and run `ls` to see what folders exist inside
 
-Open the postgresql.conf file
+Open the pg_hba.conf file
 
 ```bash
 sudo nano pg_hba.conf

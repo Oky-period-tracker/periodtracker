@@ -17,6 +17,13 @@ In order to create an account you will need to provide a payment method. You can
 4. [Configuration](./cluster_config.md)
 5. [Build, tag, push & apply](./build_tag_push_apply.md)
 6. [Fixing issues](./fixing_issues.md)
+7. [Set up DB via adminer](./adminer.md)
+
+When everything is set up correctly you can quickly redeploy with this command, find more information about this  [here](./build_tag_push_apply.md)
+
+```bash
+yarn deploy:k8s
+```
 
 ---
 

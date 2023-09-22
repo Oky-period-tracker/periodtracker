@@ -46,7 +46,10 @@
     "react-native-swiper": "^1.6.0",
     "react-native-tts": "^3.0.0",
     "react-native-wheel-picker-android": "^2.0.5",
-    "react-native-get-random-values": "1.9.0"
+    "react-native-get-random-values": "1.9.0",
+    "react-native-youtube-iframe": "2.3.0",
+    "react-native-webview": "11.13.0",
+    "react-native-video": "5.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

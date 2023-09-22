@@ -7,7 +7,13 @@ const s = (state: ReduxState) => state.content
 export const allArticlesSelector = (state: ReduxState) =>
   s(state).articles.allIds.map((id) => s(state).articles.byId[id])
 
+export const allVideosSelector = (state: ReduxState) => {
+  if (!s(state)?.videos?.allIds || !s(state)?.videos?.byId) return []
+  return s(state).videos.allIds.map((id) => s(state).videos.byId[id])
+}
+
 export const articleByIDSelector = (state: ReduxState, id) => s(state).articles.byId[id]
+export const videoByIDSelector = (state: ReduxState, id) => s(state)?.videos?.byId[id]
 
 export const articlesObjectByIDSelector = (state: ReduxState) => s(state).articles.byId
 

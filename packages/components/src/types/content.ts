@@ -12,6 +12,23 @@ export interface Articles {
   allIds: string[]
 }
 
+export interface VideoData {
+  id: string
+  title: string
+  category: string
+  subCategory: string // Should always be a translation of 'Videos'
+  youtubeId?: string // Part of the youtube url after v=
+  assetName?: string // Key for video in the assets.ts file
+  live?: boolean
+}
+
+export interface Videos {
+  byId: {
+    [id: string]: VideoData
+  }
+  allIds: string[]
+}
+
 interface AvatarMessageItem {
   id: string
   content: string
@@ -46,6 +63,7 @@ export interface SubCategories {
       id: string
       name: string
       articles: string[]
+      videos?: string[]
     }
   }
   allIds: string[]

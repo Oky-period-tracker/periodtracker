@@ -13,6 +13,7 @@ import {
   About,
   AllSurveys,
   CompletedSurveys,
+  Videos,
 } from '../../types'
 import { Actions } from '../types/index'
 
@@ -31,6 +32,7 @@ export interface ContentState {
   aboutBanner: string
   allSurveys: AllSurveys
   completedSurveys: CompletedSurveys
+  videos?: Videos
 }
 
 const initialState: ContentState = {
@@ -77,6 +79,10 @@ const initialState: ContentState = {
   termsAndConditions: [],
   about: [],
   aboutBanner: '',
+  videos: {
+    byId: {},
+    allIds: [],
+  },
 }
 
 export function contentReducer(state = initialState, action: Actions): ContentState {

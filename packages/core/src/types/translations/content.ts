@@ -46,6 +46,7 @@ interface SubCategories {
       id: string
       name: string
       articles: string[]
+      videos?: string[]
     }
   }
   allIds: string[]
@@ -171,6 +172,23 @@ interface About extends Array<ContentItem> {}
 
 // TODO_ALEX: survey fix type overlap with /components !
 
+interface VideoData {
+  id: string
+  title: string
+  category: string
+  subCategory: string // Should always be a translation of 'Videos'
+  youtubeId?: string // Part of the youtube url after v=
+  assetName?: string // Key for video in the assets.ts file
+  live?: boolean
+}
+
+interface Videos {
+  byId: {
+    [id: string]: VideoData
+  }
+  allIds: string[]
+}
+
 export interface StaticContent {
   locale: string
   articles: Articles
@@ -184,4 +202,5 @@ export interface StaticContent {
   termsAndConditions: TermsAndConditions
   about: About
   aboutBanner: string
+  videos?: Videos
 }

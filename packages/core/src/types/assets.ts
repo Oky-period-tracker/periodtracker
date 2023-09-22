@@ -132,4 +132,5 @@ export interface AppAssets {
   lottie: {
     avatars: Record<AvatarName, AnimatedLottieViewProps['source']>
   }
+  videos?: Record<string, any> // TODO: VideoSourcePropType ?
 }

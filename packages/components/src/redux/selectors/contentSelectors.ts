@@ -37,6 +37,8 @@ export const allSubCategoriesSelector = (state: ReduxState) =>
 
 export const allSubCategoriesObjectSelector = (state: ReduxState) => s(state).subCategories.byId
 
+export const categoryByIDSelector = (state: ReduxState, id) => s(state).categories.byId[id]
+
 export const subCategoryByIDSelector = (state: ReduxState, id) => s(state).subCategories.byId[id]
 
 export const allAvatarText = (state: ReduxState) => s(state).avatarMessages

@@ -26,6 +26,8 @@ import { AvatarAndThemeScreen } from '../screens/AvatarAndThemeScreen'
 import { JourneyScreen } from '../screens/JourneyScreen'
 import { FindHelpScreen } from '../screens/FindHelpScreen'
 import { PasswordRequestScreen } from '../screens/PasswordRequestScreen'
+import { VideoScreen } from '../screens/VideoScreen'
+import { VideosScreen } from '../screens/VideosScreen'
 
 const TutorialFirstStack = createStackNavigator(
   { TutorialFirstScreen },
@@ -35,6 +37,11 @@ const TutorialFirstStack = createStackNavigator(
 const TutorialSecondStack = createStackNavigator(
   { TutorialSecondScreen },
   { headerMode: 'none', initialRouteName: 'TutorialSecondScreen' },
+)
+
+const VideoStack = createStackNavigator(
+  { VideoScreen },
+  { headerMode: 'none', initialRouteName: 'VideoScreen' },
 )
 
 const HomeStack = createStackNavigator(
@@ -67,6 +74,7 @@ const EncyclopediaStack = createStackNavigator(
   {
     Encyclopedia: EncyclopediaScreen,
     Articles: ArticlesScreen,
+    Videos: VideosScreen,
     FindHelp: FindHelpScreen,
   },
   { headerMode: 'none', initialRouteName: 'Encyclopedia' },
@@ -130,6 +138,7 @@ const AppNavigator = createStackNavigator(
     MainStack,
     TutorialFirstStack,
     TutorialSecondStack,
+    VideoStack,
   },
   {
     initialRouteName: 'SplashScreen',

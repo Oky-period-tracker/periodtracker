@@ -15,8 +15,6 @@ export interface Articles {
 export interface VideoData {
   id: string
   title: string
-  category: string
-  subCategory: string // Should always be a translation of 'Videos'
   youtubeId?: string // Part of the youtube url after v=
   assetName?: string // Key for video in the assets.ts file
   live?: boolean
@@ -51,6 +49,7 @@ export interface Categories {
           emoji: string
         }
       }
+      videos?: string[]
       subCategories: string[]
     }
   }
@@ -63,7 +62,6 @@ export interface SubCategories {
       id: string
       name: string
       articles: string[]
-      videos?: string[]
     }
   }
   allIds: string[]

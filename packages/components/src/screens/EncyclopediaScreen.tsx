@@ -6,7 +6,7 @@ import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import { Category } from './encyclopediaScreen/Category'
-import { SubCategoryCard } from './encyclopediaScreen/SubCategoryCard'
+import { SubCategoryCard, VideoSubCategoryCard } from './encyclopediaScreen/SubCategoryCard'
 import Accordion from 'react-native-collapsible/Accordion'
 import { navigate } from '../services/navigationService'
 import { SearchBar } from './encyclopediaScreen/SearchBar'
@@ -114,6 +114,19 @@ export function EncyclopediaScreen({ navigation }) {
               onChange={() => true}
               renderContent={(category: any) => (
                 <Row>
+                  {category?.videos && category?.videos.length > 0 ? (
+                    <VideoSubCategoryCard
+                      key={`${category.name}-videos}`}
+                      title={'videos'}
+                      onPress={() => {
+                        analytics().logScreenView({
+                          screen_class: 'ActiveSubCateogrey',
+                          screen_name: 'SubCategoriesTapCount',
+                        })
+                        navigate('Videos', { categoryId: category.id })
+                      }}
+                    />
+                  ) : null}
                   {category.subCategories.map((subCategory) => (
                     <SubCategoryCard
                       key={subCategory}

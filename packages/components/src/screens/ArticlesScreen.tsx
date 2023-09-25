@@ -8,9 +8,6 @@ import * as selectors from '../redux/selectors'
 import { Header } from '../components/common/Header'
 import { TextWithoutTranslation } from '../components/common/Text'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
-import { VideoPlayerScreen } from './articlesScreen/VideoPlayer'
-import { VideoItem } from './articlesScreen/VideoItem'
-import { VideoData } from '../types'
 
 const ArticleItem = ({ article, index, articles }) => {
   const articleObject = useSelector((state) => selectors.articleByIDSelector(state, article))
@@ -45,7 +42,6 @@ export function ArticlesScreen({ navigation }) {
   )
   const allArticlesByIDObject = useSelector(selectors.articlesObjectByIDSelector)
   const articles = subCategoryObject.articles
-  const videos = subCategoryObject.videos || []
 
   const articlesTextArray = articles.reduce((acc, item) => {
     const selectedArticle = allArticlesByIDObject[item]
@@ -56,14 +52,6 @@ export function ArticlesScreen({ navigation }) {
   }, [])
 
   useTextToSpeechHook({ navigation, text: articlesTextArray })
-
-  const [selectedVideo, setSelectedVideo] = React.useState<VideoData | undefined>()
-
-  if (selectedVideo) {
-    return (
-      <VideoPlayerScreen videoData={selectedVideo} onBack={() => setSelectedVideo(undefined)} />
-    )
-  }
 
   return (
     <BackgroundTheme>
@@ -76,20 +64,6 @@ export function ArticlesScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => {
             return <ArticleItem index={index} article={item} articles={articles} />
-          }}
-          style={{ width: '100%' }}
-          contentContainerStyle={{ alignItems: 'center', width: '100%' }}
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(_, index) => index.toString()}
-        />
-
-        {/* Videos */}
-        <FlatList
-          data={videos}
-          horizontal={false}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => {
-            return <VideoItem videoId={item} onSelect={setSelectedVideo} />
           }}
           style={{ width: '100%' }}
           contentContainerStyle={{ alignItems: 'center', width: '100%' }}

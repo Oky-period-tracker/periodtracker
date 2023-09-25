@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { TextWithoutTranslation } from '../../components/common/Text'
+import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { Dimensions } from 'react-native'
 
 const screenWidth = Dimensions.get('screen').width
@@ -12,6 +12,18 @@ export const SubCategoryCard = ({ title, onPress }) => {
       style={{ left: 0.05 * screenWidth, width: 0.87 * screenWidth }}
     >
       <Title>{title}</Title>
+    </SubCategoryContainer>
+  )
+}
+
+export const VideoSubCategoryCard = ({ title, onPress }) => {
+  return (
+    <SubCategoryContainer
+      activeOpacity={0.8}
+      onPress={onPress}
+      style={{ left: 0.05 * screenWidth, width: 0.87 * screenWidth }}
+    >
+      <VideoTitle>{title}</VideoTitle>
     </SubCategoryContainer>
   )
 }
@@ -30,6 +42,12 @@ const SubCategoryContainer = styled.TouchableOpacity`
 `
 
 const Title = styled(TextWithoutTranslation)`
+  font-family: Roboto-Black;
+  color: #ff9e00;
+  font-size: 18;
+`
+
+const VideoTitle = styled(Text)`
   font-family: Roboto-Black;
   color: #ff9e00;
   font-size: 18;

@@ -8,10 +8,18 @@ import { notificationListener } from '../services/notifications'
 import { SafeAreaView } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
 import { Platform } from 'react-native'
+import Orientation from 'react-native-orientation-locker'
 
 const { persistor, store } = configureStore()
 
 export default function App() {
+  React.useEffect(() => {
+    Orientation.lockToPortrait()
+    return () => {
+      Orientation.unlockAllOrientations()
+    }
+  }, [])
+
   React.useEffect(() => {
     notificationListener()
     if (Platform.OS === 'ios') {

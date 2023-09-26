@@ -31,7 +31,7 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   }, [])
 
   // Bundled video
-  if (assetName && assets?.videos && assets?.videos[assetName]) {
+  if (assetName && assetName.length > 0 && assets?.videos && assets?.videos[assetName]) {
     return (
       <Video
         source={assets.videos[assetName]}
@@ -44,7 +44,7 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   }
 
   // Youtube video
-  if (youtubeId) {
+  if (youtubeId && youtubeId.length > 0) {
     return (
       <View style={styles.youtubeContainer}>
         <YoutubePlayer width={screenWidth} height={screenHeight * 0.75} videoId={youtubeId} />

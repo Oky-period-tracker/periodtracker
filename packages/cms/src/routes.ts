@@ -17,6 +17,7 @@ import { AboutBannerController } from './controller/AboutBannerController'
 import { TermsAndConditionsController } from './controller/TermsAndConditionsController'
 import { PrivacyPolicyController } from './controller/PrivacyPolicyController'
 import { DataController } from './controller/DataController'
+import { VideoController } from './controller/VideoController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -55,6 +56,12 @@ export const Routes = [
     route: '/catsubcat-management',
     controller: RenderController,
     action: 'renderCatSubcatManagement',
+  },
+  {
+    method: 'get',
+    route: '/video-management',
+    controller: RenderController,
+    action: 'renderVideoManagement',
   },
   {
     method: 'get',
@@ -171,6 +178,37 @@ export const Routes = [
     method: 'delete',
     route: '/articles/:id',
     controller: ArticleController,
+    action: 'remove',
+  },
+  // ------------ Videos Api ----------------
+  {
+    method: 'get',
+    route: '/videos',
+    controller: VideoController,
+    action: 'all',
+  },
+  {
+    method: 'get',
+    route: '/videos/:id',
+    controller: VideoController,
+    action: 'one',
+  },
+  {
+    method: 'post',
+    route: '/videos',
+    controller: VideoController,
+    action: 'save',
+  },
+  {
+    method: 'put',
+    route: '/videos/:id',
+    controller: VideoController,
+    action: 'update',
+  },
+  {
+    method: 'delete',
+    route: '/videos/:id',
+    controller: VideoController,
     action: 'remove',
   },
   // ------------ Categories Api ----------------
@@ -540,6 +578,12 @@ export const Routes = [
     route: '/mobile/articles/:lang',
     controller: ArticleController,
     action: 'mobileArticlesByLanguage',
+  },
+  {
+    method: 'get',
+    route: '/mobile/videos/:lang',
+    controller: VideoController,
+    action: 'allLive',
   },
   {
     method: 'get',

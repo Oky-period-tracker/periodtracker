@@ -22,9 +22,11 @@ import { PrivacyPolicy } from '../entity/PrivacyPolicy'
 import { AboutBanner } from '../entity/AboutBanner'
 import { Question } from '../entity/Question'
 import { env } from '../env'
+import { Video } from '../entity/Video'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
+  private videoRepository = getRepository(Video)
   private categoryRepository = getRepository(Category)
   private subcategoryRepository = getRepository(Subcategory)
   private quizRepository = getRepository(Quiz)
@@ -261,6 +263,18 @@ export class RenderController {
       [request.user.lang],
     )
     this.render(response, 'CatSubcat', { categories, subcategories })
+  }
+
+  async renderVideoManagement(request: Request, response: Response, next: NextFunction) {
+    const categories = await this.categoryRepository.find({
+      where: { lang: request.user.lang },
+    })
+
+    const videos = await this.videoRepository.find({
+      where: { lang: request.user.lang },
+    })
+
+    this.render(response, 'Videos', { categories, videos })
   }
 
   async renderUserManagement(request: Request, response: Response, next: NextFunction) {

@@ -1,0 +1,73 @@
+<!-- Modal -->
+<div
+  class="modal fade bd-example-modal-lg"
+  id="videoModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dynamicModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dynamicModalLabel">Insert new video</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-borderless modal-table">
+          <thead>
+            <tr>
+              <th style="width: 10%"><%= __('New Video title')%></th>
+              <th style="width: 10%"><%= __('Parent category')%></th>
+              <th style="width: 10%"><%= __('Youtube Id')%></th>
+              <th style="width: 10%"><%= __('Bundle asset name')%></th>
+              <th style="width: 10%"><%= __('Live')%></th>
+            </tr>
+          </thead>
+          <tbody style="overflow-y: scroll">
+            <td style="width: 10%">
+              <input type="text" class="form-control" id="colVideo0TableModal" />
+              <p id="errorVideoUniq1" style="display: none;">title is duplicate</p>
+              <p id="errorVideo1" style="display: none;">max 40 characters</p>
+              <p id="countdown">remaining</p>
+            </td>
+            <td style="width: 10%">
+              <select class="custom-select" id="colVideo1TableModal">
+                <% categories.forEach((item, index) =>{ %>
+                <option value="<%= item.id %>"><%= item.title %></option>
+                <% }) %>
+              </select>
+              <p id="errorVideo2" style="display: none;">required field</p>
+            </td>
+            <td style="width: 10%">
+              <input type="text" class="form-control" id="colVideo2TableModal" />
+              <p id="errorVideo3" style="display: none;">Must have at least one of youtube Id / asset name. Can have one or  both.</p>
+              <p style="color:grey;">https://www.youtube.com/watch?v=<strong style="color:green;">dQw4w9WgXcQ</strong></p>
+            </td>
+            <td style="width: 10%">
+              <input type="text" class="form-control" id="colVideo3TableModal" />
+              <p id="errorVideo4" style="display: none;">Must have at least one of youtube Id / asset name. Can have one or  both.</p>
+              <p style="color:grey;">/assets/index.ts</p>
+              <p style="color:grey;">videos: { <strong style="color:green;">name</strong>: require('./video.mp4') }</p>
+            </td>
+            <td >
+              <label class="switch">
+                <input id="colVideo4TableModal" type="checkbox">
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= __('Close')%></button>
+        <button type="submit" class="btn btn-primary" id="btnVideoConfirm">
+          <%= __('Confirm')%>
+        </button>
+      </div>
+    </div>
+  </div>
+  <span id="videoID" hidden></span>
+</div>

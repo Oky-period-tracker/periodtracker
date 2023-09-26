@@ -140,6 +140,12 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       )
       return response.data
     },
+    fetchVideos: async ({ locale }) => {
+      const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/videos/${locale}`,
+      )
+      return response.data
+    },
     fetchSurveys: async ({ locale, userID }: any) => {
       const response: AxiosResponse<types.SurveysResponse> = await axios.get(
         `${cmsEndpoint}/mobile/new-surveys/${locale}?user_id=${userID.id}`,

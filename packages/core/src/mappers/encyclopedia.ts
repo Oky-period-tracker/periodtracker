@@ -1,8 +1,14 @@
-import { EncyclopediaResponse } from '../api/types'
+import { EncyclopediaResponse, VideosResponse } from '../api/types'
 
 export type Encyclopedia = ReturnType<typeof fromEncyclopedia>
 
-export function fromEncyclopedia(response: EncyclopediaResponse) {
+export function fromEncyclopedia({
+  encyclopediaResponse,
+  videosResponse,
+}: {
+  encyclopediaResponse: EncyclopediaResponse
+  videosResponse: VideosResponse
+}) {
   const dataShape = {
     categories: {
       byId: {},
@@ -16,10 +22,14 @@ export function fromEncyclopedia(response: EncyclopediaResponse) {
       byId: {},
       allIds: [],
     },
+    videos: {
+      byId: {},
+      allIds: [],
+    },
   }
   let previousCat = ''
   let previousSubCat = ''
-  response.forEach(item => {
+  encyclopediaResponse.forEach((item) => {
     // main category
     if (item.category_title !== previousCat) {
       dataShape.categories = {
@@ -35,6 +45,7 @@ export function fromEncyclopedia(response: EncyclopediaResponse) {
               },
             },
             subCategories: [],
+            videos: [],
           },
         },
         allIds: dataShape.categories.allIds.concat(item.cat_id),
@@ -84,9 +95,32 @@ export function fromEncyclopedia(response: EncyclopediaResponse) {
     previousSubCat = item.subcategory_title
   })
 
+  // === VIDEOS === //
+  videosResponse.forEach((item) => {
+    dataShape.videos = {
+      byId: {
+        ...dataShape.videos.byId,
+        [item.id]: {
+          id: item.id,
+          title: item.title,
+          youtubeId: item.youtubeId,
+          assetName: item.assetName,
+          live: item.live,
+        },
+      },
+      allIds: dataShape.videos.allIds.concat(item.id),
+    }
+
+    dataShape.categories.byId[item.parent_category] = {
+      ...dataShape.categories.byId[item.parent_category],
+      videos: dataShape.categories.byId[item.parent_category].videos.concat(item.id),
+    }
+  })
+
   return {
     categories: dataShape.categories,
     subCategories: dataShape.subCategories,
     articles: dataShape.articles,
+    videos: dataShape.videos,
   }
 }

@@ -68,7 +68,8 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
 
   function* fetchEncyclopedia() {
     const encyclopediaResponse = yield httpClient.fetchEncyclopedia({ locale })
-    return fromEncyclopedia(encyclopediaResponse)
+    const videosResponse = yield httpClient.fetchVideos({ locale })
+    return fromEncyclopedia({ encyclopediaResponse, videosResponse })
   }
 
   function* fetchPrivacyPolicy() {

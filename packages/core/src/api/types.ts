@@ -13,6 +13,17 @@ export interface EncyclopediaResponseItem {
 }
 export interface EncyclopediaResponse extends Array<EncyclopediaResponseItem> {}
 
+export interface VideosResponseItem {
+  id: string
+  title: string
+  youtubeId: string | null
+  assetName: string | null
+  parent_category: string
+  live: boolean
+}
+
+export interface VideosResponse extends Array<VideosResponseItem> {}
+
 interface QuizResponseItem {
   id: string
   isAgeRestricted: boolean

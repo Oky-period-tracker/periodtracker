@@ -4,9 +4,11 @@ import YoutubePlayer from 'react-native-youtube-iframe'
 import { Header } from '../components/common/Header'
 import { assets } from '../assets'
 import { VideoData } from '../types'
-import { StyleSheet, View } from 'react-native'
+import { Alert, StyleSheet, View } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
+import { translate } from '../i18n'
+import { BackOneScreen } from '../services/navigationService'
 
 export const VideoScreen = ({ navigation }) => {
   return (
@@ -17,11 +19,58 @@ export const VideoScreen = ({ navigation }) => {
   )
 }
 
+const ConfirmAlert = ({
+  title,
+  text,
+  onPress,
+  onCancel,
+}: {
+  title: string
+  text: string
+  onPress: () => void
+  onCancel: () => void
+}) => {
+  Alert.alert(
+    title,
+    text,
+    [
+      {
+        text: translate('cancel'),
+        onPress: onCancel,
+        style: 'cancel',
+      },
+      { text: translate('yes'), onPress },
+    ],
+    { cancelable: false },
+  )
+}
+
 export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   const videoData = navigation.getParam('videoData') as VideoData // TODO_ALEX
   const { youtubeId, assetName } = videoData
-
   const { screenWidth, screenHeight } = useScreenDimensions()
+
+  const [canUseInternet, setCanUseInternet] = React.useState(false)
+  const onConfirm = () => setCanUseInternet(true)
+
+  const canPlayBundleVideo =
+    assetName && assetName.length > 0 && assets?.videos && assets?.videos[assetName]
+
+  const hasYoutubeVideo = youtubeId && youtubeId.length > 0
+  const canPlayYoutubeVideo = hasYoutubeVideo && canUseInternet
+
+  React.useEffect(() => {
+    if (canPlayBundleVideo || canPlayYoutubeVideo || !hasYoutubeVideo) {
+      return
+    }
+
+    ConfirmAlert({
+      title: translate('internet_required_title'),
+      text: translate('internet_required_text'),
+      onPress: onConfirm,
+      onCancel: () => BackOneScreen(),
+    })
+  }, [])
 
   React.useEffect(() => {
     Orientation.unlockAllOrientations()
@@ -31,7 +80,7 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   }, [])
 
   // Bundled video
-  if (assetName && assetName.length > 0 && assets?.videos && assets?.videos[assetName]) {
+  if (canPlayBundleVideo) {
     return (
       <Video
         source={assets.videos[assetName]}
@@ -44,7 +93,7 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   }
 
   // Youtube video
-  if (youtubeId && youtubeId.length > 0) {
+  if (canPlayYoutubeVideo) {
     return (
       <View style={styles.youtubeContainer}>
         <YoutubePlayer width={screenWidth} height={screenHeight * 0.75} videoId={youtubeId} />

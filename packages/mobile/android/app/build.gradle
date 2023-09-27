@@ -222,7 +222,7 @@ dependencies {
     implementation project(':react-native-push-notification')
     implementation 'androidx.work:work-runtime:2.7.1'
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.21"
     // implementation project(':react-native-firebase')
     implementation project(':react-native-community_art')
     // implementation 'com.google.firebase:firebase-crashlytics:18.2.6'

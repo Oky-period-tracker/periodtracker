@@ -444,4 +444,5 @@ export interface AppTranslations {
   green_btn_with_two_arrows: string
   reason_text_input: string
   message_text_input: string
+  videos: string
 }

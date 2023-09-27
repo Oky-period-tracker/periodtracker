@@ -73,13 +73,14 @@ psql
 ```
 
 Create a user for your database
+
 ```sql
 CREATE USER periodtracker WITH PASSWORD 'periodtracker';
 ```
 
 If successful you should see:`CREATE ROLE`
 
-Next create a database 
+Next create a database
 
 ```sql
 CREATE DATABASE periodtracker OWNER periodtracker;
@@ -98,7 +99,6 @@ and then exit the postgres user
 ```bash
 exit
 ```
-
 
 From another terminal window that isn't connected to the droplet, get the IP of your cluster:
 
@@ -179,10 +179,8 @@ Scroll down to find this section
 Enter the following below this section
 
 ```conf
-host    db_name  db_user_name       your_IP_address/32       md5
+host    db_name  db_user_name       YOUR_CLUSTER_IP/32       md5
 ```
-
-host periodtracker periodtracker 146.190.210.36/32 md5
 
 Use `control x` to exit, then `y` to save and `enter` to confirm the file name.
 
@@ -209,7 +207,7 @@ Look for this section:
 Underneath this line, add the following:
 (replace droplet_ip_address with the actual IP address of your droplet)
 
-`listen_addresses = 'localhost,137.184.56.184'`
+`listen_addresses = 'localhost,droplet_ip_address'`
 
 As before, use `control x` to exit, then `y` to save and `enter` to confirm the file name.
 

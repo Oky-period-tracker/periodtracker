@@ -42,7 +42,6 @@ export function ArticlesScreen({ navigation }) {
   )
   const allArticlesByIDObject = useSelector(selectors.articlesObjectByIDSelector)
   const articles = subCategoryObject.articles
-
   const articlesTextArray = articles.reduce((acc, item) => {
     const selectedArticle = allArticlesByIDObject[item]
     if (!selectedArticle) {
@@ -57,7 +56,6 @@ export function ArticlesScreen({ navigation }) {
     <BackgroundTheme>
       <PageContainer>
         <Header screenTitle="encyclopedia" />
-        {/* Articles */}
         <FlatList
           data={articles}
           horizontal={false}

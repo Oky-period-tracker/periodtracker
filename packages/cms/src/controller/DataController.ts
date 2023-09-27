@@ -42,8 +42,8 @@ export class DataController {
     // ========== Encyclopedia ========== //
     const encyclopediaRaw = await this.articleRepository.query(
       `SELECT ar.id, ca.title as category_title, 
-      CAST(ca.id as CHAR(50))as cat_id, sc.title as subcategory_title, 
-      CAST(sc.id as CHAR(50)) as subcat_id, 
+      ca.id as cat_id, sc.title as subcategory_title, 
+      sc.id as subcat_id, 
       ar.article_heading, 
       ar.article_text, 
       ca.primary_emoji,
@@ -52,9 +52,9 @@ export class DataController {
       ar.live
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 
-      ON ar.category = CAST(ca.id as CHAR(50))
+      ON ar.category = ca.id::varchar
       INNER JOIN ${env.db.schema}.subcategory sc  
-      ON ar.subcategory = CAST(sc.id as CHAR(50))
+      ON ar.subcategory = sc.id::varchar
       WHERE ar.lang = $1
       ${live ? 'AND ar.live = true' : ''}
       ORDER BY ca.title, sc.title ASC
@@ -160,8 +160,8 @@ export class DataController {
     const encyclopediaRaw = (await this.articleRepository.query(
       `SELECT 
       ar.id, 
-      CAST(ca.id as CHAR(50))as cat_id, 
-      CAST(sc.id as CHAR(50)) as subcat_id, 
+      ca.id as cat_id, 
+      sc.id as subcat_id, 
       ca.title as category_title, 
       sc.title as subcategory_title, 
       ar.article_heading, 
@@ -171,9 +171,9 @@ export class DataController {
       ar.live
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 
-      ON ar.category = CAST(ca.id as CHAR(50))
+      ON ar.category = ca.id::varchar
       INNER JOIN ${env.db.schema}.subcategory sc  
-      ON ar.subcategory = CAST(sc.id as CHAR(50))
+      ON ar.subcategory = sc.id::varchar
       WHERE ar.lang = $1
       /* AND ar.live = true */
       ORDER BY ca.title, sc.title ASC

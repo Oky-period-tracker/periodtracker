@@ -235,9 +235,9 @@ export class RenderController {
       `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created 
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 
-      ON ar.category = CAST(ca.id as CHAR(50))
+      ON ar.category = ca.id::varchar
       INNER JOIN ${env.db.schema}.subcategory sc  
-      ON ar.subcategory = CAST(sc.id as CHAR(50))
+      ON ar.subcategory = sc.id::varchar
       WHERE ar.lang = $1`,
       [request.user.lang],
     )
@@ -258,7 +258,7 @@ export class RenderController {
       `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id
       FROM ${env.db.schema}.subcategory sc
       INNER JOIN ${env.db.schema}.category ca
-      ON sc.parent_category = CAST(ca.id as CHAR(50))
+      ON sc.parent_category = ca.id::varchar
       WHERE sc.lang = $1`,
       [request.user.lang],
     )

@@ -34,7 +34,6 @@ $('#videoModal').on('show.bs.modal', (event) => {
 })
 
 $('#btnVideoConfirm').on('click', () => {
-  console.log('*** A')
   const videoID = $('#videoID').text()
   const data = {
     title: $('#colVideo0TableModal').val(),
@@ -43,7 +42,6 @@ $('#btnVideoConfirm').on('click', () => {
     assetName: $('#colVideo3TableModal').val(),
     live: $('#colVideo4TableModal').prop('checked'),
   }
-  console.log('*** B', data)
 
   if (
     data.title === '' ||
@@ -59,7 +57,6 @@ $('#btnVideoConfirm').on('click', () => {
     $('#errorVideo4').show()
     return
   }
-  console.log('*** C')
 
   $.ajax({
     url: '/videos' + (videoID === '0' ? '' : '/' + videoID),
@@ -80,10 +77,9 @@ $('#btnVideoConfirm').on('click', () => {
       console.log('***', error)
     },
   })
-
-  console.log('*** Done')
 })
 
+// ==================== Deletion =============================
 $('.deleteVideo').on('click', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var Id = button.data('value') // Extract info from data-* attributes
@@ -100,4 +96,35 @@ $('.deleteVideo').on('click', (event) => {
       },
     })
   }
+})
+
+// ==================== Live check =============================
+$(document).on('click', '.liveCheckbox', () => {
+  var button = $(event.target) // Button that triggered the modal
+  var videoId = button.data('value') // Extract info from data-* attributes
+  var videos = JSON.parse($('#videosJSON').text())
+  var videoInfo = videos.find((item) => {
+    return item.id === videoId
+  })
+
+  const data = {
+    title: videoInfo.title,
+    parent_category: videoInfo.parent_category,
+    youtubeId: videoInfo.youtubeId,
+    assetName: videoInfo.title,
+    live: button.prop('checked'),
+  }
+
+  // if the ID is 0 we are creating a new entry
+  $.ajax({
+    url: '/videos/' + videoId,
+    type: 'PUT',
+    data: data,
+    success: (result) => {
+      location.reload()
+    },
+    error: (error) => {
+      console.log(error)
+    },
+  })
 })

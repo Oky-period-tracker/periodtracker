@@ -31,6 +31,11 @@ export interface CmsTranslations {
   Title: string
   'Content has been saved': string
   Encyclopedia: string
+  // Videos: string,
+  // 'Video Management': string,
+  // 'Add Video': 'Add Video',
+  // 'Insert new video': string,
+  // 'Asset name': string,
   Filter: string
   'Category Management': string
   'Add Article': string

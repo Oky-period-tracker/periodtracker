@@ -16,7 +16,6 @@ import * as actions from '../actions'
 import _ from 'lodash'
 import messaging from '@react-native-firebase/messaging'
 import { closeOutTTs } from '../../services/textToSpeech'
-import { useSelector } from '../../hooks/useSelector'
 
 function* onRehydrate(action: RehydrateAction) {
   const locale = yield select(selectors.currentLocaleSelector)
@@ -129,7 +128,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
   }
 
   try {
-    const { articles, categories, subCategories } = yield fetchEncyclopedia()
+    const { articles, categories, subCategories, videos } = yield fetchEncyclopedia()
     const { quizzes } = yield fetchQuizzes()
     const { didYouKnows } = yield fetchDidYouKnows()
     const { helpCenters } = yield fetchHelpCenters()
@@ -142,6 +141,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     yield put(
       actions.fetchContentSuccess({
         articles: _.isEmpty(articles.allIds) ? staleContent[locale].articles : articles,
+        videos: _.isEmpty(videos.allIds) ? staleContent[locale].videos : videos,
         categories: _.isEmpty(categories.allIds) ? staleContent[locale].categories : categories,
         subCategories: _.isEmpty(subCategories.allIds)
           ? staleContent[locale].subCategories

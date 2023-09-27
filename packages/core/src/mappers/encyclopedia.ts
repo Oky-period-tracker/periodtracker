@@ -111,9 +111,11 @@ export function fromEncyclopedia({
       allIds: dataShape.videos.allIds.concat(item.id),
     }
 
+    const categoryVideos = dataShape.categories.byId[item.parent_category]?.videos || []
+
     dataShape.categories.byId[item.parent_category] = {
       ...dataShape.categories.byId[item.parent_category],
-      videos: dataShape.categories.byId[item.parent_category].videos.concat(item.id),
+      videos: [...categoryVideos, item.id],
     }
   })
 

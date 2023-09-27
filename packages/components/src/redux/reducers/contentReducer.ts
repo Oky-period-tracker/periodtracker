@@ -97,6 +97,7 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
       return {
         ...state,
         articles: action.payload.articles,
+        videos: action.payload.videos,
         categories: action.payload.categories,
         subCategories: action.payload.subCategories,
         quizzes: action.payload.quizzes,

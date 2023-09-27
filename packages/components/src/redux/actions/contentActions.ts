@@ -13,6 +13,7 @@ import {
   About,
   AllSurveys,
   CompletedSurveys,
+  Videos,
 } from '../../types'
 
 export function initStaleContent(payload: {
@@ -57,6 +58,7 @@ export function fetchContentRequest(locale: string) {
 
 export function fetchContentSuccess(payload: {
   articles: Articles
+  videos: Videos
   avatarMessages: AvatarMessages
   categories: Categories
   subCategories: SubCategories

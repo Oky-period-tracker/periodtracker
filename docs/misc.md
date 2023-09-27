@@ -78,3 +78,11 @@ Open [http://localhost:8000](http://localhost:8000), then lunch the application.
 ```bash
 adb reverse tcp:8000 tcp:8000
 ```
+
+---
+
+Use this command to allow the emulator to access the internet:
+
+```bash
+emulator -avd <EMULATOR_NAME> -dns-server 8.8.8.8
+```

@@ -61,7 +61,13 @@ Build the apk for release with (remember to sync your gradle files!):
 Clean the project:
 
 ```bash
-./gradlew clean
+yarn clean
+```
+
+Compile
+
+```bash
+yarn compile
 ```
 
 ```bash

@@ -10,7 +10,7 @@ Edit your `api-ingress.yaml` and `cms-ingress.yaml` files so that the host is co
 
 Next edit your `cms.yaml` file
 
-`DATABASE_HOST` should be the IP address of the database droplet you created earlier. You can find this IP address in the Digital Ocean dashboard. Make sure that `DATABASE_NAME` & `DATABASE_SCHEMA` are the same as what you created in the database droplet.
+`DATABASE_HOST` should be the IP address of the database droplet you created earlier. You can find this IP address in the Digital Ocean dashboard. Make sure that `DATABASE_NAME` is the same as what you created in the database droplet. You have not yet created a schema, I recommend calling it `periodtracker`, if you give this a different name you will need to make sure to change the schema name in other places too, eg the create-tables SQL.
 
 Next edit the `api.yaml` file, the changes here will be similar to the `cms.yaml` file. This file also requires a value for `DELETE_ACCOUNT_URL`, if you have not set up the `delete-account` website yet don't worry, you can do this later, but I recommend putting in a value for this URL anyway, so that you don't need to come back and edit this again after setting that up. eg `delete-account.yourdomain.com`
 
@@ -45,4 +45,3 @@ Create config map for CMS firebase
 ```bash
 kubectl create configmap firebase-config --from-file=firebase.conf=./packages/cms/firebase-config.json --namespace=default
 ```
-

@@ -10,7 +10,7 @@ export class VideoController {
     return this.videoRepository.find({ where: { lang: request.user.lang } })
   }
   async allLive(request: Request, response: Response, next: NextFunction) {
-    return this.videoRepository.find({ where: { lang: request.user.lang, live: true } })
+    return this.videoRepository.find({ where: { lang: request.params.lang, live: true } })
   }
 
   async one(request: Request, response: Response, next: NextFunction) {

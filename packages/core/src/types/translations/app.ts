@@ -445,4 +445,6 @@ export interface AppTranslations {
   reason_text_input: string
   message_text_input: string
   videos: string
+  internet_required_title: string
+  internet_required_text: string
 }

@@ -11,6 +11,7 @@ import _ from 'lodash'
 import { PredictionState } from '../../prediction'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 
+// TODO_ALEX: Why is this here?
 function* onRehydrate(action: RehydrateAction) {
   const locale = yield select(selectors.currentLocaleSelector)
 

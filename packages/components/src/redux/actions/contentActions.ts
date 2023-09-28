@@ -57,6 +57,7 @@ export function fetchContentRequest(locale: string) {
 }
 
 export function fetchContentSuccess(payload: {
+  timeFetched: number
   articles: Articles
   videos: Videos
   avatarMessages: AvatarMessages

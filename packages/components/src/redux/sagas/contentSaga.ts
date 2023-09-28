@@ -25,7 +25,15 @@ function* onRehydrate(action: RehydrateAction) {
   if (!hasPreviousContentFromStorage) {
     yield put(actions.initStaleContent(staleContent[locale]))
   }
-  yield put(actions.fetchContentRequest(locale))
+
+  const now = new Date().getTime()
+  const fetchInterval = 1000 * 60 * 60 * 24 // 24 hours
+  const timeFetched = action.payload && action.payload.content?.timeFetched
+  const shouldFetch = !timeFetched || timeFetched + fetchInterval < now
+
+  if (shouldFetch) {
+    yield put(actions.fetchContentRequest(locale))
+  }
 }
 
 // TODO_ALEX: survey
@@ -140,6 +148,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
 
     yield put(
       actions.fetchContentSuccess({
+        timeFetched: new Date().getTime(),
         articles: _.isEmpty(articles.allIds) ? staleContent[locale].articles : articles,
         videos: _.isEmpty(videos.allIds) ? staleContent[locale].videos : videos,
         categories: _.isEmpty(categories.allIds) ? staleContent[locale].categories : categories,

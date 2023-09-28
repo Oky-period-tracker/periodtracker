@@ -18,6 +18,7 @@ import {
 import { Actions } from '../types/index'
 
 export interface ContentState {
+  timeFetched?: number
   articles: Articles
   categories: Categories
   subCategories: SubCategories
@@ -36,6 +37,7 @@ export interface ContentState {
 }
 
 const initialState: ContentState = {
+  timeFetched: undefined,
   articles: {
     byId: {},
     allIds: [],
@@ -96,6 +98,7 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
     case 'FETCH_CONTENT_SUCCESS':
       return {
         ...state,
+        timeFetched: action.payload.timeFetched,
         articles: action.payload.articles,
         videos: action.payload.videos,
         categories: action.payload.categories,

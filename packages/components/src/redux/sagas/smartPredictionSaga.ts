@@ -1,27 +1,11 @@
-import { all, call, put, select, takeLatest } from 'redux-saga/effects'
-import { RehydrateAction, REHYDRATE } from 'redux-persist'
+import { all, put, takeLatest } from 'redux-saga/effects'
 import { ExtractActionFromActionType } from '../types'
 
 import { httpClient } from '../../services/HttpClient'
-import { liveContent as staleContent } from '@oky/core'
 
-import * as selectors from '../selectors'
 import * as actions from '../actions'
 import _ from 'lodash'
 import { PredictionState } from '../../prediction'
-import { fetchNetworkConnectionStatus } from '../../services/network'
-
-// TODO_ALEX: Why is this here?
-function* onRehydrate(action: RehydrateAction) {
-  const locale = yield select(selectors.currentLocaleSelector)
-
-  const hasPreviousContentFromStorage = action.payload && action.payload.content
-
-  if (!hasPreviousContentFromStorage) {
-    yield put(actions.initStaleContent(staleContent[locale]))
-  }
-  yield put(actions.fetchContentRequest(locale))
-}
 
 function* onFetchUpdatedPredictedCycles(
   action: ExtractActionFromActionType<'SMART_PREDICTION_REQUEST'>,
@@ -60,8 +44,5 @@ function* onFetchUpdatedPredictedCycles(
 }
 
 export function* smartPredictionbSaga() {
-  yield all([
-    takeLatest(REHYDRATE, onRehydrate),
-    takeLatest('SMART_PREDICTION_REQUEST', onFetchUpdatedPredictedCycles),
-  ])
+  yield all([takeLatest('SMART_PREDICTION_REQUEST', onFetchUpdatedPredictedCycles)])
 }

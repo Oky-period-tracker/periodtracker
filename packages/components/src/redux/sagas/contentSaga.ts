@@ -159,7 +159,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
           ? staleContent[locale].termsAndConditions
           : termsAndConditions,
         about: _.isEmpty(about) ? staleContent[locale].about : about,
-        aboutBanner: !aboutBanner ? staleContent[locale].aboutBanner : aboutBanner,
+        aboutBanner: aboutBanner ? aboutBanner : '',
       }),
     )
   } catch (error) {

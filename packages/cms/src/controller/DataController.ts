@@ -8,7 +8,6 @@ import { About } from '../entity/About'
 import { AvatarMessages } from '../entity/AvatarMessages'
 import { TermsAndConditions } from '../entity/TermsAndConditions'
 import { PrivacyPolicy } from '../entity/PrivacyPolicy'
-import { AboutBanner } from '../entity/AboutBanner'
 import xlsx from 'xlsx'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -31,7 +30,6 @@ export class DataController {
   private didYouKnowRepository = getRepository(DidYouKnow)
   private helpCenterRepository = getRepository(HelpCenter)
   private aboutRepository = getRepository(About)
-  private aboutBannerRepository = getRepository(AboutBanner)
   private termsAndConditionsRepository = getRepository(TermsAndConditions)
   private privacyPolicyRepository = getRepository(PrivacyPolicy)
   private avatarMessagesRepository = getRepository(AvatarMessages)
@@ -118,13 +116,6 @@ export class DataController {
     const latestAbout = allAboutVersions[allAboutVersions.length - 1]
     const about = latestAbout.json_dump
 
-    // ========== Banner ========== //
-    const aboutImage = await this.aboutBannerRepository.findOne({
-      where: { lang: request.user.lang },
-    })
-
-    const aboutBanner = aboutImage ? aboutImage.image : null
-
     // ========== File ========== //
     const fileContent = `
       // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
@@ -142,7 +133,7 @@ export class DataController {
         privacyPolicy: ${privacyPolicy},
         termsAndConditions: ${termsAndConditions},
         about: ${about},
-        aboutBanner: ${JSON.stringify(aboutBanner)},
+        aboutBanner: '',
       }
       `
 
@@ -340,13 +331,6 @@ export class DataController {
     })
     const latestAbout = allAboutVersions[allAboutVersions.length - 1]
     const about = JSON.parse(latestAbout.json_dump)
-
-    // ========== Banner ========== //
-    const aboutImage = await this.aboutBannerRepository.findOne({
-      where: { lang: request.user.lang },
-    })
-
-    const aboutBanner = aboutImage ? aboutImage.image : null
 
     // ========== Spread sheet ========== //
     const encyclopediaIdColumns = [0, 1, 2]
@@ -547,7 +531,7 @@ export class DataController {
         privacyPolicy: ${JSON.stringify(otherJson['Privacy'])},
         termsAndConditions: ${JSON.stringify(otherJson['Terms'])},
         about: ${JSON.stringify(otherJson['About'])},
-        aboutBanner: null // TODO_ALEX
+        aboutBanner: '',
       }
       `
 

@@ -10,7 +10,7 @@ export class AboutBannerController {
       where: { lang: request.params.lang },
     })
 
-    return aboutImage ? aboutImage.image : null
+    return aboutImage ? aboutImage.image : ''
   }
 
   async saveOrUpdate(request: Request, response: Response, next: NextFunction) {

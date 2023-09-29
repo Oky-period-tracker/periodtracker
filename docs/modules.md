@@ -59,6 +59,8 @@ git remote add origin ORIGIN_URL
 git push -u origin master
 ```
 
+> You can also use the above commands to wipe the history of an existing repository and start fresh, for example you may want to do this if you want to remove sensitive information from the history, before making the repo public. The only difference is that you will need to include `-f` in the `git push` command.
+
 Update your [urls.sh](../bin//modules/urls.sh) file, so that `assets_url` is now the url for your new repository
 
 Return to the root directory

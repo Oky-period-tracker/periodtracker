@@ -10,7 +10,7 @@ export class AboutBannerController {
       where: { lang: request.params.lang },
     })
 
-    return aboutImage ? aboutImage.image : ''
+    return aboutImage ? aboutImage.image : null
   }
 
   async mobileAboutBannerByLanguageConditional(

@@ -45,19 +45,19 @@ To use different modules, remove any modules you currently have using the comman
 ./bin/modules/remove.sh
 ```
 
-Alternatively, you can use this command to remove and the pull the modules in one command
+The iOS/Android app icons are kept in the /assets repository but they need to be copied into the correct places. Do this by running this command:
+
+```bash
+yarn copy-assets
+```
+
+Alternatively, you can use this command to remove and the pull the modules, and copy the assets in one command:
 
 ```bash
 yarn modules
 ```
 
 > [Here](./modules.md) you will find instructions on setting up your own module repositories
-
-The iOS/Android app icons are kept in the /assets repository but they need to be copied into the correct places. Do this by running this command:
-
-```bash
-yarn copy-assets
-```
 
 > If you change your assets repo, you will need to run this command again
 

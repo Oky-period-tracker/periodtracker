@@ -87,6 +87,7 @@ createConnection(ormconfig)
     app.use('/about-banner-management', Authentication.isLoggedIn)
     app.use('/terms-and-conditions-management', Authentication.isLoggedIn)
     app.use('/avatar-message-management', Authentication.isLoggedIn)
+    app.use('/video-management', Authentication.isLoggedIn)
     app.use('/mobile/suggestions', cors())
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),

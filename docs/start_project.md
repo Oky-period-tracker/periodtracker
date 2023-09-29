@@ -17,9 +17,9 @@ yarn dev
 If the database was not created successfully the cms container will exit but the api/database should still be running.
 Running services include
 
-- Adminer - Database (DB): [http://localhost:8080/](http://localhost:8080/)
-- API: [http://localhost:3000/](http://localhost:3000/)
-- CMS: [http://localhost:5000/login](http://localhost:5000/login)
+- Adminer - Database (DB): [http://localhost:8080/](http://localhost:8080)
+- API: [http://localhost:3000](http://localhost:3000)
+- CMS: [http://localhost:5000](http://localhost:5000)
 
 - Development Adminer DB credentials:
 

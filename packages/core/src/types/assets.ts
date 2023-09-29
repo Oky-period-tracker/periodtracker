@@ -127,7 +127,7 @@ export interface AppAssets {
     }
   }
   general: {
-    aboutBanner: ImageSourcePropType
+    aboutBanner: Record<Locale, ImageSourcePropType>
     calendarStatic: Record<Locale, ImageSourcePropType>
   }
   lottie: {

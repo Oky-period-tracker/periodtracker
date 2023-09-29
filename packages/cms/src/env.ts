@@ -15,6 +15,7 @@ function toBool(value: string): boolean {
 export const env = {
   isProduction: process.env.NODE_ENV === 'production',
   isDevelopment: process.env.NODE_ENV === 'development',
+  defaultLocale: process.env.DEFAULT_LOCALE ?? 'en',
   app: {
     secret: process.env.PASSPORT_SECRET,
   },

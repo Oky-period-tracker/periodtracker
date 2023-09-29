@@ -23,6 +23,7 @@ import { AboutBanner } from '../entity/AboutBanner'
 import { Question } from '../entity/Question'
 import { env } from '../env'
 import { Video } from '../entity/Video'
+import { cmsLanguages } from '../i18n/options'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -44,8 +45,7 @@ export class RenderController {
 
   // Apply global render options to all views here
   globalRenderOptions = {
-    availableAppLocales,
-    localeTranslations,
+    cmsLanguages,
   }
 
   async render(

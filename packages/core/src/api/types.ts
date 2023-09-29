@@ -139,4 +139,14 @@ export interface PrivacyResponse extends Array<ContentItem> {}
 export interface TermsAndConditionsResponse extends Array<ContentItem> {}
 export interface AboutResponse extends Array<ContentItem> {}
 
-export type AboutBannerResponse = string
+export type AboutBannerResponse = string // @deprecated
+
+export type AboutBannerConditionalResponse =
+  | {
+      shouldUpdate: true
+      timestamp: number
+      aboutBanner: string
+    }
+  | {
+      shouldUpdate: false
+    }

@@ -174,8 +174,16 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       return response.data
     },
     fetchAboutBanner: async ({ locale }: any) => {
+      // @deprecated
       const response: AxiosResponse<types.AboutBannerResponse> = await axios.get(
         `${cmsEndpoint}/mobile/about-banner/${locale}`,
+      )
+
+      return response.data
+    },
+    fetchAboutBannerConditional: async ({ locale, timestamp = 0 }: any) => {
+      const response: AxiosResponse<types.AboutBannerConditionalResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/about-banner-conditional/${locale}?timestamp=${timestamp}`,
       )
 
       return response.data

@@ -18,11 +18,11 @@ import {
   fromHelpCenters,
   fromAvatarMessages,
   appTranslations,
-  cmsTranslations,
   content,
 } from '@oky/core'
 import { EncyclopediaResponse, EncyclopediaResponseItem } from '@oky/core/src/api/types'
 import { env } from '../env'
+import { cmsTranslations } from '../i18n/options'
 
 export class DataController {
   private articleRepository = getRepository(Article)
@@ -605,14 +605,9 @@ export class DataController {
 
     const sheetData = getSimpleSheetData(request.file.buffer)
 
-    const fileContent = `
-    // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
-    import { CmsTranslations } from '../../../types'
+    const fileContent = JSON.stringify(sheetData)
 
-    export const ${request.user.lang}: CmsTranslations = ${JSON.stringify(sheetData)}
-    `
-
-    const fileName = `${request.user.lang}.ts`
+    const fileName = `${request.user.lang}.json`
 
     // Set the headers to inform the browser about file type and suggested filename
     response.setHeader('Content-disposition', 'attachment; filename=' + fileName)

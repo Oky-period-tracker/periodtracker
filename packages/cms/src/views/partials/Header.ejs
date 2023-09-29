@@ -59,14 +59,14 @@
               style="border: none; margin-top: auto; margin-bottom: auto;"
               type="button" data-toggle="collapse" data-target="#collapseExample"
               aria-expanded="false" aria-controls="collapseExample" >
-              <%=localeTranslations[currentUser.lang][currentUser.lang]%>
+              <%=cmsLanguages.find((item) => item.locale === currentUser.lang).name %>
             </button>
 
             <div class="collapse" id="collapseExample">
               <div class="card card-body">
-                <% for(var i=0; i < availableAppLocales.length; i++) { %>
-                  <button type="button" class="languageChange" data-value="en">
-                    <%=localeTranslations[currentUser.lang][availableAppLocales[i]]%>
+                <% for(var i=0; i < cmsLanguages.length; i++) { %>
+                  <button type="button" class="languageChange" data-value="<%=cmsLanguages[i].locale%>">
+                    <%=cmsLanguages[i].name%>
                   </button>
                <% } %>
               </div>

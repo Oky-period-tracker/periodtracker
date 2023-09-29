@@ -23,6 +23,12 @@ export const Routes = [
   // ------------ Render ----------------
   {
     method: 'get',
+    route: '/',
+    controller: RenderController,
+    action: 'renderLogin',
+  },
+  {
+    method: 'get',
     route: '/login',
     controller: RenderController,
     action: 'renderLogin',

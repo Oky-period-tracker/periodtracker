@@ -100,9 +100,11 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     return about
   }
 
-  function* fetchAboutBanner() {
-    const aboutBanner = yield httpClient.fetchAboutBanner({
+  function* fetchAboutBannerConditional() {
+    const timestamp = yield select((s) => s.content.aboutBannerTimestamp)
+    const aboutBanner = yield httpClient.fetchAboutBannerConditional({
       locale,
+      timestamp,
     })
     return aboutBanner
   }
@@ -144,7 +146,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     const privacyPolicy = yield fetchPrivacyPolicy()
     const termsAndConditions = yield fetchTermsAndConditions()
     const about = yield fetchAbout()
-    const aboutBanner = yield fetchAboutBanner()
+    const aboutBannerData = yield fetchAboutBannerConditional()
 
     yield put(
       actions.fetchContentSuccess({
@@ -168,7 +170,8 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
           ? staleContent[locale].termsAndConditions
           : termsAndConditions,
         about: _.isEmpty(about) ? staleContent[locale].about : about,
-        aboutBanner: aboutBanner ? aboutBanner : '',
+        aboutBanner: aboutBannerData?.aboutBanner,
+        aboutBannerTimestamp: aboutBannerData?.aboutBannerTimestamp,
       }),
     )
   } catch (error) {

@@ -19,6 +19,7 @@ import { Actions } from '../types/index'
 
 export interface ContentState {
   timeFetched?: number
+  aboutBannerTimestamp?: number
   articles: Articles
   categories: Categories
   subCategories: SubCategories
@@ -38,6 +39,7 @@ export interface ContentState {
 
 const initialState: ContentState = {
   timeFetched: undefined,
+  aboutBannerTimestamp: undefined,
   articles: {
     byId: {},
     allIds: [],
@@ -95,7 +97,9 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
         ...action.payload,
       }
 
-    case 'FETCH_CONTENT_SUCCESS':
+    case 'FETCH_CONTENT_SUCCESS': {
+      const shouldUpdateBanner = action.payload.aboutBanner !== undefined
+
       return {
         ...state,
         timeFetched: action.payload.timeFetched,
@@ -110,8 +114,12 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
         privacyPolicy: action.payload.privacyPolicy,
         termsAndConditions: action.payload.termsAndConditions,
         about: action.payload.about,
-        aboutBanner: action.payload.aboutBanner,
+        aboutBanner: shouldUpdateBanner ? action.payload.aboutBanner : state.aboutBanner,
+        aboutBannerTimestamp: shouldUpdateBanner
+          ? action.payload.aboutBannerTimestamp
+          : state.aboutBannerTimestamp,
       }
+    }
 
     case 'FETCH_SURVEY_CONTENT_SUCCESS':
       return {

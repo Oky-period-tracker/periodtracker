@@ -651,6 +651,12 @@ export const Routes = [
     controller: AboutBannerController,
     action: 'mobileAboutBannerByLanguage',
   },
+  {
+    method: 'get',
+    route: '/mobile/about-banner-conditional/:lang',
+    controller: AboutBannerController,
+    action: 'mobileAboutBannerByLanguageConditional',
+  },
 
   // ------- suggestion Api -------
   {

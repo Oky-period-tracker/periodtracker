@@ -69,7 +69,8 @@ export function fetchContentSuccess(payload: {
   privacyPolicy: PrivacyPolicy
   termsAndConditions: TermsAndConditions
   about: About
-  aboutBanner: string
+  aboutBanner?: string
+  aboutBannerTimestamp?: number
 }) {
   return createAction('FETCH_CONTENT_SUCCESS', payload)
 }

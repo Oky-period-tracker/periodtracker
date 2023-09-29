@@ -5,7 +5,8 @@
   "scripts": {
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios",
-    "clean": "cd android && ./gradlew clean && cd ..",
+    "clean": "cd .",
+    "clean:android": "cd android && ./gradlew clean && cd ..",
     "compile": "tsc -b",
     "format": "prettier --write '{.,src/**}/*.{js,jsx,ts,tsx}'",
     "lint": "tslint -p .",

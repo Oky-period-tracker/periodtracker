@@ -6,4 +6,4 @@ export const PREDICTION_ENDPOINT = env.PREDICTION_ENDPOINT
 export const WEBSITE_URL = env.WEBSITE_URL
 
 // Development purposes only
-export const FAST_SIGN_UP = false
+export const FAST_SIGN_UP = true

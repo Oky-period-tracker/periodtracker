@@ -12,17 +12,20 @@ import {
   useFullState,
 } from '../../components/context/PredictionProvider'
 import { View, Platform, TouchableOpacity, ImageBackground } from 'react-native'
-import { assets } from '../../assets/index'
+import { assets } from '../../assets'
 import { useDisplayText } from '../../components/context/DisplayTextContext'
 import { InformationButton } from '../../components/common/InformationButton'
 import { decisionProcessNonPeriod, decisionProcessPeriod } from './predictionLogic/predictionLogic'
 import { translate } from '../../i18n'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import * as actions from '../../redux/actions/index'
 import * as selectors from '../../redux/selectors'
 import analytics from '@react-native-firebase/analytics'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
+
+import { useSelector } from '../../hooks/useSelector'
+import { incrementFlowerProgress, useFlowerStateSelector, FlowerModal } from '../../moduleImports'
 
 const minBufferBetweenCycles = 2
 
@@ -61,6 +64,15 @@ export function ColourButtons({
   const currentCycleInfo = useTodayPrediction()
   const inputDayStr = moment(inputDay).format('YYYY-MM-DD')
   const todayStr = moment().format('YYYY-MM-DD')
+
+  const [showPeriodOptions, setPeriodOptions] = React.useState(false)
+  const [isFlowerVisible, setFlowerVisible] = React.useState(false)
+  const flowerState = useFlowerStateSelector()
+
+  const cardAnswersToday = useSelector((state) =>
+    selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDayStr)),
+  ) as any
+
   const fullState = useFullState()
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
@@ -76,6 +88,7 @@ export function ColourButtons({
   React.useEffect(() => {
     setFuturePredictionStatus(hasFuturePredictionActive?.futurePredictionStatus)
   }, [])
+
   const minimizeToTutorial = () => {
     hide()
     setTimeout(
@@ -147,6 +160,20 @@ export function ColourButtons({
     isActive,
   })
 
+  const incFlowerProgress = () => {
+    if (!flowerState) {
+      return
+    }
+    const { progress, maxProgress } = flowerState
+    const alreadyAnswered = cardAnswersToday?.periodDay === true
+    if (progress < maxProgress && !alreadyAnswered) {
+      appDispatch(incrementFlowerProgress())
+      setFlowerVisible(true)
+    } else {
+      hide()
+    }
+  }
+
   const checkForDay = () => {
     // For Current day
     if (moment(inputDayStr).isSame(moment(todayStr))) {
@@ -157,7 +184,11 @@ export function ColourButtons({
           selectedDayInfo.periodLength + minBufferBetweenCycles
       ) {
         if (moment(todayStr).diff(moment(currentCycleInfo.cycleStart), 'days') < 11) {
-          dispatch({ type: actionPink.type, inputDay: actionPink.day, errorCallBack })
+          dispatch({
+            type: actionPink.type,
+            inputDay: actionPink.day,
+            errorCallBack,
+          })
         } else {
           dispatch({
             type: 'start-next-cycle',
@@ -193,6 +224,88 @@ export function ColourButtons({
     )
   }
 
+  function onYesPress() {
+    if (fetchNetworkConnectionStatus()) {
+      analytics().logEvent('periodDayCloudTap', { user: currentUser })
+    }
+    if (moment(inputDay).isAfter(moment())) {
+      setDisplayTextStatic('too_far_ahead')
+      hide()
+      return
+    }
+    if (addNewCycleHistory) {
+      if (selectedDayInfo.onPeriod) {
+        appDispatch(
+          actions.answerVerifyDates({
+            userID,
+            utcDateTime: inputDay,
+            periodDay: true,
+          }),
+        )
+        incFlowerProgress()
+      } else {
+        dispatch({
+          type: 'add-new-cycle-history',
+          inputDay,
+          errorCallBack,
+          getPredictedCycles,
+        })
+        appDispatch(
+          actions.answerVerifyDates({
+            userID,
+            utcDateTime: inputDay,
+            periodDay: true,
+          }),
+        )
+        incFlowerProgress()
+      }
+    } else {
+      if (selectedDayInfo.onPeriod) {
+        appDispatch(
+          actions.answerVerifyDates({
+            userID,
+            utcDateTime: inputDay,
+            periodDay: true,
+          }),
+        )
+        incFlowerProgress()
+      } else {
+        checkForDay()
+      }
+    }
+
+    hide()
+  }
+
+  function onNoPress() {
+    if (fetchNetworkConnectionStatus()) {
+      analytics().logEvent('noPeriodDayCloudTap', { user: currentUser })
+    }
+    if (moment(inputDay).isAfter(moment())) {
+      setDisplayTextStatic('too_far_ahead')
+      hide()
+      return
+    }
+    if (selectedDayInfoEngine.onPeriod) {
+      if (actionBlue) {
+        dispatch({
+          type: actionBlue.type,
+          inputDay: actionBlue.day,
+          errorCallBack,
+          getPredictedCycles,
+        })
+        appDispatch(
+          actions.answerVerifyDates({
+            userID,
+            utcDateTime: inputDay,
+            periodDay: false,
+          }),
+        )
+      }
+    }
+    hide()
+  }
+
   return (
     <Container activeOpacity={1} onPress={onPress}>
       <InformationButton
@@ -209,7 +322,7 @@ export function ColourButtons({
         onPress={() => minimizeToTutorial()}
       />
       <InstructionText>share_period_details_heading</InstructionText>
-      <HeadingText>{'user_input_instructions'}</HeadingText>
+      <HeadingText>{isDayCard ? 'are_you_on_period' : 'user_input_instructions'}</HeadingText>
       <View
         style={{
           width: '80%',
@@ -244,57 +357,7 @@ export function ColourButtons({
           width: '60%',
         }}
       >
-        <TouchableOpacity
-          onPress={() => {
-            if (fetchNetworkConnectionStatus()) {
-              analytics().logEvent('periodDayCloudTap', { user: currentUser })
-            }
-            if (moment(inputDay).isAfter(moment())) {
-              setDisplayTextStatic('too_far_ahead')
-              hide()
-              return
-            }
-            if (addNewCycleHistory) {
-              if (selectedDayInfo.onPeriod) {
-                appDispatch(
-                  actions.answerVerifyDates({
-                    userID,
-                    utcDateTime: inputDay,
-                    periodDay: true,
-                  }),
-                )
-              } else {
-                dispatch({
-                  type: 'add-new-cycle-history',
-                  inputDay,
-                  errorCallBack,
-                  getPredictedCycles,
-                })
-                appDispatch(
-                  actions.answerVerifyDates({
-                    userID,
-                    utcDateTime: inputDay,
-                    periodDay: true,
-                  }),
-                )
-              }
-            } else {
-              if (selectedDayInfo.onPeriod) {
-                appDispatch(
-                  actions.answerVerifyDates({
-                    userID,
-                    utcDateTime: inputDay,
-                    periodDay: true,
-                  }),
-                )
-              } else {
-                checkForDay()
-              }
-            }
-
-            hide()
-          }}
-        >
+        <TouchableOpacity onPress={onYesPress}>
           <ImageBackground
             style={{
               width: 80,
@@ -319,36 +382,7 @@ export function ColourButtons({
             </Text>
           </ImageBackground>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            if (fetchNetworkConnectionStatus()) {
-              analytics().logEvent('noPeriodDayCloudTap', { user: currentUser })
-            }
-            if (moment(inputDay).isAfter(moment())) {
-              setDisplayTextStatic('too_far_ahead')
-              hide()
-              return
-            }
-            if (selectedDayInfoEngine.onPeriod) {
-              if (actionBlue) {
-                dispatch({
-                  type: actionBlue.type,
-                  inputDay: actionBlue.day,
-                  errorCallBack,
-                  getPredictedCycles,
-                })
-                appDispatch(
-                  actions.answerVerifyDates({
-                    userID,
-                    utcDateTime: inputDay,
-                    periodDay: false,
-                  }),
-                )
-              }
-            }
-            hide()
-          }}
-        >
+        <TouchableOpacity onPress={onNoPress}>
           <ImageBackground
             style={{
               width: 80,
@@ -369,11 +403,19 @@ export function ColourButtons({
                 fontFamily: 'Roboto-Black',
               }}
             >
-              No
+              no_day
             </Text>
           </ImageBackground>
         </TouchableOpacity>
       </Row>
+
+      <FlowerModal
+        isModalVisible={isFlowerVisible}
+        onDismiss={() => {
+          setFlowerVisible(false)
+          hide()
+        }}
+      />
     </Container>
   )
 }

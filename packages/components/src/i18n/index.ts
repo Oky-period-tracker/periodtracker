@@ -12,6 +12,7 @@ import {
 // TODO_ALEX flower submodule
 // import { flowerTranslations } from '../moduleImports'
 import _ from 'lodash'
+import { flowerTranslations } from '../moduleImports'
 
 type TranslationObject = Record<Locale, Record<string, string>>
 
@@ -37,8 +38,7 @@ export const allTranslations = combineTranslations([
   (appTranslations as unknown) as TranslationObject,
   (localeTranslations as unknown) as TranslationObject,
   (themeTranslations as unknown) as TranslationObject,
-  /* , flowerTranslations */
-  ,
+  flowerTranslations,
 ])
 
 export function translate(key) {

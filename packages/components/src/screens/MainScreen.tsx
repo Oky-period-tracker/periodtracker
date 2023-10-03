@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import { Platform } from 'react-native'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { CircleProgress } from './mainScreen/CircleProgress'
@@ -25,6 +25,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import moment from 'moment'
+import { FlowerButton, FlowerModal } from '../moduleImports'
 
 export function MainScreen({ navigation }) {
   const { data } = useInfiniteScroll()
@@ -34,14 +35,16 @@ export function MainScreen({ navigation }) {
   const wheelDaysInfo: any[] = Array(7)
     .fill(1)
     .map((i: number) => lastDate.subtract(i, 'days').format('DD MMMM'))
-  useTextToSpeechHook({ navigation, text: mainScreenSpeech({ data, wheelDaysInfo, todayInfo }) })
+  useTextToSpeechHook({
+    navigation,
+    text: mainScreenSpeech({ data, wheelDaysInfo, todayInfo }),
+  })
 
   return <MainScreenContainer navigation={navigation} />
 }
 const MainScreenContainer = ({ navigation }) => {
   const { data } = useInfiniteScroll()
   const theme = useTheme()
-  const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
   const userID = useSelector(selectors.currentUserSelector).id
   const fullState = useFullState()
@@ -59,16 +62,19 @@ const MainScreenContainer = ({ navigation }) => {
 
 const MainScreenActual = React.memo(() => {
   const { data, index, isActive, currentIndex, absoluteIndex } = useInfiniteScroll()
-  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
   const renamedUseSelector = useSelector
   const allCardsData = renamedUseSelector((state) => selectors.allCardAnswersSelector(state))
+  const [isAvatarMessageVisible, setAvatarMessageVisible] = useState(false)
   const getCardAnswersValues = (inputDay: any) => {
+    // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
     const verifiedPeriodDaysData = renamedUseSelector((state) =>
       selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
     )
     return verifiedPeriodDaysData
   }
   const { onFertile, onPeriod } = useTodayPrediction()
+  const [isFlowerModalVisible, setFlowerModalVisible] = useState(false)
+
   return (
     <BackgroundTheme>
       <TopSeparator>
@@ -87,14 +93,22 @@ const MainScreenActual = React.memo(() => {
       </TopSeparator>
       <MiddleSection>
         <AvatarSection>
-          <CircleProgress
-            isCalendarTextVisible={true}
-            onPress={() => navigate('Calendar', { verifiedPeriodsData: allCardsData })}
-            fillColor="#FFC900"
-            emptyFill="#F49200"
-            style={{ alignSelf: 'flex-start', marginLeft: 15, zIndex: 999 }}
+          <Row style={{ zIndex: isAvatarMessageVisible ? 999 : 9999 }}>
+            <CircleProgress
+              isCalendarTextVisible={true}
+              onPress={() => navigate('Calendar', { verifiedPeriodsData: allCardsData })}
+              fillColor="#FFC900"
+              emptyFill="#F49200"
+              style={{ alignSelf: 'flex-start', marginLeft: 15 }}
+            />
+            <FlowerButton style={{ marginStart: 16 }} onPress={() => setFlowerModalVisible(true)} />
+          </Row>
+          <Avatar
+            style={{
+              position: 'absolute',
+              top: Platform.OS === 'ios' ? 120 : 90,
+            }}
           />
-          <Avatar style={{ position: 'absolute', top: Platform.OS === 'ios' ? 120 : 90 }} />
         </AvatarSection>
         <WheelSection>
           <CircularSelection
@@ -107,6 +121,11 @@ const MainScreenActual = React.memo(() => {
       <CarouselSection>
         <Carousel {...{ index, data, isActive, currentIndex, absoluteIndex }} />
       </CarouselSection>
+      <FlowerModal
+        isModalVisible={isFlowerModalVisible}
+        onDismiss={() => setFlowerModalVisible(false)}
+        isStatic={true}
+      />
     </BackgroundTheme>
   )
 })
@@ -122,9 +141,15 @@ const MiddleSection = styled.View`
   flex-direction: row;
 `
 const AvatarSection = styled.View`
+  flex-direction: column;
   height: 100%;
   width: 35%;
   justify-content: flex-start;
+  z-index: 9999;
+`
+const Row = styled.View`
+  flex-direction: row;
+  width: 100%;
   z-index: 9999;
 `
 const WheelSection = styled.View`

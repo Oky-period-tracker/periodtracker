@@ -6,6 +6,7 @@ import { LocaleProvider } from './context/LocaleContext'
 import { DisplayTextProvider } from './context/DisplayTextContext'
 import { PredictionProvider } from './context/PredictionProvider'
 import { AlertContextProvider } from './context/AlertContext'
+import { FlowerProvider } from '../moduleImports'
 
 export const AppProvider = ({ children, store, persistor }) => (
   <ReduxProvider store={store}>
@@ -13,9 +14,11 @@ export const AppProvider = ({ children, store, persistor }) => (
       <LocaleProvider>
         <ThemeProvider>
           <PredictionProvider>
-            <AlertContextProvider>
-              <DisplayTextProvider>{children}</DisplayTextProvider>
-            </AlertContextProvider>
+            <FlowerProvider>
+              <AlertContextProvider>
+                <DisplayTextProvider>{children}</DisplayTextProvider>
+              </AlertContextProvider>
+            </FlowerProvider>
           </PredictionProvider>
         </ThemeProvider>
       </LocaleProvider>

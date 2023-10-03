@@ -9,6 +9,7 @@ import { appReducer } from './appReducer'
 import { authReducer } from './authReducer'
 import { contentReducer } from './contentReducer'
 import { predictionReducer } from './predictionReducer'
+import { flowerReducer } from '../../moduleImports'
 
 export const exportReducerNames = ['app', 'prediction']
 
@@ -21,6 +22,7 @@ const reducer = combineReducers(
       auth: authReducer,
       content: contentReducer,
       prediction: predictionReducer,
+      flower: flowerReducer,
     },
     exportReducerNames,
   ),

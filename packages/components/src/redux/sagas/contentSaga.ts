@@ -27,7 +27,8 @@ function* onRehydrate(action: RehydrateAction) {
   }
 
   const now = new Date().getTime()
-  const fetchInterval = 1000 * 60 * 60 * 24 // 24 hours
+  // TODO_ALEX what time interval should we use?
+  const fetchInterval = 0 // 1000 * 60 * 60 * 24 // 24 hours
   const timeFetched = action.payload && action.payload.content?.timeFetched
   const shouldFetch = !timeFetched || timeFetched + fetchInterval < now
 

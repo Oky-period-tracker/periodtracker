@@ -65,7 +65,6 @@ export function ColourButtons({
   const inputDayStr = moment(inputDay).format('YYYY-MM-DD')
   const todayStr = moment().format('YYYY-MM-DD')
 
-  const [showPeriodOptions, setPeriodOptions] = React.useState(false)
   const [isFlowerVisible, setFlowerVisible] = React.useState(false)
   const flowerState = useFlowerStateSelector()
 
@@ -88,7 +87,6 @@ export function ColourButtons({
   React.useEffect(() => {
     setFuturePredictionStatus(hasFuturePredictionActive?.futurePredictionStatus)
   }, [])
-
   const minimizeToTutorial = () => {
     hide()
     setTimeout(
@@ -322,7 +320,7 @@ export function ColourButtons({
         onPress={() => minimizeToTutorial()}
       />
       <InstructionText>share_period_details_heading</InstructionText>
-      <HeadingText>{isDayCard ? 'are_you_on_period' : 'user_input_instructions'}</HeadingText>
+      <HeadingText>{'user_input_instructions'}</HeadingText>
       <View
         style={{
           width: '80%',
@@ -403,7 +401,7 @@ export function ColourButtons({
                 fontFamily: 'Roboto-Black',
               }}
             >
-              no_day
+              No
             </Text>
           </ImageBackground>
         </TouchableOpacity>

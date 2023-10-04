@@ -56,7 +56,6 @@ export function TutorialSecondScreen({ navigation }) {
     return percentage * dimension - arrowSize / 2
   }
 
-  const lastTutorialStep = 8
   const stepInfo = {
     '0': {
       text: `tutorial_9`,
@@ -82,7 +81,7 @@ export function TutorialSecondScreen({ navigation }) {
       text: `tutorial_11`,
       heading: `tutorial_11_content`,
       animationPositionEnd: {
-        x: normalizePosition(0.68, screenWidth),
+        x: normalizePosition(0.6, screenWidth),
         y: normalizePosition(0.5, screenHeight),
         z: 270,
       },
@@ -119,7 +118,7 @@ export function TutorialSecondScreen({ navigation }) {
       heading: `tutorial_14_content`,
       animationPositionEnd: {
         x: normalizePosition(0.3, screenWidth),
-        y: normalizePosition(0.115, screenHeight),
+        y: normalizePosition(0.12, screenHeight),
         z: 180,
       },
       demonstrationComponent: {
@@ -132,7 +131,7 @@ export function TutorialSecondScreen({ navigation }) {
       heading: `tutorial_15_content`,
       animationPositionEnd: {
         x: normalizePosition(0.45, screenWidth),
-        y: normalizePosition(0.115, screenHeight),
+        y: normalizePosition(0.12, screenHeight),
         z: 180,
       },
       demonstrationComponent: {
@@ -167,6 +166,8 @@ export function TutorialSecondScreen({ navigation }) {
       },
     },
   }
+
+  const lastTutorialStep = _.size(stepInfo) - 1
 
   React.useEffect(() => {
     if (hasTtsActive) {
@@ -363,23 +364,22 @@ export function TutorialSecondScreen({ navigation }) {
           </WheelSection>
         </MiddleSection>
         <CarouselSection {...{ step }}>
-          <View style={{ flex: 1, paddingBottom: 16 }}>
-            <Carousel
-              {...{
-                index,
-                data,
-                isActive,
-                currentIndex,
-                absoluteIndex,
-                disableInteraction: true,
-              }}
-            />
-          </View>
+          <Carousel
+            {...{
+              index,
+              data,
+              isActive,
+              currentIndex,
+              absoluteIndex,
+              disableInteraction: true,
+            }}
+          />
 
           {step !== 0 && step !== 1 && step !== 2 && <Overlay style={{ height: '100%' }} />}
         </CarouselSection>
       </Container>
-      {step !== 7 && <Empty />}
+      <Empty />
+
       <Animated.View
         style={{
           width: 60,
@@ -455,13 +455,13 @@ export function TutorialSecondScreen({ navigation }) {
 
 const Container = styled.View`
   top: 0;
-  bottom: 64px;
+  bottom: 56px;
   right: 0;
   left: 0;
   position: absolute;
 `
 const Empty = styled.View`
-  height: 64px;
+  height: 56px;
   bottom: 0;
   right: 0;
   left: 0;
@@ -482,7 +482,7 @@ const MiddleSection = styled.View`
 `
 const AvatarSection = styled.View<{ step: number }>`
   height: 100%;
-  width: 37%;
+  width: 35%;
   justify-content: flex-start;
 `
 const WheelSection = styled.View`
@@ -528,9 +528,7 @@ const TutorialInformation = styled.View<{ step: number }>`
   position: absolute;
 
   ${(props) =>
-    props.step !== 3 && props.step !== 4 && props.step !== 5 && props.step !== 6
-      ? 'top: 25;'
-      : 'bottom: 65;'}
+    props.step !== 3 && props.step !== 4 && props.step !== 5 ? 'top: 25;' : 'bottom: 25;'}
   background-color: #fff;
   border-radius: 10px;
   align-items: flex-start;
@@ -569,13 +567,4 @@ const TutorialText = styled(Text)`
   font-family: Roboto-Regular;
   font-size: 16;
   margin-bottom: 10;
-`
-const TutorialLeavingText = styled(Text)`
-  width: 70%;
-  color: #f49200;
-  align-self: center;
-  font-size: 20;
-  font-family: Roboto-Black;
-  top: -30%;
-  text-align: center;
 `

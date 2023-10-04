@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 import { Platform } from 'react-native'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { CircleProgress } from './mainScreen/CircleProgress'
@@ -35,16 +35,14 @@ export function MainScreen({ navigation }) {
   const wheelDaysInfo: any[] = Array(7)
     .fill(1)
     .map((i: number) => lastDate.subtract(i, 'days').format('DD MMMM'))
-  useTextToSpeechHook({
-    navigation,
-    text: mainScreenSpeech({ data, wheelDaysInfo, todayInfo }),
-  })
+  useTextToSpeechHook({ navigation, text: mainScreenSpeech({ data, wheelDaysInfo, todayInfo }) })
 
   return <MainScreenContainer navigation={navigation} />
 }
 const MainScreenContainer = ({ navigation }) => {
   const { data } = useInfiniteScroll()
   const theme = useTheme()
+  const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
   const userID = useSelector(selectors.currentUserSelector).id
   const fullState = useFullState()
@@ -62,18 +60,17 @@ const MainScreenContainer = ({ navigation }) => {
 
 const MainScreenActual = React.memo(() => {
   const { data, index, isActive, currentIndex, absoluteIndex } = useInfiniteScroll()
+  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
   const renamedUseSelector = useSelector
   const allCardsData = renamedUseSelector((state) => selectors.allCardAnswersSelector(state))
-  const [isAvatarMessageVisible, setAvatarMessageVisible] = useState(false)
   const getCardAnswersValues = (inputDay: any) => {
-    // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
     const verifiedPeriodDaysData = renamedUseSelector((state) =>
       selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
     )
     return verifiedPeriodDaysData
   }
   const { onFertile, onPeriod } = useTodayPrediction()
-  const [isFlowerModalVisible, setFlowerModalVisible] = useState(false)
+  const [isFlowerModalVisible, setFlowerModalVisible] = React.useState(false)
 
   return (
     <BackgroundTheme>
@@ -93,7 +90,7 @@ const MainScreenActual = React.memo(() => {
       </TopSeparator>
       <MiddleSection>
         <AvatarSection>
-          <Row style={{ zIndex: isAvatarMessageVisible ? 999 : 9999 }}>
+          <Row style={{ zIndex: 999 }}>
             <CircleProgress
               isCalendarTextVisible={true}
               onPress={() => navigate('Calendar', { verifiedPeriodsData: allCardsData })}
@@ -103,12 +100,7 @@ const MainScreenActual = React.memo(() => {
             />
             <FlowerButton style={{ marginStart: 16 }} onPress={() => setFlowerModalVisible(true)} />
           </Row>
-          <Avatar
-            style={{
-              position: 'absolute',
-              top: Platform.OS === 'ios' ? 120 : 90,
-            }}
-          />
+          <Avatar style={{ position: 'absolute', top: Platform.OS === 'ios' ? 120 : 90 }} />
         </AvatarSection>
         <WheelSection>
           <CircularSelection

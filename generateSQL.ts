@@ -57,6 +57,9 @@ const generateSql = ({
   columns: string[]
   values: Array<Array<string | number>>
 }) => {
+  if (!values.length) {
+    return ''
+  }
   const columnsString = toColumnsString(columns)
   const valueString = toValuesString(values)
   return `INSERT INTO "${name}" (${columnsString}) VALUES ${valueString};\n\n`

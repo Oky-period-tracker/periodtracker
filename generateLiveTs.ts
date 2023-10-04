@@ -4,7 +4,7 @@ import { content as staleContent, StaticContent } from '@oky/core'
 const removeDeadContent = (content: StaticContent) => {
   // ===== Articles ===== //
   const articlesToDelete = Object.values(content.articles.byId)
-    .filter((item) => !item.live)
+    .filter((item) => item.live === false)
     .map((item) => item.id)
 
   const articles = {
@@ -34,7 +34,7 @@ const removeDeadContent = (content: StaticContent) => {
   const subCategoriesToDelete = Object.values(content.subCategories.byId)
     .filter((item) => {
       const hasLiveArticles = item.articles.some((articleId) => {
-        return content.articles.byId[articleId].live
+        return content.articles.byId[articleId]?.live !== false
       })
       return !hasLiveArticles
     })
@@ -77,7 +77,7 @@ const removeDeadContent = (content: StaticContent) => {
 
   // ===== Did you knows ===== //
   const didYouKnowsToDelete = Object.values(content.didYouKnows.byId)
-    .filter((item) => !item.live)
+    .filter((item) => item.live === false)
     .map((item) => item.id)
 
   const didYouKnows = {
@@ -90,7 +90,7 @@ const removeDeadContent = (content: StaticContent) => {
   })
 
   // ===== Avatars ===== //
-  const avatarMessages = content.avatarMessages.filter((item) => item.live)
+  const avatarMessages = content.avatarMessages.filter((item) => item.live !== false)
 
   return {
     ...content,

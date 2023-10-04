@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { provinces } from '@oky/core'
+import { logger } from './logger'
 
 // Temporarily add locales to this array then execute this script to merge them into the locales.ts file in your /translations submodule
 const localesToMerge = []
@@ -9,6 +10,7 @@ const provincesToMerge = []
 
 const outputFilepath = './packages/core/src/modules/translations/provinces.ts'
 
+// ========================= Merge ========================= //
 const mergeProvinces = () => {
   const mergedProvinces = provinces.map((province, index) => {
     if (
@@ -47,4 +49,34 @@ const mergeProvinces = () => {
   fs.writeFileSync(outputFilepath, outputString)
 }
 
-mergeProvinces()
+// ========================= Add Locales ========================= //
+const localeToInsert = 'es'
+
+const addLocale = () => {
+  const updatedProvinces = provinces.map((province, index) => {
+    return {
+      ...province,
+      [localeToInsert]: province.en, // TODO: This simply copies the english value
+    }
+  })
+
+  const outputString = `
+  import { Locale } from '.'
+
+  type Province = {
+    code: string
+    uid: number
+  } & {
+    [K in Locale]: string
+  }
+  
+  export const provinces: Province[] = ${JSON.stringify(updatedProvinces)}`
+
+  fs.writeFileSync(outputFilepath, outputString)
+}
+
+// ========================= Execute ========================= //
+// mergeProvinces()
+// addLocale()
+
+logger('===== EDIT THIS FILE BEFORE EXECUTING IT =====')

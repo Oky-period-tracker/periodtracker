@@ -189,9 +189,10 @@ export function TutorialSecondScreen({ navigation }) {
       },
     },
   }
-  */
-
+  
   const lastTutorialStep = _.size(stepInfo) - 1
+
+  */
 
   React.useEffect(() => {
     if (hasTtsActive) {
@@ -204,7 +205,7 @@ export function TutorialSecondScreen({ navigation }) {
   }, [completedStep, stepInfo, step, hasTtsActive])
 
   React.useEffect(() => {
-    if (step === lastTutorialStep) {
+    if (step === 6) {
       flag.current = true
     }
     if (flag.current) {
@@ -216,11 +217,10 @@ export function TutorialSecondScreen({ navigation }) {
         }, 1000)
       })
     }
-    if (step === lastTutorialStep + 1) return
+    if (step === 7) return
     animateArrowPosition()
     if (stepInfo[step].demonstrationComponent.isAvailable) {
       // if ([2, 4, 5, 6, 7].includes(step)) { TODO: Flower submodule changes
-
       if (step === 4 || step === 5) {
         toggleDemonstrationPosition()
         return
@@ -326,6 +326,52 @@ export function TutorialSecondScreen({ navigation }) {
       }),
     ]).start()
   }
+
+  // TODO: Flower submodule changes:
+  /* 
+   '6': {
+      text: `tutorial_15`,
+      heading: `tutorial_15_content`,
+      animationPositionEnd: {
+        x: normalizePosition(0.45, screenWidth),
+        y: normalizePosition(0.12, screenHeight),
+        z: 180,
+      },
+      demonstrationComponent: {
+        isAvailable: true,
+        position: { x: 0, y: normalizePosition(0.2, screenHeight) },
+      },
+    },
+    '7': {
+      text: `tutorial_16`,
+      heading: `tutorial_16_content`,
+      animationPositionEnd: {
+        x: normalizePosition(0.7, screenWidth),
+        y: normalizePosition(0.8, screenHeight),
+        z: 270,
+      },
+      demonstrationComponent: {
+        isAvailable: true,
+        position: { x: -screenWidth, y: normalizePosition(0.2, screenHeight) },
+      },
+    },
+    '8': {
+      text: `dummy`,
+      heading: `dummy`,
+      animationPositionEnd: {
+        x: normalizePosition(0.7, screenWidth),
+        y: screenHeight + 100,
+        z: 270,
+      },
+      demonstrationComponent: {
+        isAvailable: true,
+        position: { x: 0, y: normalizePosition(1, screenHeight + 100) },
+      },
+    },
+  }
+  */
+
+  // const lastTutorialStep = _.size(stepInfo) - 1 // TODO:
 
   const getCardAnswersValues = (inputDay) => {
     const cardData = renamedUseSelector((state) =>
@@ -460,10 +506,11 @@ export function TutorialSecondScreen({ navigation }) {
           }
         }}
       >
-        {step < lastTutorialStep && (
+        {/* TODO: use lastTutorialStep */}
+        {step <= 5 && (
           <TutorialInformation {...{ step }}>
-            <Heading>{step < lastTutorialStep ? stepInfo[step].heading : null}</Heading>
-            <TutorialText>{step < lastTutorialStep ? stepInfo[step].text : null}</TutorialText>
+            <Heading>{step <= 5 ? stepInfo[step].heading : null}</Heading>
+            <TutorialText>{step <= 5 ? stepInfo[step].text : null}</TutorialText>
           </TutorialInformation>
         )}
       </TouchableContinueOverlay>

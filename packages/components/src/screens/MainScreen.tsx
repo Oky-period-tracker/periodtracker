@@ -25,7 +25,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import moment from 'moment'
-import { FlowerButton, FlowerModal } from '../moduleImports'
+import { FlowerButton, FlowerModal } from '../optional/Flower'
 
 export function MainScreen({ navigation }) {
   const { data } = useInfiniteScroll()

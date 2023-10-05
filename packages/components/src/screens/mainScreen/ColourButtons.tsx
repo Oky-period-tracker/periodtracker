@@ -25,7 +25,7 @@ import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 
 import { useSelector } from '../../hooks/useSelector'
-import { incrementFlowerProgress, useFlowerStateSelector, FlowerModal } from '../../moduleImports'
+import { incrementFlowerProgress, useFlowerStateSelector, FlowerModal } from '../../optional/Flower'
 
 const minBufferBetweenCycles = 2
 

@@ -22,6 +22,8 @@ export default Module
 
 This will import the file called `module` if it exists, otherwise it will set the module to an empty object, and export that instead.
 
+When you use optional modules, make sure to import from the file with the try/catch import/export, not from the submodule directly.
+
 If you are going to create a new feature for this project which will be optional, you will need to add a file to import your module in the same way as above.
 
 If your optional feature is very small, consider conditionally including the code using environment variables instead.

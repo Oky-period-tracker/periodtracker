@@ -573,16 +573,6 @@ const TutorialInformation = styled.View<{ step: number }>`
   z-index: 999;
 `
 
-const SkipContainer = styled.View<{ step: number }>`
-  width: 85%;
-  position: absolute;
-  bottom: 10;
-  align-items: flex-end;
-  justify-content: flex-end;
-  align-self: center;
-  z-index: 9999;
-`
-
 const DemonstratedComponent = styled.View`
   width: 100%;
   align-items: flex-start;
@@ -601,4 +591,14 @@ const TutorialText = styled(Text)`
   font-family: Roboto-Regular;
   font-size: 16;
   margin-bottom: 10;
+`
+
+const SkipContainer = styled.View<{ step: number }>`
+  width: 85%;
+  position: absolute;
+  bottom: 10;
+  align-items: flex-end;
+  justify-content: flex-end;
+  align-self: center;
+  z-index: 9999;
 `

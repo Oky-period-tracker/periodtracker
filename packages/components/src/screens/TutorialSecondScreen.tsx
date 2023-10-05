@@ -24,7 +24,7 @@ import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import Tts from 'react-native-tts'
 import { translate } from '../i18n'
-import { FlowerAssetDemo, flowerAssets } from '../moduleImports'
+import { FlowerAssetDemo, flowerAssets } from '../optional/Flower'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 
 const screenHeight = Dimensions.get('screen').height

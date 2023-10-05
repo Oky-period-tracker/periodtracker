@@ -6,7 +6,7 @@ import { LocaleProvider } from './context/LocaleContext'
 import { DisplayTextProvider } from './context/DisplayTextContext'
 import { PredictionProvider } from './context/PredictionProvider'
 import { AlertContextProvider } from './context/AlertContext'
-import { FlowerProvider } from '../moduleImports'
+import { FlowerProvider } from '../optional/Flower'
 
 export const AppProvider = ({ children, store, persistor }) => (
   <ReduxProvider store={store}>

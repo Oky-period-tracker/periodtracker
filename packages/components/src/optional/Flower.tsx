@@ -1,9 +1,5 @@
 // tslint:disable:no-var-requires
-import React from 'react'
-
-const Fragment = ({ children }: any) => {
-  return <>{children}</>
-}
+import { Fragment } from './Fragment'
 
 let flowerAssets
 try {

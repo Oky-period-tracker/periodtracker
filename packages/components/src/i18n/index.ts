@@ -9,10 +9,8 @@ import {
   localeTranslations,
   themeTranslations,
 } from '@oky/core'
-// TODO_ALEX flower submodule
-// import { flowerTranslations } from '../moduleImports'
 import _ from 'lodash'
-import { flowerTranslations } from '../moduleImports'
+import { flowerTranslations } from '../optional/Flower'
 
 type TranslationObject = Record<Locale, Record<string, string>>
 

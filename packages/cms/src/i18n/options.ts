@@ -3,8 +3,9 @@ export const cmsTranslations = {
   fr: require('./translations/fr.json'),
   pt: require('./translations/pt.json'),
   ru: require('./translations/ru.json'),
-  id: require('./translations/id.json'),
-  mn: require('./translations/mn.json'),
+  es: require('./translations/es.json'),
+  //id: require('./translations/id.json'),
+  //mn: require('./translations/mn.json'),
 }
 
 export const cmsLanguages = [
@@ -24,13 +25,17 @@ export const cmsLanguages = [
     name: 'Русский',
     locale: 'ru',
   },
+//  {
+//    name: 'Indonesian',
+//    locale: 'id',
+//  },
+//  {
+//    name: 'Монгол',
+//    locale: 'mn',
+//  },
   {
-    name: 'Indonesian',
-    locale: 'id',
-  },
-  {
-    name: 'Монгол',
-    locale: 'mn',
+    name: 'Español',
+    locale: 'es',
   },
 ]
 

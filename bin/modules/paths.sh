@@ -7,4 +7,4 @@ translations_path="packages/core/src/modules/translations"
 delete_account_path="packages/delete-account"
 
 # Optional
-flower_path="packages/components/src/flower"
+flower_path="packages/components/src/optional/Flower"

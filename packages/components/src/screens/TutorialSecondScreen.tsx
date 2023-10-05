@@ -49,6 +49,7 @@ export function TutorialSecondScreen({ navigation }) {
   const [completedStep, setCompletedStep] = React.useState(0)
   const flag = React.useRef(false)
   const dispatch = useDispatch()
+  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
   const renamedUseSelector = useSelector
   const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
 
@@ -127,6 +128,28 @@ export function TutorialSecondScreen({ navigation }) {
       },
     },
     '6': {
+      text: `dummy`,
+      heading: `dummy`,
+      animationPositionEnd: { x: -screenWidth, y: normalizePosition(0.12, screenHeight), z: 180 },
+      demonstrationComponent: {
+        isAvailable: true,
+        position: { x: -500, y: normalizePosition(0.15, screenHeight) },
+      },
+    },
+    '7': {
+      text: `dummy`,
+      heading: `dummy`,
+      animationPositionEnd: { x: -screenWidth, y: normalizePosition(0.1, screenHeight), z: 180 },
+      demonstrationComponent: {
+        isAvailable: true,
+        position: { x: -500, y: normalizePosition(0.15, screenHeight) },
+      },
+    },
+  }
+
+  // TODO: Flower submodule changes:
+  /* 
+   '6': {
       text: `tutorial_15`,
       heading: `tutorial_15_content`,
       animationPositionEnd: {
@@ -166,6 +189,7 @@ export function TutorialSecondScreen({ navigation }) {
       },
     },
   }
+  */
 
   const lastTutorialStep = _.size(stepInfo) - 1
 
@@ -195,7 +219,9 @@ export function TutorialSecondScreen({ navigation }) {
     if (step === lastTutorialStep + 1) return
     animateArrowPosition()
     if (stepInfo[step].demonstrationComponent.isAvailable) {
-      if ([2, 4, 5, 6, 7].includes(step)) {
+      // if ([2, 4, 5, 6, 7].includes(step)) { TODO: Flower submodule changes
+
+      if (step === 4 || step === 5) {
         toggleDemonstrationPosition()
         return
       }
@@ -243,11 +269,9 @@ export function TutorialSecondScreen({ navigation }) {
   })
 
   const toggleDemonstrationPosition = () => {
-    const toXValue = -screenWidth
-
     Animated.parallel([
       Animated.timing(positionDemoX, {
-        toValue: toXValue,
+        toValue: -500,
         duration: Platform.OS === 'ios' ? 200 : 400,
         useNativeDriver: true,
       }),
@@ -257,7 +281,17 @@ export function TutorialSecondScreen({ navigation }) {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      setShowNoteAsset(false)
+      setShowDayAsset(false)
+      setShowNoteAsset(true)
+      if (step === 5) {
+        setShowNoteAsset(false)
+        setShowCalendarAsset(true)
+      }
+      secondHalf()
+
+      // TODO: Flower module
+      /* 
+            setShowNoteAsset(false)
       setShowDayAsset(false)
       setShowCalendarAsset(false)
       setShowFlowerAsset(false)
@@ -274,6 +308,7 @@ export function TutorialSecondScreen({ navigation }) {
         setShowFlowerAsset(true)
       }
       secondHalf()
+       */
     })
   }
 
@@ -293,7 +328,6 @@ export function TutorialSecondScreen({ navigation }) {
   }
 
   const getCardAnswersValues = (inputDay) => {
-    // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
     const cardData = renamedUseSelector((state) =>
       selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
     )

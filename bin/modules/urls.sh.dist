@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# Required
-k8s_url="git@github.com:Oky-period-tracker/periodtracker_k8s-whitelabelled.git"
+# Required to run
 assets_url="git@github.com:Oky-period-tracker/periodtracker_assets-whitelabelled.git"
 translations_url="git@github.com:Oky-period-tracker/periodtracker_translations-whitelabelled.git"
+
+# Required to deploy
+k8s_url="git@github.com:Oky-period-tracker/periodtracker_k8s-whitelabelled.git"
 delete_account_url="git@github.com:Oky-period-tracker/periodtracker_delete_account-whitelabelled.git"
 
 # Optional

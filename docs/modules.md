@@ -1,5 +1,41 @@
 # Git submodules
 
+The main command you will need to use is this
+
+```bash
+yarn modules
+```
+
+This one command runs the following scripts:
+
+Remove any modules you currently have
+
+> If you have local changes / commits that have not been pushed to github, they will be lost after running this command
+
+```bash
+./bin/modules/remove.sh
+```
+
+This clones / updates the git submodules:
+
+```bash
+./bin/modules/pull.sh
+```
+
+To use different modules,
+
+The iOS/Android app icons are kept in the /assets repository but they need to be copied into the correct places. Do this by running this command:
+
+```bash
+yarn copy-assets
+```
+
+> If you make changes to your assets repo, you will need to run this command again
+
+## Create your own
+
+By default `urls.sh` file contains the public whitelabelled modules. Changing the urls in this file and re-running the `yarn modules` command will replace those modules with the new urls.
+
 Follow these steps to create your own git repo to use as a sub module.
 
 As an example, this is how you can make your own `assets` module

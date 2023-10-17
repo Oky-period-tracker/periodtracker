@@ -1,6 +1,10 @@
-## Copy-env
+## yarn_config
 
-This creates several files. They contain default values for running in development environment, but of these need to be updated before deploying to production.
+```bash
+yarn config
+```
+
+This command creates several files. They contain default values for running in development environment, but of these need to be updated before deploying to production.
 
 These files are for development, when deploying to production the values defined in these files are instead defined in the /.k8s yaml files.
 
@@ -44,3 +48,7 @@ Do not change the bundle ID in Xcode because that will affect the `project.pbxpr
 To change the android application ID, please the APPLICATION_ID variable directly in the untracked `gradle.properties` file
 
 > Please note that running the `copy-env:all` commands will also overwrite changes you made to these untracked files, `gradle.properties` and `.xcconfig`
+
+---
+
+This also creates a .ts file containing the redux encryption key

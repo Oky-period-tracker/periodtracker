@@ -32,13 +32,13 @@ yarn copy-config
 
 > For an explanation of this command, go [here](./setup_details.md#copy-config)
 
-One of the files created is `packages/components/src/redux/config.ts`. Replace 'Example_Encryption_Key' in this file with the appropriate key. It is for redux persist encryption on the local device. If you are taking over the project from another team, REDUX_ENCRYPT_KEY should be requested from the relevant body/person.
-
 ## Modules
 
 Parts of the project are kept in git submodules, such as assets and translations files, so that they can easily be switched out while still allowing everyone to share this core repo. The `.gitmodules` file is untracked so that you don't need to commit changes to the core repo in order to change which modules you are using.
 
 This one command will remove any submodules you currently have in your project, and download the submodules via the github URLs you have listed in your `urls.sh`
+
+To switch between different submodules, simply change the URLs in your `urls.sh` file, and re-run the command below
 
 > If you have local changes / commits that have not been pushed to github, they will be lost after running this command
 

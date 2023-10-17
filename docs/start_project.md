@@ -75,8 +75,6 @@ cd packages/mobile
 npx react-native run-android
 ```
 
-To speed up the sign up process in the app, search the code for `FAST_SIGN_UP` and change it to `true`, this simply adds in some default values into the form fields, including a random 4 char username and password `aaa`
-
 Reverse the ports to have access to the functionality of the api/cms.
 
 ```bash
@@ -123,6 +121,8 @@ npx react-native run-ios --simulator="iPhone 12 Pro"
 <strong>Note:</strong> you will need access to Unicef Apple developer account so you can create your developemnt certificate and profile before running the ios app using xcode. Please contact your product manager to gain access.
 
 ---
+
+To speed up the sign up process in the app, search the code for `FAST_SIGN_UP` and change it to `true`, this simply adds in some default values into the form fields, including a random 4 char username and password `aaa`. Do not commit this change.
 
 If you want to install a npm module, without re-building the docker images, just run:
 

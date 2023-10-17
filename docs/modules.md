@@ -10,7 +10,7 @@ This one command runs the following scripts (you do not need to run these indivi
 
 First it removes any modules you currently have with this script
 
-> If you have local changes / commits that have not been pushed to github, they will be lost after running this command
+> If you have local changes / commits that have not been pushed, they will be lost after running this command
 
 ```bash
 ./bin/modules/remove.sh

@@ -44,7 +44,8 @@
     "deploy:android": "yarn workspace @oky/mobile run deploy:android",
     "run:android": "yarn clean:mobile && yarn workspace @oky/mobile run android",
     "clean:mobile": "yarn workspace @oky/mobile run clean:android",
-    "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets"
+    "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets",
+    "config": "yarn copy-modules-urls && yarn copy-env:all && yarn copy-redux-config"
   },
   "workspaces": {
     "packages": [

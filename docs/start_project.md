@@ -75,6 +75,8 @@ cd packages/mobile
 npx react-native run-android
 ```
 
+To speed up the sign up process in the app, search the code for `FAST_SIGN_UP` and change it to `true`, this simply adds in some default values into the form fields, including a random 4 char username and password `aaa`
+
 Reverse the ports to have access to the functionality of the api/cms.
 
 ```bash

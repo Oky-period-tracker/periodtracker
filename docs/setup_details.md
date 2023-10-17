@@ -1,7 +1,7 @@
-## yarn_config
+## copy-config
 
 ```bash
-yarn config
+yarn copy-config
 ```
 
 This command creates several files. They contain default values for running in development environment, but of these need to be updated before deploying to production.

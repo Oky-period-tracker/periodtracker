@@ -36,7 +36,7 @@
     "run:android": "yarn clean:mobile && yarn workspace @oky/mobile run android",
     "clean:mobile": "yarn workspace @oky/mobile run clean:android",
     "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets",
-    "config": "./bin/setup/config.sh"
+    "copy-config": "./bin/setup/config.sh"
   },
   "workspaces": {
     "packages": [

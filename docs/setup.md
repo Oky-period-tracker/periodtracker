@@ -27,10 +27,10 @@ There are several untracked files which need to be created for the project to ru
 > Please note that if you already have already created and edited these files, running this command overwrite those changes
 
 ```bash
-yarn config
+yarn copy-config
 ```
 
-> For an explanation of this command, go [here](./setup_details.md#yarn_config)
+> For an explanation of this command, go [here](./setup_details.md#copy-config)
 
 One of the files created is `packages/components/src/redux/config.ts`. Replace 'Example_Encryption_Key' in this file with the appropriate key. It is for redux persist encryption on the local device. If you are taking over the project from another team, REDUX_ENCRYPT_KEY should be requested from the relevant body/person.
 

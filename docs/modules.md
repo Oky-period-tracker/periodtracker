@@ -22,8 +22,6 @@ This clones / updates the git submodules:
 ./bin/modules/pull.sh
 ```
 
-To use different modules,
-
 The iOS/Android app icons are kept in the /assets repository but they need to be copied into the correct places. Do this by running this command:
 
 ```bash

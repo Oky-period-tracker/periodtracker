@@ -62,7 +62,7 @@ VALUES (-1, 'admin', '$2b$10$cslKchhKRBsWG.dCsspbb.mkY9.opLl1t1Oxs3j2E01/Zm3llW/
 
 > IMPORTANT: Once you have created this user, log into the CMS, use the `/user-management` page to create a new user with a strong password, log out, log in as your new user, and delete this non-secure `Admin` user
 
-Later you will generate SQL files to insert content into the DB, [see here](./localisation/setup.md) for the steps to do that.
+Your `/translations` submodule should contain SQL files eg `insert-content-en.sql`, execute this as well to insert content into the DB. [See here](./localisation/setup.md) for how to generate these SQL files when setting up your own repo / adding a new language.
 
 ## Start react native
 
@@ -73,6 +73,7 @@ Start the simulator, then run react-native for android:
 ```bash
 cd packages/mobile
 npx react-native run-android
+cd ../../
 ```
 
 Reverse the ports to have access to the functionality of the api/cms.

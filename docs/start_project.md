@@ -80,8 +80,13 @@ To speed up the sign up process in the app, search the code for `FAST_SIGN_UP` a
 Reverse the ports to have access to the functionality of the api/cms.
 
 ```bash
+yarn reverse:all-ports
+```
+
+Or for just a single service (in this case API) run:
+
+```bash
 adb reverse tcp:3000 tcp:3000
-adb reverse tcp:5000 tcp:5000
 ```
 
 If you have multiple devices connected, you need to specify the device to reverse the ports on
@@ -117,31 +122,7 @@ npx react-native run-ios --simulator="iPhone 12 Pro"
 
 <strong>Note:</strong> you will need access to Unicef Apple developer account so you can create your developemnt certificate and profile before running the ios app using xcode. Please contact your product manager to gain access.
 
-## Start the backend
-
-Using docker and docker-compose, just run:
-
-```bash
-docker-compose build
-```
-
-Then start the containers with:
-
-```bash
-docker-compose up
-```
-
-If you are running the react native application on a device and you want to make all the services available to it run:
-
-```bash
-yarn reverse:all-ports
-```
-
-Or for just a single service (in this case API) run:
-
-```bash
-adb reverse tcp:3000 tcp:3000
-```
+---
 
 If you want to install a npm module, without re-building the docker images, just run:
 

@@ -28,7 +28,7 @@ The iOS/Android app icons are kept in the /assets repository but they need to be
 yarn copy-assets
 ```
 
-> If you make changes to your assets repo, you will need to run this command again
+> If you make changes to your app icons in the /assets submodule, you will need to run this command again to copy them across
 
 ## Create your own
 

@@ -11,16 +11,7 @@
     "generate-content-files": "yarn generate-sql && yarn generate-live-ts",
     "provinces": "ts-node merge-provinces.ts",
     "countries": "ts-node merge-countries.ts",
-    "copy-modules-urls": "cp bin/modules/urls.sh.dist bin/modules/urls.sh",
     "copy-assets": "ts-node copyAssets.ts",
-    "copy-env:ios": "cp packages/mobile/ios/xcconfig.dist packages/mobile/ios/release.xcconfig && cp packages/mobile/ios/xcconfig.dist packages/mobile/ios/debug.xcconfig",
-    "copy-env:android": "cp packages/mobile/android/gradle.properties.dist packages/mobile/android/gradle.properties && cp packages/mobile/android/local.properties.dist packages/mobile/android/local.properties",
-    "copy-env:api": "cp packages/api/.env.dist packages/api/.env",
-    "copy-env:cms": "cp packages/cms/.env.dist packages/cms/.env",
-    "copy-env:mobile": "cp packages/mobile/.env.dist packages/mobile/.env && cp packages/mobile/.env.dist packages/mobile/.env.production",
-    "copy-env:all": "yarn copy-env:api && yarn copy-env:cms && yarn copy-env:mobile && yarn copy-env:ios && yarn copy-env:android",
-    "copy-redux-config": "cp packages/components/src/redux/config.ts.dist packages/components/src/redux/config.ts",
-    "copy-all": "yarn copy-modules-urls && yarn copy-redux-config && yarn copy-env:all",
     "database-sync:enable": "ts-node setDatabaseSync.ts --enable",
     "database-sync:disable": "ts-node setDatabaseSync.ts --disable",
     "install:pods": "if [ -z \"$DOCKER_ENV\" ]; then cd packages/mobile/ios && pod install; fi",
@@ -45,7 +36,7 @@
     "run:android": "yarn clean:mobile && yarn workspace @oky/mobile run android",
     "clean:mobile": "yarn workspace @oky/mobile run clean:android",
     "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets",
-    "config": "yarn copy-modules-urls && yarn copy-env:all && yarn copy-redux-config"
+    "config": "./bin/setup/config.sh"
   },
   "workspaces": {
     "packages": [

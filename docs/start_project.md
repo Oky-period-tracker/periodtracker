@@ -123,6 +123,8 @@ npx react-native run-ios --simulator="iPhone 12 Pro"
 
 ---
 
+### Tips
+
 To speed up the sign up process in the app, search the code for `FAST_SIGN_UP` and change it to `true`, this simply adds in some default values into the form fields, including a random 4 char username and password `aaa`. Do not commit this change.
 
 If you want to install a npm module, without re-building the docker images, just run:

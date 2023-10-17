@@ -6,9 +6,9 @@ The main command you will need to use is this
 yarn modules
 ```
 
-This one command runs the following scripts:
+This one command runs the following scripts (you do not need to run these individually unless for some specific purpose)
 
-Remove any modules you currently have
+First it removes any modules you currently have with this script
 
 > If you have local changes / commits that have not been pushed to github, they will be lost after running this command
 
@@ -16,13 +16,13 @@ Remove any modules you currently have
 ./bin/modules/remove.sh
 ```
 
-This clones / updates the git submodules:
+Next it clones / updates the git submodules:
 
 ```bash
 ./bin/modules/pull.sh
 ```
 
-The iOS/Android app icons are kept in the /assets repository but they need to be copied into the correct places. Do this by running this command:
+The iOS/Android app icons are kept in the /assets repository but they need to be copied into the correct places. This is done via this command
 
 ```bash
 yarn copy-assets

@@ -94,24 +94,6 @@ kubectl create namespace cert-manager
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.6.1 --set installCRDs=true
 ```
 
-Create a Let's Encrypt Issuer
-
-In your .k8s submodule, you should have a `letsencrypt.yml` file. This file contains the configuration for the Let's Encrypt Issuer. If you are unsure about submodules, please see the [submodule documentation](../modules.md).
-
-Edit this yaml file so that it has a valid email address. This is where Let's Encrypt will send expiry notifications.
-
-You can apply this configuration to your cluster with the following command:
-
-```bash
-kubectl apply -f .k8s/letsencrypt.yml
-```
-
-If you run this command, you should see some cert-manager pods running
-
-```bash
-kubectl get pods --namespace=cert-manager
-```
-
 ---
 
 ## Install adminer

@@ -18,6 +18,24 @@ Next edit the `api.yaml` file, the changes here will be similar to the `cms.yaml
 
 Check all the other values in these yaml files, eg the docker registry URL will also need to be updated
 
+## Let's Encrypt
+
+In your .k8s submodule, you should have a `letsencrypt.yml` file. This file contains the configuration for the Let's Encrypt Issuer.
+
+Edit this yaml file so that it has a valid email address. This is where Let's Encrypt will send expiry notifications.
+
+You can apply this configuration to your cluster with the following command:
+
+```bash
+kubectl apply -f .k8s/letsencrypt.yml
+```
+
+If you run this command, you should see some cert-manager pods running
+
+```bash
+kubectl get pods --namespace=cert-manager
+```
+
 ---
 
 ## Secrets

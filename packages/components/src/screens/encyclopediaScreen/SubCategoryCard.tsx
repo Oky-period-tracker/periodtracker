@@ -17,20 +17,6 @@ export const SubCategoryCard = ({ title, onPress }) => {
   )
 }
 
-export const VideoSubCategoryCard = ({ title, onPress }) => {
-  const { screenWidth } = useScreenDimensions()
-
-  return (
-    <SubCategoryContainer
-      activeOpacity={0.8}
-      onPress={onPress}
-      style={{ left: 0.05 * screenWidth, width: 0.87 * screenWidth }}
-    >
-      <VideoTitle>{title}</VideoTitle>
-    </SubCategoryContainer>
-  )
-}
-
 const SubCategoryContainer = styled.TouchableOpacity`
   min-height: 65px;
   justify-content: center;
@@ -47,12 +33,6 @@ const SubCategoryContainer = styled.TouchableOpacity`
 `
 
 const Title = styled(TextWithoutTranslation)`
-  font-family: Roboto-Black;
-  color: #ff9e00;
-  font-size: 18;
-`
-
-const VideoTitle = styled(Text)`
   font-family: Roboto-Black;
   color: #ff9e00;
   font-size: 18;

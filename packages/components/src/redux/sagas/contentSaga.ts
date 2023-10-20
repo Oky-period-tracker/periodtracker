@@ -20,21 +20,21 @@ import { closeOutTTs } from '../../services/textToSpeech'
 function* onRehydrate(action: RehydrateAction) {
   const locale = yield select(selectors.currentLocaleSelector)
 
-  const hasPreviousContentFromStorage = action.payload && action.payload.content
+  // const hasPreviousContentFromStorage = action.payload && action.payload.content
 
-  if (!hasPreviousContentFromStorage) {
-    yield put(actions.initStaleContent(staleContent[locale]))
-  }
+  yield put(actions.initStaleContent(staleContent[locale]))
+  // if (!hasPreviousContentFromStorage) {
+  // }
 
-  const now = new Date().getTime()
-  // TODO_ALEX what time interval should we use?
-  const fetchInterval = 0 // 1000 * 60 * 60 * 24 // 24 hours
-  const timeFetched = action.payload && action.payload.content?.timeFetched
-  const shouldFetch = !timeFetched || timeFetched + fetchInterval < now
+  // const now = new Date().getTime()
+  // // TODO_ALEX what time interval should we use?
+  // const fetchInterval = 0 // 1000 * 60 * 60 * 24 // 24 hours
+  // const timeFetched = action.payload && action.payload.content?.timeFetched
+  // const shouldFetch = !timeFetched || timeFetched + fetchInterval < now
 
-  if (shouldFetch) {
-    yield put(actions.fetchContentRequest(locale))
-  }
+  // if (shouldFetch) {
+  //   yield put(actions.fetchContentRequest(locale))
+  // }
 }
 
 // TODO_ALEX: survey

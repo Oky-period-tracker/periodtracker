@@ -27,7 +27,6 @@ import { JourneyScreen } from '../screens/JourneyScreen'
 import { FindHelpScreen } from '../screens/FindHelpScreen'
 import { PasswordRequestScreen } from '../screens/PasswordRequestScreen'
 import { VideoScreen } from '../screens/VideoScreen'
-import { VideosScreen } from '../screens/VideosScreen'
 
 const TutorialFirstStack = createStackNavigator(
   { TutorialFirstScreen },
@@ -74,7 +73,6 @@ const EncyclopediaStack = createStackNavigator(
   {
     Encyclopedia: EncyclopediaScreen,
     Articles: ArticlesScreen,
-    Videos: VideosScreen,
     FindHelp: FindHelpScreen,
   },
   { headerMode: 'none', initialRouteName: 'Encyclopedia' },

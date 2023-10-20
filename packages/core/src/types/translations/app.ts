@@ -1,4 +1,5 @@
 export interface AppTranslations {
+  Videos: string
   empty: string
   info: string
   Day: string

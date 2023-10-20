@@ -47,16 +47,18 @@ const ConfirmAlert = ({
 
 export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   const videoData = navigation.getParam('videoData') as VideoData // TODO_ALEX
-  const { youtubeId, assetName } = videoData
   const { screenWidth, screenHeight } = useScreenDimensions()
 
   const [canUseInternet, setCanUseInternet] = React.useState(false)
   const onConfirm = () => setCanUseInternet(true)
 
   const canPlayBundleVideo =
-    assetName && assetName.length > 0 && assets?.videos && assets?.videos[assetName]
+    videoData?.assetName &&
+    videoData?.assetName.length > 0 &&
+    assets?.videos &&
+    assets?.videos[videoData?.assetName]
 
-  const hasYoutubeVideo = youtubeId && youtubeId.length > 0
+  const hasYoutubeVideo = videoData?.youtubeId && videoData?.youtubeId.length > 0
   const canPlayYoutubeVideo = hasYoutubeVideo && canUseInternet
 
   React.useEffect(() => {
@@ -83,7 +85,7 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   if (canPlayBundleVideo) {
     return (
       <Video
-        source={assets.videos[assetName]}
+        source={assets.videos[videoData?.assetName]}
         style={styles.bundleVideo}
         controls={true}
         fullscreenAutorotate={true}
@@ -96,7 +98,11 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   if (canPlayYoutubeVideo) {
     return (
       <View style={styles.youtubeContainer}>
-        <YoutubePlayer width={screenWidth} height={screenHeight * 0.75} videoId={youtubeId} />
+        <YoutubePlayer
+          width={screenWidth}
+          height={screenHeight * 0.75}
+          videoId={videoData?.youtubeId}
+        />
       </View>
     )
   }

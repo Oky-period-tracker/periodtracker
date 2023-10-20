@@ -93,6 +93,8 @@ export interface AppAssets {
         profileGrey: ImageSourcePropType
         settings: ImageSourcePropType
         settingsGrey: ImageSourcePropType
+        videos: ImageSourcePropType
+        videosGrey: ImageSourcePropType
       }
       clouds: {
         nonPeriod: ImageSourcePropType

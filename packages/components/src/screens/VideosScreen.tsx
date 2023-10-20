@@ -38,10 +38,8 @@ export const VideoItem = ({
   )
 }
 
-export function VideosScreen({ navigation }) {
-  const categoryId = navigation.getParam('categoryId')
-  const category = useSelector((state) => selectors.categoryByIDSelector(state, categoryId))
-  const videos = category?.videos || []
+export function VideosScreen() {
+  const videos = useSelector(selectors.allVideosSelector)
 
   return (
     <BackgroundTheme>
@@ -54,7 +52,7 @@ export function VideosScreen({ navigation }) {
           renderItem={({ item }) => {
             return (
               <VideoItem
-                videoId={item}
+                videoId={item.id}
                 onSelect={(videoData) => navigate('VideoScreen', { videoData })}
               />
             )

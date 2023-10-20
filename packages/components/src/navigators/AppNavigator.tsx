@@ -39,6 +39,15 @@ const TutorialSecondStack = createStackNavigator(
   { headerMode: 'none', initialRouteName: 'TutorialSecondScreen' },
 )
 
+const VideosStack = createStackNavigator(
+  { VideosScreen },
+  { headerMode: 'none', initialRouteName: 'VideosScreen' },
+)
+
+VideosStack.navigationOptions = {
+  tabBarIcon: ({ focused }) => <NavigationBar focused={focused} name="videos" />,
+}
+
 const VideoStack = createStackNavigator(
   { VideoScreen },
   { headerMode: 'none', initialRouteName: 'VideoScreen' },
@@ -74,7 +83,6 @@ const EncyclopediaStack = createStackNavigator(
   {
     Encyclopedia: EncyclopediaScreen,
     Articles: ArticlesScreen,
-    Videos: VideosScreen,
     FindHelp: FindHelpScreen,
   },
   { headerMode: 'none', initialRouteName: 'Encyclopedia' },
@@ -119,6 +127,7 @@ const MainStack = createBottomTabNavigator(
     ProfileStack,
     HomeStack,
     EncyclopediaStack,
+    VideosStack,
     SettingsStack,
   },
   {

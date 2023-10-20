@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
-import { TextWithoutTranslation } from '../../components/common/Text'
+import { Text, TextWithoutTranslation } from '../../components/common/Text'
 import { capitalizeFLetter } from '../../i18n'
 
 export const Category = ({ title, tags, onPress, isActive = false }) => {
@@ -11,6 +11,42 @@ export const Category = ({ title, tags, onPress, isActive = false }) => {
         <Title style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>
           {capitalizeFLetter(title.trim())}
         </Title>
+      </TitleContainer>
+      <TagsContainer>
+        <EmojiSelector
+          title={tags.primary.name}
+          isActive={isActive}
+          isTextVisible={true}
+          emoji={tags.primary.emoji}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            marginBottom: null,
+          }}
+          emojiStyle={{ fontSize: 20 }}
+          textStyle={{
+            position: 'absolute',
+            bottom: -10,
+            fontSize: 8,
+            zIndex: 45,
+            elevation: 6,
+          }}
+          color="#e3629b"
+          onPress={onPress}
+        />
+      </TagsContainer>
+    </CategoryContainer>
+  )
+}
+
+export const VideoCategory = ({ onPress, isActive = false }) => {
+  const tags = { primary: { name: 'videos', emoji: '🎥' } }
+
+  return (
+    <CategoryContainer onPress={onPress}>
+      <TitleContainer>
+        <VideosTitle style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>Videos</VideosTitle>
       </TitleContainer>
       <TagsContainer>
         <EmojiSelector
@@ -71,6 +107,11 @@ const TagsContainer = styled.View`
 `
 
 const Title = styled(TextWithoutTranslation)`
+  font-family: Roboto-Black;
+  font-size: 18;
+`
+
+const VideosTitle = styled(Text)`
   font-family: Roboto-Black;
   font-size: 18;
 `

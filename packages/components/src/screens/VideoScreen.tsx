@@ -4,7 +4,7 @@ import YoutubePlayer from 'react-native-youtube-iframe'
 import { Header } from '../components/common/Header'
 import { assets } from '../assets'
 import { VideoData } from '../types'
-import { Alert, StyleSheet, View } from 'react-native'
+import { Alert, Dimensions, StyleSheet, View } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { translate } from '../i18n'
@@ -79,6 +79,21 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
     }
   }, [])
 
+  const [videoWidth, setVideoWidth] = React.useState(0)
+  const [videoHeight, setVideoHeight] = React.useState(0)
+
+  React.useEffect(() => {
+    const videoAspectRatio = 16 / 9 // Aspect ratios might need to be saved in VideoData object if they vary
+
+    if (screenWidth / videoAspectRatio < screenHeight) {
+      setVideoWidth(screenWidth)
+      setVideoHeight(screenWidth / videoAspectRatio)
+    } else {
+      setVideoWidth(screenHeight * videoAspectRatio)
+      setVideoHeight(screenHeight)
+    }
+  }, [])
+
   // Bundled video
   if (canPlayBundleVideo) {
     return (
@@ -96,7 +111,7 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   if (canPlayYoutubeVideo) {
     return (
       <View style={styles.youtubeContainer}>
-        <YoutubePlayer width={screenWidth} height={screenHeight * 0.75} videoId={youtubeId} />
+        <YoutubePlayer width={videoWidth} height={videoHeight} videoId={youtubeId} />
       </View>
     )
   }

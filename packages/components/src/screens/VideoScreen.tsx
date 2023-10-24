@@ -79,21 +79,6 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
     }
   }, [])
 
-  const [videoWidth, setVideoWidth] = React.useState(0)
-  const [videoHeight, setVideoHeight] = React.useState(0)
-
-  React.useEffect(() => {
-    const videoAspectRatio = 16 / 9 // Aspect ratios might need to be saved in VideoData object if they vary
-
-    if (screenWidth / videoAspectRatio < screenHeight) {
-      setVideoWidth(screenWidth)
-      setVideoHeight(screenWidth / videoAspectRatio)
-    } else {
-      setVideoWidth(screenHeight * videoAspectRatio)
-      setVideoHeight(screenHeight)
-    }
-  }, [])
-
   // Bundled video
   if (canPlayBundleVideo) {
     return (
@@ -107,8 +92,18 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
     )
   }
 
-  // Youtube video
+  const videoAspectRatio = 16 / 9 // Aspect ratios might need to be saved in VideoData object if they vary
+
+  let videoWidth = screenWidth
+  let videoHeight = videoWidth / videoAspectRatio
+
+  if (screenWidth > screenHeight) {
+    videoHeight = screenHeight
+    videoWidth = videoHeight * videoAspectRatio
+  }
+
   if (canPlayYoutubeVideo) {
+    // Youtube video
     return (
       <View style={styles.youtubeContainer}>
         <YoutubePlayer width={videoWidth} height={videoHeight} videoId={youtubeId} />

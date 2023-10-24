@@ -94,8 +94,18 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
     )
   }
 
-  // Youtube video
+  const videoAspectRatio = 16 / 9 // Aspect ratios might need to be saved in VideoData object if they vary
+
+  let videoWidth = screenWidth
+  let videoHeight = videoWidth / videoAspectRatio
+
+  if (screenWidth > screenHeight) {
+    videoHeight = screenHeight
+    videoWidth = videoHeight * videoAspectRatio
+  }
+
   if (canPlayYoutubeVideo) {
+    // Youtube video
     return (
       <View style={styles.youtubeContainer}>
         <YoutubePlayer

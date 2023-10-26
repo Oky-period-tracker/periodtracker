@@ -108,11 +108,7 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
     // Youtube video
     return (
       <View style={styles.youtubeContainer}>
-        <YoutubePlayer
-          width={screenWidth}
-          height={screenHeight * 0.75}
-          videoId={videoData?.youtubeId}
-        />
+        <YoutubePlayer width={videoWidth} height={videoHeight} videoId={videoData?.youtubeId} />
       </View>
     )
   }

@@ -12,7 +12,7 @@
     "lint": "tslint -p .",
     "start": "yarn run serve",
     "serve": "NODE_PATH=./dist node dist/index.js",
-    "test": "NODE_PATH=./src jest --forceExit --coverage --verbose",
+    "test": "NODE_PATH=./src jest --forceExit --coverage --verbose --detectOpenHandles",
     "watch": "nodemon --legacy-watch --watch src -e ts,ejs --exec NODE_PATH=./src ts-node ./src/index",
     "watch-test": "yarn run test -- --watchAll",
     "nuke": "shx rm -rf node_modules"

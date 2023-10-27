@@ -1,13 +1,18 @@
-import { OkyUserApplicationService } from '../../../../src/application/oky/OkyUserApplicationService'
-import { SignupCommand } from '../../../../src/application/oky/commands/SignupCommand'
-import { AuthenticationService } from '../../../../src/domain/oky/AuthenticationService'
-import { OkyUser } from '../../../../src/domain/oky/OkyUser'
-import { OkyUserRepository } from '../../../../src/domain/oky/OkyUserRepository'
+import { OkyUserApplicationService } from '../../../src/application/oky/OkyUserApplicationService'
+import { SignupCommand } from '../../../src/application/oky/commands/SignupCommand'
+import { AuthenticationService } from '../../../src/domain/oky/AuthenticationService'
+import { OkyUserRepository } from '../../../src/domain/oky/OkyUserRepository'
 
 describe('OkyUserApplicationService', () => {
   let authenticationService: AuthenticationService
   let okyUserRepository: OkyUserRepository
   let okyUserApplicationService: OkyUserApplicationService
+  const mockOkyUser = {
+    id: '123',
+    name: 'aaa',
+    resetPassword: jest.fn(),
+    deleteFromPassword: jest.fn(),
+  }
 
   beforeEach(() => {
     okyUserRepository = {
@@ -134,11 +139,6 @@ describe('OkyUserApplicationService', () => {
 
   describe('resetPassword', () => {
     it('should successfully reset password', async () => {
-      // Mocking the OkyUser instance
-      const mockOkyUser = {
-        resetPassword: jest.fn(),
-      }
-
       // Mock repository methods
       ;(okyUserRepository.nextIdentity as jest.Mock).mockResolvedValue('newId')
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
@@ -194,11 +194,6 @@ describe('OkyUserApplicationService', () => {
 
   describe('deleteUser', () => {
     it('should successfully delete a user', async () => {
-      // Mocking the OkyUser instance
-      const mockOkyUser = {
-        id: 'someUserId',
-      } // The actual shape depends on your OkyUser class
-
       // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
       ;(okyUserRepository.delete as jest.Mock).mockResolvedValue(undefined) // Assuming delete returns true on success
@@ -210,6 +205,44 @@ describe('OkyUserApplicationService', () => {
       expect(result).toBe(undefined)
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
       expect(okyUserRepository.delete).toHaveBeenCalledWith(mockOkyUser)
+    })
+
+    it('should not fail if the user is not found', async () => {
+      // Mock repository methods to return null for non-existing user
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
+
+      // Call deleteUser method
+      const result = await okyUserApplicationService.deleteUser({ userId: 'someNonExistingUserId' })
+
+      // Verify result and method calls
+      expect(result).toBeUndefined()
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someNonExistingUserId')
+      expect(okyUserRepository.delete).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('deleteUserFromPassword', () => {
+    it('should successfully delete a user from password', async () => {
+      // Mock repository methods
+      ;(okyUserRepository.nextIdentity as jest.Mock).mockResolvedValue('newId')
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
+      ;(okyUserRepository.byName as jest.Mock).mockResolvedValue(mockOkyUser)
+      ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
+
+      // Mock repository methods
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
+      ;(okyUserRepository.delete as jest.Mock).mockResolvedValue(undefined)
+
+      // Call deleteUser method
+      const result = await okyUserApplicationService.deleteUserFromPassword({
+        userName: 'aaa',
+        password: 'aaa',
+      })
+
+      // Verify result and method calls
+      expect(result).toBe(undefined)
+      expect(okyUserRepository.byName).toHaveBeenCalledWith('aaa')
+      expect(mockOkyUser.deleteFromPassword).toHaveBeenCalled()
     })
 
     it('should not fail if the user is not found', async () => {

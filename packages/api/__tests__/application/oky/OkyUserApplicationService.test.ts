@@ -13,6 +13,7 @@ describe('OkyUserApplicationService', () => {
     resetPassword: jest.fn(),
     deleteFromPassword: jest.fn(),
     replaceStore: jest.fn(),
+    editInfo: jest.fn(),
   }
 
   beforeEach(() => {
@@ -293,6 +294,56 @@ describe('OkyUserApplicationService', () => {
         fail('should have thrown an error') // fail if it didn't throw an error
       } catch (e) {
         expect(e.message).toBe(`Cannot replace store for missing someUserId user`)
+      }
+
+      // Verify that byId was called with the correct userId
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
+    })
+  })
+
+  describe('editInfo', () => {
+    it('should successfully edit info', async () => {
+      // Mock repository methods
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
+      ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
+
+      // Call replaceStore method
+      const command = {
+        userId: 'someUserId',
+        name: 'bbb',
+        dateOfBirth: new Date(),
+        location: 'Urban',
+        gender: 'Male' as const,
+        secretQuestion: 'favourite_actor',
+      }
+
+      const result = await okyUserApplicationService.editInfo(command)
+
+      // Verify result and method calls
+      expect(result).toBe(mockOkyUser)
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
+      expect(mockOkyUser.editInfo).toHaveBeenCalledWith({ ...command, userId: undefined })
+    })
+
+    it('should throw an error if the user is not found', async () => {
+      // Mock repository methods
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
+
+      // Try-Catch to handle expected thrown error
+      try {
+        const command = {
+          userId: 'someUserId',
+          name: 'bbb',
+          dateOfBirth: new Date(),
+          location: 'Urban',
+          gender: 'Male' as const,
+          secretQuestion: 'favourite_actor',
+        }
+
+        await okyUserApplicationService.editInfo(command)
+        fail('should have thrown an error') // fail if it didn't throw an error
+      } catch (e) {
+        expect(e.message).toBe(`Cannot edit info for missing someUserId user`)
       }
 
       // Verify that byId was called with the correct userId

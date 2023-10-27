@@ -23,7 +23,6 @@ export class MemorableQuestion {
     if (secretAnswer.length < minSecretAnswerLength) {
       throw new Error(`This secret answer is too short`)
     }
-    console.log('AAAA', secretAnswer)
     const secretAnswerHashed = await bcrypt.hash(secretAnswer, saltRounds)
     return new MemorableQuestion(secretQuestion, secretAnswerHashed)
   }

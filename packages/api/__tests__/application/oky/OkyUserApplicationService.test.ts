@@ -14,6 +14,7 @@ describe('OkyUserApplicationService', () => {
     deleteFromPassword: jest.fn(),
     replaceStore: jest.fn(),
     editInfo: jest.fn(),
+    editSecretAnswer: jest.fn(),
   }
 
   beforeEach(() => {
@@ -351,5 +352,47 @@ describe('OkyUserApplicationService', () => {
     })
   })
 
-  // Add more test cases for other methods
+  describe('editSecretAnswer', () => {
+    it('should successfully edit secret answer', async () => {
+      // Mock repository methods
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
+      ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
+
+      // Call replaceStore method
+      const command = {
+        userId: 'someUserId',
+        previousSecretAnswer: 'a',
+        nextSecretAnswer: 'b',
+      }
+
+      const result = await okyUserApplicationService.editSecretAnswer(command)
+
+      // Verify result and method calls
+      expect(result).toBe(mockOkyUser)
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
+      expect(mockOkyUser.editSecretAnswer).toHaveBeenCalledWith('a', 'b')
+    })
+
+    it('should throw an error if the user is not found', async () => {
+      // Mock repository methods
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
+
+      // Try-Catch to handle expected thrown error
+      try {
+        const command = {
+          userId: 'someUserId',
+          previousSecretAnswer: 'a',
+          nextSecretAnswer: 'b',
+        }
+
+        await okyUserApplicationService.editSecretAnswer(command)
+        fail('should have thrown an error') // fail if it didn't throw an error
+      } catch (e) {
+        expect(e.message).toBe(`Cannot edit info for missing someUserId user`)
+      }
+
+      // Verify that byId was called with the correct userId
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
+    })
+  })
 })

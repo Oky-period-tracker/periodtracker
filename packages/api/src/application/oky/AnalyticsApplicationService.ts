@@ -7,11 +7,14 @@ import { AppendEventsCommand } from './commands/AppendEventsCommand'
 
 @Service()
 export class AnalyticsApplicationService {
-  @Inject(AppEventRepositoryToken)
   private appEventRepository: AppEventRepository
 
+  constructor(@Inject(AppEventRepositoryToken) appEventRepository: AppEventRepository) {
+    this.appEventRepository = appEventRepository
+  }
+
   public async appendEvents({ userId, events }: AppendEventsCommand) {
-    const appEvents = events.map(event => {
+    const appEvents = events.map((event) => {
       return AppEvent.fromData(userId, {
         localId: event.localId,
         type: event.type,

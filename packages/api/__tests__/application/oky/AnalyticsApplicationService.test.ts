@@ -1,7 +1,7 @@
-import { AnalyticsApplicationService } from '../../../../src/application/oky/AnalyticsApplicationService'
-import { AppEventRepository } from '../../../../src/domain/oky/AppEventRepository'
-import { AppEvent } from '../../../../src/domain/oky/AppEvent'
-import { AppendEventsCommand } from '../../../../src/application/oky/commands/AppendEventsCommand'
+import { AnalyticsApplicationService } from '../../../src/application/oky/AnalyticsApplicationService'
+import { AppEventRepository } from '../../../src/domain/oky/AppEventRepository'
+import { AppEvent } from '../../../src/domain/oky/AppEvent'
+import { AppendEventsCommand } from '../../../src/application/oky/commands/AppendEventsCommand'
 
 // Create a mock implementation
 const mockAppendEvents = jest.fn()

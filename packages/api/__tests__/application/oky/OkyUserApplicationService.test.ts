@@ -12,6 +12,7 @@ describe('OkyUserApplicationService', () => {
     name: 'aaa',
     resetPassword: jest.fn(),
     deleteFromPassword: jest.fn(),
+    replaceStore: jest.fn(),
   }
 
   beforeEach(() => {
@@ -256,6 +257,46 @@ describe('OkyUserApplicationService', () => {
       expect(result).toBeUndefined()
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someNonExistingUserId')
       expect(okyUserRepository.delete).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('replaceStore', () => {
+    it('should successfully replace store', async () => {
+      // Mock repository methods
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
+      ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
+
+      // Call replaceStore method
+      const result = await okyUserApplicationService.replaceStore({
+        userId: 'someUserId',
+        storeVersion: 1,
+        appState: { some: 'appState' },
+      })
+
+      // Verify result and method calls
+      expect(result).toBe(mockOkyUser)
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
+      expect(mockOkyUser.replaceStore).toHaveBeenCalledWith(1, { some: 'appState' })
+    })
+
+    it('should throw an error if the user is not found', async () => {
+      // Mock repository methods
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
+
+      // Try-Catch to handle expected thrown error
+      try {
+        await okyUserApplicationService.replaceStore({
+          userId: 'someUserId',
+          storeVersion: 1,
+          appState: { some: 'appState' },
+        })
+        fail('should have thrown an error') // fail if it didn't throw an error
+      } catch (e) {
+        expect(e.message).toBe(`Cannot replace store for missing someUserId user`)
+      }
+
+      // Verify that byId was called with the correct userId
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
     })
   })
 

@@ -192,5 +192,39 @@ describe('OkyUserApplicationService', () => {
     })
   })
 
+  describe('deleteUser', () => {
+    it('should successfully delete a user', async () => {
+      // Mocking the OkyUser instance
+      const mockOkyUser = {
+        id: 'someUserId',
+      } // The actual shape depends on your OkyUser class
+
+      // Mock repository methods
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
+      ;(okyUserRepository.delete as jest.Mock).mockResolvedValue(undefined) // Assuming delete returns true on success
+
+      // Call deleteUser method
+      const result = await okyUserApplicationService.deleteUser({ userId: 'someUserId' })
+
+      // Verify result and method calls
+      expect(result).toBe(undefined)
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
+      expect(okyUserRepository.delete).toHaveBeenCalledWith(mockOkyUser)
+    })
+
+    it('should not fail if the user is not found', async () => {
+      // Mock repository methods to return null for non-existing user
+      ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
+
+      // Call deleteUser method
+      const result = await okyUserApplicationService.deleteUser({ userId: 'someNonExistingUserId' })
+
+      // Verify result and method calls
+      expect(result).toBeUndefined()
+      expect(okyUserRepository.byId).toHaveBeenCalledWith('someNonExistingUserId')
+      expect(okyUserRepository.delete).not.toHaveBeenCalled()
+    })
+  })
+
   // Add more test cases for other methods
 })

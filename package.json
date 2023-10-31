@@ -26,6 +26,7 @@
     "format": "yarn workspaces run format",
     "lint": "yarn workspaces run lint",
     "devtools": "yarn workspace @oky/mobile react-devtools",
+    "test": "yarn clean && yarn compile && yarn workspaces run test",
     "test:all": "yarn run test:saga && yarn run test:prediction-engine",
     "test:saga": "yarn workspace @oky/components run test",
     "test:prediction-engine": "yarn workspace @oky/core run test",

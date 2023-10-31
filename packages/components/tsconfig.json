@@ -10,6 +10,6 @@
     "rootDirs": ["src/"],
     "typeRoots": ["../../node_modules/@types", "./@types"]
   },
-  "include": ["./src/", "./@types/*.d.ts", "__tests__/saga.tests.ts"],
+  "include": ["./src/", "./@types/*.d.ts"],
   "references": [{ "path": "../core" }]
 }

@@ -441,7 +441,7 @@ export class PredictionEngine {
 
     // MARK:- if difference between selected date and last period day of current cycle is less than 2, than extend current cycle period length
     if (daysFromStart < this.state.currentCycle.periodLength / 2) {
-      const tempDate = moment(inputDay).add('days', 1)
+      const tempDate = moment(inputDay).add(1, 'days')
 
       if (daysFromStart <= 0) {
         const daysFromCurrentCycle = this.state.currentCycle.startDate.diff(tempDate, 'days')
@@ -529,7 +529,7 @@ export class PredictionEngine {
     const relevantCycleHistoryEntry = this._getClosetCycleHistoryInfo(inputDay)
     const daysFromStart = inputDay.diff(this.state.currentCycle.startDate, 'days')
     // MARK:- Add new cycle in the history (which will become 1st cycle)
-    const tempDate = moment(this.state.currentCycle.startDate).add('days', 1)
+    const tempDate = moment(this.state.currentCycle.startDate).add(1, 'days')
 
     if (_.isEmpty(relevantCycleHistoryEntry.closetCycle)) {
       const tempHistoryArr = [...this.state.history]
@@ -651,7 +651,8 @@ export class PredictionEngine {
         return
       }
 
-      const addNewHistoryCycle = {
+      // TODO: This code is unreachable ?
+      /*     const addNewHistoryCycle = {
         cycleStartDate: inputDay,
         cycleEndDate: tempHistoryArr[tempHistoryArr.length - 1].cycleStartDate
           .clone()
@@ -665,7 +666,7 @@ export class PredictionEngine {
       tempHistoryArr.push(addNewHistoryCycle)
       this.state.history = [...tempHistoryArr]
       getPredictedCycles(true)
-      return
+      return */
     }
 
     const daysFromInputToCloset = inputDay.diff(
@@ -993,7 +994,8 @@ export class PredictionEngine {
     )
 
     this.state.currentCycle.cycleLength = this.state.smartPrediction.smaCycleLength
-    getPredictedCycles(true)
+    // TODO: this is sometimes null ?
+    getPredictedCycles?.(true)
   }
 
   // +=+=+=+=+==+=+=+=+= History Adjust Methods +=+=+=+=+=+=+=+=++=+=+=+=+=+=+=+==+=+=+=+=+
@@ -1118,7 +1120,7 @@ export class PredictionEngine {
     // fetch closet cycle in history, then check if selected date is between 2 hsitory cycles or between history and current cycle
     if (relevantCycleHistoryEntry.closestIndex - 1 >= 0) {
       // if selected date is the 1st period day of cycle
-      const tempDate = moment(inputDay).add('days', 1)
+      const tempDate = moment(inputDay).add(1, 'days')
 
       if (
         tempDate.isSame(

@@ -9,7 +9,7 @@
     "compile": "tsc -b",
     "format": "prettier --write '{.,src/**}/*.{js,jsx,ts,tsx}'",
     "lint": "tslint -p .",
-    "test": "jest --forceExit --coverage --verbose"
+    "test": "cd ."
   },
   "dependencies": {
     "axios": "^0.21.1",

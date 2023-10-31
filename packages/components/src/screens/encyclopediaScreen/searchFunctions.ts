@@ -5,20 +5,28 @@ export const handleSearchResult = (searchStr, categories, subCategories, article
     const doesSubCategoryOrArticlesContainString = category.subCategories.some((subCatId) => {
       const relevantSubCategory = subCategories.find((item) => item.id === subCatId)
 
+      const doesSubCategoryContainString = relevantSubCategory.name
+        .toLocaleLowerCase(locale)
+        .includes(lowerCaseSearchStr)
+
       const doesArticleContainString = relevantSubCategory.articles.some((articleId) => {
         const articleWithinSubCategory = articles.find((item) => item?.id && item.id === articleId)
         if (!articleWithinSubCategory) {
           return false
         }
-        return articleWithinSubCategory.content
+
+        const doesArticleContentContainString = articleWithinSubCategory.content
           .toLocaleLowerCase(locale)
           .includes(lowerCaseSearchStr)
+
+        const doesArticleTitleContainString = articleWithinSubCategory.title
+          .toLocaleLowerCase(locale)
+          .includes(lowerCaseSearchStr)
+
+        return doesArticleTitleContainString || doesArticleContentContainString
       })
 
-      return (
-        relevantSubCategory.name.toLocaleLowerCase(locale).includes(lowerCaseSearchStr) ||
-        doesArticleContainString
-      )
+      return doesSubCategoryContainString || doesArticleContainString
     })
     const doesCategoryContainString = category.name
       .toLocaleLowerCase(locale)

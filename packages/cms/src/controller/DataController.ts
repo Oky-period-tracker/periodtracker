@@ -60,7 +60,9 @@ export class DataController {
       [request.user.lang],
     )
 
-    const { articles, categories, subCategories } = fromEncyclopedia(encyclopediaRaw)
+    const { articles, categories, subCategories } = fromEncyclopedia({
+      encyclopediaResponse: encyclopediaRaw,
+    })
 
     // ========== Quiz ========== //
     const quizzesRaw = await this.quizRepository.find({
@@ -432,25 +434,10 @@ export class DataController {
       return response.status(400).send('No file was uploaded.')
     }
 
-    const encyclopediaSheetNames = [
-      'Boys, men and relationships',
-      'COVID-19',
-      'Family planning',
-      'Health, nutrition and exercise',
-      'Managing menstruation',
-      'Menstruation & menstrual cycle',
-      'Mental health',
-      'My rights',
-      'Myths and feelings',
-      'Periods and life',
-      'Personal identity',
-      'Puberty',
-      'Using Oky',
-      'Violence and staying safe',
-    ]
+    // Create a workbook from the xlsx data
+    const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
 
     const otherSheetNames = [
-      'test',
       'Quizzes',
       'Did you know',
       'Help',
@@ -460,8 +447,9 @@ export class DataController {
       'About',
     ]
 
-    // Create a workbook from the xlsx data
-    const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
+    const encyclopediaSheetNames = workbook.SheetNames.filter(
+      (name) => !otherSheetNames.includes(name),
+    )
 
     const encyclopediaJson = encyclopediaSheetNames.reduce((acc, name) => {
       const worksheet = workbook.Sheets[name]
@@ -721,7 +709,7 @@ const replaceIdsInJson = (data: unknown, idsToReplace: string[], shouldReplace: 
 
 const formatEncyclopediaData = (encyclopediaJson, shouldReplace) => {
   const dataNoOriginals = removeOriginalsFromArray(encyclopediaJson)
-  const data = fromEncyclopedia(dataNoOriginals)
+  const data = fromEncyclopedia({ encyclopediaResponse: dataNoOriginals })
 
   if (!shouldReplace) {
     return data

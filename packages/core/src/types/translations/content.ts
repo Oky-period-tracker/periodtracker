@@ -68,7 +68,7 @@ interface DidYouKnows {
 interface Quiz {
   id: string
   isAgeRestricted: boolean
-  topic: string
+  topic?: string
   question: string
   answers: Array<{
     text: string

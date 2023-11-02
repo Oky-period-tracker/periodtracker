@@ -27,7 +27,7 @@ export interface VideosResponse extends Array<VideosResponseItem> {}
 interface QuizResponseItem {
   id: string
   isAgeRestricted: boolean
-  topic: string
+  topic?: string
   question: string
   option1: string
   option2: string

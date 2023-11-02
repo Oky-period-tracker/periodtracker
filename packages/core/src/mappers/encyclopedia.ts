@@ -4,10 +4,10 @@ export type Encyclopedia = ReturnType<typeof fromEncyclopedia>
 
 export function fromEncyclopedia({
   encyclopediaResponse,
-  videosResponse,
+  videosResponse = [],
 }: {
   encyclopediaResponse: EncyclopediaResponse
-  videosResponse: VideosResponse
+  videosResponse?: VideosResponse
 }) {
   const dataShape = {
     categories: {

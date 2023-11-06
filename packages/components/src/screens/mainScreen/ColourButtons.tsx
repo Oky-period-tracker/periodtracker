@@ -76,6 +76,7 @@ export function ColourButtons({
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
 
+  // TODO_ALEX this useState is redundant
   const [futurePredictionStatus, setFuturePredictionStatus] = useState(false)
 
   React.useEffect(() => {
@@ -146,8 +147,8 @@ export function ColourButtons({
     currentCycleInfo,
     history,
     isActive,
-    errorCallBack,
-    getPredictedCycles,
+    // errorCallBack,
+    // getPredictedCycles,
   })
 
   const actionBlue = decisionProcessNonPeriod({

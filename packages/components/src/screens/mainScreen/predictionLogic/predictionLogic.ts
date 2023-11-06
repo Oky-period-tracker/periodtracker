@@ -1,11 +1,11 @@
 export function decisionProcessPeriod({
-  inputDay,
-  selectedDayInfo,
-  currentCycleInfo,
-  history,
-  isActive,
-  errorCallBack,
-  getPredictedCycles,
+  inputDay, // moment.Moment
+  selectedDayInfo, // PredictionDayInfo
+  currentCycleInfo, // PredictionDayInfo
+  history, // PredictionHistory
+  isActive, // boolean
+  // errorCallBack,
+  // getPredictedCycles,
 }) {
   const diffFromStart = inputDay.diff(currentCycleInfo.cycleStart, 'days')
   if (diffFromStart >= currentCycleInfo.cycleLength) {

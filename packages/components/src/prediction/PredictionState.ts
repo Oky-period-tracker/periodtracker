@@ -9,13 +9,13 @@ interface CurrentCycle {
 }
 
 interface SmartPrediction {
-  circularPeriodLength: any
-  circularCycleLength: any
+  circularPeriodLength: any // CircularBuffer number[] array of number of days
+  circularCycleLength: any // CircularBuffer number[] array of number of days
   smaPeriodLength: number
   smaCycleLength: number
 }
 
-type History = Array<{
+type PredictionHistory = Array<{
   cycleStartDate: Moment
   cycleEndDate: Moment
   periodLength: number
@@ -26,7 +26,7 @@ export class PredictionState {
   public isActive: boolean
   public currentCycle: CurrentCycle
   public smartPrediction: SmartPrediction
-  public history: History
+  public history: PredictionHistory
   public futurePredictionStatus: boolean
   public actualCurrentStartDate: any
 
@@ -49,7 +49,7 @@ export class PredictionState {
     cycleLength?: number
     smaPeriodLength?: number
     smaCycleLength?: number
-    history?: History
+    history?: PredictionHistory
     futurePredictionStatus?: boolean
     actualCurrentStartDate?: any
   }) {

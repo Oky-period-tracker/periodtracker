@@ -2,6 +2,19 @@ import _, { trimEnd } from 'lodash'
 import moment, { Moment } from 'moment'
 import { PredictionState } from './PredictionState'
 
+interface PredictionDayInfo {
+  onPeriod: boolean
+  onFertile: boolean
+  date: moment.Moment
+  cycleDay: number
+  daysLeftOnPeriod: number
+  cycleStart: moment.Moment
+  daysUntilNextPeriod: number
+  cycleLength: number
+  periodLength: number
+  isVerified: boolean
+}
+
 type Subscriber = (state: PredictionState) => void
 const maxPeriodLength = 11
 const minPeriodLength = 1
@@ -16,7 +29,11 @@ export class PredictionEngine {
   }
 
   // +=+=+=+=+=+=+=+=+=+=+=+=+=+ Main Engine +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
-  public predictDay(inputDay: Moment, isVerified: boolean = false, selectedDayInfo: any = {}) {
+  public predictDay(
+    inputDay: Moment,
+    isVerified: boolean = false,
+    selectedDayInfo: any = {},
+  ): PredictionDayInfo {
     let onPeriod = false
     let onFertile = false
     let daysLeftOnPeriod = 0
@@ -39,7 +56,7 @@ export class PredictionEngine {
     }
     // ------------------------- Basic Calcs --------------------------------
     let cycleStart = this.state.currentCycle.startDate
-    const diffDays = inputDay.diff(cycleStart, 'days')
+    const diffDays = inputDay.diff(cycleStart, 'days') // number of days since start of cycle
     let cycleDay = diffDays + 1 // because days start from 1 and not 0
     // --------------- Future and History Handling -----------------------------
 

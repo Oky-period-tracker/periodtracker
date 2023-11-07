@@ -2,7 +2,7 @@ import _, { trimEnd } from 'lodash'
 import moment, { Moment } from 'moment'
 import { PredictionState } from './PredictionState'
 
-interface PredictionDayInfo {
+export interface PredictionDayInfo {
   onPeriod: boolean
   onFertile: boolean
   date: moment.Moment

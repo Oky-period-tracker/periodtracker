@@ -1,7 +1,7 @@
 import { content } from '../../../../src/modules/translations/content' // Update with the correct path to your content file
 
 describe('Static Content Integrity', () => {
-  let locales = []
+  let locales: string[] = []
   beforeEach(() => {
     locales = Object.keys(content)
   })

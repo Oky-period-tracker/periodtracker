@@ -29,7 +29,6 @@ describe('OkyUserApplicationService', () => {
     authenticationService = new AuthenticationService(okyUserRepository)
     authenticationService.authenticateUser = jest.fn()
 
-    // Initialize the service with mock instances
     okyUserApplicationService = new OkyUserApplicationService(
       authenticationService,
       okyUserRepository,
@@ -38,28 +37,22 @@ describe('OkyUserApplicationService', () => {
 
   describe('userDescriptor', () => {
     it('should return null if user is not found', async () => {
-      // Arrange
       ;(okyUserRepository.byName as jest.Mock).mockResolvedValueOnce(null)
 
-      // Act
       const result = await okyUserApplicationService.userDescriptor('nonexistent')
 
-      // Assert
       expect(result).toBeNull()
     })
 
     it('should return user descriptor if user is found', async () => {
-      // Arrange
       const mockUser = {
         getId: jest.fn().mockReturnValue('id123'),
         getMemorableQuestion: jest.fn().mockReturnValue('What is your favorite color?'),
       }
       ;(okyUserRepository.byName as jest.Mock).mockResolvedValueOnce(mockUser)
 
-      // Act
       const result = await okyUserApplicationService.userDescriptor('existingUser')
 
-      // Assert
       expect(result).toEqual({
         id: 'id123',
         secretQuestion: 'What is your favorite color?',
@@ -112,8 +105,6 @@ describe('OkyUserApplicationService', () => {
         'User with this name already exists',
       )
     })
-
-    // Add more conditions like invalid password, age restriction, etc.
   })
 
   describe('login', () => {
@@ -142,13 +133,11 @@ describe('OkyUserApplicationService', () => {
 
   describe('resetPassword', () => {
     it('should successfully reset password', async () => {
-      // Mock repository methods
       ;(okyUserRepository.nextIdentity as jest.Mock).mockResolvedValue('newId')
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
       ;(okyUserRepository.byName as jest.Mock).mockResolvedValue(null)
       ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
 
-      // Mock signup command
       const command: SignupCommand = {
         preferredId: '123',
         name: 'aaa',
@@ -162,23 +151,17 @@ describe('OkyUserApplicationService', () => {
         dateOfBirth: new Date(),
       }
 
-      // Signup a new user
       const okyUser = await okyUserApplicationService.signup(command)
 
-      // Verify signup
       expect(okyUser).toBe(mockOkyUser)
-
-      // Mock repository byName method to return the signed-up user
       ;(okyUserRepository.byName as jest.Mock).mockResolvedValue(mockOkyUser)
 
-      // Perform password reset
       const result = await okyUserApplicationService.resetPassword({
         userName: 'aaa',
         secretAnswer: 'a',
         newPassword: 'bbb',
       })
 
-      // Verify result and method calls
       expect(result).toBe(mockOkyUser)
       expect(mockOkyUser.resetPassword).toHaveBeenCalledWith('a', 'bbb')
     })
@@ -197,27 +180,21 @@ describe('OkyUserApplicationService', () => {
 
   describe('deleteUser', () => {
     it('should successfully delete a user', async () => {
-      // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
-      ;(okyUserRepository.delete as jest.Mock).mockResolvedValue(undefined) // Assuming delete returns true on success
+      ;(okyUserRepository.delete as jest.Mock).mockResolvedValue(undefined)
 
-      // Call deleteUser method
       const result = await okyUserApplicationService.deleteUser({ userId: 'someUserId' })
 
-      // Verify result and method calls
       expect(result).toBe(undefined)
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
       expect(okyUserRepository.delete).toHaveBeenCalledWith(mockOkyUser)
     })
 
     it('should not fail if the user is not found', async () => {
-      // Mock repository methods to return null for non-existing user
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
 
-      // Call deleteUser method
       const result = await okyUserApplicationService.deleteUser({ userId: 'someNonExistingUserId' })
 
-      // Verify result and method calls
       expect(result).toBeUndefined()
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someNonExistingUserId')
       expect(okyUserRepository.delete).not.toHaveBeenCalled()
@@ -226,36 +203,28 @@ describe('OkyUserApplicationService', () => {
 
   describe('deleteUserFromPassword', () => {
     it('should successfully delete a user from password', async () => {
-      // Mock repository methods
       ;(okyUserRepository.nextIdentity as jest.Mock).mockResolvedValue('newId')
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
       ;(okyUserRepository.byName as jest.Mock).mockResolvedValue(mockOkyUser)
       ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
-
-      // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
       ;(okyUserRepository.delete as jest.Mock).mockResolvedValue(undefined)
 
-      // Call deleteUser method
       const result = await okyUserApplicationService.deleteUserFromPassword({
         userName: 'aaa',
         password: 'aaa',
       })
 
-      // Verify result and method calls
       expect(result).toBe(undefined)
       expect(okyUserRepository.byName).toHaveBeenCalledWith('aaa')
       expect(mockOkyUser.deleteFromPassword).toHaveBeenCalled()
     })
 
     it('should not fail if the user is not found', async () => {
-      // Mock repository methods to return null for non-existing user
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
 
-      // Call deleteUser method
       const result = await okyUserApplicationService.deleteUser({ userId: 'someNonExistingUserId' })
 
-      // Verify result and method calls
       expect(result).toBeUndefined()
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someNonExistingUserId')
       expect(okyUserRepository.delete).not.toHaveBeenCalled()
@@ -264,51 +233,43 @@ describe('OkyUserApplicationService', () => {
 
   describe('replaceStore', () => {
     it('should successfully replace store', async () => {
-      // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
       ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
 
-      // Call replaceStore method
       const result = await okyUserApplicationService.replaceStore({
         userId: 'someUserId',
         storeVersion: 1,
         appState: { some: 'appState' },
       })
 
-      // Verify result and method calls
       expect(result).toBe(mockOkyUser)
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
       expect(mockOkyUser.replaceStore).toHaveBeenCalledWith(1, { some: 'appState' })
     })
 
     it('should throw an error if the user is not found', async () => {
-      // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
 
-      // Try-Catch to handle expected thrown error
       try {
         await okyUserApplicationService.replaceStore({
           userId: 'someUserId',
           storeVersion: 1,
           appState: { some: 'appState' },
         })
-        fail('should have thrown an error') // fail if it didn't throw an error
+        fail('should have thrown an error')
       } catch (e) {
         expect(e.message).toBe(`Cannot replace store for missing someUserId user`)
       }
 
-      // Verify that byId was called with the correct userId
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
     })
   })
 
   describe('editInfo', () => {
     it('should successfully edit info', async () => {
-      // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
       ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
 
-      // Call replaceStore method
       const command = {
         userId: 'someUserId',
         name: 'bbb',
@@ -320,17 +281,14 @@ describe('OkyUserApplicationService', () => {
 
       const result = await okyUserApplicationService.editInfo(command)
 
-      // Verify result and method calls
       expect(result).toBe(mockOkyUser)
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
       expect(mockOkyUser.editInfo).toHaveBeenCalledWith({ ...command, userId: undefined })
     })
 
     it('should throw an error if the user is not found', async () => {
-      // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
 
-      // Try-Catch to handle expected thrown error
       try {
         const command = {
           userId: 'someUserId',
@@ -342,23 +300,20 @@ describe('OkyUserApplicationService', () => {
         }
 
         await okyUserApplicationService.editInfo(command)
-        fail('should have thrown an error') // fail if it didn't throw an error
+        fail('should have thrown an error')
       } catch (e) {
         expect(e.message).toBe(`Cannot edit info for missing someUserId user`)
       }
 
-      // Verify that byId was called with the correct userId
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
     })
   })
 
   describe('editSecretAnswer', () => {
     it('should successfully edit secret answer', async () => {
-      // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(mockOkyUser)
       ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
 
-      // Call replaceStore method
       const command = {
         userId: 'someUserId',
         previousSecretAnswer: 'a',
@@ -367,17 +322,14 @@ describe('OkyUserApplicationService', () => {
 
       const result = await okyUserApplicationService.editSecretAnswer(command)
 
-      // Verify result and method calls
       expect(result).toBe(mockOkyUser)
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
       expect(mockOkyUser.editSecretAnswer).toHaveBeenCalledWith('a', 'b')
     })
 
     it('should throw an error if the user is not found', async () => {
-      // Mock repository methods
       ;(okyUserRepository.byId as jest.Mock).mockResolvedValue(null)
 
-      // Try-Catch to handle expected thrown error
       try {
         const command = {
           userId: 'someUserId',
@@ -386,12 +338,11 @@ describe('OkyUserApplicationService', () => {
         }
 
         await okyUserApplicationService.editSecretAnswer(command)
-        fail('should have thrown an error') // fail if it didn't throw an error
+        fail('should have thrown an error')
       } catch (e) {
         expect(e.message).toBe(`Cannot edit info for missing someUserId user`)
       }
 
-      // Verify that byId was called with the correct userId
       expect(okyUserRepository.byId).toHaveBeenCalledWith('someUserId')
     })
   })

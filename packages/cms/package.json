@@ -51,6 +51,6 @@
     "start": "nodemon --legacy-watch -e ts --exec ts-node --files src/index",
     "migrate-up": "ts-node ../../node_modules/typeorm/cli -f /ormconfig.ts migration:run",
     "projections": "ts-node ./src/projections/stale-data-projection.ts",
-    "test": "cd ."
+    "test": "NODE_PATH=./src jest --forceExit --coverage --verbose --detectOpenHandles"
   }
 }

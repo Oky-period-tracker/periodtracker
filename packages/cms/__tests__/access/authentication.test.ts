@@ -2,11 +2,22 @@ import { Authentication } from '../../src/access/authentication'
 import * as typeorm from 'typeorm'
 import bcrypt from 'bcrypt'
 
-jest.mock('typeorm', () => ({
-  getRepository: jest.fn().mockReturnValue({
-    findOne: jest.fn(),
-  }),
-}))
+jest.mock('typeorm', () => {
+  return {
+    getRepository: jest.fn(),
+    BaseEntity: class Mock {},
+    ObjectType: () => null,
+    Entity: () => null,
+    InputType: () => null,
+    Index: () => null,
+    PrimaryGeneratedColumn: () => null,
+    Column: () => null,
+    CreateDateColumn: () => null,
+    UpdateDateColumn: () => null,
+    OneToMany: () => null,
+    ManyToOne: () => null,
+  }
+})
 
 jest.mock('bcrypt', () => ({
   compare: jest.fn(),

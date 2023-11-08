@@ -55,7 +55,6 @@ describe('fromEncyclopedia', () => {
       category: 'Science',
       subCategory: 'Physics',
     })
-    // ... Assert the rest of the structure here
   })
 
   it('should normalize a response with multiple categories', () => {

@@ -3,10 +3,8 @@ import { AppEventRepository } from '../../../src/domain/oky/AppEventRepository'
 import { AppEvent } from '../../../src/domain/oky/AppEvent'
 import { AppendEventsCommand } from '../../../src/application/oky/commands/AppendEventsCommand'
 
-// Create a mock implementation
 const mockAppendEvents = jest.fn()
 
-// Create the mock repository object
 const mockAppEventRepository: Partial<AppEventRepository> = {
   appendEvents: mockAppendEvents,
 }
@@ -15,12 +13,10 @@ describe('AnalyticsApplicationService', () => {
   let service: AnalyticsApplicationService
 
   beforeEach(() => {
-    // Explicitly cast mock object to the required type
     service = new AnalyticsApplicationService(mockAppEventRepository as AppEventRepository)
   })
 
   it('should append events correctly', async () => {
-    // Arrange
     const command: AppendEventsCommand = {
       userId: 'user1',
       events: [
@@ -33,10 +29,8 @@ describe('AnalyticsApplicationService', () => {
       ],
     }
 
-    // Act
     await service.appendEvents(command)
 
-    // Assert
     expect(mockAppendEvents).toBeCalled()
 
     const expectedAppEvent = AppEvent.fromData('user1', {

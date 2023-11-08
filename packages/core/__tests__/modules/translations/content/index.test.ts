@@ -1,4 +1,4 @@
-import { content } from '../../../../src/modules/translations/content' // Update with the correct path to your content file
+import { content } from '../../../../src/modules/translations/content'
 
 describe('Static Content Integrity', () => {
   let locales: string[] = []

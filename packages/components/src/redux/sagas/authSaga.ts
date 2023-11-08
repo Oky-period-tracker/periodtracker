@@ -277,7 +277,6 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   if (yield fetchNetworkConnectionStatus()) {
     try {
       periodResult = yield httpClient.getPeriodCycles({
-        // TODO_ALEX hardcoded zeros ?
         age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
         period_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, data[2].answer + 1],
         cycle_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, (data[3].answer + 1) * 7 + data[2].answer + 1],

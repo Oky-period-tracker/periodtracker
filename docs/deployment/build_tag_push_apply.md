@@ -2,6 +2,8 @@
 
 You can build, tag push & apply with one command.
 
+This command runs the tests first, so you can be sure that the code is working before deploying. You may first need to clean and compile the code in order for the tests to pass. Read more about tests [here](../tests.md).
+
 First make sure that the contents of the `/.k8s/deploy-k8s.sh` file are correct, you may need to correct the registry URL. You may also want to change the tags from `latest` to actual version numbers `v1`.
 
 > If you are using an M1 Mac, before building you need to use the `--platform linux/amd64` flag. Edit all 3 of the `Dockerfile`s, comment out the `FROM` line(s) and uncomment the `FROM --platform linux/amd64` line(s), above it.

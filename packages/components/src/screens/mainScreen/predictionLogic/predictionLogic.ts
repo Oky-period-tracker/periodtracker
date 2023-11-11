@@ -2,7 +2,7 @@ export function decisionProcessPeriod({
   inputDay, // moment.Moment
   selectedDayInfo, // PredictionDayInfo
   currentCycleInfo, // PredictionDayInfo
-  history, // PredictionHistory
+  history, // History
   isActive, // boolean
   // errorCallBack,
   // getPredictedCycles,

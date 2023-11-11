@@ -15,7 +15,7 @@ interface SmartPrediction {
   smaCycleLength: number
 }
 
-type PredictionHistory = Array<{
+type History = Array<{
   cycleStartDate: Moment
   cycleEndDate: Moment
   periodLength: number
@@ -26,7 +26,7 @@ export class PredictionState {
   public isActive: boolean
   public currentCycle: CurrentCycle
   public smartPrediction: SmartPrediction
-  public history: PredictionHistory
+  public history: History
   public futurePredictionStatus: boolean
   public actualCurrentStartDate: any
 
@@ -49,7 +49,7 @@ export class PredictionState {
     cycleLength?: number
     smaPeriodLength?: number
     smaCycleLength?: number
-    history?: PredictionHistory
+    history?: History
     futurePredictionStatus?: boolean
     actualCurrentStartDate?: any
   }) {

@@ -1,6 +1,6 @@
 # Setting up translations
 
-If you want to add a new language, you will likely need to create your own /translations repository if you have not done so already. [Go here](./modules.md) for instructions on how to do this.
+If you want to add a new language, you will likely need to create your own /translations repository if you have not done so already. [Go here](../modules.md) for instructions on how to do this.
 
 Both the CMS and the app are capable of supporting multiple languages, and the process for adding a new language is the same for both. You _do not_ need to deploy multiple instances of the CMS or the app to support multiple languages. Simply follow the steps below.
 

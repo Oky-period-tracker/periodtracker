@@ -16,16 +16,11 @@ import { DeleteUserFromPasswordCommand } from './commands/DeleteUserFromPassword
 
 @Service()
 export class OkyUserApplicationService {
+  @Inject()
   private authenticationService: AuthenticationService
-  private okyUserRepository: OkyUserRepository
 
-  constructor(
-    @Inject() authenticationService: AuthenticationService,
-    @Inject(OkyUserRepositoryToken) okyUserRepository: OkyUserRepository,
-  ) {
-    this.authenticationService = authenticationService
-    this.okyUserRepository = okyUserRepository
-  }
+  @Inject(OkyUserRepositoryToken)
+  private okyUserRepository: OkyUserRepository
 
   public async userDescriptor(userName: string) {
     const user = await this.okyUserRepository.byName(userName)
@@ -153,5 +148,13 @@ export class OkyUserApplicationService {
     }
     await user.editSecretAnswer(previousSecretAnswer, nextSecretAnswer)
     return this.okyUserRepository.save(user)
+  }
+
+  public setRepository(repository: OkyUserRepository): void {
+    this.okyUserRepository = repository
+  }
+
+  public setAuthenticationService(service: AuthenticationService): void {
+    this.authenticationService = service
   }
 }

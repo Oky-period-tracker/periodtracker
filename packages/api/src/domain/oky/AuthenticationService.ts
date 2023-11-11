@@ -3,11 +3,8 @@ import { OkyUserRepositoryToken, OkyUserRepository } from './OkyUserRepository'
 import { AuthenticationDescriptor } from './AuthenticationDescriptor'
 
 export class AuthenticationService {
+  @Inject(OkyUserRepositoryToken)
   private okyUserRepository: OkyUserRepository
-
-  constructor(@Inject(OkyUserRepositoryToken) okyUserRepository: OkyUserRepository) {
-    this.okyUserRepository = okyUserRepository
-  }
 
   public async authenticateUser(name: string, password: string): Promise<AuthenticationDescriptor> {
     const user = await this.okyUserRepository.byName(name)
@@ -22,5 +19,9 @@ export class AuthenticationService {
       return AuthenticationDescriptor.fail(`password_incorrect`)
     }
     return AuthenticationDescriptor.fail(`Name or password are wrong.`)
+  }
+
+  public setRepository(repository: OkyUserRepository): void {
+    this.okyUserRepository = repository
   }
 }

@@ -26,13 +26,14 @@ describe('OkyUserApplicationService', () => {
       delete: jest.fn(),
     } as OkyUserRepository
 
-    authenticationService = new AuthenticationService(okyUserRepository)
+    authenticationService = new AuthenticationService()
+    authenticationService.setRepository(okyUserRepository)
+
     authenticationService.authenticateUser = jest.fn()
 
-    okyUserApplicationService = new OkyUserApplicationService(
-      authenticationService,
-      okyUserRepository,
-    )
+    okyUserApplicationService = new OkyUserApplicationService()
+    okyUserApplicationService.setAuthenticationService(authenticationService)
+    okyUserApplicationService.setRepository(okyUserRepository)
   })
 
   describe('userDescriptor', () => {

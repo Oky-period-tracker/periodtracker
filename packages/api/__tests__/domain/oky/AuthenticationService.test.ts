@@ -20,7 +20,8 @@ describe('AuthenticationService', () => {
       verifyPassword: jest.fn(),
     }
 
-    authService = new AuthenticationService(mockOkyUserRepository)
+    authService = new AuthenticationService()
+    authService.setRepository(mockOkyUserRepository)
   })
 
   it('should authenticate user successfully', async () => {

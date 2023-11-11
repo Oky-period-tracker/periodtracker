@@ -13,7 +13,8 @@ describe('AnalyticsApplicationService', () => {
   let service: AnalyticsApplicationService
 
   beforeEach(() => {
-    service = new AnalyticsApplicationService(mockAppEventRepository as AppEventRepository)
+    service = new AnalyticsApplicationService()
+    service.setRepository(mockAppEventRepository as AppEventRepository)
   })
 
   it('should append events correctly', async () => {

@@ -104,6 +104,8 @@ Remember to commit, and push your changes to the `/translations` submodule.
 
 You will need to add translations for other things such as country names, provinces, calendar names, themes, and avatars. These translations are not yet automated, so you will need to add them manually. Compilation errors will help guide you to the places where these translations need to be added.
 
+There are also some changes required within the /assets submodules
+
 ## Compilation
 
 Once you have added all the files for your new language, you can compile and test the app.

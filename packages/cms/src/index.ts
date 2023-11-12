@@ -111,6 +111,16 @@ createConnection(ormconfig)
       upload.single('spreadsheet'),
       dataController.uploadCmsTranslationsSheet,
     )
+    app.post(
+      '/data/upload-countries-sheet',
+      upload.single('spreadsheet'),
+      dataController.uploadCountriesSheet,
+    )
+    app.post(
+      '/data/upload-provinces-sheet',
+      upload.single('spreadsheet'),
+      dataController.uploadProvincesSheet,
+    )
 
     // ============================ Routes  =======================================
     Routes.forEach((route) => {

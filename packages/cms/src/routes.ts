@@ -757,4 +757,16 @@ export const Routes = [
     controller: DataController,
     action: 'generateCmsTranslationsSheet',
   },
+  {
+    method: 'get',
+    route: '/data/generate-countries-sheet',
+    controller: DataController,
+    action: 'generateCountriesSheet',
+  },
+  {
+    method: 'get',
+    route: '/data/generate-provinces-sheet',
+    controller: DataController,
+    action: 'generateProvincesSheet',
+  },
 ]

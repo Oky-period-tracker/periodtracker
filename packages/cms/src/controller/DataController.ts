@@ -20,6 +20,8 @@ import {
   appTranslations,
   content,
   defaultLocale,
+  countries,
+  provinces,
 } from '@oky/core'
 import { EncyclopediaResponse, EncyclopediaResponseItem } from '@oky/core/src/api/types'
 import { env } from '../env'
@@ -603,6 +605,170 @@ export class DataController {
     response.setHeader('Content-type', 'text/plain')
     response.send(fileContent) // Send the file data as a response
   }
+
+  async generateCountriesSheet(request: Request, response: Response, next: NextFunction) {
+    // Create a new workbook
+    const workbook = {
+      SheetNames: [],
+      Sheets: {},
+    }
+
+    const headers = ['code', ...Object.keys(Object.values(countries)[0])]
+    const dataArray = Object.entries(countries).map(([key, value]) => [
+      key,
+      ...Object.values(value),
+    ])
+
+    const sheetArray = [headers, ...dataArray]
+
+    // Convert the array of arrays to a worksheet
+    const worksheet = xlsx.utils.aoa_to_sheet(sheetArray)
+
+    // Add the worksheet to the workbook
+    workbook.SheetNames.push('countries')
+    workbook.Sheets['countries'] = worksheet
+
+    // Get the buffer
+    const buffer = xlsx.write(workbook, { type: 'buffer' })
+
+    const filename = 'countries.xlsx'
+
+    // Set the headers to inform the browser about file type and suggested filename
+    response.setHeader('Content-disposition', `attachment; filename=${filename}`)
+    response.setHeader(
+      'Content-type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response.send(buffer) // Send the file data as a response
+  }
+
+  async generateProvincesSheet(request: Request, response: Response, next: NextFunction) {
+    const buffer = generateSingleTabSheetFromArray(provinces, 'provinces')
+
+    const filename = 'provinces.xlsx'
+
+    // Set the headers to inform the browser about file type and suggested filename
+    response.setHeader('Content-disposition', `attachment; filename=${filename}`)
+    response.setHeader(
+      'Content-type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response.send(buffer) // Send the file data as a response
+  }
+
+  async uploadCountriesSheet(request: Request, response: Response, next: NextFunction) {
+    // Ensure a file was uploaded
+    if (!request.file || !request.file.buffer) {
+      return response.status(400).send('No file was uploaded.')
+    }
+
+    const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]]
+
+    // Convert the worksheet to JSON
+    const jsonRaw = xlsx.utils.sheet_to_json(worksheet, {
+      header: 1,
+    }) as string[][]
+
+    // Calculate max length of the array (to know how many columns there are)
+    const maxLength = Math.max(...jsonRaw.map((row) => row.length))
+
+    // Loop through rows and fill missing columns with empty string, so that no rows are lost
+    const json = jsonRaw.map((row) => {
+      while (row.length < maxLength && row.length !== 0) {
+        row.push('')
+      }
+      return row
+    })
+
+    const headers = json[0]
+    const data = json.slice(1)
+
+    const reformattedArray = data.map((row) => {
+      return row.reduce((acc, value, index) => {
+        acc[headers[index]] = value
+        return acc
+      }, {})
+    })
+
+    const result = reformattedArray.reduce((acc, item) => {
+      // @ts-ignore
+      const { code, ...rest } = item
+      acc[code] = rest
+      return acc
+    }, {})
+
+    const fileContent = `
+    import { Locale } from '.'
+
+    type Country = Record<Locale, string>
+
+    export const countries: Record<string, Country> = ${JSON.stringify(result)}
+    `
+
+    const fileName = `countries.ts`
+
+    // Set the headers to inform the browser about file type and suggested filename
+    response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
+    response.setHeader('Content-type', 'text/plain')
+    response.send(fileContent) // Send the file data as a response
+  }
+
+  async uploadProvincesSheet(request: Request, response: Response, next: NextFunction) {
+    // Ensure a file was uploaded
+    if (!request.file || !request.file.buffer) {
+      return response.status(400).send('No file was uploaded.')
+    }
+
+    const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]]
+
+    // Convert the worksheet to JSON
+    const jsonRaw = xlsx.utils.sheet_to_json(worksheet, {
+      header: 1,
+    }) as string[][]
+
+    // Calculate max length of the array (to know how many columns there are)
+    const maxLength = Math.max(...jsonRaw.map((row) => row.length))
+
+    // Loop through rows and fill missing columns with empty string, so that no rows are lost
+    const json = jsonRaw.map((row) => {
+      while (row.length < maxLength && row.length !== 0) {
+        row.push('')
+      }
+      return row
+    })
+
+    const headers = json[0]
+    const data = json.slice(1)
+
+    const reformattedData = data.map((row) => {
+      return row.reduce((acc, value, index) => {
+        acc[headers[index]] = value
+        return acc
+      }, {})
+    })
+
+    const fileContent = `
+    import { Locale } from '.'
+
+    type Province = {
+      code: string
+      uid: number
+    } & {
+      [K in Locale]: string
+    }
+    
+    export const provinces: Province[] =  ${JSON.stringify(reformattedData)}
+    `
+
+    const fileName = `provinces.ts`
+
+    // Set the headers to inform the browser about file type and suggested filename
+    response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
+    response.setHeader('Content-type', 'text/plain')
+    response.send(fileContent) // Send the file data as a response
+  }
 }
 
 const getSimpleSheetData = (buffer, flatten = true) => {
@@ -659,7 +825,7 @@ const getSimpleSheetData = (buffer, flatten = true) => {
   return output
 }
 
-const generateSingleTabSheet = (data, tabName) => {
+const generateSingleTabSheet = (data, tabName, maxColumns = 3) => {
   // Create a new workbook
   const workbook = {
     SheetNames: [],
@@ -671,7 +837,6 @@ const generateSingleTabSheet = (data, tabName) => {
 
   // Convert the array of arrays to a worksheet
   const worksheet = xlsx.utils.aoa_to_sheet(sheetArray)
-  const maxColumns = 3
   worksheet['!cols'] = Array(maxColumns)
     .fill({})
     .map((col, index) => {
@@ -680,6 +845,30 @@ const generateSingleTabSheet = (data, tabName) => {
       }
       return col
     })
+
+  // Add the worksheet to the workbook
+  workbook.SheetNames.push(tabName)
+  workbook.Sheets[tabName] = worksheet
+
+  // Get the buffer
+  const buffer = xlsx.write(workbook, { type: 'buffer' })
+  return buffer
+}
+
+const generateSingleTabSheetFromArray = (data, tabName, maxColumns = 3) => {
+  // Create a new workbook
+  const workbook = {
+    SheetNames: [],
+    Sheets: {},
+  }
+
+  const headers = [...Object.entries(data[0]).map((item) => item[0])]
+  console.log(headers)
+  const dataArray = data.map((item) => [...Object.values(item)])
+  const sheetArray = [headers, ...dataArray]
+
+  // Convert the array of arrays to a worksheet
+  const worksheet = xlsx.utils.aoa_to_sheet(sheetArray)
 
   // Add the worksheet to the workbook
   workbook.SheetNames.push(tabName)

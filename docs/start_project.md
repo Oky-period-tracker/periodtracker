@@ -62,7 +62,7 @@ VALUES (-1, 'admin', '$2b$10$cslKchhKRBsWG.dCsspbb.mkY9.opLl1t1Oxs3j2E01/Zm3llW/
 
 > IMPORTANT: Once you have created this user, log into the CMS, use the `/user-management` page to create a new user with a strong password, log out, log in as your new user, and delete this non-secure `Admin` user
 
-Your `/translations` submodule should contain SQL files eg `insert-content-en.sql`, execute this as well to insert content into the DB. [See here](./localisation/setup.md) for how to generate these SQL files when setting up your own repo / adding a new language.
+Your `/translations` submodule should contain SQL files eg `insert-content-en.sql`, execute this as well to insert content into the DB. [See here](./localisation/translations.md) for how to generate these SQL files when setting up your own repo / adding a new language.
 
 ## Start react native
 

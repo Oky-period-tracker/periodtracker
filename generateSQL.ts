@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { content as staleContent } from './packages/core/'
+import { content as staleContent } from './packages/core/src/modules/translations/content'
 import { Quiz, StaticContent } from './packages/components/src/types' // TODO_ALEX use core types
 
 const columnNames = {

@@ -45,6 +45,26 @@
         </div>  
       </div>  
 
+      <div class="dataManagementRow">
+        <div class="dataManagementCol">
+          <p>Upload Countries</p>
+          <form action="/data/upload-countries-sheet" method="post" enctype="multipart/form-data">
+            <input type="file" name="spreadsheet" accept=".xlsx">
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </form>
+        </div>  
+      </div>  
+
+      <div class="dataManagementRow">
+        <div class="dataManagementCol">
+          <p>Upload Provinces</p>
+          <form action="/data/upload-provinces-sheet" method="post" enctype="multipart/form-data">
+            <input type="file" name="spreadsheet" accept=".xlsx">
+            <button class="btn btn-primary" type="submit">Upload</button>
+          </form>
+        </div>  
+      </div>  
+
 
       <!-- ---------------------------------------------------------------------- -->
       <hr>
@@ -93,6 +113,22 @@
         <p>Download cms translations as a spreadsheet</p>
         <button type="button" class="btn btn-primary  mr-1">
           <a class="nav-link" href="/data/generate-cms-translations-sheet">CMS translations sheet</a>
+        </button>
+      </div>
+
+
+      <div class="dataManagementRow">
+        <p>Download Countries as a spreadsheet</p>
+        <button type="button" class="btn btn-primary  mr-1">
+          <a class="nav-link" href="/data/generate-countries-sheet">Countries sheet</a>
+        </button>
+      </div>
+
+
+      <div class="dataManagementRow">
+        <p>Download Provinces as a spreadsheet</p>
+        <button type="button" class="btn btn-primary  mr-1">
+          <a class="nav-link" href="/data/generate-provinces-sheet">Provinces sheet</a>
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import fs from 'fs'
-import { content as staleContent, StaticContent } from '@oky/core'
+import { StaticContent } from '@oky/core'
+import { content as staleContent } from './packages/core/src/modules/translations/content'
 
 const removeDeadContent = (content: StaticContent) => {
   // ===== Articles ===== //

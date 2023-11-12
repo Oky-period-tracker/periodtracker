@@ -1,9 +1,9 @@
 import fs from 'fs'
-import { countries } from '@oky/core'
+import { countries } from './packages/core/src/modules/translations/countries'
 import { logger } from './logger'
 
 // Temporarily add locales to this array, to chose which locales to merge
-const localesToMerge = []
+const localesToMerge = ['fr']
 
 // Use this to merge object instead of an array
 // const itemsObject = {}
@@ -48,13 +48,15 @@ const mergeArray = () => {
 }
 
 // ========================= Add Locales ========================= //
-const localeToInsert = 'es'
+// *** Edit this to add desired locale to the countries object *** //
+const localeToInsert = 'fr'
 
 const addLocale = () => {
   const updatedItems = { ...countries }
   Object.entries(updatedItems).map(([key, value]) => {
     updatedItems[key] = {
       ...value,
+      // @ts-ignore
       [localeToInsert]: value.en, // TODO: This simply copies the english value
     }
   })
@@ -70,6 +72,9 @@ const addLocale = () => {
 }
 
 // ========================= Execute ========================= //
+
+// *** Uncomment the function you want to execute *** //
+
 // mergeArray()
 // addLocale()
 

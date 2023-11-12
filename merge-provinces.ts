@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { provinces } from '@oky/core'
+import { provinces } from './packages/core/src/modules/translations/provinces'
 import { logger } from './logger'
 
 // Temporarily add locales to this array then execute this script to merge them into the locales.ts file in your /translations submodule

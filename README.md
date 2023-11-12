@@ -18,7 +18,7 @@ This is a period tracker application monorepo, consisting of a React Native app,
 
 ### Localisation
 
-[Translations set up](./docs/localisation/setup.md)
+[Translations](./docs/localisation/translations.md)
 
 [Updating content](./docs/localisation/updating_content.md)
 

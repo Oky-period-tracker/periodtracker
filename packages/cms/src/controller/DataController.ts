@@ -19,6 +19,7 @@ import {
   fromAvatarMessages,
   appTranslations,
   content,
+  defaultLocale,
 } from '@oky/core'
 import { EncyclopediaResponse, EncyclopediaResponseItem } from '@oky/core/src/api/types'
 import { env } from '../env'
@@ -532,7 +533,7 @@ export class DataController {
   }
 
   async generateAppTranslationsSheet(request: Request, response: Response, next: NextFunction) {
-    const buffer = generateSimpleSheet(appTranslations)
+    const buffer = generateSingleTabSheet(appTranslations[defaultLocale], 'app')
 
     const filename = 'app-translations.xlsx'
 
@@ -546,7 +547,7 @@ export class DataController {
   }
 
   async generateCmsTranslationsSheet(request: Request, response: Response, next: NextFunction) {
-    const buffer = generateSimpleSheet(cmsTranslations)
+    const buffer = generateSingleTabSheet(cmsTranslations[defaultLocale], 'cms')
 
     const filename = 'cms-translations.xlsx'
 
@@ -656,6 +657,37 @@ const getSimpleSheetData = (buffer, flatten = true) => {
   }
 
   return output
+}
+
+const generateSingleTabSheet = (data, tabName) => {
+  // Create a new workbook
+  const workbook = {
+    SheetNames: [],
+    Sheets: {},
+  }
+
+  // Convert each object to an array of arrays, with each inner array representing a row
+  const sheetArray = Object.entries(data).map(([key, value]) => [key, value, ''])
+
+  // Convert the array of arrays to a worksheet
+  const worksheet = xlsx.utils.aoa_to_sheet(sheetArray)
+  const maxColumns = 3
+  worksheet['!cols'] = Array(maxColumns)
+    .fill({})
+    .map((col, index) => {
+      if (index === 0) {
+        return { hidden: true }
+      }
+      return col
+    })
+
+  // Add the worksheet to the workbook
+  workbook.SheetNames.push(tabName)
+  workbook.Sheets[tabName] = worksheet
+
+  // Get the buffer
+  const buffer = xlsx.write(workbook, { type: 'buffer' })
+  return buffer
 }
 
 const generateSimpleSheet = (data) => {

@@ -6,7 +6,7 @@ Both the CMS and the app are capable of supporting multiple languages, and the p
 
 Log into the CMS and go to the `/data-management` page.
 
-From this page you can download spreadsheets for the app translations, CMS translations and content translations. These sheets have empty column(s) where you can enter in your translations. Once filled in you can them upload these sheets one at a time on the same page. The CMS will generate and download files for you to add into your `/translations` submodule. Continue reading for more details.
+From this page you can download spreadsheets for the app translations, CMS translations, content translations countries and provinces. These sheets have empty column(s) where you can enter in your translations. Once filled in you can them upload these sheets one at a time on the same page. The CMS will generate and download files for you to add into your `/translations` submodule. Continue reading for more details.
 
 ## Locales
 
@@ -23,9 +23,11 @@ Once you have made this change, if you try to compile you will get typescript er
 
 ## App translations
 
-Download the app translations sheet from the CMS. This sheet has empty column(s) where you can enter in your translations. Alternatively you can request a sheet which serves the same purpose but includes screenshots of the app, to give more context for the text being translated.
+Download the app translations sheet from the CMS. Enter your translations in the empty column next to the original values.
 
-Once this sheet has been filled in, you can upload it on the `/data-management`. Doing so will generate and download a `.ts` file. You can then add this file to the `/packages/core/src/modules/translations/app` folder.
+Alternatively, there is a similar spreadsheet which includes screenshots of the app, to give more context for the text being translated. Request this from the relevant person. (This is not required)
+
+Once this sheet has been filled in, you can upload it on the `/data-management`. Specify the language code in the text input field before clicking upload. Uploading your sheet will generate and download a `.ts` file. You can then add this file to the `/packages/core/src/modules/translations/app` folder.
 
 Make sure the name of the file and the name of the const within it matches the language code of the new language that you are adding. Eg 'fr' for French.
 
@@ -49,7 +51,7 @@ export const appTranslations: Record<Locale, AppTranslations> = {
 }
 ```
 
-> Make sure to commit and push your changes to the `/translations` submodule. Do not run `yarn modules` before pushing your changes otherwise they will be lost.
+> Make sure to commit and push your changes to the `/translations` submodule. Do _not_ run `yarn modules` before pushing your changes otherwise they will be lost.
 
 ## Adding content translations
 
@@ -57,7 +59,7 @@ Same as before, you can download a spreadsheet for the content translations from
 
 Some columns contain the word `original` in the header. These are the original values which are already being used, and the empty column next to it is where you can enter the translation for that value. For example `category_title_original` column may contain the titles in english, and the `category_title` column is where you can enter the translation for these titles in the new language.
 
-Once this sheet has been filled in you can upload it on the same page. This will automatically generate and download a `.ts` file.
+Once this sheet has been filled in you can specify the language code in the text input field and upload it on the same page. This will automatically generate and download a `.ts` file.
 
 Add this file into the `/packages/core/src/modules/translations/content` folder. Make sure the name of the file and the name of the const within it, and the `locale` property within the object matches the language code. eg 'fr' for French.
 

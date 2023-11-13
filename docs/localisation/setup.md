@@ -1,8 +1,12 @@
 # Setting up translations
 
-If you want to add a new language, you will likely need to create your own /translations repository if you have not done so already. [Go here](../modules.md) for instructions on how to do this.
+If you want to add a new language, you will need to create your own /translations repository if you have not done so already. [Go here](../modules.md) for instructions on how to do this.
 
 Both the CMS and the app are capable of supporting multiple languages, and the process for adding a new language is the same for both. You _do not_ need to deploy multiple instances of the CMS or the app to support multiple languages. Simply follow the steps below.
+
+Log into the CMS and go to the `/data-management` page.
+
+From this page you can download spreadsheets for the app translations, CMS translations and content translations. These sheets have empty column(s) where you can enter in your translations. Once filled in you can them upload these sheets one at a time on the same page. The CMS will generate and download files for you to add into your `/translations` submodule. Continue reading for more details.
 
 ## Locales
 
@@ -15,11 +19,15 @@ To add a new language, start by simply expanding the `Locale` type to include th
 +export type Locale = 'en' | 'fr'
 ```
 
-Once you have made this change, you will get typescript errors when you try to compile, because you still need to add the translations files for this language in all the appropriate places.
+Once you have made this change, if you try to compile you will get typescript errors, these error messages will help you find places in the code that need to be updated with this new language.
 
 ## App translations
 
-Log into the CMS and go to the `/data-management` page. You will see a form for uploading app translations. Upload the app translations spreadsheet for the new language. This will generate and download a .ts file, which you can add to the /translations/app folder. Make sure the name of the file matches the language code, and that the name of the const in this file also matches the language code. Eg
+Download the app translations sheet from the CMS. This sheet has empty column(s) where you can enter in your translations. Alternatively you can request a sheet which serves the same purpose but includes screenshots of the app, to give more context for the text being translated.
+
+Once this sheet has been filled in, you can upload it on the `/data-management`. Doing so will generate and download a `.ts` file. You can then add this file to the `/packages/core/src/modules/translations/app` folder.
+
+Make sure the name of the file and the name of the const within it matches the language code of the new language that you are adding. Eg 'fr' for French.
 
 Filename: `fr.ts`
 
@@ -35,51 +43,101 @@ Next you need to import and use this file in `/translations/app/index.ts`
 import { en } from './en'
 +import { fr } from './fr'
 
-export const appTranslations = {
+export const appTranslations: Record<Locale, AppTranslations> = {
   en,
 + fr
 }
 ```
 
-## CMS translations
+> Make sure to commit and push your changes to the `/translations` submodule. Do not run `yarn modules` before pushing your changes otherwise they will be lost.
 
-The process for adding CMS translations is the same as for app translations. Just make sure to upload your spreadsheet via the correct form in the CMS, and add the resulting .ts file into the `/translations/cms` folder instead of the `/app` folder.
+## Adding content translations
 
-## Adding content
+Same as before, you can download a spreadsheet for the content translations from the CMS. This sheet has empty columns where you can enter in your translations.
 
-Follow these steps when adding content for the first time / adding content for a new language
+Some columns contain the word `original` in the header. These are the original values which are already being used, and the empty column next to it is where you can enter the translation for that value. For example `category_title_original` column may contain the titles in english, and the `category_title` column is where you can enter the translation for these titles in the new language.
 
-1. There are 3 spreadsheets, one for the content (articles, quizzes etc), app translations, and cms translations, make a copy of these sheets and fill in the empty columns with translated text
-2. In the CMS, make sure you have selected the language that you want to add translations for
-3. Upload the spreadsheet files one at a time via the CMS, using the corresponding forms
-4. After each spreadsheet upload, the CMS will generate and download a .ts file
+Once this sheet has been filled in you can upload it on the same page. This will automatically generate and download a `.ts` file.
 
-   > If its a new language, it generates new Ids for everything, if its an existing language it will keep the same Ids and overwrite previous content
+Add this file into the `/packages/core/src/modules/translations/content` folder. Make sure the name of the file and the name of the const within it, and the `locale` property within the object matches the language code. eg 'fr' for French.
 
-5. Add .ts file into your /translations submodule
-6. Add an import statement, to the relevant index.ts file, and add the imported object to the exported object
-7. Review the changes and commit
+> If you are adding a new language that does not yet exist in your submodule, new Ids will automatically be generated for all the content, if you are updating an existing language it will keep the same Ids
 
-> These next steps are only required for the content, not for app / cms
+Filename: `fr.ts`
 
-8. Run this command to generate SQL file(s), to insert the content to the DB, and ts files containing live only content, for use in the app
+```ts
+export const fr = {
+  locale: 'fr',
+  // ...
+}
+```
+
+Next you need to import and use this file in `/translations/content/index.ts`
+
+```diff
+import { en } from './en'
++import { fr } from './fr'
+
+export const content: Record<Locale, StaticContent>  = {
+  en,
++  fr,
+}
+```
+
+Next you will generate an SQL file to insert this translated content into the DB. Additionally, since some articles can be `live: false`, you will also generate a "live" content file that excludes these non-live articles, for use in the app.
+
+Both of these files can be generated by running this one command:
 
 ```bash
 yarn generate-content-files
 ```
 
-9. Copy the contents of this SQL file, go to adminer > `SQL command`, paste the SQL and execute.
+This will generate an SQL called `insert-content-fr.sql` and a 'live' content file called `fr.ts` (where fr is whatever language code you are using).
+
+To insert into the DB, copy the contents of the SQL file, go to adminer > `SQL command`, paste the SQL and execute.
 
 For instructions on updating content after this initial set up, [go here](./updating_content.md)
 
-# Countries & Provinces
+Remember to commit, and push your changes to the `/translations` submodule.
 
-These translation files are not yet automated
+## Other translations
 
----
+You will need to add translations for other things such as country names, provinces, calendar names, themes, and avatars. These translations are not yet automated, so you will need to add them manually. Compilation errors will help guide you to the places where these translations need to be added.
 
-If you aren't sure what files are missing, try to compile and you will get an error message telling you what files are missing for your language, assuming you have added the language to the `Locale` type.
+## Compilation
+
+Once you have added all the files for your new language, you can compile and test the app.
 
 ```bash
 yarn compile
+```
+
+If there are any errors, the compiler will tell you what data is missing. If the code compiles successfully then you have successfully added your new language, and you can test it in the app.
+
+> Make sure to commit and push your changes to the `/translations` submodule. Do not run `yarn modules` before pushing your changes otherwise they will be lost.
+
+## CMS translations
+
+Since the CMS is an internal tool, it is not strictly necessary to add translations for all of the languages that the app supports. However, if you do want to add translations for the CMS, you can follow these steps.
+
+The process for adding CMS translations is very similar. Download, fill in, then upload a spreadsheet for CMS translations. The file generated from uploading the spreadsheet is `.json`, and this file needs to be added to the `/packages/cms/src/i18n/translations` folder. Make sure this file is named with the language code, eg `fr.json`.
+
+In the `/packages/cms/src/i18n/options.ts` file, you need to add a require statement for the new json file, and add a new item to the `cmsLanguages` array, with the locale code and name of the language.
+
+```diff
+export const cmsTranslations = {
+  en: require('./translations/en.json'),
++  fr: require('./translations/fr.json'),
+```
+
+```diff
+export const cmsLanguages = [
+  {
+    name: 'English',
+    locale: 'en',
+  },
++  {
++    name: 'Français',
++    locale: 'fr',
++  },
 ```

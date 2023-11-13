@@ -104,13 +104,15 @@ Remember to commit, and push your changes to the `/translations` submodule.
 
 ## Other translations
 
-You will need to add translations for other things such as country names, provinces, calendar names, themes, and avatars. These translations are not yet automated, so you will need to add them manually. Compilation errors will help guide you to the places where these translations need to be added.
+You will need to add translations for other things such as country names, provinces, calendar names, themes, and avatars. There are also some changes required within the /assets submodules.
 
-There are also some changes required within the /assets submodules
+Countries and provinces can be handled in a similar way as the app and content translations, you can download a sheet, add your changes, then upload, to generate a `.ts` file. However translations for some small things like the calendar need to be edited manually in the code.
+
+Compilation errors will help guide you to the places where these translations need to be added.
 
 ## Compilation
 
-Once you have added all the files for your new language, you can compile and test the app.
+If you are not sure what translations are missing, you can run the following command to compile the code.
 
 ```bash
 yarn compile

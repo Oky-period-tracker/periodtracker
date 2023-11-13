@@ -437,6 +437,8 @@ export class DataController {
       return response.status(400).send('No file was uploaded.')
     }
 
+    const locale = request.body.locale?.length ? request.body.locale : request.user.lang
+
     // Create a workbook from the xlsx data
     const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
 
@@ -474,7 +476,7 @@ export class DataController {
     }, {})
 
     // Generate new Ids for everything if it is a new locale
-    const isNewLocale = !content[request.user.lang]
+    const isNewLocale = !content[locale]
 
     const { articles, categories, subCategories } = formatEncyclopediaData(
       encyclopediaJson,
@@ -510,8 +512,8 @@ export class DataController {
       // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
       import { StaticContent } from '../../../types'
 
-      export const ${request.user.lang}: StaticContent = {
-        locale: '${request.user.lang}',
+      export const ${locale}: StaticContent = {
+        locale: '${locale}',
         categories: ${JSON.stringify(categories)},
         subCategories: ${JSON.stringify(subCategories)},
         articles: ${JSON.stringify(articles)},
@@ -526,7 +528,7 @@ export class DataController {
       }
       `
 
-    const fileName = `content-from-sheet-${request.user.lang}-${getDate()}.ts`
+    const fileName = `${locale}.ts`
 
     // Set the headers to inform the browser about file type and suggested filename
     response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
@@ -568,19 +570,21 @@ export class DataController {
       return response.status(400).send('No file was uploaded.')
     }
 
+    const locale = request.body.locale?.length ? request.body.locale : request.user.lang
+
     const sheetData = getSimpleSheetData(request.file.buffer)
 
     const fileContent = `
     // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
     import { AppTranslations } from '../../../types'
 
-    export const ${request.user.lang}: AppTranslations = ${JSON.stringify({
+    export const ${locale}: AppTranslations = ${JSON.stringify({
       empty: '',
       ...sheetData,
     })}
     `
 
-    const fileName = `${request.user.lang}.ts`
+    const fileName = `${locale}.ts`
 
     // Set the headers to inform the browser about file type and suggested filename
     response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
@@ -594,11 +598,13 @@ export class DataController {
       return response.status(400).send('No file was uploaded.')
     }
 
+    const locale = request.body.locale?.length ? request.body.locale : request.user.lang
+
     const sheetData = getSimpleSheetData(request.file.buffer)
 
     const fileContent = JSON.stringify(sheetData)
 
-    const fileName = `${request.user.lang}.json`
+    const fileName = `${locale}.json`
 
     // Set the headers to inform the browser about file type and suggested filename
     response.setHeader('Content-disposition', 'attachment; filename=' + fileName)

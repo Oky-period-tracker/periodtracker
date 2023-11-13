@@ -59,6 +59,7 @@
         <div class="dataManagementCol">
           <p>Upload content (articles, quizzes etc)</p>
           <form action="/data/upload-content-sheet" method="post" enctype="multipart/form-data">
+            <input type="text" name="locale" placeholder="<%= __('Language')%>">
             <input type="file" name="spreadsheet" accept=".xlsx">
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>
@@ -69,6 +70,7 @@
         <div class="dataManagementCol">
           <p>Upload app translations</p>
           <form action="/data/upload-app-translations-sheet" method="post" enctype="multipart/form-data">
+            <input type="text" name="locale" placeholder="<%= __('Language')%>">
             <input type="file" name="spreadsheet" accept=".xlsx">
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>
@@ -79,6 +81,7 @@
         <div class="dataManagementCol">
           <p>Upload CMS translations</p>
           <form action="/data/upload-cms-translations-sheet" method="post" enctype="multipart/form-data">
+            <input type="text" name="locale" placeholder="<%= __('Language')%>">
             <input type="file" name="spreadsheet" accept=".xlsx">
             <button class="btn btn-primary" type="submit">Upload</button>
           </form>

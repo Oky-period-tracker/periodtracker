@@ -12,14 +12,14 @@ From this page you can download spreadsheets for the app translations, CMS trans
 
 In the /translations submodule we use the `Locale` type to ensure all translations files are in place for all languages that are being used.
 
-To add a new language, start by simply expanding the `Locale` type to include the new language.
+To add a new language, start by simply expanding the `Locale` type to include the new language. Make this change in your `packages/core/src/modules/translations/index.ts` file.
 
 ```diff
 -export type Locale = 'en'
 +export type Locale = 'en' | 'fr'
 ```
 
-Once you have made this change, if you try to compile you will get typescript errors, these error messages will help you find places in the code that need to be updated with this new language.
+Once you have made this change, if you try to compile you will get typescript errors, these error messages will help you find places in the code that need to be updated with this new language. Right now there will be many errors, that is not a problem, continue following these steps.
 
 ## App translations
 
@@ -106,9 +106,13 @@ Remember to commit, and push your changes to the `/translations` submodule.
 
 You will need to add translations for other things such as country names, provinces, calendar names, themes, and avatars. There are also some changes required within the /assets submodules.
 
-Countries and provinces can be handled in a similar way as the app and content translations, you can download a sheet, add your changes, then upload, to generate a `.ts` file. However translations for some small things like the calendar need to be edited manually in the code.
+Countries and provinces can be handled in a similar way as the app and content translations, you can download a sheet, add your changes, then upload, to generate a `.ts` file, which then needs to be added into your translations submodule.
 
-Compilation errors will help guide you to the places where these translations need to be added.
+With these sheets, please specify the language code in the first row. You can add multiple languages at once with these sheets, by simply adding multiple columns, with different language codes in the first row.
+
+The `countries.ts` and `provinces.ts` files both belong in the `/packages/core/src/modules/translations/` folder.
+
+Translations for some small things like the calendar need to be edited manually in the code. Compilation errors will help guide you to the places where these translations need to be added.
 
 ## Compilation
 

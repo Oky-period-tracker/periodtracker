@@ -1,6 +1,6 @@
 import { applyMiddleware, createStore } from 'redux'
 import { PersistConfig, persistReducer, persistStore } from 'redux-persist'
-import createEncryptor from 'redux-persist-transform-encrypt'
+import { encryptTransform } from 'redux-persist-transform-encrypt'
 import storage from 'redux-persist/lib/storage'
 import createSagaMiddleware from 'redux-saga'
 import { composeWithDevTools } from 'remote-redux-devtools'
@@ -8,7 +8,7 @@ import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import { config } from './config'
 
-const encryptor = createEncryptor({
+const encryptor = encryptTransform({
   secretKey: config.REDUX_ENCRYPT_KEY,
   onError(error) {
     // Handle the error.

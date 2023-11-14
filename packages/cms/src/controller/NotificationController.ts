@@ -2,7 +2,6 @@ import { getRepository } from 'typeorm'
 import { Request, Response, NextFunction } from 'express'
 import { Notification } from '../entity/Notification'
 import { PermanentNotification } from '../entity/PermanentNotification'
-// @ts-ignore
 import * as admin from 'firebase-admin'
 import { env } from '../env'
 

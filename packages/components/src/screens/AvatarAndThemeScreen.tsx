@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator } from 'react-native'
+import { ActivityIndicator, StyleSheet } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { AvatarSelect } from './avatarAndTheme/AvatarSelect'
 import { ThemeSelect } from './avatarAndTheme/ThemeSelect'
@@ -33,27 +33,12 @@ export function AvatarAndThemeScreen({ navigation }) {
   return (
     <BackgroundTheme>
       <PageContainer>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollView}>
           <Header
             screenTitle={signingUp ? 'empty' : 'avatar_amp_themes'}
             showGoBackButton={!signingUp}
           />
-          {signingUp && (
-            <Text
-              style={{
-                width: '80%',
-                alignSelf: 'center',
-                color: '#F49200',
-                fontFamily: 'Roboto-Black',
-                fontSize: 20,
-                marginTop: 10,
-                marginBottom: 15,
-                textAlign: 'center',
-              }}
-            >
-              avatar_amp_themes_login
-            </Text>
-          )}
+          {signingUp && <Text style={styles.text}>avatar_amp_themes_login</Text>}
           <AvatarSelect
             avatars={avatarNames}
             value={selectedAvatar}
@@ -71,11 +56,14 @@ export function AvatarAndThemeScreen({ navigation }) {
               }
             }}
           />
-          <PrimaryButton
-            onPress={() => (signingUp ? navigate('JourneyScreen', { newUser }) : BackOneScreen())}
-          >
-            confirm
-          </PrimaryButton>
+          <ButtonContainer>
+            <PrimaryButton
+              style={styles.flex}
+              onPress={() => (signingUp ? navigate('JourneyScreen', { newUser }) : BackOneScreen())}
+            >
+              confirm
+            </PrimaryButton>
+          </ButtonContainer>
           {loading && (
             <Overlay>
               <ActivityIndicator size="large" color="#f49200" />
@@ -97,3 +85,28 @@ const Overlay = styled.View`
   top: 0;
   elevation: 6;
 `
+
+const ButtonContainer = styled.View`
+  margin-top: 12px;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`
+
+const styles = StyleSheet.create({
+  scrollView: { justifyContent: 'center' },
+  text: {
+    width: '80%',
+    alignSelf: 'center',
+    color: '#F49200',
+    fontFamily: 'Roboto-Black',
+    fontSize: 20,
+    marginTop: 8,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  flex: {
+    flex: 1,
+  },
+})

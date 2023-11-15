@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated, Platform } from 'react-native'
+import { Animated, Platform, StyleSheet } from 'react-native'
 import styled from 'styled-components/native'
 import { Text } from '../../components/common/Text'
 import { SignUp } from './SignUp'
@@ -9,6 +9,7 @@ import { DeleteAccount } from './DeleteAccount'
 import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
+import { isTablet } from 'react-native-device-info'
 
 const { Value } = Animated
 
@@ -60,13 +61,7 @@ export function AnimatedContainer({ toggled }) {
   let maxHeight = 260
   return (
     <>
-      <Container
-        style={{
-          backgroundColor: Platform.OS === 'ios' ? '' : 'white',
-          borderRadius: 10,
-          elevation: 4,
-        }}
-      >
+      <Container style={styles.container}>
         <KeyboardAwareAvoidance>
           <UpperContent
             expanded={expanded}
@@ -77,12 +72,7 @@ export function AnimatedContainer({ toggled }) {
             }}
           >
             <HeaderText expanded={expanded}>{content.title}</HeaderText>
-            {expanded && (
-              <Icon
-                source={assets.static.icons.close}
-                style={{ height: 30, width: 30, position: 'absolute', right: 30 }}
-              />
-            )}
+            {expanded && <Icon source={assets.static.icons.close} style={styles.icon} />}
           </UpperContent>
           <LowerContent style={{ height: heightInner }} expanded={expanded}>
             {!expanded && (
@@ -97,7 +87,7 @@ export function AnimatedContainer({ toggled }) {
               </Touchable>
             )}
             {expanded && (
-              <Animated.View style={{ opacity: innerOpacity.current, width: '100%' }}>
+              <Animated.View style={[styles.animated, { opacity: innerOpacity.current }]}>
                 {content.component}
               </Animated.View>
             )}
@@ -106,8 +96,8 @@ export function AnimatedContainer({ toggled }) {
       </Container>
       <Container>
         {(viewable || contentState === 1) && ( // This is so the forgot password and delete account are present on this specific state
-          <Row style={{ position: 'absolute', marginTop: 15, justifyContent: 'space-between' }}>
-            <Col style={{ alignItems: 'flex-end', paddingRight: 10 }}>
+          <Row>
+            <Col>
               <TouchableText
                 disabled={expanded && contentState !== 1}
                 onPress={() => {
@@ -120,16 +110,7 @@ export function AnimatedContainer({ toggled }) {
                   toggle()
                 }}
               >
-                <Text
-                  style={{
-                    marginBottom: 10,
-                    fontFamily: 'Roboto-Black',
-                    textDecorationLine: 'underline',
-                    color: '#000',
-                  }}
-                >
-                  forgot_password
-                </Text>
+                <Text style={styles.text}>forgot_password</Text>
               </TouchableText>
               <TouchableText
                 disabled={expanded && contentState !== 1}
@@ -143,15 +124,7 @@ export function AnimatedContainer({ toggled }) {
                   toggle()
                 }}
               >
-                <Text
-                  style={{
-                    fontFamily: 'Roboto-Black',
-                    textDecorationLine: 'underline',
-                    color: '#000',
-                  }}
-                >
-                  delete_account
-                </Text>
+                <Text style={styles.text}>delete_account</Text>
               </TouchableText>
             </Col>
           </Row>
@@ -225,16 +198,38 @@ const Row = styled.View`
   flex-direction: row;
   margin-horizontal: auto;
   align-items: center;
-  justify-content: center;
+  position: absolute;
+  margin-top: 15;
+  justify-content: space-between;
 `
 
 const TouchableText = styled.TouchableOpacity``
 
 const Container = styled.View`
   flex-direction: column;
-  width: 100%;
+  width: ${isTablet() ? '75%' : '100%'};
 `
 
 const Col = styled.View`
   flex: 1;
+  align-items: flex-end;
+  padding-right: 10;
 `
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Platform.OS === 'ios' ? '' : 'white',
+    borderRadius: 10,
+    elevation: 4,
+  },
+  icon: { height: 30, width: 30, position: 'absolute', right: 30 },
+  animated: {
+    width: '100%',
+  },
+  text: {
+    marginBottom: 10,
+    fontFamily: 'Roboto-Black',
+    textDecorationLine: 'underline',
+    color: '#000',
+  },
+})

@@ -9,12 +9,18 @@ import { SafeAreaView } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
 import { Platform } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
+import { isTablet } from 'react-native-device-info'
 
 const { persistor, store } = configureStore()
 
 export default function App() {
   React.useEffect(() => {
+    if (isTablet()) {
+      return
+    }
+
     Orientation.lockToPortrait()
+
     return () => {
       Orientation.unlockAllOrientations()
     }

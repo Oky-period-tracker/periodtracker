@@ -9,7 +9,7 @@
     "format": "prettier --write '{.,src/**}/*.{js,jsx,ts,tsx}'",
     "lint": "tslint -p .",
     "test": "NODE_PATH=./src jest --forceExit --coverage --verbose --detectOpenHandles",
-    "nuke": "shx rm -rf node_modules"
+    "rm": "shx rm -rf node_modules"
   },
   "dependencies": {
     "@oky/core": "*",

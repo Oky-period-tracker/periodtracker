@@ -17,8 +17,6 @@ export function OnboardingScreen() {
   const dispatch = useDispatch()
   const [index, setIndex] = React.useState(0)
   const [isButtonVisible, setIsButtonVisible] = React.useState(false)
-  // @TODO: LANGUAGES This is commented in case the client wants multiple languages
-  // const region = useSelector(selectors.currentChosenRegionSelector)
 
   React.useEffect(() => {
     if (index === 2) {
@@ -26,22 +24,11 @@ export function OnboardingScreen() {
     }
   }, [index])
 
-  // @TODO: LANGUAGES This is commented in case the client wants multiple languages
-  // const onPenalCodeComplete = lang => {
-  //   dispatch(actions.setChosenRegion(lang))
-  //   dispatch(actions.setLocale(lang))
-  // }
-
   return (
     <BackgroundTheme>
       <PageContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
         <Container>
-          <SwiperContainer
-            scrollEnabled={true} // @TODO: LANGUAGES This is commented in case the client wants multiple languages scrollEnabled={region !== ''}
-            setIndex={setIndex}
-            pagingEnabled={true}
-            ref={ref}
-          >
+          <SwiperContainer scrollEnabled={true} setIndex={setIndex} pagingEnabled={true} ref={ref}>
             <OnboardingCard
               image={assets.static.icons.calendar}
               heading="calendar"

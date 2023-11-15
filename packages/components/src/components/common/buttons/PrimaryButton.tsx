@@ -33,6 +33,7 @@ const Button = styled.TouchableOpacity`
   background-color: white;
   elevation: 4;
   border-radius: 10px;
+  max-width: 200px;
 `
 
 const Text = styled(BaseText)`

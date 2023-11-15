@@ -17,7 +17,7 @@ docker-compose -f docker-compose.yml up
 Remove all node_modules and Pods
 
 ```bash
-yarn nuke
+yarn rm
 ```
 
 Remove all node_modules, Pods and then reinstall them:
@@ -30,7 +30,7 @@ Clear docker
 Useful for freeing up disk space and occasionally fixing strange bugs, but will make your next build take a lot longer
 
 ```bash
-yarn nuke:docker
+yarn rm:docker
 ```
 
 Delete all docker volumes

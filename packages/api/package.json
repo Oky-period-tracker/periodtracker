@@ -15,7 +15,7 @@
     "test": "NODE_PATH=./src jest --forceExit --coverage --verbose --detectOpenHandles",
     "watch": "nodemon --legacy-watch --watch src -e ts,ejs --exec NODE_PATH=./src ts-node ./src/index",
     "watch-test": "yarn run test -- --watchAll",
-    "nuke": "shx rm -rf node_modules"
+    "rm": "shx rm -rf node_modules"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",

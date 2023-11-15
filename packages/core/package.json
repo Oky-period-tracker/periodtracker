@@ -4,7 +4,7 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "nuke": "shx rm -rf node_modules",
+    "rm": "shx rm -rf node_modules",
     "clean": "shx rm -rf dist/* && shx rm -f *.tsbuildinfo",
     "compile": "tsc -b",
     "format": "prettier --write '{.,src/**}/*.{js,jsx,ts,tsx}'",

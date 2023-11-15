@@ -5,25 +5,23 @@ import { Text } from '../components/common/Text'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { assets } from '../assets/index'
 import { AnimatedContainer } from './authScreen/AnimatedContainer'
-// @TODO: LANGUAGES This is commented in case the client wants multiple languages
 import { LanguageSelect } from '../components/common/LanguageSelect'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { navigate } from '../services/navigationService'
+import { StyleSheet } from 'react-native'
 
 export function AuthScreen() {
   const [toggled, setToggled] = React.useState(true)
-  // @TODO: LANGUAGES This is commented in case the client wants multiple languages
-  // const locale = useSelector(selectors.currentLocaleSelector)
 
   return (
     <BackgroundTheme>
-      <PageContainer style={{ justifyContent: 'center' }}>
+      <PageContainer style={styles.page}>
         {toggled && (
-          <Row style={{ position: 'absolute', top: 50 }}>
+          <Row>
             <LaunchLogo resizeMode="contain" source={assets.static.launch_icon} />
             <FlexContainer>
               <HeaderText>auth_welcome</HeaderText>
-              <HeaderText style={{ fontSize: 14 }}>auth_catchphrase</HeaderText>
+              <HeaderText style={styles.headerText}>auth_catchphrase</HeaderText>
             </FlexContainer>
           </Row>
         )}
@@ -32,14 +30,11 @@ export function AuthScreen() {
           <AnimatedContainer toggled={(val) => setToggled(val)} />
         </Container>
         {toggled && (
-          <BottomRow style={{}}>
-            <ButtonContainer style={{ paddingRight: 30 }}>
-              <PrimaryButton onPress={() => navigate('InfoScreen', null)}>info</PrimaryButton>
-            </ButtonContainer>
-            <ButtonContainer style={{ paddingLeft: 30 }}>
-              {/* // @TODO: LANGUAGES This is commented in case the client wants multiple languages */}
-              <LanguageSelect />
-            </ButtonContainer>
+          <BottomRow>
+            <PrimaryButton style={styles.info} onPress={() => navigate('InfoScreen', null)}>
+              info
+            </PrimaryButton>
+            <LanguageSelect style={styles.language} />
           </BottomRow>
         )}
       </PageContainer>
@@ -57,18 +52,24 @@ const Row = styled.View`
   margin-horizontal: auto;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  top: 50;
 `
 
 const BottomRow = styled.View`
+  flex: 1;
   flex-direction: row;
   width: 100%;
   position: absolute;
   align-self: center;
   bottom: 10;
+  justify-content: space-between;
 `
 
 const Container = styled.View`
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
 `
 const LaunchLogo = styled.Image`
@@ -82,6 +83,9 @@ const FlexContainer = styled.View`
   flex: 1;
 `
 
-const ButtonContainer = styled.View`
-  width: 50%;
-`
+const styles = StyleSheet.create({
+  page: { justifyContent: 'center' },
+  headerText: { fontSize: 14 },
+  info: { flex: 1, marginRight: 30 },
+  language: { flex: 1, marginLeft: 30 },
+})

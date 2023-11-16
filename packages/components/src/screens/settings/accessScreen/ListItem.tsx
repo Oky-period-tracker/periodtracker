@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { Dimensions } from 'react-native'
+import { Dimensions, StyleSheet, ViewStyle } from 'react-native'
 import { Text } from '../../../components/common/Text'
 
 export const ListItem = ({
@@ -9,18 +9,18 @@ export const ListItem = ({
   renderControls = null,
   innerStyle = null,
   style = null,
+}: {
+  title?: string | null
+  subtitle?: string | null
+  renderControls?: () => React.ReactNode
+  innerStyle?: ViewStyle
+  style?: ViewStyle
 }) => {
   return (
-    <Container {...{ style }}>
-      <Row
-        style={{
-          borderBottomWidth: 1,
-          borderBottomColor: '#DDD',
-          ...innerStyle,
-        }}
-      >
-        <Col style={{ width: titleBlockWidth, paddingRight: 30 }}>
-          <Title style={{ textTransform: 'capitalize' }}>{title}</Title>
+    <Container style={style}>
+      <Row style={innerStyle}>
+        <Col>
+          <Title style={styles.capitalize}>{title}</Title>
           {subtitle ? <Description>{subtitle}</Description> : null}
         </Col>
         {renderControls ? <Controls>{renderControls()}</Controls> : null}
@@ -33,14 +33,15 @@ const Container = styled.View`
   padding-horizontal: 2px;
 `
 
-const titleBlockWidth = Math.round(Dimensions.get('window').width * 0.625)
-
 const Row = styled.View`
   flex-direction: row;
   padding-left: 43;
   padding-right: 21;
   padding-vertical: 16;
   align-items: center;
+  justify-content: space-between;
+  border-color: #ddd;
+  border-bottom-width: 1px;
 `
 
 const Title = styled(Text)`
@@ -54,9 +55,13 @@ const Description = styled(Text)`
 `
 
 const Col = styled.View`
-  flex: 1;
+  flex-basis: 50%;
 `
 
-const Controls = styled.View`
-  flex: 1;
-`
+const Controls = styled.View``
+
+const styles = StyleSheet.create({
+  capitalize: {
+    textTransform: 'capitalize',
+  },
+})

@@ -7,7 +7,7 @@ import { setTopLevelNavigator } from '../services/navigationService'
 import { notificationListener } from '../services/notifications'
 import { SafeAreaView } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
-import { Platform } from 'react-native'
+import { Platform, StatusBar } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
 import { isTablet } from 'react-native-device-info'
 
@@ -35,8 +35,9 @@ export default function App() {
 
   return (
     <AppProvider store={store} persistor={persistor}>
+      <StatusBar hidden />
       <SafeAreaView
-        forceInset={{ bottom: 'never' }}
+        forceInset={{ horizontal: 'never', vertical: 'never' }}
         style={{ flex: 1, backgroundColor: '#757575' }}
       >
         <AppNavigator

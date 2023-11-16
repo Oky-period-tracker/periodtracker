@@ -1,5 +1,4 @@
 import React from 'react'
-import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import styled from 'styled-components/native'
 import { ListItem } from '../components/common/ListItem'
@@ -16,10 +15,10 @@ import { translate } from '../i18n/index'
 import { SpinLoader } from '../components/common/SpinLoader'
 import { settingsScreenText } from '../config'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
-import { closeOutTTs } from '../services/textToSpeech'
 import analytics from '@react-native-firebase/analytics'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import { useTodayPrediction } from '../components/context/PredictionProvider'
+import { StyleSheet } from 'react-native'
 
 export function SettingsScreen({ navigation }) {
   const dispatch = useDispatch()
@@ -83,10 +82,10 @@ export function SettingsScreen({ navigation }) {
             )}
           />
         </Container>
-        <Row style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+        <Row>
           <PrimaryButton
-            textStyle={{ color: 'white' }}
-            style={{ flex: 1, backgroundColor: '#f49200', marginRight: 5 }}
+            style={styles.logoutButton}
+            textStyle={styles.logoutButtonText}
             onPress={() =>
               ConfirmAlert(
                 translate('are_you_sure'),
@@ -103,7 +102,7 @@ export function SettingsScreen({ navigation }) {
             logout
           </PrimaryButton>
           <PrimaryButton
-            style={{ flex: 1, backgroundColor: '#EFEFEF' }}
+            style={styles.deleteAccountButton}
             onPress={() => {
               ConfirmAlert(
                 translate('are_you_sure'),
@@ -128,7 +127,7 @@ export function SettingsScreen({ navigation }) {
             delete_account_button
           </PrimaryButton>
           <PrimaryButton
-            style={{ flex: 1, marginLeft: 5, backgroundColor: '#a2c72d' }}
+            style={styles.contactButton}
             textStyle={{ color: 'white' }}
             onPress={() => navigate('ContactUsScreen', null)}
           >
@@ -157,18 +156,30 @@ const Container = styled.View`
 
 const Row = styled.View`
   flex-direction: row;
+  justify-content: center;
+  margin-top: 10px;
 `
 
 const NavigationLink = styled.TouchableOpacity`
   flex: 1;
 `
 
-const Overlay = styled.View`
-  position: absolute;
-  align-items: center;
-  justify-content: center;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-`
+const styles = StyleSheet.create({
+  logoutButton: {
+    flex: 1,
+    backgroundColor: '#f49200',
+    marginRight: 5,
+  },
+  logoutButtonText: {
+    color: 'white',
+  },
+  deleteAccountButton: {
+    flex: 1,
+    backgroundColor: '#EFEFEF',
+  },
+  contactButton: {
+    flex: 1,
+    marginLeft: 5,
+    backgroundColor: '#a2c72d',
+  },
+})

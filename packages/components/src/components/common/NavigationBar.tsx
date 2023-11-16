@@ -1,16 +1,17 @@
 import React from 'react'
-import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
-
-const deviceWidth = Dimensions.get('window').width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
+import { isTablet } from 'react-native-device-info'
 
 export const NavigationBar = ({ focused, name }) => {
+  const { screenWidth } = useScreenDimensions()
+
   return (
     <Column
       style={{
         backgroundColor: focused ? '#F5F5F5' : '#F1F1F1',
-        width: deviceWidth / 4,
+        width: screenWidth / 4,
       }}
     >
       <ImageWrapper accessibilityLabel={name} style={{ elevation: focused ? 5 : 0 }}>
@@ -27,8 +28,8 @@ export const NavigationBar = ({ focused, name }) => {
 const Column = styled.View`
   justify-content: center;
   align-items: center;
-  height: 56px;
-  margin-bottom: 5;
+  height: ${isTablet() ? '80' : '56'}px;
+  margin-bottom: ${isTablet() ? '0' : '5'}px;
   border-left-width: 0.5px;
   border-right-width: 0.5px;
   border-color: #e1e2e2;

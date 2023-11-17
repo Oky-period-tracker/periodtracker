@@ -15,8 +15,9 @@ const imageWidth = width - 30
 export const AboutScreen = ({ navigation }) => {
   const aboutContent = useSelector(selectors.aboutContent)
   const aboutBanner = useSelector(selectors.aboutBanner)
+  const locale = useSelector(selectors.currentLocaleSelector)
 
-  const iconSource = aboutBanner ? { uri: aboutBanner } : assets.general.aboutBanner
+  const iconSource = aboutBanner ? { uri: aboutBanner } : assets.general.aboutBanner[locale]
 
   useTextToSpeechHook({ navigation, text: aboutScreenText() })
 

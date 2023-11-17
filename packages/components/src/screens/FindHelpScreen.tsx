@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, Platform } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import styled from 'styled-components/native'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { Header } from '../components/common/Header'
@@ -12,13 +12,14 @@ import * as selectors from '../redux/selectors'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import analytics from '@react-native-firebase/analytics'
 import { fetchNetworkConnectionStatus } from '../services/network'
-
-const screenWidth = Dimensions.get('screen').width
-const screenHeight = Dimensions.get('screen').height
-const heightOfCarousel = screenHeight * 0.5
+import { useScreenDimensions } from '../hooks/useScreenDimensions'
 
 export function FindHelpScreen({ navigation }) {
+  const { screenHeight, screenWidth } = useScreenDimensions()
+  const heightOfCarousel = screenHeight * 0.5
+
   const helpCenters: any = useSelector(selectors.allHelpCentersForCurrentLocale)
+
   const [textToSpeak, setTextToSpeak] = React.useState([])
 
   React.useEffect(() => {
@@ -65,17 +66,14 @@ export function FindHelpScreen({ navigation }) {
         <MiddleSection>
           <AvatarSection>
             <Avatar
-              avatarStyle={{ width: 110, bottom: null, top: Platform.OS === 'ios' ? -25 : -30 }}
-              style={{
-                alignItems: 'flex-start',
-                justifyContent: 'flex-start',
-              }}
+              avatarStyle={styles.avatarStyle}
+              style={styles.avatar}
               disable={true}
               isProgressVisible={false}
             />
           </AvatarSection>
         </MiddleSection>
-        <CarouselSection>
+        <CarouselSection style={{ width: screenWidth, height: heightOfCarousel }}>
           <SwiperContainer pagingEnabled={true} scrollEnabled={true} ref={null}>
             {helpCenters.map((item, index) => {
               return (
@@ -135,8 +133,6 @@ const AvatarSection = styled.View`
 `
 
 const CarouselSection = styled.View`
-  height: ${heightOfCarousel};
-  width: ${screenWidth};
   left: -10;
   align-items: center;
   justify-content: center;
@@ -186,3 +182,15 @@ const CarouselItem = styled.View`
   margin-bottom: auto;
   elevation: 4;
 `
+
+const styles = StyleSheet.create({
+  avatar: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  avatarStyle: {
+    width: 110,
+    bottom: null,
+    top: Platform.OS === 'ios' ? -25 : -30,
+  },
+})

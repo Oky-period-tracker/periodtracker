@@ -8,10 +8,9 @@ import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { aboutScreenText } from '../../config'
-import { Dimensions } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { assets } from '../../assets'
-const width = Dimensions.get('window').width
-const imageWidth = width - 30
+
 export const AboutScreen = ({ navigation }) => {
   const aboutContent = useSelector(selectors.aboutContent)
   const aboutBanner = useSelector(selectors.aboutBanner)
@@ -24,24 +23,18 @@ export const AboutScreen = ({ navigation }) => {
   return (
     <BackgroundTheme>
       <PageContainer showsVerticalScrollIndicator={false}>
-        <Header style={{ paddingLeft: 10, paddingRight: 15 }} screenTitle="about" />
+        <Header style={styles.header} screenTitle="about" />
         <Container>
           <ImagesContainer>
-            <Icon
-              style={{ width: imageWidth, height: imageWidth / 2, resizeMode: 'contain' }}
-              source={iconSource}
-            />
+            <Icon style={styles.icon} source={iconSource} />
           </ImagesContainer>
-          {aboutContent.map((item, ind) => {
+          {aboutContent.map((item, i) => {
+            const isLast = i === aboutContent.length - 1
             if (item.type === 'HEADING') {
               return <HeadingText>{item.content}</HeadingText>
             }
             if (item.type === 'CONTENT') {
-              return (
-                <TextStyle style={[ind === aboutContent.length - 1 && { paddingBottom: 30 }]}>
-                  {item.content}
-                </TextStyle>
-              )
+              return <TextStyle style={isLast && styles.lastItem}>{item.content}</TextStyle>
             }
           })}
         </Container>
@@ -58,6 +51,7 @@ const Container = styled.View`
   margin-horizontal: 10px;
   flex-direction: column;
   overflow: hidden;
+  background-color: #fff;
 `
 // The reason the text has background colour and not a view was because of a bug on old versions of android and react native UIView
 // this bug would cause views greater than a few thousand pixels the view colour would make itself transparent
@@ -84,10 +78,24 @@ const TextStyle = styled(TextWithoutTranslation)`
 
 const ImagesContainer = styled.View`
   align-items: center;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding: 28px;
   width: 100%;
   background-color: #fff;
 `
 
 const PageContainer = styled.ScrollView``
+
+const styles = StyleSheet.create({
+  header: {
+    paddingLeft: 10,
+    paddingRight: 15,
+  },
+  icon: {
+    resizeMode: 'contain',
+    width: '100%',
+    height: 200,
+  },
+  lastItem: {
+    paddingBottom: 30,
+  },
+})

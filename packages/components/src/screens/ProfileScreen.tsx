@@ -10,9 +10,8 @@ import { CircleProgress } from './mainScreen/CircleProgress'
 import { assets } from '../assets/index'
 import { useTheme } from '../components/context/ThemeContext'
 import { CycleCard } from './profileScreen/CycleCard'
-import { FlatList } from 'react-native'
+import { FlatList, StyleSheet } from 'react-native'
 import { navigate } from '../services/navigationService'
-import { toAge } from '../services/dateUtils'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { AvatarOption } from './avatarAndTheme/avatarSelect/AvatarOption'
 import { ThemeSelectItem } from './avatarAndTheme/ThemeSelectItem'
@@ -55,7 +54,11 @@ export function ProfileScreen({ navigation }) {
     }
     setError(true)
   }, [connectAccountCount, error, errorCode])
-  if (!currentUser) return <Empty />
+
+  if (!currentUser) {
+    return <Empty />
+  }
+
   return (
     <BackgroundTheme>
       <PageContainer>
@@ -76,22 +79,14 @@ export function ProfileScreen({ navigation }) {
                           ? assets.static.icons.profileGuest
                           : assets.static.icons.profileL
                       }
-                      style={{ height: 57, width: 57 }}
+                      style={styles.icon}
                     />
                   </Column>
                   <Column style={{ alignItems: 'flex-start' }}>
-                    <Text style={{ height: 30, textAlignVertical: 'center', fontSize: 12 }}>
-                      name
-                    </Text>
-                    <Text style={{ height: 30, textAlignVertical: 'center', fontSize: 12 }}>
-                      age
-                    </Text>
-                    <Text style={{ height: 30, textAlignVertical: 'center', fontSize: 12 }}>
-                      gender
-                    </Text>
-                    <Text style={{ height: 30, textAlignVertical: 'center', fontSize: 12 }}>
-                      location
-                    </Text>
+                    <Text style={styles.headerText}>name</Text>
+                    <Text style={styles.headerText}>age</Text>
+                    <Text style={styles.headerText}>gender</Text>
+                    <Text style={styles.headerText}>location</Text>
                   </Column>
                   <Column style={{ alignItems: 'flex-start' }}>
                     <ItemDescription>{currentUser.name}</ItemDescription>
@@ -122,30 +117,15 @@ export function ProfileScreen({ navigation }) {
                         onPress={() => {
                           setIsModalVisible(true)
                         }}
-                        touchableStyle={{ paddingLeft: 40 }}
+                        touchableStyle={styles.infoButton}
                         source={assets.static.icons.infoPink}
                       />
-                      <Text
-                        style={{
-                          width: '70%',
-                          textAlign: 'left',
-                          paddingLeft: 10,
-                          fontSize: 12,
-                          alignSelf: 'center',
-                        }}
-                      >
-                        guest_mode_user_alert
-                      </Text>
+                      <Text style={styles.guestText}>guest_mode_user_alert</Text>
                     </Column>
                     <Column>
                       <PrimaryButton
-                        style={{
-                          height: 50,
-                          width: 115,
-                          alignSelf: 'center',
-                          backgroundColor: '#a2c72d',
-                        }}
-                        textStyle={{ color: 'white' }}
+                        style={styles.connectButton}
+                        textStyle={styles.white}
                         onPress={() => {
                           setError(false)
                           dispatch(
@@ -169,16 +149,8 @@ export function ProfileScreen({ navigation }) {
                     </Column>
                   </Row>
                   {error && (
-                    <Row style={{ height: 40 }}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: 'red',
-                          textAlignVertical: 'center',
-                          alignSelf: 'center',
-                          bottom: 0,
-                        }}
-                      >
+                    <Row style={styles.errorRow}>
+                      <Text style={styles.errorText}>
                         {errorCode === 409 ? 'error_same_name' : 'error_connect_guest'}
                       </Text>
                     </Row>
@@ -194,15 +166,11 @@ export function ProfileScreen({ navigation }) {
                     size={60}
                   />
                 </Column>
-                <Column style={{ alignItems: 'flex-start' }}>
-                  <Text style={{ height: 30, fontSize: 12, textAlignVertical: 'center' }}>
-                    cycle_length
-                  </Text>
-                  <Text style={{ height: 30, fontSize: 12, textAlignVertical: 'center' }}>
-                    period_length
-                  </Text>
+                <Column style={styles.start}>
+                  <Text style={styles.valuesText}>cycle_length</Text>
+                  <Text style={styles.valuesText}>period_length</Text>
                 </Column>
-                <Column style={{ alignItems: 'flex-start' }}>
+                <Column style={styles.start}>
                   <ItemDescription>{`${
                     todayInfo.cycleLength === 100 ? '-' : todayInfo.cycleLength
                   } ${translate('days')}`}</ItemDescription>
@@ -213,27 +181,25 @@ export function ProfileScreen({ navigation }) {
               </Row>
               <Touchable onPress={() => navigate('AvatarAndThemeScreen', null)}>
                 <Row style={{ borderBottomWidth: 0 }}>
-                  <Column style={{ width: 70, height: 70, overflow: 'hidden' }}>
+                  <Column style={styles.avatarColumn}>
                     <AvatarOption
                       isDisabled={true}
                       nameStyle={{ fontSize: 10 }}
                       avatar={selectedAvatar}
                       isSelected={false}
-                      style={{ flex: 1 }}
+                      style={styles.flex}
                     />
                   </Column>
-                  <Column style={{ alignItems: 'flex-start' }}>
+                  <Column style={styles.start}>
                     <ShadowWrapper>
                       <ThemeSelectItem theme={theme} />
                     </ShadowWrapper>
                   </Column>
-                  <Column style={{ alignItems: 'flex-start' }}>
-                    <ItemDescription style={{ textTransform: 'capitalize' }}>
+                  <Column style={styles.start}>
+                    <ItemDescription style={styles.capitalize}>
                       {translate(selectedAvatar)}
                     </ItemDescription>
-                    <ItemDescription style={{ textTransform: 'capitalize' }}>
-                      {translate(theme)}
-                    </ItemDescription>
+                    <ItemDescription style={styles.capitalize}>{translate(theme)}</ItemDescription>
                   </Column>
                 </Row>
               </Touchable>
@@ -319,3 +285,63 @@ const TextContent = styled(Text)`
   font-size: 16;
   margin-bottom: 10;
 `
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  start: {
+    alignItems: 'flex-start',
+  },
+  white: {
+    color: 'white',
+  },
+  capitalize: {
+    textTransform: 'capitalize',
+  },
+  connectButton: {
+    height: 50,
+    width: 115,
+    alignSelf: 'center',
+    backgroundColor: '#a2c72d',
+  },
+  errorRow: {
+    height: 40,
+  },
+  errorText: {
+    fontSize: 12,
+    color: 'red',
+    textAlignVertical: 'center',
+    alignSelf: 'center',
+    bottom: 0,
+  },
+  headerText: {
+    height: 30,
+    textAlignVertical: 'center',
+    fontSize: 12,
+  },
+  guestText: {
+    width: '70%',
+    textAlign: 'left',
+    paddingLeft: 10,
+    fontSize: 12,
+    alignSelf: 'center',
+  },
+  valuesText: {
+    height: 30,
+    fontSize: 12,
+    textAlignVertical: 'center',
+  },
+  avatarColumn: {
+    width: 70,
+    height: 70,
+    overflow: 'hidden',
+  },
+  infoButton: {
+    paddingLeft: 40,
+  },
+  icon: {
+    height: 57,
+    width: 57,
+  },
+})

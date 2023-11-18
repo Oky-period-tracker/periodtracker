@@ -14,14 +14,9 @@ import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
 import { ReduxState } from '../../../redux/store'
+import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 
 const reduxState = (state: ReduxState) => state
-
-const { interpolate } = Animated
-const height = 0.55 * Dimensions.get('window').height
-const width = 0.65 * Dimensions.get('window').width
-const D = height / 1.6
-const innerR = D / 2
 
 export function CircularSelection({
   data,
@@ -32,6 +27,13 @@ export function CircularSelection({
   disableInteraction = false,
   fetchCardValues,
 }) {
+  const { screenWidth, screenHeight } = useScreenDimensions()
+  const height = screenHeight * 0.6
+  const width = screenWidth * 0.65
+  const { interpolate } = Animated
+  const D = height / 1.6
+  const innerR = D / 2
+
   const [isVisible, setIsVisible] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const l = Math.sin(Math.PI / data.length)
@@ -44,6 +46,9 @@ export function CircularSelection({
     inputRange: [0, data.length],
     outputRange: [0, -2 * Math.PI],
   })
+
+  const modifier = screenWidth < 1000 ? 2 : 5
+
   const isTutorialOneOn = useSelector(selectors.isTutorialOneActiveSelector)
   const checkIfWarning = useCheckDayWarning()
   // automatically close the modal if the wheel start scrolling
@@ -65,8 +70,8 @@ export function CircularSelection({
           style={[
             {
               position: 'absolute',
-              left: 2 * r,
-              right: -2 * r,
+              left: modifier * r,
+              right: -modifier * r,
               top: -10,
               bottom: 10,
             },

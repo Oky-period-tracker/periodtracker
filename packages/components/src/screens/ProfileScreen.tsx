@@ -71,8 +71,8 @@ export function ProfileScreen({ navigation }) {
           ListHeaderComponent={
             <Container>
               <Touchable onPress={() => navigate('EditProfileScreen', null)}>
-                <Row style={{ height: 140, borderBottomWidth: currentUser.isGuest ? 0 : 1 }}>
-                  <Column style={{ justifyContent: 'flex-start', paddingTop: 10 }}>
+                <Row style={[styles.firstRow, { borderBottomWidth: currentUser.isGuest ? 0 : 1 }]}>
+                  <Column style={styles.center}>
                     <Icon
                       source={
                         currentUser.isGuest
@@ -82,13 +82,13 @@ export function ProfileScreen({ navigation }) {
                       style={styles.icon}
                     />
                   </Column>
-                  <Column style={{ alignItems: 'flex-start' }}>
+                  <Column style={styles.start}>
                     <Text style={styles.headerText}>name</Text>
                     <Text style={styles.headerText}>age</Text>
                     <Text style={styles.headerText}>gender</Text>
                     <Text style={styles.headerText}>location</Text>
                   </Column>
-                  <Column style={{ alignItems: 'flex-start' }}>
+                  <Column style={styles.start}>
                     <ItemDescription>{currentUser.name}</ItemDescription>
                     <ItemDescription>
                       {translate(dateOfBirth.format('MMM')) + ' ' + dateOfBirth.format('YYYY')}
@@ -111,7 +111,7 @@ export function ProfileScreen({ navigation }) {
               {currentUser.isGuest && (
                 <>
                   <Row>
-                    <Column style={{ flexDirection: 'row' }}>
+                    <Column style={styles.row}>
                       <IconButton
                         name="infoPink"
                         onPress={() => {
@@ -122,7 +122,8 @@ export function ProfileScreen({ navigation }) {
                       />
                       <Text style={styles.guestText}>guest_mode_user_alert</Text>
                     </Column>
-                    <Column>
+
+                    <Column style={styles.start}>
                       <PrimaryButton
                         style={styles.connectButton}
                         textStyle={styles.white}
@@ -180,11 +181,10 @@ export function ProfileScreen({ navigation }) {
                 </Column>
               </Row>
               <Touchable onPress={() => navigate('AvatarAndThemeScreen', null)}>
-                <Row style={{ borderBottomWidth: 0 }}>
+                <Row style={styles.lastRow}>
                   <Column style={styles.avatarColumn}>
                     <AvatarOption
                       isDisabled={true}
-                      nameStyle={{ fontSize: 10 }}
                       avatar={selectedAvatar}
                       isSelected={false}
                       style={styles.flex}
@@ -293,6 +293,12 @@ const styles = StyleSheet.create({
   start: {
     alignItems: 'flex-start',
   },
+  center: {
+    justifyContent: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+  },
   white: {
     color: 'white',
   },
@@ -343,5 +349,11 @@ const styles = StyleSheet.create({
   icon: {
     height: 57,
     width: 57,
+  },
+  firstRow: {
+    height: 140,
+  },
+  lastRow: {
+    borderBottomWidth: 0,
   },
 })

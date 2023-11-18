@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, Dimensions, Platform } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { CarouselElement } from './CarouselElement'
 import { PanGesture } from './PanGesture'
@@ -10,15 +10,7 @@ import { useDisplayText } from '../../../components/context/DisplayTextContext'
 import { useSelector } from '../../../hooks/useSelector'
 import * as selectors from '../../../redux/selectors'
 import { SpinLoader } from '../../../components/common/SpinLoader'
-
-const screenWidth = Dimensions.get('window').width
-const screenHeight = Dimensions.get('window').height
-
-const cardWith = 0.53 * screenWidth
-const cardHeight = 0.2 * screenHeight
-const { interpolate, Value } = Animated
-const width = cardWith + 40
-let translateX = new Value(0)
+import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 
 export function Carousel({
   data,
@@ -28,6 +20,23 @@ export function Carousel({
   absoluteIndex,
   disableInteraction = false,
 }) {
+  const { screenWidth, screenHeight } = useScreenDimensions()
+
+  let cardWith = 0.5 * screenWidth
+  let cardHeight = 0.2 * screenHeight
+
+  const maxCardWidth = 320
+  const aspectRatio = 0.7
+
+  if (cardWith > maxCardWidth) {
+    cardWith = maxCardWidth
+    cardHeight = cardWith * aspectRatio
+  }
+
+  const { interpolate, Value } = Animated
+  const width = cardWith + 40
+  let translateX = new Value(0)
+
   const isTutorialTwoOn = useSelector(selectors.isTutorialTwoActiveSelector)
   const [isVisible, setIsVisible] = React.useState(false)
   const { setDisplayTextStatic } = useDisplayText()
@@ -73,6 +82,8 @@ export function Carousel({
                 dataEntry={dataEntry}
                 isActive={isActive}
                 currentIndex={key}
+                width={cardWith}
+                height={cardHeight}
               />
             </Animated.View>
           )

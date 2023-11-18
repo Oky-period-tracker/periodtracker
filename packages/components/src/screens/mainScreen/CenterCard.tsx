@@ -1,18 +1,25 @@
 import React from 'react'
-import { Dimensions } from 'react-native'
+import { Platform } from 'react-native'
 import { useTodayPrediction } from '../../components/context/PredictionProvider'
 import { useColor } from '../../hooks/useColor'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
-
-const position = 0.5 * Dimensions.get('window').height * 0.45
-const width = 0.3 * Dimensions.get('window').width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 export const CenterCard = ({ style = null }) => {
+  const { screenWidth, screenHeight } = useScreenDimensions()
   const todaysInfo = useTodayPrediction()
   const color = useColor(todaysInfo.onPeriod, todaysInfo.onFertile)
+
+  const cardHeight = 72
+  const heightMultiplier = Platform.OS === 'ios' ? 0.5 : 1
+  const modifier = cardHeight * heightMultiplier
+  const wheelSectionHeight = screenHeight * 0.6 * 0.5
+  const top = wheelSectionHeight - modifier
+  const width = screenWidth * 0.3
+
   return (
-    <CenterCardContainer style={{ top: position, ...style }}>
+    <CenterCardContainer style={{ width, maxWidth: 180, top, ...style }}>
       <Container color={color}>
         <TextNoTranslate style={{ color, fontFamily: 'Roboto-Black' }}>
           {todaysInfo.onPeriod ? todaysInfo.daysLeftOnPeriod : todaysInfo.daysUntilNextPeriod}
@@ -25,9 +32,8 @@ export const CenterCard = ({ style = null }) => {
 
 const CenterCardContainer = styled.View`
   position: absolute;
-  right: 15px;
-  width: ${width};
-  height: 70px;
+  right: 12px;
+  height: 72px;
   border-radius: 10px;
   flex-direction: row;
   background-color: white;

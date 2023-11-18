@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { CircleProgress } from './mainScreen/CircleProgress'
 import styled from 'styled-components/native'
@@ -67,29 +67,24 @@ const MainScreenActual = React.memo(() => {
         {onFertile && !onPeriod && (
           <InformationButton
             icon={assets.static.icons.infoBlue}
-            iconStyle={{ height: 25, width: 25 }}
-            style={{
-              marginTop: 'auto',
-              marginBottom: 'auto',
-              marginRight: 20,
-              alignSelf: 'flex-end',
-            }}
+            iconStyle={styles.icon}
+            style={styles.info}
           />
         )}
       </TopSeparator>
       <MiddleSection>
         <AvatarSection>
-          <Row style={{ zIndex: 999 }}>
+          <Row>
             <CircleProgress
               isCalendarTextVisible={true}
               onPress={() => navigate('Calendar', { verifiedPeriodsData: allCardsData })}
               fillColor="#FFC900"
               emptyFill="#F49200"
-              style={{ alignSelf: 'flex-start', marginLeft: 15 }}
+              style={styles.circle}
             />
-            <FlowerButton style={{ marginStart: 16 }} onPress={() => setFlowerModalVisible(true)} />
+            <FlowerButton style={styles.flowerButton} onPress={() => setFlowerModalVisible(true)} />
           </Row>
-          <Avatar style={{ position: 'absolute', top: Platform.OS === 'ios' ? 120 : 90 }} />
+          <Avatar style={styles.avatar} />
         </AvatarSection>
         <WheelSection>
           <CircularSelection {...{ data, index, isActive, currentIndex, absoluteIndex }} />
@@ -145,3 +140,28 @@ const CarouselSection = styled.View`
   justify-content: center;
   flex-direction: row;
 `
+
+const styles = StyleSheet.create({
+  icon: {
+    height: 25,
+    width: 25,
+  },
+  info: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginRight: 20,
+    alignSelf: 'flex-end',
+  },
+  flowerButton: {
+    marginStart: 16,
+  },
+  avatar: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 120 : 90,
+  },
+  circle: {
+    alignSelf: 'flex-start',
+    marginLeft: 15,
+    backgroundColor: 'red',
+  },
+})

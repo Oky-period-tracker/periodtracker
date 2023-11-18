@@ -26,6 +26,7 @@ import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import { FlowerButton, FlowerModal } from '../optional/Flower'
+import { isTablet } from 'react-native-device-info'
 
 export function MainScreen({ navigation }) {
   const { data } = useInfiniteScroll()
@@ -148,7 +149,7 @@ const WheelSection = styled.View`
 `
 const CarouselSection = styled.View`
   height: 30%;
-  padding-bottom: 20px;
+  padding-bottom: ${isTablet() ? 40 : 20}px;
   width: 100%;
   align-items: center;
   justify-content: center;

@@ -78,7 +78,7 @@ export function PasswordRequestScreen() {
                   }
                 }}
               >
-                <HeaderText>confirm</HeaderText>
+                <HeaderText style={styles.confirmButton}>confirm</HeaderText>
               </Touchable>
             </LowerContent>
           </Container>
@@ -185,5 +185,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontFamily: 'Roboto-Black',
     textDecorationLine: 'underline',
+  },
+  confirmButton: {
+    color: '#000',
   },
 })

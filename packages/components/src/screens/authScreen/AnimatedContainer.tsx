@@ -208,6 +208,7 @@ const TouchableText = styled.TouchableOpacity``
 const Container = styled.View`
   flex-direction: column;
   width: ${isTablet() ? '75%' : '100%'};
+  max-width: 520px;
 `
 
 const Col = styled.View`

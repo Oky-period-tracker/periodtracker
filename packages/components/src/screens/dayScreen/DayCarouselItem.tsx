@@ -1,5 +1,4 @@
 import React from 'react'
-import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { TitleText } from '../../components/common/TitleText'
 import { assets } from '../../assets/index'
@@ -10,10 +9,11 @@ import * as selectors from '../../redux/selectors'
 import { useSelector } from '../../hooks/useSelector'
 import { useColor } from '../../hooks/useColor'
 import { translate } from '../../i18n'
-
-const deviceWidth = Dimensions.get('window').width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }) {
+  const { screenWidth: deviceWidth } = useScreenDimensions()
+
   const selectedEmojis = useSelector((state) => selectors.cardAnswerSelector(state, dataEntry.date))
 
   const color = useColor(dataEntry.onPeriod, dataEntry.onFertile)

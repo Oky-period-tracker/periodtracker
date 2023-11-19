@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, ImageBackground, Dimensions } from 'react-native'
+import { View, ImageBackground } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { approximates, runSpring } from 'react-native-redash'
 import { useTheme } from '../../../components/context/ThemeContext'
@@ -15,6 +15,7 @@ import {
 } from '../../../components/context/PredictionProvider'
 import _ from 'lodash'
 import { getAsset } from '../../../services/asset'
+import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 
 const {
   Value,
@@ -30,8 +31,6 @@ const {
   stopClock,
   interpolate,
 } = Animated
-
-const heightOfScreen = Dimensions.get('window').height
 
 function checkForVerifiedDay(cardValues) {
   if (_.has(cardValues, 'periodDay')) {
@@ -95,6 +94,8 @@ export function CircularElement({
   cardValues,
   state,
 }) {
+  const { screenHeight } = useScreenDimensions()
+
   const currentCycleInfo = useTodayPrediction()
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
   const actualCurrentStartDate = useActualCurrentStartDateSelector()
@@ -180,8 +181,8 @@ export function CircularElement({
         >
           <ImageBackground
             style={{
-              width: themeName === 'desert' ? 0.15 * heightOfScreen : 70,
-              height: themeName === 'desert' ? 0.15 * heightOfScreen : 70,
+              width: themeName === 'desert' ? 0.15 * screenHeight : 70,
+              height: themeName === 'desert' ? 0.15 * screenHeight : 70,
               alignItems: 'center',
               justifyContent: 'center',
             }}

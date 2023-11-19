@@ -24,13 +24,14 @@ import moment from 'moment'
 import Tts from 'react-native-tts'
 import { translate } from '../i18n'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
+import { useScreenDimensions } from '../hooks/useScreenDimensions'
 
-const screenHeight = Dimensions.get('screen').height
-const screenWidth = Dimensions.get('screen').width
 const arrowSize = 55
 // I apologize to anyone who gets to this level of error checking on the sequencing of this component.
 // Deadline pressure had mounted beyond compare and it was working stably, It definitely can be simplified and made more declarative
 export function TutorialFirstScreen() {
+  const { screenWidth, screenHeight } = useScreenDimensions()
+
   const { data, isActive, index, currentIndex, absoluteIndex } = useInfiniteScroll()
   const [step, setStep] = React.useState(0)
   const [loading, setLoading] = React.useState(false)

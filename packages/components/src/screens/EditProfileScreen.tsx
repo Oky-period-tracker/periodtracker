@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { Alert, Dimensions } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { Header } from '../components/common/Header'
@@ -22,10 +22,10 @@ import { TextInput } from '../components/common/TextInput'
 import { VerticalSelectBox } from '../components/common/VerticalSelectBox'
 import { translate } from '../i18n'
 import _ from 'lodash'
+import { useScreenDimensions } from '../hooks/useScreenDimensions'
+import { isTablet } from 'react-native-device-info'
 
-const deviceWidth = Dimensions.get('window').width
 const minPasswordLength = 1
-const inputWidth = deviceWidth - 180
 const secretQuestions = [
   'secret_question',
   `favourite_actor`,
@@ -70,6 +70,10 @@ async function runInSequence(functions) {
 }
 
 export function EditProfileScreen() {
+  const { screenWidth } = useScreenDimensions()
+  // const inputWidth = screenWidth - 180
+  const inputWidth = 180
+
   const dispatch = useDispatch()
   const currentUser = useSelector(selectors.currentUserSelector)
   const appToken = useSelector(selectors.appTokenSelector)
@@ -233,96 +237,72 @@ export function EditProfileScreen() {
     <BackgroundTheme>
       <PageContainer>
         <Header screenTitle="profile_edit" onPressBackButton={() => BackOneScreen()} />
-        <KeyboardAwareAvoidance>
+        <KeyboardAwareAvoidance contentContainerStyle={styles.keyboardAwareAvoidance}>
           <Container>
             <Row>
-              <Icon
-                source={assets.static.icons.profileL}
-                style={{ marginRight: 38, height: 57, width: 57 }}
-              />
+              <Icon source={assets.static.icons.profileL} style={styles.icon} />
               <TextInputSettings
                 onChange={(text) => setName(text)}
                 label="name"
                 isValid={false}
                 hasError={false}
-                style={{ height: '100%', justifyContent: 'space-between', marginBottom: 0 }}
+                style={styles.textInput}
                 underlineStyle={{ width: inputWidth }}
-                inputStyle={{ fontFamily: 'Roboto-Black', fontSize: 18 }}
+                inputStyle={styles.textInputInput}
                 value={name}
               />
             </Row>
             <Row>
-              <Icon
-                source={assets.static.icons.genderL}
-                style={{ marginRight: 38, height: 57, width: 57 }}
-              />
+              <Icon source={assets.static.icons.genderL} style={styles.icon} />
               <SelectBox
-                itemStyle={{
-                  fontSize: 18,
-                  fontFamily: 'Roboto-Black',
-                }}
+                itemStyle={styles.selectBoxItem}
                 width={inputWidth}
-                containerStyle={{
-                  height: 57,
-                  justifyContent: 'space-between',
-                  width: inputWidth,
-                }}
-                buttonStyle={{ right: -10, bottom: 5 }}
+                containerStyle={[
+                  styles.selectBoxContainer,
+                  {
+                    width: inputWidth,
+                  },
+                ]}
+                buttonStyle={styles.selectBoxButton}
                 title="gender"
                 items={[currentUser.gender, ...remainingGenders]}
                 onValueChange={(value) => setGender(value)}
               />
             </Row>
             <Row>
-              <Icon
-                source={assets.static.icons.calendarL}
-                style={{ marginRight: 38, height: 57, width: 57 }}
-              />
+              <Icon source={assets.static.icons.calendarL} style={styles.icon} />
               <DateOfBirthInput
                 label={'birth_month_and_year'}
-                textStyle={{ fontSize: 18, fontFamily: 'Roboto-Black', color: '#555' }}
-                style={{
-                  height: '100%',
-                  justifyContent: 'space-between',
-                  marginBottom: 0,
-                  width: inputWidth,
-                }}
+                textStyle={styles.dobInputText}
+                style={[styles.dobInput, { width: inputWidth }]}
                 value={dateOfBirth}
                 onChange={setDateOfBirth}
               />
             </Row>
             <Row>
-              <Icon
-                source={assets.static.icons.locationL}
-                style={{ marginRight: 38, height: 57, width: 57 }}
-              />
+              <Icon source={assets.static.icons.locationL} style={styles.icon} />
               <SelectBox
                 title="location"
                 items={remainingLocations}
-                itemStyle={{
-                  fontSize: 18,
-                  fontFamily: 'Roboto-Black',
-                }}
+                itemStyle={styles.selectBoxItem}
                 width={inputWidth}
-                containerStyle={{
-                  height: 57,
-                  justifyContent: 'space-between',
-                  width: inputWidth,
-                }}
-                buttonStyle={{ right: -10, bottom: 5 }}
+                containerStyle={[
+                  styles.selectBoxContainer,
+                  {
+                    width: inputWidth,
+                  },
+                ]}
+                buttonStyle={styles.selectBoxButton}
                 onValueChange={(value) => setLocation(value)}
                 isValid={false}
                 hasError={false}
               />
             </Row>
-            <Row style={{ marginBottom: 10 }}>
-              <Icon
-                source={assets.static.icons.lockL}
-                style={{ marginRight: 38, height: 57, width: 57 }}
-              />
+            <Row style={styles.row}>
+              <Icon source={assets.static.icons.lockL} style={styles.icon} />
               <TextInputSettings
                 onChange={(text) => setPassword(text)}
-                style={{ height: '100%', justifyContent: 'space-between', marginBottom: 0 }}
+                style={styles.textInput}
                 label="password"
                 isValid={password.length >= minPasswordLength}
                 hasError={notValid && !(password.length >= minPasswordLength)}
@@ -330,15 +310,12 @@ export function EditProfileScreen() {
                 onBlur={() => setShowPasscode(false)}
                 secureTextEntry={!showPasscode}
                 underlineStyle={{ width: inputWidth }}
-                inputStyle={{ fontFamily: 'Roboto-Black' }}
+                inputStyle={styles.textInputInput}
                 value={password}
               />
             </Row>
-            <Row style={{ marginBottom: 10 }}>
-              <Icon
-                source={assets.static.icons.shieldL}
-                style={{ marginRight: 38, height: 57, width: 57 }}
-              />
+            <Row style={styles.row}>
+              <Icon source={assets.static.icons.shieldL} style={styles.icon} />
               <ChangeSecretButton onPress={() => setSecretIsVisible(true)}>
                 <ConfirmText>change_secret</ConfirmText>
               </ChangeSecretButton>
@@ -355,7 +332,7 @@ export function EditProfileScreen() {
             await saveChanges()
           }}
         >
-          <ConfirmText style={{ color: '#000' }}>confirm</ConfirmText>
+          <ConfirmText style={styles.confirm}>confirm</ConfirmText>
         </ConfirmButton>
       </PageContainer>
       {/* --------------------------------- modals --------------------------------- */}
@@ -384,13 +361,10 @@ export function EditProfileScreen() {
             />
             <VerticalSelectBox
               items={secretQuestions.map((questions) => (questions ? questions : ''))}
-              containerStyle={{
-                height: 45,
-                borderRadius: 22.5,
-              }}
+              containerStyle={styles.verticalSelectContainer}
               height={45}
               maxLength={20}
-              buttonStyle={{ right: 5, bottom: 7 }}
+              buttonStyle={styles.verticalSelectButton}
               onValueChange={(value) => setSecretQuestion(value)}
               errorHeading="secret_q_error_heading"
               errorContent="secret_que_info"
@@ -432,6 +406,9 @@ const TextContainer = styled.View`
 `
 const Container = styled.View`
   background-color: #fff;
+
+  width: ${isTablet() ? 75 : 100}%;
+  max-width: 800px;
   elevation: 4;
   margin-horizontal: 3px;
   margin-vertical: 3px;
@@ -440,14 +417,7 @@ const Container = styled.View`
   padding-horizontal: 30px;
   padding-vertical: 22px;
 `
-const TextRow = styled.View`
-  width: 100%
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  background-color: red;
-`
+
 const Row = styled.View`
   flex-direction: row;
   height: 57px;
@@ -466,7 +436,8 @@ const Confirm = styled.TouchableOpacity`
 `
 
 const ChangeSecretButton = styled.TouchableOpacity`
-  width: ${inputWidth};
+  width: 100%;
+  max-width: 200px;
   height: 50px;
   border-radius: 25px;
   background-color: #a2c72d;
@@ -475,6 +446,7 @@ const ChangeSecretButton = styled.TouchableOpacity`
 `
 const ConfirmButton = styled.TouchableOpacity`
   width: 100%;
+  max-width: 520px;
   height: 60px;
   border-radius: 10px;
   background-color: #fff;
@@ -507,3 +479,60 @@ const QuestionText = styled(Text)`
   font-size: 16;
   text-align: center;
 `
+
+const styles = StyleSheet.create({
+  keyboardAwareAvoidance: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 38,
+    height: 57,
+    width: 57,
+  },
+  textInput: {
+    height: '100%',
+    justifyContent: 'space-between',
+    marginBottom: 0,
+  },
+  textInputInput: {
+    fontFamily: 'Roboto-Black',
+    fontSize: 18,
+  },
+  selectBoxContainer: {
+    height: 57,
+    justifyContent: 'space-between',
+  },
+  selectBoxItem: {
+    fontSize: 18,
+    fontFamily: 'Roboto-Black',
+  },
+  selectBoxButton: {
+    right: -10,
+    bottom: 5,
+  },
+  dobInput: {
+    height: '100%',
+    justifyContent: 'space-between',
+    marginBottom: 0,
+  },
+  dobInputText: {
+    fontSize: 18,
+    fontFamily: 'Roboto-Black',
+    color: '#555',
+  },
+  row: {
+    marginBottom: 10,
+  },
+  confirm: {
+    color: '#000',
+  },
+  verticalSelectContainer: {
+    height: 45,
+    borderRadius: 22.5,
+  },
+  verticalSelectButton: {
+    right: 5,
+    bottom: 7,
+  },
+})

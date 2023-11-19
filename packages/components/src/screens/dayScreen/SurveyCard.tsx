@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { Dimensions } from 'react-native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
@@ -11,8 +10,7 @@ import * as actions from '../../redux/actions'
 import { useDispatch } from 'react-redux'
 import { TextInput } from '../../components/common/TextInput'
 import { SurveyInformationButton } from '../../components/common/SurveyInformationButton'
-
-const { width } = Dimensions.get('window')
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 // TODO_ALEX: survey
 
@@ -31,6 +29,8 @@ export const SurveyCard = React.memo<{
   startSurveyQuestion: boolean
   endSurvey: any
 }>(({ dataEntry, index, selectAnswer, startSurveyQuestion, endSurvey }) => {
+  const { screenWidth: width } = useScreenDimensions()
+
   const [title, setTitle] = React.useState('')
   const [titlePlaceholder, setTitlePlaceholder] = React.useState('type_answer_placeholder')
   const [isSkip, setSkip] = React.useState(null)
@@ -278,10 +278,6 @@ const RowTextInput = styled.View`
   justify-content: flex-start;
 `
 
-const Container = styled.View`
-  flex: 1;
-`
-
 const UpperContent = styled.View`
   flex: 1;
   width: 100%;
@@ -364,12 +360,5 @@ const ContentText = styled(Text)`
   width: 100%;
   color: #4d4d4d;
   font-size: 14;
-  text-align: justify;
-`
-
-const ContentTextNoTranslations = styled(TextWithoutTranslation)`
-  width: 100%;
-  color: #4d4d4d;
-  font-size: 12;
   text-align: justify;
 `

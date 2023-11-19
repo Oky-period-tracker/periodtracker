@@ -88,13 +88,13 @@ export const SelectBox = ({
       {isValid && !hasError && (
         <Icon
           source={assets.static.icons.tick}
-          style={{ position: 'absolute', right: -30, bottom: 5 }}
+          style={{ position: 'absolute', right: 0, bottom: 5 }}
         />
       )}
       {hasError && (
         <Icon
           source={assets.static.icons.closeLine}
-          style={{ position: 'absolute', right: -30, bottom: 5 }}
+          style={{ position: 'absolute', right: 0, bottom: 5 }}
         />
       )}
       <Underline />
@@ -115,7 +115,7 @@ const Row = styled.TouchableOpacity`
 `
 const AbsolutePositioner = styled.View`
   position: absolute;
-  right: -40;
+  right: 0;
   bottom: 5;
 `
 

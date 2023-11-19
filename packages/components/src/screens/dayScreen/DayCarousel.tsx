@@ -16,10 +16,11 @@ import { ThemedModal } from '../../components/common/ThemedModal'
 import { ColourButtons } from '../mainScreen/ColourButtons'
 import { SpinLoader } from '../../components/common/SpinLoader'
 import { navigateAndReset } from '../../services/navigationService'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
-const screenWidth = Dimensions.get('window').width
 // TODO_ALEX: survey
 export function DayCarousel({ navigation, dataEntry }) {
+  const { screenWidth } = useScreenDimensions()
   const dispatch = useDispatch()
   const [textToSpeak, setTextToSpeak] = React.useState([])
   const [isVisible, setIsVisible] = React.useState(false)

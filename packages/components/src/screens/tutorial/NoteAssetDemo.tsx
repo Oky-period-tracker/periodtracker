@@ -9,11 +9,10 @@ import { translate } from '../../i18n'
 import Tts from 'react-native-tts'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
-
-const deviceWidth = Dimensions.get('window').width
-const deviceHeight = Dimensions.get('screen').height
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 export function NoteAssetDemo({ step }) {
+  const { screenWidth, screenHeight } = useScreenDimensions()
   const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
 
   React.useEffect(() => {
@@ -29,8 +28,8 @@ export function NoteAssetDemo({ step }) {
   return (
     <NoteCardContainer
       style={{
-        width: 0.6 * deviceWidth,
-        height: 0.4 * deviceHeight,
+        width: 0.6 * screenWidth,
+        height: 0.4 * screenHeight,
         marginLeft: 30,
       }}
     >

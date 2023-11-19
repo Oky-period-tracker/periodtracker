@@ -69,10 +69,18 @@ async function runInSequence(functions) {
   return results
 }
 
+const maxWidth = 800
+
 export function EditProfileScreen() {
   const { screenWidth } = useScreenDimensions()
-  // const inputWidth = screenWidth - 180
-  const inputWidth = 180
+  const percentWidth = isTablet() ? 0.75 : 1
+  let inputWidth = screenWidth * percentWidth
+
+  if (inputWidth > maxWidth) {
+    inputWidth = maxWidth
+  }
+
+  inputWidth -= 180 // 180 is the width of the icon
 
   const dispatch = useDispatch()
   const currentUser = useSelector(selectors.currentUserSelector)
@@ -302,7 +310,7 @@ export function EditProfileScreen() {
               <Icon source={assets.static.icons.lockL} style={styles.icon} />
               <TextInputSettings
                 onChange={(text) => setPassword(text)}
-                style={styles.textInput}
+                style={[styles.textInput, { width: inputWidth }]}
                 label="password"
                 isValid={password.length >= minPasswordLength}
                 hasError={notValid && !(password.length >= minPasswordLength)}
@@ -310,7 +318,7 @@ export function EditProfileScreen() {
                 onBlur={() => setShowPasscode(false)}
                 secureTextEntry={!showPasscode}
                 underlineStyle={{ width: inputWidth }}
-                inputStyle={styles.textInputInput}
+                inputStyle={[styles.textInputInput, { width: inputWidth }]}
                 value={password}
               />
             </Row>
@@ -406,9 +414,8 @@ const TextContainer = styled.View`
 `
 const Container = styled.View`
   background-color: #fff;
-
   width: ${isTablet() ? 75 : 100}%;
-  max-width: 800px;
+  max-width: ${maxWidth}px;
   elevation: 4;
   margin-horizontal: 3px;
   margin-vertical: 3px;
@@ -443,10 +450,11 @@ const ChangeSecretButton = styled.TouchableOpacity`
   background-color: #a2c72d;
   align-items: center;
   justify-content: center;
+  margin-left: auto;
 `
 const ConfirmButton = styled.TouchableOpacity`
-  width: 100%;
-  max-width: 520px;
+  width: ${isTablet() ? 75 : 100}%;
+  max-width: ${maxWidth}px;
   height: 60px;
   border-radius: 10px;
   background-color: #fff;

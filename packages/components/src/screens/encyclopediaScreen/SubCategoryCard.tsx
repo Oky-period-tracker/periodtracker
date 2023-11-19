@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
-import { Dimensions } from 'react-native'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
-const screenWidth = Dimensions.get('screen').width
 export const SubCategoryCard = ({ title, onPress }) => {
+  const { screenWidth } = useScreenDimensions()
+
   return (
     <SubCategoryContainer
       activeOpacity={0.8}
@@ -17,6 +18,8 @@ export const SubCategoryCard = ({ title, onPress }) => {
 }
 
 export const VideoSubCategoryCard = ({ title, onPress }) => {
+  const { screenWidth } = useScreenDimensions()
+
   return (
     <SubCategoryContainer
       activeOpacity={0.8}

@@ -3,12 +3,12 @@ import styled from 'styled-components/native'
 import { Text, TextWithoutTranslation } from '../../components/common/Text'
 import { translate, capitalizeFLetter } from '../../i18n'
 import { assets } from '../../assets'
-import { Dimensions } from 'react-native'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 export const OnboardingCard = ({ image, heading, content }) => {
   const aspectRatio = 0.93
-  const screenWidth = Dimensions.get('window').width
-  const screenHeight = Dimensions.get('window').height
+
+  const { screenWidth, screenHeight } = useScreenDimensions()
 
   let width = screenWidth * 0.95
   let height = width / aspectRatio

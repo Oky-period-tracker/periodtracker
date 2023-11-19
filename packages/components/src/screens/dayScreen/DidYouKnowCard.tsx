@@ -1,13 +1,11 @@
 import React from 'react'
-import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { useSelector } from '../../hooks/useSelector'
 import _ from 'lodash'
 import * as selectors from '../../redux/selectors'
 import { TitleText } from '../../components/common/TitleText'
-
-const deviceWidth = Dimensions.get('window').width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 function useDidYouKnow() {
   const allDidYouKnows = useSelector(selectors.allDidYouKnowsSelectors)
@@ -18,6 +16,8 @@ function useDidYouKnow() {
 }
 
 export const DidYouKnowCard = React.memo<{ index: number }>(({ index }) => {
+  const { screenWidth: deviceWidth } = useScreenDimensions()
+
   const selectedDidYouKnow = useDidYouKnow()
   if (!selectedDidYouKnow) {
     return null

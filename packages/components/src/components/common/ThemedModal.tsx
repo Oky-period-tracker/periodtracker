@@ -1,6 +1,7 @@
 import Modal from 'react-native-modal'
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
+import { IconButton } from './buttons/IconButton'
 
 export function ThemedModal({
   isVisible,
@@ -33,7 +34,21 @@ export function ThemedModal({
       hideModalContentWhileAnimating={true}
       useNativeDriver={true}
     >
+      <IconButton
+        name="close"
+        accessibilityLabel="close"
+        onPress={() => setIsVisible(false)}
+        touchableStyle={styles.close}
+      />
       {children}
     </Modal>
   )
 }
+
+const styles = StyleSheet.create({
+  close: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+})

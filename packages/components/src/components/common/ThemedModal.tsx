@@ -6,6 +6,7 @@ import { IconButton } from './buttons/IconButton'
 export function ThemedModal({
   isVisible,
   setIsVisible,
+  includeCloseButton = true,
   children,
   onModalHide = () => null,
   onModalWillShow = () => null,
@@ -34,12 +35,14 @@ export function ThemedModal({
       hideModalContentWhileAnimating={true}
       useNativeDriver={true}
     >
-      <IconButton
-        name="close"
-        accessibilityLabel="close"
-        onPress={() => setIsVisible(false)}
-        touchableStyle={styles.close}
-      />
+      {includeCloseButton ? (
+        <IconButton
+          name="close"
+          accessibilityLabel="close"
+          onPress={() => setIsVisible(false)}
+          touchableStyle={styles.close}
+        />
+      ) : null}
       {children}
     </Modal>
   )

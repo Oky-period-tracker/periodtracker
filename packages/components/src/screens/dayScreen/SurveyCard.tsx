@@ -190,6 +190,7 @@ export const SurveyCard = React.memo<{
         </Row>
 
         <ContentText>anonymous_answer</ContentText>
+        {dataEntry?.is_multiple ? <ContentText>choose_one</ContentText> : null}
       </Row>
       <Row
         style={{

@@ -257,6 +257,7 @@ export interface AppTranslations {
   will_you_answer_survey_questions: string
   thank_you_msg: string
   anonymous_answer: string
+  choose_one: string
   submit: string
   type_answer_placeholder: string
   info_button_survey: string

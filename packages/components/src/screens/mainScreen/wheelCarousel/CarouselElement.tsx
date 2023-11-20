@@ -17,6 +17,7 @@ import _ from 'lodash'
 import { navigateAndReset } from '../../../services/navigationService'
 import { ThemedModal } from '../../../components/common/ThemedModal'
 import { ColourButtons } from '../ColourButtons'
+import { globalStyles } from '../../../config/styles'
 
 const {
   Value,
@@ -70,12 +71,15 @@ export function CarouselElement({ dataEntry, index, isActive, currentIndex, widt
 
   return (
     <View
-      style={{
-        height: '100%',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-      }}
+      style={[
+        {
+          height: '100%',
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+        },
+        globalStyles.shadow,
+      ]}
     >
       <AnimatedContainer
         // @ts-ignore

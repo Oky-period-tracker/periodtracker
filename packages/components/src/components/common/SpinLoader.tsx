@@ -37,6 +37,7 @@ export const SpinLoader = ({ isVisible, setIsVisible, text = 'empty', backdropOp
         onBackdropPress: () => null,
         onModalWillShow,
         onModalHide: () => animatedValue.stopAnimation(),
+        includeCloseButton: false,
       }}
     >
       <TutorialText>{text}</TutorialText>

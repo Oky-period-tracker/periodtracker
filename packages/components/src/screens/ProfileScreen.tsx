@@ -22,10 +22,10 @@ import * as actions from '../redux/actions'
 import * as selectors from '../redux/selectors'
 import { translate } from '../i18n/index'
 import { IconButton } from '../components/common/buttons/IconButton'
-import Modal from 'react-native-modal'
 import { profileScreenSpeech } from '../config'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import moment from 'moment'
+import { ThemedModal } from '../components/common/ThemedModal'
 
 export function ProfileScreen({ navigation }) {
   const History = useHistoryPrediction()
@@ -242,26 +242,15 @@ export function ProfileScreen({ navigation }) {
           ListFooterComponent={<BottomFill />}
         />
       </PageContainer>
-      <Modal
-        isVisible={isModalVisible}
-        backdropOpacity={0.8}
-        animationInTiming={600}
-        animationOutTiming={600}
-        backdropTransitionInTiming={600}
-        backdropTransitionOutTiming={600}
-        onBackdropPress={() => setIsModalVisible(false)}
-        useNativeDriver={true}
-      >
+      <ThemedModal isVisible={isModalVisible} setIsVisible={setIsModalVisible}>
         <CardPicker>
           <Heading>alert</Heading>
           <TextContent>connect_account_info</TextContent>
         </CardPicker>
-      </Modal>
+      </ThemedModal>
     </BackgroundTheme>
   )
 }
-
-const Scroll = styled.ScrollView``
 
 const Row = styled.View`
   height: 100px;

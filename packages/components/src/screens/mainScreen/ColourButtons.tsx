@@ -429,34 +429,11 @@ const Row = styled.View`
   justify-content: space-between;
 `
 
-const Button = styled.TouchableOpacity`
-  height: 85px;
-  width: 85px;
-  align-items: center;
-  justify-content: center;
-`
-
-const LongButton = styled.TouchableOpacity`
-  height: 90px;
-  width: 120px;
-  margin-top: 20px;
-  align-items: center;
-  justify-content: center;
-`
-
-const InnerText = styled(Text)`
-  color: white;
-  font-size: 14;
-  position: absolute;
-  text-align: center;
-  font-family: Roboto-Black;
-`
-
 const InstructionText = styled(Text)`
   color: white;
   font-size: 13;
   width: 75%;
-  margin-top: 50%;
+  margin-top: 80px;
   margin-bottom: 20px;
   text-align: center;
 `
@@ -467,19 +444,6 @@ const HeadingText = styled(Text)`
   margin-bottom: 50px;
   text-align: center;
   font-family: Roboto-Black;
-`
-
-const Mask = styled.ImageBackground`
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-`
-
-const Column = styled.View`
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 `
 
 const RNText = styled.Text`

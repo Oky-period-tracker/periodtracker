@@ -1,6 +1,6 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import styled from 'styled-components/native'
-import { Dimensions, findNodeHandle, AccessibilityInfo, Text as RNText } from 'react-native'
+import { Dimensions, AccessibilityInfo, Text as RNText } from 'react-native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
@@ -53,8 +53,6 @@ export const SurveyCard = React.memo<{
     const completedSurveys = useSelector(selectors.completedSurveys)
     const allSurveys = useSelector(selectors.allSurveys)
 
-    const questionRef = useRef(null)
-
     const checkUserPermission = (option, optionIndex) => {
       setSelectedIndex(optionIndex)
       if (!startSurveyQuestion) {
@@ -104,14 +102,11 @@ export const SurveyCard = React.memo<{
     }
 
     React.useEffect(() => {
-      // Focus accessibility cursor on title
-      setTimeout(() => {
-        const tag = findNodeHandle(questionRef.current)
-        if (tag) {
-          AccessibilityInfo.setAccessibilityFocus(tag)
-        }
-      }, 750)
-    }, [selectedIndex])
+      if (!dataEntry?.question) {
+        return
+      }
+      AccessibilityInfo.announceForAccessibility(dataEntry?.question)
+    }, [dataEntry])
 
     const SurveyContent = () => {
       if (dataEntry?.thankYouMsg && selectedIndex === 1) {
@@ -233,7 +228,6 @@ export const SurveyCard = React.memo<{
                 color: '#f49200',
                 fontFamily: 'Roboto-Black',
               }}
-              ref={questionRef}
             >
               {dataEntry?.question}
             </RNText>

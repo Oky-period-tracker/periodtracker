@@ -18,7 +18,7 @@ export const Header = ({
     <Container style={style}>
       {showGoBackButton && !LeftComponent && (
         <IconButton
-          accessibilityLabel={translate('arrow_buton')}
+          accessibilityLabel={translate('arrow_button')}
           onPress={onPressBackButton || (() => BackOneScreen())}
           name="back"
         />

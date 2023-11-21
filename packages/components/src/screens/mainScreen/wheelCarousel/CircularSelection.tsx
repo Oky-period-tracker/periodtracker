@@ -14,6 +14,9 @@ import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
+import { isTablet } from 'react-native-device-info'
+
+const widthPercentage = isTablet() ? 0.4 : 0.65
 
 export function CircularSelection({
   data,
@@ -25,7 +28,7 @@ export function CircularSelection({
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
   const height = screenHeight * 0.6
-  const width = screenWidth * 0.65
+  const width = screenWidth * widthPercentage
   const { interpolate } = Animated
   const D = height / 1.6
   const innerR = D / 2
@@ -42,8 +45,6 @@ export function CircularSelection({
     inputRange: [0, data.length],
     outputRange: [0, -2 * Math.PI],
   })
-
-  const modifier = screenWidth < 1000 ? 2 : 5
 
   const isTutorialOneOn = useSelector(selectors.isTutorialOneActiveSelector)
   const checkIfWarning = useCheckDayWarning()
@@ -77,8 +78,8 @@ export function CircularSelection({
           style={[
             {
               position: 'absolute',
-              left: modifier * r,
-              right: -modifier * r,
+              left: 2 * r,
+              right: -2 * r,
               top: -10,
               bottom: 10,
             },
@@ -135,8 +136,8 @@ export function CircularSelection({
                 setIsVisible(true)
               }}
               style={{
-                height: 60,
-                width: 80,
+                height: 100,
+                width: 100,
                 marginTop: cy,
               }}
             />

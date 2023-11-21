@@ -113,6 +113,7 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
+  justify-content: space-between;
 `
 const AvatarSection = styled.View`
   flex-direction: column;
@@ -128,11 +129,12 @@ const Row = styled.View`
 `
 const WheelSection = styled.View`
   height: 100%;
-  width: 65%;
+  width: ${isTablet() ? 40 : 65}%;
   align-items: center;
   justify-content: center;
   flex-direction: row;
 `
+
 const CarouselSection = styled.View`
   height: 30%;
   padding-bottom: ${isTablet() ? 40 : 20}px;

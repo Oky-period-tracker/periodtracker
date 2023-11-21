@@ -4,6 +4,7 @@ import { assets } from '../../assets/index'
 import { AppAssets } from '@oky/core'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 import { isTablet } from 'react-native-device-info'
+import { Platform } from 'react-native'
 
 export const NavigationBar = ({
   focused,
@@ -36,7 +37,7 @@ const Column = styled.View`
   justify-content: center;
   align-items: center;
   height: ${isTablet() ? '80' : '56'}px;
-  margin-bottom: ${isTablet() ? '0' : '5'}px;
+  margin-bottom: ${isTablet() && Platform.OS === 'ios' ? '0' : '5'}px;
   border-left-width: 0.5px;
   border-right-width: 0.5px;
   border-color: #e1e2e2;

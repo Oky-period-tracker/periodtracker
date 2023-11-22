@@ -1,7 +1,8 @@
 import Modal from 'react-native-modal'
 import React from 'react'
-import { Platform, StyleSheet } from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { IconButton } from './buttons/IconButton'
+import { translate } from '../../i18n'
 
 export function ThemedModal({
   isVisible,
@@ -21,6 +22,13 @@ export function ThemedModal({
     <Modal
       isVisible={isVisible}
       backdropOpacity={backdropOpacity}
+      customBackdrop={
+        <TouchableOpacity
+          onPress={onBackdropPress}
+          importantForAccessibility="no-hide-descendants"
+          style={styles.backdrop}
+        />
+      }
       // @ts-ignore
       animationIn={animationIn}
       // @ts-ignore
@@ -53,5 +61,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 0,
+  },
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'black',
   },
 })

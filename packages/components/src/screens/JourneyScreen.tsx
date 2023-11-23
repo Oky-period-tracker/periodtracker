@@ -31,12 +31,7 @@ const cards = [
     image: assets.static.icons.calendarL,
     pickerLabel: 'survey_label_2',
     pickerType: 'calendar',
-    initialOption: moment
-      .utc()
-      .startOf('day')
-      .clone()
-      .subtract(14, 'days')
-      .format('DD-MMM-YYYY'),
+    initialOption: moment.utc().startOf('day').clone().subtract(14, 'days').format('DD-MMM-YYYY'),
     defaultAnswerMessage: 'survey_default_answer_2',
     confirmMessage: null,
     answerType: 'date',
@@ -71,14 +66,16 @@ const cards = [
   },
 ]
 
-export function JourneyScreen() {
+export function JourneyScreen({ navigation }) {
+  const newUser = navigation.getParam('newUser')
+
   let earlyFinishCheck = false
   const swiper = React.useRef(null)
   const [questionStatuses, setQuestionStatus] = React.useState({
-    data: cards.map(card => ({ id: card.id, status: 'initial' })),
+    data: cards.map((card) => ({ id: card.id, status: 'initial' })),
   })
   const [questionAnswers, setQuestionAnswer] = React.useState({
-    data: cards.map(card => ({ id: card.id, answer: card.initialOption })),
+    data: cards.map((card) => ({ id: card.id, answer: card.initialOption })),
   })
   const [currentQuestionIndex, setQuestionIndex] = React.useState(0)
   const [isSurveyCompleted, setSurveyCompleted] = React.useState(false)
@@ -109,7 +106,7 @@ export function JourneyScreen() {
     }
   }
 
-  const goToQuestion = questionNumber => {
+  const goToQuestion = (questionNumber) => {
     setQuestionIndex(questionNumber - 1)
     setQuestionStatus({
       data: questionStatuses.data.map((item, _) =>
@@ -119,13 +116,30 @@ export function JourneyScreen() {
     swiper.current.scrollBy(questionNumber - 5)
   }
 
+  const [hasAutoSkipped, setHasAutoSkipped] = React.useState(false)
+  React.useEffect(() => {
+    if (hasAutoSkipped) {
+      return
+    }
+
+    if (newUser?.gender === 'Male') {
+      setQuestionStatus({
+        data: questionStatuses.data.map((item) => ({ ...item, status: 'not_remember' })),
+      })
+      setHasAutoSkipped(true)
+      earlyFinishCheck = true
+      setSurveyCompleted(true)
+      goToTheNext()
+    }
+  }, [])
+
   return (
     <BackgroundTheme>
       <PageContainer>
         <Header showScreenTitle={false} screenTitle="" showGoBackButton={false} />
         <Container>
           <SwiperContainer
-            setIndex={ind => setQuestionIndex(ind)}
+            setIndex={(ind) => setQuestionIndex(ind)}
             scrollEnabled={true}
             pagingEnabled={true}
             ref={swiper}
@@ -139,14 +153,14 @@ export function JourneyScreen() {
                     status={questionStatuses.data[index].status}
                     onRemember={() => {
                       setQuestionStatus({
-                        data: questionStatuses.data.map(item =>
+                        data: questionStatuses.data.map((item) =>
                           item.id === card.id ? { ...item, status: 'remember' } : item,
                         ),
                       })
                     }}
                     onForget={() => {
                       setQuestionStatus({
-                        data: questionStatuses.data.map(item =>
+                        data: questionStatuses.data.map((item) =>
                           item.id === card.id
                             ? { ...item, status: card.pickerType ? 'not_remember' : 'remember' }
                             : item,
@@ -155,7 +169,7 @@ export function JourneyScreen() {
                     }}
                     onChange={() => {
                       setQuestionStatus({
-                        data: questionStatuses.data.map(item =>
+                        data: questionStatuses.data.map((item) =>
                           item.id === card.id ? { ...item, status: 'remember' } : item,
                         ),
                       })
@@ -163,7 +177,7 @@ export function JourneyScreen() {
                     onConfirm={() => {
                       if (card.pickerType === 'non_period') {
                         setQuestionAnswer({
-                          data: questionAnswers.data.map(item =>
+                          data: questionAnswers.data.map((item) =>
                             item.id === card.id ? { ...item, answer: 'Yes' } : item,
                           ),
                         })
@@ -172,7 +186,7 @@ export function JourneyScreen() {
                           questionStatuses.data[0].status === 'not_remember'
                         ) {
                           setQuestionAnswer({
-                            data: questionAnswers.data.map(item =>
+                            data: questionAnswers.data.map((item) =>
                               item.id === card.id ? { ...item, answer: 'No' } : item,
                             ),
                           })

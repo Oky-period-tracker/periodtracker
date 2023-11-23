@@ -77,7 +77,7 @@ export function SignUp({ heightInner }) {
         secretAnswer: _.toLower(answer).trim(),
       }),
     )
-    navigate('AvatarAndThemeScreen', { signingUp: true }) // @TODO: wait on isCreatingAccount
+    navigate('AvatarAndThemeScreen', { signingUp: true, newUser: { gender } }) // @TODO: wait on isCreatingAccount
   }
   return (
     <MultiStepForm

@@ -19,6 +19,7 @@ import { themeNames, avatarNames } from '@oky/core'
 
 export function AvatarAndThemeScreen({ navigation }) {
   const signingUp = navigation.getParam('signingUp')
+  const newUser = navigation.getParam('newUser')
   const [loading, setLoading] = React.useState(false)
   const selectedAvatar = useSelector(selectors.currentAvatarSelector)
   const dispatch = useDispatch()
@@ -71,7 +72,7 @@ export function AvatarAndThemeScreen({ navigation }) {
             }}
           />
           <PrimaryButton
-            onPress={() => (signingUp ? navigate('JourneyScreen', null) : BackOneScreen())}
+            onPress={() => (signingUp ? navigate('JourneyScreen', { newUser }) : BackOneScreen())}
           >
             confirm
           </PrimaryButton>

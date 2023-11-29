@@ -35,7 +35,15 @@ const {
 
 const cardNames = ['mood', 'body', 'activity', 'flow']
 
-export function CarouselElement({ dataEntry, index, isActive, currentIndex, width, height }) {
+export function CarouselElement({
+  dataEntry,
+  index,
+  isActive,
+  currentIndex,
+  width,
+  height,
+  showOverlay,
+}) {
   const clock = new Clock()
   const value = new Value(0)
   const color = useColor(dataEntry.onPeriod, dataEntry.onFertile)
@@ -89,6 +97,7 @@ export function CarouselElement({ dataEntry, index, isActive, currentIndex, widt
           transform: [{ scale, translateY: translation }],
         }}
       >
+        {showOverlay ? <Shadow /> : null}
         <Row>
           <DayBadge
             fontSizes={{ small: 14, big: 20 }}
@@ -171,6 +180,15 @@ const AnimatedContainer = styled(Animated.View)`
   justify-content: center;
   background-color: #fff;
   elevation: 5;
+`
+
+const Shadow = styled(Animated.View)`
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
 `
 
 const Empty = styled.View`

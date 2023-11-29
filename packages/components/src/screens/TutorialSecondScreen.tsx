@@ -27,6 +27,7 @@ import { translate } from '../i18n'
 import { FlowerAssetDemo, flowerAssets } from '../optional/Flower'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
+import { useOrientation } from '../hooks/useOrientation'
 
 const arrowSize = 55
 
@@ -34,6 +35,7 @@ const arrowSize = 55
 // Deadline pressure had mounted beyond compare and it was working stably, It definitely can be simplified and made more declarative
 export function TutorialSecondScreen({ navigation }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
+  const orientation = useOrientation()
   const { data, isActive, index, currentIndex, absoluteIndex } = useInfiniteScroll()
   const [step, setStep] = React.useState(0)
   const [loading, setLoading] = React.useState(false)
@@ -72,7 +74,7 @@ export function TutorialSecondScreen({ navigation }) {
       text: `tutorial_10`,
       heading: `tutorial_10_content`,
       animationPositionEnd: {
-        x: normalizePosition(0.1, screenWidth),
+        x: normalizePosition(orientation === 'landscape' ? 0.3 : 0.1, screenWidth),
         y: normalizePosition(0.5, screenHeight),
         z: 270,
       },

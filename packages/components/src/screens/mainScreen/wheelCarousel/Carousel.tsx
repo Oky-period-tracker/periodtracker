@@ -23,19 +23,19 @@ export function Carousel({
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
 
-  let cardWith = 0.5 * screenWidth
+  let cardWidth = 0.5 * screenWidth
   let cardHeight = 0.2 * screenHeight
 
   const maxCardWidth = 320
   const aspectRatio = 0.7
 
-  if (cardWith > maxCardWidth) {
-    cardWith = maxCardWidth
-    cardHeight = cardWith * aspectRatio
+  if (cardWidth > maxCardWidth) {
+    cardWidth = maxCardWidth
+    cardHeight = cardWidth * aspectRatio
   }
 
   const { interpolate, Value } = Animated
-  const width = cardWith + 40
+  const width = cardWidth + 40
   let translateX = new Value(0)
 
   const isTutorialTwoOn = useSelector(selectors.isTutorialTwoActiveSelector)
@@ -79,7 +79,7 @@ export function Carousel({
                 StyleSheet.absoluteFillObject,
                 // @ts-ignore
                 { transform: [{ translateX }] },
-                { left: -cardWith / 1.8 },
+                { left: -cardWidth / 1.8 },
               ]}
               {...{ key }}
             >
@@ -88,7 +88,7 @@ export function Carousel({
                 dataEntry={dataEntry}
                 isActive={isActive}
                 currentIndex={key}
-                width={cardWith}
+                width={cardWidth}
                 height={cardHeight}
                 showOverlay={showOverlay}
               />
@@ -112,7 +112,7 @@ export function Carousel({
               }}
               style={{
                 height: cardHeight * 1.2,
-                width: cardWith * 1.2,
+                width: cardWidth * 1.2,
                 borderRadius: 10,
                 bottom: -10,
                 left: 15,

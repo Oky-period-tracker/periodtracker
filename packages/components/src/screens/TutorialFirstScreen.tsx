@@ -58,6 +58,11 @@ export function TutorialFirstScreen() {
     )
     return cardData
   }
+
+  const cloudSize = 85
+  const cloudMargin = 10
+  const cloudWidth = cloudSize + cloudMargin * 2
+
   const stepInfo = {
     '0': {
       text: `tutorial_0`,
@@ -135,7 +140,7 @@ export function TutorialFirstScreen() {
       text: `tutorial_6`,
       heading: `tutorial_6_content`,
       animationPositionEnd: {
-        x: normalizePosition(0.25, screenWidth),
+        x: normalizePosition(0.5, screenWidth) - cloudWidth,
         y: normalizePosition(0.5, screenHeight),
         z: 90,
       },
@@ -161,7 +166,7 @@ export function TutorialFirstScreen() {
       text: `tutorial_8`,
       heading: `tutorial_8_content`,
       animationPositionEnd: {
-        x: normalizePosition(0.75, screenWidth),
+        x: normalizePosition(0.5, screenWidth) + cloudWidth,
         y: normalizePosition(0.5, screenHeight),
         z: 90,
       },

@@ -19,6 +19,7 @@ export function Carousel({
   currentIndex,
   absoluteIndex,
   disableInteraction = false,
+  showOverlay = false,
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
 
@@ -43,7 +44,12 @@ export function Carousel({
 
   return (
     <>
-      <View style={{ height: '100%', width: '100%' }}>
+      <View
+        style={[
+          { height: '100%', width: '100%' },
+          showOverlay && { backgroundColor: 'rgba(0,0,0,0.8)' },
+        ]}
+      >
         {data.map((dataEntry, key) => {
           // The following is for the 0 index and 1 index being moved so that a linear list appears to be infinite.
           if (key === 0) {
@@ -84,6 +90,7 @@ export function Carousel({
                 currentIndex={key}
                 width={cardWith}
                 height={cardHeight}
+                showOverlay={showOverlay}
               />
             </Animated.View>
           )

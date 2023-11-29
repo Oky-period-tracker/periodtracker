@@ -432,7 +432,7 @@ const WheelSection = styled.View<{ step: number }>`
   width: 65%;
   align-items: center;
   elevation: 0;
-  z-index: ${(props) => (props.step === 1 || props.step === 3 ? 15 : 0)}
+  z-index: ${(props) => (props.step === 1 || props.step === 3 ? 999999 : 0)};
   justify-content: center;
   background-color: ${(props) =>
     props.step === 1 || props.step === 3 ? 'rgba(0, 0, 0, 0.8) ' : 'transparent'};

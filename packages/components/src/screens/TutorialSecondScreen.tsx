@@ -59,6 +59,14 @@ export function TutorialSecondScreen({ navigation }) {
     return percentage * dimension - arrowSize / 2
   }
 
+  let cardWidth = 0.5 * screenWidth
+  const maxCardWidth = 320
+  if (cardWidth > maxCardWidth) {
+    cardWidth = maxCardWidth
+  }
+
+  const offset = cardWidth - 80
+
   const stepInfo = {
     '0': {
       text: `tutorial_9`,
@@ -74,7 +82,7 @@ export function TutorialSecondScreen({ navigation }) {
       text: `tutorial_10`,
       heading: `tutorial_10_content`,
       animationPositionEnd: {
-        x: normalizePosition(orientation === 'landscape' ? 0.3 : 0.1, screenWidth),
+        x: normalizePosition(0.5, screenWidth) - offset,
         y: normalizePosition(0.5, screenHeight),
         z: 270,
       },

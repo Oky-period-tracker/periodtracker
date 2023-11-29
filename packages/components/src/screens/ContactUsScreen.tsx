@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import styled from 'styled-components/native'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { Header } from '../components/common/Header'
@@ -17,7 +17,7 @@ import { ThemedModal } from '../components/common/ThemedModal'
 
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { contactUsScreenText } from '../config'
-import { BackOneScreen, navigate } from '../services/navigationService'
+import { navigate } from '../services/navigationService'
 
 const Reasons = ['reason', 'report_bug', 'request_topic', 'Other', 'problem_app']
 
@@ -65,15 +65,12 @@ export function ContactUsScreen({ navigation }) {
         <KeyboardAwareAvoidance>
           <MiddleSection>
             <VerticalSelectBox
-              containerStyle={{
-                height: 45,
-                borderRadius: 22.5,
-              }}
               height={45}
               maxLength={20}
-              itemStyle={{ fontSize: 16 }}
               items={Reasons}
-              buttonStyle={{ right: 10 }}
+              itemStyle={styles.selectBoxItem}
+              buttonStyle={styles.selectBoxButton}
+              containerStyle={styles.selectBoxContainer}
               onValueChange={(value) => setReason(value)}
             />
             <TextInput
@@ -83,20 +80,20 @@ export function ContactUsScreen({ navigation }) {
               numberOfLines={7}
               hasError={notValid && !(message.length >= 3)}
               onChange={(text) => setMessage(text)}
-              inputStyle={{ fontSize: 16, textAlignVertical: 'top', height: 200 }}
-              style={{ height: 200 }}
+              inputStyle={styles.inputInput}
+              style={styles.input}
               isValid={message.length >= 3}
             />
             {error && <ErrorText>request_error</ErrorText>}
           </MiddleSection>
         </KeyboardAwareAvoidance>
-        <PrimaryButton onPress={sendForm} rightIcon="send">
+        <PrimaryButton onPress={sendForm} style={styles.send} rightIcon="send">
           send
         </PrimaryButton>
       </PageContainer>
       <ThemedModal {...{ isVisible, setIsVisible }}>
         <TouchableWithoutFeedback
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          style={styles.thanks}
           onPress={() => navigate('SettingsScreen', null)}
         >
           <InfoCardPicker>
@@ -149,3 +146,33 @@ const TextContent = styled(Text)`
   font-size: 16;
   margin-bottom: 10px;
 `
+
+const styles = StyleSheet.create({
+  selectBoxItem: {
+    fontSize: 16,
+  },
+  selectBoxButton: {
+    right: 10,
+  },
+  selectBoxContainer: {
+    height: 45,
+    borderRadius: 22.5,
+  },
+  input: {
+    height: 200,
+  },
+  inputInput: {
+    fontSize: 16,
+    textAlignVertical: 'top',
+    height: 200,
+  },
+  send: {
+    width: '100%',
+    maxWidth: undefined,
+  },
+  thanks: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})

@@ -18,7 +18,7 @@ export const SubCategoryCard = ({ title, onPress }) => {
 }
 
 const SubCategoryContainer = styled.TouchableOpacity`
-  height: 65px;
+  min-height: 65px;
   justify-content: center;
   align-items: flex-start;
   padding-left: 21;

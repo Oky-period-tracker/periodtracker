@@ -9,7 +9,7 @@ import { CenterCard } from './mainScreen/CenterCard'
 import { Avatar } from '../components/common/Avatar/Avatar'
 import { useInfiniteScroll } from './mainScreen/wheelCarousel/useInfiniteScroll'
 import { navigateAndReset } from '../services/navigationService'
-import { Animated, Dimensions, Platform } from 'react-native'
+import { Animated, Platform } from 'react-native'
 import { useDispatch } from 'react-redux'
 import * as actions from '../redux/actions'
 import { Text } from '../components/common/Text'
@@ -307,8 +307,7 @@ export function TutorialFirstScreen() {
           </WheelSection>
         </MiddleSection>
         <CarouselSection {...{ step }}>
-          <Carousel {...{ index, data, isActive, currentIndex, absoluteIndex }} />
-          <Overlay style={{ height: '100%' }} />
+          <Carousel {...{ index, data, isActive, currentIndex, absoluteIndex }} showOverlay />
         </CarouselSection>
       </Container>
       <Empty />
@@ -406,6 +405,7 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
+  z-index: 9;
 `
 const AvatarSection = styled.View<{ step: number }>`
   height: 100%;
@@ -425,6 +425,7 @@ const WheelSection = styled.View<{ step: number }>`
   flex-direction: row;
 `
 const CarouselSection = styled.View<{ step: number }>`
+  z-index: 11;
   height: 30%;
   width: 100%;
   flex-direction: row;

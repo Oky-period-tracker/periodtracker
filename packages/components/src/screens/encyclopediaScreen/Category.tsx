@@ -41,6 +41,7 @@ export const Category = ({ title, tags, onPress, isActive = false }) => {
 const CategoryContainer = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 15px;

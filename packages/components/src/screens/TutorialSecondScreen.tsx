@@ -9,7 +9,7 @@ import { CenterCard } from './mainScreen/CenterCard'
 import { Avatar } from '../components/common/Avatar/Avatar'
 import { useInfiniteScroll } from './mainScreen/wheelCarousel/useInfiniteScroll'
 import { navigateAndReset } from '../services/navigationService'
-import { Animated, Dimensions, Image, Platform, View } from 'react-native'
+import { Animated, Image, Platform } from 'react-native'
 import { useDispatch } from 'react-redux'
 import * as actions from '../redux/actions'
 import { Text } from '../components/common/Text'
@@ -208,7 +208,7 @@ export function TutorialSecondScreen({ navigation }) {
       flag.current = true
     }
     if (flag.current) {
-      dispatch(actions.setTutorialTwoActive(false))
+      dispatch(actions.setTutorialTwoActive(true))
       setLoading(true)
       requestAnimationFrame(() => {
         setTimeout(() => {
@@ -373,7 +373,7 @@ export function TutorialSecondScreen({ navigation }) {
   // const lastTutorialStep = _.size(stepInfo) - 1 // TODO:
 
   const skip = () => {
-    dispatch(actions.setTutorialTwoActive(false))
+    dispatch(actions.setTutorialTwoActive(true))
     setLoading(true)
     requestAnimationFrame(() => {
       setTimeout(() => {
@@ -443,10 +443,9 @@ export function TutorialSecondScreen({ navigation }) {
               currentIndex,
               absoluteIndex,
               disableInteraction: true,
+              showOverlay: step !== 0 && step !== 1 && step !== 2,
             }}
           />
-
-          {step !== 0 && step !== 1 && step !== 2 && <Overlay style={{ height: '100%' }} />}
         </CarouselSection>
       </Container>
       <Empty />
@@ -551,6 +550,7 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
+  z-index: 9;
 `
 const AvatarSection = styled.View<{ step: number }>`
   height: 100%;
@@ -562,12 +562,13 @@ const WheelSection = styled.View`
   width: 65%;
   align-items: center;
   elevation: 0;
-  z-index: 0
+  z-index: -1
   justify-content: center;
   background-color: transparent;
   flex-direction: row;
 `
 const CarouselSection = styled.View<{ step: number }>`
+  z-index: 11;
   height: 30%;
   width: 100%;
   flex-direction: row;

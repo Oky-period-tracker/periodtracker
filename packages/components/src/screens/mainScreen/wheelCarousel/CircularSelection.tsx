@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Dimensions, View, ActivityIndicator } from 'react-native'
+import { View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { transformOrigin } from 'react-native-redash'
 import { CircularElement } from './CircularElement'
@@ -16,6 +16,7 @@ import moment from 'moment'
 import { ReduxState } from '../../../redux/store'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 import { isTablet } from 'react-native-device-info'
+import { useOrientation } from '../../../hooks/useOrientation'
 
 const reduxState = (state: ReduxState) => state
 
@@ -31,7 +32,12 @@ export function CircularSelection({
   fetchCardValues,
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
-  const height = screenHeight * 0.6
+  const orientation = useOrientation()
+  let heightPercentage = 0.6
+  if (orientation === 'landscape' && isTablet()) {
+    heightPercentage = 0.45
+  }
+  const height = screenHeight * heightPercentage
   const width = screenWidth * widthPercentage
   const { interpolate } = Animated
   const D = height / 1.6

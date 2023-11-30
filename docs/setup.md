@@ -60,6 +60,11 @@ These files are untracked so each country change these without needing to make c
 
 If you are setting up this project for the first time, you will need to set up firebase you will need to create your own [Firebase](https://console.firebase.google.com/) Project. Alternatively, request these files from whoever has access to your firebase project.
 
+You will need to enter your application id / bundle id. The values of these ids can be edited in these files:
+
+- APPLICATION_ID for android: `/packages/mobile/android/gradle.properties`
+- PRODUCT_BUNDLE_IDENTIFIER for iOS: `/packages/mobile/ios/release.xcconfig`
+
 You will need to have 2 apps via the [firebase console](https://console.firebase.google.com/), within your new project. An iOS app and Android app, for the react native app. Download the config files for each app and place them in the correct location, as listed above.
 
 For the CMS, go to:

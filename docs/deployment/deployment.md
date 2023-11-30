@@ -4,6 +4,13 @@ Before deploying, make sure to run the tests and fix any issues. Read more about
 
 ## Mobile
 
+Before deploying, check:
+
+- APPLICATION_ID for android: `/packages/mobile/android/gradle.properties`
+- PRODUCT_BUNDLE_IDENTIFIER for iOS: `/packages/mobile/ios/release.xcconfig`
+- Other values in the above files are correct, such as APP_DISPLAY_NAME, VERSION_CODE
+- The values in `/packages/mobile/.env.production` file
+
 [Deploy android](./android.md)
 
 ---

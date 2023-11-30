@@ -26,7 +26,7 @@ export function Carousel({
   let cardWidth = 0.5 * screenWidth
   let cardHeight = 0.2 * screenHeight
 
-  const maxCardWidth = 320
+  const maxCardWidth = 260
   const aspectRatio = 0.7
 
   if (cardWidth > maxCardWidth) {

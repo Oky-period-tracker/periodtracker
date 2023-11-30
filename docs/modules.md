@@ -126,3 +126,9 @@ For example:
 
 Label may not always be required:
 `periodtracker_flower`
+
+## Optional submodules
+
+Not all submodules are required to run the project. Optional features can be included or excluded by changing the urls in the [urls.sh](../bin//modules/urls.sh) file.
+
+Read more about optional submodules [here](./code/optional_submodules.md)

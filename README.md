@@ -28,9 +28,11 @@ This is a period tracker application monorepo, consisting of a React Native app,
 
 ### Code
 
+[Contributing](./CONTRIBUTING.md)
+
 [Submodules](./docs/modules.md)
 
-[Importing optional submodules](./docs/code/optional_imports.md)
+[Importing optional submodules](./docs/code/optional_submodules.md)
 
 [Understanding the CMS & API routes](./docs/code/routes.md)
 

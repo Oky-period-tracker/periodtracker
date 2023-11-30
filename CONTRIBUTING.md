@@ -40,12 +40,9 @@ git pull origin master --rebase
 ```
 
 6. Submit a Pull Request
-   Submit a pull request by pushing your changes to your forked repository and then creating a pull request on the main repository. Provide a clear title and description for your pull request.
+   Push your branch and then create a pull request on github. Provide a clear title and description for your pull request.
 
 7. Review and Merge
    Your pull request will be reviewed by the project maintainers. They may suggest changes or ask for additional information. Once approved, your changes will be merged into the main branch.
-
-8. Code of Conduct
-   Please note that all contributors are expected to adhere to our Code of Conduct. By participating, you are agreeing to uphold this code.
 
 Thank you for your contribution! Your time and effort are greatly appreciated.

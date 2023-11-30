@@ -40,7 +40,9 @@ Create schema:
 CREATE SCHEMA periodtracker;
 ```
 
-Next, create the tables by copy pasting the SQL from the file `/sql/create-tables.sql`. Check for other SQL files in the same directory and execute them as well.
+Next, create the tables by copy pasting the SQL from the file `/sql/create-tables.sql`.
+
+Check for other SQL files in the same directory and execute them as well.
 
 If something goes wrong you can drop the schema and start again by executing this sql. Beware that this will delete all data and tables etc that you have in your DB.
 

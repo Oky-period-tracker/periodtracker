@@ -27,6 +27,7 @@ import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import { FlowerButton, FlowerModal } from '../optional/Flower'
 import { isTablet } from 'react-native-device-info'
+import { useOrientation } from '../hooks/useOrientation'
 
 export function MainScreen({ navigation }) {
   const { data } = useInfiniteScroll()
@@ -73,6 +74,9 @@ const MainScreenActual = React.memo(() => {
   const { onFertile, onPeriod } = useTodayPrediction()
   const [isFlowerModalVisible, setFlowerModalVisible] = React.useState(false)
 
+  const orientation = useOrientation()
+  const wheelSectionWidth = isTablet() ? (orientation === 'landscape' ? '35%' : '40%') : '65%'
+
   return (
     <BackgroundTheme>
       <TopSeparator>
@@ -98,7 +102,7 @@ const MainScreenActual = React.memo(() => {
           </Row>
           <Avatar style={styles.avatar} />
         </AvatarSection>
-        <WheelSection>
+        <WheelSection style={{ width: wheelSectionWidth }}>
           <CircularSelection
             {...{ data, index, isActive, currentIndex, absoluteIndex }}
             fetchCardValues={getCardAnswersValues}
@@ -143,7 +147,6 @@ const Row = styled.View`
 `
 const WheelSection = styled.View`
   height: 100%;
-  width: ${isTablet() ? 40 : 65}%;
   align-items: center;
   justify-content: center;
   flex-direction: row;

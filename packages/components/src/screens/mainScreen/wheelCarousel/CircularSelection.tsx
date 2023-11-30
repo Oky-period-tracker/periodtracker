@@ -15,6 +15,7 @@ import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 import { isTablet } from 'react-native-device-info'
+import { useOrientation } from '../../../hooks/useOrientation'
 
 const widthPercentage = isTablet() ? 0.4 : 0.65
 
@@ -27,7 +28,12 @@ export function CircularSelection({
   disableInteraction = false,
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
-  const height = screenHeight * 0.6
+  const orientation = useOrientation()
+  let heightPercentage = 0.6
+  if (orientation === 'landscape' && isTablet()) {
+    heightPercentage = 0.45
+  }
+  const height = screenHeight * heightPercentage
   const width = screenWidth * widthPercentage
   const { interpolate } = Animated
   const D = height / 1.6

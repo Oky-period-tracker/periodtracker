@@ -22,12 +22,6 @@ export function FindHelpScreen({ navigation }) {
   const [textToSpeak, setTextToSpeak] = React.useState([])
 
   React.useEffect(() => {
-    if (fetchNetworkConnectionStatus()) {
-      analytics().logScreenView({
-        screen_class: 'HelpCenter',
-        screen_name: 'FindHelpScreen',
-      })
-    }
     const text = helpCenters.reduce((acc, item, index) => {
       let heading = ''
       let caption = ''

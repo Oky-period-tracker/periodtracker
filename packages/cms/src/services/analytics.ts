@@ -51,7 +51,6 @@ export const analyticsQueries = {
     FROM ${env.db.schema}.answered_quizzes
     GROUP BY id
     `,
-
   answeredSurveysByID: `
     SELECT answered_surveys.id,answered_surveys.questions, answered_surveys.user_id
     FROM ${env.db.schema}.answered_surveys
@@ -79,7 +78,6 @@ export const analyticsQueries = {
     GROUP BY DATE_TRUNC('day', date_created)
     ORDER BY date
   `,
-
   filterSurvey: `
     SELECT answered_surveys.id,questions, location, date_of_birth, gender, country, answered_surveys.user_id,
     SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) < 10 THEN 1 ELSE 0 END) AS under_10,
@@ -102,4 +100,68 @@ export const analyticsQueries = {
       AND ((DATE_PART('year', now()::date) - DATE_PART('year', oky_user.date_of_birth)) BETWEEN $3 AND $4 OR $3 IS NULL)
     GROUP BY answered_surveys.id, answered_surveys.user_id, answered_surveys.questions, oky_user.country, oky_user.location, oky_user.date_of_birth, oky_user.gender
   `,
+  countTotalScreenViews: (screenName) => `
+  SELECT COUNT(*)
+  FROM app_event
+  WHERE type = 'SCREEN_VIEW'
+  AND payload->>'screenName' = '${screenName}';
+  `,
+  countUniqueUserScreenViews: (screenName) => `
+  SELECT COUNT(DISTINCT user_id)
+  FROM app_event
+  WHERE type = 'SCREEN_VIEW'
+  AND payload->>'screenName' = '${screenName}';
+  `,
+  countNonLoggedInEncyclopediaViews: `
+  SELECT COUNT(*)
+  FROM app_event
+  WHERE type = 'SCREEN_VIEWED'
+  AND user_id IS NULL
+  AND payload->>'screenName' = 'Encyclopedia';`,
+  countUniqueDeviceNonLoggedInEncyclopediaViews: `
+  SELECT COUNT(DISTINCT metadata->>'deviceId') 
+  FROM app_event
+  WHERE type = 'SCREEN_VIEWED'
+  AND user_id IS NULL
+  AND payload->>'screenName' = 'Encyclopedia';
+  `,
+  countPredictionSettingsChange: (isActive: boolean) => `
+  SELECT COUNT(*)
+  FROM app_event
+  WHERE type = 'SET_FUTURE_PREDICTION_STATE_ACTIVE'
+  AND payload->>'isFuturePredictionActive' = ${isActive};`,
+  countUniqueUserPredictionSettingsChange: (isActive: boolean) => `
+  SELECT COUNT(DISTINCT user_id)
+  FROM app_event
+  WHERE type = 'SET_FUTURE_PREDICTION_STATE_ACTIVE'
+  AND payload->>'isFuturePredictionActive' = ${isActive};`,
+  countCategoryViews: () => `
+  SELECT 
+  c.id AS category_id, 
+  c.title AS category_name, 
+  COUNT(DISTINCT a.user_id) AS unique_user_count,
+  COUNT(*) FILTER (WHERE a.user_id IS NULL) AS anonymous_view_count,
+  COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
+FROM 
+  category c
+LEFT JOIN 
+  app_event a 
+  ON a.type = 'CATEGORY_VIEWED' AND c.id = (a.payload->>'categoryId')::uuid
+GROUP BY 
+  c.id, c.title;
+  `,
+  countSubCategoryViews: `
+  SELECT 
+  s.id AS subcategory_id, 
+  s.title AS subcategory_name, 
+  COUNT(DISTINCT a.user_id) AS unique_user_count,
+  COUNT(*) FILTER (WHERE a.user_id IS NULL) AS anonymous_view_count,
+  COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
+FROM 
+  subcategory s
+LEFT JOIN 
+  app_event a 
+  ON a.type = 'SUBCATEGORY_VIEWED' AND s.id = (a.payload->>'subCategoryId')::uuid
+GROUP BY 
+  s.id, s.title;`,
 }

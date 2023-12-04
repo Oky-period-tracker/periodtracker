@@ -18,10 +18,17 @@ const ACTIONS_TO_TRACK: ActionTypes[] = [
   // 'ANSWER_DAILY_CARD', // removed for privacy
   // prediction
   'ADJUST_PREDICTION',
+  'SET_FUTURE_PREDICTION_STATE_ACTIVE',
+  // Usage
+  'SCREEN_VIEWED',
+  'CATEGORY_VIEWED',
+  'SUBCATEGORY_VIEWED',
+  'DAILY_CARD_USED',
 ]
 
 function* onTrackAction(action) {
   const currentUser = yield select(selectors.currentUserSelector)
+  const deviceId = yield select(selectors.currentDeviceId)
   yield put(
     actions.queueEvent({
       id: uuidv4(),
@@ -30,6 +37,7 @@ function* onTrackAction(action) {
       metadata: {
         date: moment.utc(),
         user: currentUser && currentUser.id ? currentUser.id : null,
+        deviceId,
       },
     }),
   )

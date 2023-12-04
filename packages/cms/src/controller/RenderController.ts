@@ -61,6 +61,7 @@ export class RenderController {
     this.render(response, 'Login')
   }
 
+  //
   async renderAnalytics(request: Request, response: Response, next: NextFunction) {
     const entityManager = await getManager()
     const usersGenders = await entityManager.query(analyticsQueries.usersGender, [
@@ -85,6 +86,60 @@ export class RenderController {
     ])
     const usersShares = await entityManager.query(analyticsQueries.usersShares)
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
+
+    /*     
+    
+    
+    
+* Number of users vieweing (or tapping) on each category. On firebase we would like to see for example 20 users tapped on "managing menstruation" for example. We need to make this analytics so that if a new category is added from the cms once the app is live, the new category is also captured
+
+* Number of users vieweing (or tapping) on each subcategory. Same as above, this analytic needs to be dynamic
+
+* Track number of users, using each of the daily cards to track (mood, flow, body etc). So we do not record what exactly they are tracking but if they track one emoji in one of the daily cards, an event is sent
+
+* Number of users turnging prediction on or off from settings
+
+
+*/
+
+    // Profile screen
+    const totalProfileScreenViews = (
+      await entityManager.query(analyticsQueries.countTotalScreenViews('ProfileScreen'))
+    )[0]?.count
+    const uniqueUserProfileScreenViews = (
+      await entityManager.query(analyticsQueries.countUniqueUserScreenViews('ProfileScreen'))
+    )[0]?.count
+    // Encyclopedia screen
+    const totalEncyclopediaScreenViews = (
+      await entityManager.query(analyticsQueries.countTotalScreenViews('Encyclopedia'))
+    )[0]?.count
+    const uniqueUserEncyclopediaScreenViews = (
+      await entityManager.query(analyticsQueries.countUniqueUserScreenViews('Encyclopedia'))
+    )[0]?.count
+    const nonLoggedInEncyclopediaViews = (
+      await entityManager.query(analyticsQueries.countNonLoggedInEncyclopediaViews)
+    )[0]?.count
+    const uniqueDeviceNonLoggedInEncyclopediaViews = (
+      await entityManager.query(analyticsQueries.countUniqueDeviceNonLoggedInEncyclopediaViews)
+    )[0]?.count
+    // Calendar screen
+    const totalCalendarScreenViews = (
+      await entityManager.query(analyticsQueries.countTotalScreenViews('Calendar'))
+    )[0]?.count
+    const uniqueUserCalendarScreenViews = (
+      await entityManager.query(analyticsQueries.countUniqueUserScreenViews('Calendar'))
+    )[0]?.count
+
+    const usage = {
+      totalProfileScreenViews,
+      uniqueUserProfileScreenViews,
+      totalEncyclopediaScreenViews,
+      uniqueUserEncyclopediaScreenViews,
+      nonLoggedInEncyclopediaViews,
+      uniqueDeviceNonLoggedInEncyclopediaViews,
+      totalCalendarScreenViews,
+      uniqueUserCalendarScreenViews,
+    }
 
     const usersCountries = preProcessedCountryList.reduce((acc, item) => {
       const country = countries[item.country] || {
@@ -120,6 +175,7 @@ export class RenderController {
         usersProvinces,
         usersShares,
         directDownloads,
+        usage,
       }
     }
 
@@ -132,6 +188,7 @@ export class RenderController {
       usersProvinces,
       usersShares,
       directDownloads,
+      usage,
     })
   }
 

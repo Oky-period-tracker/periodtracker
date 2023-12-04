@@ -219,7 +219,7 @@ export function TutorialSecondScreen({ navigation }) {
       flag.current = true
     }
     if (flag.current) {
-      dispatch(actions.setTutorialTwoActive(true))
+      dispatch(actions.setTutorialTwoActive(false))
       setLoading(true)
       requestAnimationFrame(() => {
         setTimeout(() => {
@@ -391,7 +391,7 @@ export function TutorialSecondScreen({ navigation }) {
   }
 
   const skip = () => {
-    dispatch(actions.setTutorialTwoActive(true))
+    dispatch(actions.setTutorialTwoActive(false))
     setLoading(true)
     requestAnimationFrame(() => {
       setTimeout(() => {

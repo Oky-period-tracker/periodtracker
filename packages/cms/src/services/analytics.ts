@@ -100,32 +100,66 @@ export const analyticsQueries = {
       AND ((DATE_PART('year', now()::date) - DATE_PART('year', oky_user.date_of_birth)) BETWEEN $3 AND $4 OR $3 IS NULL)
     GROUP BY answered_surveys.id, answered_surveys.user_id, answered_surveys.questions, oky_user.country, oky_user.location, oky_user.date_of_birth, oky_user.gender
   `,
-  countTotalScreenViews: (screenName) => `
+  countTotalScreenViews: ({
+    screenName,
+    dateFrom,
+    dateTo,
+  }: {
+    screenName: string
+    dateFrom: string
+    dateTo: string
+  }) => `
   SELECT COUNT(*)
   FROM app_event
   WHERE type = 'SCREEN_VIEW'
-  AND payload->>'screenName' = '${screenName}';
+  AND payload->>'screenName' = '${screenName}'
+  AND (metadata->>'date')::timestamp BETWEEN '${dateFrom}' AND '${dateTo}';
   `,
-  countUniqueUserScreenViews: (screenName) => `
+  countUniqueUserScreenViews: ({
+    screenName,
+    dateFrom,
+    dateTo,
+  }: {
+    screenName: string
+    dateFrom: string
+    dateTo: string
+  }) => `
   SELECT COUNT(DISTINCT user_id)
   FROM app_event
   WHERE type = 'SCREEN_VIEW'
-  AND payload->>'screenName' = '${screenName}';
+  AND payload->>'screenName' = '${screenName}'
+  AND (metadata->>'date')::timestamp BETWEEN '${dateFrom}' AND '${dateTo}';
   `,
-  countNonLoggedInEncyclopediaViews: `
+  countNonLoggedInEncyclopediaViews: ({
+    dateFrom,
+    dateTo,
+  }: {
+    dateFrom: string
+    dateTo: string
+  }) => `
   SELECT COUNT(*)
   FROM app_event
   WHERE type = 'SCREEN_VIEWED'
   AND user_id IS NULL
-  AND payload->>'screenName' = 'Encyclopedia';`,
-  countUniqueDeviceNonLoggedInEncyclopediaViews: `
+  AND payload->>'screenName' = 'Encyclopedia'
+  AND (metadata->>'date')::timestamp BETWEEN '${dateFrom}' AND '${dateTo}';
+  `,
+  countUniqueDeviceNonLoggedInEncyclopediaViews: ({
+    dateFrom,
+    dateTo,
+  }: {
+    dateFrom: string
+    dateTo: string
+  }) => `
   SELECT COUNT(DISTINCT metadata->>'deviceId') 
   FROM app_event
   WHERE type = 'SCREEN_VIEWED'
   AND user_id IS NULL
-  AND payload->>'screenName' = 'Encyclopedia';
+  AND payload->>'screenName' = 'Encyclopedia'
+  AND (metadata->>'date')::timestamp BETWEEN '${dateFrom}' AND '${dateTo}';
+
   `,
-  countPredictionSettingsChanges: `
+  countPredictionSettingsChanges: ({ dateFrom, dateTo }: { dateFrom: string; dateTo: string }) => `
   SELECT 
   Count(*) AS total_changes, 
   Count(*) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = true) AS switched_on, 
@@ -134,13 +168,10 @@ export const analyticsQueries = {
   Count(DISTINCT a.user_id) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = true) AS unique_user_switched_on, 
   Count(DISTINCT a.user_id) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = false) AS unique_user_switched_off
   FROM app_event a
-  WHERE type = 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE';`,
-  countUniqueUserPredictionSettingsChange: (isActive: boolean) => `
-  SELECT COUNT(DISTINCT user_id)
-  FROM app_event
-  WHERE type = 'SET_FUTURE_PREDICTION_STATE_ACTIVE'
-  AND payload->>'isFuturePredictionActive' = ${isActive};`,
-  countCategoryViews: () => `
+  WHERE type = 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE'
+  AND (metadata->>'date')::timestamp BETWEEN '${dateFrom}' AND '${dateTo}';
+  `,
+  countCategoryViews: ({ dateFrom, dateTo }: { dateFrom: string; dateTo: string }) => `
   SELECT 
   c.id AS category_id, 
   c.title AS category_name, 
@@ -149,13 +180,15 @@ export const analyticsQueries = {
   COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
 FROM 
   category c
+  WHERE (metadata->>'date')::timestamp BETWEEN '${dateFrom}' AND '${dateTo}'
+
 LEFT JOIN 
   app_event a 
   ON a.type = 'CATEGORY_VIEWED' AND c.id = (a.payload->>'categoryId')::uuid
 GROUP BY 
   c.id, c.title;
   `,
-  countSubCategoryViews: `
+  countSubCategoryViews: ({ dateFrom, dateTo }: { dateFrom: string; dateTo: string }) => `
   SELECT 
   s.id AS subcategory_id, 
   s.title AS subcategory_name, 
@@ -164,6 +197,7 @@ GROUP BY
   COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
 FROM 
   subcategory s
+WHERE (metadata->>'date')::timestamp BETWEEN '${dateFrom}' AND '${dateTo}'
 LEFT JOIN 
   app_event a 
   ON a.type = 'SUBCATEGORY_VIEWED' AND s.id = (a.payload->>'subCategoryId')::uuid

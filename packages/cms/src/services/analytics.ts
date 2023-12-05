@@ -125,11 +125,16 @@ export const analyticsQueries = {
   AND user_id IS NULL
   AND payload->>'screenName' = 'Encyclopedia';
   `,
-  countPredictionSettingsChange: (isActive: boolean) => `
-  SELECT COUNT(*)
-  FROM app_event
-  WHERE type = 'SET_FUTURE_PREDICTION_STATE_ACTIVE'
-  AND payload->>'isFuturePredictionActive' = ${isActive};`,
+  countPredictionSettingsChanges: `
+  SELECT 
+  Count(*) AS total_changes, 
+  Count(*) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = true) AS switched_on, 
+  Count(*) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = false) AS switched_off,
+  Count(DISTINCT a.user_id) AS total_unique_user_changes, 
+  Count(DISTINCT a.user_id) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = true) AS unique_user_switched_on, 
+  Count(DISTINCT a.user_id) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = false) AS unique_user_switched_off
+  FROM app_event a
+  WHERE type = 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE';`,
   countUniqueUserPredictionSettingsChange: (isActive: boolean) => `
   SELECT COUNT(DISTINCT user_id)
   FROM app_event

@@ -86,6 +86,67 @@ export class RenderController {
     const usersShares = await entityManager.query(analyticsQueries.usersShares)
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
 
+    const dateFrom = (request.query.dateFrom || '1970-01-01') as string
+    const dateTo = (request.query.dateTo || '9999-12-31') as string
+    const dates = { dateFrom, dateTo }
+
+    // Profile screen
+    const totalProfileScreenViews = (
+      await entityManager.query(
+        analyticsQueries.countTotalScreenViews({ screenName: 'ProfileScreen', ...dates }),
+      )
+    )[0]?.count
+    const uniqueUserProfileScreenViews = (
+      await entityManager.query(
+        analyticsQueries.countUniqueUserScreenViews({ screenName: 'ProfileScreen', ...dates }),
+      )
+    )[0]?.count
+    // Encyclopedia screen
+    const totalEncyclopediaScreenViews = (
+      await entityManager.query(
+        analyticsQueries.countTotalScreenViews({ screenName: 'Encyclopedia', ...dates }),
+      )
+    )[0]?.count
+    const uniqueUserEncyclopediaScreenViews = (
+      await entityManager.query(
+        analyticsQueries.countUniqueUserScreenViews({ screenName: 'Encyclopedia', ...dates }),
+      )
+    )[0]?.count
+    const nonLoggedInEncyclopediaViews = (
+      await entityManager.query(analyticsQueries.countNonLoggedInEncyclopediaViews(dates))
+    )[0]?.count
+    const uniqueDeviceNonLoggedInEncyclopediaViews = (
+      await entityManager.query(
+        analyticsQueries.countUniqueDeviceNonLoggedInEncyclopediaViews(dates),
+      )
+    )[0]?.count
+    // Calendar screen
+    const totalCalendarScreenViews = (
+      await entityManager.query(
+        analyticsQueries.countTotalScreenViews({ screenName: 'Calendar', ...dates }),
+      )
+    )[0]?.count
+    const uniqueUserCalendarScreenViews = (
+      await entityManager.query(
+        analyticsQueries.countUniqueUserScreenViews({ screenName: 'Calendar', ...dates }),
+      )
+    )[0]?.count
+    // Prediction
+    const predictionSettingsChanges = (
+      await entityManager.query(analyticsQueries.countPredictionSettingsChanges(dates))
+    )[0]
+
+    const usage = {
+      totalProfileScreenViews,
+      uniqueUserProfileScreenViews,
+      totalEncyclopediaScreenViews,
+      uniqueUserEncyclopediaScreenViews,
+      nonLoggedInEncyclopediaViews,
+      uniqueDeviceNonLoggedInEncyclopediaViews,
+      totalCalendarScreenViews,
+      uniqueUserCalendarScreenViews,
+    }
+
     const usersCountries = preProcessedCountryList.reduce((acc, item) => {
       const country = countries[item.country] || {
         [request.user.lang]: `None`,
@@ -120,6 +181,9 @@ export class RenderController {
         usersProvinces,
         usersShares,
         directDownloads,
+        usage,
+        predictionSettingsChanges,
+        ...dates,
       }
     }
 
@@ -132,6 +196,9 @@ export class RenderController {
       usersProvinces,
       usersShares,
       directDownloads,
+      usage,
+      predictionSettingsChanges,
+      ...dates,
     })
   }
 

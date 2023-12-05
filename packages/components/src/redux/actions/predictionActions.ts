@@ -33,8 +33,19 @@ export function setSmartPredictionFailure({ error }) {
 export function adjustPrediction(action) {
   return createAction('ADJUST_PREDICTION', action)
 }
+
 export function updateFuturePrediction(isFuturePredictionActive: boolean, currentStartDate: any) {
   return createAction('SET_FUTURE_PREDICTION_STATE_ACTIVE', {
+    isFuturePredictionActive,
+    currentStartDate,
+  })
+}
+
+export function userUpdateFuturePrediction(
+  isFuturePredictionActive: boolean,
+  currentStartDate: any,
+) {
+  return createAction('USER_SET_FUTURE_PREDICTION_STATE_ACTIVE', {
     isFuturePredictionActive,
     currentStartDate,
   })

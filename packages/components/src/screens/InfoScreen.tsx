@@ -42,13 +42,6 @@ export function InfoScreen() {
           <NavigationContainer style={{ marginTop: 12 }}>
             <Row
               onPress={() => {
-                if (fetchNetworkConnectionStatus()) {
-                  analytics().setAnalyticsCollectionEnabled(true)
-                  analytics().logScreenView({
-                    screen_class: 'InfoScreen',
-                    screen_name: 'EncyclopediaScreen',
-                  })
-                }
                 navigate('Encyclopedia', null)
               }}
             >

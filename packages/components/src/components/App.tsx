@@ -33,12 +33,7 @@ export default function App() {
         forceInset={{ bottom: 'never' }}
         style={{ flex: 1, backgroundColor: '#757575' }}
       >
-        <AppNavigator
-          ref={(navigatorRef) => {
-            setTopLevelNavigator(navigatorRef)
-          }}
-          key="app-navigator"
-        />
+        <AppNavigator />
       </SafeAreaView>
     </AppProvider>
   )

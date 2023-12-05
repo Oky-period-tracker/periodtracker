@@ -77,7 +77,7 @@ export function SettingsScreen({ navigation }) {
                 value={hasFuturePredictionActive?.futurePredictionStatus}
                 onSwitch={(val) => {
                   const currentStartDate = currentCycleInfo
-                  dispatch(actions.updateFuturePrediction(val, currentStartDate))
+                  dispatch(actions.userUpdateFuturePrediction(val, currentStartDate))
                 }}
               />
             )}

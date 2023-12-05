@@ -10,12 +10,17 @@ import * as selectors from '../../redux/selectors'
 import { useSelector } from '../../hooks/useSelector'
 import { useColor } from '../../hooks/useColor'
 import { translate } from '../../i18n'
+import { useDispatch } from 'react-redux'
+import { logDailyCardUse } from '../../redux/actions'
 
 const deviceWidth = Dimensions.get('window').width
 
 export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }) {
   const selectedEmojis = useSelector((state) => selectors.cardAnswerSelector(state, dataEntry.date))
+  const currentUser = useSelector(selectors.currentUserSelector)
+  const dailyCardLastUsed = useSelector(selectors.dailyCardLastUsed) as number | undefined
 
+  const dispatch = useDispatch()
   const color = useColor(dataEntry.onPeriod, dataEntry.onFertile)
   const source = selectedEmojis[cardName]
     ? assets.static.icons.starOrange.full
@@ -58,7 +63,17 @@ export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }
           <EmojiContainer key={ind}>
             <EmojiSelector
               color={color}
-              onPress={() => onPress(cardName, item)}
+              onPress={() => {
+                onPress(cardName, item)
+
+                const now = new Date().getTime()
+                const oneDay = 24 * 60 * 60 * 1000
+                const timeSinceLastUse = now - dailyCardLastUsed
+                if (dailyCardLastUsed && timeSinceLastUse < oneDay) {
+                  return
+                }
+                dispatch(logDailyCardUse({ userId: currentUser.id }))
+              }}
               isActive={
                 Array.isArray(selectedEmojis[cardName])
                   ? selectedEmojis[cardName].includes(item)

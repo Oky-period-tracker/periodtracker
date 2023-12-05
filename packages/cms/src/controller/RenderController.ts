@@ -89,8 +89,6 @@ export class RenderController {
 
     /*     
     
-    
-    
 * Number of users vieweing (or tapping) on each category. On firebase we would like to see for example 20 users tapped on "managing menstruation" for example. We need to make this analytics so that if a new category is added from the cms once the app is live, the new category is also captured
 
 * Number of users vieweing (or tapping) on each subcategory. Same as above, this analytic needs to be dynamic
@@ -98,7 +96,6 @@ export class RenderController {
 * Track number of users, using each of the daily cards to track (mood, flow, body etc). So we do not record what exactly they are tracking but if they track one emoji in one of the daily cards, an event is sent
 
 * Number of users turnging prediction on or off from settings
-
 
 */
 
@@ -129,6 +126,10 @@ export class RenderController {
     const uniqueUserCalendarScreenViews = (
       await entityManager.query(analyticsQueries.countUniqueUserScreenViews('Calendar'))
     )[0]?.count
+    // Prediction
+    const predictionSettingsChanges = (
+      await entityManager.query(analyticsQueries.countPredictionSettingsChanges)
+    )[0]
 
     const usage = {
       totalProfileScreenViews,
@@ -176,6 +177,7 @@ export class RenderController {
         usersShares,
         directDownloads,
         usage,
+        predictionSettingsChanges,
       }
     }
 
@@ -189,6 +191,7 @@ export class RenderController {
       usersShares,
       directDownloads,
       usage,
+      predictionSettingsChanges,
     })
   }
 

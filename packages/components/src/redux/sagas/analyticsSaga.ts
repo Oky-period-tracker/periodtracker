@@ -18,7 +18,7 @@ const ACTIONS_TO_TRACK: ActionTypes[] = [
   // 'ANSWER_DAILY_CARD', // removed for privacy
   // prediction
   'ADJUST_PREDICTION',
-  'SET_FUTURE_PREDICTION_STATE_ACTIVE',
+  'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE',
   // Usage
   'SCREEN_VIEWED',
   'CATEGORY_VIEWED',

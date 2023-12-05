@@ -61,7 +61,6 @@ export class RenderController {
     this.render(response, 'Login')
   }
 
-  //
   async renderAnalytics(request: Request, response: Response, next: NextFunction) {
     const entityManager = await getManager()
     const usersGenders = await entityManager.query(analyticsQueries.usersGender, [
@@ -87,48 +86,54 @@ export class RenderController {
     const usersShares = await entityManager.query(analyticsQueries.usersShares)
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
 
-    /*     
-    
-* Number of users vieweing (or tapping) on each category. On firebase we would like to see for example 20 users tapped on "managing menstruation" for example. We need to make this analytics so that if a new category is added from the cms once the app is live, the new category is also captured
-
-* Number of users vieweing (or tapping) on each subcategory. Same as above, this analytic needs to be dynamic
-
-* Track number of users, using each of the daily cards to track (mood, flow, body etc). So we do not record what exactly they are tracking but if they track one emoji in one of the daily cards, an event is sent
-
-* Number of users turnging prediction on or off from settings
-
-*/
+    const dateFrom = (request.query.dateFrom || '1970-01-01') as string
+    const dateTo = (request.query.dateTo || '9999-12-31') as string
+    const dates = { dateFrom, dateTo }
 
     // Profile screen
     const totalProfileScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews('ProfileScreen'))
+      await entityManager.query(
+        analyticsQueries.countTotalScreenViews({ screenName: 'ProfileScreen', ...dates }),
+      )
     )[0]?.count
     const uniqueUserProfileScreenViews = (
-      await entityManager.query(analyticsQueries.countUniqueUserScreenViews('ProfileScreen'))
+      await entityManager.query(
+        analyticsQueries.countUniqueUserScreenViews({ screenName: 'ProfileScreen', ...dates }),
+      )
     )[0]?.count
     // Encyclopedia screen
     const totalEncyclopediaScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews('Encyclopedia'))
+      await entityManager.query(
+        analyticsQueries.countTotalScreenViews({ screenName: 'Encyclopedia', ...dates }),
+      )
     )[0]?.count
     const uniqueUserEncyclopediaScreenViews = (
-      await entityManager.query(analyticsQueries.countUniqueUserScreenViews('Encyclopedia'))
+      await entityManager.query(
+        analyticsQueries.countUniqueUserScreenViews({ screenName: 'Encyclopedia', ...dates }),
+      )
     )[0]?.count
     const nonLoggedInEncyclopediaViews = (
-      await entityManager.query(analyticsQueries.countNonLoggedInEncyclopediaViews)
+      await entityManager.query(analyticsQueries.countNonLoggedInEncyclopediaViews(dates))
     )[0]?.count
     const uniqueDeviceNonLoggedInEncyclopediaViews = (
-      await entityManager.query(analyticsQueries.countUniqueDeviceNonLoggedInEncyclopediaViews)
+      await entityManager.query(
+        analyticsQueries.countUniqueDeviceNonLoggedInEncyclopediaViews(dates),
+      )
     )[0]?.count
     // Calendar screen
     const totalCalendarScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews('Calendar'))
+      await entityManager.query(
+        analyticsQueries.countTotalScreenViews({ screenName: 'Calendar', ...dates }),
+      )
     )[0]?.count
     const uniqueUserCalendarScreenViews = (
-      await entityManager.query(analyticsQueries.countUniqueUserScreenViews('Calendar'))
+      await entityManager.query(
+        analyticsQueries.countUniqueUserScreenViews({ screenName: 'Calendar', ...dates }),
+      )
     )[0]?.count
     // Prediction
     const predictionSettingsChanges = (
-      await entityManager.query(analyticsQueries.countPredictionSettingsChanges)
+      await entityManager.query(analyticsQueries.countPredictionSettingsChanges(dates))
     )[0]
 
     const usage = {
@@ -178,6 +183,7 @@ export class RenderController {
         directDownloads,
         usage,
         predictionSettingsChanges,
+        ...dates,
       }
     }
 
@@ -192,6 +198,7 @@ export class RenderController {
       directDownloads,
       usage,
       predictionSettingsChanges,
+      ...dates,
     })
   }
 

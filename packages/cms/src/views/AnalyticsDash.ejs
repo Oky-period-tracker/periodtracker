@@ -132,13 +132,32 @@
               <div class="panel panel-primary" style="height:auto;">
                 <div class="panel-heading"><%= __('Usage')%></div>
                   <div class="panel-body">
-                      <!-- <div class="graphContainer" id="directDownloadsGraph" ></div> -->
+                    <br>
+
+                    <form id="dateFilterForm">
+                      <label for="dateFrom">Date from</label>
+                      <input type="date" id="dateFrom" name="dateFrom" value="<%= dateFrom %>">
+
+                      <label for="dateTo">Date to</label>
+                      <input type="date" id="dateTo" name="dateTo" value="<%= dateTo %>">
+
+                      <button>Submit</button>
+                    </form>
+
+                    <br>
+
                       <% Object.entries(usage).forEach(([key, value]) =>{ %>
                         <p><%= key %>: <%= value %></p>
                       <% }) %>
+
+                      <br>
+                      <p>Prediction settings:</p>
                       <% Object.entries(predictionSettingsChanges).forEach(([key, value]) =>{ %>
                         <p><%= key %>: <%= value %></p>
                       <% }) %>
+
+                      <br>
+
                   </div>
               </div>
             </div>

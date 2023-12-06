@@ -16,19 +16,19 @@
   </div>
   
     <form id="dateFilterForm">
-      <label for="dateFrom">Date from</label>
+      <label for="dateFrom" style="color:black;">Date from</label>
       <input type="date" id="dateFrom" name="dateFrom" value="<%= dateFrom %>">
 
-      <label for="dateTo">Date to</label>
+      <label for="dateTo" style="color:black;">Date to</label>
       <input type="date" id="dateTo" name="dateTo" value="<%= dateTo %>">
 
-      <select class="custom-select filter-select" id="currentGender" aria-placeholder="Gender">
+      <select class="custom-select filter-select" id="currentGender" aria-placeholder="Gender" name="gender">
         <option value="">Gender</option>
         <% ['Male', 'Female', 'Other'].forEach((item, index) =>{ %>
         <option value="<%= item %>" <%= item == query.gender ? "selected" : '' %>><%= item %></option>
         <% }) %>
       </select>
-      <select class="custom-select filter-select" id="currentLoc" title="Location">
+      <select class="custom-select filter-select" id="currentLoc" title="Location" name="location">
         <option value="">Location</option>
         <% ['Rural', 'Urban'].forEach((item, index) =>{ %>
         <option value="<%= item %>" <%= item == query.location ? "selected" : '' %>><%= item %></option>
@@ -158,6 +158,42 @@
                       <% }) %>
 
                       <br>
+
+                      <table>
+                        <tr>
+                          <th>category_name</th>
+                          <th>unique_user_count</th>
+                          <th>logged_out_view_count</th>
+                          <th>unique_device_count</th>
+                        </th>
+                        <% categoryViews.forEach((row) =>{ %>
+                          <tr>
+                            <td><%= row.category_name %></td>
+                            <td><%= row.unique_user_count %></td>
+                            <td><%= row.logged_out_view_count %></td>
+                            <td><%= row.unique_device_count %></td>
+                          </tr>
+                        <% }) %>
+                      </table>
+
+                      <br>
+
+                      <table>
+                        <tr>
+                          <th>subcategory_name</th>
+                          <th>unique_user_count</th>
+                          <th>logged_out_view_count</th>
+                          <th>unique_device_count</th>
+                        </th>
+                        <% subCategoryViews.forEach((row) =>{ %>
+                          <tr>
+                            <td><%= row.category_name %></td>
+                            <td><%= row.unique_user_count %></td>
+                            <td><%= row.logged_out_view_count %></td>
+                            <td><%= row.unique_device_count %></td>
+                          </tr>
+                        <% }) %>
+                      </table>
                   </div>
               </div>
             </div>

@@ -67,6 +67,7 @@ export class RenderController {
     const dates = [dateFrom, dateTo]
 
     const params = [request.query.gender || null, request.query.location || null, dateFrom, dateTo]
+    console.log('*** params', params)
 
     const entityManager = await getManager()
     const usersGenders = await entityManager.query(analyticsQueries.usersGender, params)
@@ -85,21 +86,24 @@ export class RenderController {
 
     // Profile screen
     const totalProfileScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews, [...dates, 'ProfileScreen'])
+      await entityManager.query(analyticsQueries.countTotalScreenViews, [
+        ...params,
+        'ProfileScreen',
+      ])
     )[0]?.count
     const uniqueUserProfileScreenViews = (
       await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [
-        ...dates,
+        ...params,
         'ProfileScreen',
       ])
     )[0]?.count
     // Encyclopedia screen
     const totalEncyclopediaScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews, [...dates, 'Encyclopedia'])
+      await entityManager.query(analyticsQueries.countTotalScreenViews, [...params, 'Encyclopedia'])
     )[0]?.count
     const uniqueUserEncyclopediaScreenViews = (
       await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [
-        ...dates,
+        ...params,
         'Encyclopedia',
       ])
     )[0]?.count
@@ -114,14 +118,17 @@ export class RenderController {
     )[0]?.count
     // Calendar screen
     const totalCalendarScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews, [...dates, 'Calendar'])
+      await entityManager.query(analyticsQueries.countTotalScreenViews, [...params, 'Calendar'])
     )[0]?.count
     const uniqueUserCalendarScreenViews = (
-      await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [...dates, 'Calendar'])
+      await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [
+        ...params,
+        'Calendar',
+      ])
     )[0]?.count
     // Prediction
     const predictionSettingsChanges = (
-      await entityManager.query(analyticsQueries.countPredictionSettingsChanges, dates)
+      await entityManager.query(analyticsQueries.countPredictionSettingsChanges, params)
     )[0]
 
     const usage = {

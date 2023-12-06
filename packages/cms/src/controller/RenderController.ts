@@ -67,7 +67,6 @@ export class RenderController {
     const dates = [dateFrom, dateTo]
 
     const params = [request.query.gender || null, request.query.location || null, dateFrom, dateTo]
-    console.log('*** params', params)
 
     const entityManager = await getManager()
     const usersGenders = await entityManager.query(analyticsQueries.usersGender, params)
@@ -116,6 +115,11 @@ export class RenderController {
         dates,
       )
     )[0]?.count
+    const categoryViews = await entityManager.query(analyticsQueries.countCategoryViews, params)
+    const subCategoryViews = await entityManager.query(
+      analyticsQueries.countSubCategoryViews,
+      params,
+    )
     // Calendar screen
     const totalCalendarScreenViews = (
       await entityManager.query(analyticsQueries.countTotalScreenViews, [...params, 'Calendar'])
@@ -178,6 +182,8 @@ export class RenderController {
         directDownloads,
         usage,
         predictionSettingsChanges,
+        categoryViews,
+        subCategoryViews,
         dateFrom,
         dateTo,
       }
@@ -194,6 +200,8 @@ export class RenderController {
       directDownloads,
       usage,
       predictionSettingsChanges,
+      categoryViews,
+      subCategoryViews,
       dateFrom,
       dateTo,
     })

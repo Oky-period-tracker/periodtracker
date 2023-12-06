@@ -165,36 +165,38 @@ export const analyticsQueries = {
     AND oky_user.location = COALESCE($2, oky_user.location)
     AND (metadata->>'date')::timestamp BETWEEN $3 AND $4
   ;`,
-  // TODO:
   countCategoryViews: `
-  SELECT 
-    c.id AS category_id, 
-    c.title AS category_name, 
+  SELECT
+    c.id AS category_id,
+    c.title AS category_name,
     COUNT(DISTINCT a.user_id) AS unique_user_count,
-    COUNT(*) FILTER (WHERE a.user_id IS NULL) AS anonymous_view_count,
+    COUNT(*) FILTER (WHERE a.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
   FROM category c
-  WHERE (metadata->>'date')::timestamp BETWEEN $1 AND $2
-  LEFT JOIN 
-    app_event a 
+  LEFT JOIN
+    app_event a
     ON a.type = 'CATEGORY_VIEWED' AND c.id = (a.payload->>'categoryId')::uuid
-  GROUP BY 
-    c.id, c.title
+  INNER JOIN oky_user ON a.user_id::uuid = oky_user.id
+  WHERE oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND (metadata->>'date')::timestamp BETWEEN $3 AND $4
+  GROUP BY c.id, c.title
   ;`,
   countSubCategoryViews: `
-  SELECT 
-    s.id AS subcategory_id, 
-    s.title AS subcategory_name, 
+  SELECT
+    s.id AS subcategory_id,
+    s.title AS subcategory_name,
     COUNT(DISTINCT a.user_id) AS unique_user_count,
-    COUNT(*) FILTER (WHERE a.user_id IS NULL) AS anonymous_view_count,
+    COUNT(*) FILTER (WHERE a.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
-  FROM 
-    subcategory s
-  WHERE (metadata->>'date')::timestamp BETWEEN $1 AND $2
-  LEFT JOIN 
-    app_event a 
+  FROM subcategory s
+  LEFT JOIN
+    app_event a
     ON a.type = 'SUBCATEGORY_VIEWED' AND s.id = (a.payload->>'subCategoryId')::uuid
-  GROUP BY 
-    s.id, s.title
+  INNER JOIN oky_user ON a.user_id::uuid = oky_user.id
+  WHERE oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND (metadata->>'date')::timestamp BETWEEN $3 AND $4
+  GROUP BY s.id, s.title
   ;`,
 }

@@ -7,8 +7,8 @@ export const analyticsQueries = {
       COUNT(CASE location WHEN 'Rural' then 1 else null end) as total_rural
     FROM ${env.db.schema}.oky_user WHERE (gender = $1 OR $1 IS NULL) 
       AND (location= $2 OR $2 IS NULL) 
-      AND (date_account_saved BETWEEN $3 AND $4);
-    `,
+      AND (date_account_saved BETWEEN $3 AND $4)
+    ;`,
   usersGender: `
     SELECT 
       COUNT(CASE gender WHEN 'Female' then 1 else null end) as total_female, 
@@ -17,8 +17,8 @@ export const analyticsQueries = {
     FROM ${env.db.schema}.oky_user 
     WHERE (gender = $1 OR $1 IS NULL) 
       AND (location= $2 OR $2 IS NULL)
-      AND (date_account_saved BETWEEN $3 AND $4);
-    `,
+      AND (date_account_saved BETWEEN $3 AND $4)
+    ;`,
   usersAgeGroups: `
     SELECT SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) < 10 THEN 1 ELSE 0 END) AS under_10,
       SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) BETWEEN 10 AND 11 THEN 1 ELSE 0 END) AS between_10_11,
@@ -31,8 +31,8 @@ export const analyticsQueries = {
     FROM ${env.db.schema}.oky_user 
     WHERE (gender = $1 OR $1 IS NULL) 
       AND (location= $2 OR $2 IS NULL)
-      AND (date_account_saved BETWEEN $3 AND $4);
-    `,
+      AND (date_account_saved BETWEEN $3 AND $4)
+    ;`,
   usersCountries: `
     SELECT
       country,
@@ -42,7 +42,7 @@ export const analyticsQueries = {
       AND (location= $2 OR $2 IS NULL)
       AND (date_account_saved BETWEEN $3 AND $4)
     GROUP BY country
-  `,
+  ;`,
   usersProvince: `
     SELECT
       country,
@@ -53,7 +53,7 @@ export const analyticsQueries = {
       AND (location= $2 OR $2 IS NULL)
       AND (date_account_saved BETWEEN $3 AND $4)
     GROUP BY province, country
-  `,
+  ;`,
   answeredQuizzesByID: `
     SELECT id,
       COUNT(*) as total_answers,
@@ -64,7 +64,7 @@ export const analyticsQueries = {
       COUNT(CASE answerID WHEN '3' then 1 else null end) as total_option3
     FROM ${env.db.schema}.answered_quizzes
     GROUP BY id
-    `,
+    ;`,
   answeredSurveysByID: `
     SELECT answered_surveys.id,answered_surveys.questions, answered_surveys.user_id
     FROM ${env.db.schema}.answered_surveys
@@ -73,7 +73,7 @@ export const analyticsQueries = {
     WHERE
       (oky_user.id = answered_surveys.user_id::uuid AND answered_surveys.isSurveyAnswered = 'true')
     GROUP BY answered_surveys.id, answered_surveys.questions, answered_surveys.user_id
-  `,
+  ;`,
   usersShares: `
     SELECT
       DATE_TRUNC('day', created_at) AS date,
@@ -82,7 +82,7 @@ export const analyticsQueries = {
     WHERE type = 'SHARE_APP'
     GROUP BY DATE_TRUNC('day', created_at)
     ORDER BY date
-  `,
+  ;`,
   directDownloads: `
     SELECT
       DATE_TRUNC('day', date_created) AS date,
@@ -91,7 +91,7 @@ export const analyticsQueries = {
     WHERE type = 'DIRECT_DOWNLOAD'
     GROUP BY DATE_TRUNC('day', date_created)
     ORDER BY date
-  `,
+  ;`,
   filterSurvey: `
     SELECT answered_surveys.id,questions, location, date_of_birth, gender, country, answered_surveys.user_id,
       SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) < 10 THEN 1 ELSE 0 END) AS under_10,
@@ -113,37 +113,43 @@ export const analyticsQueries = {
       AND (oky_user.location= $2 OR $2 IS NULL)
       AND ((DATE_PART('year', now()::date) - DATE_PART('year', oky_user.date_of_birth)) BETWEEN $3 AND $4 OR $3 IS NULL)
     GROUP BY answered_surveys.id, answered_surveys.user_id, answered_surveys.questions, oky_user.country, oky_user.location, oky_user.date_of_birth, oky_user.gender
-  `,
+  ;`,
   countTotalScreenViews: `
   SELECT COUNT(*)
   FROM app_event
-  WHERE type = 'SCREEN_VIEW'
-    AND payload->>'screenName' = $3
-    AND (metadata->>'date')::timestamp BETWEEN $1 AND $2;
-  `,
+  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+  WHERE app_event.type = 'SCREEN_VIEW'
+    AND oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND (app_event.metadata->>'date')::timestamp BETWEEN $3 AND $4
+    AND app_event.payload->>'screenName' = $5
+  ;`,
   countUniqueUserScreenViews: `
   SELECT COUNT(DISTINCT user_id)
   FROM app_event
+  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
   WHERE type = 'SCREEN_VIEW'
-    AND payload->>'screenName' = $3
-    AND (metadata->>'date')::timestamp BETWEEN $1 AND $2;
-  `,
+    AND oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND (metadata->>'date')::timestamp BETWEEN $3 AND $4
+    AND payload->>'screenName' = $5
+  ;`,
   countNonLoggedInEncyclopediaViews: `
   SELECT COUNT(*)
   FROM app_event
   WHERE type = 'SCREEN_VIEWED'
     AND user_id IS NULL
     AND payload->>'screenName' = 'Encyclopedia'
-    AND (metadata->>'date')::timestamp BETWEEN $1 AND $2;
-  `,
+    AND (metadata->>'date')::timestamp BETWEEN $1 AND $2
+  ;`,
   countUniqueDeviceNonLoggedInEncyclopediaViews: `
   SELECT COUNT(DISTINCT metadata->>'deviceId') 
   FROM app_event
   WHERE type = 'SCREEN_VIEWED'
     AND user_id IS NULL
     AND payload->>'screenName' = 'Encyclopedia'
-    AND (metadata->>'date')::timestamp BETWEEN $1 AND $2;
-  `,
+    AND (metadata->>'date')::timestamp BETWEEN $1 AND $2
+  ;`,
   countPredictionSettingsChanges: `
   SELECT 
     Count(*) AS total_changes, 
@@ -153,9 +159,13 @@ export const analyticsQueries = {
     Count(DISTINCT a.user_id) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = true) AS unique_user_switched_on, 
     Count(DISTINCT a.user_id) FILTER (WHERE (a.payload->>'isFuturePredictionActive')::boolean = false) AS unique_user_switched_off
   FROM app_event a
+  INNER JOIN oky_user ON a.user_id::uuid = oky_user.id
   WHERE type = 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE'
-    AND (metadata->>'date')::timestamp BETWEEN $1 AND $2;
-  `,
+    AND oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND (metadata->>'date')::timestamp BETWEEN $3 AND $4
+  ;`,
+  // TODO:
   countCategoryViews: `
   SELECT 
     c.id AS category_id, 
@@ -163,15 +173,14 @@ export const analyticsQueries = {
     COUNT(DISTINCT a.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE a.user_id IS NULL) AS anonymous_view_count,
     COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
-  FROM 
-    category c
+  FROM category c
   WHERE (metadata->>'date')::timestamp BETWEEN $1 AND $2
   LEFT JOIN 
     app_event a 
     ON a.type = 'CATEGORY_VIEWED' AND c.id = (a.payload->>'categoryId')::uuid
   GROUP BY 
-    c.id, c.title;
-  `,
+    c.id, c.title
+  ;`,
   countSubCategoryViews: `
   SELECT 
     s.id AS subcategory_id, 
@@ -186,6 +195,6 @@ export const analyticsQueries = {
     app_event a 
     ON a.type = 'SUBCATEGORY_VIEWED' AND s.id = (a.payload->>'subCategoryId')::uuid
   GROUP BY 
-    s.id, s.title;
-  `,
+    s.id, s.title
+  ;`,
 }

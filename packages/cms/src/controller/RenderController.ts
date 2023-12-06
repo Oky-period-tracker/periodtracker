@@ -16,7 +16,7 @@ import { HelpCenter } from '../entity/HelpCenter'
 import { About } from '../entity/About'
 import { AvatarMessages } from '../entity/AvatarMessages'
 import { PermanentNotification } from '../entity/PermanentNotification'
-import { provinces, countries, availableAppLocales, localeTranslations } from '@oky/core'
+import { provinces, countries } from '@oky/core'
 import { TermsAndConditions } from '../entity/TermsAndConditions'
 import { PrivacyPolicy } from '../entity/PrivacyPolicy'
 import { AboutBanner } from '../entity/AboutBanner'
@@ -62,78 +62,66 @@ export class RenderController {
   }
 
   async renderAnalytics(request: Request, response: Response, next: NextFunction) {
+    const dateFrom = (request.query.dateFrom || '1970-01-01') as string
+    const dateTo = (request.query.dateTo || '9999-12-31') as string
+    const dates = [dateFrom, dateTo]
+
+    const params = [request.query.gender || null, request.query.location || null, dateFrom, dateTo]
+
     const entityManager = await getManager()
-    const usersGenders = await entityManager.query(analyticsQueries.usersGender, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
-    const usersLocations = await entityManager.query(analyticsQueries.usersLocations, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
-    const usersAgeGroups = await entityManager.query(analyticsQueries.usersAgeGroups, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
-    const preProcessedProvinceList = await entityManager.query(analyticsQueries.usersProvince, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
-    const preProcessedCountryList = await entityManager.query(analyticsQueries.usersCountries, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
+    const usersGenders = await entityManager.query(analyticsQueries.usersGender, params)
+    const usersLocations = await entityManager.query(analyticsQueries.usersLocations, params)
+    const usersAgeGroups = await entityManager.query(analyticsQueries.usersAgeGroups, params)
+    const preProcessedProvinceList = await entityManager.query(
+      analyticsQueries.usersProvince,
+      params,
+    )
+    const preProcessedCountryList = await entityManager.query(
+      analyticsQueries.usersCountries,
+      params,
+    )
     const usersShares = await entityManager.query(analyticsQueries.usersShares)
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
 
-    const dateFrom = (request.query.dateFrom || '1970-01-01') as string
-    const dateTo = (request.query.dateTo || '9999-12-31') as string
-    const dates = { dateFrom, dateTo }
-
     // Profile screen
     const totalProfileScreenViews = (
-      await entityManager.query(
-        analyticsQueries.countTotalScreenViews({ screenName: 'ProfileScreen', ...dates }),
-      )
+      await entityManager.query(analyticsQueries.countTotalScreenViews, [...dates, 'ProfileScreen'])
     )[0]?.count
     const uniqueUserProfileScreenViews = (
-      await entityManager.query(
-        analyticsQueries.countUniqueUserScreenViews({ screenName: 'ProfileScreen', ...dates }),
-      )
+      await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [
+        ...dates,
+        'ProfileScreen',
+      ])
     )[0]?.count
     // Encyclopedia screen
     const totalEncyclopediaScreenViews = (
-      await entityManager.query(
-        analyticsQueries.countTotalScreenViews({ screenName: 'Encyclopedia', ...dates }),
-      )
+      await entityManager.query(analyticsQueries.countTotalScreenViews, [...dates, 'Encyclopedia'])
     )[0]?.count
     const uniqueUserEncyclopediaScreenViews = (
-      await entityManager.query(
-        analyticsQueries.countUniqueUserScreenViews({ screenName: 'Encyclopedia', ...dates }),
-      )
+      await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [
+        ...dates,
+        'Encyclopedia',
+      ])
     )[0]?.count
     const nonLoggedInEncyclopediaViews = (
-      await entityManager.query(analyticsQueries.countNonLoggedInEncyclopediaViews(dates))
+      await entityManager.query(analyticsQueries.countNonLoggedInEncyclopediaViews, dates)
     )[0]?.count
     const uniqueDeviceNonLoggedInEncyclopediaViews = (
       await entityManager.query(
-        analyticsQueries.countUniqueDeviceNonLoggedInEncyclopediaViews(dates),
+        analyticsQueries.countUniqueDeviceNonLoggedInEncyclopediaViews,
+        dates,
       )
     )[0]?.count
     // Calendar screen
     const totalCalendarScreenViews = (
-      await entityManager.query(
-        analyticsQueries.countTotalScreenViews({ screenName: 'Calendar', ...dates }),
-      )
+      await entityManager.query(analyticsQueries.countTotalScreenViews, [...dates, 'Calendar'])
     )[0]?.count
     const uniqueUserCalendarScreenViews = (
-      await entityManager.query(
-        analyticsQueries.countUniqueUserScreenViews({ screenName: 'Calendar', ...dates }),
-      )
+      await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [...dates, 'Calendar'])
     )[0]?.count
     // Prediction
     const predictionSettingsChanges = (
-      await entityManager.query(analyticsQueries.countPredictionSettingsChanges(dates))
+      await entityManager.query(analyticsQueries.countPredictionSettingsChanges, dates)
     )[0]
 
     const usage = {
@@ -183,7 +171,8 @@ export class RenderController {
         directDownloads,
         usage,
         predictionSettingsChanges,
-        ...dates,
+        dateFrom,
+        dateTo,
       }
     }
 
@@ -198,7 +187,8 @@ export class RenderController {
       directDownloads,
       usage,
       predictionSettingsChanges,
-      ...dates,
+      dateFrom,
+      dateTo,
     })
   }
 

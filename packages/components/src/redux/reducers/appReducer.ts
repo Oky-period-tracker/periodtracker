@@ -53,6 +53,7 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
   switch (action.type) {
     case REHYDRATE: {
       return {
+        ...state,
         ...(action.payload && action.payload.app),
         deviceId: action.payload?.app?.deviceId ? action.payload.app.deviceId : uuidv4(),
       }

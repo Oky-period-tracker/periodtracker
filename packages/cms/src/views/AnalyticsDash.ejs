@@ -10,6 +10,18 @@
   <div class="mainContentContainer">
     <div class="homeTopTextContainer">
       <h2><%= __('Analytics Dashboard')%></h2>
+      <button id="downloadCSV" class="btn btn-primary">
+        <%= __('Download Results')%>
+    </button>
+  </div>
+  
+    <form id="dateFilterForm">
+      <label for="dateFrom">Date from</label>
+      <input type="date" id="dateFrom" name="dateFrom" value="<%= dateFrom %>">
+
+      <label for="dateTo">Date to</label>
+      <input type="date" id="dateTo" name="dateTo" value="<%= dateTo %>">
+
       <select class="custom-select filter-select" id="currentGender" aria-placeholder="Gender">
         <option value="">Gender</option>
         <% ['Male', 'Female', 'Other'].forEach((item, index) =>{ %>
@@ -22,10 +34,10 @@
         <option value="<%= item %>" <%= item == query.location ? "selected" : '' %>><%= item %></option>
         <% }) %>
       </select>
-      <button id="downloadCSV" class="btn btn-primary">
-        <%= __('Download Results')%>
-    </button>
-    </div>
+      
+      <button class="btn btn-primary">Apply filters</button>
+    </form>
+
     <div style="flex-direction: column; justify-content: center;"  class="homeTableContainer">
         <div class="row">
           <div class="col-lg-6">
@@ -134,30 +146,18 @@
                   <div class="panel-body">
                     <br>
 
-                    <form id="dateFilterForm">
-                      <label for="dateFrom">Date from</label>
-                      <input type="date" id="dateFrom" name="dateFrom" value="<%= dateFrom %>">
-
-                      <label for="dateTo">Date to</label>
-                      <input type="date" id="dateTo" name="dateTo" value="<%= dateTo %>">
-
-                      <button>Submit</button>
-                    </form>
-
-                    <br>
-
                       <% Object.entries(usage).forEach(([key, value]) =>{ %>
                         <p><%= key %>: <%= value %></p>
                       <% }) %>
 
                       <br>
+
                       <p>Prediction settings:</p>
                       <% Object.entries(predictionSettingsChanges).forEach(([key, value]) =>{ %>
                         <p><%= key %>: <%= value %></p>
                       <% }) %>
 
                       <br>
-
                   </div>
               </div>
             </div>

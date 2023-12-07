@@ -9,4 +9,6 @@ export interface SignupCommand {
   plainPassword: string
   secretQuestion: string
   secretAnswer: string
+  dateSignedUp: string
+  dateAccountSaved: string
 }

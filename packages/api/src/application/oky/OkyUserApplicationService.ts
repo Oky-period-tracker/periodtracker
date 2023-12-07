@@ -45,6 +45,8 @@ export class OkyUserApplicationService {
     plainPassword,
     secretQuestion,
     secretAnswer,
+    dateSignedUp,
+    dateAccountSaved,
   }: SignupCommand) {
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
     if (await this.okyUserRepository.byId(id)) {
@@ -67,6 +69,8 @@ export class OkyUserApplicationService {
       plainPassword,
       secretQuestion,
       secretAnswer,
+      dateSignedUp,
+      dateAccountSaved,
     })
     return this.okyUserRepository.save(user)
   }

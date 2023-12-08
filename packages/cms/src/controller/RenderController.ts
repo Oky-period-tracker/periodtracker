@@ -83,6 +83,7 @@ export class RenderController {
     const usersShares = await entityManager.query(analyticsQueries.usersShares)
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
 
+    // Active users
     const { count: totalActiveUsers } = (
       await entityManager.query(analyticsQueries.countActiveUsers, params)
     )[0]
@@ -121,6 +122,11 @@ export class RenderController {
       await entityManager.query(analyticsQueries.countScreenViews, [...params, 'Calendar'])
     )[0]
 
+    // Daily cards
+    const { count: countDailyCardUsage, unique_user_count: countUniqueUserDailyCardUsage } = (
+      await entityManager.query(analyticsQueries.countDailyCardUsage, params)
+    )[0]
+
     // Prediction
     const predictionSettingsChanges = (
       await entityManager.query(analyticsQueries.countPredictionSettingsChanges, params)
@@ -136,6 +142,8 @@ export class RenderController {
       uniqueDeviceNonLoggedInEncyclopediaViews,
       totalCalendarScreenViews,
       uniqueUserCalendarScreenViews,
+      countDailyCardUsage,
+      countUniqueUserDailyCardUsage,
     }
 
     const usersCountries = preProcessedCountryList.reduce((acc, item) => {

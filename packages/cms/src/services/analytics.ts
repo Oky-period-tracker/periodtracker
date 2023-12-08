@@ -238,4 +238,17 @@ export const analyticsQueries = {
   GROUP BY 
     store->'appState'->'app'->>'theme'
   ;`,
+  countLocales: `
+  SELECT 
+    store->'appState'->'app'->>'locale' AS locale,
+    COUNT(*) AS user_count
+  FROM 
+    oky_user
+  WHERE 
+    store->'appState'->'app'->>'locale' IS NOT NULL
+    AND oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+  GROUP BY 
+    store->'appState'->'app'->>'locale'
+  ;`,
 }

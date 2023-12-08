@@ -99,6 +99,11 @@ export class RenderController {
 
     const countThemes = await entityManager.query(analyticsQueries.countThemes, [gender, location])
 
+    const countLocales = await entityManager.query(analyticsQueries.countLocales, [
+      gender,
+      location,
+    ])
+
     const { count: totalViews } = (await entityManager.query(analyticsQueries.countTotalViews))[0]
 
     // Profile screen
@@ -296,6 +301,7 @@ export class RenderController {
         usage,
         countAvatars,
         countThemes,
+        countLocales,
         dateFrom,
         dateTo,
       }
@@ -313,6 +319,7 @@ export class RenderController {
       usage,
       countAvatars,
       countThemes,
+      countLocales,
       dateFrom,
       dateTo,
     })

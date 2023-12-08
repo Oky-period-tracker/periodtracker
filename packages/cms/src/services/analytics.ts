@@ -212,4 +212,30 @@ export const analyticsQueries = {
     AND oky_user.location = COALESCE($2, oky_user.location)
     AND (app_event.metadata->>'date')::timestamp BETWEEN $3 AND $4
   ;`,
+  countAvatars: `
+  SELECT 
+    store->'appState'->'app'->>'avatar' AS avatar,
+    COUNT(*) AS user_count
+  FROM 
+    oky_user
+  WHERE 
+    store->'appState'->'app'->>'avatar' IS NOT NULL
+    AND oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+  GROUP BY 
+    store->'appState'->'app'->>'avatar'
+  ;`,
+  countThemes: `
+  SELECT 
+    store->'appState'->'app'->>'theme' AS theme,
+    COUNT(*) AS user_count
+  FROM 
+    oky_user
+  WHERE 
+    store->'appState'->'app'->>'theme' IS NOT NULL
+    AND oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+  GROUP BY 
+    store->'appState'->'app'->>'theme'
+  ;`,
 }

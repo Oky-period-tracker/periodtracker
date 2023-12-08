@@ -84,52 +84,39 @@ export class RenderController {
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
 
     // Profile screen
-    const totalProfileScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews, [
-        ...params,
-        'ProfileScreen',
-      ])
-    )[0]?.count
-    const uniqueUserProfileScreenViews = (
-      await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [
-        ...params,
-        'ProfileScreen',
-      ])
-    )[0]?.count
+    const { count: totalProfileScreenViews, unique_user_count: uniqueUserProfileScreenViews } = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'ProfileScreen'])
+    )[0]
+
     // Encyclopedia screen
-    const totalEncyclopediaScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews, [...params, 'Encyclopedia'])
-    )[0]?.count
-    const uniqueUserEncyclopediaScreenViews = (
-      await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [
-        ...params,
+    const {
+      count: totalEncyclopediaScreenViews,
+      unique_user_count: uniqueUserEncyclopediaScreenViews,
+    } = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'Encyclopedia'])
+    )[0]
+
+    const {
+      count: nonLoggedInEncyclopediaViews,
+      unique_device_count: uniqueDeviceNonLoggedInEncyclopediaViews,
+    } = (
+      await entityManager.query(analyticsQueries.countNonLoggedInScreenViews, [
+        ...dates,
         'Encyclopedia',
       ])
-    )[0]?.count
-    const nonLoggedInEncyclopediaViews = (
-      await entityManager.query(analyticsQueries.countNonLoggedInEncyclopediaViews, dates)
-    )[0]?.count
-    const uniqueDeviceNonLoggedInEncyclopediaViews = (
-      await entityManager.query(
-        analyticsQueries.countUniqueDeviceNonLoggedInEncyclopediaViews,
-        dates,
-      )
-    )[0]?.count
+    )[0]
+
     const categoryViews = await entityManager.query(analyticsQueries.countCategoryViews, params)
     const subCategoryViews = await entityManager.query(
       analyticsQueries.countSubCategoryViews,
       params,
     )
+
     // Calendar screen
-    const totalCalendarScreenViews = (
-      await entityManager.query(analyticsQueries.countTotalScreenViews, [...params, 'Calendar'])
-    )[0]?.count
-    const uniqueUserCalendarScreenViews = (
-      await entityManager.query(analyticsQueries.countUniqueUserScreenViews, [
-        ...params,
-        'Calendar',
-      ])
-    )[0]?.count
+    const { count: totalCalendarScreenViews, unique_user_count: uniqueUserCalendarScreenViews } = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'Calendar'])
+    )[0]
+
     // Prediction
     const predictionSettingsChanges = (
       await entityManager.query(analyticsQueries.countPredictionSettingsChanges, params)

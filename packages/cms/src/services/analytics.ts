@@ -114,6 +114,10 @@ export const analyticsQueries = {
       AND ((DATE_PART('year', now()::date) - DATE_PART('year', oky_user.date_of_birth)) BETWEEN $3 AND $4 OR $3 IS NULL)
     GROUP BY answered_surveys.id, answered_surveys.user_id, answered_surveys.questions, oky_user.country, oky_user.location, oky_user.date_of_birth, oky_user.gender
   ;`,
+  countUsers: `
+  SELECT COUNT(id)
+  FROM oky_user
+  ;`,
   countActiveUsers: `
   SELECT COUNT(DISTINCT user_id)
   FROM app_event
@@ -121,6 +125,14 @@ export const analyticsQueries = {
   WHERE oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
     AND (app_event.metadata->>'date')::timestamp BETWEEN $3 AND $4
+  ;`,
+  countTotalViews: `
+  SELECT COUNT(*)
+  FROM app_event
+  WHERE app_event.type = 'SCREEN_VIEW' 
+    OR app_event.type = 'CATEGORY_VIEWED' 
+    OR app_event.type = 'SUBCATEGORY_VIEWED' 
+    OR app_event.type = 'DAILY_CARD_USED' 
   ;`,
   countScreenViews: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
@@ -159,6 +171,7 @@ export const analyticsQueries = {
   SELECT
     c.id AS category_id,
     c.title AS category_name,
+    COUNT(*) AS total_view_count,
     COUNT(DISTINCT a.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE a.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
@@ -176,6 +189,7 @@ export const analyticsQueries = {
   SELECT
     s.id AS subcategory_id,
     s.title AS subcategory_name,
+    COUNT(*) AS total_view_count,
     COUNT(DISTINCT a.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE a.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT a.metadata->>'deviceId') FILTER (WHERE a.metadata->>'deviceId' IS NOT NULL) AS unique_device_count

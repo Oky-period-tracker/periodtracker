@@ -202,11 +202,7 @@ input:checked + .slider:before {
   flex: 1;
   width: 100%;
   background: blanchedalmond;
-  background: -webkit-linear-gradient(
-    right,
-    blanchedalmond,
-    rgb(233, 213, 183)
-  );
+  background: -webkit-linear-gradient(right, blanchedalmond, rgb(233, 213, 183));
   background: -moz-linear-gradient(right, blanchedalmond, rgb(233, 213, 183));
   background: -o-linear-gradient(right, blanchedalmond, rgb(233, 213, 183));
   background: linear-gradient(to left, blanchedalmond, rgb(233, 213, 183));
@@ -424,6 +420,10 @@ table {
 th,
 td {
   padding: 8px 16px;
+  text-align: left;
+}
+td.center {
+  text-align: center;
 }
 th {
   background: rgb(64, 135, 216);

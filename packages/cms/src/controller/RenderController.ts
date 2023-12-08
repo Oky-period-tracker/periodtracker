@@ -83,6 +83,10 @@ export class RenderController {
     const usersShares = await entityManager.query(analyticsQueries.usersShares)
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
 
+    const { count: totalActiveUsers } = (
+      await entityManager.query(analyticsQueries.countActiveUsers, params)
+    )[0]
+
     // Profile screen
     const { count: totalProfileScreenViews, unique_user_count: uniqueUserProfileScreenViews } = (
       await entityManager.query(analyticsQueries.countScreenViews, [...params, 'ProfileScreen'])
@@ -123,6 +127,7 @@ export class RenderController {
     )[0]
 
     const usage = {
+      totalActiveUsers,
       totalProfileScreenViews,
       uniqueUserProfileScreenViews,
       totalEncyclopediaScreenViews,

@@ -84,9 +84,13 @@ export class RenderController {
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
 
     // Active users
+    const { count: totalUsers } = (await entityManager.query(analyticsQueries.countUsers))[0]
+
     const { count: totalActiveUsers } = (
       await entityManager.query(analyticsQueries.countActiveUsers, params)
     )[0]
+
+    const { count: totalViews } = (await entityManager.query(analyticsQueries.countTotalViews))[0]
 
     // Profile screen
     const { count: totalProfileScreenViews, unique_user_count: uniqueUserProfileScreenViews } = (
@@ -128,23 +132,132 @@ export class RenderController {
     )[0]
 
     // Prediction
-    const predictionSettingsChanges = (
+    const predictionSettings = (
       await entityManager.query(analyticsQueries.countPredictionSettingsChanges, params)
     )[0]
 
-    const usage = {
-      totalActiveUsers,
-      totalProfileScreenViews,
-      uniqueUserProfileScreenViews,
-      totalEncyclopediaScreenViews,
-      uniqueUserEncyclopediaScreenViews,
-      nonLoggedInEncyclopediaViews,
-      uniqueDeviceNonLoggedInEncyclopediaViews,
-      totalCalendarScreenViews,
-      uniqueUserCalendarScreenViews,
-      countDailyCardUsage,
-      countUniqueUserDailyCardUsage,
+    const calculatePercentage = (value: number, total: number) => {
+      return Math.round((value / total) * 100)
     }
+
+    interface Usage {
+      feature: string
+      definition: string
+      uniqueUsers: number
+      views: number
+      loggedOutViews: number | string
+      uniqueUsersPercentage: number | string
+      viewsPercentage: number | string
+    }
+
+    const screenUsage: Usage[] = [
+      {
+        feature: 'Profile screen',
+        definition: 'Users landing on the profile screen',
+        uniqueUsers: uniqueUserProfileScreenViews,
+        views: totalProfileScreenViews,
+        loggedOutViews: '-', // Inaccessible to logged out users
+        uniqueUsersPercentage: calculatePercentage(uniqueUserProfileScreenViews, totalUsers),
+        viewsPercentage: calculatePercentage(totalProfileScreenViews, totalViews),
+      },
+      {
+        feature: 'Encyclopedia screen',
+        definition: 'Users landing on the Encyclopedia screen',
+        uniqueUsers: uniqueUserEncyclopediaScreenViews,
+        views: totalEncyclopediaScreenViews,
+        loggedOutViews: nonLoggedInEncyclopediaViews,
+        uniqueUsersPercentage: calculatePercentage(uniqueUserEncyclopediaScreenViews, totalUsers),
+        viewsPercentage: calculatePercentage(totalEncyclopediaScreenViews, totalViews),
+      },
+      {
+        feature: 'Calendar screen',
+        definition: 'Users landing on the calendar screen',
+        uniqueUsers: uniqueUserCalendarScreenViews,
+        views: totalCalendarScreenViews,
+        loggedOutViews: '-', // Inaccessible to logged out users
+        uniqueUsersPercentage: calculatePercentage(uniqueUserCalendarScreenViews, totalUsers),
+        viewsPercentage: calculatePercentage(totalCalendarScreenViews, totalViews),
+      },
+      {
+        feature: 'Daily card',
+        definition:
+          'Users who have used the daily card at least once. When they click any emoji on the card, it counts as a view. Clicking on multiple emojis and cards within 24 hours still only counts as one view.',
+        uniqueUsers: countUniqueUserDailyCardUsage,
+        views: countDailyCardUsage,
+        loggedOutViews: '-', // Inaccessible to logged out users
+        uniqueUsersPercentage: calculatePercentage(countUniqueUserDailyCardUsage, totalUsers),
+        viewsPercentage: calculatePercentage(countDailyCardUsage, totalViews),
+      },
+    ]
+
+    const categoryUsage: Usage[] = categoryViews.map((category) => {
+      return {
+        feature: category.category_name,
+        definition: 'Category viewed',
+        uniqueUsers: category.unique_user_count,
+        views: category.total_view_count,
+        loggedOutViews: category.logged_out_view_count,
+        uniqueUsersPercentage: calculatePercentage(category.unique_user_count, totalUsers),
+        viewsPercentage: calculatePercentage(category.total_view_count, totalViews),
+      }
+    })
+
+    const subCategoryUsage: Usage[] = subCategoryViews.map((subCategory) => {
+      return {
+        feature: subCategory.category_name,
+        definition: 'Subcategory viewed',
+        uniqueUsers: subCategory.unique_user_count,
+        views: subCategory.total_view_count,
+        loggedOutViews: subCategory.logged_out_view_count,
+        uniqueUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalUsers),
+        viewsPercentage: calculatePercentage(subCategory.total_view_count, totalViews),
+      }
+    })
+
+    /* 
+
+total_changes: 15
+switched_on: 8
+switched_off: 7
+total_unique_user_changes: 2
+unique_user_switched_on: 2
+unique_user_switched_off: 2
+
+*/
+
+    const predictionUsage: Usage[] = [
+      {
+        feature: 'Prediction setting',
+        definition: 'Future prediction switched ON',
+        uniqueUsers: predictionSettings.unique_user_switched_on,
+        views: predictionSettings.switched_on,
+        loggedOutViews: '-',
+        uniqueUsersPercentage: calculatePercentage(
+          predictionSettings.unique_user_switched_on,
+          totalUsers,
+        ),
+        viewsPercentage: '-',
+      },
+      {
+        feature: 'Prediction setting',
+        definition: 'Future prediction switched OFF',
+        uniqueUsers: predictionSettings.unique_user_switched_off,
+        views: predictionSettings.switched_off,
+        loggedOutViews: '-',
+        uniqueUsersPercentage: calculatePercentage(
+          predictionSettings.unique_user_switched_off,
+          totalUsers,
+        ),
+        viewsPercentage: '-',
+      },
+    ]
+
+    const usage: Usage[] = [
+      ...screenUsage,
+      ...predictionUsage,
+      ...categoryUsage,
+      ...subCategoryUsage,
+    ]
 
     const usersCountries = preProcessedCountryList.reduce((acc, item) => {
       const country = countries[item.country] || {
@@ -181,9 +294,6 @@ export class RenderController {
         usersShares,
         directDownloads,
         usage,
-        predictionSettingsChanges,
-        categoryViews,
-        subCategoryViews,
         dateFrom,
         dateTo,
       }
@@ -199,9 +309,6 @@ export class RenderController {
       usersShares,
       directDownloads,
       usage,
-      predictionSettingsChanges,
-      categoryViews,
-      subCategoryViews,
       dateFrom,
       dateTo,
     })

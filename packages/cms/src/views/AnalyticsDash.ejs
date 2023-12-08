@@ -139,18 +139,18 @@
                 </div>
               </div>
         </div>
-        <thead>
-          <table class="table table-striped table-borderless tableFixHead table-responsive">
-          <tr>
-            <th>Oky feature</th>
-            <th>Definition</th>
-            <th>Number of unique users</th>
-            <th>Number of views</th>
-            <th>Number of views while logged out</th>
-            <th>% of total unique users</th>
-            <th>% of total views</th>
-          </tr>
-        </thead>
+        <table class="table table-striped table-borderless tableFixHead table-responsive">
+          <thead>
+            <tr>
+              <th>Oky feature</th>
+              <th>Definition</th>
+              <th>Number of unique users</th>
+              <th>Number of views</th>
+              <th>Number of views while logged out</th>
+              <th>% of total unique users</th>
+              <th>% of total views</th>
+            </tr>
+          </thead>
 
           <% usage.forEach((row) =>{ %>
             <tr>
@@ -161,6 +161,39 @@
               <td class="center"><%= row.loggedOutViews %></td>
               <td class="center"><%= row.uniqueUsersPercentage %></td>
               <td class="center"><%= row.viewsPercentage %></td>
+            </tr>
+          <% }) %>
+        </table>
+
+
+        <table class="table table-striped table-borderless table-responsive">
+          <thead>
+            <tr>
+              <th>Avatars</th>
+              <th>Number of unique users</th>
+            </tr>
+          </thead>
+
+          <% countAvatars.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.avatar %></td>
+              <td class="center"><%= row.user_count %></td>
+            </tr>
+          <% }) %>
+        </table>
+
+        <table class="table table-striped table-borderless table-responsive">
+          <thead>
+            <tr>
+              <th>Theme</th>
+              <th>Number of unique users</th>
+            </tr>
+          </thead>
+
+          <% countThemes.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.theme %></td>
+              <td class="center"><%= row.user_count %></td>
             </tr>
           <% }) %>
         </table>

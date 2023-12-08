@@ -114,8 +114,8 @@ export const analyticsQueries = {
       AND ((DATE_PART('year', now()::date) - DATE_PART('year', oky_user.date_of_birth)) BETWEEN $3 AND $4 OR $3 IS NULL)
     GROUP BY answered_surveys.id, answered_surveys.user_id, answered_surveys.questions, oky_user.country, oky_user.location, oky_user.date_of_birth, oky_user.gender
   ;`,
-  countTotalScreenViews: `
-  SELECT COUNT(*)
+  countScreenViews: `
+  SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
   FROM app_event
   INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
   WHERE app_event.type = 'SCREEN_VIEW'
@@ -124,31 +124,13 @@ export const analyticsQueries = {
     AND (app_event.metadata->>'date')::timestamp BETWEEN $3 AND $4
     AND app_event.payload->>'screenName' = $5
   ;`,
-  countUniqueUserScreenViews: `
-  SELECT COUNT(DISTINCT user_id)
-  FROM app_event
-  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
-  WHERE type = 'SCREEN_VIEW'
-    AND oky_user.gender = COALESCE($1, oky_user.gender)
-    AND oky_user.location = COALESCE($2, oky_user.location)
-    AND (metadata->>'date')::timestamp BETWEEN $3 AND $4
-    AND payload->>'screenName' = $5
-  ;`,
-  countNonLoggedInEncyclopediaViews: `
-  SELECT COUNT(*)
+  countNonLoggedInScreenViews: `
+  SELECT COUNT(*) AS count, COUNT(DISTINCT metadata->>'deviceId') AS unique_device_count
   FROM app_event
   WHERE type = 'SCREEN_VIEWED'
     AND user_id IS NULL
-    AND payload->>'screenName' = 'Encyclopedia'
     AND (metadata->>'date')::timestamp BETWEEN $1 AND $2
-  ;`,
-  countUniqueDeviceNonLoggedInEncyclopediaViews: `
-  SELECT COUNT(DISTINCT metadata->>'deviceId') 
-  FROM app_event
-  WHERE type = 'SCREEN_VIEWED'
-    AND user_id IS NULL
-    AND payload->>'screenName' = 'Encyclopedia'
-    AND (metadata->>'date')::timestamp BETWEEN $1 AND $2
+    AND payload->>'screenName' = $3
   ;`,
   countPredictionSettingsChanges: `
   SELECT 

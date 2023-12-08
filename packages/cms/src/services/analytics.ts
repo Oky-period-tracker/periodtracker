@@ -189,4 +189,13 @@ export const analyticsQueries = {
     AND (metadata->>'date')::timestamp BETWEEN $3 AND $4
   GROUP BY s.id, s.title
   ;`,
+  countDailyCardUsage: `
+  SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
+  FROM app_event
+  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+  WHERE app_event.type = 'DAILY_CARD_USED'
+    AND oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND (app_event.metadata->>'date')::timestamp BETWEEN $3 AND $4
+  ;`,
 }

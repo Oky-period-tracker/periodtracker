@@ -114,6 +114,14 @@ export const analyticsQueries = {
       AND ((DATE_PART('year', now()::date) - DATE_PART('year', oky_user.date_of_birth)) BETWEEN $3 AND $4 OR $3 IS NULL)
     GROUP BY answered_surveys.id, answered_surveys.user_id, answered_surveys.questions, oky_user.country, oky_user.location, oky_user.date_of_birth, oky_user.gender
   ;`,
+  countActiveUsers: `
+  SELECT COUNT(DISTINCT user_id)
+  FROM app_event
+  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+  WHERE oky_user.gender = COALESCE($1, oky_user.gender)
+    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND (app_event.metadata->>'date')::timestamp BETWEEN $3 AND $4
+  ;`,
   countScreenViews: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
   FROM app_event

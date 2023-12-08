@@ -198,6 +198,22 @@
           <% }) %>
         </table>
 
+        <table class="table table-striped table-borderless table-responsive">
+          <thead>
+            <tr>
+              <th>Locale</th>
+              <th>Number of unique users</th>
+            </tr>
+          </thead>
+
+          <% countLocales.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.locale %></td>
+              <td class="center"><%= row.user_count %></td>
+            </tr>
+          <% }) %>
+        </table>
+
         <br />
         <br />
         <br />

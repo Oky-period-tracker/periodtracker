@@ -65,8 +65,10 @@ export class RenderController {
     const dateFrom = (request.query.dateFrom || '1970-01-01') as string
     const dateTo = (request.query.dateTo || '9999-12-31') as string
     const dates = [dateFrom, dateTo]
+    const gender = request.query.gender || null
+    const location = request.query.location || null
 
-    const params = [request.query.gender || null, request.query.location || null, dateFrom, dateTo]
+    const params = [gender, location, dateFrom, dateTo]
 
     const entityManager = await getManager()
     const usersGenders = await entityManager.query(analyticsQueries.usersGender, params)
@@ -89,6 +91,13 @@ export class RenderController {
     const { count: totalActiveUsers } = (
       await entityManager.query(analyticsQueries.countActiveUsers, params)
     )[0]
+
+    const countAvatars = await entityManager.query(analyticsQueries.countAvatars, [
+      gender,
+      location,
+    ])
+
+    const countThemes = await entityManager.query(analyticsQueries.countThemes, [gender, location])
 
     const { count: totalViews } = (await entityManager.query(analyticsQueries.countTotalViews))[0]
 
@@ -214,17 +223,6 @@ export class RenderController {
       }
     })
 
-    /* 
-
-total_changes: 15
-switched_on: 8
-switched_off: 7
-total_unique_user_changes: 2
-unique_user_switched_on: 2
-unique_user_switched_off: 2
-
-*/
-
     const predictionUsage: Usage[] = [
       {
         feature: 'Prediction setting',
@@ -251,6 +249,8 @@ unique_user_switched_off: 2
         viewsPercentage: '-',
       },
     ]
+
+    console.log('***', { countAvatars, countThemes })
 
     const usage: Usage[] = [
       ...screenUsage,
@@ -294,6 +294,8 @@ unique_user_switched_off: 2
         usersShares,
         directDownloads,
         usage,
+        countAvatars,
+        countThemes,
         dateFrom,
         dateTo,
       }
@@ -309,6 +311,8 @@ unique_user_switched_off: 2
       usersShares,
       directDownloads,
       usage,
+      countAvatars,
+      countThemes,
       dateFrom,
       dateTo,
     })

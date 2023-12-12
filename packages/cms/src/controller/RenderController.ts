@@ -106,6 +106,11 @@ export class RenderController {
 
     const { count: totalViews } = (await entityManager.query(analyticsQueries.countTotalViews))[0]
 
+    // Main screen
+    const { count: totalMainScreenViews, unique_user_count: uniqueUserMainScreenViews } = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'MainScreen'])
+    )[0]
+
     // Profile screen
     const { count: totalProfileScreenViews, unique_user_count: uniqueUserProfileScreenViews } = (
       await entityManager.query(analyticsQueries.countScreenViews, [...params, 'ProfileScreen'])
@@ -165,6 +170,15 @@ export class RenderController {
     }
 
     const screenUsage: Usage[] = [
+      {
+        feature: 'Main screen',
+        definition: 'Users landing on the main screen',
+        uniqueUsers: uniqueUserMainScreenViews,
+        views: totalMainScreenViews,
+        loggedOutViews: '-', // Inaccessible to logged out users
+        uniqueUsersPercentage: calculatePercentage(uniqueUserMainScreenViews, totalUsers),
+        viewsPercentage: calculatePercentage(totalMainScreenViews, totalViews),
+      },
       {
         feature: 'Profile screen',
         definition: 'Users landing on the profile screen',

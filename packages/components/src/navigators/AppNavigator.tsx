@@ -149,7 +149,7 @@ const Navigator = createStackNavigator(
 
 const Navigation = createAppContainer(Navigator)
 
-const SCREENS_TO_TRACK = ['ProfileScreen', 'Encyclopedia', 'Calendar']
+const SCREENS_TO_TRACK = ['MainScreen', 'ProfileScreen', 'Encyclopedia', 'Calendar']
 
 const AppNavigator = () => {
   const dispatch = useDispatch()

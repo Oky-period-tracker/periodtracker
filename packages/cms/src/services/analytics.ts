@@ -129,7 +129,7 @@ export const analyticsQueries = {
   countTotalViews: `
   SELECT COUNT(*)
   FROM app_event
-  WHERE app_event.type = 'SCREEN_VIEW' 
+  WHERE app_event.type = 'SCREEN_VIEWED' 
     OR app_event.type = 'CATEGORY_VIEWED' 
     OR app_event.type = 'SUBCATEGORY_VIEWED' 
     OR app_event.type = 'DAILY_CARD_USED' 
@@ -138,7 +138,7 @@ export const analyticsQueries = {
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
   FROM app_event
   INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
-  WHERE app_event.type = 'SCREEN_VIEW'
+  WHERE app_event.type = 'SCREEN_VIEWED'
     AND oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
     AND (app_event.metadata->>'date')::timestamp BETWEEN $3 AND $4

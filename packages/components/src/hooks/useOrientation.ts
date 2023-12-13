@@ -12,9 +12,7 @@ export const useOrientation = () => {
   React.useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window: { width, height } }) => {
       const currentOrientation = width < height ? 'PORTRAIT' : 'LANDSCAPE'
-      if (orientation !== currentOrientation) {
-        setOrientation(currentOrientation)
-      }
+      setOrientation(currentOrientation)
     })
 
     return () => subscription.remove()

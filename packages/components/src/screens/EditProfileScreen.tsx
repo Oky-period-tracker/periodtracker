@@ -23,7 +23,7 @@ import { VerticalSelectBox } from '../components/common/VerticalSelectBox'
 import { translate } from '../i18n'
 import _ from 'lodash'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
-import { isTablet } from 'react-native-device-info'
+import { IS_TABLET } from '../config/tablet'
 
 const minPasswordLength = 1
 const secretQuestions = [
@@ -73,7 +73,7 @@ const maxWidth = 800
 
 export function EditProfileScreen() {
   const { screenWidth } = useScreenDimensions()
-  const percentWidth = isTablet() ? 0.75 : 1
+  const percentWidth = IS_TABLET ? 0.75 : 1
   let inputWidth = screenWidth * percentWidth
 
   if (inputWidth > maxWidth) {
@@ -414,7 +414,7 @@ const TextContainer = styled.View`
 `
 const Container = styled.View`
   background-color: #fff;
-  width: ${isTablet() ? 75 : 100}%;
+  width: ${IS_TABLET ? 75 : 100}%;
   max-width: ${maxWidth}px;
   elevation: 4;
   margin-horizontal: 3px;
@@ -453,7 +453,7 @@ const ChangeSecretButton = styled.TouchableOpacity`
   margin-left: auto;
 `
 const ConfirmButton = styled.TouchableOpacity`
-  width: ${isTablet() ? 75 : 100}%;
+  width: ${IS_TABLET ? 75 : 100}%;
   max-width: ${maxWidth}px;
   height: 60px;
   border-radius: 10px;

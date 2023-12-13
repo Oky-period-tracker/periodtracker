@@ -9,13 +9,13 @@ import { SafeAreaView } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
 import { Platform, StatusBar } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
-import { isTablet } from 'react-native-device-info'
+import { IS_TABLET } from '../config/tablet'
 
 const { persistor, store } = configureStore()
 
 export default function App() {
   React.useEffect(() => {
-    if (isTablet()) {
+    if (IS_TABLET) {
       return
     }
 

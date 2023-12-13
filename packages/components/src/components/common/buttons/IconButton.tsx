@@ -6,8 +6,8 @@ import {
   TouchableOpacityProps,
   StyleSheet,
 } from 'react-native'
-import { isTablet } from 'react-native-device-info'
 import { assets } from '../../../assets'
+import { IS_TABLET } from '../../../config/tablet'
 
 type Props = Omit<ImageProps, 'source'> & {
   name: string
@@ -18,7 +18,7 @@ type Props = Omit<ImageProps, 'source'> & {
   disabled?: boolean
 }
 
-const defaultSize = isTablet() ? 32 : 20
+const defaultSize = IS_TABLET ? 32 : 20
 
 export const IconButton = ({
   name,

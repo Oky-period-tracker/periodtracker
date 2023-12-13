@@ -14,10 +14,10 @@ import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
-import { isTablet } from 'react-native-device-info'
 import { useOrientation } from '../../../hooks/useOrientation'
+import { IS_TABLET } from '../../../config/tablet'
 
-const widthPercentage = isTablet() ? 0.4 : 0.65
+const widthPercentage = IS_TABLET ? 0.4 : 0.65
 
 export function CircularSelection({
   data,
@@ -30,7 +30,7 @@ export function CircularSelection({
   const { screenWidth, screenHeight } = useScreenDimensions()
   const orientation = useOrientation()
   let heightPercentage = 0.6
-  if (orientation === 'landscape' && isTablet()) {
+  if (orientation === 'landscape' && IS_TABLET) {
     heightPercentage = 0.45
   }
   const height = screenHeight * heightPercentage

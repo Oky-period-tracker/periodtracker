@@ -10,6 +10,9 @@ import { useDisplayText } from '../../../components/context/DisplayTextContext'
 import { useSelector } from '../../../hooks/useSelector'
 import * as selectors from '../../../redux/selectors'
 import { SpinLoader } from '../../../components/common/SpinLoader'
+
+import { useOrientation } from '../../../hooks/useOrientation'
+import { IS_TABLET } from '../../../config/tablet'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 
 export function Carousel({
@@ -22,9 +25,10 @@ export function Carousel({
   showOverlay = false,
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
+  const orientation = useOrientation()
 
   let cardWidth = 0.5 * screenWidth
-  let cardHeight = 0.2 * screenHeight
+  let cardHeight: string | number = 0.2 * screenHeight
 
   const maxCardWidth = 260
   const aspectRatio = 0.7
@@ -34,6 +38,10 @@ export function Carousel({
     cardHeight = cardWidth * aspectRatio
   }
 
+  if (orientation === 'LANDSCAPE') {
+    cardHeight = '70%'
+  }
+
   const { interpolate, Value } = Animated
   const width = cardWidth + 40
   let translateX = new Value(0)
@@ -41,6 +49,12 @@ export function Carousel({
   const isTutorialTwoOn = useSelector(selectors.isTutorialTwoActiveSelector)
   const [isVisible, setIsVisible] = React.useState(false)
   const { setDisplayTextStatic } = useDisplayText()
+
+  const left = IS_TABLET
+    ? orientation === 'LANDSCAPE'
+      ? -cardWidth / 0.35
+      : -cardWidth
+    : -cardWidth / 1.8
 
   return (
     <>
@@ -56,13 +70,29 @@ export function Carousel({
             // @ts-ignore
             translateX = interpolate(index, {
               inputRange: [0, 1, 2, 2, 3, 10, data.length - 1, data.length],
-              outputRange: [0, -width, -2 * width, 2 * width, 2 * width, 2 * width, width, 0],
+              outputRange: [
+                0,
+                -width,
+                -2 * width,
+                IS_TABLET ? 4 * width : 2 * width,
+                IS_TABLET ? 4 * width : 2 * width,
+                IS_TABLET ? 4 * width : 2 * width,
+                width,
+                0,
+              ],
             })
           } else if (key === 1) {
             // @ts-ignore
             translateX = interpolate(index, {
               inputRange: [0, 1, 2, 2, data.length - 1, data.length],
-              outputRange: [width, 0, -width, 2 * width, 2 * width, width],
+              outputRange: [
+                width,
+                0,
+                -width,
+                IS_TABLET ? 4 * width : 2 * width,
+                IS_TABLET ? 4 * width : 2 * width,
+                width,
+              ],
             })
           } else {
             // @ts-ignore
@@ -79,7 +109,9 @@ export function Carousel({
                 StyleSheet.absoluteFillObject,
                 // @ts-ignore
                 { transform: [{ translateX }] },
-                { left: -cardWidth / 1.8 },
+                {
+                  left,
+                },
               ]}
               {...{ key }}
             >
@@ -111,8 +143,8 @@ export function Carousel({
                   : setDisplayTextStatic('carousel_no_access')
               }}
               style={{
-                height: cardHeight * 1.2,
-                width: cardWidth * 1.2,
+                height: IS_TABLET ? 0.3 * screenHeight : 100,
+                width: IS_TABLET ? cardWidth * 1.4 : cardWidth * 1.2,
                 borderRadius: 10,
                 bottom: -10,
                 left: 15,

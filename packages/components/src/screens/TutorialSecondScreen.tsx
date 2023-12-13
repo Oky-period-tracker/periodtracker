@@ -28,6 +28,7 @@ import { FlowerAssetDemo, flowerAssets } from '../optional/Flower'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { useOrientation } from '../hooks/useOrientation'
+import { IS_TABLET } from '../config/tablet'
 
 const arrowSize = 55
 
@@ -400,6 +401,8 @@ export function TutorialSecondScreen({ navigation }) {
     })
   }
 
+  const wheelSectionWidth = IS_TABLET ? (orientation === 'LANDSCAPE' ? '35%' : '40%') : '65%'
+
   return (
     <BackgroundTheme>
       <Container>
@@ -437,7 +440,7 @@ export function TutorialSecondScreen({ navigation }) {
             <Avatar style={{ position: 'absolute', top: 90, zIndex: 0, elevation: 0 }} />
             <Overlay />
           </AvatarSection>
-          <WheelSection {...{ step }} style={{ width: Platform.OS === 'ios' ? '70%' : '65%' }}>
+          <WheelSection {...{ step }} style={{ width: wheelSectionWidth }}>
             <CircularSelection
               {...{
                 data,
@@ -569,7 +572,7 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
-  z-index: 9;
+  justify-content: space-between;
 `
 const AvatarSection = styled.View<{ step: number }>`
   height: 100%;
@@ -578,12 +581,8 @@ const AvatarSection = styled.View<{ step: number }>`
 `
 const WheelSection = styled.View`
   height: 100%;
-  width: 65%;
   align-items: center;
-  elevation: 0;
-  z-index: -1
   justify-content: center;
-  background-color: transparent;
   flex-direction: row;
 `
 const CarouselSection = styled.View<{ step: number }>`

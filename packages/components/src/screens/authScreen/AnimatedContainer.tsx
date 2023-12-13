@@ -9,7 +9,7 @@ import { DeleteAccount } from './DeleteAccount'
 import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
-import { isTablet } from 'react-native-device-info'
+import { IS_TABLET } from '../../config/tablet'
 
 const { Value } = Animated
 
@@ -207,7 +207,7 @@ const TouchableText = styled.TouchableOpacity``
 
 const Container = styled.View`
   flex-direction: column;
-  width: ${isTablet() ? '75%' : '100%'};
+  width: ${IS_TABLET ? '75%' : '100%'};
   max-width: 520px;
 `
 

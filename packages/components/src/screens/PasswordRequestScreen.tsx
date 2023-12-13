@@ -13,7 +13,7 @@ import { KeyboardAwareAvoidance } from '../components/common/KeyboardAwareAvoida
 import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
 import { StyleSheet } from 'react-native'
-import { isTablet } from 'react-native-device-info'
+import { IS_TABLET } from '../config/tablet'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
@@ -133,7 +133,7 @@ const LowerContent = styled.View`
 const Container = styled.View`
   justify-content: center;
   align-items: center;
-  width: ${isTablet() ? 75 : 100}%;
+  width: ${IS_TABLET ? 75 : 100}%;
   max-width: 520px;
   shadow-color: #efefef;
   shadow-offset: 0px 2px;
@@ -160,7 +160,7 @@ const Row = styled.View`
 `
 
 const Column = styled.View`
-  width: ${isTablet() ? 75 : 100}%;
+  width: ${IS_TABLET ? 75 : 100}%;
   max-width: 520px;
   margin-top: 10px;
   align-items: flex-end;

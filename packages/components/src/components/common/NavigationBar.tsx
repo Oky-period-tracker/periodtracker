@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
-import { isTablet } from 'react-native-device-info'
 import { Platform } from 'react-native'
+import { IS_TABLET } from '../../config/tablet'
 
 export const NavigationBar = ({ focused, name }) => {
   const { screenWidth } = useScreenDimensions()
@@ -29,8 +29,8 @@ export const NavigationBar = ({ focused, name }) => {
 const Column = styled.View`
   justify-content: center;
   align-items: center;
-  height: ${isTablet() ? '80' : '56'}px;
-  margin-bottom: ${isTablet() && Platform.OS === 'ios' ? '0' : '5'}px;
+  height: ${IS_TABLET ? '80' : '56'}px;
+  margin-bottom: ${IS_TABLET && Platform.OS === 'ios' ? '0' : '5'}px;
   border-left-width: 0.5px;
   border-right-width: 0.5px;
   border-color: #e1e2e2;

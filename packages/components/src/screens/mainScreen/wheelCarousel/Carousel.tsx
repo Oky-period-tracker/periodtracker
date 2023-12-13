@@ -143,8 +143,8 @@ export function Carousel({
                   : setDisplayTextStatic('carousel_no_access')
               }}
               style={{
-                height: IS_TABLET ? 0.3 * screenHeight : 100,
-                width: IS_TABLET ? cardWidth * 1.4 : cardWidth * 1.2,
+                height: '100%',
+                width: '100%',
                 borderRadius: 10,
                 bottom: -10,
                 left: 15,

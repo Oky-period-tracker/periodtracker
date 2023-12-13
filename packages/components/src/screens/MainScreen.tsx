@@ -64,7 +64,7 @@ const MainScreenActual = React.memo(() => {
   const [isFlowerModalVisible, setFlowerModalVisible] = React.useState(false)
 
   const orientation = useOrientation()
-  const wheelSectionWidth = IS_TABLET ? (orientation === 'landscape' ? '35%' : '40%') : '65%'
+  const wheelSectionWidth = IS_TABLET ? (orientation === 'LANDSCAPE' ? '35%' : '40%') : '65%'
 
   return (
     <BackgroundTheme>

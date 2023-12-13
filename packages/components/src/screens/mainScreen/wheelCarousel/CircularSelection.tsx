@@ -30,7 +30,7 @@ export function CircularSelection({
   const { screenWidth, screenHeight } = useScreenDimensions()
   const orientation = useOrientation()
   let heightPercentage = 0.6
-  if (orientation === 'landscape' && IS_TABLET) {
+  if (orientation === 'LANDSCAPE' && IS_TABLET) {
     heightPercentage = 0.45
   }
   const height = screenHeight * heightPercentage

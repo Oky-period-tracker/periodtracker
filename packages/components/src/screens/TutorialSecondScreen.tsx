@@ -400,6 +400,8 @@ export function TutorialSecondScreen({ navigation }) {
       <Container>
         <TopSeparator />
         <MiddleSection>
+          <Overlay />
+
           <AvatarSection {...{ step }}>
             {step !== 6 ? (
               <CircleProgress
@@ -430,7 +432,6 @@ export function TutorialSecondScreen({ navigation }) {
             ) : null}
 
             <Avatar style={{ position: 'absolute', top: 90, zIndex: 0, elevation: 0 }} />
-            <Overlay />
           </AvatarSection>
           <WheelSection {...{ step }} style={{ width: wheelSectionWidth }}>
             <CircularSelection
@@ -444,7 +445,6 @@ export function TutorialSecondScreen({ navigation }) {
               }}
             />
             <CenterCard style={{ elevation: 0 }} />
-            <Overlay />
           </WheelSection>
         </MiddleSection>
         <CarouselSection {...{ step }}>

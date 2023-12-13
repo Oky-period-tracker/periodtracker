@@ -26,7 +26,7 @@ import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import { FlowerButton, FlowerModal } from '../optional/Flower'
-import { isTablet } from 'react-native-device-info'
+import { IS_TABLET } from '../config/tablet'
 import { useOrientation } from '../hooks/useOrientation'
 
 export function MainScreen({ navigation }) {
@@ -75,7 +75,7 @@ const MainScreenActual = React.memo(() => {
   const [isFlowerModalVisible, setFlowerModalVisible] = React.useState(false)
 
   const orientation = useOrientation()
-  const wheelSectionWidth = isTablet() ? (orientation === 'landscape' ? '35%' : '40%') : '65%'
+  const wheelSectionWidth = IS_TABLET ? (orientation === 'landscape' ? '35%' : '40%') : '65%'
 
   return (
     <BackgroundTheme>
@@ -154,7 +154,7 @@ const WheelSection = styled.View`
 
 const CarouselSection = styled.View`
   height: 30%;
-  padding-bottom: ${isTablet() ? 40 : 20}px;
+  padding-bottom: ${IS_TABLET ? 40 : 20}px;
   width: 100%;
   align-items: center;
   justify-content: center;

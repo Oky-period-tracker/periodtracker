@@ -1,9 +1,9 @@
 import React from 'react'
 import { TouchableOpacity, Image, StyleSheet } from 'react-native'
 import { assets } from '../../../assets/index'
-import { isTablet } from 'react-native-device-info'
+import { IS_TABLET } from '../../../config/tablet'
 
-const defaultSize = isTablet() ? 32 : 20
+const defaultSize = IS_TABLET ? 32 : 20
 
 export const IconButton = ({
   name,

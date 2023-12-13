@@ -276,6 +276,7 @@ export function TutorialFirstScreen() {
       <Container>
         <TopSeparator style={{ height: DeviceInfo.hasNotch() ? screenHeight * 0.13 : '10%' }} />
         <MiddleSection>
+          {step !== 1 && step !== 3 && <Overlay />}
           <AvatarSection {...{ step }}>
             <CircleProgress
               onPress={() => null}
@@ -296,7 +297,7 @@ export function TutorialFirstScreen() {
                 zIndex: step === 0 ? 999 : 0,
               }}
             />
-            <Overlay />
+            {(step === 1 || step === 3) && <Overlay />}
           </AvatarSection>
           <WheelSection {...{ step }} style={{ width: wheelSectionWidth }}>
             <CircularSelection
@@ -310,7 +311,7 @@ export function TutorialFirstScreen() {
               }}
             />
             <CenterCard style={{ elevation: 0 }} />
-            {step !== 1 && step !== 3 && <Overlay />}
+            {/* {step !== 1 && step !== 3 && <Overlay />} */}
           </WheelSection>
         </MiddleSection>
         <CarouselSection {...{ step }}>

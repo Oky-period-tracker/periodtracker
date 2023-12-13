@@ -1,7 +1,7 @@
 import React from 'react'
 import { Dimensions } from 'react-native'
 
-type Orientation = 'portrait' | 'landscape'
+type Orientation = 'PORTRAIT' | 'LANDSCAPE'
 
 /**
  * Detects the orientation of the device, causes re-render on orientation change
@@ -11,7 +11,7 @@ export const useOrientation = () => {
 
   React.useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window: { width, height } }) => {
-      const currentOrientation = width < height ? 'portrait' : 'landscape'
+      const currentOrientation = width < height ? 'PORTRAIT' : 'LANDSCAPE'
       if (orientation !== currentOrientation) {
         setOrientation(currentOrientation)
       }
@@ -25,5 +25,5 @@ export const useOrientation = () => {
 
 function getOrientation(): Orientation {
   const { width, height } = Dimensions.get('window')
-  return width < height ? 'portrait' : 'landscape'
+  return width < height ? 'PORTRAIT' : 'LANDSCAPE'
 }

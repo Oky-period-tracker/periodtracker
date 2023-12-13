@@ -276,7 +276,6 @@ export function TutorialFirstScreen() {
       <Container>
         <TopSeparator style={{ height: DeviceInfo.hasNotch() ? screenHeight * 0.13 : '10%' }} />
         <MiddleSection>
-          {step !== 1 && step !== 3 && <Overlay />}
           <AvatarSection {...{ step }}>
             <CircleProgress
               onPress={() => null}
@@ -297,7 +296,7 @@ export function TutorialFirstScreen() {
                 zIndex: step === 0 ? 999 : 0,
               }}
             />
-            {(step === 1 || step === 3) && <Overlay />}
+            <Overlay />
           </AvatarSection>
           <WheelSection {...{ step }} style={{ width: wheelSectionWidth }}>
             <CircularSelection
@@ -310,7 +309,10 @@ export function TutorialFirstScreen() {
                 disableInteraction: true,
               }}
             />
-            <CenterCard style={{ elevation: 0 }} />
+            <CenterCard
+              style={step === 2 ? { elevation: 20, zIndex: 999 } : { elevation: -20, zIndex: 0 }}
+            />
+            {step !== 1 && step !== 3 && <Overlay />}
           </WheelSection>
         </MiddleSection>
         <CarouselSection {...{ step }}>
@@ -416,7 +418,7 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
-  justify-content: space-between;
+  z-index: 9;
 `
 const AvatarSection = styled.View<{ step: number }>`
   height: 100%;
@@ -426,6 +428,7 @@ const AvatarSection = styled.View<{ step: number }>`
 `
 const WheelSection = styled.View<{ step: number }>`
   height: 100%;
+  width: 65%;
   align-items: center;
   elevation: 0;
   z-index: ${(props) => (props.step === 1 || props.step === 3 ? 999999 : 0)};

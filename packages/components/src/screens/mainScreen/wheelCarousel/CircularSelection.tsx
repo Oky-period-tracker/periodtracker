@@ -13,11 +13,11 @@ import { useCheckDayWarning } from '../../../hooks/usePredictionWarnings'
 import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
-import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
-import { useOrientation } from '../../../hooks/useOrientation'
 import { IS_TABLET } from '../../../config/tablet'
+import { useOrientation } from '../../../hooks/useOrientation'
+import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 
-const widthPercentage = IS_TABLET ? 0.4 : 0.65
+const { interpolate } = Animated
 
 export function CircularSelection({
   data,
@@ -29,13 +29,13 @@ export function CircularSelection({
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
   const orientation = useOrientation()
-  let heightPercentage = 0.6
-  if (orientation === 'LANDSCAPE' && IS_TABLET) {
-    heightPercentage = 0.45
-  }
-  const height = screenHeight * heightPercentage
-  const width = screenWidth * widthPercentage
-  const { interpolate } = Animated
+
+  const heightMultiplier = IS_TABLET && orientation === 'PORTRAIT' ? 0.6 : 0.55
+
+  const height = screenHeight * heightMultiplier
+
+  const width = IS_TABLET ? 0.6 * screenWidth : 0.65 * screenWidth
+
   const D = height / 1.6
   const innerR = D / 2
 

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Image, Dimensions } from 'react-native'
+import { View, Image } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { approximates, runSpring } from 'react-native-redash'
 import { DayBadge } from '../../../components/common/DayBadge'
@@ -52,6 +52,7 @@ export function CarouselElement({
   )
 
   const [isVisible, setIsVisible] = React.useState(false)
+  // TODO_ALEX redundant useState
   const [loading, setLoading] = React.useState(false)
 
   useCode(

@@ -49,8 +49,7 @@ export function TutorialSecondScreen({ navigation }) {
   const [completedStep, setCompletedStep] = React.useState(0)
   const flag = React.useRef(false)
   const dispatch = useDispatch()
-  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useSelector
+
   const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
 
   const normalizePosition = (percentage, dimension) => {
@@ -373,13 +372,6 @@ export function TutorialSecondScreen({ navigation }) {
 
   // const lastTutorialStep = _.size(stepInfo) - 1 // TODO:
 
-  const getCardAnswersValues = (inputDay) => {
-    const cardData = renamedUseSelector((state) =>
-      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
-    )
-    return cardData
-  }
-
   const skip = () => {
     dispatch(actions.setTutorialTwoActive(false))
     setLoading(true)
@@ -437,7 +429,6 @@ export function TutorialSecondScreen({ navigation }) {
                 absoluteIndex,
                 disableInteraction: true,
               }}
-              fetchCardValues={getCardAnswersValues}
             />
             <CenterCard style={{ elevation: 0 }} />
             <Overlay />

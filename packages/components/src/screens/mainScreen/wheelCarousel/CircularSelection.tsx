@@ -15,8 +15,6 @@ import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
 import { ReduxState } from '../../../redux/store'
 
-const reduxState = (state: ReduxState) => state
-
 const { interpolate } = Animated
 const height = 0.55 * Dimensions.get('window').height
 const width = 0.65 * Dimensions.get('window').width
@@ -30,7 +28,6 @@ export function CircularSelection({
   currentIndex,
   absoluteIndex,
   disableInteraction = false,
-  fetchCardValues,
 }) {
   const [isVisible, setIsVisible] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
@@ -56,6 +53,17 @@ export function CircularSelection({
     requestAnimationFrame(() => {
       navigateAndReset('TutorialFirstStack', null)
     })
+  }
+
+  const reduxState = useSelector((state) => state)
+
+  const getCardAnswersValues = (inputDay: any) => {
+    const verifiedPeriodDaysData = selectors.verifyPeriodDaySelectorWithDate(
+      reduxState,
+      moment(inputDay.date),
+    )
+
+    return verifiedPeriodDaysData
   }
 
   return (
@@ -100,7 +108,7 @@ export function CircularSelection({
                   segment={segment}
                   radius={r}
                   currentIndex={key}
-                  cardValues={fetchCardValues(dataEntry)}
+                  cardValues={getCardAnswersValues(dataEntry)}
                   state={reduxState}
                   {...{ isActive, index, dataEntry }}
                 />

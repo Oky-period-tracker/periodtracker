@@ -60,15 +60,9 @@ const MainScreenContainer = ({ navigation }) => {
 
 const MainScreenActual = React.memo(() => {
   const { data, index, isActive, currentIndex, absoluteIndex } = useInfiniteScroll()
-  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useSelector
-  const allCardsData = renamedUseSelector((state) => selectors.allCardAnswersSelector(state))
-  const getCardAnswersValues = (inputDay: any) => {
-    const verifiedPeriodDaysData = renamedUseSelector((state) =>
-      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
-    )
-    return verifiedPeriodDaysData
-  }
+
+  const allCardsData = useSelector((state) => selectors.allCardAnswersSelector(state))
+
   const { onFertile, onPeriod } = useTodayPrediction()
   const [isFlowerModalVisible, setFlowerModalVisible] = React.useState(false)
 
@@ -103,10 +97,7 @@ const MainScreenActual = React.memo(() => {
           <Avatar style={{ position: 'absolute', top: Platform.OS === 'ios' ? 120 : 90 }} />
         </AvatarSection>
         <WheelSection>
-          <CircularSelection
-            {...{ data, index, isActive, currentIndex, absoluteIndex }}
-            fetchCardValues={getCardAnswersValues}
-          />
+          <CircularSelection {...{ data, index, isActive, currentIndex, absoluteIndex }} />
           <CenterCard />
         </WheelSection>
       </MiddleSection>

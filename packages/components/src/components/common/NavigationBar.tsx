@@ -2,10 +2,17 @@ import React from 'react'
 import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
+import { AppAssets } from '@oky/core'
 
 const deviceWidth = Dimensions.get('window').width
 
-export const NavigationBar = ({ focused, name }) => {
+export const NavigationBar = ({
+  focused,
+  name,
+}: {
+  focused: boolean
+  name: keyof AppAssets['static']['icons']['tabs']
+}) => {
   return (
     <Column
       style={{

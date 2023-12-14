@@ -123,7 +123,6 @@ export function ProfileScreen({ navigation }) {
                           setIsModalVisible(true)
                         }}
                         touchableStyle={{ paddingLeft: 40 }}
-                        source={assets.static.icons.infoPink}
                       />
                       <Text
                         style={{

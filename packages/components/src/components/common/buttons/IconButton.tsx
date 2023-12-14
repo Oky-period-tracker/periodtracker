@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, Image, ImageProps, TouchableOpacityProps, StyleProp } from 'react-native'
+import { TouchableOpacity, Image, ImageProps, TouchableOpacityProps } from 'react-native'
 import { assets } from '../../../assets'
 
 type Props = Omit<ImageProps, 'source'> & {
@@ -7,7 +7,7 @@ type Props = Omit<ImageProps, 'source'> & {
   onPress: () => void
   width?: number
   height?: number
-  touchableStyle?: StyleProp<TouchableOpacityProps>
+  touchableStyle?: TouchableOpacityProps['style']
   disabled?: boolean
 }
 

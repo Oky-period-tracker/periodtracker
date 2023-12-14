@@ -1,8 +1,16 @@
 import React from 'react'
 import { Image, View } from 'react-native'
-import { assets } from '../../assets/index'
+import { getAsset } from '../../services/asset'
+import { AvatarName } from '@oky/core'
+import { assets } from '../../assets'
 
-export function AvatarSelectItem({ avatarName, type = 'theme' }) {
+export function AvatarSelectItem({
+  avatarName,
+  type = 'theme',
+}: {
+  avatarName: AvatarName
+  type?: keyof typeof assets.avatars[AvatarName]
+}) {
   return (
     <View
       style={{
@@ -15,7 +23,6 @@ export function AvatarSelectItem({ avatarName, type = 'theme' }) {
       }}
     >
       <Image
-        source={assets.avatars[avatarName][type]}
         style={{
           width: '100%',
           height: '100%',
@@ -23,6 +30,7 @@ export function AvatarSelectItem({ avatarName, type = 'theme' }) {
           aspectRatio: 1,
           resizeMode: 'contain',
         }}
+        source={getAsset(`avatars.${avatarName}.${type}`)}
       />
     </View>
   )

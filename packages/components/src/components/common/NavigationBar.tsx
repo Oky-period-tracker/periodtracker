@@ -4,8 +4,15 @@ import { assets } from '../../assets/index'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 import { Platform } from 'react-native'
 import { IS_TABLET } from '../../config/tablet'
+import { AppAssets } from '@oky/core'
 
-export const NavigationBar = ({ focused, name }) => {
+export const NavigationBar = ({
+  focused,
+  name,
+}: {
+  focused: boolean
+  name: keyof AppAssets['static']['icons']['tabs']
+}) => {
   const { screenWidth } = useScreenDimensions()
 
   return (

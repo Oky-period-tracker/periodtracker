@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components/native'
 import { useTheme } from '../../components/context/ThemeContext'
 import { Text } from '../../components/common/Text'
@@ -75,9 +75,7 @@ export function ColourButtons({
   const fullState = useFullState()
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
-
-  // TODO_ALEX this useState is redundant
-  const [futurePredictionStatus, setFuturePredictionStatus] = useState(false)
+  const futurePredictionStatus = hasFuturePredictionActive?.futurePredictionStatus
 
   React.useEffect(() => {
     if (moment(inputDay).diff(moment(currentCycleInfo.cycleStart), 'days') < 0) {
@@ -85,9 +83,6 @@ export function ColourButtons({
     }
   }, [addNewCycleHistory])
 
-  React.useEffect(() => {
-    setFuturePredictionStatus(hasFuturePredictionActive?.futurePredictionStatus)
-  }, [])
   const minimizeToTutorial = () => {
     hide()
     setTimeout(

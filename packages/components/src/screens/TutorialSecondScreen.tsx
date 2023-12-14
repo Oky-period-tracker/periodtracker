@@ -137,13 +137,14 @@ export function TutorialSecondScreen({ navigation }) {
         position: { x: 0, y: normalizePosition(0.12, screenHeight) },
       },
     },
+    // This is used to animated out after the last step
     '6': {
       text: `dummy`,
       heading: `dummy`,
       animationPositionEnd: { x: -screenWidth, y: normalizePosition(0.12, screenHeight), z: 180 },
       demonstrationComponent: {
         isAvailable: true,
-        position: { x: -500, y: normalizePosition(0.15, screenHeight) },
+        position: { x: -1500, y: normalizePosition(0.15, screenHeight) },
       },
     },
     '7': {

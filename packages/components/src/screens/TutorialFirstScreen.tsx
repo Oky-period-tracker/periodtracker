@@ -52,15 +52,6 @@ export function TutorialFirstScreen() {
   const normalizePosition = (percentage, dimension) => {
     return percentage * dimension - arrowSize / 2
   }
-  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useSelector
-
-  const getCardAnswersValues = (inputDay) => {
-    const cardData = renamedUseSelector((state) =>
-      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
-    )
-    return cardData
-  }
 
   const cloudSize = 85
   const cloudMargin = 10
@@ -329,7 +320,6 @@ export function TutorialFirstScreen() {
                 absoluteIndex,
                 disableInteraction: true,
               }}
-              fetchCardValues={getCardAnswersValues}
             />
             <CenterCard
               style={step === 2 ? { elevation: 20, zIndex: 999 } : { elevation: -20, zIndex: 0 }}

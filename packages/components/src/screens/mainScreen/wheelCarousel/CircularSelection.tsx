@@ -18,8 +18,6 @@ import { IS_TABLET } from '../../../config/tablet'
 import { useOrientation } from '../../../hooks/useOrientation'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 
-const reduxState = (state: ReduxState) => state
-
 const { interpolate } = Animated
 
 export function CircularSelection({
@@ -29,7 +27,6 @@ export function CircularSelection({
   currentIndex,
   absoluteIndex,
   disableInteraction = false,
-  fetchCardValues,
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
   const orientation = useOrientation()
@@ -68,6 +65,17 @@ export function CircularSelection({
     requestAnimationFrame(() => {
       navigateAndReset('TutorialFirstStack', null)
     })
+  }
+
+  const reduxState = useSelector((state) => state)
+
+  const getCardAnswersValues = (inputDay: any) => {
+    const verifiedPeriodDaysData = selectors.verifyPeriodDaySelectorWithDate(
+      reduxState,
+      moment(inputDay.date),
+    )
+
+    return verifiedPeriodDaysData
   }
 
   return (
@@ -112,7 +120,7 @@ export function CircularSelection({
                   segment={segment}
                   radius={r}
                   currentIndex={key}
-                  cardValues={fetchCardValues(dataEntry)}
+                  cardValues={getCardAnswersValues(dataEntry)}
                   state={reduxState}
                   {...{ isActive, index, dataEntry }}
                 />

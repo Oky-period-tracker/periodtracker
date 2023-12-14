@@ -1,5 +1,3 @@
-import { ImageSourcePropType } from 'react-native'
-import { AnimatedLottieViewProps } from 'lottie-react-native'
 import { assets } from '../assets'
 
 /**

@@ -37,7 +37,6 @@ export function DayCarousel({ navigation, dataEntry }) {
     // ...((!_.isEmpty(unansweredSurveys) || answeredSurvey) && { survey: null }),
     ...(dataEntry.date.day() % 2 === 0 && !dataEntry.onPeriod && { quiz: null }), // this is to change the order of cards based on the day (it alternates between days and when on periods the quiz cards should go to the end)
     ...(dataEntry.date.day() % 2 !== 0 && !dataEntry.onPeriod && { didYouKnow: null }),
-    // TODO_ALEX: move into submodule?
     mood: {
       happy: '😊',
       blah: '😑',

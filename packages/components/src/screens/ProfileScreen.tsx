@@ -119,7 +119,6 @@ export function ProfileScreen({ navigation }) {
                           setIsModalVisible(true)
                         }}
                         touchableStyle={styles.infoButton}
-                        source={assets.static.icons.infoPink}
                       />
                       <Text style={styles.guestText}>guest_mode_user_alert</Text>
                     </Column>

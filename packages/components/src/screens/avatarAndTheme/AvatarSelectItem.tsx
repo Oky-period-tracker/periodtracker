@@ -15,7 +15,8 @@ export function AvatarSelectItem({
     <View
       style={{
         width: '90%',
-        aspectRatio: 1,
+        height: '90%',
+        margin: 4,
         backgroundColor: 'white',
         borderRadius: 10,
         overflow: 'hidden',
@@ -24,7 +25,13 @@ export function AvatarSelectItem({
       <Image
         source={getAsset(`avatars.${avatarName}.${type}`)}
         resizeMode="contain"
-        style={{ width: '70%', alignSelf: 'center', aspectRatio: 1 }}
+        style={{
+          width: '100%',
+          height: '100%',
+          alignSelf: 'center',
+          aspectRatio: 1,
+          resizeMode: 'contain',
+        }}
       />
     </View>
   )

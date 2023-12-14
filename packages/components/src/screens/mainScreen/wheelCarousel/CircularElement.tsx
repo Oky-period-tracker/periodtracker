@@ -14,6 +14,7 @@ import {
   useActualCurrentStartDateSelector,
 } from '../../../components/context/PredictionProvider'
 import _ from 'lodash'
+import { getAsset } from '../../../services/asset'
 
 const {
   Value,
@@ -62,15 +63,15 @@ function useStatusForSource(
       }
     }
     if (isFutureDate) {
-      return assets.static.icons[themeIcon].nonPeriod
+      return getAsset(`static.icons.${themeIcon}.nonPeriod`)
     }
   }
 
-  if (data.onPeriod && isVerified) return assets.static.icons[themeIcon].period
-  if (data.onPeriod && !isVerified) return assets.static.icons[themeIcon].notVerifiedDay
-  if (data.onFertile) return assets.static.icons[themeIcon].fertile
+  if (data.onPeriod && isVerified) return getAsset(`static.icons.${themeIcon}.period`)
+  if (data.onPeriod && !isVerified) return getAsset(`static.icons.${themeIcon}.notVerifiedDay`)
+  if (data.onFertile) return getAsset(`static.icons.${themeIcon}.fertile`)
 
-  return assets.static.icons[themeIcon].nonPeriod
+  return getAsset(`static.icons.${themeIcon}.nonPeriod`)
 }
 
 function switcher(value) {

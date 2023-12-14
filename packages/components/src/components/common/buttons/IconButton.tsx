@@ -1,6 +1,15 @@
 import React from 'react'
-import { TouchableOpacity, Image } from 'react-native'
-import { assets } from '../../../assets/index'
+import { TouchableOpacity, Image, ImageProps, TouchableOpacityProps, StyleProp } from 'react-native'
+import { assets } from '../../../assets'
+
+type Props = Omit<ImageProps, 'source'> & {
+  name: string
+  onPress: () => void
+  width?: number
+  height?: number
+  touchableStyle?: StyleProp<TouchableOpacityProps>
+  disabled?: boolean
+}
 
 export const IconButton = ({
   name,
@@ -10,7 +19,7 @@ export const IconButton = ({
   touchableStyle = null,
   disabled = false,
   ...props
-}) => {
+}: Props) => {
   return (
     <TouchableOpacity
       disabled={disabled}

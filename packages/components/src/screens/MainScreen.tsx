@@ -12,11 +12,7 @@ import { navigate } from '../services/navigationService'
 import { useInfiniteScroll } from './mainScreen/wheelCarousel/useInfiniteScroll'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { mainScreenSpeech } from '../config'
-import {
-  useTodayPrediction,
-  useHistoryPrediction,
-  useFullState,
-} from '../components/context/PredictionProvider'
+import { useTodayPrediction, useHistoryPrediction } from '../components/context/PredictionProvider'
 import { useRandomText } from '../hooks/useRandomText'
 import { InformationButton } from '../components/common/InformationButton'
 import { assets } from '../assets'
@@ -45,7 +41,6 @@ const MainScreenContainer = ({ navigation }) => {
   const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
   const userID = useSelector(selectors.currentUserSelector).id
-  const fullState = useFullState()
   const history = useHistoryPrediction()
   const currentUser = useSelector(selectors.currentUserSelector)
 

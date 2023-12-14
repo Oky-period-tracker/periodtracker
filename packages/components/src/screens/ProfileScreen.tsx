@@ -187,7 +187,7 @@ export function ProfileScreen({ navigation }) {
                       isDisabled={true}
                       avatar={selectedAvatar}
                       isSelected={false}
-                      style={styles.flex}
+                      style={styles.avatarOption}
                     />
                   </Column>
                   <Column style={styles.start}>
@@ -341,7 +341,11 @@ const styles = StyleSheet.create({
   avatarColumn: {
     width: 70,
     height: 70,
-    overflow: 'hidden',
+  },
+  avatarOption: {
+    height: 70,
+    width: 70,
+    marginBottom: 0,
   },
   infoButton: {
     paddingLeft: 40,

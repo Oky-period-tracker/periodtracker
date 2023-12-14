@@ -106,11 +106,20 @@ export function TutorialFirstScreen() {
     '3': {
       text: `tutorial_2`,
       heading: `tutorial_2_content`,
-      animationPositionEnd: {
-        x: normalizePosition(0.4, screenWidth),
-        y: normalizePosition(0.52, screenHeight),
-        z: 90,
-      },
+      animationPositionEnd: IS_TABLET
+        ? {
+            x: normalizePosition(0.4, screenWidth),
+            y: normalizePosition(
+              Platform.OS === 'ios' ? (DeviceInfo.hasNotch() ? 0.4 : 0.37) : 0.33,
+              screenHeight,
+            ),
+            z: 0,
+          }
+        : {
+            x: normalizePosition(0.4, screenWidth),
+            y: normalizePosition(0.52, screenHeight),
+            z: 90,
+          },
       demonstrationComponent: { isAvailable: false },
     },
     '4': {
@@ -307,6 +316,9 @@ export function TutorialFirstScreen() {
             />
             <Overlay />
           </AvatarSection>
+
+          <MiddleOverlay />
+
           <WheelSection {...{ step }} style={{ width: wheelSectionWidth }}>
             <CircularSelection
               {...{
@@ -428,14 +440,17 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
+  justify-content: space-between;
   z-index: 9;
 `
+
 const AvatarSection = styled.View<{ step: number }>`
   height: 100%;
   width: 35%;
   justify-content: flex-start;
   z-index: 999;
 `
+
 const WheelSection = styled.View<{ step: number }>`
   height: 100%;
   width: 65%;
@@ -462,6 +477,14 @@ const Overlay = styled.View`
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.8);
   position: absolute;
+`
+
+const MiddleOverlay = styled.View`
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.8);
 `
 
 const TouchableContinueOverlay = styled.TouchableOpacity`

@@ -64,7 +64,6 @@ export class RenderController {
   async renderAnalytics(request: Request, response: Response, next: NextFunction) {
     const dateFrom = (request.query.dateFrom || '1970-01-01') as string
     const dateTo = (request.query.dateTo || '9999-12-31') as string
-    const dates = [dateFrom, dateTo]
     const gender = request.query.gender || null
     const location = request.query.location || null
 
@@ -129,7 +128,8 @@ export class RenderController {
       unique_device_count: uniqueDeviceNonLoggedInEncyclopediaViews,
     } = (
       await entityManager.query(analyticsQueries.countNonLoggedInScreenViews, [
-        ...dates,
+        dateFrom,
+        dateTo,
         'Encyclopedia',
       ])
     )[0]
@@ -242,6 +242,8 @@ export class RenderController {
       }
     })
 
+    const encyclopediaUsage = [...categoryUsage, ...subCategoryUsage]
+
     const predictionUsage: Usage[] = [
       {
         feature: 'Prediction setting',
@@ -267,15 +269,6 @@ export class RenderController {
         ),
         viewsPercentage: '-',
       },
-    ]
-
-    console.log('***', { countAvatars, countThemes })
-
-    const usage: Usage[] = [
-      ...screenUsage,
-      ...predictionUsage,
-      ...categoryUsage,
-      ...subCategoryUsage,
     ]
 
     const usersCountries = preProcessedCountryList.reduce((acc, item) => {
@@ -312,7 +305,9 @@ export class RenderController {
         usersProvinces,
         usersShares,
         directDownloads,
-        usage,
+        screenUsage,
+        predictionUsage,
+        encyclopediaUsage,
         countAvatars,
         countThemes,
         countLocales,
@@ -330,7 +325,9 @@ export class RenderController {
       usersProvinces,
       usersShares,
       directDownloads,
-      usage,
+      screenUsage,
+      predictionUsage,
+      encyclopediaUsage,
       countAvatars,
       countThemes,
       countLocales,

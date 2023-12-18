@@ -62,8 +62,8 @@ export class RenderController {
   }
 
   async renderAnalytics(request: Request, response: Response, next: NextFunction) {
-    const dateFrom = (request.query.dateFrom || '1970-01-01') as string
-    const dateTo = (request.query.dateTo || '9999-12-31') as string
+    const dateFrom = request.query.dateFrom || null
+    const dateTo = request.query.dateTo || null
     const gender = request.query.gender || null
     const location = request.query.location || null
 

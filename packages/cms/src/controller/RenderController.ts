@@ -174,45 +174,53 @@ export class RenderController {
       definition: string
       uniqueUsers: number
       views: number
-      loggedOutViews: number | string
+      loggedOutViews?: number | string
+      activeUsersPercentage: number | string
       uniqueUsersPercentage: number | string
-      viewsPercentage: number | string
+      viewsPercentage?: number | string
     }
 
     const screenUsage: Usage[] = [
       {
         feature: 'Main screen',
-        definition: 'Users landing on the main screen',
+        definition: 'Screen viewed',
         uniqueUsers: uniqueUserMainScreenViews,
         views: totalMainScreenViews,
         loggedOutViews: '-', // Inaccessible to logged out users
+        activeUsersPercentage: calculatePercentage(uniqueUserMainScreenViews, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(uniqueUserMainScreenViews, totalUsers),
         viewsPercentage: calculatePercentage(totalMainScreenViews, totalScreenViews),
       },
       {
         feature: 'Profile screen',
-        definition: 'Users landing on the profile screen',
+        definition: 'Screen viewed',
         uniqueUsers: uniqueUserProfileScreenViews,
         views: totalProfileScreenViews,
         loggedOutViews: '-', // Inaccessible to logged out users
+        activeUsersPercentage: calculatePercentage(uniqueUserProfileScreenViews, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(uniqueUserProfileScreenViews, totalUsers),
         viewsPercentage: calculatePercentage(totalProfileScreenViews, totalScreenViews),
       },
       {
         feature: 'Encyclopedia screen',
-        definition: 'Users landing on the Encyclopedia screen',
+        definition: 'Screen viewed',
         uniqueUsers: uniqueUserEncyclopediaScreenViews,
         views: totalEncyclopediaScreenViews,
         loggedOutViews: nonLoggedInEncyclopediaViews,
+        activeUsersPercentage: calculatePercentage(
+          uniqueUserEncyclopediaScreenViews,
+          totalActiveUsers,
+        ),
         uniqueUsersPercentage: calculatePercentage(uniqueUserEncyclopediaScreenViews, totalUsers),
         viewsPercentage: calculatePercentage(totalEncyclopediaScreenViews, totalScreenViews),
       },
       {
         feature: 'Calendar screen',
-        definition: 'Users landing on the calendar screen',
+        definition: 'Screen viewed',
         uniqueUsers: uniqueUserCalendarScreenViews,
         views: totalCalendarScreenViews,
         loggedOutViews: '-', // Inaccessible to logged out users
+        activeUsersPercentage: calculatePercentage(uniqueUserCalendarScreenViews, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(uniqueUserCalendarScreenViews, totalUsers),
         viewsPercentage: calculatePercentage(totalCalendarScreenViews, totalScreenViews),
       },
@@ -225,6 +233,7 @@ export class RenderController {
         uniqueUsers: category.unique_user_count,
         views: category.total_view_count,
         loggedOutViews: category.logged_out_view_count,
+        activeUsersPercentage: calculatePercentage(category.unique_user_count, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(category.unique_user_count, totalUsers),
         viewsPercentage: calculatePercentage(category.total_view_count, totalCategoryViews),
       }
@@ -237,6 +246,7 @@ export class RenderController {
         uniqueUsers: subCategory.unique_user_count,
         views: subCategory.total_view_count,
         loggedOutViews: subCategory.logged_out_view_count,
+        activeUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalUsers),
         viewsPercentage: calculatePercentage(subCategory.total_view_count, totalSubCategoryViews),
       }
@@ -251,33 +261,36 @@ export class RenderController {
           'Users who have used the daily card at least once. When they click any emoji on the card, it counts as a view. Clicking on multiple emojis and cards within 24 hours still only counts as one view.',
         uniqueUsers: countUniqueUserDailyCardUsage,
         views: countDailyCardUsage,
-        loggedOutViews: '-', // Inaccessible to logged out users
+        activeUsersPercentage: calculatePercentage(countUniqueUserDailyCardUsage, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(countUniqueUserDailyCardUsage, totalUsers),
-        viewsPercentage: '-',
       },
       {
         feature: 'Prediction setting',
         definition: 'Future prediction switched ON',
         uniqueUsers: predictionSettings.unique_user_switched_on,
         views: predictionSettings.switched_on,
-        loggedOutViews: '-',
+        activeUsersPercentage: calculatePercentage(
+          predictionSettings.unique_user_switched_on,
+          totalActiveUsers,
+        ),
         uniqueUsersPercentage: calculatePercentage(
           predictionSettings.unique_user_switched_on,
           totalUsers,
         ),
-        viewsPercentage: '-',
       },
       {
         feature: 'Prediction setting',
         definition: 'Future prediction switched OFF',
         uniqueUsers: predictionSettings.unique_user_switched_off,
         views: predictionSettings.switched_off,
-        loggedOutViews: '-',
+        activeUsersPercentage: calculatePercentage(
+          predictionSettings.unique_user_switched_off,
+          totalActiveUsers,
+        ),
         uniqueUsersPercentage: calculatePercentage(
           predictionSettings.unique_user_switched_off,
           totalUsers,
         ),
-        viewsPercentage: '-',
       },
     ]
 

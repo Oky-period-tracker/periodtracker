@@ -229,7 +229,7 @@ export class RenderController {
     const categoryUsage: Usage[] = categoryViews.map((category) => {
       return {
         feature: category.category_name,
-        definition: 'Category viewed',
+        definition: 'Category',
         uniqueUsers: category.unique_user_count,
         views: category.total_view_count,
         loggedOutViews: category.logged_out_view_count,
@@ -241,8 +241,8 @@ export class RenderController {
 
     const subCategoryUsage: Usage[] = subCategoryViews.map((subCategory) => {
       return {
-        feature: subCategory.category_name,
-        definition: 'Subcategory viewed',
+        feature: subCategory.subcategory_name,
+        definition: 'Subcategory',
         uniqueUsers: subCategory.unique_user_count,
         views: subCategory.total_view_count,
         loggedOutViews: subCategory.logged_out_view_count,

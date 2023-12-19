@@ -160,7 +160,8 @@
               <th>Number of unique users</th>
               <th>Number of views</th>
               <th>Number of views while logged out</th>
-              <th>% of total unique users</th>
+              <th>% of total active users</th>
+              <th>% of total users</th>
               <th>% of total views</th>
             </tr>
           </thead>
@@ -171,6 +172,7 @@
               <td class="center"><%= row.uniqueUsers %></td>
               <td class="center"><%= row.views %></td>
               <td class="center"><%= row.loggedOutViews %></td>
+              <td class="center"><%= row.activeUsersPercentage %></td>
               <td class="center"><%= row.uniqueUsersPercentage %></td>
               <td class="center"><%= row.viewsPercentage %></td>
             </tr>
@@ -186,7 +188,8 @@
               <th>Number of unique users</th>
               <th>Number of views</th>
               <th>Number of views while logged out</th>
-              <th>% of total unique users</th>
+              <th>% of total active users</th>
+              <th>% of total users</th>
               <th>% of total views</th>
             </tr>
           </thead>
@@ -197,6 +200,7 @@
               <td class="center"><%= row.uniqueUsers %></td>
               <td class="center"><%= row.views %></td>
               <td class="center"><%= row.loggedOutViews %></td>
+              <td class="center"><%= row.activeUsersPercentage %></td>
               <td class="center"><%= row.uniqueUsersPercentage %></td>
               <td class="center"><%= row.viewsPercentage %></td>
             </tr>
@@ -206,13 +210,13 @@
         <!-- PREDICTION -->
         <table class="table table-striped table-borderless tableFixHead table-responsive">
           <thead>
-            <tr>
+            <tr>          
               <th>Oky feature</th>
               <th>Definition</th>
               <th>Number of unique users</th>
               <th>Number of views</th>
-              <th>Number of views while logged out</th>
-              <th>% of total unique users</th>
+              <th>% of total active users</th>
+              <th>% of total users</th>
               <th>% of total views</th>
             </tr>
           </thead>
@@ -222,7 +226,7 @@
               <td><%= row.definition %></td>
               <td class="center"><%= row.uniqueUsers %></td>
               <td class="center"><%= row.views %></td>
-              <td class="center"><%= row.loggedOutViews %></td>
+              <td class="center"><%= row.activeUsersPercentage %></td>
               <td class="center"><%= row.uniqueUsersPercentage %></td>
               <td class="center"><%= row.viewsPercentage %></td>
             </tr>

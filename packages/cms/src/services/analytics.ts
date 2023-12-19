@@ -184,12 +184,12 @@ export const analyticsQueries = {
     COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
   FROM category c
-  LEFT JOIN
-    app_event
+  LEFT JOIN app_event
     ON app_event.type = 'CATEGORY_VIEWED' AND c.id = (app_event.payload->>'categoryId')::uuid
-  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
-  WHERE oky_user.gender = COALESCE($1, oky_user.gender)
-    AND oky_user.location = COALESCE($2, oky_user.location)
+  LEFT JOIN oky_user
+    ON app_event.user_id::uuid = oky_user.id
+  WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
+    AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
   GROUP BY c.id, c.title
   ;`,
@@ -202,12 +202,11 @@ export const analyticsQueries = {
     COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
   FROM subcategory s
-  LEFT JOIN
-    app_event
+  LEFT JOIN app_event
     ON app_event.type = 'SUBCATEGORY_VIEWED' AND s.id = (app_event.payload->>'subCategoryId')::uuid
-  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
-  WHERE oky_user.gender = COALESCE($1, oky_user.gender)
-    AND oky_user.location = COALESCE($2, oky_user.location)
+    LEFT JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+    WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
+    AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
   GROUP BY s.id, s.title
   ;`,

@@ -429,6 +429,10 @@ th {
   background: rgb(64, 135, 216);
   color: white;
 }
+tr.th-secondary th {
+  background: #67b7dc;
+  color: white;
+}
 .table-responsive::-webkit-scrollbar {
   -webkit-appearance: none;
 }
@@ -598,4 +602,12 @@ a.fill-div {
   height: calc(1.5em + 0.75rem + 2px);
   padding: 0.375rem 1.75rem 0.375rem 0.75rem;
   color: #495057;
+}
+
+.table-heading {
+  font-weight: 700;
+  font-size: 20px;
+  height: 15%;
+  font-family: 'Lato';
+  text-align: center;
 }

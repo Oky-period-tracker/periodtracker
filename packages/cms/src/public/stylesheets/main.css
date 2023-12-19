@@ -406,9 +406,9 @@ table p {
   font-size: 12px;
 }
 .tableFixHead {
-  height: 75vh;
+  max-height: 75vh;
 }
-.tableFixHead thead th {
+.tableFixHead thead {
   position: sticky;
   z-index: 20;
   top: 0;
@@ -610,4 +610,9 @@ a.fill-div {
   height: 15%;
   font-family: 'Lato';
   text-align: center;
+}
+
+p.description {
+  color: #000;
+  text-align: left;
 }

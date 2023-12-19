@@ -112,19 +112,19 @@ export function EncyclopediaScreen({ navigation }) {
                       }}
                     />
                   ) : null}
-                  {category.subCategories.map((subCategory) => (
+                  {category.subCategories.map((subCategoryId) => (
                     <SubCategoryCard
-                      key={subCategory}
+                      key={subCategoryId}
                       title={
                         (
-                          subCategories.find((item) => item?.id === subCategory) || {
+                          subCategories.find((item) => item?.id === subCategoryId) || {
                             name: 'no_name',
                           }
                         ).name
                       }
                       onPress={() => {
-                        navigate('Articles', { subCategory })
-                        dispatch(logSubCategoryView({ subCategoryId: subCategory.id }))
+                        navigate('Articles', { subCategory: subCategoryId })
+                        dispatch(logSubCategoryView({ subCategoryId }))
                       }}
                     />
                   ))}

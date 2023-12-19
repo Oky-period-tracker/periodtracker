@@ -16,26 +16,37 @@
   </div>
   
     <form id="dateFilterForm">
-      <label for="dateFrom" style="color:black;">Date from</label>
-      <input type="date" id="dateFrom" name="dateFrom" value="<%= dateFrom %>">
+      <div class="form-group mr-3">
+        <label for="dateFrom" class="date-picker-label mr-1">Date from</label>
+        <input type="date" class="date-picker" id="dateFrom" name="dateFrom" value="<%= dateFrom %>">
+      </div>
 
-      <label for="dateTo" style="color:black;">Date to</label>
-      <input type="date" id="dateTo" name="dateTo" value="<%= dateTo %>">
+      <div class="form-group mr-3">
+        <label for="dateTo" class="date-picker-label mr-1">Date to</label>
+        <input type="date" class="date-picker"  id="dateTo" name="dateTo" value="<%= dateTo %>">
+      </div>
 
-      <select class="custom-select filter-select" id="currentGender" aria-placeholder="Gender" name="gender">
-        <option value="">Gender</option>
-        <% ['Male', 'Female', 'Other'].forEach((item, index) =>{ %>
-        <option value="<%= item %>" <%= item == query.gender ? "selected" : '' %>><%= item %></option>
-        <% }) %>
-      </select>
-      <select class="custom-select filter-select" id="currentLoc" title="Location" name="location">
-        <option value="">Location</option>
-        <% ['Rural', 'Urban'].forEach((item, index) =>{ %>
-        <option value="<%= item %>" <%= item == query.location ? "selected" : '' %>><%= item %></option>
-        <% }) %>
-      </select>
-      
-      <button class="btn btn-primary">Apply filters</button>
+      <div class="form-group">
+        <select class="custom-select filter-select" id="currentGender" aria-placeholder="Gender" name="gender">
+          <option value="">Gender</option>
+          <% ['Male', 'Female', 'Other'].forEach((item, index) =>{ %>
+          <option value="<%= item %>" <%= item == query.gender ? "selected" : '' %>><%= item %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="custom-select filter-select" id="currentLoc" title="Location" name="location">
+          <option value="">Location</option>
+          <% ['Rural', 'Urban'].forEach((item, index) =>{ %>
+          <option value="<%= item %>" <%= item == query.location ? "selected" : '' %>><%= item %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-primary">Apply filters</button>
+      </div>
     </form>
 
     <div style="flex-direction: column; justify-content: center;"  class="homeTableContainer">
@@ -272,6 +283,13 @@
     </div>
   </div>
 </div>
+<script>
+  document.querySelectorAll('.datepicker').forEach(node => {
+    node.datepicker({
+        uiLibrary: 'bootstrap4'
+    })
+  })
+</script>
 <span id="userLocationsJSON" hidden>
     <%= JSON.stringify(usersLocations); %>
 </span>

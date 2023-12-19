@@ -206,16 +206,6 @@ export class RenderController {
         uniqueUsersPercentage: calculatePercentage(uniqueUserCalendarScreenViews, totalUsers),
         viewsPercentage: calculatePercentage(totalCalendarScreenViews, totalViews),
       },
-      {
-        feature: 'Daily card',
-        definition:
-          'Users who have used the daily card at least once. When they click any emoji on the card, it counts as a view. Clicking on multiple emojis and cards within 24 hours still only counts as one view.',
-        uniqueUsers: countUniqueUserDailyCardUsage,
-        views: countDailyCardUsage,
-        loggedOutViews: '-', // Inaccessible to logged out users
-        uniqueUsersPercentage: calculatePercentage(countUniqueUserDailyCardUsage, totalUsers),
-        viewsPercentage: calculatePercentage(countDailyCardUsage, totalViews),
-      },
     ]
 
     const categoryUsage: Usage[] = categoryViews.map((category) => {
@@ -244,7 +234,17 @@ export class RenderController {
 
     const encyclopediaUsage = [...categoryUsage, ...subCategoryUsage]
 
-    const predictionUsage: Usage[] = [
+    const usage: Usage[] = [
+      {
+        feature: 'Daily card',
+        definition:
+          'Users who have used the daily card at least once. When they click any emoji on the card, it counts as a view. Clicking on multiple emojis and cards within 24 hours still only counts as one view.',
+        uniqueUsers: countUniqueUserDailyCardUsage,
+        views: countDailyCardUsage,
+        loggedOutViews: '-', // Inaccessible to logged out users
+        uniqueUsersPercentage: calculatePercentage(countUniqueUserDailyCardUsage, totalUsers),
+        viewsPercentage: '-',
+      },
       {
         feature: 'Prediction setting',
         definition: 'Future prediction switched ON',
@@ -306,7 +306,7 @@ export class RenderController {
         usersShares,
         directDownloads,
         screenUsage,
-        predictionUsage,
+        usage,
         encyclopediaUsage,
         countAvatars,
         countThemes,
@@ -326,7 +326,7 @@ export class RenderController {
       usersShares,
       directDownloads,
       screenUsage,
-      predictionUsage,
+      usage,
       encyclopediaUsage,
       countAvatars,
       countThemes,

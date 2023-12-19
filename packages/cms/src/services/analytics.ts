@@ -137,13 +137,10 @@ export const analyticsQueries = {
     AND oky_user.location = COALESCE($2, oky_user.location)
     ${partials.and_event_date}
   ;`,
-  countTotalViews: `
+  countTotalForEvent: `
   SELECT COUNT(*)
   FROM app_event
-  WHERE app_event.type = 'SCREEN_VIEWED' 
-    OR app_event.type = 'CATEGORY_VIEWED' 
-    OR app_event.type = 'SUBCATEGORY_VIEWED' 
-    OR app_event.type = 'DAILY_CARD_USED' 
+  WHERE app_event.type = $1
   ;`,
   countScreenViews: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count

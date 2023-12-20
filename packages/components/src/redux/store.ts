@@ -8,17 +8,21 @@ import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import { config } from './config'
 
-const encryptor = encryptTransform({
-  secretKey: config.REDUX_ENCRYPT_KEY,
-  onError(error) {
-    // Handle the error.
-  },
-})
+// Function to create an encryptor
+const createEncryptor = (secretKey) =>
+  encryptTransform({
+    secretKey,
+    onError(error) {
+      // Handle the error.
+    },
+  })
 
 export const version = -1
 
-export function configureStore(key = 'primary') {
-  const persistConfig: PersistConfig = {
+export function configureStore({ key, secretKey }) {
+  const encryptor = createEncryptor(secretKey)
+
+  const persistConfig = {
     version,
     key,
     storage,
@@ -27,12 +31,11 @@ export function configureStore(key = 'primary') {
     blacklist: [],
     transforms: [encryptor],
   }
+
   const persistedReducer = persistReducer(persistConfig, rootReducer)
   const composeEnhancers = composeWithDevTools({
-    //  port: 8081,
     realtime: true,
     port: 8000,
-    hostname: '', // add your computer's IP
   })
   const sagaMiddleware = createSagaMiddleware()
 

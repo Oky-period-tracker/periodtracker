@@ -9,8 +9,12 @@ import { SafeAreaView } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
 import { Platform } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
+import { config } from '../redux/config'
 
-const { persistor, store } = configureStore()
+const { persistor, store } = configureStore({
+  key: 'primary',
+  secretKey: config.REDUX_ENCRYPT_KEY,
+})
 
 export default function App() {
   React.useEffect(() => {

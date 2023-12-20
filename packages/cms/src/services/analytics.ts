@@ -1,5 +1,7 @@
 import { env } from '../env'
 
+const schema = env.db.schema
+
 const partials = {
   and_event_date: `
     AND (app_event.metadata->>'date')::timestamp 
@@ -16,7 +18,7 @@ export const analyticsQueries = {
     SELECT 
       COUNT(CASE location WHEN 'Urban' then 1 else null end) as total_urban,
       COUNT(CASE location WHEN 'Rural' then 1 else null end) as total_rural
-    FROM ${env.db.schema}.oky_user WHERE (gender = $1 OR $1 IS NULL) 
+    FROM ${schema}.oky_user WHERE (gender = $1 OR $1 IS NULL) 
       AND (location= $2 OR $2 IS NULL) 
       ${partials.and_date_account_saved}
     ;`,
@@ -25,7 +27,7 @@ export const analyticsQueries = {
       COUNT(CASE gender WHEN 'Female' then 1 else null end) as total_female, 
       COUNT(CASE gender WHEN 'Male' then 1 else null end) as total_male,
       COUNT(CASE gender WHEN 'Other' then 1 else null end) as total_other
-    FROM ${env.db.schema}.oky_user 
+    FROM ${schema}.oky_user 
     WHERE (gender = $1 OR $1 IS NULL) 
       AND (location= $2 OR $2 IS NULL)
       ${partials.and_date_account_saved}
@@ -39,7 +41,7 @@ export const analyticsQueries = {
       SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) BETWEEN 18 AND 19 THEN 1 ELSE 0 END) AS between_18_19,
       SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) BETWEEN 20 AND 21 THEN 1 ELSE 0 END) AS between_20_21,
       SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) > 22 THEN 1 ELSE 0 END) AS greater_than_22
-    FROM ${env.db.schema}.oky_user 
+    FROM ${schema}.oky_user 
     WHERE (gender = $1 OR $1 IS NULL) 
       AND (location= $2 OR $2 IS NULL)
       ${partials.and_date_account_saved}
@@ -48,7 +50,7 @@ export const analyticsQueries = {
     SELECT
       country,
       COUNT(*) as value
-    FROM ${env.db.schema}.oky_user 
+    FROM ${schema}.oky_user 
       WHERE (gender = $1 OR $1 IS NULL) 
       AND (location= $2 OR $2 IS NULL)
       ${partials.and_date_account_saved}
@@ -59,7 +61,7 @@ export const analyticsQueries = {
       country,
       province,
       COUNT(*) as value
-    FROM ${env.db.schema}.oky_user 
+    FROM ${schema}.oky_user 
     WHERE (gender = $1 OR $1 IS NULL) 
       AND (location= $2 OR $2 IS NULL)
       ${partials.and_date_account_saved}
@@ -73,13 +75,13 @@ export const analyticsQueries = {
       COUNT(CASE answerID WHEN '1' then 1 else null end) as total_option1,
       COUNT(CASE answerID WHEN '2' then 1 else null end) as total_option2,
       COUNT(CASE answerID WHEN '3' then 1 else null end) as total_option3
-    FROM ${env.db.schema}.answered_quizzes
+    FROM ${schema}.answered_quizzes
     GROUP BY id
     ;`,
   answeredSurveysByID: `
     SELECT answered_surveys.id,answered_surveys.questions, answered_surveys.user_id
-    FROM ${env.db.schema}.answered_surveys
-    left outer join ${env.db.schema}.oky_user 
+    FROM ${schema}.answered_surveys
+    left outer join ${schema}.oky_user 
     ON oky_user.id = answered_surveys.user_id::uuid 
     WHERE
       (oky_user.id = answered_surveys.user_id::uuid AND answered_surveys.isSurveyAnswered = 'true')
@@ -89,7 +91,7 @@ export const analyticsQueries = {
     SELECT
       DATE_TRUNC('day', created_at) AS date,
       COUNT(*) as value
-    FROM ${env.db.schema}.app_event
+    FROM ${schema}.app_event
     WHERE type = 'SHARE_APP'
     GROUP BY DATE_TRUNC('day', created_at)
     ORDER BY date
@@ -98,7 +100,7 @@ export const analyticsQueries = {
     SELECT
       DATE_TRUNC('day', date_created) AS date,
       COUNT(*) as value
-    FROM ${env.db.schema}.analytics
+    FROM ${schema}.analytics
     WHERE type = 'DIRECT_DOWNLOAD'
     GROUP BY DATE_TRUNC('day', date_created)
     ORDER BY date
@@ -114,8 +116,8 @@ export const analyticsQueries = {
       SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) BETWEEN 20 AND 21 THEN 1 ELSE 0 END) AS between_20_21,
       SUM(CASE WHEN (DATE_PART('year', now()::date) - DATE_PART('year', date_of_birth)) > 22 THEN 1 ELSE 0 END) AS greater_than_22,
       STRING_AGG(questions, ' ,')
-    FROM ${env.db.schema}.answered_surveys
-    full outer join ${env.db.schema}.oky_user 
+    FROM ${schema}.answered_surveys
+    full outer join ${schema}.oky_user 
       ON oky_user.id = answered_surveys.user_id::uuid 
     WHERE
       (oky_user.id = answered_surveys.user_id::uuid)
@@ -127,25 +129,25 @@ export const analyticsQueries = {
   ;`,
   countUsers: `
   SELECT COUNT(id)
-  FROM oky_user
+  FROM ${schema}.oky_user
   ;`,
   countActiveUsers: `
   SELECT COUNT(DISTINCT user_id)
-  FROM app_event
-  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+  FROM ${schema}.app_event
+  INNER JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
   WHERE oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
     ${partials.and_event_date}
   ;`,
   countTotalForEvent: `
   SELECT COUNT(*)
-  FROM app_event
+  FROM ${schema}.app_event
   WHERE app_event.type = $1
   ;`,
   countScreenViews: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
-  FROM app_event
-  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+  FROM ${schema}.app_event
+  INNER JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
   WHERE app_event.type = 'SCREEN_VIEWED'
     AND oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
@@ -154,7 +156,7 @@ export const analyticsQueries = {
   ;`,
   countNonLoggedInScreenViews: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT metadata->>'deviceId') AS unique_device_count
-  FROM app_event
+  FROM ${schema}.app_event
   WHERE type = 'SCREEN_VIEWED'
     AND user_id IS NULL
     AND (app_event.metadata->>'date')::timestamp BETWEEN COALESCE($1, '1970-01-01'::timestamp) AND COALESCE($2, '9999-12-31'::timestamp)
@@ -168,8 +170,8 @@ export const analyticsQueries = {
     Count(DISTINCT app_event.user_id) AS total_unique_user_changes, 
     Count(DISTINCT app_event.user_id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = true) AS unique_user_switched_on, 
     Count(DISTINCT app_event.user_id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = false) AS unique_user_switched_off
-  FROM app_event
-  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+  FROM ${schema}.app_event
+  INNER JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
   WHERE type = 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE'
     AND oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
@@ -183,10 +185,10 @@ export const analyticsQueries = {
     COUNT(DISTINCT app_event.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
-  FROM category c
-  LEFT JOIN app_event
+  FROM ${schema}.category c
+  LEFT JOIN ${schema}.app_event
     ON app_event.type = 'CATEGORY_VIEWED' AND c.id = (app_event.payload->>'categoryId')::uuid
-  LEFT JOIN oky_user
+  LEFT JOIN ${schema}.oky_user
     ON app_event.user_id::uuid = oky_user.id
   WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
     AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
@@ -201,10 +203,10 @@ export const analyticsQueries = {
     COUNT(DISTINCT app_event.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
-  FROM subcategory s
-  LEFT JOIN app_event
+  FROM ${schema}.subcategory s
+  LEFT JOIN ${schema}.app_event
     ON app_event.type = 'SUBCATEGORY_VIEWED' AND s.id = (app_event.payload->>'subCategoryId')::uuid
-    LEFT JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+    LEFT JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
     WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
     AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
@@ -212,8 +214,8 @@ export const analyticsQueries = {
   ;`,
   countDailyCardUsage: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
-  FROM app_event
-  INNER JOIN oky_user ON app_event.user_id::uuid = oky_user.id
+  FROM ${schema}.app_event
+  INNER JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
   WHERE app_event.type = 'DAILY_CARD_USED'
     AND oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
@@ -224,7 +226,7 @@ export const analyticsQueries = {
     store->'appState'->'app'->>'avatar' AS avatar,
     COUNT(*) AS user_count
   FROM 
-    oky_user
+    ${schema}.oky_user
   WHERE 
     store->'appState'->'app'->>'avatar' IS NOT NULL
     AND oky_user.gender = COALESCE($1, oky_user.gender)
@@ -236,8 +238,7 @@ export const analyticsQueries = {
   SELECT 
     store->'appState'->'app'->>'theme' AS theme,
     COUNT(*) AS user_count
-  FROM 
-    oky_user
+  FROM ${schema}.oky_user
   WHERE 
     store->'appState'->'app'->>'theme' IS NOT NULL
     AND oky_user.gender = COALESCE($1, oky_user.gender)
@@ -249,8 +250,7 @@ export const analyticsQueries = {
   SELECT 
     store->'appState'->'app'->>'locale' AS locale,
     COUNT(*) AS user_count
-  FROM 
-    oky_user
+  FROM ${schema}.oky_user
   WHERE 
     store->'appState'->'app'->>'locale' IS NOT NULL
     AND oky_user.gender = COALESCE($1, oky_user.gender)

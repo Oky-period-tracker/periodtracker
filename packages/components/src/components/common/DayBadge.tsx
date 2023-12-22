@@ -4,12 +4,12 @@ import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from './Text'
 import _ from 'lodash'
 import moment from 'moment'
-import { useCommonSelector } from 'react-redux'
 import { commonSelectors } from '../../redux/common/selectors'
 import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,
 } from '../../components/context/PredictionProvider'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 
 function checkForVerifiedDay(cardValues) {
   if (_.has(cardValues, 'periodDay')) {

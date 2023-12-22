@@ -5,9 +5,9 @@ import { fetchNetworkConnectionStatus } from '../../../services/network'
 import { httpClient } from '../../../services/HttpClient'
 import { secureActions } from '../actions'
 import { secureSelectors } from '../selectors'
-import { ActionTypes } from '../types'
+import { SecureActionTypes } from '../types'
 
-const ACTIONS_TO_TRACK: ActionTypes[] = [
+const ACTIONS_TO_TRACK: SecureActionTypes[] = [
   // app
   'SET_THEME',
   'SET_LOCALE',

@@ -6,7 +6,6 @@ import { useTheme } from '../../../components/context/ThemeContext'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { assets } from '../../../assets/index'
 import { translate } from '../../../i18n'
-import { useCommonSelector } from 'react-redux'
 import { commonSelectors } from '../../../redux/common/selectors'
 import moment from 'moment'
 import {
@@ -14,6 +13,7 @@ import {
   useActualCurrentStartDateSelector,
 } from '../../../components/context/PredictionProvider'
 import _ from 'lodash'
+import { useCommonSelector } from '../../../redux/common/useCommonSelector'
 
 const {
   Value,

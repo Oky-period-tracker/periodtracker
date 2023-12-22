@@ -7,8 +7,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { assets } from '../../../assets/index'
 import { translate } from '../../../i18n'
 import { useSelector, useDispatch } from 'react-redux'
-import * as actions from '../../../redux/actions/index'
-import * as selectors from '../../../redux/selectors'
+import * as actions from '../../../redux/common/actions/index'
+import * as selectors from '../../../redux/common/selectors'
 import moment from 'moment'
 import {
   useTodayPrediction,

@@ -12,7 +12,7 @@ import { assets } from '../assets'
 import { usePredictDay } from '../components/context/PredictionProvider'
 import { ThemedModal } from '../components/common/ThemedModal'
 import { ColourButtons } from './mainScreen/ColourButtons'
-import * as selectors from '../redux/selectors'
+import * as selectors from '../redux/common/selectors'
 import { useSelector } from '../hooks/useSelector'
 import moment from 'moment'
 

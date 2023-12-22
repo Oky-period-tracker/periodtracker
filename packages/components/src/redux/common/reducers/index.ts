@@ -37,3 +37,5 @@ export function rootReducer(state, action: Actions) {
       return reducer(state, action)
   }
 }
+
+export type ReduxState = ReturnType<typeof rootReducer>

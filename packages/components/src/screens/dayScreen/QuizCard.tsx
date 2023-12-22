@@ -6,8 +6,8 @@ import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
 import { useSelector } from '../../hooks/useSelector'
 import _ from 'lodash'
-import * as selectors from '../../redux/selectors'
-import * as actions from '../../redux/actions'
+import * as selectors from '../../redux/common/selectors'
+import * as actions from '../../redux/common/actions'
 import { useDispatch } from 'react-redux'
 
 const deviceWidth = Dimensions.get('window').width

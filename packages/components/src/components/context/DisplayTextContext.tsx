@@ -3,7 +3,7 @@ import Tts from 'react-native-tts'
 import _ from 'lodash'
 import { translate } from '../../i18n'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/selectors'
+import * as selectors from '../../redux/common/selectors'
 
 interface Props {
   text: null | string

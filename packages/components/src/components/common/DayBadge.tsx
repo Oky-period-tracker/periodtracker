@@ -5,7 +5,7 @@ import { TextWithoutTranslation, Text } from './Text'
 import _ from 'lodash'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import * as selectors from '../../redux/selectors'
+import * as selectors from '../../redux/common/selectors'
 import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,

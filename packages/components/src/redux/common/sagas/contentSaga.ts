@@ -10,12 +10,12 @@ import {
   fromAvatarMessages,
   liveContent as staleContent,
 } from '@oky/core'
-import { httpClient } from '../../services/HttpClient'
+import { httpClient } from '../../../services/HttpClient'
 import * as selectors from '../selectors'
 import * as actions from '../actions'
 import _ from 'lodash'
 import messaging from '@react-native-firebase/messaging'
-import { closeOutTTs } from '../../services/textToSpeech'
+import { closeOutTTs } from '../../../services/textToSpeech'
 
 function* onRehydrate(action: RehydrateAction) {
   const locale = yield select(selectors.currentLocaleSelector)

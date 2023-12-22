@@ -1,7 +1,7 @@
 import React from 'react'
 import { speakArray, clearTTSQueue } from '../services/textToSpeech'
 import { useSelector } from './useSelector'
-import * as selectors from '../redux/selectors'
+import * as selectors from '../redux/common/selectors'
 
 export function useTextToSpeechHook({ navigation, text }) {
   const hasTtsActive = useSelector(selectors.isTtsActiveSelector)

@@ -6,7 +6,7 @@ import { WheelPickerContent } from '../../components/WheelPickerContent'
 import { Avatar } from '../../components/common/Avatar/Avatar'
 import { assets } from '../../assets'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/selectors'
+import * as selectors from '../../redux/common/selectors'
 
 export function JourneyCard({
   question,

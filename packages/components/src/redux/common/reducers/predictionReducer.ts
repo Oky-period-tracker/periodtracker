@@ -1,6 +1,5 @@
 import _ from 'lodash'
-import moment from 'moment'
-import { PredictionSerializableState } from '../../prediction'
+import { PredictionSerializableState } from '../../../prediction'
 
 import { Actions } from '../types/index'
 

@@ -1,11 +1,11 @@
 import { all, put, takeLatest } from 'redux-saga/effects'
 import { ExtractActionFromActionType } from '../types'
 
-import { httpClient } from '../../services/HttpClient'
+import { httpClient } from '../../../services/HttpClient'
 
 import * as actions from '../actions'
 import _ from 'lodash'
-import { PredictionState } from '../../prediction'
+import { PredictionState } from '../../../prediction'
 
 function* onFetchUpdatedPredictedCycles(
   action: ExtractActionFromActionType<'SMART_PREDICTION_REQUEST'>,

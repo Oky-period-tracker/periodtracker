@@ -10,8 +10,8 @@ import SplashScreen from 'react-native-splash-screen'
 import { Platform } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
 import { config } from '../redux/config'
-import { rootReducer } from '../redux/reducers'
-import { rootSaga } from '../redux/sagas'
+import { rootReducer } from '../redux/common/reducers'
+import { rootSaga } from '../redux/common/sagas'
 
 const { persistor, store } = configureStore({
   key: 'primary',

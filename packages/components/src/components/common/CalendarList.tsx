@@ -4,7 +4,7 @@ import { CalendarList as DefaultCalendarList, LocaleConfig } from 'react-native-
 import momentTimezone from 'moment-timezone'
 import { assets } from '../../assets/index'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/selectors'
+import * as selectors from '../../redux/common/selectors'
 import { calendarTranslations } from '@oky/core'
 
 LocaleConfig.locales = {

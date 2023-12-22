@@ -9,7 +9,7 @@ import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { translate } from '../../i18n'
 import Tts from 'react-native-tts'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/selectors'
+import * as selectors from '../../redux/common/selectors'
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 

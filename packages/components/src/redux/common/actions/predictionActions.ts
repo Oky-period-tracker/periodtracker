@@ -1,5 +1,5 @@
 import { createAction } from '../helpers'
-import { PredictionState } from '../../prediction'
+import { PredictionState } from '../../../prediction'
 import { Moment } from 'moment'
 
 export function setPredictionEngineState(predictionState: PredictionState) {

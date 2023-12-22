@@ -5,6 +5,7 @@ export type Actions = ActionsUnion<typeof actions>
 
 export type ActionTypes = Actions[keyof Actions]
 
-export type ExtractActionFromActionType<
-  ActionType extends string
-> = ActionsOfType<Actions, ActionType>
+export type ExtractActionFromActionType<ActionType extends string> = ActionsOfType<
+  Actions,
+  ActionType
+>

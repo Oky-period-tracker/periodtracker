@@ -8,7 +8,7 @@ import { navigate, navigateAndReset } from '../../../services/navigationService'
 import moment from 'moment'
 import { useDisplayText } from '../../../components/context/DisplayTextContext'
 import { useSelector } from '../../../hooks/useSelector'
-import * as selectors from '../../../redux/selectors'
+import * as selectors from '../../../redux/common/selectors'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 
 const screenWidth = Dimensions.get('window').width

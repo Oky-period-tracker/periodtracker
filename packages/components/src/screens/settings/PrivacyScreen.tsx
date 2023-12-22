@@ -5,7 +5,7 @@ import { Header } from '../../components/common/Header'
 import { TextWithoutTranslation } from '../../components/common/Text'
 import { ScrollView, Dimensions } from 'react-native'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/selectors'
+import * as selectors from '../../redux/common/selectors'
 import { chunk } from 'lodash'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 

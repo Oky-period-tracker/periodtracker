@@ -7,13 +7,13 @@ import { PanGesture } from './PanGesture'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ColourButtons } from '../ColourButtons'
 import { useSelector } from '../../../hooks/useSelector'
-import * as selectors from '../../../redux/selectors'
+import * as selectors from '../../../redux/common/selectors'
 import { navigateAndReset } from '../../../services/navigationService'
 import { useCheckDayWarning } from '../../../hooks/usePredictionWarnings'
 import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
-import { ReduxState } from '../../../redux/store'
+import { ReduxState } from '../../../redux/common/reducers'
 
 const reduxState = (state: ReduxState) => state
 

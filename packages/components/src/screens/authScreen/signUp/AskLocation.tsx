@@ -8,7 +8,7 @@ import { GenderSelectItem } from '../../../components/common/GenderSelectItem'
 import { formHeights } from './FormHeights'
 import { ModalSearchBox } from '../../../components/common/ModalSearchBox'
 import { useSelector } from '../../../hooks/useSelector'
-import * as selectors from '../../../redux/selectors'
+import * as selectors from '../../../redux/common/selectors'
 import { translate } from '../../../i18n'
 import { FAST_SIGN_UP } from '../../../config'
 

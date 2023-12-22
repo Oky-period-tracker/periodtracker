@@ -4,7 +4,6 @@ import { encryptTransform } from 'redux-persist-transform-encrypt'
 import storage from 'redux-persist/lib/storage'
 import createSagaMiddleware from 'redux-saga'
 import { composeWithDevTools } from 'remote-redux-devtools'
-import { rootReducer as commonRootReducer } from './reducers'
 
 // Function to create an encryptor
 const createEncryptor = (secretKey) =>
@@ -45,5 +44,3 @@ export function configureStore({ key, secretKey, rootReducer, rootSaga }) {
 
   return { store, persistor }
 }
-
-export type ReduxState = ReturnType<typeof commonRootReducer>

@@ -5,7 +5,7 @@ import { PredictionState, PredictionEngine } from '../../prediction'
 
 import { useSelector } from '../../hooks/useSelector'
 import { useDispatch } from 'react-redux'
-import * as actions from '../../redux/actions'
+import * as actions from '../../redux/common/actions'
 
 type PredictionDispatch = typeof PredictionEngine.prototype.userInputDispatch
 

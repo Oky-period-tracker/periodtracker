@@ -7,7 +7,7 @@ import styled from 'styled-components/native'
 import { handleCategoriesFilter, handleSearchResult } from './searchFunctions'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/selectors'
+import * as selectors from '../../redux/common/selectors'
 import { translate } from '../../i18n'
 
 export const SearchBar = ({

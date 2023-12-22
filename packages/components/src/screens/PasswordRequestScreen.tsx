@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { useDispatch } from 'react-redux'
-import * as actions from '../redux/common/actions'
+import { commonActions } from '../redux/common/actions'
 import { Text } from '../components/common/Text'
 import { TextInput } from '../components/common/TextInput'
 import * as selectors from '../redux/common/selectors'
@@ -91,7 +91,7 @@ export function PasswordRequestScreen() {
         <Column>
           <TouchableText
             onPress={() => {
-              dispatch(actions.logoutRequest())
+              dispatch(commonActions.logoutRequest())
             }}
           >
             <Text

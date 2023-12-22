@@ -20,7 +20,7 @@ import {
 import { useRandomText } from '../hooks/useRandomText'
 import { InformationButton } from '../components/common/InformationButton'
 import { assets } from '../assets'
-import * as actions from '../redux/common/actions'
+import { commonActions } from '../redux/common/actions'
 import { useDispatch } from 'react-redux'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/common/selectors'
@@ -51,7 +51,7 @@ const MainScreenContainer = ({ navigation }) => {
 
   // @TODO: careful note here, may be worth the performance increase though May not work with Memo now
   React.useEffect(() => {
-    dispatch(actions.fetchSurveyContentRequest(userID))
+    dispatch(commonActions.fetchSurveyContentRequest(userID))
   }, [])
 
   useRandomText({ navigation })

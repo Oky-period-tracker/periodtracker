@@ -18,7 +18,7 @@ import { InformationButton } from '../../components/common/InformationButton'
 import { decisionProcessNonPeriod, decisionProcessPeriod } from './predictionLogic/predictionLogic'
 import { translate } from '../../i18n'
 import { useDispatch } from 'react-redux'
-import * as actions from '../../redux/common/actions/index'
+import { commonActions } from '../../redux/common/actions/index'
 import * as selectors from '../../redux/common/selectors'
 import analytics from '@react-native-firebase/analytics'
 import moment from 'moment'
@@ -128,7 +128,7 @@ export function ColourButtons({
           }
         }
         appDispatch(
-          actions.smartPredictionRequest({
+          commonActions.smartPredictionRequest({
             cycle_lengths: tempPeriodsCycles,
             period_lengths: tempPeriodsLength,
             age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
@@ -138,7 +138,9 @@ export function ColourButtons({
         )
       }
     }
-    appDispatch(actions.updateFuturePrediction(futurePredictionStatus, fullState.currentCycle))
+    appDispatch(
+      commonActions.updateFuturePrediction(futurePredictionStatus, fullState.currentCycle),
+    )
   }
 
   const actionPink = decisionProcessPeriod({
@@ -215,7 +217,7 @@ export function ColourButtons({
       })
     }
     appDispatch(
-      actions.answerVerifyDates({
+      commonActions.answerVerifyDates({
         userID,
         utcDateTime: inputDay,
         periodDay: true,
@@ -235,7 +237,7 @@ export function ColourButtons({
     if (addNewCycleHistory) {
       if (selectedDayInfo.onPeriod) {
         appDispatch(
-          actions.answerVerifyDates({
+          commonActions.answerVerifyDates({
             userID,
             utcDateTime: inputDay,
             periodDay: true,
@@ -250,7 +252,7 @@ export function ColourButtons({
           getPredictedCycles,
         })
         appDispatch(
-          actions.answerVerifyDates({
+          commonActions.answerVerifyDates({
             userID,
             utcDateTime: inputDay,
             periodDay: true,
@@ -261,7 +263,7 @@ export function ColourButtons({
     } else {
       if (selectedDayInfo.onPeriod) {
         appDispatch(
-          actions.answerVerifyDates({
+          commonActions.answerVerifyDates({
             userID,
             utcDateTime: inputDay,
             periodDay: true,
@@ -294,7 +296,7 @@ export function ColourButtons({
           getPredictedCycles,
         })
         appDispatch(
-          actions.answerVerifyDates({
+          commonActions.answerVerifyDates({
             userID,
             utcDateTime: inputDay,
             periodDay: false,

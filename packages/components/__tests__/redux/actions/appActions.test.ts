@@ -1,7 +1,7 @@
 import configureStore from 'redux-mock-store'
 
 import _ from 'lodash'
-import * as actions from '../../../src/redux/common/actions'
+import { commonActions } from '../../../src/redux/common/actions'
 
 const middleWares = []
 const mockStore = configureStore(middleWares)
@@ -11,7 +11,7 @@ describe('appActions', () => {
   const store = mockStore(initialState)
 
   it('Set Avatar action', () => {
-    const action = actions.setAvatar('nur')
+    const action = commonActions.setAvatar('nur')
     // Dispatch the action
     store.dispatch(action)
     // Test if your store dispatched the expected actions
@@ -21,7 +21,7 @@ describe('appActions', () => {
   })
 
   it('Set Theme action', () => {
-    const action = actions.setTheme('hills')
+    const action = commonActions.setTheme('hills')
     // Dispatch the action
     store.dispatch(action)
     // Test if your store dispatched the expected actions

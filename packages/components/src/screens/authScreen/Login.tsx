@@ -3,7 +3,7 @@ import styled from 'styled-components/native'
 import { Text } from '../../components/common/Text'
 import { TextInput } from '../../components/common/TextInput'
 import { useDispatch } from 'react-redux'
-import * as actions from '../../redux/common/actions'
+import { commonActions } from '../../redux/common/actions'
 import { useSelector } from '../../hooks/useSelector'
 import { SpinLoader } from '../../components/common/SpinLoader'
 import _ from 'lodash'
@@ -46,7 +46,7 @@ export function Login() {
         onPress={() => {
           setLoading(true)
           requestAnimationFrame(() => {
-            dispatch(actions.loginRequest({ name, password: _.toLower(password).trim() }))
+            dispatch(commonActions.loginRequest({ name, password: _.toLower(password).trim() }))
           })
         }}
       >

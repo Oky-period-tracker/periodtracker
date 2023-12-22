@@ -5,7 +5,7 @@ import { assets } from '../assets/index'
 import styled from 'styled-components/native'
 import { useSelector, useDispatch } from 'react-redux'
 import * as selectors from '../redux/common/selectors'
-import * as actions from '../redux/common/actions'
+import { commonActions } from '../redux/common/actions'
 import { navigateAndReset } from '../services/navigationService'
 import { Animated, Easing } from 'react-native'
 import { createNotificationChannel, requestUserPermission } from '../services/notifications'
@@ -57,12 +57,12 @@ export function SplashScreen() {
     messaging().unsubscribeFromTopic('oky_mn_notifications')
     messaging().subscribeToTopic(`oky_${locale}_notifications`)
     if (currentAppVersion !== DeviceInfo.getVersion()) {
-      dispatch(actions.setUpdatedVersion())
-      dispatch(actions.updateFuturePrediction(true, null))
+      dispatch(commonActions.setUpdatedVersion())
+      dispatch(commonActions.updateFuturePrediction(true, null))
     }
     if (fetchNetworkConnectionStatus()) {
       if (currentFirebaseToken === null) {
-        dispatch(actions.requestStoreFirebaseKey())
+        dispatch(commonActions.requestStoreFirebaseKey())
       }
     }
 

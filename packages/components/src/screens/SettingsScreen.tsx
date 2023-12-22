@@ -8,7 +8,7 @@ import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { Switcher } from './settings/Switcher'
 import { navigate } from '../services/navigationService'
 import { useDispatch } from 'react-redux'
-import * as actions from '../redux/common/actions'
+import { commonActions } from '../redux/common/actions'
 import { ConfirmAlert } from '../components/common/ConfirmAlert'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/common/selectors'
@@ -64,7 +64,7 @@ export function SettingsScreen({ navigation }) {
                     }
                   }
                   closeOutTTs()
-                  dispatch(actions.setTtsActive(val))
+                  dispatch(commonActions.setTtsActive(val))
                 }}
               />
             )}
@@ -77,7 +77,7 @@ export function SettingsScreen({ navigation }) {
                 value={hasFuturePredictionActive?.futurePredictionStatus}
                 onSwitch={(val) => {
                   const currentStartDate = currentCycleInfo
-                  dispatch(actions.updateFuturePrediction(val, currentStartDate))
+                  dispatch(commonActions.updateFuturePrediction(val, currentStartDate))
                 }}
               />
             )}
@@ -94,7 +94,7 @@ export function SettingsScreen({ navigation }) {
                 () => {
                   setLoading(true)
                   setTimeout(() => {
-                    dispatch(actions.logoutRequest())
+                    dispatch(commonActions.logoutRequest())
                   }, 100)
                 },
               )
@@ -114,7 +114,7 @@ export function SettingsScreen({ navigation }) {
                       analytics().logEvent('delete_account', { user: currentUser })
                     }
                     dispatch(
-                      actions.deleteAccountRequest({
+                      commonActions.deleteAccountRequest({
                         name: currentUser.name,
                         password: currentUser.password,
                         setLoading,

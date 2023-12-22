@@ -11,7 +11,7 @@ import { useInfiniteScroll } from './mainScreen/wheelCarousel/useInfiniteScroll'
 import { navigateAndReset } from '../services/navigationService'
 import { Animated, Dimensions, Image, Platform, View } from 'react-native'
 import { useDispatch } from 'react-redux'
-import * as actions from '../redux/common/actions'
+import { commonActions } from '../redux/common/actions'
 import { Text } from '../components/common/Text'
 import { Icon } from '../components/common/Icon'
 import { assets } from '../assets'
@@ -209,7 +209,7 @@ export function TutorialSecondScreen({ navigation }) {
       flag.current = true
     }
     if (flag.current) {
-      dispatch(actions.setTutorialTwoActive(false))
+      dispatch(commonActions.setTutorialTwoActive(false))
       setLoading(true)
       requestAnimationFrame(() => {
         setTimeout(() => {
@@ -381,7 +381,7 @@ export function TutorialSecondScreen({ navigation }) {
   }
 
   const skip = () => {
-    dispatch(actions.setTutorialTwoActive(false))
+    dispatch(commonActions.setTutorialTwoActive(false))
     setLoading(true)
     requestAnimationFrame(() => {
       setTimeout(() => {

@@ -7,7 +7,7 @@ import { TitleText } from '../../components/common/TitleText'
 import { useSelector } from '../../hooks/useSelector'
 import _ from 'lodash'
 import * as selectors from '../../redux/common/selectors'
-import * as actions from '../../redux/common/actions'
+import { commonActions } from '../../redux/common/actions'
 import { useDispatch } from 'react-redux'
 import { TextInput } from '../../components/common/TextInput'
 import { SurveyInformationButton } from '../../components/common/SurveyInformationButton'
@@ -57,7 +57,7 @@ export const SurveyCard = React.memo<{
 
         // TODO_ALEX: Does this do anything?
         dispatch(
-          actions.answerSurvey({
+          commonActions.answerSurvey({
             id: dataEntry.surveyId,
             isCompleted: true,
             isSurveyAnswered: false,
@@ -68,10 +68,10 @@ export const SurveyCard = React.memo<{
         )
         const tempData = allSurveys
         const tempCompletedSurveys = completedSurveys ? completedSurveys : []
-        dispatch(actions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
+        dispatch(commonActions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
         tempData.shift()
-        dispatch(actions.updateAllSurveyContent(tempData))
-        dispatch(actions.fetchSurveyContentRequest(userID))
+        dispatch(commonActions.updateAllSurveyContent(tempData))
+        dispatch(commonActions.fetchSurveyContentRequest(userID))
       }
     } else {
       setTimeout(() => {

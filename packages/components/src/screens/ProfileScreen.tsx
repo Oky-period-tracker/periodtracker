@@ -18,7 +18,7 @@ import { AvatarOption } from './avatarAndTheme/avatarSelect/AvatarOption'
 import { ThemeSelectItem } from './avatarAndTheme/ThemeSelectItem'
 import { useHistoryPrediction, useTodayPrediction } from '../components/context/PredictionProvider'
 import { useSelector } from '../hooks/useSelector'
-import * as actions from '../redux/common/actions'
+import { commonActions } from '../redux/common/actions'
 import * as selectors from '../redux/common/selectors'
 import { translate } from '../i18n/index'
 import { IconButton } from '../components/common/buttons/IconButton'
@@ -149,7 +149,7 @@ export function ProfileScreen({ navigation }) {
                         onPress={() => {
                           setError(false)
                           dispatch(
-                            actions.convertGuestAccount({
+                            commonActions.convertGuestAccount({
                               id: currentUser.id,
                               name: currentUser.name,
                               dateOfBirth: currentUser.dateOfBirth,

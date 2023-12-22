@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../../services/network'
 import { httpClient } from '../../../services/HttpClient'
-import * as actions from '../actions'
+import { commonActions } from '../actions'
 import * as selectors from '../selectors'
 import { ActionTypes } from '../types'
 
@@ -23,7 +23,7 @@ const ACTIONS_TO_TRACK: ActionTypes[] = [
 function* onTrackAction(action) {
   const currentUser = yield select(selectors.currentUserSelector)
   yield put(
-    actions.queueEvent({
+    commonActions.queueEvent({
       id: uuidv4(),
       type: action.type,
       payload: action.payload || {},
@@ -56,7 +56,7 @@ function* processEventQueue() {
 
     try {
       yield httpClient.appendEvents({ events, appToken })
-      yield put(actions.resetQueue())
+      yield put(commonActions.resetQueue())
     } catch (err) {
       // ignore error, we'll try later
     }

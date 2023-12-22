@@ -12,7 +12,7 @@ import {
 } from '@oky/core'
 import { httpClient } from '../../../services/HttpClient'
 import * as selectors from '../selectors'
-import * as actions from '../actions'
+import { commonActions } from '../actions'
 import _ from 'lodash'
 import messaging from '@react-native-firebase/messaging'
 import { closeOutTTs } from '../../../services/textToSpeech'
@@ -23,7 +23,7 @@ function* onRehydrate(action: RehydrateAction) {
   const hasPreviousContentFromStorage = action.payload && action.payload.content
 
   if (!hasPreviousContentFromStorage) {
-    yield put(actions.initStaleContent(staleContent[locale]))
+    yield put(commonActions.initStaleContent(staleContent[locale]))
   }
 
   const now = new Date().getTime()
@@ -33,7 +33,7 @@ function* onRehydrate(action: RehydrateAction) {
   const shouldFetch = !timeFetched || timeFetched + fetchInterval < now
 
   if (shouldFetch) {
-    yield put(actions.fetchContentRequest(locale))
+    yield put(commonActions.fetchContentRequest(locale))
   }
 }
 
@@ -65,7 +65,7 @@ function* onFetchSurveyContent(
       }
     })
 
-    yield put(actions.updateAllSurveyContent(finalArr))
+    yield put(commonActions.updateAllSurveyContent(finalArr))
   } catch (error) {
     //
   }
@@ -150,7 +150,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     const aboutBannerData = yield fetchAboutBannerConditional()
 
     yield put(
-      actions.fetchContentSuccess({
+      commonActions.fetchContentSuccess({
         timeFetched: new Date().getTime(),
         articles: _.isEmpty(articles.allIds) ? staleContent[locale].articles : articles,
         videos: _.isEmpty(videos.allIds) ? staleContent[locale].videos : videos,
@@ -176,11 +176,11 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
       }),
     )
   } catch (error) {
-    yield put(actions.fetchContentFailure())
+    yield put(commonActions.fetchContentFailure())
     const aboutContent = yield select(selectors.aboutContent)
     if (!aboutContent) {
       const localeInit = yield select(selectors.currentLocaleSelector)
-      yield put(actions.initStaleContent(staleContent[localeInit]))
+      yield put(commonActions.initStaleContent(staleContent[localeInit]))
     }
   }
 }
@@ -191,7 +191,7 @@ function* onSetLocale(action: ExtractActionFromActionType<'SET_LOCALE'>) {
   if (isTtsActive) {
     // TODO_ALEX why?
     yield call(closeOutTTs)
-    yield put(actions.setTtsActive(false))
+    yield put(commonActions.setTtsActive(false))
   }
   // unsubscribe from topic
   // TODO_ALEX: use locales from submodule
@@ -199,9 +199,9 @@ function* onSetLocale(action: ExtractActionFromActionType<'SET_LOCALE'>) {
   messaging().unsubscribeFromTopic('oky_id_notifications')
   messaging().unsubscribeFromTopic('oky_mn_notifications')
   messaging().subscribeToTopic(`oky_${locale}_notifications`)
-  yield put(actions.initStaleContent(staleContent[locale]))
+  yield put(commonActions.initStaleContent(staleContent[locale]))
 
-  yield put(actions.fetchContentRequest(locale))
+  yield put(commonActions.fetchContentRequest(locale))
 }
 
 export function* contentSaga() {

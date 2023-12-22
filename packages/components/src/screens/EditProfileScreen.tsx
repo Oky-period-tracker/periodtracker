@@ -10,7 +10,7 @@ import { DateOfBirthInput } from '../components/common/DateOfBirthInput'
 import { assets } from '../assets/index'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/common/selectors'
-import * as actions from '../redux/common/actions'
+import { commonActions } from '../redux/common/actions'
 import { useDispatch } from 'react-redux'
 import { BackOneScreen } from '../services/navigationService'
 import { httpClient } from '../services/HttpClient'
@@ -117,7 +117,7 @@ export function EditProfileScreen() {
       })
 
       dispatch(
-        actions.editUser({
+        commonActions.editUser({
           name,
           dateOfBirth,
           gender,
@@ -144,7 +144,7 @@ export function EditProfileScreen() {
       })
 
       dispatch(
-        actions.editUser({
+        commonActions.editUser({
           secretAnswer: _.toLower(secretAnswer).trim(),
         }),
       )
@@ -182,7 +182,7 @@ export function EditProfileScreen() {
       })
 
       dispatch(
-        actions.editUser({
+        commonActions.editUser({
           password: _.toLower(password).trim(),
         }),
       )
@@ -205,7 +205,7 @@ export function EditProfileScreen() {
       }
 
       dispatch(
-        actions.editUser({
+        commonActions.editUser({
           name,
           dateOfBirth,
           gender,

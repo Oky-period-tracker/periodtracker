@@ -5,7 +5,7 @@ import { fetchNetworkConnectionStatus } from '../../../services/network'
 import { extractReducerState } from '../sync'
 import { ReduxState, exportReducerNames } from '../reducers'
 import { version as storeVersion } from '../../store'
-import * as actions from '../actions'
+import { commonActions } from '../actions'
 import * as selectors from '../selectors'
 import messaging from '@react-native-firebase/messaging'
 
@@ -42,7 +42,7 @@ function* syncAppState() {
         appToken,
       })
 
-      const temp = yield put(actions.syncStore())
+      const temp = yield put(commonActions.syncStore())
 
       lastAppState = appState
     } catch (err) {
@@ -55,7 +55,7 @@ function* onRequestStoreFirebaseKey() {
   if (yield fetchNetworkConnectionStatus()) {
     // no internet connection
     const firebaseToken = yield messaging().getToken()
-    yield put(actions.storeFirebaseKey(firebaseToken))
+    yield put(commonActions.storeFirebaseKey(firebaseToken))
   }
 }
 

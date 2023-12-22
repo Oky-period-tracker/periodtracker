@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { FlatList, Dimensions, KeyboardAvoidingView } from 'react-native'
 import { DayCarouselItem } from './DayCarouselItem'
 import { useDispatch } from 'react-redux'
-import * as actions from '../../redux/common/actions'
+import { commonActions } from '../../redux/common/actions'
 import { NoteCard } from './NoteCard'
 import { QuizCard } from './QuizCard'
 import { DidYouKnowCard } from './DidYouKnowCard'
@@ -225,7 +225,7 @@ export function DayCarousel({ navigation, dataEntry }) {
           setEndSurvey(true)
         }, 5000)
         dispatch(
-          actions.answerSurvey({
+          commonActions.answerSurvey({
             id: newSurveys?.id,
             isCompleted: true,
             isSurveyAnswered: true,
@@ -238,10 +238,10 @@ export function DayCarousel({ navigation, dataEntry }) {
           if (allSurveys?.length) {
             const tempData = allSurveys
             const tempCompletedSurveys = completedSurveys ? completedSurveys : []
-            dispatch(actions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
+            dispatch(commonActions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
 
             tempData.shift()
-            dispatch(actions.updateAllSurveyContent(tempData))
+            dispatch(commonActions.updateAllSurveyContent(tempData))
           }
         }, 2000)
       } else {
@@ -261,7 +261,7 @@ export function DayCarousel({ navigation, dataEntry }) {
         currentSurvey.answeredQuestion = currQuestion?.is_multiple ? tempAnswer : answersArray
         const tempData = [...allSurveys]
         tempData[0] = currentSurvey
-        dispatch(actions.updateAllSurveyContent(tempData))
+        dispatch(commonActions.updateAllSurveyContent(tempData))
       }
     }
   }
@@ -332,7 +332,7 @@ export function DayCarousel({ navigation, dataEntry }) {
                     setTempCardAnswer(answer)
                     setIsVisible(true)
                     dispatch(
-                      actions.answerDailyCard({
+                      commonActions.answerDailyCard({
                         cardName: tempCardName,
                         answer: tempCardAnswer,
                         userID,
@@ -344,7 +344,7 @@ export function DayCarousel({ navigation, dataEntry }) {
                     return
                   }
                   dispatch(
-                    actions.answerDailyCard({
+                    commonActions.answerDailyCard({
                       cardName,
                       answer,
                       userID,
@@ -370,7 +370,7 @@ export function DayCarousel({ navigation, dataEntry }) {
           hide={() => {
             setIsVisible(false)
             dispatch(
-              actions.answerDailyCard({
+              commonActions.answerDailyCard({
                 cardName: tempCardName,
                 answer: tempCardAnswer,
                 userID,

@@ -3,7 +3,7 @@ import { ExtractActionFromActionType } from '../types'
 
 import { httpClient } from '../../../services/HttpClient'
 
-import * as actions from '../actions'
+import { commonActions } from '../actions'
 import _ from 'lodash'
 import { PredictionState } from '../../../prediction'
 
@@ -34,12 +34,15 @@ function* onFetchUpdatedPredictedCycles(
       history: predictionFullState.history,
       actualCurrentStartDate: predictionFullState.currentCycle,
     })
-    yield put(actions.setPredictionEngineState(stateToSet))
+    yield put(commonActions.setPredictionEngineState(stateToSet))
     yield put(
-      actions.updateFuturePrediction(futurePredictionStatus, predictionFullState.currentCycle),
+      commonActions.updateFuturePrediction(
+        futurePredictionStatus,
+        predictionFullState.currentCycle,
+      ),
     )
   } catch (error) {
-    yield put(actions.setSmartPredictionFailure(error))
+    yield put(commonActions.setSmartPredictionFailure(error))
   }
 }
 

@@ -6,7 +6,7 @@ import { ListItem } from './accessScreen/ListItem'
 import { Header } from '../../components/common/Header'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/common/selectors'
-import * as actions from '../../redux/common/actions/index'
+import { commonActions } from '../../redux/common/actions/index'
 import { useDispatch } from 'react-redux'
 import { navigateAndReset } from '../../services/navigationService'
 import { TouchableOpacity } from 'react-native'
@@ -27,7 +27,7 @@ export function AccessScreen({ navigation }) {
   const speechText = privacyContent.map((item) => item.content)
   const shareLink = () => {
     // @TODO: app event
-    dispatch(actions.shareApp())
+    dispatch(commonActions.shareApp())
     const options = {
       url: WEBSITE_URL,
       message: translate('join_oky_message'),
@@ -57,7 +57,7 @@ export function AccessScreen({ navigation }) {
                   if (lang !== locale) {
                     setLoading(true)
                     requestAnimationFrame(() => {
-                      dispatch(actions.setLocale(lang))
+                      dispatch(commonActions.setLocale(lang))
                     })
                   }
                 }}

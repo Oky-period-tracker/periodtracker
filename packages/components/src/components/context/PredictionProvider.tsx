@@ -5,7 +5,7 @@ import { PredictionState, PredictionEngine } from '../../prediction'
 
 import { useSelector } from '../../hooks/useSelector'
 import { useDispatch } from 'react-redux'
-import * as actions from '../../redux/common/actions'
+import { commonActions } from '../../redux/common/actions'
 
 type PredictionDispatch = typeof PredictionEngine.prototype.userInputDispatch
 
@@ -38,21 +38,21 @@ export function PredictionProvider({ children }) {
     (action) => {
       setPredictionSnapshots((snapshots) => snapshots.concat(predictionState))
       predictionEngine.userInputDispatch(action)
-      reduxDispatch(actions.adjustPrediction(action))
+      reduxDispatch(commonActions.adjustPrediction(action))
     },
     [predictionState, reduxDispatch, predictionEngine],
   )
 
   React.useEffect(() => {
     return predictionEngine.subscribe((nextPredictionState) => {
-      reduxDispatch(actions.setPredictionEngineState(nextPredictionState))
+      reduxDispatch(commonActions.setPredictionEngineState(nextPredictionState))
     })
   }, [reduxDispatch, predictionEngine])
 
   const undo = React.useCallback(() => {
     if (predictionSnapshots.length > 0) {
       const lastSnapshot = _.last(predictionSnapshots)
-      reduxDispatch(actions.setPredictionEngineState(PredictionState.fromJSON(lastSnapshot)))
+      reduxDispatch(commonActions.setPredictionEngineState(PredictionState.fromJSON(lastSnapshot)))
       setPredictionSnapshots((snapshots) => snapshots.slice(0, -1))
     }
   }, [predictionSnapshots])

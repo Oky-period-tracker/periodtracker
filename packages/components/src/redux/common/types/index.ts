@@ -1,7 +1,7 @@
-import * as actions from '../actions'
+import { commonActions } from '../actions'
 import { ActionsUnion, ActionsOfType } from './types'
 
-export type Actions = ActionsUnion<typeof actions>
+export type Actions = ActionsUnion<typeof commonActions>
 
 export type ActionTypes = Actions[keyof Actions]
 

@@ -7,7 +7,7 @@ import { OnboardingCard } from './onboardingScreen/OnboardingCard'
 import { assets } from '../assets/index'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { navigateAndReset } from '../services/navigationService'
-import * as actions from '../redux/common/actions'
+import { commonActions } from '../redux/common/actions'
 import { useDispatch } from 'react-redux'
 import { Animated } from 'react-native'
 import { Text } from '../components/common/Text'
@@ -28,8 +28,8 @@ export function OnboardingScreen() {
 
   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
   // const onPenalCodeComplete = lang => {
-  //   dispatch(actions.setChosenRegion(lang))
-  //   dispatch(actions.setLocale(lang))
+  //   dispatch(commonActions.setChosenRegion(lang))
+  //   dispatch(commonActions.setLocale(lang))
   // }
 
   return (
@@ -70,7 +70,7 @@ export function OnboardingScreen() {
             }}
             textStyle={{ color: 'white' }}
             onPress={() => {
-              dispatch(actions.setHasOpened(true))
+              dispatch(commonActions.setHasOpened(true))
               navigateAndReset('LoginStack', null)
             }}
           >

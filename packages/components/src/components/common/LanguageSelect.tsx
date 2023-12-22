@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components/native'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/common/selectors'
-import * as actions from '../../redux/common/actions/index'
+import { commonActions } from '../../redux/common/actions/index'
 import { useDispatch } from 'react-redux'
 
 import { PrimaryButton } from './buttons/PrimaryButton'
@@ -27,7 +27,7 @@ export const LanguageSelect = ({ style = null, textStyle = null, onPress = null 
         }}
         onModalHide={() => {
           if (lang === '') return
-          dispatch(actions.setLocale(lang))
+          dispatch(commonActions.setLocale(lang))
         }}
         setIsVisible={setModalVisible}
         isVisible={modalVisible}

@@ -3,7 +3,7 @@ import moment from 'moment'
 import configureStore from 'redux-mock-store'
 
 import _ from 'lodash'
-import * as actions from '../../../src/redux/common/actions'
+import { commonActions } from '../../../src/redux/common/actions'
 import { authReducer } from '../../../src/redux/common/reducers/authReducer'
 
 const middleWares = []
@@ -32,7 +32,7 @@ describe('authReducer', () => {
   })
 
   it('Create account request actions', () => {
-    const action = actions.createAccountRequest({ ...mockPayload, id: undefined })
+    const action = commonActions.createAccountRequest({ ...mockPayload, id: undefined })
     // Dispatch the action
     store.dispatch(action)
     // Test if your store dispatched the expected actions
@@ -41,7 +41,7 @@ describe('authReducer', () => {
     expect(scopedActions[0].type).toEqual(expectedType)
   })
   it('Login As guest account', () => {
-    const action = actions.loginSuccessAsGuestAccount(mockPayload)
+    const action = commonActions.loginSuccessAsGuestAccount(mockPayload)
     const newStore = authReducer(undefined, action)
     // Dispatch the action
 
@@ -49,14 +49,14 @@ describe('authReducer', () => {
     expect(newStore?.user?.isGuest).toEqual(true)
   })
   it('Login Out guest account', () => {
-    const action = actions.logout()
+    const action = commonActions.logout()
     const newStore = authReducer(undefined, action)
     // Dispatch the action
 
     expect(newStore.user).toEqual(null)
   })
   it('Create account faiure', () => {
-    const action = actions.createAccountFailure()
+    const action = commonActions.createAccountFailure()
     const newStore = authReducer(undefined, action)
     // Dispatch the action
 

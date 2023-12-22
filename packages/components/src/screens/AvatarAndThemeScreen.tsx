@@ -6,7 +6,7 @@ import { ThemeSelect } from './avatarAndTheme/ThemeSelect'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
-import * as actions from '../redux/common/actions/index'
+import { commonActions } from '../redux/common/actions/index'
 import { Header } from '../components/common/Header'
 import { useTheme } from '../components/context/ThemeContext'
 import { BackOneScreen, navigate } from '../services/navigationService'
@@ -57,7 +57,7 @@ export function AvatarAndThemeScreen({ navigation }) {
           <AvatarSelect
             avatars={avatarNames}
             value={selectedAvatar}
-            onSelect={(avatar) => dispatch(actions.setAvatar(avatar))}
+            onSelect={(avatar) => dispatch(commonActions.setAvatar(avatar))}
           />
           <ThemeSelect
             themes={themeNames}
@@ -66,7 +66,7 @@ export function AvatarAndThemeScreen({ navigation }) {
               if (theme !== id) {
                 setLoading(true)
                 requestAnimationFrame(() => {
-                  dispatch(actions.setTheme(theme))
+                  dispatch(commonActions.setTheme(theme))
                 })
               }
             }}

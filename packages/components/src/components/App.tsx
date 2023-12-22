@@ -2,14 +2,12 @@ import 'react-native-get-random-values' // Required for uuid package
 import React from 'react'
 import { AppProvider } from './AppProvider'
 import AppNavigator from '../navigators/AppNavigator'
-import { configureStore } from '../redux/store'
 import { setTopLevelNavigator } from '../services/navigationService'
 import { notificationListener } from '../services/notifications'
 import { SafeAreaView } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
 import { Platform } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
-import { commonPersistor, commonStore } from '../redux/common/commonStore'
 
 export default function App() {
   React.useEffect(() => {
@@ -27,7 +25,7 @@ export default function App() {
   }, [])
 
   return (
-    <AppProvider store={commonStore} persistor={commonPersistor}>
+    <AppProvider>
       <SafeAreaView
         forceInset={{ bottom: 'never' }}
         style={{ flex: 1, backgroundColor: '#757575' }}

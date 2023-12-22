@@ -9,16 +9,7 @@ import { SafeAreaView } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
 import { Platform } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
-import { config } from '../redux/config'
-import { rootReducer } from '../redux/common/reducers'
-import { rootSaga } from '../redux/common/sagas'
-
-const { persistor, store } = configureStore({
-  key: 'primary',
-  secretKey: config.REDUX_ENCRYPT_KEY,
-  rootReducer,
-  rootSaga,
-})
+import { commonPersistor, commonStore } from '../redux/common/commonStore'
 
 export default function App() {
   React.useEffect(() => {
@@ -36,7 +27,7 @@ export default function App() {
   }, [])
 
   return (
-    <AppProvider store={store} persistor={persistor}>
+    <AppProvider store={commonStore} persistor={commonPersistor}>
       <SafeAreaView
         forceInset={{ bottom: 'never' }}
         style={{ flex: 1, backgroundColor: '#757575' }}

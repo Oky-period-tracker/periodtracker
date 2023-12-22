@@ -6,7 +6,7 @@ import { authSaga } from './authSaga'
 import { contentSaga } from './contentSaga'
 import { smartPredictionbSaga } from './smartPredictionSaga'
 
-export function* rootSaga() {
+export function* secureRootSaga() {
   yield all([
     fork(analyticsSaga),
     fork(appSaga),

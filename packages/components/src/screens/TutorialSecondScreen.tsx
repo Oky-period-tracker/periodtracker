@@ -20,7 +20,7 @@ import { CalendarAssetDemo } from './tutorial/CalendarAssetDemo'
 import { SpinLoader } from '../components/common/SpinLoader'
 import { NoteAssetDemo } from './tutorial/NoteAssetDemo'
 import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import moment from 'moment'
 import Tts from 'react-native-tts'
 import { translate } from '../i18n'
@@ -51,7 +51,7 @@ export function TutorialSecondScreen({ navigation }) {
   const dispatch = useDispatch()
   // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
   const renamedUseSelector = useSelector
-  const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
+  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
 
   const normalizePosition = (percentage, dimension) => {
     return percentage * dimension - arrowSize / 2
@@ -375,7 +375,7 @@ export function TutorialSecondScreen({ navigation }) {
 
   const getCardAnswersValues = (inputDay) => {
     const cardData = renamedUseSelector((state) =>
-      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
+      commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
     )
     return cardData
   }

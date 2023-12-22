@@ -19,7 +19,7 @@ import { ColourButtonsDemo } from './tutorial/ColourButtonsDemo'
 import { SpinLoader } from '../components/common/SpinLoader'
 import DeviceInfo from 'react-native-device-info'
 import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import moment from 'moment'
 import Tts from 'react-native-tts'
 import { translate } from '../i18n'
@@ -43,7 +43,7 @@ export function TutorialFirstScreen() {
   const dispatch = useDispatch()
   const [completedStep, setCompletedStep] = React.useState(0)
 
-  const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
+  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
 
   const normalizePosition = (percentage, dimension) => {
     return percentage * dimension - arrowSize / 2
@@ -53,7 +53,7 @@ export function TutorialFirstScreen() {
 
   const getCardAnswersValues = (inputDay) => {
     const cardData = renamedUseSelector((state) =>
-      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
+      commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
     )
     return cardData
   }

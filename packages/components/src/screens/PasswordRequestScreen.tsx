@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { commonActions } from '../redux/common/actions'
 import { Text } from '../components/common/Text'
 import { TextInput } from '../components/common/TextInput'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import { navigateAndReset } from '../services/navigationService'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PageContainer } from '../components/layout/PageContainer'
@@ -15,7 +15,7 @@ import _ from 'lodash'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
-  const user = useSelector(selectors.currentUserSelector)
+  const user = useSelector(commonSelectors.currentUserSelector)
   const [loading, setLoading] = React.useState(false)
   const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)

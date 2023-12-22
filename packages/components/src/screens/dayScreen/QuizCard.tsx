@@ -6,16 +6,16 @@ import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
 import { useSelector } from '../../hooks/useSelector'
 import _ from 'lodash'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { commonActions } from '../../redux/common/actions'
 import { useDispatch } from 'react-redux'
 
 const deviceWidth = Dimensions.get('window').width
 
 function useQuiz() {
-  const unansweredQuizzes = useSelector(selectors.quizzesWithoutAnswersSelector)
+  const unansweredQuizzes = useSelector(commonSelectors.quizzesWithoutAnswersSelector)
 
-  const allQuizzes = useSelector(selectors.allQuizzesSelectors)
+  const allQuizzes = useSelector(commonSelectors.allQuizzesSelectors)
   const randomQuiz = React.useMemo(() => {
     if (_.isEmpty(unansweredQuizzes)) {
       return _.sample(allQuizzes)
@@ -27,9 +27,11 @@ function useQuiz() {
 
 export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEntry, index }) => {
   const dispatch = useDispatch()
-  const userID = useSelector(selectors.currentUserSelector).id
+  const userID = useSelector(commonSelectors.currentUserSelector).id
   const selectedQuestion = useQuiz()
-  const answeredQuestion = useSelector((state) => selectors.quizAnswerByDate(state, dataEntry.date))
+  const answeredQuestion = useSelector((state) =>
+    commonSelectors.quizAnswerByDate(state, dataEntry.date),
+  )
 
   const QuizContent = () => {
     return selectedQuestion.answers.map((item, ind) => {

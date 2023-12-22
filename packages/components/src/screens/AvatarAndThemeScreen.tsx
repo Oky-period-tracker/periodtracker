@@ -11,7 +11,7 @@ import { Header } from '../components/common/Header'
 import { useTheme } from '../components/context/ThemeContext'
 import { BackOneScreen, navigate } from '../services/navigationService'
 import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import styled from 'styled-components/native'
 import { Text } from '../components/common/Text'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -21,7 +21,7 @@ export function AvatarAndThemeScreen({ navigation }) {
   const signingUp = navigation.getParam('signingUp')
   const newUser = navigation.getParam('newUser')
   const [loading, setLoading] = React.useState(false)
-  const selectedAvatar = useSelector(selectors.currentAvatarSelector)
+  const selectedAvatar = useSelector(commonSelectors.currentAvatarSelector)
   const dispatch = useDispatch()
 
   const { id } = useTheme()

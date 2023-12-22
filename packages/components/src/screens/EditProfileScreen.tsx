@@ -9,7 +9,7 @@ import { SelectBox } from '../components/common/SelectBox'
 import { DateOfBirthInput } from '../components/common/DateOfBirthInput'
 import { assets } from '../assets/index'
 import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import { commonActions } from '../redux/common/actions'
 import { useDispatch } from 'react-redux'
 import { BackOneScreen } from '../services/navigationService'
@@ -71,8 +71,8 @@ async function runInSequence(functions) {
 
 export function EditProfileScreen() {
   const dispatch = useDispatch()
-  const currentUser = useSelector(selectors.currentUserSelector)
-  const appToken = useSelector(selectors.appTokenSelector)
+  const currentUser = useSelector(commonSelectors.currentUserSelector)
+  const appToken = useSelector(commonSelectors.appTokenSelector)
 
   const [name, setName] = React.useState(currentUser.name)
   const [notValid, setNotValid] = React.useState(false)

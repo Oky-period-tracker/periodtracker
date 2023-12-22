@@ -6,7 +6,7 @@ import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
 import { useSelector } from '../../hooks/useSelector'
 import _ from 'lodash'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { commonActions } from '../../redux/common/actions'
 import { useDispatch } from 'react-redux'
 import { TextInput } from '../../components/common/TextInput'
@@ -34,12 +34,12 @@ export const SurveyCard = React.memo<{
   const [title, setTitle] = React.useState('')
   const [titlePlaceholder, setTitlePlaceholder] = React.useState('type_answer_placeholder')
   const [isSkip, setSkip] = React.useState(null)
-  const userID = useSelector(selectors.currentUserSelector).id
+  const userID = useSelector(commonSelectors.currentUserSelector).id
   const dispatch = useDispatch()
   const [showThankYouMsg, setThankYouMsg] = React.useState(null)
   const [selectedIndex, setSelectedIndex] = React.useState(null)
-  const completedSurveys = useSelector(selectors.completedSurveys)
-  const allSurveys = useSelector(selectors.allSurveys)
+  const completedSurveys = useSelector(commonSelectors.completedSurveys)
+  const allSurveys = useSelector(commonSelectors.allSurveys)
 
   const checkUserPermission = (option, optionIndex) => {
     setSelectedIndex(optionIndex)

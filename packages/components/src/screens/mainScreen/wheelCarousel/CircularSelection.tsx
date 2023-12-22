@@ -7,7 +7,7 @@ import { PanGesture } from './PanGesture'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ColourButtons } from '../ColourButtons'
 import { useSelector } from '../../../hooks/useSelector'
-import * as selectors from '../../../redux/common/selectors'
+import { commonSelectors } from '../../../redux/common/selectors'
 import { navigateAndReset } from '../../../services/navigationService'
 import { useCheckDayWarning } from '../../../hooks/usePredictionWarnings'
 import { ThemedModal } from '../../../components/common/ThemedModal'
@@ -44,7 +44,7 @@ export function CircularSelection({
     inputRange: [0, data.length],
     outputRange: [0, -2 * Math.PI],
   })
-  const isTutorialOneOn = useSelector(selectors.isTutorialOneActiveSelector)
+  const isTutorialOneOn = useSelector(commonSelectors.isTutorialOneActiveSelector)
   const checkIfWarning = useCheckDayWarning()
   // automatically close the modal if the wheel start scrolling
   React.useEffect(() => {
@@ -139,7 +139,10 @@ export function CircularSelection({
             onPress={() => setIsVisible(false)}
             selectedDayInfo={data[currentIndex]}
             cardValues={useSelector((state) =>
-              selectors.verifyPeriodDaySelectorWithDate(state, moment(data[currentIndex].date)),
+              commonSelectors.verifyPeriodDaySelectorWithDate(
+                state,
+                moment(data[currentIndex].date),
+              ),
             )}
           />
         </ThemedModal>

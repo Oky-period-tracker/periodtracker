@@ -9,7 +9,7 @@ import { QuizCard } from './QuizCard'
 import { DidYouKnowCard } from './DidYouKnowCard'
 import { SurveyCard } from './SurveyCard'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { translate } from '../../i18n'
 import { ThemedModal } from '../../components/common/ThemedModal'
@@ -27,9 +27,9 @@ export function DayCarousel({ navigation, dataEntry }) {
   const [tempCardName, setTempCardName] = React.useState(null)
   const [tempCardAnswer, setTempCardAnswer] = React.useState(null)
   const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 })
-  const userID = useSelector(selectors.currentUserSelector).id
-  const allSurveys = useSelector(selectors.allSurveys)
-  const completedSurveys = useSelector(selectors.completedSurveys)
+  const userID = useSelector(commonSelectors.currentUserSelector).id
+  const allSurveys = useSelector(commonSelectors.allSurveys)
+  const completedSurveys = useSelector(commonSelectors.completedSurveys)
   const newSurveys = allSurveys?.length ? allSurveys[0] : null
 
   const cards = {

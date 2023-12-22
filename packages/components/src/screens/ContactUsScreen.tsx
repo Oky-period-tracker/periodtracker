@@ -10,7 +10,7 @@ import { TextInput } from '../components/common/TextInput'
 import { KeyboardAwareAvoidance } from '../components/common/KeyboardAwareAvoidance'
 import { httpClient } from '../services/HttpClient'
 import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import moment from 'moment'
 import { Text } from '../components/common/Text'
 import { ThemedModal } from '../components/common/ThemedModal'
@@ -23,8 +23,8 @@ const Reasons = ['reason', 'report_bug', 'request_topic', 'Other', 'problem_app'
 
 export function ContactUsScreen({ navigation }) {
   const [email, setEmail] = React.useState('')
-  const user = useSelector(selectors.currentUserSelector)
-  const locale = useSelector(selectors.currentLocaleSelector)
+  const user = useSelector(commonSelectors.currentUserSelector)
+  const locale = useSelector(commonSelectors.currentLocaleSelector)
   const [reason, setReason] = React.useState('')
   const [message, setMessage] = React.useState('')
   const [notValid, setNotValid] = React.useState(false)

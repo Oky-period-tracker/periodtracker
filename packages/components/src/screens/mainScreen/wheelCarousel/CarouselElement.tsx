@@ -8,7 +8,7 @@ import { assets } from '../../../assets/index'
 import { EmojiSelector } from '../../../components/common/EmojiSelector'
 import { useSelector } from '../../../hooks/useSelector'
 import { emojis } from '../../../config'
-import * as selectors from '../../../redux/common/selectors'
+import { commonSelectors } from '../../../redux/common/selectors'
 import { useColor } from '../../../hooks/useColor'
 import styled from 'styled-components/native'
 import moment from 'moment'
@@ -47,7 +47,7 @@ export function CarouselElement({ dataEntry, index, isActive, currentIndex }) {
   const value = new Value(0)
   const color = useColor(dataEntry.onPeriod, dataEntry.onFertile)
   const cardAnswersValues = useSelector((state) =>
-    selectors.cardAnswerSelector(state, moment(dataEntry.date)),
+    commonSelectors.cardAnswerSelector(state, moment(dataEntry.date)),
   )
 
   const [isVisible, setIsVisible] = React.useState(false)
@@ -73,7 +73,7 @@ export function CarouselElement({ dataEntry, index, isActive, currentIndex }) {
     })
   }
   const verifiedPeriodDaysData = useSelector((state) =>
-    selectors.verifyPeriodDaySelectorWithDate(state, moment(dataEntry.date)),
+    commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(dataEntry.date)),
   )
 
   return (

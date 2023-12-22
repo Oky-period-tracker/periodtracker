@@ -19,7 +19,7 @@ import { ThemeSelectItem } from './avatarAndTheme/ThemeSelectItem'
 import { useHistoryPrediction, useTodayPrediction } from '../components/context/PredictionProvider'
 import { useSelector } from '../hooks/useSelector'
 import { commonActions } from '../redux/common/actions'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import { translate } from '../i18n/index'
 import { IconButton } from '../components/common/buttons/IconButton'
 import Modal from 'react-native-modal'
@@ -29,12 +29,12 @@ import moment from 'moment'
 
 export function ProfileScreen({ navigation }) {
   const History = useHistoryPrediction()
-  const selectedAvatar = useSelector(selectors.currentAvatarSelector)
+  const selectedAvatar = useSelector(commonSelectors.currentAvatarSelector)
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [error, setError] = React.useState(false)
   const shouldSkip = React.useRef(0)
-  const currentUser = useSelector(selectors.currentUserSelector)
-  const errorCode: any = useSelector(selectors.authError)
+  const currentUser = useSelector(commonSelectors.currentUserSelector)
+  const errorCode: any = useSelector(commonSelectors.authError)
   const todayInfo = useTodayPrediction()
   const { id: theme } = useTheme()
   const dispatch = useDispatch()

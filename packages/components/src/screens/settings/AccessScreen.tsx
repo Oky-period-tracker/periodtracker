@@ -5,7 +5,7 @@ import styled from 'styled-components/native'
 import { ListItem } from './accessScreen/ListItem'
 import { Header } from '../../components/common/Header'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { commonActions } from '../../redux/common/actions/index'
 import { useDispatch } from 'react-redux'
 import { navigateAndReset } from '../../services/navigationService'
@@ -19,11 +19,11 @@ import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { acessSettingsScreenText, WEBSITE_URL } from '../../config'
 
 export function AccessScreen({ navigation }) {
-  const locale = useSelector(selectors.currentLocaleSelector)
+  const locale = useSelector(commonSelectors.currentLocaleSelector)
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
 
-  const privacyContent = useSelector(selectors.privacyContent)
+  const privacyContent = useSelector(commonSelectors.privacyContent)
   const speechText = privacyContent.map((item) => item.content)
   const shareLink = () => {
     // @TODO: app event

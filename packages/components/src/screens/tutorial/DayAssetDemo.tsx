@@ -9,12 +9,12 @@ import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { translate } from '../../i18n'
 import Tts from 'react-native-tts'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 
 export function DayAssetDemo({ step }) {
-  const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
+  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
 
   React.useEffect(() => {
     if (hasTtsActive) {

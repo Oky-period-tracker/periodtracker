@@ -6,7 +6,7 @@ import { assets } from '../../assets/index'
 import { Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { Icon } from '../../components/common/Icon'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { useSelector } from '../../hooks/useSelector'
 import { useColor } from '../../hooks/useColor'
 import { translate } from '../../i18n'
@@ -14,7 +14,9 @@ import { translate } from '../../i18n'
 const deviceWidth = Dimensions.get('window').width
 
 export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }) {
-  const selectedEmojis = useSelector((state) => selectors.cardAnswerSelector(state, dataEntry.date))
+  const selectedEmojis = useSelector((state) =>
+    commonSelectors.cardAnswerSelector(state, dataEntry.date),
+  )
 
   const color = useColor(dataEntry.onPeriod, dataEntry.onFertile)
   const source = selectedEmojis[cardName]

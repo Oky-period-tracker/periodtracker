@@ -11,14 +11,14 @@ import {
   liveContent as staleContent,
 } from '@oky/core'
 import { httpClient } from '../../../services/HttpClient'
-import * as selectors from '../selectors'
+import { commonSelectors } from '../selectors'
 import { commonActions } from '../actions'
 import _ from 'lodash'
 import messaging from '@react-native-firebase/messaging'
 import { closeOutTTs } from '../../../services/textToSpeech'
 
 function* onRehydrate(action: RehydrateAction) {
-  const locale = yield select(selectors.currentLocaleSelector)
+  const locale = yield select(commonSelectors.currentLocaleSelector)
 
   const hasPreviousContentFromStorage = action.payload && action.payload.content
 
@@ -41,15 +41,15 @@ function* onRehydrate(action: RehydrateAction) {
 function* onFetchSurveyContent(
   action: ExtractActionFromActionType<'FETCH_SURVEY_CONTENT_REQUEST'>,
 ) {
-  const locale = yield select(selectors.currentLocaleSelector)
-  const userID = yield select(selectors.currentUserSelector)
+  const locale = yield select(commonSelectors.currentLocaleSelector)
+  const userID = yield select(commonSelectors.currentUserSelector)
   try {
     const surveys = yield httpClient.fetchSurveys({
       locale,
       userID,
     })
-    const previousSurveys = yield select(selectors.allSurveys)
-    const completedSurveys = yield select(selectors.completedSurveys)
+    const previousSurveys = yield select(commonSelectors.allSurveys)
+    const completedSurveys = yield select(commonSelectors.completedSurveys)
     const newSurveyArr = previousSurveys?.length ? previousSurveys : []
     surveys.forEach((item) => {
       const itemExits = _.find(previousSurveys, { id: item.id })
@@ -177,9 +177,9 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     )
   } catch (error) {
     yield put(commonActions.fetchContentFailure())
-    const aboutContent = yield select(selectors.aboutContent)
+    const aboutContent = yield select(commonSelectors.aboutContent)
     if (!aboutContent) {
-      const localeInit = yield select(selectors.currentLocaleSelector)
+      const localeInit = yield select(commonSelectors.currentLocaleSelector)
       yield put(commonActions.initStaleContent(staleContent[localeInit]))
     }
   }
@@ -187,7 +187,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
 
 function* onSetLocale(action: ExtractActionFromActionType<'SET_LOCALE'>) {
   const { locale } = action.payload
-  const isTtsActive = yield select(selectors.isTtsActiveSelector)
+  const isTtsActive = yield select(commonSelectors.isTtsActiveSelector)
   if (isTtsActive) {
     // TODO_ALEX why?
     yield call(closeOutTTs)

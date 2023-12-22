@@ -5,7 +5,7 @@ import { TextWithoutTranslation, Text } from './Text'
 import _ from 'lodash'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,
@@ -51,7 +51,7 @@ function useStatusForSource(
 
 export const DayBadge = ({ dataEntry, style, fontSizes, cardValues }) => {
   const currentCycleInfo = useTodayPrediction()
-  const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
+  const hasFuturePredictionActive = useSelector(commonSelectors.isFuturePredictionSelector)
 
   const actualCurrentStartDate = useActualCurrentStartDateSelector()
 

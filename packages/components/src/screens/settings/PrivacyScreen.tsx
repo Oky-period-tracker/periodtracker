@@ -5,14 +5,14 @@ import { Header } from '../../components/common/Header'
 import { TextWithoutTranslation } from '../../components/common/Text'
 import { ScrollView, Dimensions } from 'react-native'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { chunk } from 'lodash'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 
 const width = Dimensions.get('window').width
 export function PrivacyScreen({ navigation }) {
   const [page, setPage] = React.useState(0)
-  const privacyContent = useSelector(selectors.privacyContent)
+  const privacyContent = useSelector(commonSelectors.privacyContent)
   const speechText = privacyContent.map((item) => item.content)
   const content = privacyContent.map((item, ind) => {
     if (item.type === 'HEADING') {

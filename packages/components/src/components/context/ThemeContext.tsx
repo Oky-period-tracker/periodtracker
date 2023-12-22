@@ -1,12 +1,12 @@
 import React from 'react'
 import { ThemeContext, ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { themes } from '@oky/core'
 
 export function ThemeProvider({ children }) {
   const themeName = useSelector((state) => state.app.theme)
-  const locale = useSelector(selectors.currentLocaleSelector)
+  const locale = useSelector(commonSelectors.currentLocaleSelector)
   return (
     <StyledThemeProvider
       theme={{ ...themes[themeName], fontSize: moderateScale(themes[themeName].fontSize, locale) }}

@@ -4,7 +4,7 @@ import { ScrollView, Animated } from 'react-native'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import { Category } from './encyclopediaScreen/Category'
 import { SubCategoryCard, VideoSubCategoryCard } from './encyclopediaScreen/SubCategoryCard'
 import Accordion from 'react-native-collapsible/Accordion'
@@ -18,16 +18,16 @@ import analytics from '@react-native-firebase/analytics'
 import { fetchNetworkConnectionStatus } from '../services/network'
 
 export function EncyclopediaScreen({ navigation }) {
-  const categories = useSelector(selectors.allCategoriesSelector)
-  const articles = useSelector(selectors.allArticlesSelector)
-  const subCategories = useSelector(selectors.allSubCategoriesSelector)
-  const subCategoriesObject = useSelector(selectors.allSubCategoriesObjectSelector)
+  const categories = useSelector(commonSelectors.allCategoriesSelector)
+  const articles = useSelector(commonSelectors.allArticlesSelector)
+  const subCategories = useSelector(commonSelectors.allSubCategoriesSelector)
+  const subCategoriesObject = useSelector(commonSelectors.allSubCategoriesObjectSelector)
   const [activeCategories, setActiveCategory] = React.useState([])
   const [filteredCategories, setFilteredCategories] = React.useState(categories)
   const [shownCategories, setShownCategories] = React.useState(categories)
   const [searching, setSearching] = React.useState(false)
   const [position] = React.useState(new Animated.Value(0))
-  const currentUser = useSelector(selectors.currentUserSelector)
+  const currentUser = useSelector(commonSelectors.currentUserSelector)
 
   const categoryNames = categories.map((item) => item?.name)
   const [textArray, setTextArray] = React.useState(categoryNames)

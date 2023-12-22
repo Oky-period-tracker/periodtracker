@@ -3,12 +3,12 @@ import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('screen').height
 
 export function CalendarAssetDemo() {
-  const locale = useSelector(selectors.currentLocaleSelector)
+  const locale = useSelector(commonSelectors.currentLocaleSelector)
   const source = assets.general.calendarStatic[locale]
 
   return (

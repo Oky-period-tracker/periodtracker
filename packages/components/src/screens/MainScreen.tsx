@@ -23,7 +23,7 @@ import { assets } from '../assets'
 import { commonActions } from '../redux/common/actions'
 import { useDispatch } from 'react-redux'
 import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import moment from 'moment'
 import { FlowerButton, FlowerModal } from '../optional/Flower'
 
@@ -44,10 +44,10 @@ const MainScreenContainer = ({ navigation }) => {
   const theme = useTheme()
   const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
-  const userID = useSelector(selectors.currentUserSelector).id
+  const userID = useSelector(commonSelectors.currentUserSelector).id
   const fullState = useFullState()
   const history = useHistoryPrediction()
-  const currentUser = useSelector(selectors.currentUserSelector)
+  const currentUser = useSelector(commonSelectors.currentUserSelector)
 
   // @TODO: careful note here, may be worth the performance increase though May not work with Memo now
   React.useEffect(() => {
@@ -62,10 +62,10 @@ const MainScreenActual = React.memo(() => {
   const { data, index, isActive, currentIndex, absoluteIndex } = useInfiniteScroll()
   // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
   const renamedUseSelector = useSelector
-  const allCardsData = renamedUseSelector((state) => selectors.allCardAnswersSelector(state))
+  const allCardsData = renamedUseSelector((state) => commonSelectors.allCardAnswersSelector(state))
   const getCardAnswersValues = (inputDay: any) => {
     const verifiedPeriodDaysData = renamedUseSelector((state) =>
-      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
+      commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
     )
     return verifiedPeriodDaysData
   }

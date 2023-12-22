@@ -4,13 +4,13 @@ import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { useSelector } from '../../hooks/useSelector'
 import _ from 'lodash'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { TitleText } from '../../components/common/TitleText'
 
 const deviceWidth = Dimensions.get('window').width
 
 function useDidYouKnow() {
-  const allDidYouKnows = useSelector(selectors.allDidYouKnowsSelectors)
+  const allDidYouKnows = useSelector(commonSelectors.allDidYouKnowsSelectors)
   const randomDidYouKnow = React.useMemo(() => {
     return _.sample(allDidYouKnows)
   }, [])

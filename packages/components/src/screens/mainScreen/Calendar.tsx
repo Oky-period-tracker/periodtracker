@@ -22,7 +22,7 @@ import { translate } from '../../i18n'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { calendarScreenSpeech } from '../../config'
 import { useSelector } from 'react-redux'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
@@ -34,8 +34,10 @@ const startDate = moment().startOf('day').subtract(24, 'months')
 const endDate = moment().startOf('day').add(12, 'months')
 
 export const Calendar = ({ navigation }) => {
-  const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
-  const verifiedPeriodsData = useSelector((state: any) => selectors.allCardAnswersSelector(state))
+  const hasFuturePredictionActive = useSelector(commonSelectors.isFuturePredictionSelector)
+  const verifiedPeriodsData = useSelector((state: any) =>
+    commonSelectors.allCardAnswersSelector(state),
+  )
   const highlightedDates = useCalculateStatusForDateRange(
     startDate,
     endDate,

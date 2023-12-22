@@ -6,7 +6,7 @@ import { extractReducerState } from '../sync'
 import { ReduxState, exportReducerNames } from '../reducers'
 import { version as storeVersion } from '../../store'
 import { commonActions } from '../actions'
-import * as selectors from '../selectors'
+import { commonSelectors } from '../selectors'
 import messaging from '@react-native-firebase/messaging'
 
 function* syncAppState() {
@@ -16,7 +16,7 @@ function* syncAppState() {
     // process queue every minute
     yield delay(60 * 1000)
 
-    const appToken = yield select(selectors.appTokenSelector)
+    const appToken = yield select(commonSelectors.appTokenSelector)
     if (!appToken) {
       // not logged
       continue

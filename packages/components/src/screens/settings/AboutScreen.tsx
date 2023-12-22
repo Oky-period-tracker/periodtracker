@@ -5,7 +5,7 @@ import { TextWithoutTranslation } from '../../components/common/Text'
 import { Header } from '../../components/common/Header'
 import { Icon } from '../../components/common/Icon'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { aboutScreenText } from '../../config'
 import { Dimensions } from 'react-native'
@@ -13,9 +13,9 @@ import { assets } from '../../assets'
 const width = Dimensions.get('window').width
 const imageWidth = width - 30
 export const AboutScreen = ({ navigation }) => {
-  const aboutContent = useSelector(selectors.aboutContent)
-  const aboutBanner = useSelector(selectors.aboutBanner)
-  const locale = useSelector(selectors.currentLocaleSelector)
+  const aboutContent = useSelector(commonSelectors.aboutContent)
+  const aboutBanner = useSelector(commonSelectors.aboutBanner)
+  const locale = useSelector(commonSelectors.currentLocaleSelector)
 
   const iconSource = aboutBanner ? { uri: aboutBanner } : assets.general.aboutBanner[locale]
 

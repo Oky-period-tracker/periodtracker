@@ -6,7 +6,7 @@ import { WheelPickerContent } from '../../components/WheelPickerContent'
 import { Avatar } from '../../components/common/Avatar/Avatar'
 import { assets } from '../../assets'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 
 export function JourneyCard({
   question,
@@ -29,7 +29,7 @@ export function JourneyCard({
   leftButtonTitle = 'i_dont_remember',
   rightButtonTitle = 'i_remember',
 }) {
-  const selectedAvatar = useSelector(selectors.currentAvatarSelector)
+  const selectedAvatar = useSelector(commonSelectors.currentAvatarSelector)
   return (
     <>
       {status === 'initial' && (

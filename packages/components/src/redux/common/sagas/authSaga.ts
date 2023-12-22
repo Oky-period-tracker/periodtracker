@@ -6,7 +6,7 @@ import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../../services/HttpClient'
 import { ReduxState, exportReducerNames } from '../reducers'
 import { commonActions } from '../actions'
-import * as selectors from '../selectors'
+import { commonSelectors } from '../selectors'
 import { navigateAndReset } from '../../../services/navigationService'
 import { PredictionState } from '../../../prediction'
 import moment from 'moment'
@@ -19,8 +19,8 @@ type Await<T> = T extends Promise<infer U> ? U : T
 function* onRehydrate() {
   const state: ReduxState = yield select()
 
-  const appToken = selectors.appTokenSelector(state)
-  const user = selectors.currentUserSelector(state)
+  const appToken = commonSelectors.appTokenSelector(state)
+  const user = commonSelectors.currentUserSelector(state)
 
   // convert guest account
   if (!appToken && user && user.isGuest) {
@@ -61,7 +61,7 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
 function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
   const { name, password } = action.payload
   const stateRedux: ReduxState = yield select()
-  const localeapp = selectors.currentLocaleSelector(stateRedux)
+  const localeapp = commonSelectors.currentLocaleSelector(stateRedux)
   yield commonActions.setLocale(localeapp)
 
   try {
@@ -224,7 +224,7 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
 function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACCOUNT_REQUEST'>) {
   const { setLoading } = action.payload
   const state: ReduxState = yield select()
-  const user = selectors.currentUserSelector(state)
+  const user = commonSelectors.currentUserSelector(state)
   setLoading(true)
   try {
     const { name, password } = action.payload
@@ -251,7 +251,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
 }
 
 function* onLogoutRequest() {
-  const isTtsActive = yield select(selectors.isTtsActiveSelector)
+  const isTtsActive = yield select(commonSelectors.isTtsActiveSelector)
 
   if (isTtsActive) {
     yield call(closeOutTTs)
@@ -271,7 +271,7 @@ function* onLogoutRequest() {
 
 function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPLETION'>) {
   const { data } = action.payload
-  const currentUser = yield select(selectors.currentUserSelector)
+  const currentUser = yield select(commonSelectors.currentUserSelector)
   let periodResult = null
   if (yield fetchNetworkConnectionStatus()) {
     try {

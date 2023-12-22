@@ -5,14 +5,14 @@ import { Header } from '../../components/common/Header'
 import { TextWithoutTranslation } from '../../components/common/Text'
 import { ScrollView, Dimensions, Platform } from 'react-native'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { chunk } from 'lodash'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 
 const width = Dimensions.get('window').width
 export function TermsScreen({ navigation }) {
   const [page, setPage] = React.useState(0)
-  const termsAndConditions = useSelector(selectors.termsAndConditionsContent)
+  const termsAndConditions = useSelector(commonSelectors.termsAndConditionsContent)
   const speechText = termsAndConditions.map((item) => item.content)
   const content = termsAndConditions.map((item, ind) => {
     if (item.type === 'HEADING') {

@@ -3,7 +3,7 @@ import styled from 'styled-components/native'
 import { Text } from '../../components/common/Text'
 import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { useSelector } from '../../hooks/useSelector'
 import { emojis } from '../../config'
@@ -13,7 +13,7 @@ const cardNames = ['mood', 'body', 'activity', 'flow']
 
 export const CycleCard = ({ item, cycleNumber }) => {
   const cardAnswersValues = useSelector((state) =>
-    selectors.mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
+    commonSelectors.mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
   )
 
   return (

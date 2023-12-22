@@ -13,7 +13,7 @@ import { navigate } from '../services/navigationService'
 export function AuthScreen() {
   const [toggled, setToggled] = React.useState(true)
   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
-  // const locale = useSelector(selectors.currentLocaleSelector)
+  // const locale = useSelector(commonSelectors.currentLocaleSelector)
 
   return (
     <BackgroundTheme>

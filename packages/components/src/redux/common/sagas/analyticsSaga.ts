@@ -4,7 +4,7 @@ import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../../services/network'
 import { httpClient } from '../../../services/HttpClient'
 import { commonActions } from '../actions'
-import * as selectors from '../selectors'
+import { commonSelectors } from '../selectors'
 import { ActionTypes } from '../types'
 
 const ACTIONS_TO_TRACK: ActionTypes[] = [
@@ -21,7 +21,7 @@ const ACTIONS_TO_TRACK: ActionTypes[] = [
 ]
 
 function* onTrackAction(action) {
-  const currentUser = yield select(selectors.currentUserSelector)
+  const currentUser = yield select(commonSelectors.currentUserSelector)
   yield put(
     commonActions.queueEvent({
       id: uuidv4(),
@@ -40,8 +40,8 @@ function* processEventQueue() {
     // process queue every minute
     yield delay(60 * 1000)
 
-    const appToken = yield select(selectors.appTokenSelector)
-    const events = yield select(selectors.allAnalyticsEventsSelector)
+    const appToken = yield select(commonSelectors.appTokenSelector)
+    const events = yield select(commonSelectors.allAnalyticsEventsSelector)
 
     const isQueueEmpty = events.length === 0
     if (isQueueEmpty) {

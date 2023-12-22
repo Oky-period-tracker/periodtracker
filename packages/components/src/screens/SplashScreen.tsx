@@ -4,7 +4,7 @@ import { PageContainer } from '../components/layout/PageContainer'
 import { assets } from '../assets/index'
 import styled from 'styled-components/native'
 import { useSelector, useDispatch } from 'react-redux'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import { commonActions } from '../redux/common/actions'
 import { navigateAndReset } from '../services/navigationService'
 import { Animated, Easing } from 'react-native'
@@ -18,14 +18,14 @@ import messaging from '@react-native-firebase/messaging'
 
 export function SplashScreen() {
   const dispatch = useDispatch()
-  const user: any = useSelector(selectors.currentUserSelector)
+  const user: any = useSelector(commonSelectors.currentUserSelector)
   const Alert = useAlert()
 
-  const locale = useSelector(selectors.currentLocaleSelector)
-  const hasOpened = useSelector(selectors.hasOpenedSelector)
-  const currentAppVersion = useSelector(selectors.currentAppVersion)
-  const currentFirebaseToken = useSelector(selectors.currentFirebaseToken)
-  const hasPasswordRequestOn = useSelector(selectors.isLoginPasswordActiveSelector)
+  const locale = useSelector(commonSelectors.currentLocaleSelector)
+  const hasOpened = useSelector(commonSelectors.hasOpenedSelector)
+  const currentAppVersion = useSelector(commonSelectors.currentAppVersion)
+  const currentFirebaseToken = useSelector(commonSelectors.currentFirebaseToken)
+  const hasPasswordRequestOn = useSelector(commonSelectors.isLoginPasswordActiveSelector)
   const [animatedValue] = React.useState(new Animated.Value(0))
 
   async function checkForPermanentAlerts() {

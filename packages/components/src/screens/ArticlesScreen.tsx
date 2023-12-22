@@ -4,13 +4,13 @@ import { FlatList } from 'react-native'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { useSelector } from '../hooks/useSelector'
-import * as selectors from '../redux/common/selectors'
+import { commonSelectors } from '../redux/common/selectors'
 import { Header } from '../components/common/Header'
 import { TextWithoutTranslation } from '../components/common/Text'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 
 const ArticleItem = ({ article, index, articles }) => {
-  const articleObject = useSelector((state) => selectors.articleByIDSelector(state, article))
+  const articleObject = useSelector((state) => commonSelectors.articleByIDSelector(state, article))
 
   if (!articleObject) {
     return null
@@ -38,9 +38,9 @@ const ArticleItem = ({ article, index, articles }) => {
 export function ArticlesScreen({ navigation }) {
   const subCategory = navigation.getParam('subCategory')
   const subCategoryObject = useSelector((state) =>
-    selectors.subCategoryByIDSelector(state, subCategory),
+    commonSelectors.subCategoryByIDSelector(state, subCategory),
   )
-  const allArticlesByIDObject = useSelector(selectors.articlesObjectByIDSelector)
+  const allArticlesByIDObject = useSelector(commonSelectors.articlesObjectByIDSelector)
   const articles = subCategoryObject.articles
   const articlesTextArray = articles.reduce((acc, item) => {
     const selectedArticle = allArticlesByIDObject[item]

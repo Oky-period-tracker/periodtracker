@@ -4,7 +4,7 @@ import { CalendarList as DefaultCalendarList, LocaleConfig } from 'react-native-
 import momentTimezone from 'moment-timezone'
 import { assets } from '../../assets/index'
 import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/common/selectors'
 import { calendarTranslations } from '@oky/core'
 
 LocaleConfig.locales = {
@@ -19,7 +19,7 @@ export function CalendarList({
   setInputDay,
   width = null,
 }: any) {
-  const locale = useSelector(selectors.currentLocaleSelector)
+  const locale = useSelector(commonSelectors.currentLocaleSelector)
   LocaleConfig.defaultLocale = locale
   const [markedDates, setMarkedDates] = React.useState({})
   const calendarRef = React.useRef()

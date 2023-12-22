@@ -1,6 +1,6 @@
 import { REHYDRATE, RehydrateAction } from 'redux-persist'
 import _ from 'lodash'
-import { Actions } from '../types/index'
+import { CommonActions } from '../types/index'
 
 export interface User {
   id: string
@@ -36,7 +36,10 @@ const initialState: AuthState = {
   user: null,
 }
 
-export function authReducer(state = initialState, action: Actions | RehydrateAction): AuthState {
+export function authReducer(
+  state = initialState,
+  action: CommonActions | RehydrateAction,
+): AuthState {
   switch (action.type) {
     case REHYDRATE:
       return {

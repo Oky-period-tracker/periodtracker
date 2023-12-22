@@ -1,34 +1,35 @@
-import { ReduxState } from '../reducers'
+import { CommonReduxState } from '../reducers'
 
-const s = (state: ReduxState) => state.app
-const predictionS = (state: ReduxState) => state.prediction
-export const currentLocaleSelector = (state: ReduxState) => s(state).locale
+const s = (state: CommonReduxState) => state.app
+const predictionS = (state: CommonReduxState) => state.prediction
+export const currentLocaleSelector = (state: CommonReduxState) => s(state).locale
 
-export const currentChosenRegionSelector = (state: ReduxState) => s(state).chosenRegion
+export const currentChosenRegionSelector = (state: CommonReduxState) => s(state).chosenRegion
 
-export const currentThemeSelector = (state: ReduxState) => s(state).theme
+export const currentThemeSelector = (state: CommonReduxState) => s(state).theme
 
-export const currentAvatarSelector = (state: ReduxState) => s(state).avatar
+export const currentAvatarSelector = (state: CommonReduxState) => s(state).avatar
 
-export const hasOpenedSelector = (state: ReduxState) => s(state).hasOpened
+export const hasOpenedSelector = (state: CommonReduxState) => s(state).hasOpened
 
-export const isTutorialOneActiveSelector = (state: ReduxState) => s(state).isTutorialOneActive
+export const isTutorialOneActiveSelector = (state: CommonReduxState) => s(state).isTutorialOneActive
 
-export const isTutorialTwoActiveSelector = (state: ReduxState) => s(state).isTutorialTwoActive
+export const isTutorialTwoActiveSelector = (state: CommonReduxState) => s(state).isTutorialTwoActive
 
-export const isTtsActiveSelector = (state: ReduxState) => s(state).isTtsActive
+export const isTtsActiveSelector = (state: CommonReduxState) => s(state).isTtsActive
 
-export const isLoginPasswordActiveSelector = (state: ReduxState) => s(state).isLoginPasswordActive
+export const isLoginPasswordActiveSelector = (state: CommonReduxState) =>
+  s(state).isLoginPasswordActive
 
-export const currentAppVersion = (state: ReduxState) => s(state).appVersionName
+export const currentAppVersion = (state: CommonReduxState) => s(state).appVersionName
 
-export const currentFirebaseToken = (state: ReduxState) => s(state).firebaseToken
+export const currentFirebaseToken = (state: CommonReduxState) => s(state).firebaseToken
 
-export const userVerifiedDates = (state: ReduxState) => s(state).verifiedDates
+export const userVerifiedDates = (state: CommonReduxState) => s(state).verifiedDates
 
 // Smart precition selectors
-export const isFuturePredictionSelector = (state: ReduxState) => predictionS(state)
-export const isFuturePredictionActiveSelector = (state: ReduxState) =>
+export const isFuturePredictionSelector = (state: CommonReduxState) => predictionS(state)
+export const isFuturePredictionActiveSelector = (state: CommonReduxState) =>
   predictionS(state)?.futurePredictionStatus
 
-// export const smartPredictedPeriods = (state: ReduxState) => s(state).predicted_periods
+// export const smartPredictedPeriods = (state: CommonReduxState) => s(state).predicted_periods

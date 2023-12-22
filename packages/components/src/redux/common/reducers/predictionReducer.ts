@@ -1,13 +1,13 @@
 import _ from 'lodash'
 import { PredictionSerializableState } from '../../../prediction'
 
-import { Actions } from '../types/index'
+import { CommonActions } from '../types/index'
 
 export type PredictionState = PredictionSerializableState | null
 
 const initialState: PredictionState = null
 
-export function predictionReducer(state = initialState, action: Actions): PredictionState {
+export function predictionReducer(state = initialState, action: CommonActions): PredictionState {
   switch (action.type) {
     case 'SET_PREDICTION_ENGINE_STATE':
       return action.payload.predictionState.toJSON()

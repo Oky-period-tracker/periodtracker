@@ -3,7 +3,7 @@ import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
 import { httpClient } from '../../../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../../../services/network'
 import { extractReducerState } from '../sync'
-import { ReduxState, exportReducerNames } from '../reducers'
+import { CommonReduxState, exportReducerNames } from '../reducers'
 import { version as storeVersion } from '../../store'
 import { commonActions } from '../actions'
 import { commonSelectors } from '../selectors'
@@ -22,7 +22,7 @@ function* syncAppState() {
       continue
     }
 
-    const state: ReduxState = yield select()
+    const state: CommonReduxState = yield select()
     const appState = extractReducerState(state, exportReducerNames)
 
     if (_.isEqual(appState, lastAppState)) {

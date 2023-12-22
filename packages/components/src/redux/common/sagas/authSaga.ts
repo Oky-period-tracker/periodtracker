@@ -4,7 +4,7 @@ import { Alert } from 'react-native'
 import { v4 as uuidv4 } from 'uuid'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../../services/HttpClient'
-import { ReduxState, exportReducerNames } from '../reducers'
+import { CommonReduxState, exportReducerNames } from '../reducers'
 import { commonActions } from '../actions'
 import { commonSelectors } from '../selectors'
 import { navigateAndReset } from '../../../services/navigationService'
@@ -17,7 +17,7 @@ import { fetchNetworkConnectionStatus } from '../../../services/network'
 type Await<T> = T extends Promise<infer U> ? U : T
 
 function* onRehydrate() {
-  const state: ReduxState = yield select()
+  const state: CommonReduxState = yield select()
 
   const appToken = commonSelectors.appTokenSelector(state)
   const user = commonSelectors.currentUserSelector(state)
@@ -60,7 +60,7 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
 
 function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
   const { name, password } = action.payload
-  const stateRedux: ReduxState = yield select()
+  const stateRedux: CommonReduxState = yield select()
   const localeapp = commonSelectors.currentLocaleSelector(stateRedux)
   yield commonActions.setLocale(localeapp)
 
@@ -223,7 +223,7 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
 }
 function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACCOUNT_REQUEST'>) {
   const { setLoading } = action.payload
-  const state: ReduxState = yield select()
+  const state: CommonReduxState = yield select()
   const user = commonSelectors.currentUserSelector(state)
   setLoading(true)
   try {

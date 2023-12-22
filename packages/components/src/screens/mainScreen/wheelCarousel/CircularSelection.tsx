@@ -13,9 +13,9 @@ import { useCheckDayWarning } from '../../../hooks/usePredictionWarnings'
 import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
-import { ReduxState } from '../../../redux/common/reducers'
+import { CommonReduxState } from '../../../redux/common/reducers'
 
-const reduxState = (state: ReduxState) => state
+const reduxState = (state: CommonReduxState) => state
 
 const { interpolate } = Animated
 const height = 0.55 * Dimensions.get('window').height

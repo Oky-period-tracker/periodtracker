@@ -1,4 +1,4 @@
 import { useSelector as useReduxSelector, TypedUseSelectorHook } from 'react-redux'
-import { ReduxState } from './reducers'
+import { CommonReduxState } from './reducers'
 
-export const useCommonSelector: TypedUseSelectorHook<ReduxState> = useReduxSelector
+export const useCommonSelector: TypedUseSelectorHook<CommonReduxState> = useReduxSelector

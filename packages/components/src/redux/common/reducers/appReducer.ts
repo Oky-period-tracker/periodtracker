@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Actions } from '../types'
+import { CommonActions } from '../types'
 import { currentLocale } from '../../../i18n'
 import DeviceInfo from 'react-native-device-info'
 import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from '@oky/core'
@@ -44,7 +44,7 @@ const initialState: AppState = {
   predicted_periods: [],
 }
 
-export function appReducer(state = initialState, action: Actions): AppState {
+export function appReducer(state = initialState, action: CommonActions): AppState {
   switch (action.type) {
     case 'SET_THEME':
       return {

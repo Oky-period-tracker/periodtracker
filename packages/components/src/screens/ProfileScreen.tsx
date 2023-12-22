@@ -17,7 +17,7 @@ import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { AvatarOption } from './avatarAndTheme/avatarSelect/AvatarOption'
 import { ThemeSelectItem } from './avatarAndTheme/ThemeSelectItem'
 import { useHistoryPrediction, useTodayPrediction } from '../components/context/PredictionProvider'
-import { useSelector } from '../hooks/useSelector'
+import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { commonActions } from '../redux/common/actions'
 import { commonSelectors } from '../redux/common/selectors'
 import { translate } from '../i18n/index'
@@ -29,17 +29,17 @@ import moment from 'moment'
 
 export function ProfileScreen({ navigation }) {
   const History = useHistoryPrediction()
-  const selectedAvatar = useSelector(commonSelectors.currentAvatarSelector)
+  const selectedAvatar = useCommonSelector(commonSelectors.currentAvatarSelector)
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [error, setError] = React.useState(false)
   const shouldSkip = React.useRef(0)
-  const currentUser = useSelector(commonSelectors.currentUserSelector)
-  const errorCode: any = useSelector(commonSelectors.authError)
+  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
+  const errorCode: any = useCommonSelector(commonSelectors.authError)
   const todayInfo = useTodayPrediction()
   const { id: theme } = useTheme()
   const dispatch = useDispatch()
 
-  const connectAccountCount = useSelector((state) => state.auth.connectAccountAttempts)
+  const connectAccountCount = useCommonSelector((state) => state.auth.connectAccountAttempts)
   const dateOfBirth = moment(currentUser.dateOfBirth)
 
   useTextToSpeechHook({

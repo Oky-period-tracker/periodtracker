@@ -3,14 +3,16 @@ import styled from 'styled-components/native'
 import { FlatList } from 'react-native'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
-import { useSelector } from '../hooks/useSelector'
+import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { commonSelectors } from '../redux/common/selectors'
 import { Header } from '../components/common/Header'
 import { TextWithoutTranslation } from '../components/common/Text'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 
 const ArticleItem = ({ article, index, articles }) => {
-  const articleObject = useSelector((state) => commonSelectors.articleByIDSelector(state, article))
+  const articleObject = useCommonSelector((state) =>
+    commonSelectors.articleByIDSelector(state, article),
+  )
 
   if (!articleObject) {
     return null
@@ -37,10 +39,10 @@ const ArticleItem = ({ article, index, articles }) => {
 
 export function ArticlesScreen({ navigation }) {
   const subCategory = navigation.getParam('subCategory')
-  const subCategoryObject = useSelector((state) =>
+  const subCategoryObject = useCommonSelector((state) =>
     commonSelectors.subCategoryByIDSelector(state, subCategory),
   )
-  const allArticlesByIDObject = useSelector(commonSelectors.articlesObjectByIDSelector)
+  const allArticlesByIDObject = useCommonSelector(commonSelectors.articlesObjectByIDSelector)
   const articles = subCategoryObject.articles
   const articlesTextArray = articles.reduce((acc, item) => {
     const selectedArticle = allArticlesByIDObject[item]

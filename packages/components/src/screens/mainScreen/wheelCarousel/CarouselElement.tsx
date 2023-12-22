@@ -6,7 +6,7 @@ import { DayBadge } from '../../../components/common/DayBadge'
 import { DateBadge } from '../../../components/common/DateBadge'
 import { assets } from '../../../assets/index'
 import { EmojiSelector } from '../../../components/common/EmojiSelector'
-import { useSelector } from '../../../hooks/useSelector'
+import { useCommonSelector } from '../../../redux/common/useCommonSelector'
 import { emojis } from '../../../config'
 import { commonSelectors } from '../../../redux/common/selectors'
 import { useColor } from '../../../hooks/useColor'
@@ -46,7 +46,7 @@ export function CarouselElement({ dataEntry, index, isActive, currentIndex }) {
   const clock = new Clock()
   const value = new Value(0)
   const color = useColor(dataEntry.onPeriod, dataEntry.onFertile)
-  const cardAnswersValues = useSelector((state) =>
+  const cardAnswersValues = useCommonSelector((state) =>
     commonSelectors.cardAnswerSelector(state, moment(dataEntry.date)),
   )
 
@@ -72,7 +72,7 @@ export function CarouselElement({ dataEntry, index, isActive, currentIndex }) {
       navigateAndReset('TutorialFirstStack', null)
     })
   }
-  const verifiedPeriodDaysData = useSelector((state) =>
+  const verifiedPeriodDaysData = useCommonSelector((state) =>
     commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(dataEntry.date)),
   )
 

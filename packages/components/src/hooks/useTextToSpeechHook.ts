@@ -1,10 +1,10 @@
 import React from 'react'
 import { speakArray, clearTTSQueue } from '../services/textToSpeech'
-import { useSelector } from './useSelector'
+import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { commonSelectors } from '../redux/common/selectors'
 
 export function useTextToSpeechHook({ navigation, text }) {
-  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
+  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
   const [shouldSpeak, setShouldSpeak] = React.useState(false)
 
   React.useEffect(() => {

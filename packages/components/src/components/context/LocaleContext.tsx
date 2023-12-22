@@ -1,9 +1,9 @@
 import React from 'react'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { currentLocale, configureI18n } from '../../i18n'
 
 export function LocaleProvider({ children }) {
-  const locale = useSelector(state => state.app.locale)
+  const locale = useCommonSelector((state) => state.app.locale)
   const [syncLocale, setSyncLocale] = React.useState(currentLocale())
 
   React.useLayoutEffect(() => {

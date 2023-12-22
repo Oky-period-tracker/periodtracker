@@ -4,7 +4,7 @@ import { Dimensions } from 'react-native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import _ from 'lodash'
 import { commonSelectors } from '../../redux/common/selectors'
 import { commonActions } from '../../redux/common/actions'
@@ -34,12 +34,12 @@ export const SurveyCard = React.memo<{
   const [title, setTitle] = React.useState('')
   const [titlePlaceholder, setTitlePlaceholder] = React.useState('type_answer_placeholder')
   const [isSkip, setSkip] = React.useState(null)
-  const userID = useSelector(commonSelectors.currentUserSelector).id
+  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
   const dispatch = useDispatch()
   const [showThankYouMsg, setThankYouMsg] = React.useState(null)
   const [selectedIndex, setSelectedIndex] = React.useState(null)
-  const completedSurveys = useSelector(commonSelectors.completedSurveys)
-  const allSurveys = useSelector(commonSelectors.allSurveys)
+  const completedSurveys = useCommonSelector(commonSelectors.completedSurveys)
+  const allSurveys = useCommonSelector(commonSelectors.allSurveys)
 
   const checkUserPermission = (option, optionIndex) => {
     setSelectedIndex(optionIndex)

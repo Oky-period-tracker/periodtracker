@@ -18,7 +18,7 @@ export function OnboardingScreen() {
   const [index, setIndex] = React.useState(0)
   const [isButtonVisible, setIsButtonVisible] = React.useState(false)
   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
-  // const region = useSelector(commonSelectors.currentChosenRegionSelector)
+  // const region = useCommonSelector(commonSelectors.currentChosenRegionSelector)
 
   React.useEffect(() => {
     if (index === 2) {

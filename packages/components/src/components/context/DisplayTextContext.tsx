@@ -2,7 +2,7 @@ import React from 'react'
 import Tts from 'react-native-tts'
 import _ from 'lodash'
 import { translate } from '../../i18n'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { commonSelectors } from '../../redux/common/selectors'
 
 interface Props {
@@ -15,10 +15,10 @@ interface Props {
 const DisplayTextContext = React.createContext<Props>(undefined)
 
 export function DisplayTextProvider({ children }) {
-  const availableText = useSelector(commonSelectors.allAvatarText)
+  const availableText = useCommonSelector(commonSelectors.allAvatarText)
 
   const [text, setText] = React.useState(null)
-  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
+  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
 
   const setDisplayTextRandom = () => {
     setText(_.sample(availableText).content)

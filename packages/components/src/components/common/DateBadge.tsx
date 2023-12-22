@@ -6,7 +6,7 @@ import { translate } from '../../i18n'
 import { TouchableOpacity } from 'react-native'
 import _ from 'lodash'
 import moment from 'moment'
-import { useSelector } from 'react-redux'
+import { useCommonSelector } from 'react-redux'
 import { commonSelectors } from '../../redux/common/selectors'
 import {
   useTodayPrediction,
@@ -69,7 +69,7 @@ export function DateBadge({ dataEntry, style, textStyle = null, showModal, cardV
   const { id: themeName } = useTheme()
   const currentCycleInfo = useTodayPrediction()
   const actualCurrentStartDate = useActualCurrentStartDateSelector()
-  const hasFuturePredictionActive = useSelector(commonSelectors.isFuturePredictionSelector)
+  const hasFuturePredictionActive = useCommonSelector(commonSelectors.isFuturePredictionSelector)
 
   const source = useStatusForSource(
     dataEntry,

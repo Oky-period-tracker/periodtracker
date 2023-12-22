@@ -4,7 +4,7 @@ import { BackgroundTheme } from '../../components/layout/BackgroundTheme'
 import { TextWithoutTranslation } from '../../components/common/Text'
 import { Header } from '../../components/common/Header'
 import { Icon } from '../../components/common/Icon'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { commonSelectors } from '../../redux/common/selectors'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { aboutScreenText } from '../../config'
@@ -13,9 +13,9 @@ import { assets } from '../../assets'
 const width = Dimensions.get('window').width
 const imageWidth = width - 30
 export const AboutScreen = ({ navigation }) => {
-  const aboutContent = useSelector(commonSelectors.aboutContent)
-  const aboutBanner = useSelector(commonSelectors.aboutBanner)
-  const locale = useSelector(commonSelectors.currentLocaleSelector)
+  const aboutContent = useCommonSelector(commonSelectors.aboutContent)
+  const aboutBanner = useCommonSelector(commonSelectors.aboutBanner)
+  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
 
   const iconSource = aboutBanner ? { uri: aboutBanner } : assets.general.aboutBanner[locale]
 

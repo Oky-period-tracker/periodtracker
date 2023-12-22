@@ -10,7 +10,7 @@ import { commonActions } from '../redux/common/actions/index'
 import { Header } from '../components/common/Header'
 import { useTheme } from '../components/context/ThemeContext'
 import { BackOneScreen, navigate } from '../services/navigationService'
-import { useSelector } from '../hooks/useSelector'
+import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { commonSelectors } from '../redux/common/selectors'
 import styled from 'styled-components/native'
 import { Text } from '../components/common/Text'
@@ -21,7 +21,7 @@ export function AvatarAndThemeScreen({ navigation }) {
   const signingUp = navigation.getParam('signingUp')
   const newUser = navigation.getParam('newUser')
   const [loading, setLoading] = React.useState(false)
-  const selectedAvatar = useSelector(commonSelectors.currentAvatarSelector)
+  const selectedAvatar = useCommonSelector(commonSelectors.currentAvatarSelector)
   const dispatch = useDispatch()
 
   const { id } = useTheme()

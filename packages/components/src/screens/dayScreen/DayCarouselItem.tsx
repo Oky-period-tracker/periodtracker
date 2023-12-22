@@ -7,14 +7,14 @@ import { Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { Icon } from '../../components/common/Icon'
 import { commonSelectors } from '../../redux/common/selectors'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { useColor } from '../../hooks/useColor'
 import { translate } from '../../i18n'
 
 const deviceWidth = Dimensions.get('window').width
 
 export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }) {
-  const selectedEmojis = useSelector((state) =>
+  const selectedEmojis = useCommonSelector((state) =>
     commonSelectors.cardAnswerSelector(state, dataEntry.date),
   )
 

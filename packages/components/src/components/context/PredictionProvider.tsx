@@ -3,7 +3,7 @@ import moment, { Moment } from 'moment'
 import _ from 'lodash'
 import { PredictionState, PredictionEngine } from '../../prediction'
 
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { useDispatch } from 'react-redux'
 import { commonActions } from '../../redux/common/actions'
 
@@ -23,7 +23,7 @@ const defaultState = PredictionState.fromData({
 
 export function PredictionProvider({ children }) {
   const reduxDispatch = useDispatch()
-  const predictionState = useSelector((state) => state.prediction)
+  const predictionState = useCommonSelector((state) => state.prediction)
 
   const [predictionSnapshots, setPredictionSnapshots] = React.useState([])
   const predictionEngine = React.useMemo(() => {

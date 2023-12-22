@@ -4,7 +4,7 @@ import { BackgroundTheme } from '../../components/layout/BackgroundTheme'
 import styled from 'styled-components/native'
 import { ListItem } from './accessScreen/ListItem'
 import { Header } from '../../components/common/Header'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { commonSelectors } from '../../redux/common/selectors'
 import { commonActions } from '../../redux/common/actions/index'
 import { useDispatch } from 'react-redux'
@@ -19,11 +19,11 @@ import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { acessSettingsScreenText, WEBSITE_URL } from '../../config'
 
 export function AccessScreen({ navigation }) {
-  const locale = useSelector(commonSelectors.currentLocaleSelector)
+  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
 
-  const privacyContent = useSelector(commonSelectors.privacyContent)
+  const privacyContent = useCommonSelector(commonSelectors.privacyContent)
   const speechText = privacyContent.map((item) => item.content)
   const shareLink = () => {
     // @TODO: app event

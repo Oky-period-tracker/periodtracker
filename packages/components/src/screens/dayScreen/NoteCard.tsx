@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { commonSelectors } from '../../redux/common/selectors'
 import { commonActions } from '../../redux/common/actions'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { TextInput } from '../../components/common/TextInput'
 import { useDispatch } from 'react-redux'
 import { BackOneScreen } from '../../services/navigationService'
@@ -16,10 +16,10 @@ import { translate } from '../../i18n'
 const deviceWidth = Dimensions.get('window').width
 
 export function NoteCard({ dataEntry }) {
-  const noteObject: any = useSelector((state) =>
+  const noteObject: any = useCommonSelector((state) =>
     commonSelectors.notesAnswerSelector(state, dataEntry.date),
   )
-  const userID = useSelector(commonSelectors.currentUserSelector).id
+  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
   const [title, setTitle] = React.useState(noteObject.title || '')
   const [titlePlaceholder, setTitlePlaceholder] = React.useState('title')
   const [notesPlaceholder, setNotesPlaceholder] = React.useState('daily_note_description')

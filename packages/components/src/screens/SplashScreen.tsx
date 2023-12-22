@@ -3,7 +3,7 @@ import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PageContainer } from '../components/layout/PageContainer'
 import { assets } from '../assets/index'
 import styled from 'styled-components/native'
-import { useSelector, useDispatch } from 'react-redux'
+import { useCommonSelector, useDispatch } from 'react-redux'
 import { commonSelectors } from '../redux/common/selectors'
 import { commonActions } from '../redux/common/actions'
 import { navigateAndReset } from '../services/navigationService'
@@ -18,14 +18,14 @@ import messaging from '@react-native-firebase/messaging'
 
 export function SplashScreen() {
   const dispatch = useDispatch()
-  const user: any = useSelector(commonSelectors.currentUserSelector)
+  const user: any = useCommonSelector(commonSelectors.currentUserSelector)
   const Alert = useAlert()
 
-  const locale = useSelector(commonSelectors.currentLocaleSelector)
-  const hasOpened = useSelector(commonSelectors.hasOpenedSelector)
-  const currentAppVersion = useSelector(commonSelectors.currentAppVersion)
-  const currentFirebaseToken = useSelector(commonSelectors.currentFirebaseToken)
-  const hasPasswordRequestOn = useSelector(commonSelectors.isLoginPasswordActiveSelector)
+  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
+  const hasOpened = useCommonSelector(commonSelectors.hasOpenedSelector)
+  const currentAppVersion = useCommonSelector(commonSelectors.currentAppVersion)
+  const currentFirebaseToken = useCommonSelector(commonSelectors.currentFirebaseToken)
+  const hasPasswordRequestOn = useCommonSelector(commonSelectors.isLoginPasswordActiveSelector)
   const [animatedValue] = React.useState(new Animated.Value(0))
 
   async function checkForPermanentAlerts() {

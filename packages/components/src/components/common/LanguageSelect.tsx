@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { commonSelectors } from '../../redux/common/selectors'
 import { commonActions } from '../../redux/common/actions/index'
 import { useDispatch } from 'react-redux'
@@ -13,7 +13,7 @@ import { availableAppLocales } from '@oky/core'
 export const LanguageSelect = ({ style = null, textStyle = null, onPress = null }) => {
   const [modalVisible, setModalVisible] = React.useState(false)
   const [lang, setLang] = React.useState('')
-  const locale = useSelector(commonSelectors.currentLocaleSelector)
+  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
   const dispatch = useDispatch()
   return (
     <>

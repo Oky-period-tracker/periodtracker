@@ -8,14 +8,14 @@ import { commonSelectors } from '../redux/common/selectors'
 import { navigateAndReset } from '../services/navigationService'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PageContainer } from '../components/layout/PageContainer'
-import { useSelector } from '../hooks/useSelector'
+import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { KeyboardAwareAvoidance } from '../components/common/KeyboardAwareAvoidance'
 import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
-  const user = useSelector(commonSelectors.currentUserSelector)
+  const user = useCommonSelector(commonSelectors.currentUserSelector)
   const [loading, setLoading] = React.useState(false)
   const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)

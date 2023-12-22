@@ -19,7 +19,7 @@ import { DayAssetDemo } from './tutorial/DayAssetDemo'
 import { CalendarAssetDemo } from './tutorial/CalendarAssetDemo'
 import { SpinLoader } from '../components/common/SpinLoader'
 import { NoteAssetDemo } from './tutorial/NoteAssetDemo'
-import { useSelector } from '../hooks/useSelector'
+import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { commonSelectors } from '../redux/common/selectors'
 import moment from 'moment'
 import Tts from 'react-native-tts'
@@ -50,8 +50,8 @@ export function TutorialSecondScreen({ navigation }) {
   const flag = React.useRef(false)
   const dispatch = useDispatch()
   // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useSelector
-  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
+  const renamedUseSelector = useCommonSelector
+  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
 
   const normalizePosition = (percentage, dimension) => {
     return percentage * dimension - arrowSize / 2

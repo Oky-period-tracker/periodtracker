@@ -4,13 +4,13 @@ import { Text } from '../../components/common/Text'
 import { TextInput } from '../../components/common/TextInput'
 import { useDispatch } from 'react-redux'
 import { commonActions } from '../../redux/common/actions'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { SpinLoader } from '../../components/common/SpinLoader'
 import _ from 'lodash'
 
 export function Login() {
   const dispatch = useDispatch()
-  const { error: loginError, isLoggingIn } = useSelector((state) => state.auth)
+  const { error: loginError, isLoggingIn } = useCommonSelector((state) => state.auth)
 
   const [loading, setLoading] = React.useState(false)
   const [name, setName] = React.useState('')

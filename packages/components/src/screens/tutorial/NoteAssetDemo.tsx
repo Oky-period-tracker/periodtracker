@@ -7,14 +7,14 @@ import { TextInput } from '../../components/common/TextInput'
 import { Text } from '../../components/common/Text'
 import { translate } from '../../i18n'
 import Tts from 'react-native-tts'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { commonSelectors } from '../../redux/common/selectors'
 
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('screen').height
 
 export function NoteAssetDemo({ step }) {
-  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
+  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
 
   React.useEffect(() => {
     if (hasTtsActive) {

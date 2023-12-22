@@ -10,7 +10,7 @@ import { navigate } from '../services/navigationService'
 import { useDispatch } from 'react-redux'
 import { commonActions } from '../redux/common/actions'
 import { ConfirmAlert } from '../components/common/ConfirmAlert'
-import { useSelector } from '../hooks/useSelector'
+import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { commonSelectors } from '../redux/common/selectors'
 import { translate } from '../i18n/index'
 import { SpinLoader } from '../components/common/SpinLoader'
@@ -25,9 +25,9 @@ export function SettingsScreen({ navigation }) {
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
   const currentCycleInfo = useTodayPrediction()
-  const currentUser = useSelector(commonSelectors.currentUserSelector)
-  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
-  const hasFuturePredictionActive = useSelector(commonSelectors.isFuturePredictionSelector)
+  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
+  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
+  const hasFuturePredictionActive = useCommonSelector(commonSelectors.isFuturePredictionSelector)
 
   useTextToSpeechHook({
     navigation,

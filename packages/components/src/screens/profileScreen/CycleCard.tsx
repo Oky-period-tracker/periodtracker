@@ -5,14 +5,14 @@ import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
 import { commonSelectors } from '../../redux/common/selectors'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { emojis } from '../../config'
 import { translate } from '../../i18n'
 
 const cardNames = ['mood', 'body', 'activity', 'flow']
 
 export const CycleCard = ({ item, cycleNumber }) => {
-  const cardAnswersValues = useSelector((state) =>
+  const cardAnswersValues = useCommonSelector((state) =>
     commonSelectors.mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
   )
 

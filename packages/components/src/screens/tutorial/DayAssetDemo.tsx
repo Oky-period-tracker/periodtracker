@@ -8,13 +8,13 @@ import { Icon } from '../../components/common/Icon'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { translate } from '../../i18n'
 import Tts from 'react-native-tts'
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { commonSelectors } from '../../redux/common/selectors'
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 
 export function DayAssetDemo({ step }) {
-  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
+  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
 
   React.useEffect(() => {
     if (hasTtsActive) {

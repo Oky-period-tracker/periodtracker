@@ -18,7 +18,7 @@ import { assets } from '../assets'
 import { ColourButtonsDemo } from './tutorial/ColourButtonsDemo'
 import { SpinLoader } from '../components/common/SpinLoader'
 import DeviceInfo from 'react-native-device-info'
-import { useSelector } from '../hooks/useSelector'
+import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { commonSelectors } from '../redux/common/selectors'
 import moment from 'moment'
 import Tts from 'react-native-tts'
@@ -43,13 +43,13 @@ export function TutorialFirstScreen() {
   const dispatch = useDispatch()
   const [completedStep, setCompletedStep] = React.useState(0)
 
-  const hasTtsActive = useSelector(commonSelectors.isTtsActiveSelector)
+  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
 
   const normalizePosition = (percentage, dimension) => {
     return percentage * dimension - arrowSize / 2
   }
   // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useSelector
+  const renamedUseSelector = useCommonSelector
 
   const getCardAnswersValues = (inputDay) => {
     const cardData = renamedUseSelector((state) =>

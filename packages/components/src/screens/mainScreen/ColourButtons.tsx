@@ -24,7 +24,7 @@ import analytics from '@react-native-firebase/analytics'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 
-import { useSelector } from '../../hooks/useSelector'
+import { useCommonSelector } from '../../redux/common/useCommonSelector'
 import { incrementFlowerProgress, useFlowerStateSelector, FlowerModal } from '../../optional/Flower'
 
 const minBufferBetweenCycles = 2
@@ -59,8 +59,8 @@ export function ColourButtons({
   const selectedDayInfoEngine = usePredictDay(inputDay)
   const isActive = useIsActiveSelector()
   const appDispatch = useDispatch()
-  const userID = useSelector(commonSelectors.currentUserSelector).id
-  const currentUser = useSelector(commonSelectors.currentUserSelector)
+  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
+  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
   const currentCycleInfo = useTodayPrediction()
   const inputDayStr = moment(inputDay).format('YYYY-MM-DD')
   const todayStr = moment().format('YYYY-MM-DD')
@@ -68,13 +68,13 @@ export function ColourButtons({
   const [isFlowerVisible, setFlowerVisible] = React.useState(false)
   const flowerState = useFlowerStateSelector()
 
-  const cardAnswersToday = useSelector((state) =>
+  const cardAnswersToday = useCommonSelector((state) =>
     commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(inputDayStr)),
   ) as any
 
   const fullState = useFullState()
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
-  const hasFuturePredictionActive = useSelector(commonSelectors.isFuturePredictionSelector)
+  const hasFuturePredictionActive = useCommonSelector(commonSelectors.isFuturePredictionSelector)
 
   // TODO_ALEX this useState is redundant
   const [futurePredictionStatus, setFuturePredictionStatus] = useState(false)

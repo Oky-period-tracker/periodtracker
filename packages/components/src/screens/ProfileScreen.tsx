@@ -12,7 +12,6 @@ import { useTheme } from '../components/context/ThemeContext'
 import { CycleCard } from './profileScreen/CycleCard'
 import { FlatList } from 'react-native'
 import { navigate } from '../services/navigationService'
-import { toAge } from '../services/dateUtils'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { AvatarOption } from './avatarAndTheme/avatarSelect/AvatarOption'
 import { ThemeSelectItem } from './avatarAndTheme/ThemeSelectItem'
@@ -40,7 +39,7 @@ export function ProfileScreen({ navigation }) {
   const dispatch = useDispatch()
 
   const connectAccountCount = useCommonSelector((state) => state.auth.connectAccountAttempts)
-  const dateOfBirth = moment(currentUser.dateOfBirth)
+  const dateOfBirth = moment(currentUser?.dateOfBirth)
 
   useTextToSpeechHook({
     navigation,

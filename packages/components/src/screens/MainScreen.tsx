@@ -44,7 +44,7 @@ const MainScreenContainer = ({ navigation }) => {
   const theme = useTheme()
   const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
-  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
+  const userID = useCommonSelector(commonSelectors.currentUserSelector)?.id
   const fullState = useFullState()
   const history = useHistoryPrediction()
   const currentUser = useCommonSelector(commonSelectors.currentUserSelector)

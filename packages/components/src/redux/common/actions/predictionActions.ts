@@ -1,4 +1,4 @@
-import { createAction } from '../helpers'
+import { createAction } from '../../helpers'
 import { PredictionState } from '../../../prediction'
 import { Moment } from 'moment'
 

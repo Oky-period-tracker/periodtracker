@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { Dimensions, AccessibilityInfo, Text as RNText } from 'react-native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
@@ -11,9 +10,9 @@ import * as actions from '../../redux/actions'
 import { useDispatch } from 'react-redux'
 import { TextInput } from '../../components/common/TextInput'
 import { SurveyInformationButton } from '../../components/common/SurveyInformationButton'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 import { PrimaryButton } from '../../components/common/buttons/PrimaryButton'
-
-const { width } = Dimensions.get('window')
+import { AccessibilityInfo } from 'react-native'
 
 // TODO_ALEX: survey
 
@@ -43,6 +42,8 @@ export const SurveyCard = React.memo<{
     showEndButton,
     onEndPress,
   }) => {
+    const { screenWidth: width } = useScreenDimensions()
+
     const [title, setTitle] = React.useState('')
     const [titlePlaceholder, setTitlePlaceholder] = React.useState('type_answer_placeholder')
     const [isSkip, setSkip] = React.useState(null)
@@ -220,17 +221,7 @@ export const SurveyCard = React.memo<{
           }}
         >
           <Row style={{ marginBottom: 10 }}>
-            <RNText
-              style={{
-                flex: 1,
-                fontSize: 20,
-                marginBottom: 15,
-                color: '#f49200',
-                fontFamily: 'Roboto-Black',
-              }}
-            >
-              {dataEntry?.question}
-            </RNText>
+            <InnerTitleText>{dataEntry?.question}</InnerTitleText>
           </Row>
           {!dataEntry?.is_multiple && !dataEntry?.endSurvey && (
             <UpperContent>
@@ -292,7 +283,6 @@ export const SurveyCard = React.memo<{
               </LowerContentButton>
             </LowerContent>
           )}
-
           {showEndButton ? (
             <PrimaryButton style={{ marginTop: 12 }} onPress={() => onEndPress()}>
               continue

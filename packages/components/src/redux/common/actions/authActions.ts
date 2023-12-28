@@ -36,7 +36,7 @@ export function loginSuccess({
   })
 }
 
-export function loginSuccessAsGuestAccount({
+export function createGuestAccountSuccess({
   id,
   name,
   dateOfBirth,
@@ -48,7 +48,7 @@ export function loginSuccessAsGuestAccount({
   secretQuestion,
   secretAnswer,
 }) {
-  return createAction('LOGIN_SUCCESS_AS_GUEST_ACCOUNT', {
+  return createAction('CREATE_GUEST_ACCOUNT_SUCCESS', {
     id,
     name,
     dateOfBirth,

@@ -12,6 +12,7 @@ import { PredictionState } from '../../../prediction'
 import moment from 'moment'
 import { closeOutTTs } from '../../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../../services/network'
+import { hash } from '../../../services/hash'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -121,6 +122,37 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         errorMessage = error.response.data.message
       }
     }
+
+    // Attempt offline login
+    const usernameHash = hash(name)
+    const credentials = yield select((s) => s.access.credentials)
+    const credential = credentials[usernameHash]
+
+    if (credential) {
+      // ???????????????
+      // Switch stores here ?
+      // Change boolean to trigger switch in coordinator ?
+      // Somehow need to pass the keys to the coordinator though
+      // yield put(
+      //   commonActions.loginOfflineSuccess({
+      //     appToken: null,
+      //     user: {
+      //       id: user.id,
+      //       name,
+      //       dateOfBirth: user.dateOfBirth,
+      //       gender: user.gender,
+      //       location: user.location,
+      //       country: user.country,
+      //       province: user.province,
+      //       secretQuestion: user.secretQuestion,
+      //       secretAnswer: user.secretAnswer,
+      //       password,
+      //     },
+      //   }),
+      // )
+      // return
+    }
+
     yield put(
       commonActions.loginFailure({
         error: errorMessage,
@@ -184,8 +216,19 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     yield put(commonActions.setAuthError({ error: errorStatusCode }))
     yield put(commonActions.createAccountFailure())
 
+    // Check username is not already taken
+    const usernameHash = hash(name)
+    const credentials = yield select((s) => s.access.credentials)
+    const credential = credentials[usernameHash]
+
+    if (credential) {
+      // username already taken
+      // yield put(secureActions.setAuthError({ error: errorStatusCode }))
+      return
+    }
+
     yield put(
-      commonActions.loginSuccessAsGuestAccount({
+      commonActions.createGuestAccountSuccess({
         id: id || uuidv4(),
         name,
         dateOfBirth,
@@ -221,6 +264,7 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
     }),
   )
 }
+
 function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACCOUNT_REQUEST'>) {
   const { setLoading } = action.payload
   const state: CommonReduxState = yield select()

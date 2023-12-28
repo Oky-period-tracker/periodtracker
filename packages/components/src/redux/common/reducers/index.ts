@@ -9,12 +9,14 @@ import { appReducer } from './appReducer'
 import { authReducer } from './authReducer'
 import { contentReducer } from './contentReducer'
 import { predictionReducer } from './predictionReducer'
+import { accessReducer } from './accessReducer'
 
 export const exportReducerNames = ['app', 'prediction']
 
 const reducer = combineReducers(
   syncReducers(
     {
+      access: accessReducer,
       analytics: analyticsReducer,
       answer: answerReducer,
       app: appReducer,
@@ -31,7 +33,7 @@ export function commonRootReducer(state, action: CommonActions) {
   switch (action.type) {
     case 'LOGOUT':
       // @ts-ignore
-      return reducer(_.pick(state, 'app', 'content', 'answer'), action)
+      return reducer(_.pick(state, 'app', 'content', 'answer', 'access'), action)
 
     default:
       return reducer(state, action)

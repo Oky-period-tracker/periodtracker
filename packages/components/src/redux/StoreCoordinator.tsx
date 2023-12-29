@@ -5,8 +5,7 @@ import { configureStore } from './store'
 import { config } from './config'
 import { commonRootReducer } from './common/reducers'
 import { commonRootSaga } from './common/sagas'
-import { secureRootReducer } from './secure/reducers'
-import { secureRootSaga } from './secure/sagas'
+import { REHYDRATE } from 'redux-persist'
 
 interface Keys {
   key: string
@@ -37,6 +36,12 @@ const commonStore = configureStore({
 export function StoreCoordinator({ children }) {
   const [{ persistor, store }, setStore] = React.useState(commonStore)
 
+  const hasTimedOut = React.useRef(false)
+
+  const [state, setState] = React.useState(undefined)
+  const [shouldSwitch, setShouldSwitch] = React.useState(false)
+  const [shouldMigrate, setShouldMigrate] = React.useState(false)
+
   const switchToCommonStore = () => {
     setStore(commonStore)
   }
@@ -46,11 +51,52 @@ export function StoreCoordinator({ children }) {
       configureStore({
         key,
         secretKey,
-        rootReducer: secureRootReducer,
-        rootSaga: secureRootSaga,
+        rootReducer: commonRootReducer,
+        rootSaga: commonRootSaga,
       }),
     )
   }
+
+  // ===== Step 1: Get the current state ===== //
+  React.useEffect(() => {
+    if (hasTimedOut.current) {
+      return
+    }
+
+    hasTimedOut.current = true
+
+    setTimeout(() => {
+      const commonState = store.getState()
+      setState(commonState)
+      setShouldSwitch(true)
+    }, 20000)
+  })
+
+  // ===== Step 2: Switch stores ===== //
+  React.useEffect(() => {
+    if (!shouldSwitch) {
+      return
+    }
+
+    switchStore({
+      key: 'test6',
+      secretKey: 'test6',
+    })
+
+    setShouldMigrate(true)
+  }, [shouldSwitch])
+
+  // ===== Step 3: Migrate state ===== //
+  React.useEffect(() => {
+    if (!shouldMigrate) {
+      return
+    }
+
+    store.dispatch({ type: REHYDRATE, payload: state })
+
+    setShouldSwitch(false)
+    setShouldMigrate(false)
+  }, [shouldMigrate])
 
   return (
     <StoreCoordinatorContext.Provider

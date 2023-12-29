@@ -1,6 +1,7 @@
 import { hash } from '../../../services/hash'
 import { CommonActions } from '../types'
 import { v4 as uuidv4 } from 'uuid'
+import _ from 'lodash'
 
 export interface AccessState {
   credentials: {
@@ -9,11 +10,18 @@ export interface AccessState {
     }
   }
   lastLoggedInUsername?: string
+  keys:
+    | {
+        key: string
+        secretKey: string
+      }
+    | undefined
 }
 
 const initialState: AccessState = {
   credentials: {},
   lastLoggedInUsername: undefined,
+  keys: undefined,
 }
 
 export function accessReducer(state = initialState, action: CommonActions): AccessState {
@@ -49,6 +57,12 @@ export function accessReducer(state = initialState, action: CommonActions): Acce
         },
       }
     }
+
+    case 'SET_STORE_KEYS':
+      return {
+        ...state,
+        keys: action.payload,
+      }
 
     default:
       return state

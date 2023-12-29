@@ -36,6 +36,10 @@ export function loginSuccess({
   })
 }
 
+export function setStoreKeys(payload: { key: string; secretKey: string }) {
+  return createAction('SET_STORE_KEYS', payload)
+}
+
 export function createGuestAccountSuccess({
   id,
   name,

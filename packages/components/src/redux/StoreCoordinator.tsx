@@ -6,6 +6,7 @@ import { config } from './config'
 import { commonRootReducer } from './common/reducers'
 import { commonRootSaga } from './common/sagas'
 import { REHYDRATE } from 'redux-persist'
+import { commonActions } from './common/actions'
 
 interface Keys {
   key: string
@@ -39,6 +40,7 @@ export function StoreCoordinator({ children }) {
   const hasTimedOut = React.useRef(false)
 
   const [state, setState] = React.useState(undefined)
+  const [keys, setKeys] = React.useState<Keys | undefined>(undefined)
   const [shouldSwitch, setShouldSwitch] = React.useState(false)
   const [shouldMigrate, setShouldMigrate] = React.useState(false)
 
@@ -57,7 +59,6 @@ export function StoreCoordinator({ children }) {
     )
   }
 
-  // ===== Step 1: Get the current state ===== //
   React.useEffect(() => {
     if (hasTimedOut.current) {
       return
@@ -66,11 +67,27 @@ export function StoreCoordinator({ children }) {
     hasTimedOut.current = true
 
     setTimeout(() => {
-      const commonState = store.getState()
-      setState(commonState)
-      setShouldSwitch(true)
+      store.dispatch(commonActions.setStoreKeys({ key: 'test', secretKey: 'test' }))
     }, 20000)
   })
+
+  // ===== Step 1: Detect key change ===== //
+  React.useEffect(() => {
+    const unsubscribe = store.subscribe(() => {
+      const commonState = store.getState()
+      // TODO:
+      // @ts-ignore
+      const currentKeys = commonState.access.keys
+
+      if (currentKeys && currentKeys !== keys) {
+        setKeys(currentKeys)
+        setState(commonState)
+        setShouldSwitch(true)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [store])
 
   // ===== Step 2: Switch stores ===== //
   React.useEffect(() => {
@@ -78,11 +95,7 @@ export function StoreCoordinator({ children }) {
       return
     }
 
-    switchStore({
-      key: 'test6',
-      secretKey: 'test6',
-    })
-
+    switchStore(keys)
     setShouldMigrate(true)
   }, [shouldSwitch])
 
@@ -96,6 +109,7 @@ export function StoreCoordinator({ children }) {
 
     setShouldSwitch(false)
     setShouldMigrate(false)
+    setState(undefined)
   }, [shouldMigrate])
 
   return (

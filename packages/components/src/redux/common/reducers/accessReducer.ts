@@ -51,6 +51,11 @@ export function accessReducer(state = initialState, action: CommonActions): Acce
       }
     }
 
+    case 'LOGIN_SUCCESS': {
+      // TODO_ALEX Can just update keys here instead of via saga ?
+      return state
+    }
+
     default:
       return state
   }

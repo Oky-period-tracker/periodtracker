@@ -161,6 +161,15 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
   }
 }
 
+function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
+  const keys = {
+    key: hash(action.payload.user.name),
+    secretKey: hash(action.payload.user.password),
+  }
+
+  yield put(commonActions.setStoreKeys(keys))
+}
+
 function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACCOUNT_REQUEST'>) {
   const {
     id,
@@ -353,6 +362,7 @@ export function* authSaga() {
     takeLatest(REHYDRATE, onRehydrate),
     takeLatest('LOGOUT_REQUEST', onLogoutRequest),
     takeLatest('LOGIN_REQUEST', onLoginRequest),
+    takeLatest('LOGIN_SUCCESS', onLoginSuccess),
     takeLatest('DELETE_ACCOUNT_REQUEST', onDeleteAccountRequest),
     takeLatest('CREATE_ACCOUNT_REQUEST', onCreateAccountRequest),
     takeLatest('CREATE_ACCOUNT_SUCCESS', onCreateAccountSuccess),

@@ -162,9 +162,18 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 }
 
 function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
+  const credentials = yield select((s) => s.access.credentials)
+  const usernameHash = hash(action.payload.user.name)
+  const salt = credentials[usernameHash]?.passwordSalt
+
+  if (!salt) {
+    // TODO_ALEX ???
+    // Cant just return because they could have online account from another device that they're logging in to
+  }
+
   const keys = {
-    key: hash(action.payload.user.name),
-    secretKey: hash(action.payload.user.password),
+    key: usernameHash,
+    secretKey: hash(action.payload.user.password + salt),
   }
 
   yield put(commonActions.setStoreKeys(keys))

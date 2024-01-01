@@ -17,12 +17,20 @@ import { hash } from '../services/hash'
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
   const user = useCommonSelector(commonSelectors.currentUserSelector)
+  const credentials = useCommonSelector((s) => s.access.credentials)
   const [loading, setLoading] = React.useState(false)
   const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)
   const [nameError, setNameError] = React.useState(false)
   const [name, setName] = React.useState(user.name)
   const [password, setPassword] = React.useState('')
+
+  const usernameHash = hash(user.name)
+  const salt = credentials[usernameHash]?.passwordSalt
+
+  if (!salt) {
+    // TODO_ALEX: handle this case, navigate away?
+  }
 
   return (
     <BackgroundTheme>
@@ -71,8 +79,8 @@ export function PasswordRequestScreen() {
                     })
 
                     const keys = {
-                      key: hash(user.name),
-                      secretKey: hash(trimmedPassword),
+                      key: usernameHash,
+                      secretKey: hash(trimmedPassword + salt),
                     }
 
                     // TODO_ALEX Consider moving to MainScreen for safer transition

@@ -25,7 +25,7 @@ export function configureStore({ key, secretKey, rootReducer, rootSaga }) {
     storage,
     timeout: 10000,
     throttle: 500,
-    blacklist: [],
+    blacklist: ['keys'],
     transforms: [encryptor],
   }
 

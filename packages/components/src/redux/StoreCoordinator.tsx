@@ -37,8 +37,6 @@ const commonStore = configureStore({
 export function StoreCoordinator({ children }) {
   const [{ persistor, store }, setStore] = React.useState(commonStore)
 
-  const hasTimedOut = React.useRef(false)
-
   const [state, setState] = React.useState(undefined)
   const [keys, setKeys] = React.useState<Keys | undefined>(undefined)
   const [shouldSwitch, setShouldSwitch] = React.useState(false)
@@ -49,6 +47,9 @@ export function StoreCoordinator({ children }) {
   }
 
   const switchStore = ({ key, secretKey }: Keys) => {
+    if (!key || !secretKey) {
+      return
+    }
     setStore(
       configureStore({
         key,
@@ -59,25 +60,13 @@ export function StoreCoordinator({ children }) {
     )
   }
 
-  React.useEffect(() => {
-    if (hasTimedOut.current) {
-      return
-    }
-
-    hasTimedOut.current = true
-
-    setTimeout(() => {
-      store.dispatch(commonActions.setStoreKeys({ key: 'test', secretKey: 'test' }))
-    }, 20000)
-  })
-
   // ===== Step 1: Detect key change ===== //
   React.useEffect(() => {
     const unsubscribe = store.subscribe(() => {
       const commonState = store.getState()
       // TODO:
       // @ts-ignore
-      const currentKeys = commonState.access.keys
+      const currentKeys = commonState?.keys.keys
 
       if (currentKeys && currentKeys !== keys) {
         setKeys(currentKeys)

@@ -54,6 +54,7 @@ const MainScreenContainer = ({ navigation }) => {
     dispatch(commonActions.fetchSurveyContentRequest(userID))
   }, [])
 
+  // TODO: Cant use hook like this?
   useRandomText({ navigation })
   return <MainScreenActual key={theme.id} />
 }

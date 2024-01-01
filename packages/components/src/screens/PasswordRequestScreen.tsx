@@ -12,6 +12,7 @@ import { useCommonSelector } from '../redux/common/useCommonSelector'
 import { KeyboardAwareAvoidance } from '../components/common/KeyboardAwareAvoidance'
 import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
+import { hash } from '../services/hash'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
@@ -68,6 +69,16 @@ export function PasswordRequestScreen() {
                     requestAnimationFrame(() => {
                       navigateAndReset('MainStack', null)
                     })
+
+                    const keys = {
+                      key: hash(user.name),
+                      secretKey: hash(trimmedPassword),
+                    }
+
+                    // TODO_ALEX Consider moving to MainScreen for safer transition
+                    setTimeout(() => {
+                      dispatch(commonActions.setStoreKeys(keys))
+                    }, 1000)
                   } else if (trimmedPassword === user.password && name !== user.name) {
                     setLoading(false)
                     setPasswordError(false)

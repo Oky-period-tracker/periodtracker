@@ -10,12 +10,14 @@ import { authReducer } from './authReducer'
 import { contentReducer } from './contentReducer'
 import { predictionReducer } from './predictionReducer'
 import { accessReducer } from './accessReducer'
+import { keysReducer } from './keysReducer'
 
 export const exportReducerNames = ['app', 'prediction']
 
 const reducer = combineReducers(
   syncReducers(
     {
+      keys: keysReducer,
       access: accessReducer,
       analytics: analyticsReducer,
       answer: answerReducer,

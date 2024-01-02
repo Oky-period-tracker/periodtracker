@@ -17,7 +17,7 @@ import { hash } from '../services/hash'
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
   const user = useSelector(selectors.currentUserSelector)
-  const credentials = useSelector((s) => s.access.credentials)
+  const storeCredentials = useSelector((s) => s.access.storeCredentials)
   const [loading, setLoading] = React.useState(false)
   const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)
@@ -26,7 +26,7 @@ export function PasswordRequestScreen() {
   const [password, setPassword] = React.useState('')
 
   const usernameHash = hash(user.name)
-  const salt = credentials[usernameHash]?.passwordSalt
+  const salt = storeCredentials[usernameHash]?.passwordSalt
 
   if (!salt) {
     // TODO_ALEX: handle this case, navigate away?

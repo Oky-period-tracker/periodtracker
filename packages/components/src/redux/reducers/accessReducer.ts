@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
 export interface AccessState {
-  credentials: {
+  storeCredentials: {
     [usernameHash: string]: {
       passwordSalt: string
     }
@@ -13,7 +13,7 @@ export interface AccessState {
 }
 
 const initialState: AccessState = {
-  credentials: {},
+  storeCredentials: {},
   lastLoggedInUsername: undefined,
 }
 
@@ -26,8 +26,8 @@ export function accessReducer(state = initialState, action: Actions): AccessStat
       return {
         ...state,
         lastLoggedInUsername: action.payload.user.name,
-        credentials: {
-          ...state.credentials,
+        storeCredentials: {
+          ...state.storeCredentials,
           [usernameHash]: {
             passwordSalt,
           },
@@ -42,8 +42,8 @@ export function accessReducer(state = initialState, action: Actions): AccessStat
       return {
         ...state,
         lastLoggedInUsername: action.payload.name,
-        credentials: {
-          ...state.credentials,
+        storeCredentials: {
+          ...state.storeCredentials,
           [usernameHash]: {
             passwordSalt,
           },

@@ -19,7 +19,7 @@ import { hash } from '../services/hash'
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
   const user = useSelector(selectors.currentUserSelector)
-  const storeCredentials = useSelector((s) => s.access.storeCredentials)
+  const storeCredentials = useSelector(selectors.storeCredentialsSelector)
   const [loading, setLoading] = React.useState(false)
   const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)

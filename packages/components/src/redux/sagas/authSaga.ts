@@ -124,7 +124,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 
     // Attempt offline login
     const usernameHash = hash(name)
-    const storeCredentials = yield select((s) => s.access.storeCredentials)
+    const storeCredentials = yield select(selectors.storeCredentialsSelector)
     const credential = storeCredentials[usernameHash]
 
     if (credential) {
@@ -161,7 +161,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 }
 
 function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
-  const storeCredentials = yield select((s) => s.access.storeCredentials)
+  const storeCredentials = yield select(selectors.storeCredentialsSelector)
   const usernameHash = hash(action.payload.user.name)
   const salt = storeCredentials[usernameHash]?.passwordSalt
 
@@ -239,7 +239,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
 
     // Check username is not already taken
     const usernameHash = hash(name)
-    const storeCredentials = yield select((s) => s.access.storeCredentials)
+    const storeCredentials = yield select(selectors.storeCredentialsSelector)
     const credential = storeCredentials[usernameHash]
 
     if (credential) {

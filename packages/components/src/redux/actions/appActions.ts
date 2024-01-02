@@ -1,5 +1,5 @@
 import { AvatarName, ThemeName } from '@oky/core'
-import { createAction } from '../../helpers'
+import { createAction } from '../helpers'
 
 export function setTheme(theme: ThemeName) {
   return createAction('SET_THEME', { theme })

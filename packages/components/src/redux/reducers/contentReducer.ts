@@ -14,7 +14,7 @@ import {
   AllSurveys,
   CompletedSurveys,
   Videos,
-} from '../../../types'
+} from '../../types'
 import { CommonActions } from '../types/index'
 
 export interface ContentState {

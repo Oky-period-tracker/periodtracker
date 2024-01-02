@@ -5,8 +5,8 @@ import { CalendarCardContent } from './CalendarCardContent'
 import { WheelPickerContent } from '../../components/WheelPickerContent'
 import { Avatar } from '../../components/common/Avatar/Avatar'
 import { assets } from '../../assets'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
-import { commonSelectors } from '../../redux/common/selectors'
+import { useCommonSelector } from '../../redux/useCommonSelector'
+import { commonSelectors } from '../../redux/selectors'
 
 export function JourneyCard({
   question,

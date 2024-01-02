@@ -20,10 +20,10 @@ import {
 import { useRandomText } from '../hooks/useRandomText'
 import { InformationButton } from '../components/common/InformationButton'
 import { assets } from '../assets'
-import { commonActions } from '../redux/common/actions'
+import { commonActions } from '../redux/actions'
 import { useDispatch } from 'react-redux'
-import { useCommonSelector } from '../redux/common/useCommonSelector'
-import { commonSelectors } from '../redux/common/selectors'
+import { useCommonSelector } from '../redux/useCommonSelector'
+import { commonSelectors } from '../redux/selectors'
 import moment from 'moment'
 import { FlowerButton, FlowerModal } from '../optional/Flower'
 

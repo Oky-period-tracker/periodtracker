@@ -6,14 +6,14 @@ import { useTheme } from '../../../components/context/ThemeContext'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { assets } from '../../../assets/index'
 import { translate } from '../../../i18n'
-import { commonSelectors } from '../../../redux/common/selectors'
+import { commonSelectors } from '../../../redux/selectors'
 import moment from 'moment'
 import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,
 } from '../../../components/context/PredictionProvider'
 import _ from 'lodash'
-import { useCommonSelector } from '../../../redux/common/useCommonSelector'
+import { useCommonSelector } from '../../../redux/useCommonSelector'
 
 const {
   Value,

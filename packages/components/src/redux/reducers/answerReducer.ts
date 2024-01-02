@@ -1,7 +1,7 @@
 import { CommonActions } from '../types'
 import { combineReducers } from 'redux'
-import { toShortISO } from '../../../services/dateUtils'
-import { DailyCard } from '../../../types'
+import { toShortISO } from '../../services/dateUtils'
+import { DailyCard } from '../../types'
 
 export interface AnswerForUserState {
   surveys: {

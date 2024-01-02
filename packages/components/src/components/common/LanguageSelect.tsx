@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
-import { commonSelectors } from '../../redux/common/selectors'
-import { commonActions } from '../../redux/common/actions/index'
+import { useCommonSelector } from '../../redux/useCommonSelector'
+import { commonSelectors } from '../../redux/selectors'
+import { commonActions } from '../../redux/actions/index'
 import { useDispatch } from 'react-redux'
 
 import { PrimaryButton } from './buttons/PrimaryButton'

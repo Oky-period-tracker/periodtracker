@@ -6,8 +6,8 @@ import { IconButton } from '../../components/common/buttons/IconButton'
 import styled from 'styled-components/native'
 import { handleCategoriesFilter, handleSearchResult } from './searchFunctions'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
-import { commonSelectors } from '../../redux/common/selectors'
+import { useCommonSelector } from '../../redux/useCommonSelector'
+import { commonSelectors } from '../../redux/selectors'
 import { translate } from '../../i18n'
 
 export const SearchBar = ({

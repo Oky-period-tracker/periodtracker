@@ -3,8 +3,8 @@ import moment from 'moment'
 import configureStore from 'redux-mock-store'
 
 import _ from 'lodash'
-import { commonActions } from '../../../src/redux/common/actions'
-import { authReducer } from '../../../src/redux/common/reducers/authReducer'
+import { commonActions } from '../../../src/redux/actions'
+import { authReducer } from '../../../src/redux/reducers/authReducer'
 
 const middleWares = []
 const mockStore = configureStore(middleWares)

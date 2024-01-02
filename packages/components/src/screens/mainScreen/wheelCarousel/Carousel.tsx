@@ -7,8 +7,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { navigate, navigateAndReset } from '../../../services/navigationService'
 import moment from 'moment'
 import { useDisplayText } from '../../../components/context/DisplayTextContext'
-import { useCommonSelector } from '../../../redux/common/useCommonSelector'
-import { commonSelectors } from '../../../redux/common/selectors'
+import { useCommonSelector } from '../../../redux/useCommonSelector'
+import { commonSelectors } from '../../../redux/selectors'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 
 const screenWidth = Dimensions.get('window').width

@@ -18,13 +18,13 @@ import { InformationButton } from '../../components/common/InformationButton'
 import { decisionProcessNonPeriod, decisionProcessPeriod } from './predictionLogic/predictionLogic'
 import { translate } from '../../i18n'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../../redux/common/actions/index'
-import { commonSelectors } from '../../redux/common/selectors'
+import { commonActions } from '../../redux/actions/index'
+import { commonSelectors } from '../../redux/selectors'
 import analytics from '@react-native-firebase/analytics'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
+import { useCommonSelector } from '../../redux/useCommonSelector'
 import { incrementFlowerProgress, useFlowerStateSelector, FlowerModal } from '../../optional/Flower'
 
 const minBufferBetweenCycles = 2

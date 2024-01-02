@@ -1,4 +1,4 @@
-import { createAction } from '../../helpers'
+import { createAction } from '../helpers'
 import {
   Articles,
   Categories,
@@ -14,7 +14,7 @@ import {
   AllSurveys,
   CompletedSurveys,
   Videos,
-} from '../../../types'
+} from '../../types'
 
 export function initStaleContent(payload: {
   articles: Articles

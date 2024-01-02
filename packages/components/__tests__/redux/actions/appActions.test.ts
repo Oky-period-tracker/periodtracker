@@ -1,7 +1,7 @@
 import configureStore from 'redux-mock-store'
 
 import _ from 'lodash'
-import { commonActions } from '../../../src/redux/common/actions'
+import { commonActions } from '../../../src/redux/actions'
 
 const middleWares = []
 const mockStore = configureStore(middleWares)

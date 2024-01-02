@@ -6,12 +6,12 @@ import { translate } from '../../i18n'
 import { TouchableOpacity } from 'react-native'
 import _ from 'lodash'
 import moment from 'moment'
-import { commonSelectors } from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/selectors'
 import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,
 } from '../../components/context/PredictionProvider'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
+import { useCommonSelector } from '../../redux/useCommonSelector'
 
 function checkForVerifiedDay(cardValues) {
   if (_.has(cardValues, 'periodDay')) {

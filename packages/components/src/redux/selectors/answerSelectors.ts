@@ -1,7 +1,7 @@
 import { allQuizzesSelectors } from './contentSelectors'
 
 import { Moment } from 'moment'
-import { toShortISO } from '../../../services/dateUtils'
+import { toShortISO } from '../../services/dateUtils'
 import _ from 'lodash'
 import { CommonReduxState } from '../reducers'
 

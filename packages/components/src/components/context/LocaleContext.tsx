@@ -1,5 +1,5 @@
 import React from 'react'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
+import { useCommonSelector } from '../../redux/useCommonSelector'
 import { currentLocale, configureI18n } from '../../i18n'
 
 export function LocaleProvider({ children }) {

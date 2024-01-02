@@ -1,4 +1,4 @@
-import { createAction } from '../../helpers'
+import { createAction } from '../helpers'
 
 export function loginRequest({ name, password }) {
   return createAction('LOGIN_REQUEST', { name, password })

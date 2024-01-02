@@ -1,7 +1,7 @@
 import React from 'react'
 import { ThemeContext, ThemeProvider as StyledThemeProvider } from 'styled-components'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
-import { commonSelectors } from '../../redux/common/selectors'
+import { useCommonSelector } from '../../redux/useCommonSelector'
+import { commonSelectors } from '../../redux/selectors'
 import { themes } from '@oky/core'
 
 export function ThemeProvider({ children }) {

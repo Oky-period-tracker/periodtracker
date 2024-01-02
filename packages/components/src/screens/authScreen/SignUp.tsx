@@ -8,7 +8,7 @@ import { AskAge } from './signUp/AskAge'
 import { AskLocation } from './signUp/AskLocation'
 import { AskUserConfirmation } from './signUp/AskUserConfirmation'
 import { navigate } from '../../services/navigationService'
-import { commonActions } from '../../redux/common/actions'
+import { commonActions } from '../../redux/actions'
 import _ from 'lodash'
 import { FAST_SIGN_UP } from '../../config'
 

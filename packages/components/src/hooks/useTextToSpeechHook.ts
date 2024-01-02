@@ -1,7 +1,7 @@
 import React from 'react'
 import { speakArray, clearTTSQueue } from '../services/textToSpeech'
-import { useCommonSelector } from '../redux/common/useCommonSelector'
-import { commonSelectors } from '../redux/common/selectors'
+import { useCommonSelector } from '../redux/useCommonSelector'
+import { commonSelectors } from '../redux/selectors'
 
 export function useTextToSpeechHook({ navigation, text }) {
   const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)

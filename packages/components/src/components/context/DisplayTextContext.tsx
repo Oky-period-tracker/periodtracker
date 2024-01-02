@@ -2,8 +2,8 @@ import React from 'react'
 import Tts from 'react-native-tts'
 import _ from 'lodash'
 import { translate } from '../../i18n'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
-import { commonSelectors } from '../../redux/common/selectors'
+import { useCommonSelector } from '../../redux/useCommonSelector'
+import { commonSelectors } from '../../redux/selectors'
 
 interface Props {
   text: null | string

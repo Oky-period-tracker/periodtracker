@@ -12,8 +12,8 @@ import { assets } from '../assets'
 import { usePredictDay } from '../components/context/PredictionProvider'
 import { ThemedModal } from '../components/common/ThemedModal'
 import { ColourButtons } from './mainScreen/ColourButtons'
-import { commonSelectors } from '../redux/common/selectors'
-import { useCommonSelector } from '../redux/common/useCommonSelector'
+import { commonSelectors } from '../redux/selectors'
+import { useCommonSelector } from '../redux/useCommonSelector'
 import moment from 'moment'
 
 export function DayScreen({ navigation }) {

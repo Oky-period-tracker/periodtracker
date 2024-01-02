@@ -3,9 +3,9 @@ import moment, { Moment } from 'moment'
 import _ from 'lodash'
 import { PredictionState, PredictionEngine } from '../../prediction'
 
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
+import { useCommonSelector } from '../../redux/useCommonSelector'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../../redux/common/actions'
+import { commonActions } from '../../redux/actions'
 
 type PredictionDispatch = typeof PredictionEngine.prototype.userInputDispatch
 

@@ -3,10 +3,10 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { configureStore } from './store'
 import { config } from './config'
-import { commonRootReducer } from './common/reducers'
-import { commonRootSaga } from './common/sagas'
+import { commonRootReducer } from './reducers'
+import { commonRootSaga } from './sagas'
 import { REHYDRATE } from 'redux-persist'
-import { commonActions } from './common/actions'
+import { commonActions } from './actions'
 
 interface Keys {
   key: string

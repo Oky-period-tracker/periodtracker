@@ -6,14 +6,14 @@ import { CircularElement } from './CircularElement'
 import { PanGesture } from './PanGesture'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ColourButtons } from '../ColourButtons'
-import { useCommonSelector } from '../../../redux/common/useCommonSelector'
-import { commonSelectors } from '../../../redux/common/selectors'
+import { useCommonSelector } from '../../../redux/useCommonSelector'
+import { commonSelectors } from '../../../redux/selectors'
 import { navigateAndReset } from '../../../services/navigationService'
 import { useCheckDayWarning } from '../../../hooks/usePredictionWarnings'
 import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
-import { CommonReduxState } from '../../../redux/common/reducers'
+import { CommonReduxState } from '../../../redux/reducers'
 
 const reduxState = (state: CommonReduxState) => state
 

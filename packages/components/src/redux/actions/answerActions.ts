@@ -1,6 +1,6 @@
-import { createAction } from '../../helpers'
+import { createAction } from '../helpers'
 import { Moment } from 'moment'
-import { CardName, DailyCard } from '../../../types'
+import { CardName, DailyCard } from '../../types'
 import { AnswerForUserState } from '../reducers/answerReducer'
 import { User } from '../reducers/authReducer'
 

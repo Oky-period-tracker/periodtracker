@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { CommonActions } from '../types'
-import { currentLocale } from '../../../i18n'
+import { currentLocale } from '../../i18n'
 import DeviceInfo from 'react-native-device-info'
 import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from '@oky/core'
 

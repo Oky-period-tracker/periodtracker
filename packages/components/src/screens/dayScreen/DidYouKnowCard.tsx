@@ -2,9 +2,9 @@ import React from 'react'
 import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
+import { useCommonSelector } from '../../redux/useCommonSelector'
 import _ from 'lodash'
-import { commonSelectors } from '../../redux/common/selectors'
+import { commonSelectors } from '../../redux/selectors'
 import { TitleText } from '../../components/common/TitleText'
 
 const deviceWidth = Dimensions.get('window').width

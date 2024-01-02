@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { PredictionSerializableState } from '../../../prediction'
+import { PredictionSerializableState } from '../../prediction'
 
 import { CommonActions } from '../types/index'
 

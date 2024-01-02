@@ -4,10 +4,10 @@ import { Dimensions } from 'react-native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
-import { useCommonSelector } from '../../redux/common/useCommonSelector'
+import { useCommonSelector } from '../../redux/useCommonSelector'
 import _ from 'lodash'
-import { commonSelectors } from '../../redux/common/selectors'
-import { commonActions } from '../../redux/common/actions'
+import { commonSelectors } from '../../redux/selectors'
+import { commonActions } from '../../redux/actions'
 import { useDispatch } from 'react-redux'
 
 const deviceWidth = Dimensions.get('window').width

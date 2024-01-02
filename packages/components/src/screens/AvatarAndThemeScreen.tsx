@@ -6,12 +6,12 @@ import { ThemeSelect } from './avatarAndTheme/ThemeSelect'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
-import { commonActions } from '../redux/actions/index'
+import * as actions from '../redux/actions/index'
 import { Header } from '../components/common/Header'
 import { useTheme } from '../components/context/ThemeContext'
 import { BackOneScreen, navigate } from '../services/navigationService'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
 import styled from 'styled-components/native'
 import { Text } from '../components/common/Text'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -21,7 +21,7 @@ export function AvatarAndThemeScreen({ navigation }) {
   const signingUp = navigation.getParam('signingUp')
   const newUser = navigation.getParam('newUser')
   const [loading, setLoading] = React.useState(false)
-  const selectedAvatar = useCommonSelector(commonSelectors.currentAvatarSelector)
+  const selectedAvatar = useSelector(selectors.currentAvatarSelector)
   const dispatch = useDispatch()
 
   const { id } = useTheme()
@@ -57,7 +57,7 @@ export function AvatarAndThemeScreen({ navigation }) {
           <AvatarSelect
             avatars={avatarNames}
             value={selectedAvatar}
-            onSelect={(avatar) => dispatch(commonActions.setAvatar(avatar))}
+            onSelect={(avatar) => dispatch(actions.setAvatar(avatar))}
           />
           <ThemeSelect
             themes={themeNames}
@@ -66,7 +66,7 @@ export function AvatarAndThemeScreen({ navigation }) {
               if (theme !== id) {
                 setLoading(true)
                 requestAnimationFrame(() => {
-                  dispatch(commonActions.setTheme(theme))
+                  dispatch(actions.setTheme(theme))
                 })
               }
             }}

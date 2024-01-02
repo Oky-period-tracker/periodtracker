@@ -6,8 +6,8 @@ import { IconButton } from '../../components/common/buttons/IconButton'
 import styled from 'styled-components/native'
 import { handleCategoriesFilter, handleSearchResult } from './searchFunctions'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
-import { useCommonSelector } from '../../redux/useCommonSelector'
-import { commonSelectors } from '../../redux/selectors'
+import { useSelector } from '../../redux/useSelector'
+import * as selectors from '../../redux/selectors'
 import { translate } from '../../i18n'
 
 export const SearchBar = ({
@@ -22,8 +22,8 @@ export const SearchBar = ({
 }) => {
   const [searchStr, setSearchStr] = React.useState('')
   const [emojiFilter, updateEmojiFilter] = React.useState([])
-  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
-  const emojiList = useCommonSelector(commonSelectors.allCategoryEmojis)
+  const locale = useSelector(selectors.currentLocaleSelector)
+  const emojiList = useSelector(selectors.allCategoryEmojis)
 
   return (
     <>

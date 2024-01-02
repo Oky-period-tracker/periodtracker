@@ -9,8 +9,8 @@ import { PageContainer } from '../components/layout/PageContainer'
 import { TextInput } from '../components/common/TextInput'
 import { KeyboardAwareAvoidance } from '../components/common/KeyboardAwareAvoidance'
 import { httpClient } from '../services/HttpClient'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import { Text } from '../components/common/Text'
 import { ThemedModal } from '../components/common/ThemedModal'
@@ -23,8 +23,8 @@ const Reasons = ['reason', 'report_bug', 'request_topic', 'Other', 'problem_app'
 
 export function ContactUsScreen({ navigation }) {
   const [email, setEmail] = React.useState('')
-  const user = useCommonSelector(commonSelectors.currentUserSelector)
-  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
+  const user = useSelector(selectors.currentUserSelector)
+  const locale = useSelector(selectors.currentLocaleSelector)
   const [reason, setReason] = React.useState('')
   const [message, setMessage] = React.useState('')
   const [notValid, setNotValid] = React.useState(false)

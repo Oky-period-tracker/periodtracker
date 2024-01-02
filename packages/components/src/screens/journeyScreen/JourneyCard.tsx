@@ -5,8 +5,8 @@ import { CalendarCardContent } from './CalendarCardContent'
 import { WheelPickerContent } from '../../components/WheelPickerContent'
 import { Avatar } from '../../components/common/Avatar/Avatar'
 import { assets } from '../../assets'
-import { useCommonSelector } from '../../redux/useCommonSelector'
-import { commonSelectors } from '../../redux/selectors'
+import { useSelector } from '../../redux/useSelector'
+import * as selectors from '../../redux/selectors'
 
 export function JourneyCard({
   question,
@@ -29,7 +29,7 @@ export function JourneyCard({
   leftButtonTitle = 'i_dont_remember',
   rightButtonTitle = 'i_remember',
 }) {
-  const selectedAvatar = useCommonSelector(commonSelectors.currentAvatarSelector)
+  const selectedAvatar = useSelector(selectors.currentAvatarSelector)
   return (
     <>
       {status === 'initial' && (

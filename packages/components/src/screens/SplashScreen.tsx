@@ -4,8 +4,8 @@ import { PageContainer } from '../components/layout/PageContainer'
 import { assets } from '../assets/index'
 import styled from 'styled-components/native'
 import { useDispatch } from 'react-redux'
-import { commonSelectors } from '../redux/selectors'
-import { commonActions } from '../redux/actions'
+import * as selectors from '../redux/selectors'
+import * as actions from '../redux/actions'
 import { navigateAndReset } from '../services/navigationService'
 import { Animated, Easing } from 'react-native'
 import { createNotificationChannel, requestUserPermission } from '../services/notifications'
@@ -15,18 +15,18 @@ import { useAlert } from '../components/context/AlertContext'
 import { httpClient } from '../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import messaging from '@react-native-firebase/messaging'
-import { useCommonSelector } from '../redux/useCommonSelector'
+import { useSelector } from '../redux/useSelector'
 
 export function SplashScreen() {
   const dispatch = useDispatch()
-  const user: any = useCommonSelector(commonSelectors.currentUserSelector)
+  const user: any = useSelector(selectors.currentUserSelector)
   const Alert = useAlert()
 
-  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
-  const hasOpened = useCommonSelector(commonSelectors.hasOpenedSelector)
-  const currentAppVersion = useCommonSelector(commonSelectors.currentAppVersion)
-  const currentFirebaseToken = useCommonSelector(commonSelectors.currentFirebaseToken)
-  const hasPasswordRequestOn = useCommonSelector(commonSelectors.isLoginPasswordActiveSelector)
+  const locale = useSelector(selectors.currentLocaleSelector)
+  const hasOpened = useSelector(selectors.hasOpenedSelector)
+  const currentAppVersion = useSelector(selectors.currentAppVersion)
+  const currentFirebaseToken = useSelector(selectors.currentFirebaseToken)
+  const hasPasswordRequestOn = useSelector(selectors.isLoginPasswordActiveSelector)
   const [animatedValue] = React.useState(new Animated.Value(0))
 
   async function checkForPermanentAlerts() {
@@ -58,12 +58,12 @@ export function SplashScreen() {
     messaging().unsubscribeFromTopic('oky_mn_notifications')
     messaging().subscribeToTopic(`oky_${locale}_notifications`)
     if (currentAppVersion !== DeviceInfo.getVersion()) {
-      dispatch(commonActions.setUpdatedVersion())
-      dispatch(commonActions.updateFuturePrediction(true, null))
+      dispatch(actions.setUpdatedVersion())
+      dispatch(actions.updateFuturePrediction(true, null))
     }
     if (fetchNetworkConnectionStatus()) {
       if (currentFirebaseToken === null) {
-        dispatch(commonActions.requestStoreFirebaseKey())
+        dispatch(actions.requestStoreFirebaseKey())
       }
     }
 

@@ -8,9 +8,9 @@ import { Icon } from '../components/common/Icon'
 import { SelectBox } from '../components/common/SelectBox'
 import { DateOfBirthInput } from '../components/common/DateOfBirthInput'
 import { assets } from '../assets/index'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
-import { commonActions } from '../redux/actions'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
+import * as actions from '../redux/actions'
 import { useDispatch } from 'react-redux'
 import { BackOneScreen } from '../services/navigationService'
 import { httpClient } from '../services/HttpClient'
@@ -71,8 +71,8 @@ async function runInSequence(functions) {
 
 export function EditProfileScreen() {
   const dispatch = useDispatch()
-  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
-  const appToken = useCommonSelector(commonSelectors.appTokenSelector)
+  const currentUser = useSelector(selectors.currentUserSelector)
+  const appToken = useSelector(selectors.appTokenSelector)
 
   const [name, setName] = React.useState(currentUser.name)
   const [notValid, setNotValid] = React.useState(false)
@@ -117,7 +117,7 @@ export function EditProfileScreen() {
       })
 
       dispatch(
-        commonActions.editUser({
+        actions.editUser({
           name,
           dateOfBirth,
           gender,
@@ -144,7 +144,7 @@ export function EditProfileScreen() {
       })
 
       dispatch(
-        commonActions.editUser({
+        actions.editUser({
           secretAnswer: _.toLower(secretAnswer).trim(),
         }),
       )
@@ -182,7 +182,7 @@ export function EditProfileScreen() {
       })
 
       dispatch(
-        commonActions.editUser({
+        actions.editUser({
           password: _.toLower(password).trim(),
         }),
       )
@@ -205,7 +205,7 @@ export function EditProfileScreen() {
       }
 
       dispatch(
-        commonActions.editUser({
+        actions.editUser({
           name,
           dateOfBirth,
           gender,

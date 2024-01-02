@@ -8,10 +8,10 @@ import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { Switcher } from './settings/Switcher'
 import { navigate } from '../services/navigationService'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../redux/actions'
+import * as actions from '../redux/actions'
 import { ConfirmAlert } from '../components/common/ConfirmAlert'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
 import { translate } from '../i18n/index'
 import { SpinLoader } from '../components/common/SpinLoader'
 import { settingsScreenText } from '../config'
@@ -25,9 +25,9 @@ export function SettingsScreen({ navigation }) {
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
   const currentCycleInfo = useTodayPrediction()
-  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
-  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
-  const hasFuturePredictionActive = useCommonSelector(commonSelectors.isFuturePredictionSelector)
+  const currentUser = useSelector(selectors.currentUserSelector)
+  const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
+  const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
 
   useTextToSpeechHook({
     navigation,
@@ -64,7 +64,7 @@ export function SettingsScreen({ navigation }) {
                     }
                   }
                   closeOutTTs()
-                  dispatch(commonActions.setTtsActive(val))
+                  dispatch(actions.setTtsActive(val))
                 }}
               />
             )}
@@ -77,7 +77,7 @@ export function SettingsScreen({ navigation }) {
                 value={hasFuturePredictionActive?.futurePredictionStatus}
                 onSwitch={(val) => {
                   const currentStartDate = currentCycleInfo
-                  dispatch(commonActions.updateFuturePrediction(val, currentStartDate))
+                  dispatch(actions.updateFuturePrediction(val, currentStartDate))
                 }}
               />
             )}
@@ -94,7 +94,7 @@ export function SettingsScreen({ navigation }) {
                 () => {
                   setLoading(true)
                   setTimeout(() => {
-                    dispatch(commonActions.logoutRequest())
+                    dispatch(actions.logoutRequest())
                   }, 100)
                 },
               )
@@ -114,7 +114,7 @@ export function SettingsScreen({ navigation }) {
                       analytics().logEvent('delete_account', { user: currentUser })
                     }
                     dispatch(
-                      commonActions.deleteAccountRequest({
+                      actions.deleteAccountRequest({
                         name: currentUser.name,
                         password: currentUser.password,
                         setLoading,

@@ -1,4 +1,4 @@
-import { CommonActions } from '../types'
+import { Actions } from '../types'
 import { combineReducers } from 'redux'
 import { toShortISO } from '../../services/dateUtils'
 import { DailyCard } from '../../types'
@@ -47,7 +47,7 @@ export interface AnswerState {
   [userId: string]: AnswerForUserState
 }
 
-function surveysReducer(state = {}, action: CommonActions): AnswerForUserState['surveys'] {
+function surveysReducer(state = {}, action: Actions): AnswerForUserState['surveys'] {
   if (action.type === 'ANSWER_SURVEY') {
     return {
       ...state,
@@ -65,7 +65,7 @@ function surveysReducer(state = {}, action: CommonActions): AnswerForUserState['
   return state
 }
 
-function quizzesReducer(state = {}, action: CommonActions): AnswerForUserState['quizzes'] {
+function quizzesReducer(state = {}, action: Actions): AnswerForUserState['quizzes'] {
   if (action.type === 'ANSWER_QUIZ') {
     return {
       ...state,
@@ -85,7 +85,7 @@ function quizzesReducer(state = {}, action: CommonActions): AnswerForUserState['
   return state
 }
 
-function cardsReducer(state = {}, action: CommonActions): AnswerForUserState['cards'] {
+function cardsReducer(state = {}, action: Actions): AnswerForUserState['cards'] {
   if (action.type === 'ANSWER_DAILY_CARD') {
     const keyCard = toShortISO(action.payload.utcDateTime)
     let answersToInsert = []
@@ -125,10 +125,7 @@ function cardsReducer(state = {}, action: CommonActions): AnswerForUserState['ca
   }
   return state
 }
-function periodVerifyReducer(
-  state = {},
-  action: CommonActions,
-): AnswerForUserState['verifiedDates'] {
+function periodVerifyReducer(state = {}, action: Actions): AnswerForUserState['verifiedDates'] {
   if (action.type === 'ANSWER_VERIFY_DATES') {
     const keyCard = toShortISO(action.payload.utcDateTime)
     const answersToInsert = []
@@ -144,7 +141,7 @@ function periodVerifyReducer(
   return state
 }
 
-function notesReducer(state = {}, action: CommonActions): AnswerForUserState['notes'] {
+function notesReducer(state = {}, action: Actions): AnswerForUserState['notes'] {
   if (action.type === 'ANSWER_NOTES_CARD') {
     const keyCard = toShortISO(action.payload.utcDateTime)
     return {
@@ -159,7 +156,7 @@ function notesReducer(state = {}, action: CommonActions): AnswerForUserState['no
   return state
 }
 
-const answerForUserReducer = combineReducers<AnswerForUserState, CommonActions>({
+const answerForUserReducer = combineReducers<AnswerForUserState, Actions>({
   surveys: surveysReducer,
   quizzes: quizzesReducer,
   cards: cardsReducer,
@@ -167,7 +164,7 @@ const answerForUserReducer = combineReducers<AnswerForUserState, CommonActions>(
   verifiedDates: periodVerifyReducer,
 })
 
-export function answerReducer(state: AnswerState = {}, action: CommonActions): AnswerState {
+export function answerReducer(state: AnswerState = {}, action: Actions): AnswerState {
   // TODO_ALEX: survey
   if (action.type === 'ANSWER_SURVEY') {
     return {

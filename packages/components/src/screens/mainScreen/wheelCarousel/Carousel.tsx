@@ -7,8 +7,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { navigate, navigateAndReset } from '../../../services/navigationService'
 import moment from 'moment'
 import { useDisplayText } from '../../../components/context/DisplayTextContext'
-import { useCommonSelector } from '../../../redux/useCommonSelector'
-import { commonSelectors } from '../../../redux/selectors'
+import { useSelector } from '../../../redux/useSelector'
+import * as selectors from '../../../redux/selectors'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 
 const screenWidth = Dimensions.get('window').width
@@ -28,7 +28,7 @@ export function Carousel({
   absoluteIndex,
   disableInteraction = false,
 }) {
-  const isTutorialTwoOn = useCommonSelector(commonSelectors.isTutorialTwoActiveSelector)
+  const isTutorialTwoOn = useSelector(selectors.isTutorialTwoActiveSelector)
   const [isVisible, setIsVisible] = React.useState(false)
   const { setDisplayTextStatic } = useDisplayText()
 

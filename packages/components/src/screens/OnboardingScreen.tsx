@@ -7,7 +7,7 @@ import { OnboardingCard } from './onboardingScreen/OnboardingCard'
 import { assets } from '../assets/index'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { navigateAndReset } from '../services/navigationService'
-import { commonActions } from '../redux/actions'
+import * as actions from '../redux/actions'
 import { useDispatch } from 'react-redux'
 import { Animated } from 'react-native'
 import { Text } from '../components/common/Text'
@@ -18,7 +18,7 @@ export function OnboardingScreen() {
   const [index, setIndex] = React.useState(0)
   const [isButtonVisible, setIsButtonVisible] = React.useState(false)
   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
-  // const region = useCommonSelector(commonSelectors.currentChosenRegionSelector)
+  // const region = useSelector(selectors.currentChosenRegionSelector)
 
   React.useEffect(() => {
     if (index === 2) {
@@ -28,8 +28,8 @@ export function OnboardingScreen() {
 
   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
   // const onPenalCodeComplete = lang => {
-  //   dispatch(commonActions.setChosenRegion(lang))
-  //   dispatch(commonActions.setLocale(lang))
+  //   dispatch(actions.setChosenRegion(lang))
+  //   dispatch(actions.setLocale(lang))
   // }
 
   return (
@@ -70,7 +70,7 @@ export function OnboardingScreen() {
             }}
             textStyle={{ color: 'white' }}
             onPress={() => {
-              dispatch(commonActions.setHasOpened(true))
+              dispatch(actions.setHasOpened(true))
               navigateAndReset('LoginStack', null)
             }}
           >

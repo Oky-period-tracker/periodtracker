@@ -3,7 +3,7 @@ import styled from 'styled-components/native'
 import { Text, TextWithoutTranslation } from '../../components/common/Text'
 import { assets } from '../../assets/index'
 import { translate } from '../../i18n/index'
-import { commonActions } from '../../redux/actions/index'
+import * as actions from '../../redux/actions/index'
 import { useDispatch } from 'react-redux'
 import moment from 'moment'
 import { SpinLoader } from '../../components/common/SpinLoader'
@@ -74,7 +74,7 @@ export function FinalJourneyCard({ cards, questionAnswers, goToQuestion }) {
           onPress={() => {
             setLoading(true)
             requestAnimationFrame(() => {
-              dispatch(commonActions.journeyCompletion(questionAnswers))
+              dispatch(actions.journeyCompletion(questionAnswers))
             })
           }}
         >

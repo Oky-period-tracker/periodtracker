@@ -3,8 +3,8 @@ import styled from 'styled-components/native'
 import { ScrollView, Animated } from 'react-native'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
 import { Category } from './encyclopediaScreen/Category'
 import { SubCategoryCard, VideoSubCategoryCard } from './encyclopediaScreen/SubCategoryCard'
 import Accordion from 'react-native-collapsible/Accordion'
@@ -18,16 +18,16 @@ import analytics from '@react-native-firebase/analytics'
 import { fetchNetworkConnectionStatus } from '../services/network'
 
 export function EncyclopediaScreen({ navigation }) {
-  const categories = useCommonSelector(commonSelectors.allCategoriesSelector)
-  const articles = useCommonSelector(commonSelectors.allArticlesSelector)
-  const subCategories = useCommonSelector(commonSelectors.allSubCategoriesSelector)
-  const subCategoriesObject = useCommonSelector(commonSelectors.allSubCategoriesObjectSelector)
+  const categories = useSelector(selectors.allCategoriesSelector)
+  const articles = useSelector(selectors.allArticlesSelector)
+  const subCategories = useSelector(selectors.allSubCategoriesSelector)
+  const subCategoriesObject = useSelector(selectors.allSubCategoriesObjectSelector)
   const [activeCategories, setActiveCategory] = React.useState([])
   const [filteredCategories, setFilteredCategories] = React.useState(categories)
   const [shownCategories, setShownCategories] = React.useState(categories)
   const [searching, setSearching] = React.useState(false)
   const [position] = React.useState(new Animated.Value(0))
-  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
+  const currentUser = useSelector(selectors.currentUserSelector)
 
   const categoryNames = categories.map((item) => item?.name)
   const [textArray, setTextArray] = React.useState(categoryNames)

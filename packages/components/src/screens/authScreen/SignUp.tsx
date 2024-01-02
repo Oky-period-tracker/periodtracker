@@ -8,7 +8,7 @@ import { AskAge } from './signUp/AskAge'
 import { AskLocation } from './signUp/AskLocation'
 import { AskUserConfirmation } from './signUp/AskUserConfirmation'
 import { navigate } from '../../services/navigationService'
-import { commonActions } from '../../redux/actions'
+import * as actions from '../../redux/actions'
 import _ from 'lodash'
 import { FAST_SIGN_UP } from '../../config'
 
@@ -64,7 +64,7 @@ export function SignUp({ heightInner }) {
     answer,
   }) => {
     dispatch(
-      commonActions.createAccountRequest({
+      actions.createAccountRequest({
         id: uuidv4(),
         name,
         dateOfBirth,

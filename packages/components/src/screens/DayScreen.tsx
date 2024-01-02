@@ -12,8 +12,8 @@ import { assets } from '../assets'
 import { usePredictDay } from '../components/context/PredictionProvider'
 import { ThemedModal } from '../components/common/ThemedModal'
 import { ColourButtons } from './mainScreen/ColourButtons'
-import { commonSelectors } from '../redux/selectors'
-import { useCommonSelector } from '../redux/useCommonSelector'
+import * as selectors from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
 import moment from 'moment'
 
 export function DayScreen({ navigation }) {
@@ -21,8 +21,8 @@ export function DayScreen({ navigation }) {
   const dataEntry = usePredictDay(temp.date)
   const [isVisible, setIsVisible] = React.useState(false)
   const { keyboardIsOpen, dismiss } = useKeyboardController()
-  const cardAnswersToday = useCommonSelector((state) =>
-    commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(dataEntry.date)),
+  const cardAnswersToday = useSelector((state) =>
+    selectors.verifyPeriodDaySelectorWithDate(state, moment(dataEntry.date)),
   )
 
   const goBack = () => {

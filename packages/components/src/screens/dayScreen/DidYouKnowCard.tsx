@@ -2,15 +2,15 @@ import React from 'react'
 import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import { useSelector } from '../../redux/useSelector'
 import _ from 'lodash'
-import { commonSelectors } from '../../redux/selectors'
+import * as selectors from '../../redux/selectors'
 import { TitleText } from '../../components/common/TitleText'
 
 const deviceWidth = Dimensions.get('window').width
 
 function useDidYouKnow() {
-  const allDidYouKnows = useCommonSelector(commonSelectors.allDidYouKnowsSelectors)
+  const allDidYouKnows = useSelector(selectors.allDidYouKnowsSelectors)
   const randomDidYouKnow = React.useMemo(() => {
     return _.sample(allDidYouKnows)
   }, [])

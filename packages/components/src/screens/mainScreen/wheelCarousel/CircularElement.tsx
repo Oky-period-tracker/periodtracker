@@ -6,14 +6,14 @@ import { useTheme } from '../../../components/context/ThemeContext'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { assets } from '../../../assets/index'
 import { translate } from '../../../i18n'
-import { commonSelectors } from '../../../redux/selectors'
+import * as selectors from '../../../redux/selectors'
 import moment from 'moment'
 import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,
 } from '../../../components/context/PredictionProvider'
 import _ from 'lodash'
-import { useCommonSelector } from '../../../redux/useCommonSelector'
+import { useSelector } from '../../../redux/useSelector'
 
 const {
   Value,
@@ -95,7 +95,7 @@ export function CircularElement({
   state,
 }) {
   const currentCycleInfo = useTodayPrediction()
-  const hasFuturePredictionActive = useCommonSelector(commonSelectors.isFuturePredictionSelector)
+  const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
   const actualCurrentStartDate = useActualCurrentStartDateSelector()
   const { id: themeName } = useTheme()
   const clock = new Clock()

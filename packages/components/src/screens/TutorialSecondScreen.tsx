@@ -11,7 +11,7 @@ import { useInfiniteScroll } from './mainScreen/wheelCarousel/useInfiniteScroll'
 import { navigateAndReset } from '../services/navigationService'
 import { Animated, Dimensions, Image, Platform, View } from 'react-native'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../redux/actions'
+import * as actions from '../redux/actions'
 import { Text } from '../components/common/Text'
 import { Icon } from '../components/common/Icon'
 import { assets } from '../assets'
@@ -19,8 +19,8 @@ import { DayAssetDemo } from './tutorial/DayAssetDemo'
 import { CalendarAssetDemo } from './tutorial/CalendarAssetDemo'
 import { SpinLoader } from '../components/common/SpinLoader'
 import { NoteAssetDemo } from './tutorial/NoteAssetDemo'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import Tts from 'react-native-tts'
 import { translate } from '../i18n'
@@ -50,8 +50,8 @@ export function TutorialSecondScreen({ navigation }) {
   const flag = React.useRef(false)
   const dispatch = useDispatch()
   // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useCommonSelector
-  const hasTtsActive = useCommonSelector(commonSelectors.isTtsActiveSelector)
+  const renamedUseSelector = useSelector
+  const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
 
   const normalizePosition = (percentage, dimension) => {
     return percentage * dimension - arrowSize / 2
@@ -209,7 +209,7 @@ export function TutorialSecondScreen({ navigation }) {
       flag.current = true
     }
     if (flag.current) {
-      dispatch(commonActions.setTutorialTwoActive(false))
+      dispatch(actions.setTutorialTwoActive(false))
       setLoading(true)
       requestAnimationFrame(() => {
         setTimeout(() => {
@@ -375,13 +375,13 @@ export function TutorialSecondScreen({ navigation }) {
 
   const getCardAnswersValues = (inputDay) => {
     const cardData = renamedUseSelector((state) =>
-      commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
+      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
     )
     return cardData
   }
 
   const skip = () => {
-    dispatch(commonActions.setTutorialTwoActive(false))
+    dispatch(actions.setTutorialTwoActive(false))
     setLoading(true)
     requestAnimationFrame(() => {
       setTimeout(() => {

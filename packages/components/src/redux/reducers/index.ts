@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { combineReducers } from 'redux'
 import { syncReducers } from '../sync'
-import { CommonActions } from '../types'
+import { Actions } from '../types'
 
 import { analyticsReducer } from './analyticsReducer'
 import { answerReducer } from './answerReducer'
@@ -31,7 +31,7 @@ const reducer = combineReducers(
   ),
 )
 
-export function commonRootReducer(state, action: CommonActions) {
+export function rootReducer(state, action: Actions) {
   switch (action.type) {
     case 'LOGOUT':
       // @ts-ignore
@@ -42,4 +42,4 @@ export function commonRootReducer(state, action: CommonActions) {
   }
 }
 
-export type CommonReduxState = ReturnType<typeof commonRootReducer>
+export type ReduxState = ReturnType<typeof rootReducer>

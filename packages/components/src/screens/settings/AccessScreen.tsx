@@ -4,9 +4,9 @@ import { BackgroundTheme } from '../../components/layout/BackgroundTheme'
 import styled from 'styled-components/native'
 import { ListItem } from './accessScreen/ListItem'
 import { Header } from '../../components/common/Header'
-import { useCommonSelector } from '../../redux/useCommonSelector'
-import { commonSelectors } from '../../redux/selectors'
-import { commonActions } from '../../redux/actions/index'
+import { useSelector } from '../../redux/useSelector'
+import * as selectors from '../../redux/selectors'
+import * as actions from '../../redux/actions/index'
 import { useDispatch } from 'react-redux'
 import { navigateAndReset } from '../../services/navigationService'
 import { TouchableOpacity } from 'react-native'
@@ -19,15 +19,15 @@ import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { acessSettingsScreenText, WEBSITE_URL } from '../../config'
 
 export function AccessScreen({ navigation }) {
-  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
+  const locale = useSelector(selectors.currentLocaleSelector)
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
 
-  const privacyContent = useCommonSelector(commonSelectors.privacyContent)
+  const privacyContent = useSelector(selectors.privacyContent)
   const speechText = privacyContent.map((item) => item.content)
   const shareLink = () => {
     // @TODO: app event
-    dispatch(commonActions.shareApp())
+    dispatch(actions.shareApp())
     const options = {
       url: WEBSITE_URL,
       message: translate('join_oky_message'),
@@ -57,7 +57,7 @@ export function AccessScreen({ navigation }) {
                   if (lang !== locale) {
                     setLoading(true)
                     requestAnimationFrame(() => {
-                      dispatch(commonActions.setLocale(lang))
+                      dispatch(actions.setLocale(lang))
                     })
                   }
                 }}

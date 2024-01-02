@@ -18,13 +18,13 @@ import { InformationButton } from '../../components/common/InformationButton'
 import { decisionProcessNonPeriod, decisionProcessPeriod } from './predictionLogic/predictionLogic'
 import { translate } from '../../i18n'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../../redux/actions/index'
-import { commonSelectors } from '../../redux/selectors'
+import * as actions from '../../redux/actions/index'
+import * as selectors from '../../redux/selectors'
 import analytics from '@react-native-firebase/analytics'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import { useSelector } from '../../redux/useSelector'
 import { incrementFlowerProgress, useFlowerStateSelector, FlowerModal } from '../../optional/Flower'
 
 const minBufferBetweenCycles = 2
@@ -59,8 +59,8 @@ export function ColourButtons({
   const selectedDayInfoEngine = usePredictDay(inputDay)
   const isActive = useIsActiveSelector()
   const appDispatch = useDispatch()
-  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
-  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
+  const userID = useSelector(selectors.currentUserSelector).id
+  const currentUser = useSelector(selectors.currentUserSelector)
   const currentCycleInfo = useTodayPrediction()
   const inputDayStr = moment(inputDay).format('YYYY-MM-DD')
   const todayStr = moment().format('YYYY-MM-DD')
@@ -68,13 +68,13 @@ export function ColourButtons({
   const [isFlowerVisible, setFlowerVisible] = React.useState(false)
   const flowerState = useFlowerStateSelector()
 
-  const cardAnswersToday = useCommonSelector((state) =>
-    commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(inputDayStr)),
+  const cardAnswersToday = useSelector((state) =>
+    selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDayStr)),
   ) as any
 
   const fullState = useFullState()
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
-  const hasFuturePredictionActive = useCommonSelector(commonSelectors.isFuturePredictionSelector)
+  const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
 
   // TODO_ALEX this useState is redundant
   const [futurePredictionStatus, setFuturePredictionStatus] = useState(false)
@@ -128,7 +128,7 @@ export function ColourButtons({
           }
         }
         appDispatch(
-          commonActions.smartPredictionRequest({
+          actions.smartPredictionRequest({
             cycle_lengths: tempPeriodsCycles,
             period_lengths: tempPeriodsLength,
             age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
@@ -138,9 +138,7 @@ export function ColourButtons({
         )
       }
     }
-    appDispatch(
-      commonActions.updateFuturePrediction(futurePredictionStatus, fullState.currentCycle),
-    )
+    appDispatch(actions.updateFuturePrediction(futurePredictionStatus, fullState.currentCycle))
   }
 
   const actionPink = decisionProcessPeriod({
@@ -217,7 +215,7 @@ export function ColourButtons({
       })
     }
     appDispatch(
-      commonActions.answerVerifyDates({
+      actions.answerVerifyDates({
         userID,
         utcDateTime: inputDay,
         periodDay: true,
@@ -237,7 +235,7 @@ export function ColourButtons({
     if (addNewCycleHistory) {
       if (selectedDayInfo.onPeriod) {
         appDispatch(
-          commonActions.answerVerifyDates({
+          actions.answerVerifyDates({
             userID,
             utcDateTime: inputDay,
             periodDay: true,
@@ -252,7 +250,7 @@ export function ColourButtons({
           getPredictedCycles,
         })
         appDispatch(
-          commonActions.answerVerifyDates({
+          actions.answerVerifyDates({
             userID,
             utcDateTime: inputDay,
             periodDay: true,
@@ -263,7 +261,7 @@ export function ColourButtons({
     } else {
       if (selectedDayInfo.onPeriod) {
         appDispatch(
-          commonActions.answerVerifyDates({
+          actions.answerVerifyDates({
             userID,
             utcDateTime: inputDay,
             periodDay: true,
@@ -296,7 +294,7 @@ export function ColourButtons({
           getPredictedCycles,
         })
         appDispatch(
-          commonActions.answerVerifyDates({
+          actions.answerVerifyDates({
             userID,
             utcDateTime: inputDay,
             periodDay: false,

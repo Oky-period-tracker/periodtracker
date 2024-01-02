@@ -3,10 +3,9 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { configureStore } from './store'
 import { config } from './config'
-import { commonRootReducer } from './reducers'
-import { commonRootSaga } from './sagas'
+import { rootReducer } from './reducers'
+import { rootSaga } from './sagas'
 import { REHYDRATE } from 'redux-persist'
-import { commonActions } from './actions'
 
 interface Keys {
   key: string
@@ -15,35 +14,35 @@ interface Keys {
 
 interface Context {
   switchStore: (keys: Keys) => void
-  switchToCommonStore: () => void
+  switchToPrimaryStore: () => void
 }
 
 const StoreCoordinatorContext = React.createContext<Context>({
   switchStore: () => {
     //
   },
-  switchToCommonStore: () => {
+  switchToPrimaryStore: () => {
     //
   },
 })
 
-const commonStore = configureStore({
+const primaryStore = configureStore({
   key: 'primary',
   secretKey: config.REDUX_ENCRYPT_KEY,
-  rootReducer: commonRootReducer,
-  rootSaga: commonRootSaga,
+  rootReducer,
+  rootSaga,
 })
 
 export function StoreCoordinator({ children }) {
-  const [{ persistor, store }, setStore] = React.useState(commonStore)
+  const [{ persistor, store }, setStore] = React.useState(primaryStore)
 
   const [state, setState] = React.useState(undefined)
   const [keys, setKeys] = React.useState<Keys | undefined>(undefined)
   const [shouldSwitch, setShouldSwitch] = React.useState(false)
   const [shouldMigrate, setShouldMigrate] = React.useState(false)
 
-  const switchToCommonStore = () => {
-    setStore(commonStore)
+  const switchToPrimaryStore = () => {
+    setStore(primaryStore)
   }
 
   const switchStore = ({ key, secretKey }: Keys) => {
@@ -54,8 +53,8 @@ export function StoreCoordinator({ children }) {
       configureStore({
         key,
         secretKey,
-        rootReducer: commonRootReducer,
-        rootSaga: commonRootSaga,
+        rootReducer,
+        rootSaga,
       }),
     )
   }
@@ -63,14 +62,14 @@ export function StoreCoordinator({ children }) {
   // ===== Step 1: Detect key change ===== //
   React.useEffect(() => {
     const unsubscribe = store.subscribe(() => {
-      const commonState = store.getState()
+      const primaryState = store.getState()
       // TODO:
       // @ts-ignore
-      const currentKeys = commonState?.keys.keys
+      const currentKeys = primaryState?.keys.keys
 
       if (currentKeys && currentKeys !== keys) {
         setKeys(currentKeys)
-        setState(commonState)
+        setState(primaryState)
         setShouldSwitch(true)
       }
     })
@@ -105,7 +104,7 @@ export function StoreCoordinator({ children }) {
     <StoreCoordinatorContext.Provider
       value={{
         switchStore,
-        switchToCommonStore,
+        switchToPrimaryStore,
       }}
     >
       <ReduxProvider store={store}>

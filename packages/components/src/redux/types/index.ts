@@ -1,11 +1,11 @@
-import { commonActions } from '../actions'
+import * as actions from '../actions'
 import { ActionsUnion, ActionsOfType } from './types'
 
-export type CommonActions = ActionsUnion<typeof commonActions>
+export type Actions = ActionsUnion<typeof actions>
 
-export type CommonActionTypes = CommonActions[keyof CommonActions]
+export type ActionTypes = Actions[keyof Actions]
 
 export type ExtractActionFromActionType<ActionType extends string> = ActionsOfType<
-  CommonActions,
+  Actions,
   ActionType
 >

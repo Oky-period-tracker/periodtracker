@@ -6,12 +6,12 @@ import { translate } from '../../i18n'
 import { TouchableOpacity } from 'react-native'
 import _ from 'lodash'
 import moment from 'moment'
-import { commonSelectors } from '../../redux/selectors'
+import * as selectors from '../../redux/selectors'
 import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,
 } from '../../components/context/PredictionProvider'
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import { useSelector } from '../../redux/useSelector'
 
 function checkForVerifiedDay(cardValues) {
   if (_.has(cardValues, 'periodDay')) {
@@ -69,7 +69,7 @@ export function DateBadge({ dataEntry, style, textStyle = null, showModal, cardV
   const { id: themeName } = useTheme()
   const currentCycleInfo = useTodayPrediction()
   const actualCurrentStartDate = useActualCurrentStartDateSelector()
-  const hasFuturePredictionActive = useCommonSelector(commonSelectors.isFuturePredictionSelector)
+  const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
 
   const source = useStatusForSource(
     dataEntry,

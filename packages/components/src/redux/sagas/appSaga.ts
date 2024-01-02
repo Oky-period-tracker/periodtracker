@@ -3,10 +3,10 @@ import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
 import { httpClient } from '../../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import { extractReducerState } from '../sync'
-import { CommonReduxState, exportReducerNames } from '../reducers'
+import { ReduxState, exportReducerNames } from '../reducers'
 import { version as storeVersion } from '../store'
-import { commonActions } from '../actions'
-import { commonSelectors } from '../selectors'
+import * as actions from '../actions'
+import * as selectors from '../selectors'
 import messaging from '@react-native-firebase/messaging'
 
 function* syncAppState() {
@@ -16,13 +16,13 @@ function* syncAppState() {
     // process queue every minute
     yield delay(60 * 1000)
 
-    const appToken = yield select(commonSelectors.appTokenSelector)
+    const appToken = yield select(selectors.appTokenSelector)
     if (!appToken) {
       // not logged
       continue
     }
 
-    const state: CommonReduxState = yield select()
+    const state: ReduxState = yield select()
     const appState = extractReducerState(state, exportReducerNames)
 
     if (_.isEqual(appState, lastAppState)) {
@@ -42,7 +42,7 @@ function* syncAppState() {
         appToken,
       })
 
-      const temp = yield put(commonActions.syncStore())
+      const temp = yield put(actions.syncStore())
 
       lastAppState = appState
     } catch (err) {
@@ -55,7 +55,7 @@ function* onRequestStoreFirebaseKey() {
   if (yield fetchNetworkConnectionStatus()) {
     // no internet connection
     const firebaseToken = yield messaging().getToken()
-    yield put(commonActions.storeFirebaseKey(firebaseToken))
+    yield put(actions.storeFirebaseKey(firebaseToken))
   }
 }
 

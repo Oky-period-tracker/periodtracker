@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { useCommonSelector } from '../../redux/useCommonSelector'
-import { commonSelectors } from '../../redux/selectors'
-import { commonActions } from '../../redux/actions/index'
+import { useSelector } from '../../redux/useSelector'
+import * as selectors from '../../redux/selectors'
+import * as actions from '../../redux/actions/index'
 import { useDispatch } from 'react-redux'
 
 import { PrimaryButton } from './buttons/PrimaryButton'
@@ -13,7 +13,7 @@ import { availableAppLocales } from '@oky/core'
 export const LanguageSelect = ({ style = null, textStyle = null, onPress = null }) => {
   const [modalVisible, setModalVisible] = React.useState(false)
   const [lang, setLang] = React.useState('')
-  const locale = useCommonSelector(commonSelectors.currentLocaleSelector)
+  const locale = useSelector(selectors.currentLocaleSelector)
   const dispatch = useDispatch()
   return (
     <>
@@ -27,7 +27,7 @@ export const LanguageSelect = ({ style = null, textStyle = null, onPress = null 
         }}
         onModalHide={() => {
           if (lang === '') return
-          dispatch(commonActions.setLocale(lang))
+          dispatch(actions.setLocale(lang))
         }}
         setIsVisible={setModalVisible}
         isVisible={modalVisible}

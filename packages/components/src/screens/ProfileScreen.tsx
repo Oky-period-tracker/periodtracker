@@ -16,9 +16,9 @@ import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { AvatarOption } from './avatarAndTheme/avatarSelect/AvatarOption'
 import { ThemeSelectItem } from './avatarAndTheme/ThemeSelectItem'
 import { useHistoryPrediction, useTodayPrediction } from '../components/context/PredictionProvider'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonActions } from '../redux/actions'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as actions from '../redux/actions'
+import * as selectors from '../redux/selectors'
 import { translate } from '../i18n/index'
 import { IconButton } from '../components/common/buttons/IconButton'
 import Modal from 'react-native-modal'
@@ -28,17 +28,17 @@ import moment from 'moment'
 
 export function ProfileScreen({ navigation }) {
   const History = useHistoryPrediction()
-  const selectedAvatar = useCommonSelector(commonSelectors.currentAvatarSelector)
+  const selectedAvatar = useSelector(selectors.currentAvatarSelector)
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [error, setError] = React.useState(false)
   const shouldSkip = React.useRef(0)
-  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
-  const errorCode: any = useCommonSelector(commonSelectors.authError)
+  const currentUser = useSelector(selectors.currentUserSelector)
+  const errorCode: any = useSelector(selectors.authError)
   const todayInfo = useTodayPrediction()
   const { id: theme } = useTheme()
   const dispatch = useDispatch()
 
-  const connectAccountCount = useCommonSelector((state) => state.auth.connectAccountAttempts)
+  const connectAccountCount = useSelector((state) => state.auth.connectAccountAttempts)
   const dateOfBirth = moment(currentUser?.dateOfBirth)
 
   useTextToSpeechHook({
@@ -148,7 +148,7 @@ export function ProfileScreen({ navigation }) {
                         onPress={() => {
                           setError(false)
                           dispatch(
-                            commonActions.convertGuestAccount({
+                            actions.convertGuestAccount({
                               id: currentUser.id,
                               name: currentUser.name,
                               dateOfBirth: currentUser.dateOfBirth,

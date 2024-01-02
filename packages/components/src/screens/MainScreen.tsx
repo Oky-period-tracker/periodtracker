@@ -20,10 +20,10 @@ import {
 import { useRandomText } from '../hooks/useRandomText'
 import { InformationButton } from '../components/common/InformationButton'
 import { assets } from '../assets'
-import { commonActions } from '../redux/actions'
+import * as actions from '../redux/actions'
 import { useDispatch } from 'react-redux'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import { FlowerButton, FlowerModal } from '../optional/Flower'
 
@@ -44,14 +44,14 @@ const MainScreenContainer = ({ navigation }) => {
   const theme = useTheme()
   const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
-  const userID = useCommonSelector(commonSelectors.currentUserSelector)?.id
+  const userID = useSelector(selectors.currentUserSelector)?.id
   const fullState = useFullState()
   const history = useHistoryPrediction()
-  const currentUser = useCommonSelector(commonSelectors.currentUserSelector)
+  const currentUser = useSelector(selectors.currentUserSelector)
 
   // @TODO: careful note here, may be worth the performance increase though May not work with Memo now
   React.useEffect(() => {
-    dispatch(commonActions.fetchSurveyContentRequest(userID))
+    dispatch(actions.fetchSurveyContentRequest(userID))
   }, [])
 
   // TODO: Cant use hook like this?
@@ -62,11 +62,11 @@ const MainScreenContainer = ({ navigation }) => {
 const MainScreenActual = React.memo(() => {
   const { data, index, isActive, currentIndex, absoluteIndex } = useInfiniteScroll()
   // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useCommonSelector
-  const allCardsData = renamedUseSelector((state) => commonSelectors.allCardAnswersSelector(state))
+  const renamedUseSelector = useSelector
+  const allCardsData = renamedUseSelector((state) => selectors.allCardAnswersSelector(state))
   const getCardAnswersValues = (inputDay: any) => {
     const verifiedPeriodDaysData = renamedUseSelector((state) =>
-      commonSelectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
+      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
     )
     return verifiedPeriodDaysData
   }

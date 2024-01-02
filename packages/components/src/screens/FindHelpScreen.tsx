@@ -7,8 +7,8 @@ import { Avatar } from '../components/common/Avatar/Avatar'
 import { TextWithoutTranslation, Text } from '../components/common/Text'
 import { SwiperContainer } from '../components/common/SwiperContainer'
 import { PageContainer } from '../components/layout/PageContainer'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import analytics from '@react-native-firebase/analytics'
 import { fetchNetworkConnectionStatus } from '../services/network'
@@ -18,7 +18,7 @@ const screenHeight = Dimensions.get('screen').height
 const heightOfCarousel = screenHeight * 0.5
 
 export function FindHelpScreen({ navigation }) {
-  const helpCenters: any = useCommonSelector(commonSelectors.allHelpCentersForCurrentLocale)
+  const helpCenters: any = useSelector(selectors.allHelpCentersForCurrentLocale)
   const [textToSpeak, setTextToSpeak] = React.useState([])
 
   React.useEffect(() => {

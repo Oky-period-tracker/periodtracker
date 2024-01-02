@@ -3,17 +3,17 @@ import styled from 'styled-components/native'
 import { Text } from '../../components/common/Text'
 import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
-import { commonSelectors } from '../../redux/selectors'
+import * as selectors from '../../redux/selectors'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import { useSelector } from '../../redux/useSelector'
 import { emojis } from '../../config'
 import { translate } from '../../i18n'
 
 const cardNames = ['mood', 'body', 'activity', 'flow']
 
 export const CycleCard = ({ item, cycleNumber }) => {
-  const cardAnswersValues = useCommonSelector((state) =>
-    commonSelectors.mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
+  const cardAnswersValues = useSelector((state) =>
+    selectors.mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
   )
 
   return (

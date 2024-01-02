@@ -3,26 +3,26 @@ import { allQuizzesSelectors } from './contentSelectors'
 import { Moment } from 'moment'
 import { toShortISO } from '../../services/dateUtils'
 import _ from 'lodash'
-import { CommonReduxState } from '../reducers'
+import { ReduxState } from '../reducers'
 
-const s = (state: CommonReduxState) => state.answer
+const s = (state: ReduxState) => state.answer
 
-export const surveyHasAnswerSelector = (state: CommonReduxState, id: string) => {
+export const surveyHasAnswerSelector = (state: ReduxState, id: string) => {
   if (!s(state)[state.auth.user.id]) return false
   return id in s(state)[state.auth.user.id].surveys
 }
 
-// export const surveysWithoutAnswersSelector = (state: CommonReduxState) => {
+// export const surveysWithoutAnswersSelector = (state: ReduxState) => {
 //   return allSurveysSelectors(state).filter(({ id }) => !surveyHasAnswerSelector(state, id))
 // }
 
-export const quizHasAnswerSelector = (state: CommonReduxState, id: string) => {
+export const quizHasAnswerSelector = (state: ReduxState, id: string) => {
   if (!s(state)[state.auth.user.id]) return false
   return id in s(state)[state.auth.user.id].quizzes
 }
 
 // Had a type error here had to add any to avoid
-export const quizAnswerByDate: any = (state: CommonReduxState, date: Moment) => {
+export const quizAnswerByDate: any = (state: ReduxState, date: Moment) => {
   if (!s(state)[state.auth.user.id]) return null
   return Object.values(s(state)[state.auth.user.id].quizzes).filter(
     ({ utcDateTime }) => utcDateTime === date.toISOString(),
@@ -30,23 +30,23 @@ export const quizAnswerByDate: any = (state: CommonReduxState, date: Moment) => 
 }
 
 // Had a type error here had to add any to avoid
-export const surveyAnswerByDate: any = (state: CommonReduxState, date: Moment) => {
+export const surveyAnswerByDate: any = (state: ReduxState, date: Moment) => {
   if (!s(state)[state.auth.user.id]) return null
   return Object.values(s(state)[state.auth.user.id].surveys).filter(
     ({ utcDateTime }) => utcDateTime === date.toISOString(),
   )[0]
 }
 
-export const quizzesWithoutAnswersSelector = (state: CommonReduxState) => {
+export const quizzesWithoutAnswersSelector = (state: ReduxState) => {
   return allQuizzesSelectors(state).filter(({ id }) => !quizHasAnswerSelector(state, id))
 }
 
-export const cardAnswerSelector = (state: CommonReduxState, date: Moment) => {
+export const cardAnswerSelector = (state: ReduxState, date: Moment) => {
   if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
   if (!s(state)[state.auth.user.id]) return {}
   return s(state)[state.auth.user.id]?.cards[toShortISO(date)] || {}
 }
-export const verifyPeriodDaySelectorWithDate = (state: CommonReduxState, date: Moment) => {
+export const verifyPeriodDaySelectorWithDate = (state: ReduxState, date: Moment) => {
   if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
   if (!s(state)[state.auth.user.id]) return {}
   if (s(state)[state.auth.user.id]?.verifiedDates) {
@@ -55,22 +55,18 @@ export const verifyPeriodDaySelectorWithDate = (state: CommonReduxState, date: M
   return {}
   // return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)] || {}
 }
-export const allCardAnswersSelector = (state: CommonReduxState) => {
+export const allCardAnswersSelector = (state: ReduxState) => {
   if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
   if (!s(state)[state.auth.user.id]) return {}
   return s(state)[state.auth.user.id]?.verifiedDates || {}
 }
 
-export const notesAnswerSelector = (state: CommonReduxState, date: Moment) => {
+export const notesAnswerSelector = (state: ReduxState, date: Moment) => {
   if (!s(state)[state.auth.user.id]) return {}
   return s(state)[state.auth.user.id].notes[toShortISO(date)] || {}
 }
 
-export const mostAnsweredSelector = (
-  state: CommonReduxState,
-  startDate: Moment,
-  endDate: Moment,
-) => {
+export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDate: Moment) => {
   if (!s(state)[state.auth.user.id]) return {}
   const dates = Object.keys(s(state)[state.auth.user.id].cards)
   const filteredDates = dates.filter((item) => {

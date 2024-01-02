@@ -4,9 +4,9 @@ import { Alert } from 'react-native'
 import { v4 as uuidv4 } from 'uuid'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
-import { CommonReduxState, exportReducerNames } from '../reducers'
-import { commonActions } from '../actions'
-import { commonSelectors } from '../selectors'
+import { ReduxState, exportReducerNames } from '../reducers'
+import * as actions from '../actions'
+import * as selectors from '../selectors'
 import { navigateAndReset } from '../../services/navigationService'
 import { PredictionState } from '../../prediction'
 import moment from 'moment'
@@ -18,14 +18,14 @@ import { hash } from '../../services/hash'
 type Await<T> = T extends Promise<infer U> ? U : T
 
 function* onRehydrate() {
-  const state: CommonReduxState = yield select()
+  const state: ReduxState = yield select()
 
-  const appToken = commonSelectors.appTokenSelector(state)
-  const user = commonSelectors.currentUserSelector(state)
+  const appToken = selectors.appTokenSelector(state)
+  const user = selectors.currentUserSelector(state)
 
   // convert guest account
   if (!appToken && user && user.isGuest) {
-    yield put(commonActions.convertGuestAccount(user))
+    yield put(actions.convertGuestAccount(user))
   }
 }
 
@@ -44,7 +44,7 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
   } = action.payload
 
   yield put(
-    commonActions.createAccountRequest({
+    actions.createAccountRequest({
       id,
       name,
       dateOfBirth,
@@ -61,9 +61,9 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
 
 function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
   const { name, password } = action.payload
-  const stateRedux: CommonReduxState = yield select()
-  const localeapp = commonSelectors.currentLocaleSelector(stateRedux)
-  yield commonActions.setLocale(localeapp)
+  const stateRedux: ReduxState = yield select()
+  const localeapp = selectors.currentLocaleSelector(stateRedux)
+  yield actions.setLocale(localeapp)
 
   try {
     const {
@@ -76,7 +76,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     })
 
     yield put(
-      commonActions.loginSuccess({
+      actions.loginSuccess({
         appToken,
         user: {
           id: user.id,
@@ -107,7 +107,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       }, {})
 
       // @TODO: execute migration based on storeVersion
-      yield put(commonActions.refreshStore(newAppState))
+      yield put(actions.refreshStore(newAppState))
     }
 
     yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
@@ -134,7 +134,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       // Change boolean to trigger switch in coordinator ?
       // Somehow need to pass the keys to the coordinator though
       // yield put(
-      //   commonActions.loginOfflineSuccess({
+      //   actions.loginOfflineSuccess({
       //     appToken: null,
       //     user: {
       //       id: user.id,
@@ -154,7 +154,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     }
 
     yield put(
-      commonActions.loginFailure({
+      actions.loginFailure({
         error: errorMessage,
       }),
     )
@@ -176,7 +176,7 @@ function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
     secretKey: hash(action.payload.user.password + salt),
   }
 
-  yield put(commonActions.setStoreKeys(keys))
+  yield put(actions.setStoreKeys(keys))
 }
 
 function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACCOUNT_REQUEST'>) {
@@ -212,7 +212,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     }
 
     yield put(
-      commonActions.createAccountSuccess({
+      actions.createAccountSuccess({
         appToken,
         user: {
           id: user.id,
@@ -231,8 +231,8 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
   } catch (error) {
     const errorStatusCode =
       error && error.response && error.response.status ? error.response.status : null // to check various error codes and respond accordingly
-    yield put(commonActions.setAuthError({ error: errorStatusCode }))
-    yield put(commonActions.createAccountFailure())
+    yield put(actions.setAuthError({ error: errorStatusCode }))
+    yield put(actions.createAccountFailure())
 
     // Check username is not already taken
     const usernameHash = hash(name)
@@ -246,7 +246,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     }
 
     yield put(
-      commonActions.createGuestAccountSuccess({
+      actions.createGuestAccountSuccess({
         id: id || uuidv4(),
         name,
         dateOfBirth,
@@ -265,7 +265,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
 function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACCOUNT_SUCCESS'>) {
   const { appToken, user } = action.payload
   yield put(
-    commonActions.loginSuccess({
+    actions.loginSuccess({
       appToken,
       user: {
         id: user.id,
@@ -285,8 +285,8 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
 
 function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACCOUNT_REQUEST'>) {
   const { setLoading } = action.payload
-  const state: CommonReduxState = yield select()
-  const user = commonSelectors.currentUserSelector(state)
+  const state: ReduxState = yield select()
+  const user = selectors.currentUserSelector(state)
   setLoading(true)
   try {
     const { name, password } = action.payload
@@ -294,17 +294,17 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
       name,
       password,
     })
-    yield put(commonActions.updateAllSurveyContent([])) // TODO_ALEX
-    yield put(commonActions.updateCompletedSurveys([])) // TODO_ALEX
+    yield put(actions.updateAllSurveyContent([])) // TODO_ALEX
+    yield put(actions.updateCompletedSurveys([])) // TODO_ALEX
     yield put(
-      commonActions.fetchSurveyContentSuccess({
+      actions.fetchSurveyContentSuccess({
         surveys: null,
       }), // TODO_ALEX
     )
     yield call(navigateAndReset, 'LoginStack', null)
 
     if (user) {
-      yield put(commonActions.logout())
+      yield put(actions.logout())
     }
   } catch (err) {
     setLoading(false)
@@ -313,27 +313,27 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
 }
 
 function* onLogoutRequest() {
-  const isTtsActive = yield select(commonSelectors.isTtsActiveSelector)
+  const isTtsActive = yield select(selectors.isTtsActiveSelector)
 
   if (isTtsActive) {
     yield call(closeOutTTs)
-    yield put(commonActions.setTtsActive(false))
-    yield put(commonActions.verifyPeriodDayByUser([])) // TODO_ALEX: survey
+    yield put(actions.setTtsActive(false))
+    yield put(actions.verifyPeriodDayByUser([])) // TODO_ALEX: survey
   }
-  yield put(commonActions.updateAllSurveyContent([])) // TODO_ALEX: survey
+  yield put(actions.updateAllSurveyContent([])) // TODO_ALEX: survey
   yield put(
-    commonActions.fetchSurveyContentSuccess({
+    actions.fetchSurveyContentSuccess({
       surveys: null,
     }),
   )
-  yield put(commonActions.updateCompletedSurveys([])) // TODO_ALEX: survey
+  yield put(actions.updateCompletedSurveys([])) // TODO_ALEX: survey
   yield call(navigateAndReset, 'LoginStack', null)
-  yield put(commonActions.logout())
+  yield put(actions.logout())
 }
 
 function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPLETION'>) {
   const { data } = action.payload
-  const currentUser = yield select(commonSelectors.currentUserSelector)
+  const currentUser = yield select(selectors.currentUserSelector)
   let periodResult = null
   if (yield fetchNetworkConnectionStatus()) {
     try {
@@ -358,10 +358,10 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
     history: [],
   })
 
-  yield put(commonActions.setPredictionEngineState(stateToSet))
-  yield put(commonActions.updateFuturePrediction(true, null))
-  yield put(commonActions.setTutorialOneActive(true))
-  yield put(commonActions.setTutorialTwoActive(true))
+  yield put(actions.setPredictionEngineState(stateToSet))
+  yield put(actions.updateFuturePrediction(true, null))
+  yield put(actions.setTutorialOneActive(true))
+  yield put(actions.setTutorialTwoActive(true))
   yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
   yield call(navigateAndReset, 'MainStack', null)
 }

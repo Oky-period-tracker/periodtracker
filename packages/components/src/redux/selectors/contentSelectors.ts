@@ -1,29 +1,29 @@
 import _ from 'lodash'
-import { CommonReduxState } from '../reducers'
+import { ReduxState } from '../reducers'
 
-const s = (state: CommonReduxState) => state.content
+const s = (state: ReduxState) => state.content
 
-export const allArticlesSelector = (state: CommonReduxState) =>
+export const allArticlesSelector = (state: ReduxState) =>
   s(state).articles.allIds.map((id) => s(state).articles.byId[id])
 
-export const allVideosSelector = (state: CommonReduxState) => {
+export const allVideosSelector = (state: ReduxState) => {
   if (!s(state)?.videos?.allIds || !s(state)?.videos?.byId) return []
   return s(state).videos.allIds.map((id) => s(state).videos.byId[id])
 }
 
-export const articleByIDSelector = (state: CommonReduxState, id) => s(state).articles.byId[id]
-export const videoByIDSelector = (state: CommonReduxState, id) => s(state)?.videos?.byId[id]
+export const articleByIDSelector = (state: ReduxState, id) => s(state).articles.byId[id]
+export const videoByIDSelector = (state: ReduxState, id) => s(state)?.videos?.byId[id]
 
-export const articlesObjectByIDSelector = (state: CommonReduxState) => s(state).articles.byId
+export const articlesObjectByIDSelector = (state: ReduxState) => s(state).articles.byId
 
 // @ts-ignore
-export const allHelpCentersForCurrentLocale: any = (state: CommonReduxState) =>
+export const allHelpCentersForCurrentLocale: any = (state: ReduxState) =>
   s(state).helpCenters.filter((item) => item.lang === state.app.locale)
 
-export const allCategoriesSelector = (state: CommonReduxState) =>
+export const allCategoriesSelector = (state: ReduxState) =>
   s(state).categories.allIds.map((id) => s(state).categories.byId[id])
 
-export const allCategoryEmojis = (state: CommonReduxState) => {
+export const allCategoryEmojis = (state: ReduxState) => {
   const categories = allCategoriesSelector(state)
 
   return categories.map((item) => {
@@ -31,32 +31,30 @@ export const allCategoryEmojis = (state: CommonReduxState) => {
   })
 }
 
-export const allSubCategoriesSelector = (state: CommonReduxState) =>
+export const allSubCategoriesSelector = (state: ReduxState) =>
   s(state).subCategories.allIds.map((id) => s(state).subCategories.byId[id])
 
-export const allSubCategoriesObjectSelector = (state: CommonReduxState) =>
-  s(state).subCategories.byId
+export const allSubCategoriesObjectSelector = (state: ReduxState) => s(state).subCategories.byId
 
-export const categoryByIDSelector = (state: CommonReduxState, id) => s(state).categories.byId[id]
+export const categoryByIDSelector = (state: ReduxState, id) => s(state).categories.byId[id]
 
-export const subCategoryByIDSelector = (state: CommonReduxState, id) =>
-  s(state).subCategories.byId[id]
+export const subCategoryByIDSelector = (state: ReduxState, id) => s(state).subCategories.byId[id]
 
-export const allAvatarText = (state: CommonReduxState) => s(state).avatarMessages
+export const allAvatarText = (state: ReduxState) => s(state).avatarMessages
 
-export const privacyContent = (state: CommonReduxState) => s(state).privacyPolicy
+export const privacyContent = (state: ReduxState) => s(state).privacyPolicy
 
-export const termsAndConditionsContent = (state: CommonReduxState) => s(state).termsAndConditions
+export const termsAndConditionsContent = (state: ReduxState) => s(state).termsAndConditions
 
-export const aboutContent = (state: CommonReduxState) => s(state).about
+export const aboutContent = (state: ReduxState) => s(state).about
 
-export const allSurveys = (state: CommonReduxState) => s(state).allSurveys
+export const allSurveys = (state: ReduxState) => s(state).allSurveys
 
-export const completedSurveys = (state: CommonReduxState) => s(state).completedSurveys
+export const completedSurveys = (state: ReduxState) => s(state).completedSurveys
 
-export const aboutBanner = (state: CommonReduxState) => s(state).aboutBanner
+export const aboutBanner = (state: ReduxState) => s(state).aboutBanner
 
-export const allQuizzesSelectors = (state: CommonReduxState) => {
+export const allQuizzesSelectors = (state: ReduxState) => {
   // TODO: FIXME
   const isUserYoungerThan15 = true
   // moment()
@@ -88,7 +86,7 @@ export const allQuizzesSelectors = (state: CommonReduxState) => {
   return filteredArray
 }
 
-export const allDidYouKnowsSelectors = (state: CommonReduxState) => {
+export const allDidYouKnowsSelectors = (state: ReduxState) => {
   // TODO_ALEX: FIXME
   const isUserYoungerThan15 = true
   // moment()

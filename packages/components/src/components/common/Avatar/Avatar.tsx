@@ -8,8 +8,8 @@ import { FloatingQuestion } from './FloatingQuestion'
 import styled from 'styled-components/native'
 import { Icon } from '../Icon'
 import { HeartAnimation } from './HeartAnimation'
-import { useCommonSelector } from '../../../redux/useCommonSelector'
-import { commonSelectors } from '../../../redux/selectors/index'
+import { useSelector } from '../../../redux/useSelector'
+import * as selectors from '../../../redux/selectors/index'
 import moment from 'moment'
 import { useDisplayText } from '../../context/DisplayTextContext'
 import { useTodayPrediction } from '../../context/PredictionProvider'
@@ -37,13 +37,11 @@ export function Avatar({
   const isJumpingToggled = React.useRef(false)
   const isDancingToggled = React.useRef(false)
   const randomDance = React.useRef(1)
-  const selectedAvatar = useCommonSelector(commonSelectors.currentAvatarSelector)
+  const selectedAvatar = useSelector(selectors.currentAvatarSelector)
   const [animatedProgress] = React.useState(new Animated.Value(0))
 
   const { onPeriod } = useTodayPrediction()
-  const cardAnswersToday = useCommonSelector((state) =>
-    commonSelectors.cardAnswerSelector(state, moment.utc()),
-  )
+  const cardAnswersToday = useSelector((state) => selectors.cardAnswerSelector(state, moment.utc()))
   React.useEffect(() => {
     const intervalId = setTimeout(hideDisplayText, 3000)
     return () => {

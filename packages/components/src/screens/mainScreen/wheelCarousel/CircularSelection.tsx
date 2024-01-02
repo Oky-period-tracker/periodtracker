@@ -6,16 +6,16 @@ import { CircularElement } from './CircularElement'
 import { PanGesture } from './PanGesture'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { ColourButtons } from '../ColourButtons'
-import { useCommonSelector } from '../../../redux/useCommonSelector'
-import { commonSelectors } from '../../../redux/selectors'
+import { useSelector } from '../../../redux/useSelector'
+import * as selectors from '../../../redux/selectors'
 import { navigateAndReset } from '../../../services/navigationService'
 import { useCheckDayWarning } from '../../../hooks/usePredictionWarnings'
 import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
-import { CommonReduxState } from '../../../redux/reducers'
+import { ReduxState } from '../../../redux/reducers'
 
-const reduxState = (state: CommonReduxState) => state
+const reduxState = (state: ReduxState) => state
 
 const { interpolate } = Animated
 const height = 0.55 * Dimensions.get('window').height
@@ -44,7 +44,7 @@ export function CircularSelection({
     inputRange: [0, data.length],
     outputRange: [0, -2 * Math.PI],
   })
-  const isTutorialOneOn = useCommonSelector(commonSelectors.isTutorialOneActiveSelector)
+  const isTutorialOneOn = useSelector(selectors.isTutorialOneActiveSelector)
   const checkIfWarning = useCheckDayWarning()
   // automatically close the modal if the wheel start scrolling
   React.useEffect(() => {
@@ -138,11 +138,8 @@ export function CircularSelection({
             isCalendar={false}
             onPress={() => setIsVisible(false)}
             selectedDayInfo={data[currentIndex]}
-            cardValues={useCommonSelector((state) =>
-              commonSelectors.verifyPeriodDaySelectorWithDate(
-                state,
-                moment(data[currentIndex].date),
-              ),
+            cardValues={useSelector((state) =>
+              selectors.verifyPeriodDaySelectorWithDate(state, moment(data[currentIndex].date)),
             )}
           />
         </ThemedModal>

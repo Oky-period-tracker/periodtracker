@@ -4,18 +4,18 @@ import { Dimensions } from 'react-native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import { useSelector } from '../../redux/useSelector'
 import _ from 'lodash'
-import { commonSelectors } from '../../redux/selectors'
-import { commonActions } from '../../redux/actions'
+import * as selectors from '../../redux/selectors'
+import * as actions from '../../redux/actions'
 import { useDispatch } from 'react-redux'
 
 const deviceWidth = Dimensions.get('window').width
 
 function useQuiz() {
-  const unansweredQuizzes = useCommonSelector(commonSelectors.quizzesWithoutAnswersSelector)
+  const unansweredQuizzes = useSelector(selectors.quizzesWithoutAnswersSelector)
 
-  const allQuizzes = useCommonSelector(commonSelectors.allQuizzesSelectors)
+  const allQuizzes = useSelector(selectors.allQuizzesSelectors)
   const randomQuiz = React.useMemo(() => {
     if (_.isEmpty(unansweredQuizzes)) {
       return _.sample(allQuizzes)
@@ -27,11 +27,9 @@ function useQuiz() {
 
 export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEntry, index }) => {
   const dispatch = useDispatch()
-  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
+  const userID = useSelector(selectors.currentUserSelector).id
   const selectedQuestion = useQuiz()
-  const answeredQuestion = useCommonSelector((state) =>
-    commonSelectors.quizAnswerByDate(state, dataEntry.date),
-  )
+  const answeredQuestion = useSelector((state) => selectors.quizAnswerByDate(state, dataEntry.date))
 
   const QuizContent = () => {
     return selectedQuestion.answers.map((item, ind) => {
@@ -42,7 +40,7 @@ export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEnt
             color={'pink'}
             onPress={() =>
               dispatch(
-                commonActions.answerQuiz({
+                actions.answerQuiz({
                   id: selectedQuestion.id,
                   answerID: ind + 1,
                   question: selectedQuestion.question,

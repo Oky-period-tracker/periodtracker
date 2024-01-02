@@ -1,5 +1,5 @@
 import { hash } from '../../services/hash'
-import { CommonActions } from '../types'
+import { Actions } from '../types'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
@@ -17,7 +17,7 @@ const initialState: AccessState = {
   lastLoggedInUsername: undefined,
 }
 
-export function accessReducer(state = initialState, action: CommonActions): AccessState {
+export function accessReducer(state = initialState, action: Actions): AccessState {
   switch (action.type) {
     case 'CREATE_ACCOUNT_SUCCESS': {
       const usernameHash = hash(action.payload.user.name)

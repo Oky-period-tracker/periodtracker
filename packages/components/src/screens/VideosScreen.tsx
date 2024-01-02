@@ -3,8 +3,8 @@ import styled from 'styled-components/native'
 import { FlatList } from 'react-native'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
-import { useCommonSelector } from '../redux/useCommonSelector'
-import { commonSelectors } from '../redux/selectors'
+import { useSelector } from '../redux/useSelector'
+import * as selectors from '../redux/selectors'
 import { Header } from '../components/common/Header'
 import { TextWithoutTranslation } from '../components/common/Text'
 import { VideoData } from '../types'
@@ -17,9 +17,7 @@ export const VideoItem = ({
   videoId: string
   onSelect: React.Dispatch<React.SetStateAction<VideoData>>
 }) => {
-  const videoObject = useCommonSelector((state) =>
-    commonSelectors.videoByIDSelector(state, videoId),
-  )
+  const videoObject = useSelector((state) => selectors.videoByIDSelector(state, videoId))
 
   if (!videoObject) {
     return null
@@ -42,9 +40,7 @@ export const VideoItem = ({
 
 export function VideosScreen({ navigation }) {
   const categoryId = navigation.getParam('categoryId')
-  const category = useCommonSelector((state) =>
-    commonSelectors.categoryByIDSelector(state, categoryId),
-  )
+  const category = useSelector((state) => selectors.categoryByIDSelector(state, categoryId))
   const videos = category?.videos || []
 
   return (

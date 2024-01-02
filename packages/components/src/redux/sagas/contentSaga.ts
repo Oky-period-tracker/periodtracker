@@ -11,19 +11,19 @@ import {
   liveContent as staleContent,
 } from '@oky/core'
 import { httpClient } from '../../services/HttpClient'
-import { commonSelectors } from '../selectors'
-import { commonActions } from '../actions'
+import * as selectors from '../selectors'
+import * as actions from '../actions'
 import _ from 'lodash'
 import messaging from '@react-native-firebase/messaging'
 import { closeOutTTs } from '../../services/textToSpeech'
 
 function* onRehydrate(action: RehydrateAction) {
-  const locale = yield select(commonSelectors.currentLocaleSelector)
+  const locale = yield select(selectors.currentLocaleSelector)
 
   const hasPreviousContentFromStorage = action.payload && action.payload.content
 
   if (!hasPreviousContentFromStorage) {
-    yield put(commonActions.initStaleContent(staleContent[locale]))
+    yield put(actions.initStaleContent(staleContent[locale]))
   }
 
   const now = new Date().getTime()
@@ -33,7 +33,7 @@ function* onRehydrate(action: RehydrateAction) {
   const shouldFetch = !timeFetched || timeFetched + fetchInterval < now
 
   if (shouldFetch) {
-    yield put(commonActions.fetchContentRequest(locale))
+    yield put(actions.fetchContentRequest(locale))
   }
 }
 
@@ -41,15 +41,15 @@ function* onRehydrate(action: RehydrateAction) {
 function* onFetchSurveyContent(
   action: ExtractActionFromActionType<'FETCH_SURVEY_CONTENT_REQUEST'>,
 ) {
-  const locale = yield select(commonSelectors.currentLocaleSelector)
-  const userID = yield select(commonSelectors.currentUserSelector)
+  const locale = yield select(selectors.currentLocaleSelector)
+  const userID = yield select(selectors.currentUserSelector)
   try {
     const surveys = yield httpClient.fetchSurveys({
       locale,
       userID,
     })
-    const previousSurveys = yield select(commonSelectors.allSurveys)
-    const completedSurveys = yield select(commonSelectors.completedSurveys)
+    const previousSurveys = yield select(selectors.allSurveys)
+    const completedSurveys = yield select(selectors.completedSurveys)
     const newSurveyArr = previousSurveys?.length ? previousSurveys : []
     surveys.forEach((item) => {
       const itemExits = _.find(previousSurveys, { id: item.id })
@@ -65,7 +65,7 @@ function* onFetchSurveyContent(
       }
     })
 
-    yield put(commonActions.updateAllSurveyContent(finalArr))
+    yield put(actions.updateAllSurveyContent(finalArr))
   } catch (error) {
     //
   }
@@ -150,7 +150,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     const aboutBannerData = yield fetchAboutBannerConditional()
 
     yield put(
-      commonActions.fetchContentSuccess({
+      actions.fetchContentSuccess({
         timeFetched: new Date().getTime(),
         articles: _.isEmpty(articles.allIds) ? staleContent[locale].articles : articles,
         videos: _.isEmpty(videos.allIds) ? staleContent[locale].videos : videos,
@@ -176,22 +176,22 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
       }),
     )
   } catch (error) {
-    yield put(commonActions.fetchContentFailure())
-    const aboutContent = yield select(commonSelectors.aboutContent)
+    yield put(actions.fetchContentFailure())
+    const aboutContent = yield select(selectors.aboutContent)
     if (!aboutContent) {
-      const localeInit = yield select(commonSelectors.currentLocaleSelector)
-      yield put(commonActions.initStaleContent(staleContent[localeInit]))
+      const localeInit = yield select(selectors.currentLocaleSelector)
+      yield put(actions.initStaleContent(staleContent[localeInit]))
     }
   }
 }
 
 function* onSetLocale(action: ExtractActionFromActionType<'SET_LOCALE'>) {
   const { locale } = action.payload
-  const isTtsActive = yield select(commonSelectors.isTtsActiveSelector)
+  const isTtsActive = yield select(selectors.isTtsActiveSelector)
   if (isTtsActive) {
     // TODO_ALEX why?
     yield call(closeOutTTs)
-    yield put(commonActions.setTtsActive(false))
+    yield put(actions.setTtsActive(false))
   }
   // unsubscribe from topic
   // TODO_ALEX: use locales from submodule
@@ -199,9 +199,9 @@ function* onSetLocale(action: ExtractActionFromActionType<'SET_LOCALE'>) {
   messaging().unsubscribeFromTopic('oky_id_notifications')
   messaging().unsubscribeFromTopic('oky_mn_notifications')
   messaging().subscribeToTopic(`oky_${locale}_notifications`)
-  yield put(commonActions.initStaleContent(staleContent[locale]))
+  yield put(actions.initStaleContent(staleContent[locale]))
 
-  yield put(commonActions.fetchContentRequest(locale))
+  yield put(actions.fetchContentRequest(locale))
 }
 
 export function* contentSaga() {

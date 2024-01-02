@@ -1,14 +1,14 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../redux/actions'
+import * as actions from '../redux/actions'
 import { Text } from '../components/common/Text'
 import { TextInput } from '../components/common/TextInput'
-import { commonSelectors } from '../redux/selectors'
+import * as selectors from '../redux/selectors'
 import { navigateAndReset } from '../services/navigationService'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PageContainer } from '../components/layout/PageContainer'
-import { useCommonSelector } from '../redux/useCommonSelector'
+import { useSelector } from '../redux/useSelector'
 import { KeyboardAwareAvoidance } from '../components/common/KeyboardAwareAvoidance'
 import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
@@ -16,8 +16,8 @@ import { hash } from '../services/hash'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
-  const user = useCommonSelector(commonSelectors.currentUserSelector)
-  const credentials = useCommonSelector((s) => s.access.credentials)
+  const user = useSelector(selectors.currentUserSelector)
+  const credentials = useSelector((s) => s.access.credentials)
   const [loading, setLoading] = React.useState(false)
   const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)
@@ -85,7 +85,7 @@ export function PasswordRequestScreen() {
 
                     // TODO_ALEX Consider moving to MainScreen for safer transition
                     setTimeout(() => {
-                      dispatch(commonActions.setStoreKeys(keys))
+                      dispatch(actions.setStoreKeys(keys))
                     }, 1000)
                   } else if (trimmedPassword === user.password && name !== user.name) {
                     setLoading(false)
@@ -110,7 +110,7 @@ export function PasswordRequestScreen() {
         <Column>
           <TouchableText
             onPress={() => {
-              dispatch(commonActions.logoutRequest())
+              dispatch(actions.logoutRequest())
             }}
           >
             <Text

@@ -4,10 +4,10 @@ import { Dimensions } from 'react-native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import { useSelector } from '../../redux/useSelector'
 import _ from 'lodash'
-import { commonSelectors } from '../../redux/selectors'
-import { commonActions } from '../../redux/actions'
+import * as selectors from '../../redux/selectors'
+import * as actions from '../../redux/actions'
 import { useDispatch } from 'react-redux'
 import { TextInput } from '../../components/common/TextInput'
 import { SurveyInformationButton } from '../../components/common/SurveyInformationButton'
@@ -34,12 +34,12 @@ export const SurveyCard = React.memo<{
   const [title, setTitle] = React.useState('')
   const [titlePlaceholder, setTitlePlaceholder] = React.useState('type_answer_placeholder')
   const [isSkip, setSkip] = React.useState(null)
-  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
+  const userID = useSelector(selectors.currentUserSelector).id
   const dispatch = useDispatch()
   const [showThankYouMsg, setThankYouMsg] = React.useState(null)
   const [selectedIndex, setSelectedIndex] = React.useState(null)
-  const completedSurveys = useCommonSelector(commonSelectors.completedSurveys)
-  const allSurveys = useCommonSelector(commonSelectors.allSurveys)
+  const completedSurveys = useSelector(selectors.completedSurveys)
+  const allSurveys = useSelector(selectors.allSurveys)
 
   const checkUserPermission = (option, optionIndex) => {
     setSelectedIndex(optionIndex)
@@ -57,7 +57,7 @@ export const SurveyCard = React.memo<{
 
         // TODO_ALEX: Does this do anything?
         dispatch(
-          commonActions.answerSurvey({
+          actions.answerSurvey({
             id: dataEntry.surveyId,
             isCompleted: true,
             isSurveyAnswered: false,
@@ -68,10 +68,10 @@ export const SurveyCard = React.memo<{
         )
         const tempData = allSurveys
         const tempCompletedSurveys = completedSurveys ? completedSurveys : []
-        dispatch(commonActions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
+        dispatch(actions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
         tempData.shift()
-        dispatch(commonActions.updateAllSurveyContent(tempData))
-        dispatch(commonActions.fetchSurveyContentRequest(userID))
+        dispatch(actions.updateAllSurveyContent(tempData))
+        dispatch(actions.fetchSurveyContentRequest(userID))
       }
     } else {
       setTimeout(() => {

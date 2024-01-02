@@ -3,9 +3,9 @@ import moment, { Moment } from 'moment'
 import _ from 'lodash'
 import { PredictionState, PredictionEngine } from '../../prediction'
 
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import { useSelector } from '../../redux/useSelector'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../../redux/actions'
+import * as actions from '../../redux/actions'
 
 type PredictionDispatch = typeof PredictionEngine.prototype.userInputDispatch
 
@@ -23,7 +23,7 @@ const defaultState = PredictionState.fromData({
 
 export function PredictionProvider({ children }) {
   const reduxDispatch = useDispatch()
-  const predictionState = useCommonSelector((state) => state.prediction)
+  const predictionState = useSelector((state) => state.prediction)
 
   const [predictionSnapshots, setPredictionSnapshots] = React.useState([])
   const predictionEngine = React.useMemo(() => {
@@ -38,21 +38,21 @@ export function PredictionProvider({ children }) {
     (action) => {
       setPredictionSnapshots((snapshots) => snapshots.concat(predictionState))
       predictionEngine.userInputDispatch(action)
-      reduxDispatch(commonActions.adjustPrediction(action))
+      reduxDispatch(actions.adjustPrediction(action))
     },
     [predictionState, reduxDispatch, predictionEngine],
   )
 
   React.useEffect(() => {
     return predictionEngine.subscribe((nextPredictionState) => {
-      reduxDispatch(commonActions.setPredictionEngineState(nextPredictionState))
+      reduxDispatch(actions.setPredictionEngineState(nextPredictionState))
     })
   }, [reduxDispatch, predictionEngine])
 
   const undo = React.useCallback(() => {
     if (predictionSnapshots.length > 0) {
       const lastSnapshot = _.last(predictionSnapshots)
-      reduxDispatch(commonActions.setPredictionEngineState(PredictionState.fromJSON(lastSnapshot)))
+      reduxDispatch(actions.setPredictionEngineState(PredictionState.fromJSON(lastSnapshot)))
       setPredictionSnapshots((snapshots) => snapshots.slice(0, -1))
     }
   }, [predictionSnapshots])

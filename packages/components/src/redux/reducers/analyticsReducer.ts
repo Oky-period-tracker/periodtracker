@@ -1,4 +1,4 @@
-import { CommonActions } from '../types'
+import { Actions } from '../types'
 
 export type AnalyticsState = Array<{
   id: string
@@ -9,7 +9,7 @@ export type AnalyticsState = Array<{
 
 const initialState: AnalyticsState = []
 
-export function analyticsReducer(state = initialState, action: CommonActions): AnalyticsState {
+export function analyticsReducer(state = initialState, action: Actions): AnalyticsState {
   switch (action.type) {
     case 'QUEUE_EVENT':
       return state.concat({

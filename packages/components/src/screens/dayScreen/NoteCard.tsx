@@ -1,9 +1,9 @@
 import React from 'react'
 import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
-import { commonSelectors } from '../../redux/selectors'
-import { commonActions } from '../../redux/actions'
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import * as selectors from '../../redux/selectors'
+import * as actions from '../../redux/actions'
+import { useSelector } from '../../redux/useSelector'
 import { TextInput } from '../../components/common/TextInput'
 import { useDispatch } from 'react-redux'
 import { BackOneScreen } from '../../services/navigationService'
@@ -16,10 +16,10 @@ import { translate } from '../../i18n'
 const deviceWidth = Dimensions.get('window').width
 
 export function NoteCard({ dataEntry }) {
-  const noteObject: any = useCommonSelector((state) =>
-    commonSelectors.notesAnswerSelector(state, dataEntry.date),
+  const noteObject: any = useSelector((state) =>
+    selectors.notesAnswerSelector(state, dataEntry.date),
   )
-  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
+  const userID = useSelector(selectors.currentUserSelector).id
   const [title, setTitle] = React.useState(noteObject.title || '')
   const [titlePlaceholder, setTitlePlaceholder] = React.useState('title')
   const [notesPlaceholder, setNotesPlaceholder] = React.useState('daily_note_description')
@@ -49,7 +49,7 @@ export function NoteCard({ dataEntry }) {
               onChange={(text) => setTitle(text)}
               onEndEditing={() =>
                 dispatch(
-                  commonActions.answerNotesCard({
+                  actions.answerNotesCard({
                     title,
                     notes,
                     userID,
@@ -74,7 +74,7 @@ export function NoteCard({ dataEntry }) {
             onBlur={() => setNotesPlaceholder('daily_note_description')}
             onEndEditing={() =>
               dispatch(
-                commonActions.answerNotesCard({
+                actions.answerNotesCard({
                   title,
                   notes,
                   userID,

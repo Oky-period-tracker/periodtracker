@@ -15,7 +15,7 @@ import {
   CompletedSurveys,
   Videos,
 } from '../../types'
-import { CommonActions } from '../types/index'
+import { Actions } from '../types/index'
 
 export interface ContentState {
   timeFetched?: number
@@ -89,7 +89,7 @@ const initialState: ContentState = {
   },
 }
 
-export function contentReducer(state = initialState, action: CommonActions): ContentState {
+export function contentReducer(state = initialState, action: Actions): ContentState {
   switch (action.type) {
     case 'INIT_STALE_CONTENT':
       return {

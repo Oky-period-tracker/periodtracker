@@ -1,4 +1,5 @@
-import { CommonActions } from '../types'
+import { hash } from '../../services/hash'
+import { Actions } from '../types'
 import _ from 'lodash'
 
 export interface KeysState {
@@ -14,7 +15,7 @@ const initialState: KeysState = {
   keys: undefined,
 }
 
-export function keysReducer(state = initialState, action: CommonActions): KeysState {
+export function keysReducer(state = initialState, action: Actions): KeysState {
   switch (action.type) {
     case 'SET_STORE_KEYS':
       return {

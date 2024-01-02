@@ -7,14 +7,14 @@ import { Text } from '../../../components/common/Text'
 import { GenderSelectItem } from '../../../components/common/GenderSelectItem'
 import { formHeights } from './FormHeights'
 import { ModalSearchBox } from '../../../components/common/ModalSearchBox'
-import { useCommonSelector } from '../../../redux/useCommonSelector'
-import { commonSelectors } from '../../../redux/selectors'
+import { useSelector } from '../../../redux/useSelector'
+import * as selectors from '../../../redux/selectors'
 import { translate } from '../../../i18n'
 import { FAST_SIGN_UP } from '../../../config'
 
 export function AskLocation({ step, createAccount }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
-  const lang = useCommonSelector(commonSelectors.currentLocaleSelector)
+  const lang = useSelector(selectors.currentLocaleSelector)
   const { country, province, location } = state
   const [derivedCountry, setDerivedCountry] = React.useState(
     FAST_SIGN_UP ? { code: 'AF', item: 'Afghanistan' } : null,

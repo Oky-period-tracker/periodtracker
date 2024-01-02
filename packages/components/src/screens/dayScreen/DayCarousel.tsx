@@ -3,13 +3,13 @@ import _ from 'lodash'
 import { FlatList, Dimensions, KeyboardAvoidingView } from 'react-native'
 import { DayCarouselItem } from './DayCarouselItem'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../../redux/actions'
+import * as actions from '../../redux/actions'
 import { NoteCard } from './NoteCard'
 import { QuizCard } from './QuizCard'
 import { DidYouKnowCard } from './DidYouKnowCard'
 import { SurveyCard } from './SurveyCard'
-import { useCommonSelector } from '../../redux/useCommonSelector'
-import { commonSelectors } from '../../redux/selectors'
+import { useSelector } from '../../redux/useSelector'
+import * as selectors from '../../redux/selectors'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { translate } from '../../i18n'
 import { ThemedModal } from '../../components/common/ThemedModal'
@@ -27,9 +27,9 @@ export function DayCarousel({ navigation, dataEntry }) {
   const [tempCardName, setTempCardName] = React.useState(null)
   const [tempCardAnswer, setTempCardAnswer] = React.useState(null)
   const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 })
-  const userID = useCommonSelector(commonSelectors.currentUserSelector).id
-  const allSurveys = useCommonSelector(commonSelectors.allSurveys)
-  const completedSurveys = useCommonSelector(commonSelectors.completedSurveys)
+  const userID = useSelector(selectors.currentUserSelector).id
+  const allSurveys = useSelector(selectors.allSurveys)
+  const completedSurveys = useSelector(selectors.completedSurveys)
   const newSurveys = allSurveys?.length ? allSurveys[0] : null
 
   const cards = {
@@ -225,7 +225,7 @@ export function DayCarousel({ navigation, dataEntry }) {
           setEndSurvey(true)
         }, 5000)
         dispatch(
-          commonActions.answerSurvey({
+          actions.answerSurvey({
             id: newSurveys?.id,
             isCompleted: true,
             isSurveyAnswered: true,
@@ -238,10 +238,10 @@ export function DayCarousel({ navigation, dataEntry }) {
           if (allSurveys?.length) {
             const tempData = allSurveys
             const tempCompletedSurveys = completedSurveys ? completedSurveys : []
-            dispatch(commonActions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
+            dispatch(actions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
 
             tempData.shift()
-            dispatch(commonActions.updateAllSurveyContent(tempData))
+            dispatch(actions.updateAllSurveyContent(tempData))
           }
         }, 2000)
       } else {
@@ -261,7 +261,7 @@ export function DayCarousel({ navigation, dataEntry }) {
         currentSurvey.answeredQuestion = currQuestion?.is_multiple ? tempAnswer : answersArray
         const tempData = [...allSurveys]
         tempData[0] = currentSurvey
-        dispatch(commonActions.updateAllSurveyContent(tempData))
+        dispatch(actions.updateAllSurveyContent(tempData))
       }
     }
   }
@@ -332,7 +332,7 @@ export function DayCarousel({ navigation, dataEntry }) {
                     setTempCardAnswer(answer)
                     setIsVisible(true)
                     dispatch(
-                      commonActions.answerDailyCard({
+                      actions.answerDailyCard({
                         cardName: tempCardName,
                         answer: tempCardAnswer,
                         userID,
@@ -344,7 +344,7 @@ export function DayCarousel({ navigation, dataEntry }) {
                     return
                   }
                   dispatch(
-                    commonActions.answerDailyCard({
+                    actions.answerDailyCard({
                       cardName,
                       answer,
                       userID,
@@ -370,7 +370,7 @@ export function DayCarousel({ navigation, dataEntry }) {
           hide={() => {
             setIsVisible(false)
             dispatch(
-              commonActions.answerDailyCard({
+              actions.answerDailyCard({
                 cardName: tempCardName,
                 answer: tempCardAnswer,
                 userID,

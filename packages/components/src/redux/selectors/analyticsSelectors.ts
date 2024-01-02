@@ -1,5 +1,5 @@
-import { CommonReduxState } from '../reducers'
+import { ReduxState } from '../reducers'
 
-const s = (state: CommonReduxState) => state.analytics
+const s = (state: ReduxState) => state.analytics
 
-export const allAnalyticsEventsSelector = (state: CommonReduxState) => s(state)
+export const allAnalyticsEventsSelector = (state: ReduxState) => s(state)

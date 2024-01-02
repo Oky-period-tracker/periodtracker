@@ -1,9 +1,9 @@
-import { CommonReduxState } from '../reducers'
+import { ReduxState } from '../reducers'
 
-const s = (state: CommonReduxState) => state.auth
+const s = (state: ReduxState) => state.auth
 
-export const appTokenSelector = (state: CommonReduxState) => s(state).appToken
+export const appTokenSelector = (state: ReduxState) => s(state).appToken
 
-export const authError = (state: CommonReduxState) => s(state).error
+export const authError = (state: ReduxState) => s(state).error
 
-export const currentUserSelector = (state: CommonReduxState) => s(state).user
+export const currentUserSelector = (state: ReduxState) => s(state).user

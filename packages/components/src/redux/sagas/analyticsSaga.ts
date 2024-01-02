@@ -3,11 +3,11 @@ import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import { httpClient } from '../../services/HttpClient'
-import { commonActions } from '../actions'
-import { commonSelectors } from '../selectors'
-import { CommonActionTypes } from '../types'
+import * as actions from '../actions'
+import * as selectors from '../selectors'
+import { ActionTypes } from '../types'
 
-const ACTIONS_TO_TRACK: CommonActionTypes[] = [
+const ACTIONS_TO_TRACK: ActionTypes[] = [
   // app
   'SET_THEME',
   'SET_LOCALE',
@@ -21,9 +21,9 @@ const ACTIONS_TO_TRACK: CommonActionTypes[] = [
 ]
 
 function* onTrackAction(action) {
-  const currentUser = yield select(commonSelectors.currentUserSelector)
+  const currentUser = yield select(selectors.currentUserSelector)
   yield put(
-    commonActions.queueEvent({
+    actions.queueEvent({
       id: uuidv4(),
       type: action.type,
       payload: action.payload || {},
@@ -40,8 +40,8 @@ function* processEventQueue() {
     // process queue every minute
     yield delay(60 * 1000)
 
-    const appToken = yield select(commonSelectors.appTokenSelector)
-    const events = yield select(commonSelectors.allAnalyticsEventsSelector)
+    const appToken = yield select(selectors.appTokenSelector)
+    const events = yield select(selectors.allAnalyticsEventsSelector)
 
     const isQueueEmpty = events.length === 0
     if (isQueueEmpty) {
@@ -56,7 +56,7 @@ function* processEventQueue() {
 
     try {
       yield httpClient.appendEvents({ events, appToken })
-      yield put(commonActions.resetQueue())
+      yield put(actions.resetQueue())
     } catch (err) {
       // ignore error, we'll try later
     }

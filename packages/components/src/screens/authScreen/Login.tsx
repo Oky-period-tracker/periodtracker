@@ -3,14 +3,14 @@ import styled from 'styled-components/native'
 import { Text } from '../../components/common/Text'
 import { TextInput } from '../../components/common/TextInput'
 import { useDispatch } from 'react-redux'
-import { commonActions } from '../../redux/actions'
-import { useCommonSelector } from '../../redux/useCommonSelector'
+import * as actions from '../../redux/actions'
+import { useSelector } from '../../redux/useSelector'
 import { SpinLoader } from '../../components/common/SpinLoader'
 import _ from 'lodash'
 
 export function Login() {
   const dispatch = useDispatch()
-  const { error: loginError, isLoggingIn } = useCommonSelector((state) => state.auth)
+  const { error: loginError, isLoggingIn } = useSelector((state) => state.auth)
 
   const [loading, setLoading] = React.useState(false)
   const [name, setName] = React.useState('')
@@ -46,7 +46,7 @@ export function Login() {
         onPress={() => {
           setLoading(true)
           requestAnimationFrame(() => {
-            dispatch(commonActions.loginRequest({ name, password: _.toLower(password).trim() }))
+            dispatch(actions.loginRequest({ name, password: _.toLower(password).trim() }))
           })
         }}
       >

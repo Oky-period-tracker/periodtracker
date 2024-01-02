@@ -111,7 +111,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     }
 
     yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-    yield call(navigateAndReset, 'MainStack', null)
+    yield call(navigateAndReset, 'StoreSwitchStack', null)
   } catch (error) {
     let errorMessage = 'request_fail'
     if (error && error.response && error.response.data) {
@@ -363,7 +363,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield put(actions.setTutorialOneActive(true))
   yield put(actions.setTutorialTwoActive(true))
   yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-  yield call(navigateAndReset, 'MainStack', null)
+  yield call(navigateAndReset, 'StoreSwitchStack', null)
 }
 
 export function* authSaga() {

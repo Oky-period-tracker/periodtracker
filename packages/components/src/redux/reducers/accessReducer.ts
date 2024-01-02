@@ -10,14 +10,16 @@ export interface AccessState {
     }
   }
   lastLoggedInUsername?: string
+  storeId: string
 }
 
-const initialState: AccessState = {
+const initialState = (): AccessState => ({
   storeCredentials: {},
   lastLoggedInUsername: undefined,
-}
+  storeId: uuidv4(),
+})
 
-export function accessReducer(state = initialState, action: Actions): AccessState {
+export function accessReducer(state = initialState(), action: Actions): AccessState {
   switch (action.type) {
     case 'CREATE_ACCOUNT_SUCCESS': {
       const usernameHash = hash(action.payload.user.name)

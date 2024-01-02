@@ -30,6 +30,12 @@ import { VideoScreen } from '../screens/VideoScreen'
 import { getRouteName, setTopLevelNavigator } from '../services/navigationService'
 import { useDispatch } from 'react-redux'
 import { logScreenView } from '../redux/actions'
+import { StoreSwitch } from '../redux/StoreSwitch'
+
+const StoreSwitchStack = createStackNavigator(
+  { StoreSwitch },
+  { headerMode: 'none', initialRouteName: 'StoreSwitch' },
+)
 
 const TutorialFirstStack = createStackNavigator(
   { TutorialFirstScreen },
@@ -132,6 +138,7 @@ const MainStack = createBottomTabNavigator(
 
 const Navigator = createStackNavigator(
   {
+    StoreSwitchStack,
     SplashScreen,
     OnboardingScreen,
     PasswordRequestScreen,

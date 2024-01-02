@@ -3,7 +3,7 @@ import styled from 'styled-components/native'
 import { useTheme } from '../context/ThemeContext'
 import { useTodayPrediction } from '../context/PredictionProvider'
 import { assets } from '../../assets'
-import { ThemeName } from '@oky/core'
+import { ThemeName, defaultTheme } from '@oky/core'
 
 function getBackgroundImage(theme: ThemeName, onPeriod: boolean) {
   const background = assets.backgrounds[theme]
@@ -21,6 +21,12 @@ export function BackgroundTheme({ theme = null, ...props }) {
   const { id } = useTheme()
   const { onPeriod } = useTodayPrediction()
   const backgroundImage = getBackgroundImage(theme || id, onPeriod)
+
+  return <Background source={backgroundImage} {...props} />
+}
+
+export function DefaultBackgroundTheme({ ...props }) {
+  const backgroundImage = assets.backgrounds[defaultTheme]
 
   return <Background source={backgroundImage} {...props} />
 }

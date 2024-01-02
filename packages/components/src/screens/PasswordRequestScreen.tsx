@@ -69,19 +69,16 @@ export function PasswordRequestScreen() {
                     setNameError(false)
                     setPasswordError(false)
                     setValid(true)
-                    requestAnimationFrame(() => {
-                      navigateAndReset('MainStack', null)
-                    })
 
                     const keys = {
                       key: usernameHash,
                       secretKey: hash(trimmedPassword + salt),
                     }
+                    dispatch(actions.setStoreKeys(keys))
 
-                    // TODO_ALEX Consider moving to MainScreen for safer transition
-                    setTimeout(() => {
-                      dispatch(actions.setStoreKeys(keys))
-                    }, 1000)
+                    requestAnimationFrame(() => {
+                      navigateAndReset('StoreSwitchStack', null)
+                    })
                   } else if (trimmedPassword === user.password && name !== user.name) {
                     setLoading(false)
                     setPasswordError(false)

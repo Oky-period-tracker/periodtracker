@@ -12,6 +12,18 @@ interface Keys {
   secretKey: string
 }
 
+interface Context {
+  triggerStoreSwitch: () => void
+  switchComplete: boolean
+}
+
+const StoreCoordinatorContext = React.createContext<Context>({
+  triggerStoreSwitch: () => {
+    //
+  },
+  switchComplete: false,
+})
+
 const primaryStore = configureStore({
   key: 'primary',
   secretKey: config.REDUX_ENCRYPT_KEY,
@@ -23,13 +35,13 @@ export function StoreCoordinator({ children }) {
   const [{ persistor, store }, setStore] = React.useState(primaryStore)
 
   const [state, setState] = React.useState(undefined)
-  const [keys, setKeys] = React.useState<Keys | undefined>(undefined)
+  const [switchComplete, setSwitchComplete] = React.useState(false)
   const [shouldSwitch, setShouldSwitch] = React.useState(false)
   const [shouldMigrate, setShouldMigrate] = React.useState(false)
 
   const switchStore = ({ key, secretKey }: Keys) => {
     if (!key || !secretKey) {
-      return
+      return // ERROR
     }
     setStore(
       configureStore({
@@ -41,35 +53,38 @@ export function StoreCoordinator({ children }) {
     )
   }
 
-  // ===== Step 1: Detect key change ===== //
-  React.useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
-      const primaryState = store.getState()
-      // TODO:
-      // @ts-ignore
-      const currentKeys = primaryState?.keys.keys
+  const triggerStoreSwitch = () => {
+    if (shouldSwitch) {
+      return
+    }
+    setShouldSwitch(true)
+    setShouldMigrate(false)
+    setSwitchComplete(false)
+  }
 
-      if (currentKeys && currentKeys !== keys) {
-        setKeys(currentKeys)
-        setState(primaryState)
-        setShouldSwitch(true)
-      }
-    })
-
-    return () => unsubscribe()
-  }, [store])
-
-  // ===== Step 2: Switch stores ===== //
+  // ===== Switch stores ===== //
   React.useEffect(() => {
     if (!shouldSwitch) {
       return
     }
 
+    const primaryState = store.getState()
+    // TODO:
+    // @ts-ignore
+    const keys = primaryState?.keys.keys
+
+    if (!keys) {
+      return // ERROR
+    }
+
+    setState(primaryState)
+
     switchStore(keys)
     setShouldMigrate(true)
+    setShouldSwitch(false)
   }, [shouldSwitch])
 
-  // ===== Step 3: Migrate state ===== //
+  // ===== Migrate state ===== //
   React.useEffect(() => {
     if (!shouldMigrate) {
       return
@@ -77,16 +92,32 @@ export function StoreCoordinator({ children }) {
 
     store.dispatch({ type: REHYDRATE, payload: state })
 
-    setShouldSwitch(false)
     setShouldMigrate(false)
     setState(undefined)
+    setSwitchComplete(true)
   }, [shouldMigrate])
 
   return (
-    <ReduxProvider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        {children}
-      </PersistGate>
-    </ReduxProvider>
+    <StoreCoordinatorContext.Provider
+      value={{
+        triggerStoreSwitch,
+        switchComplete,
+      }}
+    >
+      <ReduxProvider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          {children}
+        </PersistGate>
+      </ReduxProvider>
+    </StoreCoordinatorContext.Provider>
   )
+}
+
+export function useStoreCoordinator() {
+  const storeCoordinatorContext = React.useContext(StoreCoordinatorContext)
+  if (storeCoordinatorContext === undefined) {
+    throw new Error(`useStoreCoordinator must be used within a StoreCoordinator`)
+  }
+
+  return storeCoordinatorContext
 }

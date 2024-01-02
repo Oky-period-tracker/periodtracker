@@ -12,6 +12,7 @@ import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
 import { useSelector } from '../../../redux/useSelector'
 import { hash } from '../../../services/hash'
+import * as selectors from '../../../redux/selectors'
 
 export function AskUserInformation({ step, heightInner }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
@@ -25,7 +26,7 @@ export function AskUserInformation({ step, heightInner }) {
   const { name, password, passwordConfirm, gender } = state
   const [debouncedName] = useDebounce(name, 500) // to stop fast typing calls
 
-  const storeCredentials = useSelector((s) => s.access.storeCredentials)
+  const storeCredentials = useSelector(selectors.storeCredentialsSelector)
 
   React.useEffect(() => {
     let ignore = false

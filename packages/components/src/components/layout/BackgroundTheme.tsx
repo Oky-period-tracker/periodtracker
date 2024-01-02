@@ -26,7 +26,8 @@ export function BackgroundTheme({ theme = null, ...props }) {
 }
 
 export function DefaultBackgroundTheme({ ...props }) {
-  const backgroundImage = assets.backgrounds[defaultTheme]
+  // TODO_ALEX getAsset() safely
+  const backgroundImage = assets.backgrounds[defaultTheme].default
 
   return <Background source={backgroundImage} {...props} />
 }

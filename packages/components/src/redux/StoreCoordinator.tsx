@@ -12,20 +12,6 @@ interface Keys {
   secretKey: string
 }
 
-interface Context {
-  switchStore: (keys: Keys) => void
-  switchToPrimaryStore: () => void
-}
-
-const StoreCoordinatorContext = React.createContext<Context>({
-  switchStore: () => {
-    //
-  },
-  switchToPrimaryStore: () => {
-    //
-  },
-})
-
 const primaryStore = configureStore({
   key: 'primary',
   secretKey: config.REDUX_ENCRYPT_KEY,
@@ -40,10 +26,6 @@ export function StoreCoordinator({ children }) {
   const [keys, setKeys] = React.useState<Keys | undefined>(undefined)
   const [shouldSwitch, setShouldSwitch] = React.useState(false)
   const [shouldMigrate, setShouldMigrate] = React.useState(false)
-
-  const switchToPrimaryStore = () => {
-    setStore(primaryStore)
-  }
 
   const switchStore = ({ key, secretKey }: Keys) => {
     if (!key || !secretKey) {
@@ -101,26 +83,10 @@ export function StoreCoordinator({ children }) {
   }, [shouldMigrate])
 
   return (
-    <StoreCoordinatorContext.Provider
-      value={{
-        switchStore,
-        switchToPrimaryStore,
-      }}
-    >
-      <ReduxProvider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          {children}
-        </PersistGate>
-      </ReduxProvider>
-    </StoreCoordinatorContext.Provider>
+    <ReduxProvider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        {children}
+      </PersistGate>
+    </ReduxProvider>
   )
-}
-
-export function useStoreCoordinator() {
-  const storeCoordinatorContext = React.useContext(StoreCoordinatorContext)
-  if (storeCoordinatorContext === undefined) {
-    throw new Error(`useStoreCoordinator must be used within a StoreCoordinator`)
-  }
-
-  return storeCoordinatorContext
 }

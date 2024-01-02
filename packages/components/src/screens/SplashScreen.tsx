@@ -1,5 +1,5 @@
 import React from 'react'
-import { BackgroundTheme } from '../components/layout/BackgroundTheme'
+import { BackgroundTheme, DefaultBackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PageContainer } from '../components/layout/PageContainer'
 import { assets } from '../assets/index'
 import styled from 'styled-components/native'
@@ -78,7 +78,7 @@ export function SplashScreen() {
           navigateAndReset('PasswordRequestScreen', null)
           return
         }
-        navigateAndReset('MainStack', null)
+        navigateAndReset('StoreSwitchStack', null)
         return
       }
       navigateAndReset('LoginStack', null)
@@ -118,6 +118,45 @@ export function SplashScreen() {
         </Container>
       </PageContainer>
     </BackgroundTheme>
+  )
+}
+
+export function SimpleSplashScreen() {
+  const [animatedValue] = React.useState(new Animated.Value(0))
+
+  React.useEffect(() => {
+    Spin()
+  })
+
+  const Spin = () => {
+    Animated.timing(animatedValue, {
+      duration: 50000,
+      toValue: 36000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start()
+  }
+
+  const rotation = animatedValue.interpolate({
+    inputRange: [0, 36000],
+    outputRange: ['0deg', '36000deg'],
+  })
+
+  return (
+    <DefaultBackgroundTheme>
+      <PageContainer>
+        <Container>
+          <Face resizeMode="contain" source={assets.static.spin_load_face} />
+          <AnimatedContainer
+            style={{
+              transform: [{ rotate: rotation }],
+            }}
+          >
+            <Spinner resizeMode="contain" source={assets.static.spin_load_circle} />
+          </AnimatedContainer>
+        </Container>
+      </PageContainer>
+    </DefaultBackgroundTheme>
   )
 }
 

@@ -74,3 +74,6 @@ This will automatically download a json file, rename this as `firebase-config.js
 
 ### Push notifications
 You will need to enable push notifications so that users can send and receive notifications from the CMS. Follow the steps above to make sure everything is correctly configured. For Apple you will need to make sure you have added the [Apple Push Notificatios](https://learn.buildfire.com/en/articles/5760994-how-to-set-up-your-apple-push-notification-key-for-your-ios-firebase-certificate). 
+
+Crashalytics
+In order to be able to diagnose any issue and receive reports regarding instabilities or crashes, it is important to setup Firebase crashalytics. You can find instructions [here](https://medium.com/@Bigscal-Technologies/crashlytics-in-react-native-763b53dd5e97).

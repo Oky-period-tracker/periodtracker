@@ -71,7 +71,9 @@ export function StoreCoordinator({ children }) {
     const primaryState = store.getState()
     // TODO:
     // @ts-ignore
-    const keys = primaryState?.keys.keys
+    const keys = primaryState?.keys?.keys
+    // @ts-ignore
+    const shouldMigrateData = primaryState?.keys?.shouldMigrateData
 
     if (!keys) {
       return // ERROR
@@ -80,7 +82,7 @@ export function StoreCoordinator({ children }) {
     setState(primaryState)
 
     switchStore(keys)
-    setShouldMigrate(true)
+    setShouldMigrate(shouldMigrateData)
     setShouldSwitch(false)
   }, [shouldSwitch])
 

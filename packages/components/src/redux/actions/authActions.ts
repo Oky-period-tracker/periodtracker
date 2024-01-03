@@ -38,6 +38,13 @@ export function loginSuccess({
   })
 }
 
+export function loginOfflineSuccess(payload: {
+  keys: { key: string; secretKey: string }
+  shouldMigrateData: boolean
+}) {
+  return createAction('LOGIN_OFFLINE_SUCCESS', payload)
+}
+
 export function setStoreKeys(payload: { key: string; secretKey: string }) {
   return createAction('SET_STORE_KEYS', payload)
 }

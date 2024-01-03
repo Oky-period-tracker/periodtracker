@@ -9,10 +9,13 @@ export interface KeysState {
         secretKey: string
       }
     | undefined
+
+  shouldMigrateData: boolean
 }
 
 const initialState: KeysState = {
   keys: undefined,
+  shouldMigrateData: false,
 }
 
 export function keysReducer(state = initialState, action: Actions): KeysState {
@@ -21,6 +24,13 @@ export function keysReducer(state = initialState, action: Actions): KeysState {
       return {
         ...state,
         keys: action.payload,
+      }
+
+    case 'LOGIN_OFFLINE_SUCCESS':
+      return {
+        ...state,
+        keys: action.payload.keys,
+        shouldMigrateData: action.payload.shouldMigrateData,
       }
 
     default:

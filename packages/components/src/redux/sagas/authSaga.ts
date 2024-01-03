@@ -129,36 +129,22 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     const credential = storeCredentials[usernameHash]
 
     if (credential) {
-      // ???????????????
-      // Switch stores here ?
-      // Change boolean to trigger switch in coordinator ?
-      // Somehow need to pass the keys to the coordinator though
-      // yield put(
-      //   actions.loginOfflineSuccess({
-      //     appToken: null,
-      //     user: {
-      //       id: user.id,
-      //       name,
-      //       dateOfBirth: user.dateOfBirth,
-      //       gender: user.gender,
-      //       location: user.location,
-      //       country: user.country,
-      //       province: user.province,
-      //       secretQuestion: user.secretQuestion,
-      //       secretAnswer: user.secretAnswer,
-      //       password,
-      //       isGuest: false,
-      //     },
-      //   }),
-      // )
-      // return
+      yield put(
+        actions.loginOfflineSuccess({
+          keys: {
+            key: usernameHash,
+            secretKey: hash(password + credential.passwordSalt),
+          },
+          shouldMigrateData: false,
+        }),
+      )
+    } else {
+      yield put(
+        actions.loginFailure({
+          error: errorMessage,
+        }),
+      )
     }
-
-    yield put(
-      actions.loginFailure({
-        error: errorMessage,
-      }),
-    )
   }
 }
 
@@ -251,6 +237,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
       return
     }
 
+    // CREATE OFFLINE GUEST ACCOUNT
     yield put(
       actions.createAccountSuccess({
         appToken: null,
@@ -275,6 +262,8 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
 
 function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACCOUNT_SUCCESS'>) {
   const { appToken, user } = action.payload
+  // Is this even necessary ????
+  // Because we already update the redux state when account is created, so why the extra log in step?
   yield put(
     actions.loginSuccess({
       appToken,

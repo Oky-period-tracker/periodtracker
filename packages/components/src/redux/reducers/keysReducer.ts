@@ -10,15 +10,23 @@ export interface KeysState {
     | undefined
 
   shouldMigrateData: boolean
+  migrationComplete: boolean
 }
 
 const initialState: KeysState = {
   keys: undefined,
-  shouldMigrateData: false,
+  shouldMigrateData: true,
+  migrationComplete: false,
 }
 
 export function keysReducer(state = initialState, action: Actions): KeysState {
   switch (action.type) {
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        migrationComplete: true,
+      }
+
     case 'SET_STORE_KEYS':
       return {
         ...state,

@@ -37,22 +37,6 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
       }
     }
 
-    case 'CREATE_GUEST_ACCOUNT_SUCCESS': {
-      const usernameHash = hash(action.payload.name)
-      const passwordSalt = uuidv4()
-
-      return {
-        ...state,
-        lastLoggedInUsername: action.payload.name,
-        storeCredentials: {
-          ...state.storeCredentials,
-          [usernameHash]: {
-            passwordSalt,
-          },
-        },
-      }
-    }
-
     case 'LOGIN_SUCCESS': {
       // TODO_ALEX Can just update keys here instead of via saga ?
       return state

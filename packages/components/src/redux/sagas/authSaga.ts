@@ -89,6 +89,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
           secretQuestion: user.secretQuestion,
           secretAnswer: user.secretAnswer,
           password,
+          isGuest: false,
         },
       }),
     )
@@ -147,6 +148,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       //       secretQuestion: user.secretQuestion,
       //       secretAnswer: user.secretAnswer,
       //       password,
+      //       isGuest: false,
       //     },
       //   }),
       // )
@@ -225,6 +227,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           secretQuestion: user.secretQuestion,
           secretAnswer: user.secretAnswer,
           password,
+          isGuest: false,
         },
       }),
     )
@@ -246,17 +249,21 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     }
 
     yield put(
-      actions.createGuestAccountSuccess({
-        id: id || uuidv4(),
-        name,
-        dateOfBirth,
-        gender,
-        location,
-        country,
-        province,
-        password,
-        secretAnswer,
-        secretQuestion,
+      actions.createAccountSuccess({
+        appToken: null,
+        user: {
+          id: id || uuidv4(),
+          name,
+          dateOfBirth,
+          gender,
+          location,
+          country,
+          province,
+          password,
+          secretAnswer,
+          secretQuestion,
+          isGuest: true,
+        },
       }),
     )
   }
@@ -278,6 +285,7 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
         password: user.password,
         secretQuestion: user.secretQuestion,
         secretAnswer: user.secretAnswer,
+        isGuest: user.isGuest,
       },
     }),
   )

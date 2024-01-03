@@ -5,7 +5,7 @@ import { configureStore } from './store'
 import { config } from './config'
 import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
-import { REHYDRATE } from 'redux-persist'
+import * as actions from './actions'
 
 interface Keys {
   key: string
@@ -84,19 +84,68 @@ export function StoreCoordinator({ children }) {
     switchStore(keys)
     setShouldMigrate(shouldMigrateData)
     setShouldSwitch(false)
+
+    if (!shouldMigrateData) {
+      setSwitchComplete(true)
+    }
   }, [shouldSwitch])
 
   // ===== Migrate state ===== //
+  const interval = 500
+  const maxAttempts = 10
+  let attempts = 0
+
   React.useEffect(() => {
     if (!shouldMigrate) {
       return
     }
 
-    store.dispatch({ type: REHYDRATE, payload: state })
+    let cleanup = false
 
-    setShouldMigrate(false)
-    setState(undefined)
-    setSwitchComplete(true)
+    const attemptMigration = () => {
+      store.dispatch(
+        actions.migrateStore({
+          auth: state.auth,
+        }),
+      )
+
+      setTimeout(onTimeout, interval)
+      attempts++
+    }
+
+    const onTimeout = () => {
+      if (cleanup) {
+        return
+      }
+
+      if (attempts > maxAttempts) {
+        return // ERROR
+      }
+
+      if (attempts === 0) {
+        attemptMigration()
+        return
+      }
+
+      const currentState = store.getState()
+      // @ts-ignore
+      const migrationComplete = currentState?.keys.migrationComplete
+
+      if (migrationComplete) {
+        setShouldMigrate(false)
+        setState(undefined)
+        setSwitchComplete(true)
+        return
+      }
+
+      attemptMigration()
+    }
+
+    setTimeout(onTimeout, interval)
+
+    return () => {
+      cleanup = true
+    }
   }, [shouldMigrate])
 
   return (

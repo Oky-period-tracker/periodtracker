@@ -73,29 +73,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
           secretQuestion: action.payload.user.secretQuestion,
           secretAnswer: action.payload.user.secretAnswer,
           dateSignedUp: action.payload.user.dateSignedUp,
-          isGuest: false,
-        },
-      }
-
-    case 'CREATE_GUEST_ACCOUNT_SUCCESS':
-      return {
-        ...state,
-        appToken: null,
-        isLoggingIn: false,
-        loginFailedCount: 0,
-        user: {
-          id: action.payload.id,
-          name: action.payload.name,
-          dateOfBirth: action.payload.dateOfBirth,
-          gender: action.payload.gender,
-          location: action.payload.location,
-          country: action.payload.country,
-          province: action.payload.province,
-          password: action.payload.password,
-          secretQuestion: action.payload.secretQuestion,
-          secretAnswer: action.payload.secretAnswer,
-          dateSignedUp: action.payload.dateSignedUp,
-          isGuest: true,
+          isGuest: action.payload.user.isGuest,
         },
       }
 

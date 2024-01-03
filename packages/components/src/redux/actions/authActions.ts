@@ -18,6 +18,7 @@ export function loginSuccess({
     secretQuestion,
     secretAnswer,
     dateSignedUp,
+    isGuest,
   },
 }) {
   return createAction('LOGIN_SUCCESS', {
@@ -34,40 +35,13 @@ export function loginSuccess({
       secretQuestion,
       secretAnswer,
       dateSignedUp,
+      isGuest,
     },
   })
 }
 
 export function setStoreKeys(payload: { key: string; secretKey: string }) {
   return createAction('SET_STORE_KEYS', payload)
-}
-
-export function createGuestAccountSuccess({
-  id,
-  name,
-  dateOfBirth,
-  gender,
-  location,
-  country,
-  province,
-  password,
-  secretQuestion,
-  secretAnswer,
-  dateSignedUp,
-}) {
-  return createAction('CREATE_GUEST_ACCOUNT_SUCCESS', {
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    secretQuestion,
-    secretAnswer,
-    dateSignedUp,
-  })
 }
 
 export function loginFailure({ error }) {
@@ -129,6 +103,7 @@ export function createAccountSuccess({
     secretQuestion,
     secretAnswer,
     dateSignedUp,
+    isGuest,
   },
 }) {
   return createAction('CREATE_ACCOUNT_SUCCESS', {
@@ -145,6 +120,7 @@ export function createAccountSuccess({
       secretQuestion,
       secretAnswer,
       dateSignedUp,
+      isGuest,
     },
   })
 }

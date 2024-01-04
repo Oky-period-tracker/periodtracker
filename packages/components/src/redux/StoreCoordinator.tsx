@@ -6,19 +6,15 @@ import { config } from './config'
 import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import * as actions from './actions'
-
-interface Keys {
-  key: string
-  secretKey: string
-}
+import { PersistPartial } from 'redux-persist'
 
 interface Context {
-  triggerStoreSwitch: () => void
+  switchStore: () => void
   switchComplete: boolean
 }
 
 const StoreCoordinatorContext = React.createContext<Context>({
-  triggerStoreSwitch: () => {
+  switchStore: () => {
     //
   },
   switchComplete: false,
@@ -31,43 +27,87 @@ const primaryStore = configureStore({
   rootSaga,
 })
 
+interface State {
+  redux: ReturnType<typeof configureStore>
+  storeStateSnapshot: PersistPartial | undefined
+  shouldMigrate: boolean
+  switchComplete: boolean
+}
+
+type Action =
+  | {
+      type: 'set_redux'
+      payload: ReturnType<typeof configureStore>
+    }
+  | {
+      type: 'set_snapshot'
+      payload: PersistPartial
+    }
+  | {
+      type: 'switch_store'
+      payload: {
+        redux: ReturnType<typeof configureStore>
+        storeStateSnapshot: PersistPartial
+        shouldMigrate: boolean
+        switchComplete: boolean
+      }
+    }
+  | {
+      type: 'complete_migration'
+    }
+
+const initialState: State = {
+  redux: primaryStore,
+  storeStateSnapshot: undefined,
+  shouldMigrate: false,
+  switchComplete: false,
+}
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'set_redux':
+      return {
+        ...state,
+        redux: action.payload,
+      }
+
+    case 'set_snapshot':
+      return {
+        ...state,
+        storeStateSnapshot: action.payload,
+      }
+
+    case 'switch_store':
+      return {
+        ...state,
+        redux: action.payload.redux,
+        storeStateSnapshot: action.payload.storeStateSnapshot,
+        shouldMigrate: action.payload.shouldMigrate,
+        switchComplete: action.payload.switchComplete,
+      }
+
+    case 'complete_migration':
+      return {
+        ...state,
+        storeStateSnapshot: undefined,
+        shouldMigrate: false,
+        switchComplete: true,
+      }
+  }
+}
+
 export function StoreCoordinator({ children }) {
-  const [{ persistor, store }, setStore] = React.useState(primaryStore)
+  const [
+    {
+      redux: { store, persistor },
+      storeStateSnapshot,
+      shouldMigrate,
+      switchComplete,
+    },
+    dispatch,
+  ] = React.useReducer(reducer, initialState)
 
-  const [state, setState] = React.useState(undefined)
-  const [switchComplete, setSwitchComplete] = React.useState(false)
-  const [shouldSwitch, setShouldSwitch] = React.useState(false)
-  const [shouldMigrate, setShouldMigrate] = React.useState(false)
-
-  const switchStore = ({ key, secretKey }: Keys) => {
-    if (!key || !secretKey) {
-      return // ERROR
-    }
-    setStore(
-      configureStore({
-        key,
-        secretKey,
-        rootReducer,
-        rootSaga,
-      }),
-    )
-  }
-
-  const triggerStoreSwitch = () => {
-    if (shouldSwitch) {
-      return
-    }
-    setShouldSwitch(true)
-    setShouldMigrate(false)
-    setSwitchComplete(false)
-  }
-
-  // ===== Switch stores ===== //
-  React.useEffect(() => {
-    if (!shouldSwitch) {
-      return
-    }
-
+  const switchStore = () => {
     const primaryState = store.getState()
     // TODO:
     // @ts-ignore
@@ -79,16 +119,23 @@ export function StoreCoordinator({ children }) {
       return // ERROR
     }
 
-    setState(primaryState)
+    const userStore = configureStore({
+      key: keys.key,
+      secretKey: keys.secretKey,
+      rootReducer,
+      rootSaga,
+    })
 
-    switchStore(keys)
-    setShouldMigrate(shouldMigrateData)
-    setShouldSwitch(false)
-
-    if (!shouldMigrateData) {
-      setSwitchComplete(true)
-    }
-  }, [shouldSwitch])
+    dispatch({
+      type: 'switch_store',
+      payload: {
+        redux: userStore,
+        storeStateSnapshot: primaryState,
+        shouldMigrate: shouldMigrateData,
+        switchComplete: !shouldMigrateData,
+      },
+    })
+  }
 
   // ===== Migrate state ===== //
   const interval = 500
@@ -96,16 +143,16 @@ export function StoreCoordinator({ children }) {
   let attempts = 0
 
   React.useEffect(() => {
+    let ignore = false
     if (!shouldMigrate) {
       return
     }
 
-    let cleanup = false
-
     const attemptMigration = () => {
       store.dispatch(
         actions.migrateStore({
-          auth: state.auth,
+          // @ts-ignore
+          auth: storeStateSnapshot?.auth,
         }),
       )
 
@@ -114,7 +161,7 @@ export function StoreCoordinator({ children }) {
     }
 
     const onTimeout = () => {
-      if (cleanup) {
+      if (ignore) {
         return
       }
 
@@ -132,9 +179,7 @@ export function StoreCoordinator({ children }) {
       const migrationComplete = currentState?.keys.migrationComplete
 
       if (migrationComplete) {
-        setShouldMigrate(false)
-        setState(undefined)
-        setSwitchComplete(true)
+        dispatch({ type: 'complete_migration' })
         return
       }
 
@@ -144,14 +189,14 @@ export function StoreCoordinator({ children }) {
     setTimeout(onTimeout, interval)
 
     return () => {
-      cleanup = true
+      ignore = true
     }
   }, [shouldMigrate])
 
   return (
     <StoreCoordinatorContext.Provider
       value={{
-        triggerStoreSwitch,
+        switchStore,
         switchComplete,
       }}
     >

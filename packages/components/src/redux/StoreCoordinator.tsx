@@ -3,10 +3,12 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { configureStore } from './store'
 import { config } from './config'
-import { rootReducer } from './reducers'
+import { ReduxState, rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import * as actions from './actions'
 import { PersistPartial } from 'redux-persist'
+
+type ReduxPersistState = ReduxState & PersistPartial
 
 interface Context {
   switchStore: () => void
@@ -29,7 +31,7 @@ const primaryStore = configureStore({
 
 interface State {
   redux: ReturnType<typeof configureStore>
-  storeStateSnapshot: PersistPartial | undefined
+  storeStateSnapshot: ReduxPersistState | undefined
   shouldMigrate: boolean
   switchComplete: boolean
 }
@@ -41,13 +43,13 @@ type Action =
     }
   | {
       type: 'set_snapshot'
-      payload: PersistPartial
+      payload: ReduxPersistState
     }
   | {
       type: 'switch_store'
       payload: {
         redux: ReturnType<typeof configureStore>
-        storeStateSnapshot: PersistPartial
+        storeStateSnapshot: ReduxPersistState
         shouldMigrate: boolean
         switchComplete: boolean
       }
@@ -108,11 +110,8 @@ export function StoreCoordinator({ children }) {
   ] = React.useReducer(reducer, initialState)
 
   const switchStore = () => {
-    const primaryState = store.getState()
-    // TODO:
-    // @ts-ignore
+    const primaryState = store.getState() as ReduxPersistState
     const keys = primaryState?.keys?.keys
-    // @ts-ignore
     const shouldMigrateData = primaryState?.keys?.shouldMigrateData
 
     if (!keys) {
@@ -151,7 +150,6 @@ export function StoreCoordinator({ children }) {
     const attemptMigration = () => {
       store.dispatch(
         actions.migrateStore({
-          // @ts-ignore
           auth: storeStateSnapshot?.auth,
         }),
       )
@@ -174,8 +172,7 @@ export function StoreCoordinator({ children }) {
         return
       }
 
-      const currentState = store.getState()
-      // @ts-ignore
+      const currentState = store.getState() as ReduxPersistState
       const migrationComplete = currentState?.keys.migrationComplete
 
       if (migrationComplete) {

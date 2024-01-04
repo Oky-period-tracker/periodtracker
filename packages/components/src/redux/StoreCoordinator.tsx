@@ -38,14 +38,6 @@ interface State {
 
 type Action =
   | {
-      type: 'set_redux'
-      payload: ReturnType<typeof configureStore>
-    }
-  | {
-      type: 'set_snapshot'
-      payload: ReduxPersistState
-    }
-  | {
       type: 'switch_store'
       payload: {
         redux: ReturnType<typeof configureStore>
@@ -67,18 +59,6 @@ const initialState: State = {
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'set_redux':
-      return {
-        ...state,
-        redux: action.payload,
-      }
-
-    case 'set_snapshot':
-      return {
-        ...state,
-        storeStateSnapshot: action.payload,
-      }
-
     case 'switch_store':
       return {
         ...state,

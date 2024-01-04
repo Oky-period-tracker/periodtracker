@@ -4,10 +4,10 @@ import { navigateAndReset } from '../services/navigationService'
 import { useStoreCoordinator } from './StoreCoordinator'
 
 export function StoreSwitch() {
-  const { triggerStoreSwitch, switchComplete } = useStoreCoordinator()
+  const { switchStore, switchComplete } = useStoreCoordinator()
 
   React.useEffect(() => {
-    triggerStoreSwitch()
+    switchStore()
   }, [])
 
   React.useEffect(() => {

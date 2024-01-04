@@ -24,6 +24,7 @@ export function EncyclopediaScreen({ navigation }) {
   const subCategoriesObject = useSelector(selectors.allSubCategoriesObjectSelector)
   const [activeCategories, setActiveCategory] = React.useState([])
   const [filteredCategories, setFilteredCategories] = React.useState(categories)
+  // TODO_ALEX redundant useState?
   const [shownCategories, setShownCategories] = React.useState(categories)
   const [searching, setSearching] = React.useState(false)
   const [position] = React.useState(new Animated.Value(0))

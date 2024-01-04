@@ -35,6 +35,7 @@ export function EncyclopediaScreen({ navigation }) {
   const dispatch = useDispatch()
 
   const categoryNames = categories.map((item) => item?.name)
+  // TODO_ALEX redundant useState & useEffect?
   const [textArray, setTextArray] = React.useState(categoryNames)
   useTextToSpeechHook({ navigation, text: encyclopediaScreenText(categories) })
 

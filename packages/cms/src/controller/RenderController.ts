@@ -16,7 +16,7 @@ import { HelpCenter } from '../entity/HelpCenter'
 import { About } from '../entity/About'
 import { AvatarMessages } from '../entity/AvatarMessages'
 import { PermanentNotification } from '../entity/PermanentNotification'
-import { provinces, countries, availableAppLocales, localeTranslations } from '@oky/core'
+import { provinces, countries } from '@oky/core'
 import { TermsAndConditions } from '../entity/TermsAndConditions'
 import { PrivacyPolicy } from '../entity/PrivacyPolicy'
 import { AboutBanner } from '../entity/AboutBanner'
@@ -62,29 +62,237 @@ export class RenderController {
   }
 
   async renderAnalytics(request: Request, response: Response, next: NextFunction) {
+    const dateFrom = request.query.dateFrom || null
+    const dateTo = request.query.dateTo || null
+    const gender = request.query.gender || null
+    const location = request.query.location || null
+
+    const params = [gender, location, dateFrom, dateTo]
+
     const entityManager = await getManager()
-    const usersGenders = await entityManager.query(analyticsQueries.usersGender, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
-    const usersLocations = await entityManager.query(analyticsQueries.usersLocations, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
-    const usersAgeGroups = await entityManager.query(analyticsQueries.usersAgeGroups, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
-    const preProcessedProvinceList = await entityManager.query(analyticsQueries.usersProvince, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
-    const preProcessedCountryList = await entityManager.query(analyticsQueries.usersCountries, [
-      request.query.gender || null,
-      request.query.location || null,
-    ])
+    const usersGenders = await entityManager.query(analyticsQueries.usersGender, params)
+    const usersLocations = await entityManager.query(analyticsQueries.usersLocations, params)
+    const usersAgeGroups = await entityManager.query(analyticsQueries.usersAgeGroups, params)
+    const preProcessedProvinceList = await entityManager.query(
+      analyticsQueries.usersProvince,
+      params,
+    )
+    const preProcessedCountryList = await entityManager.query(
+      analyticsQueries.usersCountries,
+      params,
+    )
     const usersShares = await entityManager.query(analyticsQueries.usersShares)
     const directDownloads = await entityManager.query(analyticsQueries.directDownloads)
+
+    // Active users
+    const { count: totalUsers } = (await entityManager.query(analyticsQueries.countUsers))[0]
+
+    const { count: totalActiveUsers } = (
+      await entityManager.query(analyticsQueries.countActiveUsers, params)
+    )[0]
+
+    const countAvatars = await entityManager.query(analyticsQueries.countAvatars, [
+      gender,
+      location,
+    ])
+
+    const countThemes = await entityManager.query(analyticsQueries.countThemes, [gender, location])
+
+    const countLocales = await entityManager.query(analyticsQueries.countLocales, [
+      gender,
+      location,
+    ])
+
+    const { count: totalScreenViews } = (
+      await entityManager.query(analyticsQueries.countTotalForEvent, ['SCREEN_VIEWED'])
+    )[0]
+
+    const { count: totalCategoryViews } = (
+      await entityManager.query(analyticsQueries.countTotalForEvent, ['CATEGORY_VIEWED'])
+    )[0]
+
+    const { count: totalSubCategoryViews } = (
+      await entityManager.query(analyticsQueries.countTotalForEvent, ['SUBCATEGORY_VIEWED'])
+    )[0]
+
+    // Main screen
+    const { count: totalMainScreenViews, unique_user_count: uniqueUserMainScreenViews } = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'MainScreen'])
+    )[0]
+
+    // Profile screen
+    const { count: totalProfileScreenViews, unique_user_count: uniqueUserProfileScreenViews } = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'ProfileScreen'])
+    )[0]
+
+    // Encyclopedia screen
+    const {
+      count: totalEncyclopediaScreenViews,
+      unique_user_count: uniqueUserEncyclopediaScreenViews,
+    } = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'Encyclopedia'])
+    )[0]
+
+    const {
+      count: nonLoggedInEncyclopediaViews,
+      unique_device_count: uniqueDeviceNonLoggedInEncyclopediaViews,
+    } = (
+      await entityManager.query(analyticsQueries.countNonLoggedInScreenViews, [
+        dateFrom,
+        dateTo,
+        'Encyclopedia',
+      ])
+    )[0]
+
+    const categoryViews = await entityManager.query(analyticsQueries.countCategoryViews, params)
+    const subCategoryViews = await entityManager.query(
+      analyticsQueries.countSubCategoryViews,
+      params,
+    )
+
+    // Calendar screen
+    const { count: totalCalendarScreenViews, unique_user_count: uniqueUserCalendarScreenViews } = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'Calendar'])
+    )[0]
+
+    // Daily cards
+    const { count: countDailyCardUsage, unique_user_count: countUniqueUserDailyCardUsage } = (
+      await entityManager.query(analyticsQueries.countDailyCardUsage, params)
+    )[0]
+
+    // Prediction
+    const predictionSettings = (
+      await entityManager.query(analyticsQueries.countPredictionSettingsChanges, params)
+    )[0]
+
+    const calculatePercentage = (value: number, total: number) => {
+      return Math.round((value / total) * 100)
+    }
+
+    interface Usage {
+      feature: string
+      definition: string
+      uniqueUsers: number
+      views: number
+      loggedOutViews?: number | string
+      activeUsersPercentage: number | string
+      uniqueUsersPercentage: number | string
+      viewsPercentage?: number | string
+    }
+
+    const screenUsage: Usage[] = [
+      {
+        feature: 'Main screen',
+        definition: 'Screen viewed',
+        uniqueUsers: uniqueUserMainScreenViews,
+        views: totalMainScreenViews,
+        loggedOutViews: '-', // Inaccessible to logged out users
+        activeUsersPercentage: calculatePercentage(uniqueUserMainScreenViews, totalActiveUsers),
+        uniqueUsersPercentage: calculatePercentage(uniqueUserMainScreenViews, totalUsers),
+        viewsPercentage: calculatePercentage(totalMainScreenViews, totalScreenViews),
+      },
+      {
+        feature: 'Profile screen',
+        definition: 'Screen viewed',
+        uniqueUsers: uniqueUserProfileScreenViews,
+        views: totalProfileScreenViews,
+        loggedOutViews: '-', // Inaccessible to logged out users
+        activeUsersPercentage: calculatePercentage(uniqueUserProfileScreenViews, totalActiveUsers),
+        uniqueUsersPercentage: calculatePercentage(uniqueUserProfileScreenViews, totalUsers),
+        viewsPercentage: calculatePercentage(totalProfileScreenViews, totalScreenViews),
+      },
+      {
+        feature: 'Encyclopedia screen',
+        definition: 'Screen viewed',
+        uniqueUsers: uniqueUserEncyclopediaScreenViews,
+        views: totalEncyclopediaScreenViews,
+        loggedOutViews: nonLoggedInEncyclopediaViews,
+        activeUsersPercentage: calculatePercentage(
+          uniqueUserEncyclopediaScreenViews,
+          totalActiveUsers,
+        ),
+        uniqueUsersPercentage: calculatePercentage(uniqueUserEncyclopediaScreenViews, totalUsers),
+        viewsPercentage: calculatePercentage(totalEncyclopediaScreenViews, totalScreenViews),
+      },
+      {
+        feature: 'Calendar screen',
+        definition: 'Screen viewed',
+        uniqueUsers: uniqueUserCalendarScreenViews,
+        views: totalCalendarScreenViews,
+        loggedOutViews: '-', // Inaccessible to logged out users
+        activeUsersPercentage: calculatePercentage(uniqueUserCalendarScreenViews, totalActiveUsers),
+        uniqueUsersPercentage: calculatePercentage(uniqueUserCalendarScreenViews, totalUsers),
+        viewsPercentage: calculatePercentage(totalCalendarScreenViews, totalScreenViews),
+      },
+    ]
+
+    const categoryUsage: Usage[] = categoryViews.map((category) => {
+      return {
+        feature: category.category_name,
+        definition: 'Category',
+        uniqueUsers: category.unique_user_count,
+        views: category.total_view_count,
+        loggedOutViews: category.logged_out_view_count,
+        activeUsersPercentage: calculatePercentage(category.unique_user_count, totalActiveUsers),
+        uniqueUsersPercentage: calculatePercentage(category.unique_user_count, totalUsers),
+        viewsPercentage: calculatePercentage(category.total_view_count, totalCategoryViews),
+      }
+    })
+
+    const subCategoryUsage: Usage[] = subCategoryViews.map((subCategory) => {
+      return {
+        feature: subCategory.subcategory_name,
+        definition: 'Subcategory',
+        uniqueUsers: subCategory.unique_user_count,
+        views: subCategory.total_view_count,
+        loggedOutViews: subCategory.logged_out_view_count,
+        activeUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalActiveUsers),
+        uniqueUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalUsers),
+        viewsPercentage: calculatePercentage(subCategory.total_view_count, totalSubCategoryViews),
+      }
+    })
+
+    const encyclopediaUsage = [...categoryUsage, ...subCategoryUsage]
+
+    const usage: Usage[] = [
+      {
+        feature: 'Daily card',
+        definition:
+          'Users who have used the daily card at least once. When they click any emoji on the card, it counts as a view. Clicking on multiple emojis and cards within 24 hours still only counts as one view.',
+        uniqueUsers: countUniqueUserDailyCardUsage,
+        views: countDailyCardUsage,
+        activeUsersPercentage: calculatePercentage(countUniqueUserDailyCardUsage, totalActiveUsers),
+        uniqueUsersPercentage: calculatePercentage(countUniqueUserDailyCardUsage, totalUsers),
+      },
+      {
+        feature: 'Prediction setting',
+        definition: 'Future prediction switched ON',
+        uniqueUsers: predictionSettings.unique_user_switched_on,
+        views: predictionSettings.switched_on,
+        activeUsersPercentage: calculatePercentage(
+          predictionSettings.unique_user_switched_on,
+          totalActiveUsers,
+        ),
+        uniqueUsersPercentage: calculatePercentage(
+          predictionSettings.unique_user_switched_on,
+          totalUsers,
+        ),
+      },
+      {
+        feature: 'Prediction setting',
+        definition: 'Future prediction switched OFF',
+        uniqueUsers: predictionSettings.unique_user_switched_off,
+        views: predictionSettings.switched_off,
+        activeUsersPercentage: calculatePercentage(
+          predictionSettings.unique_user_switched_off,
+          totalActiveUsers,
+        ),
+        uniqueUsersPercentage: calculatePercentage(
+          predictionSettings.unique_user_switched_off,
+          totalUsers,
+        ),
+      },
+    ]
 
     const usersCountries = preProcessedCountryList.reduce((acc, item) => {
       const country = countries[item.country] || {
@@ -120,6 +328,14 @@ export class RenderController {
         usersProvinces,
         usersShares,
         directDownloads,
+        screenUsage,
+        usage,
+        encyclopediaUsage,
+        countAvatars,
+        countThemes,
+        countLocales,
+        dateFrom,
+        dateTo,
       }
     }
 
@@ -132,6 +348,14 @@ export class RenderController {
       usersProvinces,
       usersShares,
       directDownloads,
+      screenUsage,
+      usage,
+      encyclopediaUsage,
+      countAvatars,
+      countThemes,
+      countLocales,
+      dateFrom,
+      dateTo,
     })
   }
 

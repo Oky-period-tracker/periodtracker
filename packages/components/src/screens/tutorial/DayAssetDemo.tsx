@@ -10,10 +10,11 @@ import { translate } from '../../i18n'
 import Tts from 'react-native-tts'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
-const deviceWidth = Dimensions.get('window').width
-const deviceHeight = Dimensions.get('window').height
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 export function DayAssetDemo({ step }) {
+  const { screenWidth, screenHeight } = useScreenDimensions()
+
   const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
 
   React.useEffect(() => {
@@ -32,8 +33,8 @@ export function DayAssetDemo({ step }) {
   return (
     <DayCarouselItemContainer
       style={{
-        width: 0.6 * deviceWidth,
-        height: 0.4 * deviceHeight,
+        width: 0.6 * screenWidth,
+        height: 0.4 * screenHeight,
       }}
     >
       <Row

@@ -4,13 +4,14 @@ import styled from 'styled-components/native'
 import { SignUpFormLayout } from './SignUpFormLayout'
 import { useMultiStepForm } from '../../../components/common/MultiStepForm'
 import { Text } from '../../../components/common/Text'
-import { GenderSelectItem } from '../../../components/common/GenderSelectItem'
+import { SegmentControl } from '../../../components/common/SegmentControl'
 import { formHeights } from './FormHeights'
 import { ModalSearchBox } from '../../../components/common/ModalSearchBox'
 import { useSelector } from '../../../hooks/useSelector'
 import * as selectors from '../../../redux/selectors'
 import { translate } from '../../../i18n'
 import { FAST_SIGN_UP } from '../../../config'
+import { AppAssets } from '@oky/core'
 
 export function AskLocation({ step, createAccount }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
@@ -38,6 +39,8 @@ export function AskLocation({ step, createAccount }) {
   function checkValidity() {
     return location.length >= 4 && derivedProvince !== null && derivedCountry !== null
   }
+
+  const locations: Array<keyof AppAssets['static']['icons']> = ['Urban', 'Rural']
 
   return (
     <SignUpFormLayout
@@ -93,11 +96,11 @@ export function AskLocation({ step, createAccount }) {
         />
         <LocationText>location</LocationText>
         <Row>
-          {['Urban', 'Rural'].map((value) => {
+          {locations.map((value) => {
             return (
-              <GenderSelectItem
+              <SegmentControl
                 key={value}
-                gender={value}
+                option={value}
                 isActive={location === value}
                 onPress={() => dispatch({ type: 'change-form-data', inputName: 'location', value })}
               />

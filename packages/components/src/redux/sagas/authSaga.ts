@@ -88,6 +88,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
           province: user.province,
           secretQuestion: user.secretQuestion,
           secretAnswer: user.secretAnswer,
+          dateSignedUp: user.dateSignedUp,
           password,
         },
       }),
@@ -131,6 +132,8 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 }
 
 function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACCOUNT_REQUEST'>) {
+  const dateSignedUp = moment.utc().toISOString()
+
   const {
     id,
     name,
@@ -156,6 +159,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
         secretAnswer,
         secretQuestion,
         preferredId: id || null,
+        dateSignedUp,
       },
     )
     if (!appToken || !user || !user.id) {
@@ -176,6 +180,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           secretQuestion: user.secretQuestion,
           secretAnswer: user.secretAnswer,
           password,
+          dateSignedUp,
         },
       }),
     )
@@ -197,6 +202,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
         password,
         secretAnswer,
         secretQuestion,
+        dateSignedUp,
       }),
     )
   }
@@ -218,6 +224,7 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
         password: user.password,
         secretQuestion: user.secretQuestion,
         secretAnswer: user.secretAnswer,
+        dateSignedUp: user.dateSignedUp,
       },
     }),
   )

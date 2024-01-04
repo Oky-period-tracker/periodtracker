@@ -1,5 +1,4 @@
 import React from 'react'
-import { assets } from '../../assets/index'
 import styled from 'styled-components/native'
 import { useTheme } from '../context/ThemeContext'
 import { translate } from '../../i18n'
@@ -12,6 +11,7 @@ import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,
 } from '../../components/context/PredictionProvider'
+import { getAsset } from '../../services/asset'
 
 function checkForVerifiedDay(cardValues) {
   if (_.has(cardValues, 'periodDay')) {
@@ -43,17 +43,18 @@ function useStatusForSource(
         )
       }
       if (isFutureDate) {
-        return assets.static.icons[themeIcon].nonPeriod
+        return getAsset(`static.icons.${themeIcon}.nonPeriod`)
       }
     }
   }
-  if (data.onPeriod && isVerified) return assets.static.icons[themeIcon].period
-  if (data.onPeriod && !isVerified) return assets.static.icons[themeIcon].notVerifiedDay
-  if (data.onFertile) return assets.static.icons[themeIcon].fertile
+  if (data.onPeriod && isVerified) return getAsset(`static.icons.${themeIcon}.period`)
+  if (data.onPeriod && !isVerified) return getAsset(`static.icons.${themeIcon}.notVerifiedDay`)
+  if (data.onFertile) return getAsset(`static.icons.${themeIcon}.fertile`)
 
-  return assets.static.icons[themeIcon].nonPeriod
+  return getAsset(`static.icons.${themeIcon}.nonPeriod`)
 }
 
+// TODO_ALEX This needs to allow for different themes from different submodules
 function switcher(value) {
   switch (value) {
     case 'mosaic':

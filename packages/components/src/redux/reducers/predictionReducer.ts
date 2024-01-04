@@ -17,6 +17,8 @@ export function predictionReducer(state = initialState, action: Actions): Predic
       return {
         ...state,
       }
+
+    case 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE':
     case 'SET_FUTURE_PREDICTION_STATE_ACTIVE':
       return {
         ...state,

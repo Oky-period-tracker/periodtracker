@@ -23,17 +23,16 @@ import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { calendarScreenSpeech } from '../../config'
 import { useSelector } from 'react-redux'
 import * as selectors from '../../redux/selectors'
-
-const width = Dimensions.get('window').width
-const height = Dimensions.get('window').height
-
-// const calendarHeight = 0.71 * height
-const calendarWidth = 0.95 * width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 const startDate = moment().startOf('day').subtract(24, 'months')
 const endDate = moment().startOf('day').add(12, 'months')
 
 export const Calendar = ({ navigation }) => {
+  const { screenWidth: width, screenHeight: height } = useScreenDimensions()
+
+  const calendarWidth = 0.95 * width
+
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
   const verifiedPeriodsData = useSelector((state: any) => selectors.allCardAnswersSelector(state))
   const highlightedDates = useCalculateStatusForDateRange(
@@ -163,7 +162,7 @@ export const Calendar = ({ navigation }) => {
     <BackgroundTheme>
       <Header screenTitle="calendar" />
       <Container>
-        <CalendarContainer>
+        <CalendarContainer width={calendarWidth}>
           <CalendarList
             handleMonthChange={handleMonthChange}
             currentMonth={currentMonth}
@@ -241,7 +240,6 @@ const CalendarText = styled.View`
 `
 const CalendarContainer = styled.View`
   height: 400px;
-  width: ${calendarWidth};
   align-self: center;
   align-items: center;
   justify-content: center;

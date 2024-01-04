@@ -134,7 +134,7 @@ export function usePredictDay(inputDay: Moment) {
   }, [predictionEngine, inputDay])
 }
 
-export function useFullState() {
+export function usePredictionEngineState() {
   const predictionEngine = usePredictionEngine()
 
   return React.useMemo(() => {

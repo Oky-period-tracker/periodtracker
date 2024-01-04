@@ -84,7 +84,6 @@ export interface AppAssets {
       periodLength: ImageSourcePropType
       periodDays: ImageSourcePropType
       tabs: {
-        // TODO_ALEX make sure this corresponds to the tabs in the app, <NavigationBar
         encyclopedia: ImageSourcePropType
         encyclopediaGrey: ImageSourcePropType
         main: ImageSourcePropType

@@ -29,14 +29,7 @@ export function answerQuiz(payload: {
   return createAction('ANSWER_QUIZ', payload)
 }
 
-export function answerDailyCard<T extends CardName>({
-  cardName,
-  answer,
-  userID,
-  utcDateTime,
-  mutuallyExclusive = false,
-  periodDay = false,
-}: {
+export function answerDailyCard<T extends CardName>(payload: {
   cardName: T
   answer: DailyCard[T]
   userID: string
@@ -44,30 +37,15 @@ export function answerDailyCard<T extends CardName>({
   mutuallyExclusive: boolean
   periodDay: boolean
 }) {
-  return createAction('ANSWER_DAILY_CARD', {
-    cardName,
-    answer,
-    userID,
-    utcDateTime,
-    mutuallyExclusive,
-    periodDay,
-  })
+  return createAction('ANSWER_DAILY_CARD', payload)
 }
 
-export function answerVerifyDates({
-  userID,
-  utcDateTime,
-  periodDay = false,
-}: {
+export function answerVerifyDates(payload: {
   userID: string
   utcDateTime: Moment
   periodDay: boolean
 }) {
-  return createAction('ANSWER_VERIFY_DATES', {
-    userID,
-    utcDateTime,
-    periodDay,
-  })
+  return createAction('ANSWER_VERIFY_DATES', payload)
 }
 
 export function answerNotesCard(payload: {

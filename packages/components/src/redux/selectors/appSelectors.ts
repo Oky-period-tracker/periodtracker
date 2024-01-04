@@ -32,3 +32,7 @@ export const isFuturePredictionActiveSelector = (state: ReduxState) =>
   predictionS(state)?.futurePredictionStatus
 
 // export const smartPredictedPeriods = (state: ReduxState) => s(state).predicted_periods
+
+export const currentDeviceId = (state: ReduxState) => s(state)?.deviceId
+
+export const dailyCardLastUsed = (state: ReduxState) => s(state)?.dailyCardLastUsed

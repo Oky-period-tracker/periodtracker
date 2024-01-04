@@ -4,9 +4,10 @@ import { Text } from '../../components/common/Text'
 import { CalendarCardContent } from './CalendarCardContent'
 import { WheelPickerContent } from '../../components/WheelPickerContent'
 import { Avatar } from '../../components/common/Avatar/Avatar'
-import { assets } from '../../assets'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
+import { getAsset } from '../../services/asset'
+import { IS_TABLET } from '../../config/tablet'
 
 export function JourneyCard({
   question,
@@ -37,7 +38,7 @@ export function JourneyCard({
           <WhiteContainer>
             <BubbleAvatarImage
               resizeMode="contain"
-              source={assets.avatars[selectedAvatar].bubbles}
+              source={getAsset(`avatars.${selectedAvatar}.bubbles`)}
             />
             <Text style={{ fontSize: 14, textAlign: 'left', color: '#000' }}>{description}</Text>
             <BigOrangeText>{question}</BigOrangeText>
@@ -153,8 +154,7 @@ const WhiteContainer = styled.View`
   flex: 1;
   width: 100%;
   background-color: #fff;
-  padding-vertical: 25px;
-  padding-horizontal: 30px;
+  padding: ${IS_TABLET ? '56px' : '28px'};
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   align-items: center;

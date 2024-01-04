@@ -3,13 +3,14 @@ import { Animated } from 'react-native'
 import styled from 'styled-components/native'
 import { Text, TextWithoutTranslation } from '../../../components/common/Text'
 import { TextInput } from '../../../components/common/TextInput'
-import { GenderSelectItem } from '../../../components/common/GenderSelectItem'
+import { SegmentControl } from '../../../components/common/SegmentControl'
 import { SignUpFormLayout } from './SignUpFormLayout'
 import { useMultiStepForm, formActions } from '../../../components/common/MultiStepForm'
 import { httpClient } from '../../../services/HttpClient'
 import { useDebounce } from '../../../hooks/useDebounce'
 import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
+import { AppAssets } from '@oky/core'
 
 export function AskUserInformation({ step, heightInner }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
@@ -60,6 +61,8 @@ export function AskUserInformation({ step, heightInner }) {
     return null
   }
 
+  const genders: Array<keyof AppAssets['static']['icons']> = ['Male', 'Female', 'Other']
+
   return (
     <SignUpFormLayout
       onSubmit={() => {
@@ -107,11 +110,11 @@ export function AskUserInformation({ step, heightInner }) {
 
         <GenderText>your_gender</GenderText>
         <Row>
-          {['Male', 'Female', 'Other'].map((value) => {
+          {genders.map((value) => {
             return (
-              <GenderSelectItem
+              <SegmentControl
                 key={value}
-                gender={value}
+                option={value}
                 isActive={gender === value}
                 onPress={() => dispatch({ type: 'change-form-data', inputName: 'gender', value })}
               />

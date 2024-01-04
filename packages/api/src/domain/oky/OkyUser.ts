@@ -15,6 +15,8 @@ interface OkyUserProps {
   province: string
   password: HashedPassword
   memorable: MemorableQuestion
+  dateSignedUp: string
+  dateAccountSaved: string
 }
 
 @Entity()
@@ -22,7 +24,7 @@ export class OkyUser {
   @PrimaryColumn('uuid', { name: 'id' })
   private id: string
 
-  @Column(type => HashedName)
+  @Column((type) => HashedName)
   private name: HashedName
 
   @Column({ name: 'date_of_birth' })
@@ -40,10 +42,10 @@ export class OkyUser {
   @Column({ name: 'province', default: '0', nullable: true })
   private province: string
 
-  @Column(type => HashedPassword)
+  @Column((type) => HashedPassword)
   private password: HashedPassword
 
-  @Column(type => MemorableQuestion)
+  @Column((type) => MemorableQuestion)
   private memorable: MemorableQuestion
 
   @Column({ name: 'store', type: 'json', nullable: true })
@@ -51,6 +53,12 @@ export class OkyUser {
     storeVersion: number
     appState: object
   }
+
+  @Column({ name: 'date_signed_up' })
+  private dateSignedUp: string
+
+  @Column({ name: 'date_account_saved' })
+  private dateAccountSaved: string
 
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
@@ -64,6 +72,7 @@ export class OkyUser {
         province,
         password,
         memorable,
+        dateSignedUp,
       } = props
 
       this.id = id
@@ -76,6 +85,7 @@ export class OkyUser {
       this.password = password
       this.memorable = memorable
       this.store = null
+      this.dateSignedUp = dateSignedUp
     }
   }
 
@@ -90,6 +100,8 @@ export class OkyUser {
     plainPassword,
     secretQuestion,
     secretAnswer,
+    dateSignedUp,
+    dateAccountSaved,
   }: {
     id: string
     name: string
@@ -101,6 +113,8 @@ export class OkyUser {
     plainPassword: string
     secretQuestion: string
     secretAnswer: string
+    dateSignedUp: string
+    dateAccountSaved: string
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -124,6 +138,8 @@ export class OkyUser {
       province,
       password,
       memorable,
+      dateSignedUp,
+      dateAccountSaved,
     })
   }
 
@@ -210,11 +226,16 @@ export class OkyUser {
   public getMemorableQuestion() {
     return this.memorable.secretQuestion
   }
+
   public getHashedMemorableAnswer() {
     return this.memorable.secretAnswerHashed
   }
 
   public getStore() {
     return this.store
+  }
+
+  public getDateSignedUp() {
+    return this.dateSignedUp
   }
 }

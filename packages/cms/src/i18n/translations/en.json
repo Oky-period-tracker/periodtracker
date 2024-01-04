@@ -187,5 +187,8 @@
   "No": "No",
   "Survey ID": "Survey ID",
   "Data Management": "Data Management",
-  "Video Management": "Video Management"
+  "Video Management": "Video Management",
+  "analytics_description_1": "Certain metrics included in these analytics are based on data that was not gathered in earlier versions of the app. As a result, these figures predominantly reflect activity from the more recent app version. Information pertaining to usage before the update date was not recorded. Additionally, users who have not updated to the newer version of the app are not contributing this specific tracking data.",
+  "analytics_description_2": "The 'total' number of users is every user stored in the user table. The users count as 'active' if they have done at least one of the actions listed, within the time period you have selected above.",
+  "analytics_description_3": "These tables present a current snapshot of user activity and do not track changes over time. As a result, applying date filters will not alter the displayed data."
 }

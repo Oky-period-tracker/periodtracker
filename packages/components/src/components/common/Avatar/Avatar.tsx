@@ -13,6 +13,7 @@ import * as selectors from '../../../redux/selectors/index'
 import moment from 'moment'
 import { useDisplayText } from '../../context/DisplayTextContext'
 import { useTodayPrediction } from '../../context/PredictionProvider'
+import { getAsset } from '../../../services/asset'
 
 const lookingAndWave = { start: 0, end: 8 / 30, duration: 6500 }
 const looking = { start: 0, end: 4 / 30, duration: 4000 }
@@ -154,7 +155,7 @@ export function Avatar({
         {/* TODO_ALEX */}
         {/* @ts-ignore */}
         {(stationary || selectedAvatar === 'oky') && (
-          <Image source={assets.avatars[selectedAvatar].stationary_colour} />
+          <Image source={getAsset(`avatars.${selectedAvatar}.stationary_colour`)} />
         )}
       </TouchableOpacity>
       {isProgressVisible && (

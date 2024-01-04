@@ -95,6 +95,7 @@ export interface LoginResponse {
     province: string
     secretQuestion: string
     secretAnswer: string
+    dateSignedUp: string
   }
   store: {
     storeVersion: number

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, Image, Dimensions } from 'react-native'
+import { View, Image } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { approximates, runSpring } from 'react-native-redash'
 import { DayBadge } from '../../../components/common/DayBadge'
@@ -17,14 +17,12 @@ import _ from 'lodash'
 import { navigateAndReset } from '../../../services/navigationService'
 import { ThemedModal } from '../../../components/common/ThemedModal'
 import { ColourButtons } from '../ColourButtons'
+import { globalStyles } from '../../../config/styles'
 
 const {
   Value,
   useCode,
   cond,
-  call,
-  or,
-  eq,
   Clock,
   and,
   set,
@@ -35,14 +33,17 @@ const {
   interpolate,
 } = Animated
 
-const screenWidth = Dimensions.get('window').width
-const screenHeight = Dimensions.get('window').height
-
-const cardWith = 0.53 * screenWidth
-const cardHeight = 0.2 * screenHeight
 const cardNames = ['mood', 'body', 'activity', 'flow']
 
-export function CarouselElement({ dataEntry, index, isActive, currentIndex }) {
+export function CarouselElement({
+  dataEntry,
+  index,
+  isActive,
+  currentIndex,
+  width,
+  height,
+  showOverlay,
+}) {
   const clock = new Clock()
   const value = new Value(0)
   const color = useColor(dataEntry.onPeriod, dataEntry.onFertile)
@@ -51,6 +52,7 @@ export function CarouselElement({ dataEntry, index, isActive, currentIndex }) {
   )
 
   const [isVisible, setIsVisible] = React.useState(false)
+  // TODO_ALEX redundant useState
   const [loading, setLoading] = React.useState(false)
 
   useCode(
@@ -78,16 +80,25 @@ export function CarouselElement({ dataEntry, index, isActive, currentIndex }) {
 
   return (
     <View
-      style={{ height: '100%', width: '100%', alignItems: 'center', justifyContent: 'flex-end' }}
+      style={[
+        {
+          height: '100%',
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+        },
+        globalStyles.shadow,
+      ]}
     >
       <AnimatedContainer
         // @ts-ignore
         style={{
-          height: cardHeight,
-          width: cardWith,
+          height,
+          width,
           transform: [{ scale, translateY: translation }],
         }}
       >
+        {showOverlay ? <Shadow /> : null}
         <Row>
           <DayBadge
             fontSizes={{ small: 14, big: 20 }}
@@ -170,6 +181,15 @@ const AnimatedContainer = styled(Animated.View)`
   justify-content: center;
   background-color: #fff;
   elevation: 5;
+`
+
+const Shadow = styled(Animated.View)`
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
 `
 
 const Empty = styled.View`

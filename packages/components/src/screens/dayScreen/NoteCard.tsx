@@ -1,5 +1,4 @@
 import React from 'react'
-import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import * as selectors from '../../redux/selectors'
 import * as actions from '../../redux/actions'
@@ -12,10 +11,11 @@ import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets'
 import { ConfirmAlert } from '../../components/common/ConfirmAlert'
 import { translate } from '../../i18n'
-
-const deviceWidth = Dimensions.get('window').width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 export function NoteCard({ dataEntry }) {
+  const { screenWidth: deviceWidth } = useScreenDimensions()
+
   const noteObject: any = useSelector((state) =>
     selectors.notesAnswerSelector(state, dataEntry.date),
   )

@@ -21,7 +21,7 @@ export function DisplayTextProvider({ children }) {
   const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
 
   const setDisplayTextRandom = () => {
-    setText(_.sample(availableText).content)
+    setText(_.sample(availableText)?.content)
   }
 
   const setDisplayTextStatic = (translationKey: string) => {

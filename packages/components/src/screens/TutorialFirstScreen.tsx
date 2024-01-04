@@ -9,7 +9,7 @@ import { CenterCard } from './mainScreen/CenterCard'
 import { Avatar } from '../components/common/Avatar/Avatar'
 import { useInfiniteScroll } from './mainScreen/wheelCarousel/useInfiniteScroll'
 import { navigateAndReset } from '../services/navigationService'
-import { Animated, Dimensions, Platform } from 'react-native'
+import { Animated, Platform } from 'react-native'
 import { useDispatch } from 'react-redux'
 import * as actions from '../redux/actions'
 import { Text } from '../components/common/Text'
@@ -24,13 +24,17 @@ import moment from 'moment'
 import Tts from 'react-native-tts'
 import { translate } from '../i18n'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
+import { useScreenDimensions } from '../hooks/useScreenDimensions'
+import { IS_TABLET } from '../config/tablet'
+import { useOrientation } from '../hooks/useOrientation'
 
-const screenHeight = Dimensions.get('screen').height
-const screenWidth = Dimensions.get('screen').width
 const arrowSize = 55
 // I apologize to anyone who gets to this level of error checking on the sequencing of this component.
 // Deadline pressure had mounted beyond compare and it was working stably, It definitely can be simplified and made more declarative
 export function TutorialFirstScreen() {
+  const { screenWidth, screenHeight } = useScreenDimensions()
+  const orientation = useOrientation()
+
   const { data, isActive, index, currentIndex, absoluteIndex } = useInfiniteScroll()
   const [step, setStep] = React.useState(0)
   const [loading, setLoading] = React.useState(false)
@@ -48,15 +52,11 @@ export function TutorialFirstScreen() {
   const normalizePosition = (percentage, dimension) => {
     return percentage * dimension - arrowSize / 2
   }
-  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useSelector
 
-  const getCardAnswersValues = (inputDay) => {
-    const cardData = renamedUseSelector((state) =>
-      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
-    )
-    return cardData
-  }
+  const cloudSize = 85
+  const cloudMargin = 10
+  const cloudWidth = cloudSize + cloudMargin * 2
+
   const stepInfo = {
     '0': {
       text: `tutorial_0`,
@@ -97,11 +97,20 @@ export function TutorialFirstScreen() {
     '3': {
       text: `tutorial_2`,
       heading: `tutorial_2_content`,
-      animationPositionEnd: {
-        x: normalizePosition(0.4, screenWidth),
-        y: normalizePosition(0.52, screenHeight),
-        z: 90,
-      },
+      animationPositionEnd: IS_TABLET
+        ? {
+            x: normalizePosition(0.4, screenWidth),
+            y: normalizePosition(
+              Platform.OS === 'ios' ? (DeviceInfo.hasNotch() ? 0.4 : 0.37) : 0.33,
+              screenHeight,
+            ),
+            z: 0,
+          }
+        : {
+            x: normalizePosition(0.4, screenWidth),
+            y: normalizePosition(0.52, screenHeight),
+            z: 90,
+          },
       demonstrationComponent: { isAvailable: false },
     },
     '4': {
@@ -134,7 +143,7 @@ export function TutorialFirstScreen() {
       text: `tutorial_6`,
       heading: `tutorial_6_content`,
       animationPositionEnd: {
-        x: normalizePosition(0.25, screenWidth),
+        x: normalizePosition(0.5, screenWidth) - cloudWidth,
         y: normalizePosition(0.5, screenHeight),
         z: 90,
       },
@@ -160,7 +169,7 @@ export function TutorialFirstScreen() {
       text: `tutorial_8`,
       heading: `tutorial_8_content`,
       animationPositionEnd: {
-        x: normalizePosition(0.75, screenWidth),
+        x: normalizePosition(0.5, screenWidth) + cloudWidth,
         y: normalizePosition(0.5, screenHeight),
         z: 90,
       },
@@ -269,6 +278,8 @@ export function TutorialFirstScreen() {
     })
   }
 
+  const wheelSectionWidth = IS_TABLET ? (orientation === 'LANDSCAPE' ? '35%' : '40%') : '65%'
+
   return (
     <BackgroundTheme>
       <Container>
@@ -296,7 +307,10 @@ export function TutorialFirstScreen() {
             />
             <Overlay />
           </AvatarSection>
-          <WheelSection {...{ step }} style={{ width: Platform.OS === 'ios' ? '68%' : '65%' }}>
+
+          <MiddleOverlay />
+
+          <WheelSection {...{ step }} style={{ width: wheelSectionWidth }}>
             <CircularSelection
               {...{
                 data,
@@ -306,7 +320,6 @@ export function TutorialFirstScreen() {
                 absoluteIndex,
                 disableInteraction: true,
               }}
-              fetchCardValues={getCardAnswersValues}
             />
             <CenterCard
               style={step === 2 ? { elevation: 20, zIndex: 999 } : { elevation: -20, zIndex: 0 }}
@@ -315,8 +328,11 @@ export function TutorialFirstScreen() {
           </WheelSection>
         </MiddleSection>
         <CarouselSection {...{ step }}>
-          <Carousel {...{ index, data, isActive, currentIndex, absoluteIndex }} />
-          <Overlay style={{ height: '100%' }} />
+          <Carousel
+            {...{ index, data, isActive, currentIndex, absoluteIndex }}
+            disableInteraction
+            showOverlay
+          />
         </CarouselSection>
       </Container>
       <Empty />
@@ -414,25 +430,31 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
+  justify-content: space-between;
+  z-index: 9;
 `
+
 const AvatarSection = styled.View<{ step: number }>`
   height: 100%;
   width: 35%;
   justify-content: flex-start;
   z-index: 999;
 `
+
 const WheelSection = styled.View<{ step: number }>`
   height: 100%;
   width: 65%;
   align-items: center;
   elevation: 0;
-  z-index: ${(props) => (props.step === 1 || props.step === 3 ? 15 : 0)}
+  z-index: ${(props) => (props.step === 1 || props.step === 3 ? 999999 : 0)};
   justify-content: center;
   background-color: ${(props) =>
     props.step === 1 || props.step === 3 ? 'rgba(0, 0, 0, 0.8) ' : 'transparent'};
   flex-direction: row;
 `
+
 const CarouselSection = styled.View<{ step: number }>`
+  z-index: 11;
   height: 30%;
   width: 100%;
   flex-direction: row;
@@ -445,6 +467,14 @@ const Overlay = styled.View`
   z-index: 100;
   background-color: rgba(0, 0, 0, 0.8);
   position: absolute;
+`
+
+const MiddleOverlay = styled.View`
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.8);
 `
 
 const TouchableContinueOverlay = styled.TouchableOpacity`
@@ -487,14 +517,4 @@ const TutorialText = styled(Text)`
   font-family: Roboto-Regular;
   font-size: 16;
   margin-bottom: 10;
-`
-
-const TutorialLeavingText = styled(Text)`
-  width: 70%;
-  color: #f49200;
-  align-self: center;
-  font-size: 20;
-  font-family: Roboto-Black;
-  top: -30%;
-  text-align: center;
 `

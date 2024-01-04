@@ -7,14 +7,20 @@ import { setTopLevelNavigator } from '../services/navigationService'
 import { notificationListener } from '../services/notifications'
 import { SafeAreaView } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
-import { Platform } from 'react-native'
+import { Platform, StatusBar } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
+import { IS_TABLET } from '../config/tablet'
 
 const { persistor, store } = configureStore()
 
 export default function App() {
   React.useEffect(() => {
+    if (IS_TABLET) {
+      return
+    }
+
     Orientation.lockToPortrait()
+
     return () => {
       Orientation.unlockAllOrientations()
     }
@@ -29,16 +35,12 @@ export default function App() {
 
   return (
     <AppProvider store={store} persistor={persistor}>
+      <StatusBar hidden />
       <SafeAreaView
-        forceInset={{ bottom: 'never' }}
+        forceInset={{ horizontal: 'never', vertical: 'never' }}
         style={{ flex: 1, backgroundColor: '#757575' }}
       >
-        <AppNavigator
-          ref={(navigatorRef) => {
-            setTopLevelNavigator(navigatorRef)
-          }}
-          key="app-navigator"
-        />
+        <AppNavigator />
       </SafeAreaView>
     </AppProvider>
   )

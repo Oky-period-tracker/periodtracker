@@ -3,27 +3,27 @@ import styled from 'styled-components/native'
 import { BackgroundTheme } from '../../components/layout/BackgroundTheme'
 import { Header } from '../../components/common/Header'
 import { TextWithoutTranslation } from '../../components/common/Text'
-import { ScrollView, Dimensions } from 'react-native'
+import { ScrollView, StyleSheet } from 'react-native'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
 import { chunk } from 'lodash'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
-const width = Dimensions.get('window').width
 export function PrivacyScreen({ navigation }) {
+  const { screenWidth: width } = useScreenDimensions()
   const [page, setPage] = React.useState(0)
   const privacyContent = useSelector(selectors.privacyContent)
+
   const speechText = privacyContent.map((item) => item.content)
-  const content = privacyContent.map((item, ind) => {
+  const content = privacyContent.map((item, i) => {
+    const isLast = i === privacyContent.length - 1
+
     if (item.type === 'HEADING') {
       return <HeadingText>{item.content}</HeadingText>
     }
     if (item.type === 'CONTENT') {
-      return (
-        <ContentText style={[ind === privacyContent.length - 1 && { paddingBottom: 30 }]}>
-          {item.content}
-        </ContentText>
-      )
+      return <ContentText style={isLast && styles.last}>{item.content}</ContentText>
     }
   })
 
@@ -37,12 +37,11 @@ export function PrivacyScreen({ navigation }) {
       <Header screenTitle="privacy_policy" />
       <ScrollView
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ width: numPages * width }}
         horizontal
         onMomentumScrollEnd={(event) => {
           setPage(Math.round(event.nativeEvent.contentOffset.x / width))
         }}
-        style={{ flex: 1 }}
+        style={styles.flex}
         scrollEnabled={true}
         pagingEnabled={true}
       >
@@ -54,16 +53,17 @@ export function PrivacyScreen({ navigation }) {
           )
         })}
       </ScrollView>
-      <Buttons>
+      <DotsRow>
         {new Array(numPages).fill(0).map((item, index) => {
           return <Circle key={index} isHighlighted={index === page} />
         })}
-      </Buttons>
+      </DotsRow>
     </BackgroundTheme>
   )
 }
 
 const Container = ({ children, page }) => {
+  const { screenWidth: width } = useScreenDimensions()
   const scrollRef = React.useRef(null)
 
   React.useEffect(() => {
@@ -86,16 +86,6 @@ const Container = ({ children, page }) => {
 const ScrollContainer = styled.ScrollView`
   height: 100%;
 `
-const Buttons = styled.View`
-  position: absolute;
-  width: 90%;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  bottom: 20px;
-  align-self: center;
-  flex-direction: row;
-`
 
 const Circle = styled.View<{ isHighlighted: boolean }>`
   height: 15px;
@@ -108,17 +98,12 @@ const Circle = styled.View<{ isHighlighted: boolean }>`
 `
 
 const ViewContainer = styled.View`
-  width: ${width * 0.95};
   border-radius: 10px;
-  padding-left: 42px;
-  padding-right: 42px;
+  padding: 40px;
   background-color: #fff;
-  padding-top: 40px;
-  padding-bottom: 40px;
   elevation: 2;
-  margin-bottom: 30px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-bottom: 28px;
+  margin-horizontal: 12px;
 `
 
 const ContentText = styled(TextWithoutTranslation)`
@@ -136,3 +121,23 @@ const HeadingText = styled(TextWithoutTranslation)`
   width: 100%;
   margin-bottom: 10px;
 `
+
+const DotsRow = styled.View`
+  position: absolute;
+  width: 90%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  bottom: 20px;
+  align-self: center;
+  flex-direction: row;
+`
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  last: {
+    paddingBottom: 30,
+  },
+})

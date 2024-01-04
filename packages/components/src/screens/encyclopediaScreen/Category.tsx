@@ -108,16 +108,21 @@ const VideoCategoryContainer = styled.TouchableOpacity`
   min-height: 120px;
 `
 
+const TitleContainer = styled.View`
+  width: 200px;
+  height: 100%;
+  justify-content: center;
+  margin-vertical: 4px;
+  margin-horizontal: 4px;
+  min-height: 80px;
+`
+
 const TagsContainer = styled.View`
   flex-direction: row;
   height: 50px;
   width: 50px;
   justify-content: center;
   align-items: center;
-`
-
-const TitleContainer = styled.View`
-  flex: 1;
 `
 
 const Title = styled(TextWithoutTranslation)`

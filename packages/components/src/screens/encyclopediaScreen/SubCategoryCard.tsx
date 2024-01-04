@@ -35,8 +35,10 @@ const SubCategoryContainer = styled.TouchableOpacity`
   min-height: 65px;
   justify-content: center;
   align-items: flex-start;
-  padding-left: 21;
-  padding-right: 36;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   background-color: #fff;
   elevation: 3;
   border-radius: 10px;

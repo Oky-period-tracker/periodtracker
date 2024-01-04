@@ -7,9 +7,11 @@ import { capitalizeFLetter } from '../../i18n'
 export const Category = ({ title, tags, onPress, isActive = false }) => {
   return (
     <CategoryContainer onPress={onPress}>
-      <Title style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>
-        {capitalizeFLetter(title.trim())}
-      </Title>
+      <TitleContainer>
+        <Title style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>
+          {capitalizeFLetter(title.trim())}
+        </Title>
+      </TitleContainer>
       <TagsContainer>
         <EmojiSelector
           title={tags.primary.name}
@@ -44,13 +46,13 @@ const CategoryContainer = styled.TouchableOpacity`
   align-items: center;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   background-color: #fff;
   elevation: 5;
   border-radius: 10px;
-  margin-vertical: 5px;
-  margin-horizontal: 3px;
+  margin-vertical: 4px;
+  margin-horizontal: 4px;
   min-height: 80px;
 `
 
@@ -60,7 +62,10 @@ const TagsContainer = styled.View`
   width: 50px;
   justify-content: center;
   align-items: center;
-  align-self: flex-end;
+`
+
+const TitleContainer = styled.View`
+  flex: 1;
 `
 
 const Title = styled(TextWithoutTranslation)`

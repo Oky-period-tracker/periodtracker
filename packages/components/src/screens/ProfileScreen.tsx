@@ -25,6 +25,7 @@ import { profileScreenSpeech } from '../config'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import moment from 'moment'
 import { ThemedModal } from '../components/common/ThemedModal'
+import { getDeviceFontScale } from '../services/font'
 
 export function ProfileScreen({ navigation }) {
   const History = useHistoryPrediction()
@@ -182,7 +183,7 @@ export function ProfileScreen({ navigation }) {
               </Row>
               <Touchable onPress={() => navigate('AvatarAndThemeScreen', null)}>
                 <Row style={styles.lastRow}>
-                  <Column style={styles.avatarColumn}>
+                  <Column>
                     <AvatarOption
                       isDisabled={true}
                       avatar={selectedAvatar}
@@ -218,13 +219,16 @@ export function ProfileScreen({ navigation }) {
   )
 }
 
+const FONT_SCALE = getDeviceFontScale()
+
 const Row = styled.View`
-  height: 100px;
+  min-height: ${FONT_SCALE === 'EXTRA_LARGE' ? 128 : FONT_SCALE === 'LARGE' ? 120 : 100}px;
   flex-direction: row;
   border-bottom-width: 1px;
   border-bottom-color: #eaeaea;
   align-items: center;
   justify-content: center;
+  padding-horizontal: 8px;
 `
 
 const Touchable = styled.TouchableOpacity``
@@ -239,7 +243,6 @@ const Container = styled.View`
 const Empty = styled.View``
 
 const Column = styled.View`
-  height: 100%;
   flex: 1;
   align-items: center;
   justify-content: center;
@@ -306,12 +309,15 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   connectButton: {
-    height: 50,
-    width: 115,
+    height: 60,
+    minWidth: 115,
+    maxWidth: 180,
+    padding: 4,
     alignSelf: 'center',
     backgroundColor: '#a2c72d',
   },
   errorRow: {
+    minHeight: 40,
     height: 40,
   },
   errorText: {
@@ -322,7 +328,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   headerText: {
-    height: 30,
+    minHeight: 30,
     textAlignVertical: 'center',
     fontSize: 12,
   },
@@ -334,13 +340,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   valuesText: {
-    height: 30,
+    minHeight: 30,
     fontSize: 12,
     textAlignVertical: 'center',
-  },
-  avatarColumn: {
-    width: 70,
-    height: 70,
   },
   avatarOption: {
     height: 70,
@@ -355,9 +357,10 @@ const styles = StyleSheet.create({
     width: 57,
   },
   firstRow: {
-    height: 140,
+    minHeight: FONT_SCALE === 'EXTRA_LARGE' ? 150 : FONT_SCALE === 'LARGE' ? 145 : 140,
   },
   lastRow: {
     borderBottomWidth: 0,
+    minHeight: FONT_SCALE === 'EXTRA_LARGE' ? 150 : FONT_SCALE === 'LARGE' ? 145 : 140,
   },
 })

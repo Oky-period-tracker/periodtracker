@@ -6,7 +6,9 @@
     {
       "path": "packages/cms"
     },
-
+    {
+      "path": "packages/components/src/redux"
+    },
     {
       "path": "packages/components"
     },

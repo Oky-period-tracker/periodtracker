@@ -8,6 +8,7 @@ import { navigate } from '../../../services/navigationService'
 import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
 import { FAST_SIGN_UP } from '../../../config'
+
 export function AskUserConfirmation({ step, heightInner }) {
   const [, dispatch] = useMultiStepForm()
   const [loading, setLoading] = React.useState(false)
@@ -102,12 +103,12 @@ const RadioFill = styled.View`
 const GenderText = styled(Text)`
   font-family: Roboto-Regular;
   text-align: center;
-  font-size: 14;
+  font-size: 12;
   color: black;
 `
 
 const AgreeText = styled(Text)`
-  font-size: 16;
+  font-size: 14;
   text-align: center;
   align-self: center;
   color: #000;

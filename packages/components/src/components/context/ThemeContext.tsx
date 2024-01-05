@@ -1,6 +1,6 @@
 import React from 'react'
 import { ThemeContext, ThemeProvider as StyledThemeProvider } from 'styled-components'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import * as selectors from '../../redux/selectors'
 import { themes } from '@oky/core'
 

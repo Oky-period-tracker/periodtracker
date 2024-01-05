@@ -1,6 +1,5 @@
-import { ReduxState } from '../store'
-import moment from 'moment'
 import _ from 'lodash'
+import { ReduxState } from '../reducers'
 
 const s = (state: ReduxState) => state.content
 

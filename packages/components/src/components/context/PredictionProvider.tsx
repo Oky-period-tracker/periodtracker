@@ -3,7 +3,7 @@ import moment, { Moment } from 'moment'
 import _ from 'lodash'
 import { PredictionState, PredictionEngine } from '../../prediction'
 
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import { useDispatch } from 'react-redux'
 import * as actions from '../../redux/actions'
 

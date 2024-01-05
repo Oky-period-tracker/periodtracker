@@ -4,8 +4,7 @@ import { Alert } from 'react-native'
 import { v4 as uuidv4 } from 'uuid'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
-import { exportReducerNames } from '../reducers'
-import { ReduxState } from '../store'
+import { ReduxState, exportReducerNames } from '../reducers'
 import * as actions from '../actions'
 import * as selectors from '../selectors'
 import { navigateAndReset } from '../../services/navigationService'
@@ -13,6 +12,7 @@ import { PredictionState } from '../../prediction'
 import moment from 'moment'
 import { closeOutTTs } from '../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../services/network'
+import { hash } from '../../services/hash'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -89,6 +89,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
           secretQuestion: user.secretQuestion,
           secretAnswer: user.secretAnswer,
           password,
+          isGuest: false,
         },
       }),
     )
@@ -111,7 +112,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     }
 
     yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-    yield call(navigateAndReset, 'MainStack', null)
+    yield call(navigateAndReset, 'StoreSwitchStack', null)
   } catch (error) {
     let errorMessage = 'request_fail'
     if (error && error.response && error.response.data) {
@@ -122,12 +123,48 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         errorMessage = error.response.data.message
       }
     }
-    yield put(
-      actions.loginFailure({
-        error: errorMessage,
-      }),
-    )
+
+    // Attempt offline login
+    const usernameHash = hash(name)
+    const storeCredentials = yield select(selectors.storeCredentialsSelector)
+    const credential = storeCredentials[usernameHash]
+
+    if (credential) {
+      yield put(
+        actions.loginOfflineSuccess({
+          keys: {
+            key: usernameHash,
+            secretKey: hash(password + credential.passwordSalt),
+          },
+          shouldMigrateData: false,
+        }),
+      )
+    } else {
+      yield put(
+        actions.loginFailure({
+          error: errorMessage,
+        }),
+      )
+    }
   }
+}
+
+function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
+  const storeCredentials = yield select(selectors.storeCredentialsSelector)
+  const usernameHash = hash(action.payload.user.name)
+  const salt = storeCredentials[usernameHash]?.passwordSalt
+
+  if (!salt) {
+    // TODO_ALEX ???
+    // Cant just return because they could have online account from another device that they're logging in to
+  }
+
+  const keys = {
+    key: usernameHash,
+    secretKey: hash(action.payload.user.password + salt),
+  }
+
+  yield put(actions.setStoreKeys(keys))
 }
 
 function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACCOUNT_REQUEST'>) {
@@ -176,6 +213,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           secretQuestion: user.secretQuestion,
           secretAnswer: user.secretAnswer,
           password,
+          isGuest: false,
         },
       }),
     )
@@ -185,18 +223,34 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     yield put(actions.setAuthError({ error: errorStatusCode }))
     yield put(actions.createAccountFailure())
 
+    // Check username is not already taken
+    const usernameHash = hash(name)
+    const storeCredentials = yield select(selectors.storeCredentialsSelector)
+    const credential = storeCredentials[usernameHash]
+
+    if (credential) {
+      // username already taken
+      // yield put(secureActions.setAuthError({ error: errorStatusCode }))
+      return
+    }
+
+    // CREATE OFFLINE GUEST ACCOUNT
     yield put(
-      actions.loginSuccessAsGuestAccount({
-        id: id || uuidv4(),
-        name,
-        dateOfBirth,
-        gender,
-        location,
-        country,
-        province,
-        password,
-        secretAnswer,
-        secretQuestion,
+      actions.createAccountSuccess({
+        appToken: null,
+        user: {
+          id: id || uuidv4(),
+          name,
+          dateOfBirth,
+          gender,
+          location,
+          country,
+          province,
+          password,
+          secretAnswer,
+          secretQuestion,
+          isGuest: true,
+        },
       }),
     )
   }
@@ -204,6 +258,8 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
 
 function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACCOUNT_SUCCESS'>) {
   const { appToken, user } = action.payload
+  // Is this even necessary ????
+  // Because we already update the redux state when account is created, so why the extra log in step?
   yield put(
     actions.loginSuccess({
       appToken,
@@ -218,10 +274,12 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
         password: user.password,
         secretQuestion: user.secretQuestion,
         secretAnswer: user.secretAnswer,
+        isGuest: user.isGuest,
       },
     }),
   )
 }
+
 function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACCOUNT_REQUEST'>) {
   const { setLoading } = action.payload
   const state: ReduxState = yield select()
@@ -302,7 +360,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield put(actions.setTutorialOneActive(true))
   yield put(actions.setTutorialTwoActive(true))
   yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-  yield call(navigateAndReset, 'MainStack', null)
+  yield call(navigateAndReset, 'StoreSwitchStack', null)
 }
 
 export function* authSaga() {
@@ -310,6 +368,7 @@ export function* authSaga() {
     takeLatest(REHYDRATE, onRehydrate),
     takeLatest('LOGOUT_REQUEST', onLogoutRequest),
     takeLatest('LOGIN_REQUEST', onLoginRequest),
+    takeLatest('LOGIN_SUCCESS', onLoginSuccess),
     takeLatest('DELETE_ACCOUNT_REQUEST', onDeleteAccountRequest),
     takeLatest('CREATE_ACCOUNT_REQUEST', onCreateAccountRequest),
     takeLatest('CREATE_ACCOUNT_SUCCESS', onCreateAccountSuccess),

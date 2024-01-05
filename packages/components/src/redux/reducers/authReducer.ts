@@ -45,6 +45,12 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         ..._.pick(initialState, ['error', 'isLoggingIn', 'loginFailedCount', 'isCreatingAccount']),
       }
 
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        ...action.payload.auth,
+      }
+
     case 'LOGIN_REQUEST':
       return {
         ...state,
@@ -71,28 +77,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
           password: action.payload.user.password,
           secretQuestion: action.payload.user.secretQuestion,
           secretAnswer: action.payload.user.secretAnswer,
-          isGuest: false,
-        },
-      }
-
-    case 'LOGIN_SUCCESS_AS_GUEST_ACCOUNT':
-      return {
-        ...state,
-        appToken: null,
-        isLoggingIn: false,
-        loginFailedCount: 0,
-        user: {
-          id: action.payload.id,
-          name: action.payload.name,
-          dateOfBirth: action.payload.dateOfBirth,
-          gender: action.payload.gender,
-          location: action.payload.location,
-          country: action.payload.country,
-          province: action.payload.province,
-          password: action.payload.password,
-          secretQuestion: action.payload.secretQuestion,
-          secretAnswer: action.payload.secretAnswer,
-          isGuest: true,
+          isGuest: action.payload.user.isGuest,
         },
       }
 

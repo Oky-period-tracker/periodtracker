@@ -6,7 +6,7 @@ import { IconButton } from '../../components/common/buttons/IconButton'
 import styled from 'styled-components/native'
 import { handleCategoriesFilter, handleSearchResult } from './searchFunctions'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import * as selectors from '../../redux/selectors'
 import { translate } from '../../i18n'
 

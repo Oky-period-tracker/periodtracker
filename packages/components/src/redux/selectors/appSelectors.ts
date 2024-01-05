@@ -1,4 +1,4 @@
-import { ReduxState } from '../store'
+import { ReduxState } from '../reducers'
 
 const s = (state: ReduxState) => state.app
 const predictionS = (state: ReduxState) => state.prediction

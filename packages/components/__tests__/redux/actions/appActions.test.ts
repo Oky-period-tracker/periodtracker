@@ -1,10 +1,7 @@
-import { v4 as uuidv4 } from 'uuid'
-import moment from 'moment'
 import configureStore from 'redux-mock-store'
 
 import _ from 'lodash'
 import * as actions from '../../../src/redux/actions'
-import { authReducer } from '../../../src/redux/reducers/authReducer'
 
 const middleWares = []
 const mockStore = configureStore(middleWares)

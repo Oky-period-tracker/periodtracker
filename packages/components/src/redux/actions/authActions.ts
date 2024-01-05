@@ -17,6 +17,7 @@ export function loginSuccess({
     password,
     secretQuestion,
     secretAnswer,
+    isGuest,
   },
 }) {
   return createAction('LOGIN_SUCCESS', {
@@ -32,34 +33,20 @@ export function loginSuccess({
       password,
       secretQuestion,
       secretAnswer,
+      isGuest,
     },
   })
 }
 
-export function loginSuccessAsGuestAccount({
-  id,
-  name,
-  dateOfBirth,
-  gender,
-  location,
-  country,
-  province,
-  password,
-  secretQuestion,
-  secretAnswer,
+export function loginOfflineSuccess(payload: {
+  keys: { key: string; secretKey: string }
+  shouldMigrateData: boolean
 }) {
-  return createAction('LOGIN_SUCCESS_AS_GUEST_ACCOUNT', {
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    secretQuestion,
-    secretAnswer,
-  })
+  return createAction('LOGIN_OFFLINE_SUCCESS', payload)
+}
+
+export function setStoreKeys(payload: { key: string; secretKey: string }) {
+  return createAction('SET_STORE_KEYS', payload)
 }
 
 export function loginFailure({ error }) {
@@ -120,6 +107,7 @@ export function createAccountSuccess({
     province,
     secretQuestion,
     secretAnswer,
+    isGuest,
   },
 }) {
   return createAction('CREATE_ACCOUNT_SUCCESS', {
@@ -135,6 +123,7 @@ export function createAccountSuccess({
       password,
       secretQuestion,
       secretAnswer,
+      isGuest,
     },
   })
 }

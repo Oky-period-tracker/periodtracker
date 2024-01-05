@@ -22,7 +22,7 @@ import { InformationButton } from '../components/common/InformationButton'
 import { assets } from '../assets'
 import * as actions from '../redux/actions'
 import { useDispatch } from 'react-redux'
-import { useSelector } from '../hooks/useSelector'
+import { useSelector } from '../redux/useSelector'
 import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import { FlowerButton, FlowerModal } from '../optional/Flower'
@@ -44,7 +44,7 @@ const MainScreenContainer = ({ navigation }) => {
   const theme = useTheme()
   const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
-  const userID = useSelector(selectors.currentUserSelector).id
+  const userID = useSelector(selectors.currentUserSelector)?.id
   const fullState = useFullState()
   const history = useHistoryPrediction()
   const currentUser = useSelector(selectors.currentUserSelector)
@@ -54,6 +54,7 @@ const MainScreenContainer = ({ navigation }) => {
     dispatch(actions.fetchSurveyContentRequest(userID))
   }, [])
 
+  // TODO: Cant use hook like this?
   useRandomText({ navigation })
   return <MainScreenActual key={theme.id} />
 }

@@ -1,10 +1,7 @@
 import _ from 'lodash'
 import { Action, Reducer, ReducersMapObject } from 'redux'
 
-function syncReducerFactory(
-  innerReducer: Reducer,
-  reducerName: string,
-): Reducer {
+function syncReducerFactory(innerReducer: Reducer, reducerName: string): Reducer {
   return (state, action) => {
     if (action.type === 'REFRESH_STORE' && action.payload[reducerName]) {
       return {

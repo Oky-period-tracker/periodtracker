@@ -4,7 +4,7 @@ import { Text } from '../../components/common/Text'
 import { TextInput } from '../../components/common/TextInput'
 import { useDispatch } from 'react-redux'
 import * as actions from '../../redux/actions'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import { SpinLoader } from '../../components/common/SpinLoader'
 import _ from 'lodash'
 

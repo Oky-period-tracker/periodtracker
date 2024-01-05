@@ -2,7 +2,7 @@ import React from 'react'
 import Tts from 'react-native-tts'
 import _ from 'lodash'
 import { translate } from '../../i18n'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import * as selectors from '../../redux/selectors'
 
 interface Props {

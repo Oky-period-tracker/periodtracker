@@ -2,7 +2,7 @@ import React from 'react'
 import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import * as selectors from '../../redux/selectors'
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('screen').height

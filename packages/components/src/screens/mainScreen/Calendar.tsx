@@ -21,8 +21,8 @@ import { assets } from '../../assets'
 import { translate } from '../../i18n'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { calendarScreenSpeech } from '../../config'
-import { useSelector } from 'react-redux'
 import * as selectors from '../../redux/selectors'
+import { useSelector } from '../../redux/useSelector'
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height

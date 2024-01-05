@@ -5,7 +5,7 @@ import { CalendarCardContent } from './CalendarCardContent'
 import { WheelPickerContent } from '../../components/WheelPickerContent'
 import { Avatar } from '../../components/common/Avatar/Avatar'
 import { assets } from '../../assets'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import * as selectors from '../../redux/selectors'
 
 export function JourneyCard({

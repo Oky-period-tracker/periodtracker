@@ -8,6 +8,8 @@ import { navigate } from '../../../services/navigationService'
 import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
 import { FAST_SIGN_UP } from '../../../config'
+import { getDeviceFontScale } from '../../../services/font'
+import { IS_TABLET } from '../../../config/tablet'
 
 export function AskUserConfirmation({ step, heightInner }) {
   const [, dispatch] = useMultiStepForm()
@@ -68,6 +70,9 @@ export function AskUserConfirmation({ step, heightInner }) {
   )
 }
 
+const FONT_SCALE = getDeviceFontScale()
+const NORMAL = FONT_SCALE === 'NORMAL' || IS_TABLET
+
 const RadioButton = ({ selected, onPress }) => {
   return <RadioCircle onPress={() => onPress(true)}>{selected && <RadioFill />}</RadioCircle>
 }
@@ -103,12 +108,12 @@ const RadioFill = styled.View`
 const GenderText = styled(Text)`
   font-family: Roboto-Regular;
   text-align: center;
-  font-size: 12;
+  font-size: ${NORMAL ? 14 : 12};
   color: black;
 `
 
 const AgreeText = styled(Text)`
-  font-size: 14;
+  font-size: ${NORMAL ? 16 : 14};
   text-align: center;
   align-self: center;
   color: #000;

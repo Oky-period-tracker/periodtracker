@@ -332,6 +332,10 @@ function* onLogoutRequest() {
   yield put(actions.logout())
 }
 
+function* onClearLastLogin() {
+  yield call(navigateAndReset, 'LoginStack', null)
+}
+
 function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPLETION'>) {
   const { data } = action.payload
   const currentUser = yield select(selectors.currentUserSelector)
@@ -371,6 +375,7 @@ export function* authSaga() {
   yield all([
     takeLatest(REHYDRATE, onRehydrate),
     takeLatest('LOGOUT_REQUEST', onLogoutRequest),
+    takeLatest('CLEAR_LAST_LOGIN', onClearLastLogin),
     takeLatest('LOGIN_REQUEST', onLoginRequest),
     takeLatest('LOGIN_SUCCESS', onLoginSuccess),
     takeLatest('DELETE_ACCOUNT_REQUEST', onDeleteAccountRequest),

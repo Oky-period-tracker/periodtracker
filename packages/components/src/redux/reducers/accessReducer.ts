@@ -59,10 +59,17 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         },
       }
 
-    case 'LOGIN_SUCCESS': {
-      // TODO_ALEX Can just update keys here instead of via saga ?
-      return state
-    }
+    case 'LOGIN_SUCCESS':
+      return {
+        ...state,
+        lastLoggedInUsername: action.payload.user.name,
+      }
+
+    case 'CLEAR_LAST_LOGIN':
+      return {
+        ...state,
+        lastLoggedInUsername: undefined,
+      }
 
     default:
       return state

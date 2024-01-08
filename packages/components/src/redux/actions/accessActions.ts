@@ -37,3 +37,7 @@ export function saveLocalCredentials({
 export function setStoreExists(payload: { usernameHash: string }) {
   return createAction('SET_STORE_EXISTS', payload)
 }
+
+export function clearLastLogin() {
+  return createAction('CLEAR_LAST_LOGIN')
+}

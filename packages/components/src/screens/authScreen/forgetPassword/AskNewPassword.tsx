@@ -4,6 +4,7 @@ import { useMultiStepForm, formActions } from '../../../components/common/MultiS
 import { httpClient } from '../../../services/HttpClient'
 import { ForgotPasswordFormLayout } from './ForgotPasswordFormLayout'
 import _ from 'lodash'
+import { formatPassword } from '../../../services/auth'
 
 export function AskNewPassword({ step }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
@@ -22,8 +23,8 @@ export function AskNewPassword({ step }) {
     try {
       await httpClient.resetPassword({
         name: state.name,
-        secretAnswer: _.toLower(state.secretAnswer).trim(),
-        password: _.toLower(state.password).trim(),
+        secretAnswer: formatPassword(state.secretAnswer),
+        password: formatPassword(state.password),
       })
 
       dispatch({ formAction: formActions.goToStep('completed') })
@@ -40,7 +41,7 @@ export function AskNewPassword({ step }) {
     <ForgotPasswordFormLayout onSubmit={onSubmit}>
       <TextInput
         style={{ marginBottom: 5, marginTop: 20 }}
-        onChange={password => dispatch({ type: 'change-password', password })}
+        onChange={(password) => dispatch({ type: 'change-password', password })}
         label="password"
         secureTextEntry={true}
         isValid={passwordIsValid}

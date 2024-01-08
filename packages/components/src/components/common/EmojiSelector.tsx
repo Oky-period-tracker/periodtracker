@@ -35,7 +35,14 @@ export const EmojiSelector = React.memo<Props>(
     color,
   }) => {
     return (
-      <Container disabled={disabled} onPress={onPress} style={style}>
+      <Container
+        disabled={disabled}
+        onPress={onPress}
+        style={{
+          ...style,
+          height: undefined, // Prevent text height being limited by the height of the emoji
+        }}
+      >
         <Mask
           color={color}
           isActive={isActive}

@@ -23,13 +23,13 @@ const StoreCoordinatorContext = React.createContext<Context>({
 })
 
 const primaryStoreBlacklist = [
-  'keys', // Not persisted for security
+  'storeSwitch', // Not persisted for security
   'content', // Moved to async storage
   'auth', // Persisted in secure userStore
   'prediction', // Persisted in secure userStore
 ]
 const userStoreBlacklist = [
-  'keys', // Not persisted for security
+  'storeSwitch', // Not persisted for security
   'content', // Moved to async storage
   'access', // Not required after store switch
 ]
@@ -104,8 +104,8 @@ export function StoreCoordinator({ children }) {
 
   const switchStore = () => {
     const primaryState = store.getState() as ReduxPersistState
-    const keys = primaryState?.keys?.keys
-    const shouldMigrateData = primaryState?.keys?.shouldMigrateData
+    const keys = primaryState?.storeSwitch?.keys
+    const shouldMigrateData = primaryState?.storeSwitch?.shouldMigrateData
 
     if (!keys) {
       return // ERROR
@@ -167,7 +167,7 @@ export function StoreCoordinator({ children }) {
       }
 
       const currentState = store.getState() as ReduxPersistState
-      const migrationComplete = currentState?.keys.migrationComplete
+      const migrationComplete = currentState?.storeSwitch.migrationComplete
 
       if (migrationComplete) {
         dispatch({ type: 'complete_migration' })

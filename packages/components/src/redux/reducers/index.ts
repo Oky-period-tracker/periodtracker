@@ -11,8 +11,9 @@ import { predictionReducer } from './predictionReducer'
 import { accessReducer } from './accessReducer'
 import { storeSwitchReducer } from './storeSwitchReducer'
 
-const reducer = combineReducers({
+export const rootReducer = combineReducers({
   access: accessReducer,
+  storeSwitch: storeSwitchReducer,
   analytics: analyticsReducer,
   answer: answerReducer,
   app: appReducer,
@@ -21,16 +22,5 @@ const reducer = combineReducers({
   prediction: predictionReducer,
   // flower: flowerReducer, TODO: Flower state should be saved per user
 })
-
-export function rootReducer(state, action: Actions) {
-  switch (action.type) {
-    case 'LOGOUT':
-      // @ts-ignore
-      return reducer(_.pick(state, 'app', 'content', 'answer', 'access'), action)
-
-    default:
-      return reducer(state, action)
-  }
-}
 
 export type ReduxState = ReturnType<typeof rootReducer>

@@ -14,7 +14,7 @@ import { storeSwitchReducer } from './storeSwitchReducer'
 
 export const exportReducerNames = ['app', 'prediction']
 
-const reducer = combineReducers(
+export const rootReducer = combineReducers(
   syncReducers(
     {
       access: accessReducer,
@@ -30,16 +30,5 @@ const reducer = combineReducers(
     exportReducerNames,
   ),
 )
-
-export function rootReducer(state, action: Actions) {
-  switch (action.type) {
-    case 'LOGOUT':
-      // @ts-ignore
-      return reducer(_.pick(state, 'app', 'content', 'answer', 'access'), action)
-
-    default:
-      return reducer(state, action)
-  }
-}
 
 export type ReduxState = ReturnType<typeof rootReducer>

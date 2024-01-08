@@ -51,10 +51,6 @@ export function logoutRequest() {
   return createAction('LOGOUT_REQUEST')
 }
 
-export function logout() {
-  return createAction('LOGOUT')
-}
-
 export function createAccountRequest({
   id = null,
   name,

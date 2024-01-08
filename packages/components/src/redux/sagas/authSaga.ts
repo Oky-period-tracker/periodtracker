@@ -14,6 +14,7 @@ import { closeOutTTs } from '../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import { PartialStateSnapshot } from '../types/partialStore'
 import { hash } from '../../services/hash'
+import _ from 'lodash'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -133,7 +134,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         actions.loginOfflineSuccess({
           keys: {
             key: usernameHash,
-            secretKey: hash(password + credential.passwordSalt),
+            secretKey: hash(password + credential.storeSalt),
           },
           shouldMigrateData: false,
         }),
@@ -151,16 +152,18 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
   const storeCredentials = yield select(selectors.storeCredentialsSelector)
   const usernameHash = hash(action.payload.user.name)
-  const salt = storeCredentials[usernameHash]?.passwordSalt
+  const salt = storeCredentials[usernameHash]?.storeSalt
 
   if (!salt) {
     // TODO_ALEX ???
     // Cant just return because they could have online account from another device that they're logging in to
   }
 
+  const password = _.toLower(action.payload.user.password)
+
   const keys = {
     key: usernameHash,
-    secretKey: hash(action.payload.user.password + salt),
+    secretKey: hash(password + salt),
   }
 
   yield put(actions.setStoreKeys(keys))

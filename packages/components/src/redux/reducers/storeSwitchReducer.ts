@@ -1,25 +1,23 @@
 import { Actions } from '../types'
-import _ from 'lodash'
 
-export interface KeysState {
-  keys:
-    | {
-        key: string
-        secretKey: string
-      }
-    | undefined
+export interface StoreKeys {
+  key: string
+  secretKey: string
+}
 
+export interface StoreSwitchState {
+  keys: StoreKeys | undefined
   shouldMigrateData: boolean
   migrationComplete: boolean
 }
 
-const initialState: KeysState = {
+const initialState: StoreSwitchState = {
   keys: undefined,
   shouldMigrateData: true,
   migrationComplete: false,
 }
 
-export function keysReducer(state = initialState, action: Actions): KeysState {
+export function storeSwitchReducer(state = initialState, action: Actions): StoreSwitchState {
   switch (action.type) {
     case 'MIGRATE_STORE':
       return {
@@ -27,13 +25,7 @@ export function keysReducer(state = initialState, action: Actions): KeysState {
         migrationComplete: true,
       }
 
-    case 'SET_STORE_KEYS':
-      return {
-        ...state,
-        keys: action.payload,
-      }
-
-    case 'LOGIN_OFFLINE_SUCCESS':
+    case 'INITIATE_STORE_SWITCH':
       return {
         ...state,
         keys: action.payload.keys,

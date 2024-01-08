@@ -83,7 +83,7 @@ export function PasswordRequestScreen() {
                       key: usernameHash,
                       secretKey: hash(enteredPassword + storeSalt),
                     }
-                    dispatch(actions.setStoreKeys(keys))
+                    dispatch(actions.initiateStoreSwitch({ keys, shouldMigrateData: false }))
 
                     requestAnimationFrame(() => {
                       navigateAndReset('StoreSwitchStack', null)

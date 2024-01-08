@@ -132,7 +132,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 
     if (credential) {
       yield put(
-        actions.loginOfflineSuccess({
+        actions.initiateStoreSwitch({
           keys: {
             key: usernameHash,
             secretKey: hash(password + credential.storeSalt),
@@ -167,7 +167,7 @@ function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
     secretKey: hash(password + salt),
   }
 
-  yield put(actions.setStoreKeys(keys))
+  yield put(actions.initiateStoreSwitch({ keys, shouldMigrateData: false }))
 }
 
 function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACCOUNT_REQUEST'>) {

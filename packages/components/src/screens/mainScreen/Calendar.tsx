@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated, Easing, Dimensions } from 'react-native'
+import { Animated } from 'react-native'
 import styled from 'styled-components/native'
 import moment from 'moment'
 import { BackgroundTheme } from '../../components/layout/BackgroundTheme'
@@ -24,9 +24,13 @@ import { calendarScreenSpeech } from '../../config'
 import { useSelector } from 'react-redux'
 import * as selectors from '../../redux/selectors'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
+import { getDeviceFontScale } from '../../services/font'
 
 const startDate = moment().startOf('day').subtract(24, 'months')
 const endDate = moment().startOf('day').add(12, 'months')
+
+const FONT_SCALE = getDeviceFontScale()
+const OVAL_ASPECT_RATIO = 90 / 40
 
 export const Calendar = ({ navigation }) => {
   const { screenWidth: width, screenHeight: height } = useScreenDimensions()
@@ -278,8 +282,8 @@ const Triangle = styled.View`
   z-index: 100;
 `
 const LongButton = styled.TouchableOpacity`
-  height: 70px;
-  width: 270px;
+  height: ${FONT_SCALE === 'NORMAL' ? 70 : 100}px;
+  aspect-ratio: ${OVAL_ASPECT_RATIO};
   margin-top: 20px;
   align-items: center;
   align-self: center;

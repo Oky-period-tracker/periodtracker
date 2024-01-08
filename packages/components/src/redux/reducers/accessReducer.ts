@@ -1,4 +1,4 @@
-import { hash } from '../../services/hash'
+import { formatPassword, hash } from '../../services/auth'
 import { Actions } from '../types'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
@@ -27,7 +27,7 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
       const storeSalt = uuidv4()
       const verificationSalt = uuidv4()
       const usernameHash = hash(action.payload.user.name)
-      const password = _.toLower(action.payload.user.password).trim()
+      const password = formatPassword(action.payload.user.password)
       const passwordHash = hash(password + verificationSalt)
 
       return {

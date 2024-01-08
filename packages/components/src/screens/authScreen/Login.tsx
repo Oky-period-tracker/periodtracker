@@ -7,6 +7,7 @@ import * as actions from '../../redux/actions'
 import { useSelector } from '../../hooks/useSelector'
 import { SpinLoader } from '../../components/common/SpinLoader'
 import _ from 'lodash'
+import { formatPassword } from '../../services/auth'
 
 export function Login() {
   const dispatch = useDispatch()
@@ -46,7 +47,7 @@ export function Login() {
         onPress={() => {
           setLoading(true)
           requestAnimationFrame(() => {
-            dispatch(actions.loginRequest({ name, password: _.toLower(password).trim() }))
+            dispatch(actions.loginRequest({ name, password: formatPassword(password) }))
           })
         }}
       >

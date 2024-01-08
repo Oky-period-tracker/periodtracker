@@ -11,6 +11,7 @@ import { navigate } from '../../services/navigationService'
 import * as actions from '../../redux/actions'
 import _ from 'lodash'
 import { FAST_SIGN_UP } from '../../config'
+import { formatPassword } from '../../services/auth'
 
 const randomLetters = () => {
   const letters = 'abcdefghijklmnopqrstuvwxyz'
@@ -72,9 +73,9 @@ export function SignUp({ heightInner }) {
         location,
         country,
         province,
-        password: _.toLower(password).trim(),
+        password: formatPassword(password),
         secretQuestion: selectedQuestion,
-        secretAnswer: _.toLower(answer).trim(),
+        secretAnswer: formatPassword(answer),
       }),
     )
     navigate('AvatarAndThemeScreen', { signingUp: true, newUser: { gender } }) // @TODO: wait on isCreatingAccount

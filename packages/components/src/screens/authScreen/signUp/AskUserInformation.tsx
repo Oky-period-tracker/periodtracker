@@ -12,7 +12,7 @@ import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
 import { AppAssets } from '@oky/core'
 import { useSelector } from '../../../hooks/useSelector'
-import { hash } from '../../../services/hash'
+import { hash } from '../../../services/auth'
 import * as selectors from '../../../redux/selectors'
 
 export function AskUserInformation({ step, heightInner }) {

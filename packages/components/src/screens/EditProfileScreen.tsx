@@ -24,6 +24,7 @@ import { translate } from '../i18n'
 import _ from 'lodash'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { IS_TABLET } from '../config/tablet'
+import { formatPassword } from '../services/auth'
 
 const minPasswordLength = 1
 const secretQuestions = [
@@ -143,7 +144,7 @@ export function EditProfileScreen() {
   }
 
   const tryToChangeSecretAnswer = async () => {
-    const hasSecretAnswerChanged = secretAnswer !== '' && _.toLower(oldSecretAnswer).trim() !== ''
+    const hasSecretAnswerChanged = secretAnswer !== '' && formatPassword(oldSecretAnswer) !== ''
     if (!hasSecretAnswerChanged) {
       return null
     }
@@ -151,13 +152,13 @@ export function EditProfileScreen() {
     try {
       await httpClient.editUserSecretAnswer({
         appToken,
-        previousSecretAnswer: _.toLower(oldSecretAnswer).trim(),
-        nextSecretAnswer: _.toLower(secretAnswer).trim(),
+        previousSecretAnswer: formatPassword(oldSecretAnswer),
+        nextSecretAnswer: formatPassword(secretAnswer),
       })
 
       dispatch(
         actions.editUser({
-          secretAnswer: _.toLower(secretAnswer).trim(),
+          secretAnswer: formatPassword(secretAnswer),
         }),
       )
       setSecretAnswer('')
@@ -189,13 +190,13 @@ export function EditProfileScreen() {
     try {
       await httpClient.resetPassword({
         name,
-        secretAnswer: _.toLower(secretAnswer).trim(),
-        password: _.toLower(password).trim(),
+        secretAnswer: formatPassword(secretAnswer),
+        password: formatPassword(password),
       })
 
       dispatch(
         actions.editUser({
-          password: _.toLower(password).trim(),
+          password: formatPassword(password),
         }),
       )
     } catch (err) {
@@ -208,9 +209,9 @@ export function EditProfileScreen() {
     setIsVisible(false)
     // for non-logged user, save the changes locally immediately
     if (!appToken) {
-      const hasSecretAnswerChanged = secretAnswer !== '' && _.toLower(oldSecretAnswer).trim() !== ''
+      const hasSecretAnswerChanged = secretAnswer !== '' && formatPassword(oldSecretAnswer) !== ''
       if (hasSecretAnswerChanged) {
-        if (_.toLower(oldSecretAnswer).trim() !== _.toLower(currentUser.secretAnswer).trim()) {
+        if (formatPassword(oldSecretAnswer) !== formatPassword(currentUser.secretAnswer)) {
           showAcceptAlert(translate('wrong_old_secret_answer'))
           return
         }
@@ -225,7 +226,7 @@ export function EditProfileScreen() {
           location,
           secretQuestion,
           secretAnswer:
-            secretAnswer === '' ? currentUser.secretAnswer : _.toLower(secretAnswer).trim(),
+            secretAnswer === '' ? currentUser.secretAnswer : formatPassword(secretAnswer),
         }),
       )
       BackOneScreen()

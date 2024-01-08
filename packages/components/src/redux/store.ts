@@ -16,7 +16,7 @@ const createEncryptor = (secretKey) =>
 
 export const version = -1
 
-export function configureStore({ key, secretKey, rootReducer, rootSaga }) {
+export function configureStore({ key, secretKey, rootReducer, rootSaga, blacklist }) {
   const encryptor = createEncryptor(secretKey)
 
   const persistConfig = {
@@ -25,7 +25,7 @@ export function configureStore({ key, secretKey, rootReducer, rootSaga }) {
     storage,
     timeout: 10000,
     throttle: 500,
-    blacklist: ['keys'],
+    blacklist,
     transforms: [encryptor],
   }
 

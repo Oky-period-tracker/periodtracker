@@ -1,4 +1,5 @@
 import { createAction } from '../helpers'
+import { StoreKeys } from '../reducers/storeSwitchReducer'
 
 export function loginRequest({ name, password }) {
   return createAction('LOGIN_REQUEST', { name, password })
@@ -40,15 +41,8 @@ export function loginSuccess({
   })
 }
 
-export function loginOfflineSuccess(payload: {
-  keys: { key: string; secretKey: string }
-  shouldMigrateData: boolean
-}) {
-  return createAction('LOGIN_OFFLINE_SUCCESS', payload)
-}
-
-export function setStoreKeys(payload: { key: string; secretKey: string }) {
-  return createAction('SET_STORE_KEYS', payload)
+export function initiateStoreSwitch(payload: { keys: StoreKeys; shouldMigrateData: boolean }) {
+  return createAction('INITIATE_STORE_SWITCH', payload)
 }
 
 export function loginFailure({ error }) {

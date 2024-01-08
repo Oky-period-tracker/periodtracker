@@ -9,10 +9,9 @@ import { authReducer } from './authReducer'
 import { contentReducer } from './contentReducer'
 import { predictionReducer } from './predictionReducer'
 import { accessReducer } from './accessReducer'
-import { keysReducer } from './keysReducer'
+import { storeSwitchReducer } from './storeSwitchReducer'
 
 const reducer = combineReducers({
-  keys: keysReducer,
   access: accessReducer,
   analytics: analyticsReducer,
   answer: answerReducer,

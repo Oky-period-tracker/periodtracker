@@ -12,7 +12,7 @@ import { useSelector } from '../redux/useSelector'
 import { KeyboardAwareAvoidance } from '../components/common/KeyboardAwareAvoidance'
 import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
-import { hash } from '../services/hash'
+import { formatPassword, hash } from '../services/auth'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
@@ -34,7 +34,7 @@ export function PasswordRequestScreen() {
 
   const { storeSalt, verificationSalt, passwordHash } = userCredentials
 
-  const enteredPassword = _.toLower(password).trim()
+  const enteredPassword = formatPassword(password)
   const enteredPasswordHash = hash(enteredPassword + verificationSalt)
 
   return (

@@ -11,7 +11,7 @@ import { useDebounce } from '../../../hooks/useDebounce'
 import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
 import { useSelector } from '../../../redux/useSelector'
-import { hash } from '../../../services/hash'
+import { hash } from '../../../services/auth'
 import * as selectors from '../../../redux/selectors'
 
 export function AskUserInformation({ step, heightInner }) {

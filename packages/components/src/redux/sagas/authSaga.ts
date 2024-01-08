@@ -12,8 +12,8 @@ import { PredictionState } from '../../prediction'
 import moment from 'moment'
 import { closeOutTTs } from '../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../services/network'
-import { hash } from '../../services/hash'
 import _ from 'lodash'
+import { formatPassword, hash } from '../../services/auth'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -160,7 +160,7 @@ function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
     // Cant just return because they could have online account from another device that they're logging in to
   }
 
-  const password = _.toLower(action.payload.user.password)
+  const password = formatPassword(action.payload.user.password)
 
   const keys = {
     key: usernameHash,

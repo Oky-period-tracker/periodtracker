@@ -52,7 +52,7 @@ export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEnt
                 }),
               )
             }
-            numberOfLines={2}
+            numberOfLines={3}
             isActive={false}
             style={{
               flexDirection: 'row',

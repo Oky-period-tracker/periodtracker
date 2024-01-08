@@ -20,6 +20,7 @@ import { useSelector } from '../redux/useSelector'
 export function SplashScreen() {
   const dispatch = useDispatch()
   const user: any = useSelector(selectors.currentUserSelector)
+  const lastLoggedInUsername: any = useSelector(selectors.lastLoggedInUsernameSelector)
   const Alert = useAlert()
 
   const locale = useSelector(selectors.currentLocaleSelector)
@@ -73,7 +74,7 @@ export function SplashScreen() {
         navigateAndReset('OnboardingScreen', null)
         return
       }
-      if (user) {
+      if (lastLoggedInUsername) {
         if (hasPasswordRequestOn) {
           navigateAndReset('PasswordRequestScreen', null)
           return

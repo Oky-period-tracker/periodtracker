@@ -16,21 +16,26 @@ import { hash } from '../services/hash'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
-  const user = useSelector(selectors.currentUserSelector)
+  const username = useSelector(selectors.lastLoggedInUsernameSelector)
   const storeCredentials = useSelector(selectors.storeCredentialsSelector)
   const [loading, setLoading] = React.useState(false)
   const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)
   const [nameError, setNameError] = React.useState(false)
-  const [name, setName] = React.useState(user.name)
+  const [name, setName] = React.useState(username)
   const [password, setPassword] = React.useState('')
 
-  const usernameHash = hash(user.name)
-  const salt = storeCredentials[usernameHash]?.passwordSalt
+  const usernameHash = hash(username)
+  const userCredentials = storeCredentials[usernameHash]
 
-  if (!salt) {
+  if (!userCredentials) {
     // TODO_ALEX: handle this case, navigate away?
   }
+
+  const { storeSalt, verificationSalt, passwordHash } = userCredentials
+
+  const enteredPassword = _.toLower(password).trim()
+  const enteredPasswordHash = hash(enteredPassword + verificationSalt)
 
   return (
     <BackgroundTheme>
@@ -68,27 +73,26 @@ export function PasswordRequestScreen() {
               </Container>
               <Touchable
                 onPress={() => {
-                  const trimmedPassword = _.toLower(password).trim()
                   setLoading(true)
-                  if (trimmedPassword === user.password && name === user.name) {
+                  if (enteredPasswordHash === passwordHash && name === username) {
                     setNameError(false)
                     setPasswordError(false)
                     setValid(true)
 
                     const keys = {
                       key: usernameHash,
-                      secretKey: hash(trimmedPassword + salt),
+                      secretKey: hash(enteredPassword + storeSalt),
                     }
                     dispatch(actions.setStoreKeys(keys))
 
                     requestAnimationFrame(() => {
                       navigateAndReset('StoreSwitchStack', null)
                     })
-                  } else if (trimmedPassword === user.password && name !== user.name) {
+                  } else if (enteredPasswordHash === passwordHash && name !== username) {
                     setLoading(false)
                     setPasswordError(false)
                     setNameError(true)
-                  } else if (trimmedPassword !== user.password && name === user.name) {
+                  } else if (enteredPasswordHash !== passwordHash && name === username) {
                     setLoading(false)
                     setNameError(false)
                     setPasswordError(true)

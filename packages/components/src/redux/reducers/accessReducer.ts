@@ -6,7 +6,9 @@ import _ from 'lodash'
 export interface AccessState {
   storeCredentials: {
     [usernameHash: string]: {
-      passwordSalt: string
+      storeSalt: string
+      verificationSalt: string
+      passwordHash: string
     }
   }
   lastLoggedInUsername?: string
@@ -22,8 +24,11 @@ const initialState = (): AccessState => ({
 export function accessReducer(state = initialState(), action: Actions): AccessState {
   switch (action.type) {
     case 'CREATE_ACCOUNT_SUCCESS': {
+      const storeSalt = uuidv4()
+      const verificationSalt = uuidv4()
       const usernameHash = hash(action.payload.user.name)
-      const passwordSalt = uuidv4()
+      const password = _.toLower(action.payload.user.password).trim()
+      const passwordHash = hash(password + verificationSalt)
 
       return {
         ...state,
@@ -31,7 +36,9 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         storeCredentials: {
           ...state.storeCredentials,
           [usernameHash]: {
-            passwordSalt,
+            storeSalt,
+            verificationSalt,
+            passwordHash,
           },
         },
       }

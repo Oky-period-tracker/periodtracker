@@ -22,9 +22,22 @@ const StoreCoordinatorContext = React.createContext<Context>({
   switchComplete: false,
 })
 
+const primaryStoreBlacklist = [
+  'keys', // Not persisted for security
+  'content', // Moved to async storage
+  'auth', // Persisted in secure userStore
+  'prediction', // Persisted in secure userStore
+]
+const userStoreBlacklist = [
+  'keys', // Not persisted for security
+  'content', // Moved to async storage
+  'access', // Not required after store switch
+]
+
 const primaryStore = configureStore({
   key: 'primary',
   secretKey: config.REDUX_ENCRYPT_KEY,
+  blacklist: primaryStoreBlacklist,
   rootReducer,
   rootSaga,
 })
@@ -101,6 +114,7 @@ export function StoreCoordinator({ children }) {
     const userStore = configureStore({
       key: keys.key,
       secretKey: keys.secretKey,
+      blacklist: userStoreBlacklist,
       rootReducer,
       rootSaga,
     })

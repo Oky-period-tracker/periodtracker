@@ -310,7 +310,8 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     yield call(navigateAndReset, 'LoginStack', null)
 
     if (user) {
-      yield put(actions.logout())
+      // TODO: TODO_ALEX
+      // yield put(actions.logout())
     }
   } catch (err) {
     setLoading(false)
@@ -332,8 +333,8 @@ function* onLogoutRequest() {
     }),
   )
   yield put(actions.updateCompletedSurveys([])) // TODO_ALEX: survey
-  yield call(navigateAndReset, 'LoginStack', null)
-  yield put(actions.logout())
+
+  yield call(navigateAndReset, 'LogOutStack', null)
 }
 
 function* onClearLastLogin() {

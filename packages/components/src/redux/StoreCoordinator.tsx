@@ -13,6 +13,8 @@ type ReduxPersistState = ReduxState & PersistPartial
 interface Context {
   switchStore: () => void
   switchComplete: boolean
+  logout: () => void
+  loggedOut: boolean
 }
 
 const StoreCoordinatorContext = React.createContext<Context>({
@@ -20,6 +22,10 @@ const StoreCoordinatorContext = React.createContext<Context>({
     //
   },
   switchComplete: false,
+  logout: () => {
+    //
+  },
+  loggedOut: true,
 })
 
 const primaryStoreBlacklist = [
@@ -34,19 +40,21 @@ const userStoreBlacklist = [
   'access', // Not required after store switch
 ]
 
-const primaryStore = configureStore({
-  key: 'primary',
-  secretKey: config.REDUX_ENCRYPT_KEY,
-  blacklist: primaryStoreBlacklist,
-  rootReducer,
-  rootSaga,
-})
+const primaryStore = () =>
+  configureStore({
+    key: 'primary',
+    secretKey: config.REDUX_ENCRYPT_KEY,
+    blacklist: primaryStoreBlacklist,
+    rootReducer,
+    rootSaga,
+  })
 
 interface State {
   redux: ReturnType<typeof configureStore>
   storeStateSnapshot: ReduxPersistState | undefined
   shouldMigrate: boolean
   switchComplete: boolean
+  loggedOut: boolean
 }
 
 type Action =
@@ -62,12 +70,19 @@ type Action =
   | {
       type: 'complete_migration'
     }
+  | {
+      type: 'logout_request'
+    }
+  | {
+      type: 'complete_logout'
+    }
 
 const initialState: State = {
-  redux: primaryStore,
+  redux: primaryStore(),
   storeStateSnapshot: undefined,
   shouldMigrate: false,
   switchComplete: false,
+  loggedOut: true,
 }
 
 function reducer(state: State, action: Action): State {
@@ -88,6 +103,19 @@ function reducer(state: State, action: Action): State {
         shouldMigrate: false,
         switchComplete: true,
       }
+
+    case 'logout_request':
+      return {
+        ...initialState,
+        redux: primaryStore(),
+        loggedOut: false,
+      }
+
+    case 'complete_logout':
+      return {
+        ...state,
+        loggedOut: true,
+      }
   }
 }
 
@@ -98,10 +126,12 @@ export function StoreCoordinator({ children }) {
       storeStateSnapshot,
       shouldMigrate,
       switchComplete,
+      loggedOut,
     },
     dispatch,
   ] = React.useReducer(reducer, initialState)
 
+  // ===== Switch store ===== //
   const switchStore = () => {
     const primaryState = store.getState() as ReduxPersistState
     const keys = primaryState?.storeSwitch?.keys
@@ -191,11 +221,28 @@ export function StoreCoordinator({ children }) {
     }
   }, [shouldMigrate])
 
+  // ===== Log out ===== //
+  const logout = () => dispatch({ type: 'logout_request' })
+
+  React.useEffect(() => {
+    if (loggedOut) {
+      return
+    }
+
+    setTimeout(() => {
+      // TODO: confirm store is ready
+      store.dispatch(actions.clearLastLogin())
+      dispatch({ type: 'complete_logout' })
+    }, 2000)
+  }, [loggedOut])
+
   return (
     <StoreCoordinatorContext.Provider
       value={{
         switchStore,
         switchComplete,
+        logout,
+        loggedOut,
       }}
     >
       <ReduxProvider store={store}>

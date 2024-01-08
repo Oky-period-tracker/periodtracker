@@ -18,3 +18,20 @@ export function StoreSwitchSplash() {
 
   return <SimpleSplashScreen />
 }
+
+export function LogoutSplash() {
+  const { switchComplete, logout, loggedOut } = useStoreCoordinator()
+
+  React.useEffect(() => {
+    logout()
+  }, [])
+
+  React.useEffect(() => {
+    if (!loggedOut || switchComplete) {
+      return
+    }
+    navigateAndReset('LoginStack', null)
+  }, [loggedOut])
+
+  return <SimpleSplashScreen />
+}

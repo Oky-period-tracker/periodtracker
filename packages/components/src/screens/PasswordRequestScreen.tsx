@@ -107,7 +107,7 @@ export function PasswordRequestScreen() {
           <Column>
             <TouchableText
               onPress={() => {
-                dispatch(actions.logoutRequest())
+                dispatch(actions.clearLastLogin())
               }}
             >
               <Text style={styles.text}>back_to_signup</Text>

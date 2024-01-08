@@ -149,15 +149,17 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 }
 
 function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
-  const storeCredentials = yield select(selectors.storeCredentialsSelector)
+  let storeCredentials = yield select(selectors.storeCredentialsSelector)
   const usernameHash = hash(action.payload.user.name)
-  const salt = storeCredentials[usernameHash]?.storeSalt
 
-  if (!salt) {
-    // TODO_ALEX ???
-    // Cant just return because they could have online account from another device that they're logging in to
+  if (!storeCredentials[usernameHash]) {
+    // Can occur when the account was created online via a different device
+    yield put(actions.saveLocalCredentials(action.payload))
+    storeCredentials = yield select(selectors.storeCredentialsSelector)
+    return
   }
 
+  const salt = storeCredentials[usernameHash].storeSalt
   const password = formatPassword(action.payload.user.password)
 
   const keys = {

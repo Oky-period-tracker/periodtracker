@@ -24,6 +24,7 @@ const initialState = (): AccessState => ({
 
 export function accessReducer(state = initialState(), action: Actions): AccessState {
   switch (action.type) {
+    case 'SAVE_LOCAL_CREDENTIALS':
     case 'CREATE_ACCOUNT_SUCCESS': {
       const storeSalt = uuidv4()
       const verificationSalt = uuidv4()

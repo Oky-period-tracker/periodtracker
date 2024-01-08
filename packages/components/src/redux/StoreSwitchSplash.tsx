@@ -3,7 +3,7 @@ import { SimpleSplashScreen } from '../screens/SplashScreen'
 import { navigateAndReset } from '../services/navigationService'
 import { useStoreCoordinator } from './StoreCoordinator'
 
-export function StoreSwitch() {
+export function StoreSwitchSplash() {
   const { switchStore, switchComplete } = useStoreCoordinator()
 
   React.useEffect(() => {

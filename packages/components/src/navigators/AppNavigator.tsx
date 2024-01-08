@@ -28,11 +28,11 @@ import { FindHelpScreen } from '../screens/FindHelpScreen'
 import { PasswordRequestScreen } from '../screens/PasswordRequestScreen'
 import { VideoScreen } from '../screens/VideoScreen'
 import { VideosScreen } from '../screens/VideosScreen'
-import { StoreSwitch } from '../redux/StoreSwitch'
+import { StoreSwitchSplash } from '../redux/StoreSwitchSplash'
 
 const StoreSwitchStack = createStackNavigator(
-  { StoreSwitch },
-  { headerMode: 'none', initialRouteName: 'StoreSwitch' },
+  { StoreSwitchSplash },
+  { headerMode: 'none', initialRouteName: 'StoreSwitchSplash' },
 )
 
 const TutorialFirstStack = createStackNavigator(

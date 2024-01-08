@@ -1,6 +1,7 @@
 import { createAction } from '../helpers'
 import { ReduxState } from '../reducers'
 
+export * from './accessActions'
 export * from './analyticsActions'
 export * from './answerActions'
 export * from './appActions'

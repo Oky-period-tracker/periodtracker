@@ -6,6 +6,7 @@ import _ from 'lodash'
 export interface AccessState {
   storeCredentials: {
     [usernameHash: string]: {
+      storeExists: boolean
       storeSalt: string
       verificationSalt: string
       passwordHash: string
@@ -36,6 +37,7 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         storeCredentials: {
           ...state.storeCredentials,
           [usernameHash]: {
+            storeExists: false,
             storeSalt,
             verificationSalt,
             passwordHash,
@@ -43,6 +45,18 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         },
       }
     }
+
+    case 'SET_STORE_EXISTS':
+      return {
+        ...state,
+        storeCredentials: {
+          ...state.storeCredentials,
+          [action.payload.usernameHash]: {
+            ...state.storeCredentials[action.payload.usernameHash],
+            storeExists: true,
+          },
+        },
+      }
 
     case 'LOGIN_SUCCESS': {
       // TODO_ALEX Can just update keys here instead of via saga ?

@@ -105,10 +105,17 @@ export function StoreCoordinator({ children }) {
   const switchStore = () => {
     const primaryState = store.getState() as ReduxPersistState
     const keys = primaryState?.storeSwitch?.keys
-    const shouldMigrateData = primaryState?.storeSwitch?.shouldMigrateData
+    const accessState = primaryState?.access
 
     if (!keys) {
       return // ERROR
+    }
+
+    const usernameHash = keys.key
+    const storeExists = accessState.storeCredentials?.[usernameHash]?.storeExists
+
+    if (!storeExists) {
+      store.dispatch(actions.setStoreExists({ usernameHash }))
     }
 
     const userStore = configureStore({
@@ -124,8 +131,8 @@ export function StoreCoordinator({ children }) {
       payload: {
         redux: userStore,
         storeStateSnapshot: primaryState,
-        shouldMigrate: shouldMigrateData,
-        switchComplete: !shouldMigrateData,
+        shouldMigrate: !storeExists,
+        switchComplete: storeExists,
       },
     })
   }

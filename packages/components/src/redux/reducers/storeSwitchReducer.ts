@@ -7,13 +7,11 @@ export interface StoreKeys {
 
 export interface StoreSwitchState {
   keys: StoreKeys | undefined
-  shouldMigrateData: boolean
   migrationComplete: boolean
 }
 
 const initialState: StoreSwitchState = {
   keys: undefined,
-  shouldMigrateData: true,
   migrationComplete: false,
 }
 
@@ -29,7 +27,6 @@ export function storeSwitchReducer(state = initialState, action: Actions): Store
       return {
         ...state,
         keys: action.payload.keys,
-        shouldMigrateData: action.payload.shouldMigrateData,
       }
 
     default:

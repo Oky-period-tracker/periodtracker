@@ -136,7 +136,6 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
             key: usernameHash,
             secretKey: hash(password + credential.storeSalt),
           },
-          shouldMigrateData: false,
         }),
       )
     } else {
@@ -166,7 +165,7 @@ function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
     secretKey: hash(password + salt),
   }
 
-  yield put(actions.initiateStoreSwitch({ keys, shouldMigrateData: false }))
+  yield put(actions.initiateStoreSwitch({ keys }))
 }
 
 function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACCOUNT_REQUEST'>) {

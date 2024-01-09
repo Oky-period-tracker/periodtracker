@@ -26,10 +26,18 @@ export const StoreSwitchSplash = ({ navigation }) => {
   }
 
   React.useEffect(() => {
+    if (!action) {
+      return
+    }
+
     actions[action]()
   }, [action])
 
   React.useEffect(() => {
+    if (!action) {
+      return
+    }
+
     if (action === 'login' && !switchComplete) {
       return
     }

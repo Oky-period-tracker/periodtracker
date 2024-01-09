@@ -13,6 +13,7 @@ import { KeyboardAwareAvoidance } from '../components/common/KeyboardAwareAvoida
 import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
 import { formatPassword, hash } from '../services/auth'
+import { navigateToStoreSwitch } from '../redux/StoreSwitchSplash'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
@@ -86,7 +87,7 @@ export function PasswordRequestScreen() {
                     dispatch(actions.initiateStoreSwitch({ keys }))
 
                     requestAnimationFrame(() => {
-                      navigateAndReset('StoreSwitchStack', null)
+                      navigateToStoreSwitch('login')
                     })
                   } else if (enteredPasswordHash === passwordHash && name !== username) {
                     setLoading(false)

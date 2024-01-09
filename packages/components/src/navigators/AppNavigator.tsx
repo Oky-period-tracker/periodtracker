@@ -28,21 +28,11 @@ import { FindHelpScreen } from '../screens/FindHelpScreen'
 import { PasswordRequestScreen } from '../screens/PasswordRequestScreen'
 import { VideoScreen } from '../screens/VideoScreen'
 import { VideosScreen } from '../screens/VideosScreen'
-import { StoreSwitchSplash, LogoutSplash, DeleteAccountSplash } from '../redux/StoreSwitchSplash'
+import { StoreSwitchSplash } from '../redux/StoreSwitchSplash'
 
 const StoreSwitchStack = createStackNavigator(
   { StoreSwitchSplash },
   { headerMode: 'none', initialRouteName: 'StoreSwitchSplash' },
-)
-
-const LogOutStack = createStackNavigator(
-  { LogoutSplash },
-  { headerMode: 'none', initialRouteName: 'LogoutSplash' },
-)
-
-const DeleteAccountStack = createStackNavigator(
-  { DeleteAccountSplash },
-  { headerMode: 'none', initialRouteName: 'DeleteAccountSplash' },
 )
 
 const TutorialFirstStack = createStackNavigator(
@@ -148,8 +138,6 @@ const MainStack = createBottomTabNavigator(
 const AppNavigator = createStackNavigator(
   {
     StoreSwitchStack,
-    LogOutStack,
-    DeleteAccountStack,
     SplashScreen,
     OnboardingScreen,
     PasswordRequestScreen,

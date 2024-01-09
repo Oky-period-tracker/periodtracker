@@ -3,7 +3,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { configureStore } from './store'
 import { config } from './config'
-import { ReduxState, rootReducer } from './reducers'
+import { ReduxState, ReduxStateProperties, rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import * as actions from './actions'
 import { PersistPartial } from 'redux-persist'
@@ -33,23 +33,25 @@ const StoreCoordinatorContext = React.createContext<Context>({
   },
 })
 
-const primaryStoreBlacklist = [
-  'storeSwitch', // Not persisted for security
-  'content', // Moved to async storage
-  'auth', // Persisted in secure userStore
-  'prediction', // Persisted in secure userStore
-]
-const userStoreBlacklist = [
-  'storeSwitch', // Not persisted for security
-  'content', // Moved to async storage
-  'access', // Not required after store switch
-]
+const blacklists: Record<string, ReduxStateProperties[]> = {
+  primary: [
+    'storeSwitch', // Not persisted for security
+    'content', // Moved to async storage
+    'auth', // Persisted in secure userStore
+    'prediction', // Persisted in secure userStore
+  ],
+  secure: [
+    'storeSwitch', // Not persisted for security
+    'content', // Moved to async storage
+    'access', // Not required after store switch
+  ],
+}
 
 const primaryStore = () =>
   configureStore({
     key: 'primary',
     secretKey: config.REDUX_ENCRYPT_KEY,
-    blacklist: primaryStoreBlacklist,
+    blacklist: blacklists.primary,
     rootReducer,
     rootSaga,
   })
@@ -163,7 +165,7 @@ export function StoreCoordinator({ children }) {
     const userStore = configureStore({
       key: keys.key,
       secretKey: keys.secretKey,
-      blacklist: userStoreBlacklist,
+      blacklist: blacklists.secure,
       rootReducer,
       rootSaga,
     })

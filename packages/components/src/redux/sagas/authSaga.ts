@@ -289,6 +289,14 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
   const state: ReduxState = yield select()
   const user = selectors.currentUserSelector(state)
   setLoading(true)
+
+  if (user.isGuest) {
+    // No online account to delete
+    // Delete local store
+    yield call(navigateAndReset, 'DeleteAccountStack', null)
+    return
+  }
+
   try {
     const { name, password } = action.payload
     yield httpClient.deleteUserFromPassword({
@@ -302,12 +310,10 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
         surveys: null,
       }), // TODO_ALEX
     )
-    yield call(navigateAndReset, 'LoginStack', null)
 
-    if (user) {
-      // TODO: TODO_ALEX
-      // yield put(actions.logout())
-    }
+    // Online account successfully deleted
+    // Delete local store
+    yield call(navigateAndReset, 'DeleteAccountStack', null)
   } catch (err) {
     setLoading(false)
     Alert.alert('Error', 'Unable to delete the account')

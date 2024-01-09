@@ -17,7 +17,7 @@ const destinations: DestinationMap = {
 
 export const StoreSwitchSplash = ({ navigation }) => {
   const action = navigation.getParam('action') as StoreSwitchAction
-  const { switchStore, switchComplete, logout, loggedOut, deleteStore } = useStoreCoordinator()
+  const { switchStore, switchComplete, logout, logoutComplete, deleteStore } = useStoreCoordinator()
 
   const actions: ActionMap = {
     login: switchStore,
@@ -34,16 +34,16 @@ export const StoreSwitchSplash = ({ navigation }) => {
       return
     }
 
-    if (action === 'logout' && (!loggedOut || switchComplete)) {
+    if (action === 'logout' && (!logoutComplete || switchComplete)) {
       return
     }
 
-    if (action === 'delete' && (!loggedOut || switchComplete)) {
+    if (action === 'delete' && (!logoutComplete || switchComplete)) {
       return
     }
 
     navigateAndReset(destinations[action], null)
-  }, [switchComplete, loggedOut])
+  }, [switchComplete, logoutComplete])
 
   return <SimpleSplashScreen />
 }

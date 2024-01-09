@@ -71,6 +71,12 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         lastLoggedInUsername: undefined,
       }
 
+    case 'DELETE_USER_ACCESS':
+      return {
+        ...state,
+        storeCredentials: _.omit(state.storeCredentials, action.payload.usernameHash),
+      }
+
     default:
       return state
   }

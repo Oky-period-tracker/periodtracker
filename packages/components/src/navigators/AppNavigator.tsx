@@ -30,7 +30,7 @@ import { VideoScreen } from '../screens/VideoScreen'
 import { getRouteName, setTopLevelNavigator } from '../services/navigationService'
 import { useDispatch } from 'react-redux'
 import { logScreenView } from '../redux/actions'
-import { StoreSwitchSplash, LogoutSplash } from '../redux/StoreSwitchSplash'
+import { StoreSwitchSplash, LogoutSplash, DeleteAccountSplash } from '../redux/StoreSwitchSplash'
 
 const StoreSwitchStack = createStackNavigator(
   { StoreSwitchSplash },
@@ -40,6 +40,11 @@ const StoreSwitchStack = createStackNavigator(
 const LogOutStack = createStackNavigator(
   { LogoutSplash },
   { headerMode: 'none', initialRouteName: 'LogoutSplash' },
+)
+
+const DeleteAccountStack = createStackNavigator(
+  { DeleteAccountSplash },
+  { headerMode: 'none', initialRouteName: 'DeleteAccountSplash' },
 )
 
 const TutorialFirstStack = createStackNavigator(
@@ -145,6 +150,7 @@ const Navigator = createStackNavigator(
   {
     StoreSwitchStack,
     LogOutStack,
+    DeleteAccountStack,
     SplashScreen,
     OnboardingScreen,
     PasswordRequestScreen,

@@ -35,3 +35,20 @@ export function LogoutSplash() {
 
   return <SimpleSplashScreen />
 }
+
+export function DeleteAccountSplash() {
+  const { switchComplete, deleteStore, loggedOut } = useStoreCoordinator()
+
+  React.useEffect(() => {
+    deleteStore()
+  }, [])
+
+  React.useEffect(() => {
+    if (!loggedOut || switchComplete) {
+      return
+    }
+    navigateAndReset('LoginStack', null)
+  }, [loggedOut])
+
+  return <SimpleSplashScreen />
+}

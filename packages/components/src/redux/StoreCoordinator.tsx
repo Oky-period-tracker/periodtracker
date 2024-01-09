@@ -15,7 +15,7 @@ interface Context {
   switchStore: () => void
   switchComplete: boolean
   logout: () => void
-  loggedOut: boolean
+  logoutComplete: boolean
   deleteStore: () => void
 }
 
@@ -27,7 +27,7 @@ const StoreCoordinatorContext = React.createContext<Context>({
   logout: () => {
     //
   },
-  loggedOut: true,
+  logoutComplete: true,
   deleteStore: () => {
     //
   },
@@ -61,7 +61,7 @@ interface State {
   storeStateSnapshot: ReduxPersistState | undefined
   shouldMigrate: boolean
   switchComplete: boolean
-  loggedOut: boolean
+  logoutComplete: boolean
   userToDelete?: string // nameHash
 }
 
@@ -93,7 +93,7 @@ const initialState: State = {
   storeStateSnapshot: undefined,
   shouldMigrate: false,
   switchComplete: false,
-  loggedOut: true,
+  logoutComplete: true,
   userToDelete: undefined,
 }
 
@@ -121,13 +121,13 @@ function reducer(state: State, action: Action): State {
         ...initialState,
         redux: primaryStore(),
         userToDelete: action.payload?.userToDelete,
-        loggedOut: false,
+        logoutComplete: false,
       }
 
     case 'complete_logout':
       return {
         ...state,
-        loggedOut: true,
+        logoutComplete: true,
       }
   }
 }
@@ -139,7 +139,7 @@ export function StoreCoordinator({ children }) {
       storeStateSnapshot,
       shouldMigrate,
       switchComplete,
-      loggedOut,
+      logoutComplete,
       userToDelete,
     },
     dispatch,
@@ -240,7 +240,7 @@ export function StoreCoordinator({ children }) {
     dispatch({ type: 'logout_request', payload: { userToDelete: usernameHash } })
 
   React.useEffect(() => {
-    if (loggedOut) {
+    if (logoutComplete) {
       return
     }
 
@@ -252,7 +252,7 @@ export function StoreCoordinator({ children }) {
       }
       dispatch({ type: 'complete_logout' })
     }, 2000)
-  }, [loggedOut])
+  }, [logoutComplete])
 
   // ===== Delete store ===== //
   const deleteStore = () => {
@@ -271,7 +271,7 @@ export function StoreCoordinator({ children }) {
         switchStore,
         switchComplete,
         logout,
-        loggedOut,
+        logoutComplete,
         deleteStore,
       }}
     >

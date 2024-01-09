@@ -15,6 +15,7 @@ import { fetchNetworkConnectionStatus } from '../../services/network'
 import { PartialStateSnapshot } from '../types/partialStore'
 import _ from 'lodash'
 import { formatPassword, hash } from '../../services/auth'
+import { navigateToStoreSwitch } from '../StoreSwitchSplash'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -112,7 +113,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     }
 
     yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-    yield call(navigateAndReset, 'StoreSwitchStack', null)
+    yield call(navigateToStoreSwitch, 'login')
   } catch (error) {
     let errorMessage = 'request_fail'
     if (error && error.response && error.response.data) {
@@ -298,7 +299,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
   if (user.isGuest) {
     // No online account to delete
     // Delete local store
-    yield call(navigateAndReset, 'DeleteAccountStack', null)
+    yield call(navigateToStoreSwitch, 'delete')
     return
   }
 
@@ -318,7 +319,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
 
     // Online account successfully deleted
     // Delete local store
-    yield call(navigateAndReset, 'DeleteAccountStack', null)
+    yield call(navigateToStoreSwitch, 'delete')
   } catch (err) {
     setLoading(false)
     Alert.alert('Error', 'Unable to delete the account')
@@ -340,7 +341,7 @@ function* onLogoutRequest() {
   )
   yield put(actions.updateCompletedSurveys([])) // TODO_ALEX: survey
 
-  yield call(navigateAndReset, 'LogOutStack', null)
+  yield call(navigateToStoreSwitch, 'logout')
 }
 
 function* onClearLastLogin() {
@@ -379,7 +380,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield put(actions.setTutorialOneActive(true))
   yield put(actions.setTutorialTwoActive(true))
   yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-  yield call(navigateAndReset, 'StoreSwitchStack', null)
+  yield call(navigateToStoreSwitch, 'login')
 }
 
 export function* authSaga() {

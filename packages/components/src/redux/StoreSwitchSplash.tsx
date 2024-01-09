@@ -1,54 +1,53 @@
 import React from 'react'
+import { useStoreCoordinator } from './StoreCoordinator'
 import { SimpleSplashScreen } from '../screens/SplashScreen'
 import { navigateAndReset } from '../services/navigationService'
-import { useStoreCoordinator } from './StoreCoordinator'
 
-export function StoreSwitchSplash() {
-  const { switchStore, switchComplete } = useStoreCoordinator()
+type StoreSwitchAction = 'login' | 'logout' | 'delete'
+
+type ActionMap = Record<StoreSwitchAction, () => void>
+
+type DestinationMap = Record<StoreSwitchAction, string>
+
+const destinations: DestinationMap = {
+  login: 'MainStack',
+  logout: 'LoginStack',
+  delete: 'LoginStack',
+}
+
+export const StoreSwitchSplash = ({ navigation }) => {
+  const action = navigation.getParam('action') as StoreSwitchAction
+  const { switchStore, switchComplete, logout, loggedOut, deleteStore } = useStoreCoordinator()
+
+  const actions: ActionMap = {
+    login: switchStore,
+    logout,
+    delete: deleteStore,
+  }
 
   React.useEffect(() => {
-    switchStore()
-  }, [])
+    actions[action]()
+  }, [action])
 
   React.useEffect(() => {
-    if (switchComplete) {
-      navigateAndReset('MainStack', null)
+    if (action === 'login' && !switchComplete) {
+      return
     }
-  }, [switchComplete])
+
+    if (action === 'logout' && (!loggedOut || switchComplete)) {
+      return
+    }
+
+    if (action === 'delete' && (!loggedOut || switchComplete)) {
+      return
+    }
+
+    navigateAndReset(destinations[action], null)
+  }, [switchComplete, loggedOut])
 
   return <SimpleSplashScreen />
 }
 
-export function LogoutSplash() {
-  const { switchComplete, logout, loggedOut } = useStoreCoordinator()
-
-  React.useEffect(() => {
-    logout()
-  }, [])
-
-  React.useEffect(() => {
-    if (!loggedOut || switchComplete) {
-      return
-    }
-    navigateAndReset('LoginStack', null)
-  }, [loggedOut])
-
-  return <SimpleSplashScreen />
-}
-
-export function DeleteAccountSplash() {
-  const { switchComplete, deleteStore, loggedOut } = useStoreCoordinator()
-
-  React.useEffect(() => {
-    deleteStore()
-  }, [])
-
-  React.useEffect(() => {
-    if (!loggedOut || switchComplete) {
-      return
-    }
-    navigateAndReset('LoginStack', null)
-  }, [loggedOut])
-
-  return <SimpleSplashScreen />
+export const navigateToStoreSwitch = (action: StoreSwitchAction) => {
+  return navigateAndReset('StoreSwitchStack', { action })
 }

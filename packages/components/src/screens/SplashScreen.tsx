@@ -16,6 +16,7 @@ import { httpClient } from '../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import messaging from '@react-native-firebase/messaging'
 import { useSelector } from '../hooks/useSelector'
+import { navigateToStoreSwitch } from '../redux/StoreSwitchSplash'
 
 export function SplashScreen() {
   const dispatch = useDispatch()
@@ -79,7 +80,7 @@ export function SplashScreen() {
           navigateAndReset('PasswordRequestScreen', null)
           return
         }
-        navigateAndReset('StoreSwitchStack', null)
+        navigateToStoreSwitch('login')
         return
       }
       navigateAndReset('LoginStack', null)

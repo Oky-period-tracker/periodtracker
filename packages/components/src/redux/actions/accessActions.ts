@@ -41,3 +41,7 @@ export function setStoreExists(payload: { usernameHash: string }) {
 export function clearLastLogin() {
   return createAction('CLEAR_LAST_LOGIN')
 }
+
+export function deleteUserAccess(payload: { usernameHash: string }) {
+  return createAction('DELETE_USER_ACCESS', payload)
+}

@@ -7,6 +7,7 @@ import { ReduxState, rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import * as actions from './actions'
 import { PersistPartial } from 'redux-persist'
+import { hash } from '../services/auth'
 
 type ReduxPersistState = ReduxState & PersistPartial
 
@@ -15,6 +16,7 @@ interface Context {
   switchComplete: boolean
   logout: () => void
   loggedOut: boolean
+  deleteStore: () => void
 }
 
 const StoreCoordinatorContext = React.createContext<Context>({
@@ -26,6 +28,9 @@ const StoreCoordinatorContext = React.createContext<Context>({
     //
   },
   loggedOut: true,
+  deleteStore: () => {
+    //
+  },
 })
 
 const primaryStoreBlacklist = [
@@ -55,6 +60,7 @@ interface State {
   shouldMigrate: boolean
   switchComplete: boolean
   loggedOut: boolean
+  userToDelete?: string // nameHash
 }
 
 type Action =
@@ -72,6 +78,9 @@ type Action =
     }
   | {
       type: 'logout_request'
+      payload?: {
+        userToDelete: string
+      }
     }
   | {
       type: 'complete_logout'
@@ -83,6 +92,7 @@ const initialState: State = {
   shouldMigrate: false,
   switchComplete: false,
   loggedOut: true,
+  userToDelete: undefined,
 }
 
 function reducer(state: State, action: Action): State {
@@ -108,6 +118,7 @@ function reducer(state: State, action: Action): State {
       return {
         ...initialState,
         redux: primaryStore(),
+        userToDelete: action.payload?.userToDelete,
         loggedOut: false,
       }
 
@@ -127,6 +138,7 @@ export function StoreCoordinator({ children }) {
       shouldMigrate,
       switchComplete,
       loggedOut,
+      userToDelete,
     },
     dispatch,
   ] = React.useReducer(reducer, initialState)
@@ -222,7 +234,8 @@ export function StoreCoordinator({ children }) {
   }, [shouldMigrate])
 
   // ===== Log out ===== //
-  const logout = () => dispatch({ type: 'logout_request' })
+  const logout = (usernameHash?: string) =>
+    dispatch({ type: 'logout_request', payload: { userToDelete: usernameHash } })
 
   React.useEffect(() => {
     if (loggedOut) {
@@ -232,9 +245,23 @@ export function StoreCoordinator({ children }) {
     setTimeout(() => {
       // TODO: confirm store is ready
       store.dispatch(actions.clearLastLogin())
+      if (userToDelete) {
+        store.dispatch(actions.deleteUserAccess({ usernameHash: userToDelete }))
+      }
       dispatch({ type: 'complete_logout' })
     }, 2000)
   }, [loggedOut])
+
+  // ===== Delete store ===== //
+  const deleteStore = () => {
+    const currentState = store.getState() as ReduxPersistState
+    const username = currentState?.auth?.user.name
+    const usernameHash = hash(username)
+
+    persistor.purge().then(() => {
+      logout(usernameHash)
+    })
+  }
 
   return (
     <StoreCoordinatorContext.Provider
@@ -243,6 +270,7 @@ export function StoreCoordinator({ children }) {
         switchComplete,
         logout,
         loggedOut,
+        deleteStore,
       }}
     >
       <ReduxProvider store={store}>

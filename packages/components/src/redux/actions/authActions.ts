@@ -39,7 +39,7 @@ export function loginSuccess({
   })
 }
 
-export function initiateStoreSwitch(payload: { keys: StoreKeys }) {
+export function initiateStoreSwitch(payload: { username: string; password: string }) {
   return createAction('INITIATE_STORE_SWITCH', payload)
 }
 

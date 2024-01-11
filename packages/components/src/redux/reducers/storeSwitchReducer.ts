@@ -23,7 +23,7 @@ export function storeSwitchReducer(state = initialState, action: Actions): Store
         migrationComplete: true,
       }
 
-    case 'INITIATE_STORE_SWITCH':
+    case 'SET_STORE_KEYS':
       return {
         ...state,
         keys: action.payload.keys,

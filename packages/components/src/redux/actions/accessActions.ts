@@ -1,37 +1,18 @@
 import { createAction } from '../helpers'
+import { StoreKeys } from '../reducers/storeSwitchReducer'
 
-export function saveLocalCredentials({
-  appToken,
-  user: {
-    id,
-    name,
-    password,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    secretQuestion,
-    secretAnswer,
-    isGuest,
-  },
+export function saveStoreCredentials(payload: {
+  usernameHash: string
+  storeExists: boolean
+  storeSalt: string
+  verificationSalt: string
+  passwordHash: string
 }) {
-  return createAction('SAVE_LOCAL_CREDENTIALS', {
-    appToken,
-    user: {
-      id,
-      name,
-      dateOfBirth,
-      gender,
-      location,
-      country,
-      province,
-      password,
-      secretQuestion,
-      secretAnswer,
-      isGuest,
-    },
-  })
+  return createAction('SAVE_STORE_CREDENTIALS', payload)
+}
+
+export function setStoreKeys(payload: { keys: StoreKeys }) {
+  return createAction('SET_STORE_KEYS', payload)
 }
 
 export function setStoreExists(payload: { usernameHash: string }) {

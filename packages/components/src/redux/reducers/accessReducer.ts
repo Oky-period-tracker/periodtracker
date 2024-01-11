@@ -1,4 +1,3 @@
-import { formatPassword, hash } from '../../services/auth'
 import { Actions } from '../types'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
@@ -24,24 +23,17 @@ const initialState = (): AccessState => ({
 
 export function accessReducer(state = initialState(), action: Actions): AccessState {
   switch (action.type) {
-    case 'SAVE_LOCAL_CREDENTIALS':
-    case 'CREATE_ACCOUNT_SUCCESS': {
-      const storeSalt = uuidv4()
-      const verificationSalt = uuidv4()
-      const usernameHash = hash(action.payload.user.name)
-      const password = formatPassword(action.payload.user.password)
-      const passwordHash = hash(password + verificationSalt)
-
+    case 'SAVE_STORE_CREDENTIALS': {
       return {
         ...state,
-        lastLoggedInUsername: action.payload.user.name,
         storeCredentials: {
           ...state.storeCredentials,
-          [usernameHash]: {
-            storeExists: false,
-            storeSalt,
-            verificationSalt,
-            passwordHash,
+          [action.payload.usernameHash]: {
+            ...state.storeCredentials[action.payload.usernameHash],
+            storeExists: action.payload.storeExists,
+            storeSalt: action.payload.storeSalt,
+            verificationSalt: action.payload.verificationSalt,
+            passwordHash: action.payload.passwordHash,
           },
         },
       }
@@ -59,10 +51,10 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         },
       }
 
-    case 'LOGIN_SUCCESS':
+    case 'INITIATE_STORE_SWITCH':
       return {
         ...state,
-        lastLoggedInUsername: action.payload.user.name,
+        lastLoggedInUsername: action.payload.username,
       }
 
     case 'CLEAR_LAST_LOGIN':

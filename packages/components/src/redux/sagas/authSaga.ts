@@ -374,7 +374,6 @@ function* onInitiateStoreSwitch(action: ExtractActionFromActionType<'INITIATE_ST
     yield put(
       actions.saveStoreCredentials({
         usernameHash,
-        storeExists: false,
         storeSalt,
         verificationSalt,
         passwordHash,

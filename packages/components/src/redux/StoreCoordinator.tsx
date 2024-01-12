@@ -8,6 +8,7 @@ import { rootSaga } from './sagas'
 import * as actions from './actions'
 import { PersistPartial } from 'redux-persist'
 import { hash } from '../services/auth'
+import { AsyncStorage } from 'react-native'
 
 type ReduxPersistState = ReduxState & PersistPartial
 
@@ -146,20 +147,20 @@ export function StoreCoordinator({ children }) {
   ] = React.useReducer(reducer, initialState)
 
   // ===== Switch store ===== //
-  const switchStore = () => {
+  const switchStore = async () => {
     const primaryState = store.getState() as ReduxPersistState
     const keys = primaryState?.storeSwitch?.keys
-    const accessState = primaryState?.access
 
     if (!keys) {
       return // ERROR
     }
 
     const usernameHash = keys.key
-    const storeExists = accessState.storeCredentials?.[usernameHash]?.storeExists
+    const storeExists = await checkStoreExists(usernameHash)
 
-    if (!storeExists) {
-      store.dispatch(actions.setStoreExists({ usernameHash }))
+    if (!storeExists && !primaryState?.auth.user) {
+      // TODO:
+      // Need to migrate but have no user data, something went wrong
     }
 
     const userStore = configureStore({
@@ -291,4 +292,9 @@ export function useStoreCoordinator() {
   }
 
   return storeCoordinatorContext
+}
+
+const checkStoreExists = async (usernameHash: string) => {
+  const keys = await AsyncStorage.getAllKeys()
+  return keys.includes(`persist:${usernameHash}`)
 }

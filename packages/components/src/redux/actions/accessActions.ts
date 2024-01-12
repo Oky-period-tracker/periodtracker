@@ -3,7 +3,6 @@ import { StoreKeys } from '../reducers/storeSwitchReducer'
 
 export function saveStoreCredentials(payload: {
   usernameHash: string
-  storeExists: boolean
   storeSalt: string
   verificationSalt: string
   passwordHash: string
@@ -13,10 +12,6 @@ export function saveStoreCredentials(payload: {
 
 export function setStoreKeys(payload: { keys: StoreKeys }) {
   return createAction('SET_STORE_KEYS', payload)
-}
-
-export function setStoreExists(payload: { usernameHash: string }) {
-  return createAction('SET_STORE_EXISTS', payload)
 }
 
 export function clearLastLogin() {

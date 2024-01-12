@@ -2,15 +2,17 @@ import { Actions } from '../types'
 import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
-export interface AccessState {
-  storeCredentials: {
-    [usernameHash: string]: {
-      storeExists: boolean
-      storeSalt: string
-      verificationSalt: string
-      passwordHash: string
-    }
+export interface StoreCredentials {
+  [usernameHash: string]: {
+    storeExists: boolean
+    storeSalt: string
+    verificationSalt: string
+    passwordHash: string
   }
+}
+
+export interface AccessState {
+  storeCredentials: StoreCredentials
   lastLoggedInUsername?: string
   storeId: string
 }

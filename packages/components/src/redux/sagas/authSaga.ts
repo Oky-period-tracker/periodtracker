@@ -13,7 +13,7 @@ import moment from 'moment'
 import { closeOutTTs } from '../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import _ from 'lodash'
-import { formatPassword, hash } from '../../services/auth'
+import { formatPassword, hash, verifyStoreCredentials } from '../../services/auth'
 import { navigateToStoreSwitch } from '../StoreSwitchSplash'
 
 // unwrap promise
@@ -127,22 +127,12 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       }
     }
 
-    // Attempt offline login
-    const usernameHash = hash(name)
     const storeCredentials = yield select(selectors.storeCredentialsSelector)
-    const credential = storeCredentials[usernameHash]
-
-    if (!credential) {
-      yield put(
-        actions.loginFailure({
-          error: errorMessage,
-        }),
-      )
-    }
-
-    const enteredPassword = formatPassword(password)
-    const enteredPasswordHash = hash(enteredPassword + credential.verificationSalt)
-    const passwordCorrect = enteredPasswordHash === credential.passwordHash
+    const passwordCorrect = verifyStoreCredentials({
+      username: name,
+      password,
+      storeCredentials,
+    })
 
     if (!passwordCorrect) {
       yield put(

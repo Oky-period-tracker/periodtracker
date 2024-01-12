@@ -224,6 +224,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
       // TODO: TODO_ALEX
       // username already taken
       // yield put(secureActions.setAuthError({ error: errorStatusCode }))
+      // Its not just on error, this will be hit when attempting convert guest account offline
       return
     }
 

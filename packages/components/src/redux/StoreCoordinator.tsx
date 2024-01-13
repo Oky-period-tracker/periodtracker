@@ -38,8 +38,8 @@ const blacklists: Record<string, ReduxStateProperties[]> = {
   primary: [
     'storeSwitch', // Not persisted for security
     'content', // Moved to async storage
-    'auth', // Persisted in secure userStore
-    'prediction', // Persisted in secure userStore
+    // 'auth', // Persisted in secure userStore
+    // 'prediction', // Persisted in secure userStore
   ],
   secure: [
     'storeSwitch', // Not persisted for security

@@ -21,7 +21,7 @@ export function PasswordRequestScreen() {
 
   const [loading, setLoading] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)
-  const [name, setName] = React.useState(username)
+  const [name, setName] = React.useState(username ?? user?.name)
   const [password, setPassword] = React.useState('')
 
   const onConfirm = () => {
@@ -43,7 +43,7 @@ export function PasswordRequestScreen() {
 
     dispatch(
       actions.initiateStoreSwitch({
-        username,
+        username: name,
         password,
       }),
     )

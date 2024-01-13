@@ -9,6 +9,7 @@ import * as actions from './actions'
 import { PersistPartial } from 'redux-persist'
 import { hash } from '../services/auth'
 import { AsyncStorage } from 'react-native'
+import { SimpleSplashScreen } from '../screens/SplashScreen'
 
 type ReduxPersistState = ReduxState & PersistPartial
 
@@ -34,31 +35,48 @@ const StoreCoordinatorContext = React.createContext<Context>({
   },
 })
 
-const blacklists: Record<string, ReduxStateProperties[]> = {
-  primary: [
-    'storeSwitch', // Not persisted for security
-    'content', // Moved to async storage
-    // 'auth', // Persisted in secure userStore
-    // 'prediction', // Persisted in secure userStore
-  ],
-  secure: [
-    'storeSwitch', // Not persisted for security
-    'content', // Moved to async storage
-    'access', // Not required after store switch
-  ],
+const checkStoreExists = async (usernameHash: string) => {
+  const keys = await AsyncStorage.getAllKeys()
+  return keys.includes(`persist:${usernameHash}`)
 }
 
-const primaryStore = () =>
+const hasMigrated = async () => {
+  const keys = await AsyncStorage.getAllKeys()
+  const persistKeys = keys.filter((key) => {
+    return key.startsWith('persist:')
+  })
+  return persistKeys.length > 1
+}
+
+const initialPrimaryBlacklist: ReduxStateProperties[] = [
+  'storeSwitch', // Not persisted for security
+  'content', // Moved to async storage
+]
+
+const postMigrationBlacklist: ReduxStateProperties[] = [
+  'auth', //
+  'prediction', //
+]
+
+const fullPrimaryBlacklist = [...initialPrimaryBlacklist, ...postMigrationBlacklist]
+
+const userStoreBlacklist = [
+  'storeSwitch', // Not persisted for security
+  'content', // Moved to async storage
+  'access', // Not required after store switch
+]
+
+const primaryStore = (blacklist: ReduxStateProperties[]) =>
   configureStore({
     key: 'primary',
     secretKey: config.REDUX_ENCRYPT_KEY,
-    blacklist: blacklists.primary,
+    blacklist,
     rootReducer,
     rootSaga,
   })
 
 interface State {
-  redux: ReturnType<typeof configureStore>
+  redux: ReturnType<typeof configureStore> | undefined
   storeStateSnapshot: ReduxPersistState | undefined
   shouldMigrate: boolean
   switchComplete: boolean
@@ -67,6 +85,12 @@ interface State {
 }
 
 type Action =
+  | {
+      type: 'initialise'
+      payload: {
+        redux: ReturnType<typeof configureStore>
+      }
+    }
   | {
       type: 'switch_store'
       payload: {
@@ -90,7 +114,7 @@ type Action =
     }
 
 const initialState: State = {
-  redux: primaryStore(),
+  redux: undefined,
   storeStateSnapshot: undefined,
   shouldMigrate: false,
   switchComplete: false,
@@ -100,6 +124,12 @@ const initialState: State = {
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
+    case 'initialise':
+      return {
+        ...state,
+        redux: action.payload.redux,
+      }
+
     case 'switch_store':
       return {
         ...state,
@@ -120,7 +150,7 @@ function reducer(state: State, action: Action): State {
     case 'logout_request':
       return {
         ...initialState,
-        redux: primaryStore(),
+        redux: primaryStore(fullPrimaryBlacklist),
         userToDelete: action.payload?.userToDelete,
         logoutComplete: false,
       }
@@ -135,20 +165,40 @@ function reducer(state: State, action: Action): State {
 
 export function StoreCoordinator({ children }) {
   const [
-    {
-      redux: { store, persistor },
-      storeStateSnapshot,
-      shouldMigrate,
-      switchComplete,
-      logoutComplete,
-      userToDelete,
-    },
+    { redux, storeStateSnapshot, shouldMigrate, switchComplete, logoutComplete, userToDelete },
     dispatch,
   ] = React.useReducer(reducer, initialState)
 
+  React.useEffect(() => {
+    let ignore = false
+    if (redux) {
+      return
+    }
+
+    ;(async () => {
+      const canUseFullBlacklist = await hasMigrated()
+
+      if (ignore) {
+        return
+      }
+
+      const blacklist = canUseFullBlacklist ? fullPrimaryBlacklist : initialPrimaryBlacklist
+      const initialStore = primaryStore(blacklist)
+      dispatch({ type: 'initialise', payload: { redux: initialStore } })
+    })()
+
+    return () => {
+      ignore = true
+    }
+  }, [redux])
+
   // ===== Switch store ===== //
   const switchStore = async () => {
-    const primaryState = store.getState() as ReduxPersistState
+    if (!redux) {
+      return
+    }
+
+    const primaryState = redux.store.getState() as ReduxPersistState
     const keys = primaryState?.storeSwitch?.keys
 
     if (!keys) {
@@ -166,7 +216,7 @@ export function StoreCoordinator({ children }) {
     const userStore = configureStore({
       key: keys.key,
       secretKey: keys.secretKey,
-      blacklist: blacklists.secure,
+      blacklist: userStoreBlacklist,
       rootReducer,
       rootSaga,
     })
@@ -193,8 +243,12 @@ export function StoreCoordinator({ children }) {
       return
     }
 
+    if (!redux) {
+      return
+    }
+
     const attemptMigration = () => {
-      store.dispatch(
+      redux.store.dispatch(
         actions.migrateStore({
           auth: storeStateSnapshot?.auth,
         }),
@@ -218,7 +272,7 @@ export function StoreCoordinator({ children }) {
         return
       }
 
-      const currentState = store.getState() as ReduxPersistState
+      const currentState = redux.store.getState() as ReduxPersistState
       const migrationComplete = currentState?.storeSwitch.migrationComplete
 
       if (migrationComplete) {
@@ -245,11 +299,15 @@ export function StoreCoordinator({ children }) {
       return
     }
 
+    if (!redux) {
+      return
+    }
+
     setTimeout(() => {
       // TODO: confirm store is ready
-      store.dispatch(actions.clearLastLogin())
+      redux.store.dispatch(actions.clearLastLogin())
       if (userToDelete) {
-        store.dispatch(actions.deleteUserAccess({ usernameHash: userToDelete }))
+        redux.store.dispatch(actions.deleteUserAccess({ usernameHash: userToDelete }))
       }
       dispatch({ type: 'complete_logout' })
     }, 2000)
@@ -257,11 +315,15 @@ export function StoreCoordinator({ children }) {
 
   // ===== Delete store ===== //
   const deleteStore = () => {
-    const currentState = store.getState() as ReduxPersistState
+    if (!redux) {
+      return
+    }
+
+    const currentState = redux.store.getState() as ReduxPersistState
     const username = currentState?.auth?.user.name
     const usernameHash = hash(username)
 
-    persistor.purge().then(() => {
+    redux.persistor.purge().then(() => {
       logout(usernameHash)
     })
   }
@@ -276,11 +338,15 @@ export function StoreCoordinator({ children }) {
         deleteStore,
       }}
     >
-      <ReduxProvider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          {children}
-        </PersistGate>
-      </ReduxProvider>
+      {redux ? (
+        <ReduxProvider store={redux.store}>
+          <PersistGate loading={null} persistor={redux.persistor}>
+            {children}
+          </PersistGate>
+        </ReduxProvider>
+      ) : (
+        <SimpleSplashScreen />
+      )}
     </StoreCoordinatorContext.Provider>
   )
 }
@@ -292,9 +358,4 @@ export function useStoreCoordinator() {
   }
 
   return storeCoordinatorContext
-}
-
-const checkStoreExists = async (usernameHash: string) => {
-  const keys = await AsyncStorage.getAllKeys()
-  return keys.includes(`persist:${usernameHash}`)
 }

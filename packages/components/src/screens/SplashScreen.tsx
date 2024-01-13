@@ -16,19 +16,17 @@ import { httpClient } from '../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import messaging from '@react-native-firebase/messaging'
 import { useSelector } from '../hooks/useSelector'
-import { navigateToStoreSwitch } from '../redux/StoreSwitchSplash'
 
 export function SplashScreen() {
   const dispatch = useDispatch()
-  const user: any = useSelector(selectors.currentUserSelector)
-  const lastLoggedInUsername: any = useSelector(selectors.lastLoggedInUsernameSelector)
+  const user: any = useSelector(selectors.currentUserSelector) // TODO_ALEX fix any
+  const lastLoggedInUsername = useSelector(selectors.lastLoggedInUsernameSelector)
   const Alert = useAlert()
 
   const locale = useSelector(selectors.currentLocaleSelector)
   const hasOpened = useSelector(selectors.hasOpenedSelector)
   const currentAppVersion = useSelector(selectors.currentAppVersion)
   const currentFirebaseToken = useSelector(selectors.currentFirebaseToken)
-  const hasPasswordRequestOn = useSelector(selectors.isLoginPasswordActiveSelector)
   const [animatedValue] = React.useState(new Animated.Value(0))
 
   async function checkForPermanentAlerts() {
@@ -75,12 +73,8 @@ export function SplashScreen() {
         navigateAndReset('OnboardingScreen', null)
         return
       }
-      if (lastLoggedInUsername) {
-        if (hasPasswordRequestOn) {
-          navigateAndReset('PasswordRequestScreen', null)
-          return
-        }
-        navigateToStoreSwitch('login')
+      if (lastLoggedInUsername || user) {
+        navigateAndReset('PasswordRequestScreen', null)
         return
       }
       navigateAndReset('LoginStack', null)

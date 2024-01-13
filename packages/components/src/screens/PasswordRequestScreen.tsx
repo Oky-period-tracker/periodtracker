@@ -13,11 +13,12 @@ import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
 import { StyleSheet } from 'react-native'
 import { IS_TABLET } from '../config/tablet'
-import { verifyStoreCredentials } from '../services/auth'
+import { formatPassword, verifyStoreCredentials } from '../services/auth'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
   const username = useSelector(selectors.lastLoggedInUsernameSelector)
+  const user = useSelector(selectors.currentUserSelector)
   const storeCredentials = useSelector(selectors.storeCredentialsSelector)
 
   const [loading, setLoading] = React.useState(false)
@@ -34,13 +35,13 @@ export function PasswordRequestScreen() {
       storeCredentials,
     })
 
-    if (!passwordCorrect) {
+    const legacyPasswordCorrect = verifyLegacyPassword()
+
+    if (!passwordCorrect && !legacyPasswordCorrect) {
       setLoading(false)
       setPasswordError(true)
       return
     }
-
-    setPasswordError(false)
 
     dispatch(
       actions.initiateStoreSwitch({
@@ -48,6 +49,14 @@ export function PasswordRequestScreen() {
         password,
       }),
     )
+  }
+
+  const verifyLegacyPassword = () => {
+    if (!user) {
+      return false
+    }
+    const enteredPassword = formatPassword(password)
+    return enteredPassword === user?.password
   }
 
   const onBack = () => {

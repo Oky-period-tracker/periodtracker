@@ -10,6 +10,7 @@ import { PersistPartial } from 'redux-persist'
 import { hash } from '../services/auth'
 import { AsyncStorage } from 'react-native'
 import { SimpleSplashScreen } from '../screens/SplashScreen'
+import _ from 'lodash'
 
 type ReduxPersistState = ReduxState & PersistPartial
 
@@ -49,6 +50,13 @@ const hasMigrated = async () => {
   })
   return persistKeys.length > 1
 }
+
+const migrationBlacklist: ReduxStateProperties[] = [
+  '_persist',
+  'access',
+  'analytics', // TODO:?
+  'content',
+]
 
 const initialPrimaryBlacklist: ReduxStateProperties[] = [
   'storeSwitch', // Not persisted for security
@@ -250,11 +258,12 @@ export function StoreCoordinator({ children }) {
     }
 
     const attemptMigration = () => {
-      redux.store.dispatch(
-        actions.migrateStore({
-          auth: storeStateSnapshot?.auth,
-        }),
-      )
+      const stateToMigrate = _.omit(
+        { ...storeStateSnapshot },
+        migrationBlacklist,
+      ) as ReduxPersistState
+
+      redux.store.dispatch(actions.migrateStore(stateToMigrate))
 
       setTimeout(onTimeout, interval)
       attempts++

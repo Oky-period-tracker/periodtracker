@@ -365,7 +365,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
       userId: currentUser.id,
       username: currentUser.name,
       password: currentUser.password,
-      answer: currentUser.secret,
+      answer: currentUser.secretAnswer,
     }),
   )
 }

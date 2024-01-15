@@ -9,10 +9,13 @@ export interface StoreCredentials {
 export interface UserCredentials {
   userId: string
   storeSalt: string
+  // password
   passwordSalt: string
   passwordHash: string
+  // answer
   answerSalt: string
   answerHash: string
+  // secretKey
   secretKeyEncryptedWithPassword: string
   secretKeyEncryptedWithAnswer: string
 }
@@ -43,7 +46,6 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         storeCredentials: {
           ...state.storeCredentials,
           [action.payload.usernameHash]: {
-            ...state.storeCredentials[action.payload.usernameHash],
             userId: action.payload.userId,
             storeSalt: action.payload.storeSalt,
             answerSalt: action.payload.answerSalt,

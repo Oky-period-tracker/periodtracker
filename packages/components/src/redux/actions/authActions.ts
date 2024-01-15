@@ -41,6 +41,15 @@ export function loginSuccess({
   })
 }
 
+export function initiateNewStore(payload: {
+  userId: string
+  username: string
+  password: string
+  secret: string
+}) {
+  return createAction('INITIATE_NEW_STORE', payload)
+}
+
 export function initiateStoreSwitch(payload: { username: string; password: string }) {
   return createAction('INITIATE_STORE_SWITCH', payload)
 }

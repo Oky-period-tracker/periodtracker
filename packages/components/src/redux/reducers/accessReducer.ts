@@ -77,6 +77,7 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         },
       }
 
+    case 'SET_UP_NEW_STORE':
     case 'INITIATE_STORE_SWITCH':
       return {
         ...state,

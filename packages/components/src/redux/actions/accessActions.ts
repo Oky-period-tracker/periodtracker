@@ -26,3 +26,12 @@ export function clearLastLogin() {
 export function deleteUserAccess(payload: { usernameHash: string }) {
   return createAction('DELETE_USER_ACCESS', payload)
 }
+
+export function editPassword(payload: {
+  usernameHash: string
+  passwordSalt: string
+  passwordHash: string
+  secretKeyEncryptedWithPassword: string
+}) {
+  return createAction('EDIT_PASSWORD', payload)
+}

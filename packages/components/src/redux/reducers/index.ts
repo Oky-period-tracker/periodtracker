@@ -9,6 +9,7 @@ import { contentReducer } from './contentReducer'
 import { predictionReducer } from './predictionReducer'
 import { accessReducer } from './accessReducer'
 import { storeSwitchReducer } from './storeSwitchReducer'
+import { Actions } from '../types'
 
 export const exportReducerNames = ['app', 'prediction']
 
@@ -24,7 +25,25 @@ export const allReducers = {
   // flower: flowerReducer, TODO: Flower state should be saved per user
 }
 
-export const rootReducer = combineReducers(syncReducers(allReducers, exportReducerNames))
+const reducer = combineReducers(syncReducers(allReducers, exportReducerNames))
+
+export function rootReducer(state, action: Actions) {
+  switch (action.type) {
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        // @ts-ignore
+        ...action.payload,
+        storeSwitch: {
+          ...state.storeSwitch,
+          migrationComplete: true,
+        },
+      }
+
+    default:
+      return reducer(state, action)
+  }
+}
 
 export type ReduxState = ReturnType<typeof rootReducer>
 

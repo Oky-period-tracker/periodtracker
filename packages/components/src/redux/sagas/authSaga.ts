@@ -115,7 +115,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
 
     yield put(
-      actions.initiateNewStore({
+      actions.setUpNewStore({
         userId: user.id,
         username: name,
         password,
@@ -365,7 +365,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
 
   yield put(
-    actions.initiateNewStore({
+    actions.setUpNewStore({
       userId: currentUser.id,
       username: currentUser.name,
       password: currentUser.password,
@@ -374,7 +374,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   )
 }
 
-function* onInitiateNewStore(action: ExtractActionFromActionType<'INITIATE_NEW_STORE'>) {
+function* onSetUpNewStore(action: ExtractActionFromActionType<'SET_UP_NEW_STORE'>) {
   const storeCredentials = yield select(selectors.storeCredentialsSelector)
   const usernameHash = hash(action.payload.username)
 
@@ -463,7 +463,7 @@ export function* authSaga() {
     takeLatest('CREATE_ACCOUNT_SUCCESS', onCreateAccountSuccess),
     takeLatest('CONVERT_GUEST_ACCOUNT', onConvertGuestAccount),
     takeLatest('JOURNEY_COMPLETION', onJourneyCompletion),
-    takeLatest('INITIATE_NEW_STORE', onInitiateNewStore),
+    takeLatest('SET_UP_NEW_STORE', onSetUpNewStore),
     takeLatest('INITIATE_STORE_SWITCH', onInitiateStoreSwitch),
   ])
 }

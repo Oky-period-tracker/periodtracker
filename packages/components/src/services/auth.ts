@@ -22,6 +22,10 @@ export const formatPassword = (password: string) => {
   return _.toLower(password).trim()
 }
 
+export const validatePassword = (password: string, minLength = 1) => {
+  return formatPassword(password).length >= minLength
+}
+
 export const verifyStoreCredentials = ({
   username,
   password,
@@ -45,9 +49,12 @@ export const verifyStoreCredentials = ({
   }
 
   const formattedPassword = formatPassword(password)
-  const passwordHash = hash(formattedPassword + credential.passwordSalt)
+
+  const salt = method === 'password' ? credential.passwordSalt : credential.answerSalt
   const verificationHash = method === 'password' ? credential.passwordHash : credential.answerHash
-  const passwordCorrect = passwordHash === verificationHash
+
+  const inputHash = hash(formattedPassword + salt)
+  const passwordCorrect = inputHash === verificationHash
 
   return passwordCorrect
 }

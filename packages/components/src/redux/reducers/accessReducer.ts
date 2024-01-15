@@ -63,6 +63,20 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
       }
     }
 
+    case 'EDIT_PASSWORD':
+      return {
+        ...state,
+        storeCredentials: {
+          ...state.storeCredentials,
+          [action.payload.usernameHash]: {
+            ...state.storeCredentials[action.payload.usernameHash],
+            passwordSalt: action.payload.passwordSalt,
+            passwordHash: action.payload.passwordHash,
+            secretKeyEncryptedWithPassword: action.payload.secretKeyEncryptedWithPassword,
+          },
+        },
+      }
+
     case 'INITIATE_STORE_SWITCH':
       return {
         ...state,

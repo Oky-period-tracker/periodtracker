@@ -45,7 +45,8 @@
     "typescript": "4.7.4",
     "uuid": "9.0.0",
     "react-native-get-random-values": "1.9.0",
-    "js-sha256": "0.10.1"
+    "js-sha256": "0.10.1",
+    "react-native-crypto-js": "^1.0.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.136",

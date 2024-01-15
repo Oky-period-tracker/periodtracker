@@ -13,6 +13,8 @@ import { SimpleSplashScreen } from '../screens/SplashScreen'
 
 type ReduxPersistState = ReduxState & PersistPartial
 
+type ReduxInstance = ReturnType<typeof configureStore>
+
 interface Context {
   switchStore: () => void
   switchComplete: boolean
@@ -76,7 +78,7 @@ const primaryStore = (blacklist: ReduxStateProperties[]) =>
   })
 
 interface State {
-  redux: ReturnType<typeof configureStore> | undefined
+  redux: ReduxInstance | undefined
   storeStateSnapshot: ReduxPersistState | undefined
   shouldMigrate: boolean
   switchComplete: boolean
@@ -88,13 +90,13 @@ type Action =
   | {
       type: 'initialise'
       payload: {
-        redux: ReturnType<typeof configureStore>
+        redux: ReduxInstance
       }
     }
   | {
       type: 'switch_store'
       payload: {
-        redux: ReturnType<typeof configureStore>
+        redux: ReduxInstance
         storeStateSnapshot: ReduxPersistState
         shouldMigrate: boolean
         switchComplete: boolean

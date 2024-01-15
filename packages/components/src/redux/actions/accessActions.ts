@@ -7,8 +7,8 @@ export function saveStoreCredentials(payload: {
   storeSalt: string
   passwordSalt: string
   passwordHash: string
-  secretSalt: string
-  secretHash: string
+  answerSalt: string
+  answerHash: string
 }) {
   return createAction('SAVE_STORE_CREDENTIALS', payload)
 }

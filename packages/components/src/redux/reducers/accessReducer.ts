@@ -3,21 +3,32 @@ import { v4 as uuidv4 } from 'uuid'
 import _ from 'lodash'
 
 export interface StoreCredentials {
-  [usernameHash: string]: {
-    storeSalt: string
-    verificationSalt: string
-    passwordHash: string
-  }
+  [usernameHash: string]: UserCredentials
+}
+
+export interface UserCredentials {
+  userId: string
+  storeSalt: string
+  passwordSalt: string
+  passwordHash: string
+  secretSalt: string
+  secretHash: string
+}
+
+export interface UserIdToUsernameHash {
+  [userId: string]: string
 }
 
 export interface AccessState {
   storeCredentials: StoreCredentials
+  userIdToUsernameHash: UserIdToUsernameHash
   lastLoggedInUsername?: string
   storeId: string
 }
 
 const initialState = (): AccessState => ({
   storeCredentials: {},
+  userIdToUsernameHash: {},
   lastLoggedInUsername: undefined,
   storeId: uuidv4(),
 })
@@ -31,10 +42,17 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
           ...state.storeCredentials,
           [action.payload.usernameHash]: {
             ...state.storeCredentials[action.payload.usernameHash],
+            userId: action.payload.userId,
             storeSalt: action.payload.storeSalt,
-            verificationSalt: action.payload.verificationSalt,
+            secretSalt: action.payload.secretSalt,
+            secretHash: action.payload.secretHash,
+            passwordSalt: action.payload.passwordSalt,
             passwordHash: action.payload.passwordHash,
           },
+        },
+        userIdToUsernameHash: {
+          ...state.userIdToUsernameHash,
+          [action.payload.userId]: action.payload.usernameHash,
         },
       }
     }

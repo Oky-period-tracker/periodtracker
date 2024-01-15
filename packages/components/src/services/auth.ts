@@ -20,7 +20,7 @@ export const verifyStoreCredentials = ({
   username: string
   password: string
   storeCredentials: StoreCredentials
-  method?: 'password' | 'secret'
+  method?: 'password' | 'answer'
 }): boolean => {
   if (!username || !password) {
     return false
@@ -35,7 +35,7 @@ export const verifyStoreCredentials = ({
 
   const formattedPassword = formatPassword(password)
   const passwordHash = hash(formattedPassword + credential.passwordSalt)
-  const verificationHash = method === 'password' ? credential.passwordHash : credential.secretHash
+  const verificationHash = method === 'password' ? credential.passwordHash : credential.answerHash
   const passwordCorrect = passwordHash === verificationHash
 
   return passwordCorrect

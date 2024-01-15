@@ -11,8 +11,8 @@ export interface UserCredentials {
   storeSalt: string
   passwordSalt: string
   passwordHash: string
-  secretSalt: string
-  secretHash: string
+  answerSalt: string
+  answerHash: string
 }
 
 export interface UserIdToUsernameHash {
@@ -44,8 +44,8 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
             ...state.storeCredentials[action.payload.usernameHash],
             userId: action.payload.userId,
             storeSalt: action.payload.storeSalt,
-            secretSalt: action.payload.secretSalt,
-            secretHash: action.payload.secretHash,
+            answerSalt: action.payload.answerSalt,
+            answerHash: action.payload.answerHash,
             passwordSalt: action.payload.passwordSalt,
             passwordHash: action.payload.passwordHash,
           },

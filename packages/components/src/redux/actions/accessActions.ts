@@ -2,10 +2,13 @@ import { createAction } from '../helpers'
 import { StoreKeys } from '../reducers/storeSwitchReducer'
 
 export function saveStoreCredentials(payload: {
+  userId: string
   usernameHash: string
   storeSalt: string
-  verificationSalt: string
+  passwordSalt: string
   passwordHash: string
+  secretSalt: string
+  secretHash: string
 }) {
   return createAction('SAVE_STORE_CREDENTIALS', payload)
 }

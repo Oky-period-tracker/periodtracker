@@ -115,7 +115,14 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 
     yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
 
-    yield put(actions.initiateStoreSwitch({ username: name, password }))
+    yield put(
+      actions.initiateNewStore({
+        userId: user.id,
+        username: name,
+        password,
+        secret: user.secretAnswer,
+      }),
+    )
   } catch (error) {
     let errorMessage = 'request_fail'
     if (error && error.response && error.response.data) {
@@ -354,33 +361,68 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
 
   yield put(
-    actions.initiateStoreSwitch({ username: currentUser.name, password: currentUser.password }),
+    actions.initiateNewStore({
+      userId: currentUser.id,
+      username: currentUser.name,
+      password: currentUser.password,
+      secret: currentUser.secret,
+    }),
+  )
+}
+
+function* onInitiateNewStore(action: ExtractActionFromActionType<'INITIATE_NEW_STORE'>) {
+  const storeCredentials = yield select(selectors.storeCredentialsSelector)
+  const usernameHash = hash(action.payload.username)
+
+  if (storeCredentials[usernameHash]) {
+    // Store already exists
+    yield put(
+      actions.initiateStoreSwitch({
+        username: action.payload.username,
+        password: action.payload.password,
+      }),
+    )
+    return
+  }
+
+  const storeSalt = uuidv4()
+
+  const passwordSalt = uuidv4()
+  const password = formatPassword(action.payload.password)
+  const passwordHash = hash(password + passwordSalt)
+
+  const secretSalt = uuidv4()
+  const secretHash = hash(password + passwordSalt)
+
+  yield put(
+    actions.saveStoreCredentials({
+      userId: action.payload.userId,
+      usernameHash,
+      storeSalt,
+      passwordSalt,
+      passwordHash,
+      secretSalt,
+      secretHash,
+    }),
+  )
+
+  yield put(
+    actions.initiateStoreSwitch({
+      username: action.payload.username,
+      password: action.payload.password,
+    }),
   )
 }
 
 function* onInitiateStoreSwitch(action: ExtractActionFromActionType<'INITIATE_STORE_SWITCH'>) {
   // Please note: Assumes password has already been verified
 
-  let storeCredentials = yield select(selectors.storeCredentialsSelector)
+  const storeCredentials = yield select(selectors.storeCredentialsSelector)
   const usernameHash = hash(action.payload.username)
   const password = formatPassword(action.payload.password)
 
   if (!storeCredentials[usernameHash]) {
-    // New account / Online account on new device
-    const storeSalt = uuidv4()
-    const verificationSalt = uuidv4()
-    const passwordHash = hash(password + verificationSalt)
-
-    yield put(
-      actions.saveStoreCredentials({
-        usernameHash,
-        storeSalt,
-        verificationSalt,
-        passwordHash,
-      }),
-    )
-
-    storeCredentials = yield select(selectors.storeCredentialsSelector)
+    return // ERROR
   }
 
   const credentials = storeCredentials[usernameHash]
@@ -406,6 +448,7 @@ export function* authSaga() {
     takeLatest('CREATE_ACCOUNT_SUCCESS', onCreateAccountSuccess),
     takeLatest('CONVERT_GUEST_ACCOUNT', onConvertGuestAccount),
     takeLatest('JOURNEY_COMPLETION', onJourneyCompletion),
+    takeLatest('INITIATE_NEW_STORE', onInitiateNewStore),
     takeLatest('INITIATE_STORE_SWITCH', onInitiateStoreSwitch),
   ])
 }

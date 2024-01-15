@@ -146,6 +146,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
           error: errorMessage,
         }),
       )
+      return
     }
 
     yield put(actions.initiateStoreSwitch({ username: name, password }))

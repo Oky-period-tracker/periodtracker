@@ -1,6 +1,17 @@
+import { AES, enc } from 'react-native-crypto-js'
 import { sha256 } from 'js-sha256'
 import _ from 'lodash'
 import { StoreCredentials } from '../redux/reducers/accessReducer'
+
+export const encrypt = (str: string, secret: string): string => {
+  return AES.encrypt(str, secret).toString()
+}
+
+export const decrypt = (str: string, secret: string) => {
+  const bytes = AES.decrypt(str, secret)
+  const originalText = bytes.toString(enc.Utf8)
+  return originalText
+}
 
 export const hash = (str: string) => {
   return sha256(str)

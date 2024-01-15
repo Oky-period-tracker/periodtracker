@@ -9,6 +9,8 @@ export function saveStoreCredentials(payload: {
   passwordHash: string
   answerSalt: string
   answerHash: string
+  secretKeyEncryptedWithPassword: string
+  secretKeyEncryptedWithAnswer: string
 }) {
   return createAction('SAVE_STORE_CREDENTIALS', payload)
 }

@@ -23,7 +23,25 @@ export const allReducers = {
   // flower: flowerReducer, TODO: Flower state should be saved per user
 }
 
-export const rootReducer = combineReducers(allReducers)
+const reducer = combineReducers(allReducers)
+
+export function rootReducer(state, action: Actions) {
+  switch (action.type) {
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        // @ts-ignore
+        ...action.payload,
+        storeSwitch: {
+          ...state.storeSwitch,
+          migrationComplete: true,
+        },
+      }
+
+    default:
+      return reducer(state, action)
+  }
+}
 
 export type ReduxState = ReturnType<typeof rootReducer>
 

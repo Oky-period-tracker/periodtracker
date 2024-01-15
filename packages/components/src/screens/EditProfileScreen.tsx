@@ -49,6 +49,7 @@ function showAlert(message) {
     { cancelable: false },
   )
 }
+
 function showAcceptAlert(message) {
   Alert.alert(
     translate('something_went_wrong'),
@@ -61,16 +62,6 @@ function showAcceptAlert(message) {
     { cancelable: false },
   )
 }
-
-async function runInSequence(functions) {
-  const results = []
-  for (const fn of functions) {
-    results.push(await fn())
-  }
-  return results
-}
-
-const maxWidth = 800
 
 export function EditProfileScreen() {
   const { screenWidth } = useScreenDimensions()
@@ -108,139 +99,23 @@ export function EditProfileScreen() {
   remainingLocations.unshift(currentUser.location)
   const [showPasscode, setShowPasscode] = React.useState(false)
 
-  const tryToEditUserInfo = async () => {
-    const hasInfoChanged =
-      name !== currentUser.name ||
-      dateOfBirth !== currentUser.dateOfBirth ||
-      gender !== currentUser.gender ||
-      location !== currentUser.location ||
-      secretQuestion !== currentUser.secretQuestion
-    if (!hasInfoChanged) {
-      return null
-    }
-
-    try {
-      await httpClient.editUserInfo({
-        appToken,
-        name,
-        dateOfBirth,
-        gender,
-        location,
-        secretQuestion,
-      })
-
-      dispatch(
-        actions.editUser({
-          name,
-          dateOfBirth,
-          gender,
-          location,
-          secretQuestion,
-        }),
-      )
-    } catch (err) {
-      throw new Error(translate('could_not_edit')) // TODO_ALEX: this is not displayed
-    }
+  const onConfirm = () => {
+    //
   }
 
-  const tryToChangeSecretAnswer = async () => {
-    const hasSecretAnswerChanged = secretAnswer !== '' && formatPassword(oldSecretAnswer) !== ''
-    if (!hasSecretAnswerChanged) {
-      return null
-    }
-
-    try {
-      await httpClient.editUserSecretAnswer({
-        appToken,
-        previousSecretAnswer: formatPassword(oldSecretAnswer),
-        nextSecretAnswer: formatPassword(secretAnswer),
-      })
-
-      dispatch(
-        actions.editUser({
-          secretAnswer: formatPassword(secretAnswer),
-        }),
-      )
-      setSecretAnswer('')
-    } catch (err) {
-      setSecretAnswer('')
-      if (err && err.response && err.response.data) {
-        if (err.response.data.name === 'BadRequestError') {
-          if (err.response.data.message === 'wrong_previous_secret_answer') {
-            const message = translate('wrong_old_secret_answer')
-            throw new Error(message) // TODO_ALEX: this is not displayed
-          }
-        }
-      }
-      throw new Error(translate('could_not_change_secret')) // TODO_ALEX: this is not displayed
-    }
+  const onSecretConfirm = () => {
+    //
   }
 
-  const tryToChangePassword = async () => {
-    const hasPasswordChanged = currentUser.password !== password
-    if (!hasPasswordChanged) {
-      return null
-    }
-
-    if (secretAnswer.length === 0) {
-      setIsVisible(true)
-      throw new Error()
-    }
-
-    try {
-      await httpClient.resetPassword({
-        name,
-        secretAnswer: formatPassword(secretAnswer),
-        password: formatPassword(password),
-      })
-
-      dispatch(
-        actions.editUser({
-          password: formatPassword(password),
-        }),
-      )
-    } catch (err) {
-      setSecretAnswer('')
-      throw new Error('could_not_change_password') // TODO_ALEX: this is not displayed
-    }
+  const onResetSecretConfirm = () => {
+    //
   }
 
-  const saveChanges = async () => {
-    setIsVisible(false)
-    // for non-logged user, save the changes locally immediately
-    if (!appToken) {
-      const hasSecretAnswerChanged = secretAnswer !== '' && formatPassword(oldSecretAnswer) !== ''
-      if (hasSecretAnswerChanged) {
-        if (formatPassword(oldSecretAnswer) !== formatPassword(currentUser.secretAnswer)) {
-          showAcceptAlert(translate('wrong_old_secret_answer'))
-          return
-        }
-      }
-
-      dispatch(
-        actions.editUser({
-          name,
-          dateOfBirth,
-          gender,
-          password,
-          location,
-          secretQuestion,
-          secretAnswer:
-            secretAnswer === '' ? currentUser.secretAnswer : formatPassword(secretAnswer),
-        }),
-      )
-      BackOneScreen()
-      return
-    }
-    try {
-      await runInSequence([tryToEditUserInfo, tryToChangeSecretAnswer, tryToChangePassword])
-      BackOneScreen()
-    } catch (err) {
-      if (err.message) {
-        showAlert(err.message)
-      }
-    }
-  }
+  /* 
+   When they confirm they will need to 
+  
+  
+  */
 
   return (
     <BackgroundTheme>
@@ -331,17 +206,8 @@ export function EditProfileScreen() {
             </Row>
           </Container>
         </KeyboardAwareAvoidance>
-        <ConfirmButton
-          onPress={async () => {
-            setNotValid(false)
-            if (password.length < minPasswordLength) {
-              setNotValid(true)
-              return
-            }
-            await saveChanges()
-          }}
-        >
-          <ConfirmText style={styles.confirm}>confirm</ConfirmText>
+        <ConfirmButton onPress={onConfirm}>
+          <ConfirmText style={{ color: '#000' }}>confirm</ConfirmText>
         </ConfirmButton>
       </PageContainer>
       {/* --------------------------------- modals --------------------------------- */}
@@ -353,11 +219,12 @@ export function EditProfileScreen() {
             label="secret_answer"
             value={secretAnswer}
           />
-          <Confirm onPress={saveChanges}>
+          <Confirm onPress={onSecretConfirm}>
             <ConfirmText>confirm</ConfirmText>
           </Confirm>
         </CardModal>
       </ThemedModal>
+
       <ThemedModal {...{ isVisible: secretIsVisible, setIsVisible: setSecretIsVisible }}>
         <CardModal>
           <QuestionText>reset_secret_question</QuestionText>
@@ -387,15 +254,7 @@ export function EditProfileScreen() {
               multiline={true}
             />
           </TextContainer>
-          <Confirm
-            onPress={() => {
-              if (secretAnswer.length < minPasswordLength) {
-                setNotValid(true)
-                return
-              }
-              setSecretIsVisible(false)
-            }}
-          >
+          <Confirm onPress={onResetSecretConfirm}>
             <ConfirmText>confirm</ConfirmText>
           </Confirm>
         </CardModal>

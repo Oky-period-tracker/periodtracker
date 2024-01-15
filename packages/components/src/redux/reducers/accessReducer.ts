@@ -13,6 +13,8 @@ export interface UserCredentials {
   passwordHash: string
   answerSalt: string
   answerHash: string
+  secretKeyEncryptedWithPassword: string
+  secretKeyEncryptedWithAnswer: string
 }
 
 export interface UserIdToUsernameHash {
@@ -48,6 +50,8 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
             answerHash: action.payload.answerHash,
             passwordSalt: action.payload.passwordSalt,
             passwordHash: action.payload.passwordHash,
+            secretKeyEncryptedWithPassword: action.payload.secretKeyEncryptedWithPassword,
+            secretKeyEncryptedWithAnswer: action.payload.secretKeyEncryptedWithAnswer,
           },
         },
         userIdToUsernameHash: {

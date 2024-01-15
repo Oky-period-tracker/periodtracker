@@ -13,7 +13,7 @@ import moment from 'moment'
 import { closeOutTTs } from '../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import _ from 'lodash'
-import { formatPassword, hash, verifyStoreCredentials } from '../../services/auth'
+import { decrypt, encrypt, formatPassword, hash, verifyStoreCredentials } from '../../services/auth'
 import { navigateToStoreSwitch } from '../StoreSwitchSplash'
 
 // unwrap promise
@@ -395,6 +395,10 @@ function* onInitiateNewStore(action: ExtractActionFromActionType<'INITIATE_NEW_S
   const answer = formatPassword(action.payload.answer)
   const answerHash = hash(answer + answerSalt)
 
+  const secretKey = uuidv4()
+  const secretKeyEncryptedWithPassword = encrypt(secretKey, password)
+  const secretKeyEncryptedWithAnswer = encrypt(secretKey, answer)
+
   yield put(
     actions.saveStoreCredentials({
       userId: action.payload.userId,
@@ -404,15 +408,19 @@ function* onInitiateNewStore(action: ExtractActionFromActionType<'INITIATE_NEW_S
       passwordHash,
       answerSalt,
       answerHash,
+      secretKeyEncryptedWithPassword,
+      secretKeyEncryptedWithAnswer,
     }),
   )
 
-  yield put(
-    actions.initiateStoreSwitch({
-      username: action.payload.username,
-      password: action.payload.password,
-    }),
-  )
+  const keys = {
+    key: action.payload.userId,
+    secretKey,
+  }
+
+  yield put(actions.setStoreKeys({ keys }))
+
+  yield call(navigateToStoreSwitch, 'login')
 }
 
 function* onInitiateStoreSwitch(action: ExtractActionFromActionType<'INITIATE_STORE_SWITCH'>) {
@@ -428,9 +436,11 @@ function* onInitiateStoreSwitch(action: ExtractActionFromActionType<'INITIATE_ST
 
   const credentials = storeCredentials[usernameHash]
 
+  const secretKey = decrypt(credentials.secretKeyEncryptedWithPassword, password)
+
   const keys = {
-    key: usernameHash,
-    secretKey: hash(password + credentials.storeSalt),
+    key: credentials.userId,
+    secretKey,
   }
 
   yield put(actions.setStoreKeys({ keys }))

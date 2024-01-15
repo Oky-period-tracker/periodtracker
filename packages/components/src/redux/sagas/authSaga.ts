@@ -391,8 +391,8 @@ function* onInitiateNewStore(action: ExtractActionFromActionType<'INITIATE_NEW_S
   const password = formatPassword(action.payload.password)
   const passwordHash = hash(password + passwordSalt)
 
-  const secretSalt = uuidv4()
-  const secretHash = hash(password + passwordSalt)
+  const answerSalt = uuidv4()
+  const answerHash = hash(password + passwordSalt)
 
   yield put(
     actions.saveStoreCredentials({
@@ -401,8 +401,8 @@ function* onInitiateNewStore(action: ExtractActionFromActionType<'INITIATE_NEW_S
       storeSalt,
       passwordSalt,
       passwordHash,
-      secretSalt,
-      secretHash,
+      answerSalt,
+      answerHash,
     }),
   )
 

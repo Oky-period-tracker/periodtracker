@@ -45,7 +45,7 @@ export function initiateNewStore(payload: {
   userId: string
   username: string
   password: string
-  secret: string
+  answer: string
 }) {
   return createAction('INITIATE_NEW_STORE', payload)
 }

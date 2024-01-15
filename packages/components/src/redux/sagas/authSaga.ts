@@ -119,7 +119,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         userId: user.id,
         username: name,
         password,
-        secret: user.secretAnswer,
+        answer: user.secretAnswer,
       }),
     )
   } catch (error) {
@@ -369,7 +369,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
       userId: currentUser.id,
       username: currentUser.name,
       password: currentUser.password,
-      secret: currentUser.secret,
+      answer: currentUser.secret,
     }),
   )
 }
@@ -396,7 +396,8 @@ function* onInitiateNewStore(action: ExtractActionFromActionType<'INITIATE_NEW_S
   const passwordHash = hash(password + passwordSalt)
 
   const answerSalt = uuidv4()
-  const answerHash = hash(password + passwordSalt)
+  const answer = formatPassword(action.payload.answer)
+  const answerHash = hash(answer + answerSalt)
 
   yield put(
     actions.saveStoreCredentials({

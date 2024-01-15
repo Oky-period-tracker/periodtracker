@@ -39,13 +39,13 @@ export function loginSuccess({
   })
 }
 
-export function initiateNewStore(payload: {
+export function setUpNewStore(payload: {
   userId: string
   username: string
   password: string
   answer: string
 }) {
-  return createAction('INITIATE_NEW_STORE', payload)
+  return createAction('SET_UP_NEW_STORE', payload)
 }
 
 export function initiateStoreSwitch(payload: { username: string; password: string }) {

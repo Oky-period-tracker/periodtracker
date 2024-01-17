@@ -10,10 +10,7 @@ import { DateOfBirthInput } from '../../components/common/DateOfBirthInput'
 import { assets } from '../../assets/index'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
-<<<<<<< HEAD
 import { useDispatch } from 'react-redux'
-=======
->>>>>>> 3af4d83 (Refactor EditProfile logic into hook)
 import { BackOneScreen } from '../../services/navigationService'
 import { TextInputSettings } from '../../components/common/TextInputSettings'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
@@ -105,8 +102,21 @@ export function EditProfileScreen() {
   }
 
   const {
+    onConfirm,
     onConfirmPassword,
     onConfirmResetQuestion,
+    // State
+    name,
+    setName,
+    dateOfBirth,
+    setDateOfBirth,
+    gender,
+    setGender,
+    location,
+    setLocation,
+    // Constants
+    remainingGenders,
+    remainingLocations,
     // Modals
     isPasswordModalVisible,
     setIsPasswordModalVisible,
@@ -146,7 +156,7 @@ export function EditProfileScreen() {
                 ]}
                 buttonStyle={styles.selectBoxButton}
                 title="gender"
-                items={[currentUser.gender, ...remainingGenders]}
+                items={[gender, ...remainingGenders]}
                 onValueChange={(value) => setGender(value)}
               />
             </Row>

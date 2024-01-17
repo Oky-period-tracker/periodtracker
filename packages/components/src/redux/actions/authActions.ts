@@ -162,22 +162,30 @@ export function convertGuestAccount({
 }
 
 export function editUser({
-  name = null,
-  dateOfBirth = null,
-  gender = null,
-  location = null,
-  password = null,
-  secretQuestion = null,
-  secretAnswer = null,
+  oldUsernameHash,
+  newUsernameHash,
+  user: {
+    name = null,
+    dateOfBirth = null,
+    gender = null,
+    location = null,
+    password = null,
+    secretQuestion = null,
+    secretAnswer = null,
+  },
 }) {
   return createAction('EDIT_USER', {
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    password,
-    secretQuestion,
-    secretAnswer,
+    oldUsernameHash,
+    newUsernameHash,
+    user: {
+      name,
+      dateOfBirth,
+      gender,
+      location,
+      password,
+      secretQuestion,
+      secretAnswer,
+    },
   })
 }
 

@@ -4,8 +4,7 @@ import { Alert } from 'react-native'
 import { v4 as uuidv4 } from 'uuid'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
-import { exportReducerNames } from '../reducers'
-import { ReduxState } from '../store'
+import { ReduxState, exportReducerNames } from '../reducers'
 import * as actions from '../actions'
 import * as selectors from '../selectors'
 import { navigateAndReset } from '../../services/navigationService'
@@ -13,6 +12,9 @@ import { PredictionState } from '../../prediction'
 import moment from 'moment'
 import { closeOutTTs } from '../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../services/network'
+import _ from 'lodash'
+import { decrypt, encrypt, formatPassword, hash, verifyStoreCredentials } from '../../services/auth'
+import { navigateToStoreSwitch } from '../StoreSwitchSplash'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -89,6 +91,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
           secretQuestion: user.secretQuestion,
           secretAnswer: user.secretAnswer,
           password,
+          isGuest: false,
         },
       }),
     )
@@ -111,7 +114,15 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     }
 
     yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-    yield call(navigateAndReset, 'MainStack', null)
+
+    yield put(
+      actions.setUpNewStore({
+        userId: user.id,
+        username: name,
+        password,
+        answer: user.secretAnswer,
+      }),
+    )
   } catch (error) {
     let errorMessage = 'request_fail'
     if (error && error.response && error.response.data) {
@@ -122,11 +133,24 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         errorMessage = error.response.data.message
       }
     }
-    yield put(
-      actions.loginFailure({
-        error: errorMessage,
-      }),
-    )
+
+    const storeCredentials = yield select(selectors.storeCredentialsSelector)
+    const passwordCorrect = verifyStoreCredentials({
+      username: name,
+      password,
+      storeCredentials,
+    })
+
+    if (!passwordCorrect) {
+      yield put(
+        actions.loginFailure({
+          error: errorMessage,
+        }),
+      )
+      return
+    }
+
+    yield put(actions.initiateStoreSwitch({ username: name, password }))
   }
 }
 
@@ -176,6 +200,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           secretQuestion: user.secretQuestion,
           secretAnswer: user.secretAnswer,
           password,
+          isGuest: false,
         },
       }),
     )
@@ -185,18 +210,36 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     yield put(actions.setAuthError({ error: errorStatusCode }))
     yield put(actions.createAccountFailure())
 
+    // Check username is not already taken
+    const usernameHash = hash(name)
+    const storeCredentials = yield select(selectors.storeCredentialsSelector)
+    const credential = storeCredentials[usernameHash]
+
+    if (credential) {
+      // TODO: TODO_ALEX
+      // username already taken
+      // yield put(secureActions.setAuthError({ error: errorStatusCode }))
+      // Its not just on error, this will be hit when attempting convert guest account offline
+      return
+    }
+
+    // CREATE OFFLINE GUEST ACCOUNT
     yield put(
-      actions.loginSuccessAsGuestAccount({
-        id: id || uuidv4(),
-        name,
-        dateOfBirth,
-        gender,
-        location,
-        country,
-        province,
-        password,
-        secretAnswer,
-        secretQuestion,
+      actions.createAccountSuccess({
+        appToken: null,
+        user: {
+          id: id || uuidv4(),
+          name,
+          dateOfBirth,
+          gender,
+          location,
+          country,
+          province,
+          password,
+          secretAnswer,
+          secretQuestion,
+          isGuest: true,
+        },
       }),
     )
   }
@@ -204,6 +247,8 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
 
 function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACCOUNT_SUCCESS'>) {
   const { appToken, user } = action.payload
+  // Is this even necessary ????
+  // Because we already update the redux state when account is created, so why the extra log in step?
   yield put(
     actions.loginSuccess({
       appToken,
@@ -218,15 +263,25 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
         password: user.password,
         secretQuestion: user.secretQuestion,
         secretAnswer: user.secretAnswer,
+        isGuest: user.isGuest,
       },
     }),
   )
 }
+
 function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACCOUNT_REQUEST'>) {
   const { setLoading } = action.payload
   const state: ReduxState = yield select()
   const user = selectors.currentUserSelector(state)
   setLoading(true)
+
+  if (user.isGuest) {
+    // No online account to delete
+    // Delete local store
+    yield call(navigateToStoreSwitch, 'delete')
+    return
+  }
+
   try {
     const { name, password } = action.payload
     yield httpClient.deleteUserFromPassword({
@@ -240,11 +295,10 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
         surveys: null,
       }), // TODO_ALEX
     )
-    yield call(navigateAndReset, 'LoginStack', null)
 
-    if (user) {
-      yield put(actions.logout())
-    }
+    // Online account successfully deleted
+    // Delete local store
+    yield call(navigateToStoreSwitch, 'delete')
   } catch (err) {
     setLoading(false)
     Alert.alert('Error', 'Unable to delete the account')
@@ -266,8 +320,12 @@ function* onLogoutRequest() {
     }),
   )
   yield put(actions.updateCompletedSurveys([])) // TODO_ALEX: survey
+
+  yield call(navigateToStoreSwitch, 'logout')
+}
+
+function* onClearLastLogin() {
   yield call(navigateAndReset, 'LoginStack', null)
-  yield put(actions.logout())
 }
 
 function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPLETION'>) {
@@ -302,18 +360,107 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield put(actions.setTutorialOneActive(true))
   yield put(actions.setTutorialTwoActive(true))
   yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-  yield call(navigateAndReset, 'MainStack', null)
+
+  yield put(
+    actions.setUpNewStore({
+      userId: currentUser.id,
+      username: currentUser.name,
+      password: currentUser.password,
+      answer: currentUser.secretAnswer,
+    }),
+  )
+}
+
+function* onSetUpNewStore(action: ExtractActionFromActionType<'SET_UP_NEW_STORE'>) {
+  const storeCredentials = yield select(selectors.storeCredentialsSelector)
+  const usernameHash = hash(action.payload.username)
+
+  if (storeCredentials[usernameHash]) {
+    // Store already exists
+    yield put(
+      actions.initiateStoreSwitch({
+        username: action.payload.username,
+        password: action.payload.password,
+      }),
+    )
+    return
+  }
+
+  const storeSalt = uuidv4()
+
+  const passwordSalt = uuidv4()
+  const password = formatPassword(action.payload.password)
+  const passwordHash = hash(password + passwordSalt)
+
+  const answerSalt = uuidv4()
+  const answer = formatPassword(action.payload.answer)
+  const answerHash = hash(answer + answerSalt)
+
+  const secretKey = uuidv4()
+  const secretKeyEncryptedWithPassword = encrypt(secretKey, password)
+  const secretKeyEncryptedWithAnswer = encrypt(secretKey, answer)
+
+  yield put(
+    actions.saveStoreCredentials({
+      userId: action.payload.userId,
+      usernameHash,
+      storeSalt,
+      passwordSalt,
+      passwordHash,
+      answerSalt,
+      answerHash,
+      secretKeyEncryptedWithPassword,
+      secretKeyEncryptedWithAnswer,
+    }),
+  )
+
+  const keys = {
+    key: action.payload.userId,
+    secretKey,
+  }
+
+  yield put(actions.setStoreKeys({ keys }))
+
+  yield call(navigateToStoreSwitch, 'login')
+}
+
+function* onInitiateStoreSwitch(action: ExtractActionFromActionType<'INITIATE_STORE_SWITCH'>) {
+  // Please note: Assumes password has already been verified
+
+  const storeCredentials = yield select(selectors.storeCredentialsSelector)
+  const usernameHash = hash(action.payload.username)
+  const password = formatPassword(action.payload.password)
+
+  if (!storeCredentials[usernameHash]) {
+    return // ERROR
+  }
+
+  const credentials = storeCredentials[usernameHash]
+
+  const secretKey = decrypt(credentials.secretKeyEncryptedWithPassword, password)
+
+  const keys = {
+    key: credentials.userId,
+    secretKey,
+  }
+
+  yield put(actions.setStoreKeys({ keys }))
+
+  yield call(navigateToStoreSwitch, 'login')
 }
 
 export function* authSaga() {
   yield all([
     takeLatest(REHYDRATE, onRehydrate),
     takeLatest('LOGOUT_REQUEST', onLogoutRequest),
+    takeLatest('CLEAR_LAST_LOGIN', onClearLastLogin),
     takeLatest('LOGIN_REQUEST', onLoginRequest),
     takeLatest('DELETE_ACCOUNT_REQUEST', onDeleteAccountRequest),
     takeLatest('CREATE_ACCOUNT_REQUEST', onCreateAccountRequest),
     takeLatest('CREATE_ACCOUNT_SUCCESS', onCreateAccountSuccess),
     takeLatest('CONVERT_GUEST_ACCOUNT', onConvertGuestAccount),
     takeLatest('JOURNEY_COMPLETION', onJourneyCompletion),
+    takeLatest('SET_UP_NEW_STORE', onSetUpNewStore),
+    takeLatest('INITIATE_STORE_SWITCH', onInitiateStoreSwitch),
   ])
 }

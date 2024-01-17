@@ -6,8 +6,6 @@ import { useTheme } from '../../../components/context/ThemeContext'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { assets } from '../../../assets/index'
 import { translate } from '../../../i18n'
-import { useSelector, useDispatch } from 'react-redux'
-import * as actions from '../../../redux/actions/index'
 import * as selectors from '../../../redux/selectors'
 import moment from 'moment'
 import {
@@ -15,6 +13,7 @@ import {
   useActualCurrentStartDateSelector,
 } from '../../../components/context/PredictionProvider'
 import _ from 'lodash'
+import { useSelector } from '../../../redux/useSelector'
 
 const {
   Value,

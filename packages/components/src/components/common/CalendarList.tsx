@@ -3,7 +3,7 @@ import { Image } from 'react-native'
 import { CalendarList as DefaultCalendarList, LocaleConfig } from 'react-native-calendars'
 import momentTimezone from 'moment-timezone'
 import { assets } from '../../assets/index'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import * as selectors from '../../redux/selectors'
 import { calendarTranslations } from '@oky/core'
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import * as selectors from '../../redux/selectors'
 import * as actions from '../../redux/actions/index'
 import { useDispatch } from 'react-redux'

@@ -1,9 +1,9 @@
 import React from 'react'
-import { BackgroundTheme } from '../components/layout/BackgroundTheme'
+import { BackgroundTheme, DefaultBackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PageContainer } from '../components/layout/PageContainer'
 import { assets } from '../assets/index'
 import styled from 'styled-components/native'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import * as selectors from '../redux/selectors'
 import * as actions from '../redux/actions'
 import { navigateAndReset } from '../services/navigationService'
@@ -15,17 +15,18 @@ import { useAlert } from '../components/context/AlertContext'
 import { httpClient } from '../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import messaging from '@react-native-firebase/messaging'
+import { useSelector } from '../redux/useSelector'
 
 export function SplashScreen() {
   const dispatch = useDispatch()
-  const user: any = useSelector(selectors.currentUserSelector)
+  const user: any = useSelector(selectors.currentUserSelector) // TODO_ALEX fix any
+  const lastLoggedInUsername = useSelector(selectors.lastLoggedInUsernameSelector)
   const Alert = useAlert()
 
   const locale = useSelector(selectors.currentLocaleSelector)
   const hasOpened = useSelector(selectors.hasOpenedSelector)
   const currentAppVersion = useSelector(selectors.currentAppVersion)
   const currentFirebaseToken = useSelector(selectors.currentFirebaseToken)
-  const hasPasswordRequestOn = useSelector(selectors.isLoginPasswordActiveSelector)
   const [animatedValue] = React.useState(new Animated.Value(0))
 
   async function checkForPermanentAlerts() {
@@ -72,12 +73,8 @@ export function SplashScreen() {
         navigateAndReset('OnboardingScreen', null)
         return
       }
-      if (user) {
-        if (hasPasswordRequestOn) {
-          navigateAndReset('PasswordRequestScreen', null)
-          return
-        }
-        navigateAndReset('MainStack', null)
+      if (lastLoggedInUsername || user) {
+        navigateAndReset('PasswordRequestScreen', null)
         return
       }
       navigateAndReset('LoginStack', null)
@@ -117,6 +114,45 @@ export function SplashScreen() {
         </Container>
       </PageContainer>
     </BackgroundTheme>
+  )
+}
+
+export function SimpleSplashScreen() {
+  const [animatedValue] = React.useState(new Animated.Value(0))
+
+  React.useEffect(() => {
+    Spin()
+  })
+
+  const Spin = () => {
+    Animated.timing(animatedValue, {
+      duration: 50000,
+      toValue: 36000,
+      easing: Easing.linear,
+      useNativeDriver: true,
+    }).start()
+  }
+
+  const rotation = animatedValue.interpolate({
+    inputRange: [0, 36000],
+    outputRange: ['0deg', '36000deg'],
+  })
+
+  return (
+    <DefaultBackgroundTheme>
+      <PageContainer>
+        <Container>
+          <Face resizeMode="contain" source={assets.static.spin_load_face} />
+          <AnimatedContainer
+            style={{
+              transform: [{ rotate: rotation }],
+            }}
+          >
+            <Spinner resizeMode="contain" source={assets.static.spin_load_circle} />
+          </AnimatedContainer>
+        </Container>
+      </PageContainer>
+    </DefaultBackgroundTheme>
   )
 }
 

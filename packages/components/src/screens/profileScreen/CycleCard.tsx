@@ -5,7 +5,7 @@ import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
 import * as selectors from '../../redux/selectors'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import { emojis } from '../../config'
 import { translate } from '../../i18n'
 

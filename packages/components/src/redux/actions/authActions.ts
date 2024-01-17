@@ -1,4 +1,5 @@
 import { createAction } from '../helpers'
+import { StoreKeys } from '../reducers/storeSwitchReducer'
 
 export function loginRequest({ name, password }) {
   return createAction('LOGIN_REQUEST', { name, password })
@@ -17,6 +18,7 @@ export function loginSuccess({
     password,
     secretQuestion,
     secretAnswer,
+    isGuest,
   },
 }) {
   return createAction('LOGIN_SUCCESS', {
@@ -32,34 +34,22 @@ export function loginSuccess({
       password,
       secretQuestion,
       secretAnswer,
+      isGuest,
     },
   })
 }
 
-export function loginSuccessAsGuestAccount({
-  id,
-  name,
-  dateOfBirth,
-  gender,
-  location,
-  country,
-  province,
-  password,
-  secretQuestion,
-  secretAnswer,
+export function setUpNewStore(payload: {
+  userId: string
+  username: string
+  password: string
+  answer: string
 }) {
-  return createAction('LOGIN_SUCCESS_AS_GUEST_ACCOUNT', {
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    secretQuestion,
-    secretAnswer,
-  })
+  return createAction('SET_UP_NEW_STORE', payload)
+}
+
+export function initiateStoreSwitch(payload: { username: string; password: string }) {
+  return createAction('INITIATE_STORE_SWITCH', payload)
 }
 
 export function loginFailure({ error }) {
@@ -68,10 +58,6 @@ export function loginFailure({ error }) {
 
 export function logoutRequest() {
   return createAction('LOGOUT_REQUEST')
-}
-
-export function logout() {
-  return createAction('LOGOUT')
 }
 
 export function createAccountRequest({
@@ -120,6 +106,7 @@ export function createAccountSuccess({
     province,
     secretQuestion,
     secretAnswer,
+    isGuest,
   },
 }) {
   return createAction('CREATE_ACCOUNT_SUCCESS', {
@@ -135,6 +122,7 @@ export function createAccountSuccess({
       password,
       secretQuestion,
       secretAnswer,
+      isGuest,
     },
   })
 }
@@ -170,22 +158,30 @@ export function convertGuestAccount({
 }
 
 export function editUser({
-  name = null,
-  dateOfBirth = null,
-  gender = null,
-  location = null,
-  password = null,
-  secretQuestion = null,
-  secretAnswer = null,
+  oldUsernameHash,
+  newUsernameHash,
+  user: {
+    name = null,
+    dateOfBirth = null,
+    gender = null,
+    location = null,
+    password = null,
+    secretQuestion = null,
+    secretAnswer = null,
+  },
 }) {
   return createAction('EDIT_USER', {
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    password,
-    secretQuestion,
-    secretAnswer,
+    oldUsernameHash,
+    newUsernameHash,
+    user: {
+      name,
+      dateOfBirth,
+      gender,
+      location,
+      password,
+      secretQuestion,
+      secretAnswer,
+    },
   })
 }
 

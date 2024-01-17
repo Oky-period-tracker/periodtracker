@@ -21,14 +21,13 @@ export type Action<T extends string = string, P = void> = P extends void
  * get Actions types union from Action creators object.
  * it is recommended to export them under the same name as your Actions object, to leverage token merging
  */
-export type ActionsUnion<A extends StringMap<AnyFunction>> = ReturnType<
-  A[keyof A]
->
+export type ActionsUnion<A extends StringMap<AnyFunction>> = ReturnType<A[keyof A]>
 
 /**
  * gets particular Action type from ActionsUnion
  */
-export type ActionsOfType<
-  ActionUnion,
-  ActionType extends string
-> = ActionUnion extends Action<ActionType> ? ActionUnion : never
+export type ActionsOfType<ActionUnion, ActionType extends string> = ActionUnion extends Action<
+  ActionType
+>
+  ? ActionUnion
+  : never

@@ -1,6 +1,6 @@
 import React from 'react'
 import { speakArray, clearTTSQueue } from '../services/textToSpeech'
-import { useSelector } from './useSelector'
+import { useSelector } from '../redux/useSelector'
 import * as selectors from '../redux/selectors'
 
 export function useTextToSpeechHook({ navigation, text }) {

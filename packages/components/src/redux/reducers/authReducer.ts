@@ -71,28 +71,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
           password: action.payload.user.password,
           secretQuestion: action.payload.user.secretQuestion,
           secretAnswer: action.payload.user.secretAnswer,
-          isGuest: false,
-        },
-      }
-
-    case 'LOGIN_SUCCESS_AS_GUEST_ACCOUNT':
-      return {
-        ...state,
-        appToken: null,
-        isLoggingIn: false,
-        loginFailedCount: 0,
-        user: {
-          id: action.payload.id,
-          name: action.payload.name,
-          dateOfBirth: action.payload.dateOfBirth,
-          gender: action.payload.gender,
-          location: action.payload.location,
-          country: action.payload.country,
-          province: action.payload.province,
-          password: action.payload.password,
-          secretQuestion: action.payload.secretQuestion,
-          secretAnswer: action.payload.secretAnswer,
-          isGuest: true,
+          isGuest: action.payload.user.isGuest,
         },
       }
 
@@ -102,14 +81,6 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         appToken: null,
         loginFailedCount: state.loginFailedCount + 1,
         error: action.payload.error,
-        isLoggingIn: false,
-        user: null,
-      }
-
-    case 'LOGOUT':
-      return {
-        ...state,
-        appToken: null,
         isLoggingIn: false,
         user: null,
       }
@@ -143,7 +114,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
     case 'EDIT_USER':
       return {
         ...state,
-        user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
+        user: { ...state.user, ..._.omitBy(action.payload.user, _.isNil) },
       }
 
     default:

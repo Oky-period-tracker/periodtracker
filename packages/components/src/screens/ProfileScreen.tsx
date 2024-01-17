@@ -12,12 +12,11 @@ import { useTheme } from '../components/context/ThemeContext'
 import { CycleCard } from './profileScreen/CycleCard'
 import { FlatList } from 'react-native'
 import { navigate } from '../services/navigationService'
-import { toAge } from '../services/dateUtils'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
 import { AvatarOption } from './avatarAndTheme/avatarSelect/AvatarOption'
 import { ThemeSelectItem } from './avatarAndTheme/ThemeSelectItem'
 import { useHistoryPrediction, useTodayPrediction } from '../components/context/PredictionProvider'
-import { useSelector } from '../hooks/useSelector'
+import { useSelector } from '../redux/useSelector'
 import * as actions from '../redux/actions'
 import * as selectors from '../redux/selectors'
 import { translate } from '../i18n/index'
@@ -40,7 +39,7 @@ export function ProfileScreen({ navigation }) {
   const dispatch = useDispatch()
 
   const connectAccountCount = useSelector((state) => state.auth.connectAccountAttempts)
-  const dateOfBirth = moment(currentUser.dateOfBirth)
+  const dateOfBirth = moment(currentUser?.dateOfBirth)
 
   useTextToSpeechHook({
     navigation,

@@ -3,7 +3,7 @@ import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import * as selectors from '../../redux/selectors'
 import * as actions from '../../redux/actions'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import { TextInput } from '../../components/common/TextInput'
 import { useDispatch } from 'react-redux'
 import { BackOneScreen } from '../../services/navigationService'
@@ -49,7 +49,12 @@ export function NoteCard({ dataEntry }) {
               onChange={(text) => setTitle(text)}
               onEndEditing={() =>
                 dispatch(
-                  actions.answerNotesCard({ title, notes, userID, utcDateTime: dataEntry.date }),
+                  actions.answerNotesCard({
+                    title,
+                    notes,
+                    userID,
+                    utcDateTime: dataEntry.date,
+                  }),
                 )
               }
               label={titlePlaceholder}
@@ -69,7 +74,12 @@ export function NoteCard({ dataEntry }) {
             onBlur={() => setNotesPlaceholder('daily_note_description')}
             onEndEditing={() =>
               dispatch(
-                actions.answerNotesCard({ title, notes, userID, utcDateTime: dataEntry.date }),
+                actions.answerNotesCard({
+                  title,
+                  notes,
+                  userID,
+                  utcDateTime: dataEntry.date,
+                }),
               )
             }
             label={notesPlaceholder}

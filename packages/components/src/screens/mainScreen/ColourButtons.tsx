@@ -24,7 +24,7 @@ import analytics from '@react-native-firebase/analytics'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import { incrementFlowerProgress, useFlowerStateSelector, FlowerModal } from '../../optional/Flower'
 
 const minBufferBetweenCycles = 2

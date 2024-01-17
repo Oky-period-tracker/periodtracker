@@ -3,12 +3,11 @@ import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
 import { httpClient } from '../../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import { extractReducerState } from '../sync'
-import { exportReducerNames } from '../reducers'
-import { version as storeVersion, ReduxState } from '../store'
+import { ReduxState, exportReducerNames } from '../reducers'
+import { version as storeVersion } from '../store'
 import * as actions from '../actions'
 import * as selectors from '../selectors'
 import messaging from '@react-native-firebase/messaging'
-import { ExtractActionFromActionType } from '../types'
 
 function* syncAppState() {
   let lastAppState

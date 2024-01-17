@@ -7,7 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { navigate, navigateAndReset } from '../../../services/navigationService'
 import moment from 'moment'
 import { useDisplayText } from '../../../components/context/DisplayTextContext'
-import { useSelector } from '../../../hooks/useSelector'
+import { useSelector } from '../../../redux/useSelector'
 import * as selectors from '../../../redux/selectors'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 

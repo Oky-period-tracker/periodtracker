@@ -13,7 +13,7 @@ import { usePredictDay } from '../components/context/PredictionProvider'
 import { ThemedModal } from '../components/common/ThemedModal'
 import { ColourButtons } from './mainScreen/ColourButtons'
 import * as selectors from '../redux/selectors'
-import { useSelector } from '../hooks/useSelector'
+import { useSelector } from '../redux/useSelector'
 import moment from 'moment'
 
 export function DayScreen({ navigation }) {

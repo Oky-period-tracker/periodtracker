@@ -7,7 +7,7 @@ import { Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { Icon } from '../../components/common/Icon'
 import * as selectors from '../../redux/selectors'
-import { useSelector } from '../../hooks/useSelector'
+import { useSelector } from '../../redux/useSelector'
 import { useColor } from '../../hooks/useColor'
 import { translate } from '../../i18n'
 

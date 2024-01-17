@@ -40,6 +40,12 @@ const initialState = (): AccessState => ({
 
 export function accessReducer(state = initialState(), action: Actions): AccessState {
   switch (action.type) {
+    case 'SET_COMMON_STATE':
+      return {
+        ...state,
+        ...action.payload.access,
+      }
+
     case 'SAVE_STORE_CREDENTIALS': {
       return {
         ...state,

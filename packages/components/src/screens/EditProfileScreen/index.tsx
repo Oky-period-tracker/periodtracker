@@ -8,8 +8,6 @@ import { Icon } from '../../components/common/Icon'
 import { SelectBox } from '../../components/common/SelectBox'
 import { DateOfBirthInput } from '../../components/common/DateOfBirthInput'
 import { assets } from '../../assets/index'
-import { useSelector } from '../../redux/useSelector'
-import * as selectors from '../../redux/selectors'
 import { BackOneScreen } from '../../services/navigationService'
 import { TextInputSettings } from '../../components/common/TextInputSettings'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
@@ -53,28 +51,22 @@ function showAcceptAlert(message) {
 }
 
 export function EditProfileScreen() {
-  const currentUser = useSelector(selectors.currentUserSelector)
-
-  const [name, setName] = React.useState(currentUser.name)
-  const [dateOfBirth, setDateOfBirth] = React.useState(currentUser.dateOfBirth)
-  const [gender, setGender] = React.useState(currentUser.gender)
-  const [location, setLocation] = React.useState(currentUser.location)
-
-  const remainingGenders = ['Female', 'Male', 'Other'].filter((item) => {
-    return item !== currentUser.gender
-  })
-  const remainingLocations = ['Urban', 'Rural'].filter((item) => {
-    return item !== currentUser.location
-  })
-  remainingLocations.unshift(currentUser.location)
-
-  const onConfirm = () => {
-    //
-  }
-
   const {
+    onConfirm,
     onConfirmPassword,
     onConfirmResetQuestion,
+    // State
+    name,
+    setName,
+    dateOfBirth,
+    setDateOfBirth,
+    gender,
+    setGender,
+    location,
+    setLocation,
+    // Constants
+    remainingGenders,
+    remainingLocations,
     // Modals
     isPasswordModalVisible,
     setIsPasswordModalVisible,
@@ -122,7 +114,7 @@ export function EditProfileScreen() {
                 }}
                 buttonStyle={{ right: -10, bottom: 5 }}
                 title="gender"
-                items={[currentUser.gender, ...remainingGenders]}
+                items={[gender, ...remainingGenders]}
                 onValueChange={(value) => setGender(value)}
               />
             </Row>

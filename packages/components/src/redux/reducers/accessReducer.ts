@@ -69,6 +69,24 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
       }
     }
 
+    case 'EDIT_USER': {
+      const credentials = state.storeCredentials[action.payload.oldUsernameHash]
+
+      return {
+        ...state,
+        storeCredentials: {
+          ...state.storeCredentials,
+          [action.payload.oldUsernameHash]: undefined,
+          [action.payload.newUsernameHash]: credentials,
+        },
+        userIdToUsernameHash: {
+          ...state.userIdToUsernameHash,
+          [credentials?.userId]: action.payload.newUsernameHash,
+        },
+        lastLoggedInUsername: action.payload.user.name,
+      }
+    }
+
     case 'EDIT_PASSWORD':
       return {
         ...state,

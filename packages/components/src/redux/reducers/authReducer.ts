@@ -116,7 +116,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
     case 'EDIT_USER':
       return {
         ...state,
-        user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
+        user: { ...state.user, ..._.omitBy(action.payload.user, _.isNil) },
       }
 
     default:

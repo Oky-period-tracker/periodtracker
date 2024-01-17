@@ -5,6 +5,7 @@ import * as selectors from '../../redux/selectors'
 import * as actions from '../../redux/actions'
 import { v4 as uuidv4 } from 'uuid'
 import { httpClient } from '../../services/HttpClient'
+import { translate } from '../../i18n'
 
 export const useEditProfile = () => {
   const reduxDispatch = useDispatch()
@@ -15,6 +16,74 @@ export const useEditProfile = () => {
 
   const [isPasswordModalVisible, setIsPasswordModalVisible] = React.useState(false)
   const [isSecretModalVisible, setIsSecretModalVisible] = React.useState(false)
+
+  const [name, setName] = React.useState(currentUser.name)
+  const [dateOfBirth, setDateOfBirth] = React.useState(currentUser.dateOfBirth)
+  const [gender, setGender] = React.useState(currentUser.gender)
+  const [location, setLocation] = React.useState(currentUser.location)
+
+  const remainingGenders = ['Female', 'Male', 'Other'].filter((item) => {
+    return item !== currentUser.gender
+  })
+  const remainingLocations = ['Urban', 'Rural'].filter((item) => {
+    return item !== currentUser.location
+  })
+  remainingLocations.unshift(currentUser.location)
+
+  const onConfirm = async () => {
+    const noChanges =
+      name === currentUser.name &&
+      dateOfBirth === currentUser.dateOfBirth &&
+      gender === currentUser.gender &&
+      location === currentUser.location
+
+    if (noChanges) {
+      return
+    }
+
+    const oldUsernameHash = hash(currentUser.name)
+    const credentials = storeCredentials[oldUsernameHash]
+
+    if (!credentials) {
+      return // TODO: ERROR ?
+    }
+
+    const newUsernameHash = hash(name)
+    const usernameTaken = !!storeCredentials[newUsernameHash]
+
+    if (usernameTaken) {
+      return // TODO:
+    }
+
+    try {
+      // TODO: Check user is guest
+
+      await httpClient.editUserInfo({
+        appToken,
+        name,
+        dateOfBirth,
+        gender,
+        location,
+        // secretQuestion,
+      })
+
+      reduxDispatch(
+        actions.editUser({
+          oldUsernameHash,
+          newUsernameHash,
+          user: {
+            name,
+            dateOfBirth,
+            gender,
+            location,
+            // secretQuestion,
+          },
+        }),
+      )
+    } catch (err) {
+      throw new Error(translate('could_not_edit'))
+    }
+  }
 
   const onConfirmPassword = async ({
     answer,
@@ -140,8 +209,21 @@ export const useEditProfile = () => {
   }
 
   return {
+    onConfirm,
     onConfirmPassword,
     onConfirmResetQuestion,
+    // State
+    name,
+    setName,
+    dateOfBirth,
+    setDateOfBirth,
+    gender,
+    setGender,
+    location,
+    setLocation,
+    // Constants
+    remainingGenders,
+    remainingLocations,
     // Modals
     isPasswordModalVisible,
     setIsPasswordModalVisible,

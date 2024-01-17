@@ -105,14 +105,13 @@ export function EditProfileScreen() {
   }
 
   const {
-    // State
+    onConfirmPassword,
+    onConfirmResetQuestion,
+    // Modals
     isPasswordModalVisible,
     setIsPasswordModalVisible,
     isSecretModalVisible,
     setIsSecretModalVisible,
-    // Methods
-    onConfirmPassword,
-    onConfirmResetQuestion,
   } = useEditProfile()
 
   return (

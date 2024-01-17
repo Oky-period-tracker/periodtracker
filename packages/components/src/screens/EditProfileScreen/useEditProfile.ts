@@ -140,13 +140,12 @@ export const useEditProfile = () => {
   }
 
   return {
-    // State
+    onConfirmPassword,
+    onConfirmResetQuestion,
+    // Modals
     isPasswordModalVisible,
     setIsPasswordModalVisible,
     isSecretModalVisible,
     setIsSecretModalVisible,
-    // Methods
-    onConfirmPassword,
-    onConfirmResetQuestion,
   }
 }

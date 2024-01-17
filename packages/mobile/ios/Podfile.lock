@@ -496,6 +496,8 @@ PODS:
     - React-perflogger (= 0.66.4)
   - ReactNativeART (1.2.0):
     - React
+  - RNCAsyncStorage (1.21.0):
+    - React-Core
   - RNCPicker (2.4.3):
     - React-Core
   - RNCPushNotificationIOS (1.10.1):
@@ -612,6 +614,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../../../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../../../node_modules/react-native/ReactCommon`)
   - "ReactNativeART (from `../../../node_modules/@react-native-community/art`)"
+  - "RNCAsyncStorage (from `../../../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCPicker (from `../../../node_modules/@react-native-picker/picker`)"
   - "RNCPushNotificationIOS (from `../../../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../../../node_modules/react-native-device-info`)
@@ -740,6 +743,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native/ReactCommon"
   ReactNativeART:
     :path: "../../../node_modules/@react-native-community/art"
+  RNCAsyncStorage:
+    :path: "../../../node_modules/@react-native-async-storage/async-storage"
   RNCPicker:
     :path: "../../../node_modules/@react-native-picker/picker"
   RNCPushNotificationIOS:
@@ -838,6 +843,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: dec32ee6f2e2a26e13e58152271535fadff5455a
   ReactCommon: 57b69f6383eafcbd7da625bfa6003810332313c4
   ReactNativeART: 78edc68dd4a1e675338cd0cd113319cf3a65f2ab
+  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCPicker: a99807a74d9cd65c394f6e2a6c843a377b355b4d
   RNCPushNotificationIOS: 87b8d16d3ede4532745e05b03c42cff33a36cc45
   RNDeviceInfo: 9538a884f862fe4aa0d7cead9f34e292d41ba8f6

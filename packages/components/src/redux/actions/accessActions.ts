@@ -35,3 +35,12 @@ export function editPassword(payload: {
 }) {
   return createAction('EDIT_PASSWORD', payload)
 }
+
+export function editAnswer(payload: {
+  usernameHash: string
+  answerSalt: string
+  answerHash: string
+  secretKeyEncryptedWithAnswer: string
+}) {
+  return createAction('EDIT_ANSWER', payload)
+}

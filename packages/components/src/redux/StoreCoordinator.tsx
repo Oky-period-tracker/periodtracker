@@ -8,9 +8,9 @@ import { rootSaga } from './sagas'
 import * as actions from './actions'
 import { PersistPartial } from 'redux-persist'
 import { hash } from '../services/auth'
-import { AsyncStorage } from 'react-native'
 import { SimpleSplashScreen } from '../screens/SplashScreen'
 import _ from 'lodash'
+import Storage from '../storage'
 
 type ReduxPersistState = ReduxState & PersistPartial
 
@@ -39,12 +39,12 @@ const StoreCoordinatorContext = React.createContext<Context>({
 })
 
 const checkStoreExists = async (usernameHash: string) => {
-  const keys = await AsyncStorage.getAllKeys()
+  const keys = await Storage.getAllKeys()
   return keys.includes(`persist:${usernameHash}`)
 }
 
 const hasMigrated = async () => {
-  const keys = await AsyncStorage.getAllKeys()
+  const keys = await Storage.getAllKeys()
   const persistKeys = keys.filter((key) => {
     return key.startsWith('persist:')
   })

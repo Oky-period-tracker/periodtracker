@@ -10,31 +10,17 @@ import { DateOfBirthInput } from '../../components/common/DateOfBirthInput'
 import { assets } from '../../assets/index'
 import { useSelector } from '../../redux/useSelector'
 import * as selectors from '../../redux/selectors'
-import * as actions from '../../redux/actions'
-import { useDispatch } from 'react-redux'
 import { BackOneScreen } from '../../services/navigationService'
-import { httpClient } from '../../services/HttpClient'
 import { TextInputSettings } from '../../components/common/TextInputSettings'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
-import { ThemedModal } from '../../components/common/ThemedModal'
 import { Text } from '../../components/common/Text'
-import { TextInput } from '../../components/common/TextInput'
 import { translate } from '../../i18n'
 import _ from 'lodash'
-import {
-  decrypt,
-  encrypt,
-  formatPassword,
-  hash,
-  validatePassword,
-  verifyStoreCredentials,
-} from '../../services/auth'
 import { EditSecretQuestionModal } from './EditSecretQuestionModal'
-import { v4 as uuidv4 } from 'uuid'
 import { EditPasswordModal } from './EditPasswordModal'
+import { useEditProfile } from './useEditProfile'
 
 const deviceWidth = Dimensions.get('window').width
-const minPasswordLength = 1
 const inputWidth = deviceWidth - 180
 
 function showAlert(message) {
@@ -67,18 +53,12 @@ function showAcceptAlert(message) {
 }
 
 export function EditProfileScreen() {
-  const reduxDispatch = useDispatch()
   const currentUser = useSelector(selectors.currentUserSelector)
-  const appToken = useSelector(selectors.appTokenSelector)
-  const storeCredentials = useSelector(selectors.storeCredentialsSelector)
 
   const [name, setName] = React.useState(currentUser.name)
   const [dateOfBirth, setDateOfBirth] = React.useState(currentUser.dateOfBirth)
   const [gender, setGender] = React.useState(currentUser.gender)
   const [location, setLocation] = React.useState(currentUser.location)
-
-  const [isPasswordModalVisible, setIsPasswordModalVisible] = React.useState(false)
-  const [isSecretModalVisible, setIsSecretModalVisible] = React.useState(false)
 
   const remainingGenders = ['Female', 'Male', 'Other'].filter((item) => {
     return item !== currentUser.gender
@@ -92,132 +72,16 @@ export function EditProfileScreen() {
     //
   }
 
-  const onSecretConfirm = () => {
-    //
-  }
-
-  const onConfirmPassword = async ({
-    answer,
-    newPassword,
-  }: {
-    answer: string
-    newPassword: string
-  }) => {
-    const usernameHash = hash(currentUser.name)
-    const credentials = storeCredentials[usernameHash]
-
-    if (!credentials) {
-      return // TODO: ERROR ?
-    }
-
-    const secretAnswer = formatPassword(answer)
-
-    const currentAnswerCorrect = verifyStoreCredentials({
-      username: currentUser.name,
-      password: secretAnswer,
-      storeCredentials,
-      method: 'answer',
-    })
-
-    if (!currentAnswerCorrect) {
-      return // TODO: Show alert
-    }
-
-    const secretKey = decrypt(credentials.secretKeyEncryptedWithAnswer, secretAnswer)
-
-    const password = formatPassword(newPassword)
-    const secretKeyEncryptedWithPassword = encrypt(secretKey, password)
-
-    const passwordSalt = uuidv4()
-    const passwordHash = hash(password + passwordSalt)
-
-    try {
-      // TODO: Check user is guest
-
-      await httpClient.resetPassword({
-        name,
-        secretAnswer,
-        password,
-      })
-
-      // Update redux AFTER successful API request
-      reduxDispatch(
-        actions.editPassword({
-          usernameHash,
-          passwordSalt,
-          passwordHash,
-          secretKeyEncryptedWithPassword,
-        }),
-      )
-
-      setIsSecretModalVisible(false)
-    } catch (err) {
-      // TODO: Show alert, update failed
-    }
-  }
-
-  const onConfirmResetQuestion = async ({
-    currentAnswer,
-    newAnswer,
-  }: // question,
-  {
-    currentAnswer: string
-    newAnswer: string
-    question: string
-  }) => {
-    const usernameHash = hash(currentUser.name)
-    const credentials = storeCredentials[usernameHash]
-
-    if (!credentials) {
-      return // TODO: ERROR ?
-    }
-
-    const currentAnswerCorrect = verifyStoreCredentials({
-      username: currentUser.name,
-      password: currentAnswer,
-      storeCredentials,
-      method: 'answer',
-    })
-
-    if (!currentAnswerCorrect) {
-      return // TODO: Show alert
-    }
-
-    const secretKey = decrypt(
-      credentials.secretKeyEncryptedWithAnswer,
-      formatPassword(currentAnswer),
-    )
-
-    const answer = formatPassword(newAnswer)
-    const secretKeyEncryptedWithAnswer = encrypt(secretKey, answer)
-
-    const answerSalt = uuidv4()
-    const answerHash = hash(answer + answerSalt)
-
-    try {
-      // TODO: Check user is guest
-
-      await httpClient.editUserSecretAnswer({
-        appToken,
-        previousSecretAnswer: formatPassword(currentAnswer),
-        nextSecretAnswer: answer,
-      })
-
-      // Update redux AFTER successful API request
-      reduxDispatch(
-        actions.editAnswer({
-          usernameHash,
-          answerSalt,
-          answerHash,
-          secretKeyEncryptedWithAnswer,
-        }),
-      )
-
-      setIsSecretModalVisible(false)
-    } catch (err) {
-      // TODO: Show alert, update failed
-    }
-  }
+  const {
+    // State
+    isPasswordModalVisible,
+    setIsPasswordModalVisible,
+    isSecretModalVisible,
+    setIsSecretModalVisible,
+    // Methods
+    onConfirmPassword,
+    onConfirmResetQuestion,
+  } = useEditProfile()
 
   return (
     <BackgroundTheme>
@@ -346,15 +210,6 @@ export function EditProfileScreen() {
   )
 }
 
-const TextContainer = styled.View`
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  shadow-color: #efefef;
-  shadow-offset: 0px 2px;
-  shadow-opacity: 1;
-  shadow-radius: 2px;
-`
 const Container = styled.View`
   background-color: #fff;
   elevation: 4;
@@ -365,29 +220,12 @@ const Container = styled.View`
   padding-horizontal: 30px;
   padding-vertical: 22px;
 `
-const TextRow = styled.View`
-  width: 100%
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  background-color: red;
-`
+
 const Row = styled.View`
   flex-direction: row;
   height: 57px;
   align-items: flex-end;
   margin-bottom: 4px;
-`
-const Confirm = styled.TouchableOpacity`
-  width: 100%;
-  height: 45px;
-  border-radius: 22.5px;
-  background-color: #a2c72d;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  margin-top: 10px;
 `
 
 const ChangeSecretButton = styled.TouchableOpacity`
@@ -411,24 +249,9 @@ const ConfirmButton = styled.TouchableOpacity`
   elevation: 4;
 `
 
-const CardModal = styled.View`
-  width: 90%;
-  height: 400px;
-  background-color: #fff;
-  border-radius: 10px;
-  padding-horizontal: 20px;
-  padding-vertical: 20px;
-  align-items: center;
-  justify-content: space-around;
-  align-self: center;
-`
 const ConfirmText = styled(Text)`
   font-family: Roboto-Black;
   text-align: center;
   font-size: 16;
   color: #fff;
-`
-const QuestionText = styled(Text)`
-  font-size: 16;
-  text-align: center;
 `

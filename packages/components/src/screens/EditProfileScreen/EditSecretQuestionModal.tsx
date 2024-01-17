@@ -68,6 +68,7 @@ export const EditSecretQuestionModal = ({
           />
         </TextContainer>
         <Confirm
+          disabled={!isValid}
           onPress={() =>
             onConfirm({
               currentAnswer: oldSecretAnswer,

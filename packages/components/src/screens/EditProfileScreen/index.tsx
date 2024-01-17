@@ -19,20 +19,22 @@ import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvo
 import { ThemedModal } from '../../components/common/ThemedModal'
 import { Text } from '../../components/common/Text'
 import { TextInput } from '../../components/common/TextInput'
-import { VerticalSelectBox } from '../../components/common/VerticalSelectBox'
 import { translate } from '../../i18n'
 import _ from 'lodash'
-import { formatPassword, validatePassword } from '../../services/auth'
+import {
+  decrypt,
+  encrypt,
+  formatPassword,
+  hash,
+  validatePassword,
+  verifyStoreCredentials,
+} from '../../services/auth'
+import { EditSecretQuestionModal } from './EditSecretQuestionModal'
+import { v4 as uuidv4 } from 'uuid'
 
 const deviceWidth = Dimensions.get('window').width
 const minPasswordLength = 1
 const inputWidth = deviceWidth - 180
-const secretQuestions = [
-  'secret_question',
-  `favourite_actor`,
-  `favourite_teacher`,
-  `childhood_hero`,
-]
 
 function showAlert(message) {
   Alert.alert(
@@ -64,21 +66,20 @@ function showAcceptAlert(message) {
 }
 
 export function EditProfileScreen() {
-  const dispatch = useDispatch()
+  const reduxDispatch = useDispatch()
   const currentUser = useSelector(selectors.currentUserSelector)
   const appToken = useSelector(selectors.appTokenSelector)
+  const storeCredentials = useSelector(selectors.storeCredentialsSelector)
 
   const [name, setName] = React.useState(currentUser.name)
-  const [notValid, setNotValid] = React.useState(false)
   const [dateOfBirth, setDateOfBirth] = React.useState(currentUser.dateOfBirth)
   const [gender, setGender] = React.useState(currentUser.gender)
   const [location, setLocation] = React.useState(currentUser.location)
   const [password, setPassword] = React.useState(currentUser.password)
   const [secretAnswer, setSecretAnswer] = React.useState('')
-  const [oldSecretAnswer, setOldSecretAnswer] = React.useState('')
-  const [secretQuestion, setSecretQuestion] = React.useState(currentUser.secretQuestion)
   const [isVisible, setIsVisible] = React.useState(false)
-  const [secretIsVisible, setSecretIsVisible] = React.useState(false)
+
+  const [isSecretModalVisible, setIsSecretModalVisible] = React.useState(false)
 
   const remainingGenders = ['Female', 'Male', 'Other'].filter((item) => {
     return item !== currentUser.gender
@@ -97,15 +98,65 @@ export function EditProfileScreen() {
     //
   }
 
-  const onResetSecretConfirm = () => {
-    //
-  }
+  const onConfirmResetQuestion = async ({
+    currentAnswer,
+    newAnswer,
+  }: // question,
+  {
+    currentAnswer: string
+    newAnswer: string
+    question: string
+  }) => {
+    const usernameHash = hash(currentUser.name)
+    const credentials = storeCredentials[usernameHash]
 
-  /* 
-   When they confirm they will need to 
-  
-  
-  */
+    if (!credentials) {
+      return // TODO: ERROR ?
+    }
+
+    const currentAnswerCorrect = verifyStoreCredentials({
+      username: currentUser.name,
+      password: currentAnswer,
+      storeCredentials,
+      method: 'answer',
+    })
+
+    if (!currentAnswerCorrect) {
+      return // TODO: Show alert
+    }
+
+    const secretKey = decrypt(credentials.secretKeyEncryptedWithAnswer, currentAnswer)
+
+    const answer = formatPassword(newAnswer)
+    const secretKeyEncryptedWithAnswer = encrypt(secretKey, answer)
+
+    const answerSalt = uuidv4()
+    const answerHash = hash(answer + answerSalt)
+
+    try {
+      // TODO: Check user is guest
+
+      await httpClient.editUserSecretAnswer({
+        appToken,
+        previousSecretAnswer: formatPassword(currentAnswer),
+        nextSecretAnswer: answer,
+      })
+
+      // Update redux AFTER successful API request
+      reduxDispatch(
+        actions.editAnswer({
+          usernameHash,
+          answerSalt,
+          answerHash,
+          secretKeyEncryptedWithAnswer,
+        }),
+      )
+
+      setIsSecretModalVisible(false)
+    } catch (err) {
+      // TODO: Show alert, update failed
+    }
+  }
 
   return (
     <BackgroundTheme>
@@ -203,7 +254,7 @@ export function EditProfileScreen() {
                 style={{ height: '100%', justifyContent: 'space-between', marginBottom: 0 }}
                 label="password"
                 isValid={password.length >= minPasswordLength}
-                hasError={notValid && !(password.length >= minPasswordLength)}
+                // hasError={notValid && !(password.length >= minPasswordLength)}
                 onFocus={() => setShowPasscode(true)}
                 onBlur={() => setShowPasscode(false)}
                 secureTextEntry={!showPasscode}
@@ -217,7 +268,7 @@ export function EditProfileScreen() {
                 source={assets.static.icons.shieldL}
                 style={{ marginRight: 38, height: 57, width: 57 }}
               />
-              <ChangeSecretButton onPress={() => setSecretIsVisible(true)}>
+              <ChangeSecretButton onPress={() => setIsSecretModalVisible(true)}>
                 <ConfirmText>change_secret</ConfirmText>
               </ChangeSecretButton>
             </Row>
@@ -227,7 +278,8 @@ export function EditProfileScreen() {
           <ConfirmText style={{ color: '#000' }}>confirm</ConfirmText>
         </ConfirmButton>
       </PageContainer>
-      {/* --------------------------------- modals --------------------------------- */}
+
+      {/* ===== Modals ===== */}
       <ThemedModal {...{ isVisible, setIsVisible, onBackdropPress: () => null }}>
         <CardModal>
           <QuestionText>reset_password_question</QuestionText>
@@ -242,43 +294,11 @@ export function EditProfileScreen() {
         </CardModal>
       </ThemedModal>
 
-      <ThemedModal {...{ isVisible: secretIsVisible, setIsVisible: setSecretIsVisible }}>
-        <CardModal>
-          <QuestionText>reset_secret_question</QuestionText>
-
-          <TextContainer>
-            <TextInput
-              onChange={(value) => setOldSecretAnswer(value)}
-              label="old_secret_answer"
-              value={oldSecretAnswer}
-            />
-            <VerticalSelectBox
-              items={secretQuestions.map((questions) => (questions ? questions : ''))}
-              containerStyle={{
-                height: 45,
-                borderRadius: 22.5,
-              }}
-              height={45}
-              maxLength={20}
-              buttonStyle={{ right: 5, bottom: 7 }}
-              onValueChange={(value) => setSecretQuestion(value)}
-              errorHeading="secret_q_error_heading"
-              errorContent="secret_que_info"
-            />
-            <TextInput
-              onChange={(value) => setSecretAnswer(value)}
-              label="secret_answer"
-              isValid={secretAnswer.length >= minPasswordLength}
-              hasError={notValid && !(secretAnswer.length >= minPasswordLength)}
-              value={secretAnswer}
-              multiline={true}
-            />
-          </TextContainer>
-          <Confirm onPress={onResetSecretConfirm}>
-            <ConfirmText>confirm</ConfirmText>
-          </Confirm>
-        </CardModal>
-      </ThemedModal>
+      <EditSecretQuestionModal
+        isVisible={isSecretModalVisible}
+        setIsVisible={setIsSecretModalVisible}
+        onConfirm={onConfirmResetQuestion}
+      />
     </BackgroundTheme>
   )
 }

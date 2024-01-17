@@ -83,6 +83,20 @@ export function accessReducer(state = initialState(), action: Actions): AccessSt
         },
       }
 
+    case 'EDIT_ANSWER':
+      return {
+        ...state,
+        storeCredentials: {
+          ...state.storeCredentials,
+          [action.payload.usernameHash]: {
+            ...state.storeCredentials[action.payload.usernameHash],
+            answerSalt: action.payload.answerSalt,
+            answerHash: action.payload.answerHash,
+            secretKeyEncryptedWithAnswer: action.payload.secretKeyEncryptedWithAnswer,
+          },
+        },
+      }
+
     case 'SET_UP_NEW_STORE':
     case 'INITIATE_STORE_SWITCH':
       return {

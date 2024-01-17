@@ -12,6 +12,7 @@ const ACTIONS_TO_TRACK: ActionTypes[] = [
   'CLEAR_LAST_LOGIN',
   'DELETE_USER_ACCESS',
   'EDIT_PASSWORD',
+  'EDIT_ANSWER',
 ]
 
 function* onRehydrate() {

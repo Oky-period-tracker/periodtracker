@@ -44,7 +44,7 @@ export const VideoCategory = ({ onPress, isActive = false }) => {
   const tags = { primary: { name: 'videos', emoji: '🎥' } }
 
   return (
-    <CategoryContainer onPress={onPress}>
+    <CategoryContainer onPress={onPress} style={{ backgroundColor: '#FFE6E3' }}>
       <TitleContainer>
         <VideosTitle style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>videos</VideosTitle>
       </TitleContainer>

@@ -147,7 +147,7 @@ export function EncyclopediaScreen({ navigation }) {
               onChange={() => true}
               renderContent={(category: any) => (
                 <Row>
-                  {category.subCategories.map((subCategory) => (
+                  {category.subCategories.map((subCategoryId) => (
                     <SubCategoryCard
                       key={subCategoryId}
                       title={

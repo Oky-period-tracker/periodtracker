@@ -14,7 +14,7 @@ export class TermsAndConditionsController {
       where: { lang: request.params.lang },
     })
     const latest = allTermsAndConditionVersions[allTermsAndConditionVersions.length - 1]
-    return latest.json_dump
+    return latest?.json_dump || []
   }
 
   async all(request: Request, response: Response, next: NextFunction) {

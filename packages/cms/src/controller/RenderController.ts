@@ -490,15 +490,11 @@ export class RenderController {
   }
 
   async renderVideoManagement(request: Request, response: Response, next: NextFunction) {
-    const categories = await this.categoryRepository.find({
-      where: { lang: request.user.lang },
-    })
-
     const videos = await this.videoRepository.find({
       where: { lang: request.user.lang },
     })
 
-    this.render(response, 'Videos', { categories, videos })
+    this.render(response, 'Videos', { videos })
   }
 
   async renderUserManagement(request: Request, response: Response, next: NextFunction) {

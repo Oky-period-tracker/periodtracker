@@ -1,5 +1,5 @@
 <%- include('partials/Header') %>
-<%- include('modals/VideoModal', { categories }) %> 
+<%- include('modals/VideoModal') %> 
 <div class="homePageContainer">
   <div class="sideBar">
     <%- include('partials/SideTab') %> 
@@ -40,7 +40,6 @@
       <table class="table table-striped table-borderless tableFixHead table-responsive">
         <thead>
           <tr>
-            <th style="width: 15%" class="pointer" id="categoryTag"><%= __('Category Tag') %></th>
             <th style="width: 15%"><%= __('Title') %></th>
             <th style="width: 15%"><%= __('Youtube Id') %></th>
             <th style="width: 15%"><%= __('Asset name') %></th>
@@ -52,10 +51,13 @@
         <tbody style="overflow-y: scroll" id="videos">
           <% videos.forEach((video) =>{ %>
           <tr>
-            <td><%= categories.find(item => item.id === video.parent_category)?.title %></td>
             <td><%= video.title %></td>
-            <td><%= video.youtubeId %></td>
-            <td><%= video.assetName %></td>
+            <% if(!!video.youtubeId){ %>
+              <td><a href="https://www.youtube.com/watch?v=<%= (video.youtubeId) %>" target="_blank" style="color:#007bff;"><%= (video.youtubeId) %></a></td>
+            <% } else{ %>
+              <td>-</td>
+            <% } %>
+            <td><%= (video.assetName ? video.assetName : '-') %></td>
             <td>
               <button
                 type="button"
@@ -90,7 +92,6 @@
     </div>
   </div>
   <span id="videosJSON" hidden><%= JSON.stringify(videos); %> </span>
-  <span id="categoriesJSON" hidden><%= JSON.stringify(categories); %> </span>
   <script type="application/javascript" src="/scripts/videosViewScript.js"></script>
 </div>
 <%- include('partials/Footer') %>

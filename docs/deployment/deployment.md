@@ -17,6 +17,8 @@ Before deploying, check:
 
 ## Deploy the CMS and API
 
+Go [here](./deployment_overview.md) for a visual overview of the deployment and architecture.
+
 1. Create a DigitalOcean account & Project
 
 In order to create an account you will need to provide a payment method. You can use a credit card or Paypal. You will not be charged until you create a droplet/cluster.

@@ -66,19 +66,6 @@ If you're not in a simulator then you also need to run the following in a comman
 adb reverse tcp:8097 tcp:8097
 ```
 
-### Redux devtools
-
-```bash
-cd packages/mobile
-yarn remotedev
-```
-
-Open [http://localhost:8000](http://localhost:8000), then lunch the application. You may need to run:
-
-```bash
-adb reverse tcp:8000 tcp:8000
-```
-
 ---
 
 Use this command to allow the emulator to access the internet:

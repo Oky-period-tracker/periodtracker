@@ -15,7 +15,7 @@
     "database-sync:enable": "ts-node setDatabaseSync.ts --enable",
     "database-sync:disable": "ts-node setDatabaseSync.ts --disable",
     "install:pods": "if [ -z \"$DOCKER_ENV\" ]; then cd packages/mobile/ios && pod install; fi",
-    "rm": "yarn workspaces run rm && yarn cache clean",
+    "rm": "yarn workspaces run rm && yarn cache clean && rm -rf node_modules",
     "rm:docker": "docker stop $(docker ps -q); docker system prune -a",
     "reinstall": "yarn run rm && yarn",
     "clean": "yarn workspaces run clean",

@@ -121,7 +121,7 @@ cd packages/mobile
 npx react-native run-ios --simulator="iPhone 12 Pro"
 ```
 
-<strong>Note:</strong> you will need access to Unicef Apple developer account so you can create your developemnt certificate and profile before running the ios app using xcode. Please contact your product manager to gain access.
+<strong>Note:</strong> you will need access to Unicef Apple developer account so you can create your development certificate and profile before running the ios app using xcode. Please contact your product manager to gain access.
 
 ---
 

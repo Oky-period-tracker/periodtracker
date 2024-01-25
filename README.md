@@ -8,6 +8,8 @@ This is a period tracker application monorepo, consisting of a React Native app,
 
 [Start the Project](./docs/start_project.md)
 
+[Run the project locally](./docs/run_project.md)
+
 [Test the Project](./docs/tests.md)
 
 [Overview of deployment and architecture](./docs/deployment/deployment_overview.md)

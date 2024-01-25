@@ -83,6 +83,16 @@ brew install yarn
 
 ---
 
+## Cocoapods
+
+A dependency manager required for iOS development
+
+```bash
+brew install cocoapods
+```
+
+---
+
 ## Typescript
 
 It is not necessary to install typescript globally as it is installed as a dependency. However given that the project is a mono-repository it is crucial that the version of typescript is consistent throughout. This can be checked in the root directory with:

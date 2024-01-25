@@ -78,7 +78,7 @@ This will automatically download a json file, rename this as `firebase-config.js
 
 ### Push notifications
 
-You will need to enable push notifications so that users can send and receive notifications from the CMS. Follow the steps [above](https://learn.buildfire.com/en/articles/2060582-how-to-set-up-your-firebase-certificates-for-ios-and-android) to make sure everything is correctly configured. For Apple you will need to make sure you have added the [Apple Push Notificatios](https://learn.buildfire.com/en/articles/5760994-how-to-set-up-your-apple-push-notification-key-for-your-ios-firebase-certificate).
+You will need to enable push notifications so that users can send and receive notifications from the CMS. Follow the steps [above](https://learn.buildfire.com/en/articles/2060582-how-to-set-up-your-firebase-certificates-for-ios-and-android) to make sure everything is correctly configured. For Apple you will need to make sure you have added the [Apple Push Notifications](https://learn.buildfire.com/en/articles/5760994-how-to-set-up-your-apple-push-notification-key-for-your-ios-firebase-certificate).
 
 ### Crashalytics
 

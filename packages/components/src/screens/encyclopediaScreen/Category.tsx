@@ -127,5 +127,5 @@ const Title = styled(TextWithoutTranslation)`
 
 const VideosTitle = styled(Text)`
   font-family: Roboto-Black;
-  font-size: 18;
+  font-size: 22;
 `

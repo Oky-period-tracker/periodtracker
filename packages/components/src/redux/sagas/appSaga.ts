@@ -43,8 +43,6 @@ function* syncAppState() {
         appToken,
       })
 
-      const temp = yield put(actions.syncStore())
-
       lastAppState = appState
     } catch (err) {
       // ignore error, we'll try later

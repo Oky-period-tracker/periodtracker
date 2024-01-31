@@ -57,10 +57,6 @@ export function refreshStore(appState: any) {
   return createAction('REFRESH_STORE', appState)
 }
 
-export function syncStore() {
-  return createAction('SYNC_STORE')
-}
-
 export function verifyPeriodDayByUser(date: any) {
   return createAction('VERIFY_PERIOD_DAY', { date })
 }

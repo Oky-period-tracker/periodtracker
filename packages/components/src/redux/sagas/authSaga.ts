@@ -264,7 +264,6 @@ function* onLogoutRequest() {
   if (isTtsActive) {
     yield call(closeOutTTs)
     yield put(actions.setTtsActive(false))
-    yield put(actions.verifyPeriodDayByUser([])) // TODO_ALEX: survey
   }
   yield put(actions.updateAllSurveyContent([])) // TODO_ALEX: survey
   yield put(

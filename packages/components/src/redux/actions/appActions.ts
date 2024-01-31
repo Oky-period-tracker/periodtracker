@@ -56,7 +56,3 @@ export function setFuturePredictionActive(isFuturePredictionActive: boolean) {
 export function refreshStore(appState: any) {
   return createAction('REFRESH_STORE', appState)
 }
-
-export function verifyPeriodDayByUser(date: any) {
-  return createAction('VERIFY_PERIOD_DAY', { date })
-}

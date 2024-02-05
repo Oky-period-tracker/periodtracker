@@ -100,20 +100,27 @@ and then exit the postgres user
 exit
 ```
 
-From another terminal window that isn't connected to the droplet, get the IP of your cluster:
+From another terminal window that isn't connected to the droplet, get the IP of your nodes
 
 ```bash
 kubectl get nodes -o wide
 ```
 
-Copy paste the EXTERNAL IP
+If you have multiple nodes they should have similar EXTERNAL IPS, for example `123.45.67.000`, where only the last set of numbers vary
+
+Copy paste the EXTERNAL IP, of any of your nodes, it doesn't matter which
 
 Return to the droplet terminal
 
 Allow access to the droplet from this IP address
 
+The `/24` after the IP address means that the last 3 digits of the IP are allowed to vary, this allows all of your nodes to connect to the droplet, because each of your nodes IP addresses will vary in the last few numbers. If you have automatic scaling enabled for your cluster, your cluster may dynamically create new nodes with new IP addresses.
+
+> Please note that it is possible that your nodes change IP address in future, more than just the last 3 numbers, in which case you will need to update the droplet firewall and the pg_hba.conf file with the new IP address
+
 ```bash
-sudo ufw allow from YOUR_CLUSTER_IP to any port 5432
+sudo ufw allow from YOUR_NODE_IP/24 to any port 5432
+
 ```
 
 Allow connections to the droplet via SSH
@@ -179,8 +186,12 @@ Scroll down to find this section
 Enter the following below this section
 
 ```conf
-host    db_name  db_user_name       YOUR_CLUSTER_IP/32       md5
+host    db_name  db_user_name       YOUR_NODE_IP/24       md5
 ```
+
+As mentioned previously, the `/24` allows the last 3 digits of you IP to vary, to allow access to all of your nodes
+
+> Please note that it is possible that your nodes change IP address in future, more than just the last 3 numbers, in which case you will need to update the droplet firewall and the pg_hba.conf file with the new IP address
 
 Use `control x` to exit, then `y` to save and `enter` to confirm the file name.
 

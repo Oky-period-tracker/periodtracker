@@ -16,6 +16,12 @@ You have not yet created a schema, I recommend calling it `periodtracker`, if yo
 
 Next edit the `api.yaml` file, the changes here will be similar to the `cms.yaml` file except this file also requires a value for `DELETE_ACCOUNT_URL`, if you have not set up the `delete-account` website yet don't worry, you can do this later, but I recommend putting in a value for this URL anyway, so that you don't need to come back and edit this again after setting that up. eg `delete-account.yourdomain.com`
 
+To create a random string for the `APPLICATION_SECRET`, use this command:
+
+```bash
+openssl rand -base64 32
+```
+
 Check all the other values in these yaml files, eg the docker registry URL will also need to be updated
 
 ## Let's Encrypt

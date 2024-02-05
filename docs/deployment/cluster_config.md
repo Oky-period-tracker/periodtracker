@@ -52,6 +52,16 @@ Do the same for the passport secret
 kubectl create secret generic passport --from-literal=secret=<YOUR_PASSPORT_SECRET>
 ```
 
+Create a secret for `imagePullSecrets`. Use this command and replacing the placeholders with your real values. Make sure that the name of the secret eg `periodtracker-core-registry` matches the name in your `api.yaml` file.
+
+```bash
+kubectl create secret periodtracker-core-registry  \
+  --docker-server=registry.digitalocean.com/EXAMPLE_REGISTRY \
+  --docker-username=EXAMPLE_EMAIL_OR_USERNAME \
+  --docker-password=EXAMPLE_PASSWORD_OR_TOKEN \
+  --docker-email=EXAMPLE_EMAIL
+```
+
 You can check what secrets you have by running this command
 
 ```bash

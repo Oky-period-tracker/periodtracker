@@ -132,7 +132,20 @@ Run this command to get the IP address of the load balancer
 kubectl get svc -n ingress-nginx
 ```
 
-Copy paste the external IP address, and go to your domain name provider. Create A records for the API and CMS, both of which point to this same IP address. For example `api.example.com` & `cms.example.com`. Bear in mind that DNS propagation can take up to 48 hours.
+Copy paste the external IP address, and go to your domain name provider. Create 2 `A` records for the API and CMS, both of which point to this same IP address. For example `api.example.com` & `cms.example.com`. Bear in mind that DNS propagation can take up to 48 hours.
+
+Example:
+
+```
+cms.example.com.  A  123.45.67.89
+api.example.com.  A  123.45.67.89
+```
+
+You can use this command to verify that your DNS is set up correctly
+
+```bash
+nslookup cms.example.com
+```
 
 ## Container registry
 

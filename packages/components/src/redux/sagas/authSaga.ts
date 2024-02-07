@@ -4,7 +4,6 @@ import { Alert } from 'react-native'
 import { v4 as uuidv4 } from 'uuid'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
-import { exportReducerNames } from '../reducers'
 import { ReduxState } from '../store'
 import * as actions from '../actions'
 import * as selectors from '../selectors'
@@ -13,6 +12,7 @@ import { PredictionState } from '../../prediction'
 import moment from 'moment'
 import { closeOutTTs } from '../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../services/network'
+import { PartialStateSnapshot } from '../types/partialStore'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -95,20 +95,17 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     )
 
     if (store && store.storeVersion && store.appState) {
-      const newAppState = exportReducerNames.reduce((state, reducerName) => {
-        if (store.appState[reducerName]) {
-          return {
-            ...state,
-            [reducerName]: store.appState[reducerName],
-            app: { ...store.appState.app, appLocale: localeapp, locale: localeapp },
-          }
-        }
-
-        return state
-      }, {})
+      const partialState: PartialStateSnapshot = {
+        ...store.appState,
+        app: {
+          ...store.appState.app,
+          appLocale: localeapp,
+          locale: localeapp,
+        },
+      }
 
       // @TODO: execute migration based on storeVersion
-      yield put(actions.refreshStore(newAppState))
+      yield put(actions.refreshStore({ userID: user.id, ...partialState }))
     }
 
     yield delay(5000) // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones

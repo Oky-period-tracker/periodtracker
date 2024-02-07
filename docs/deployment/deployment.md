@@ -36,6 +36,8 @@ When everything is set up correctly you can quickly redeploy with this command, 
 yarn deploy:k8s
 ```
 
+If you are working on multiple projects with multiple teams, you will need to switch between digital ocean and k8s contexts, the commands to do this are outlined [here](./switch_context.md)
+
 ---
 
 ## Website

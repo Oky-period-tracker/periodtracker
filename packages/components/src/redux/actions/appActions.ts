@@ -1,5 +1,8 @@
 import { AvatarName, ThemeName } from '@oky/core'
 import { createAction } from '../helpers'
+import { ReduxState } from '../store'
+import { VerifiedDates } from '../reducers/answerReducer'
+import { PartialStateSnapshot } from '../types/partialStore'
 
 export function setTheme(theme: ThemeName) {
   return createAction('SET_THEME', { theme })
@@ -53,6 +56,10 @@ export function setFuturePredictionActive(isFuturePredictionActive: boolean) {
   return createAction('SET_FUTURE_PREDICTION_ACTIVE', { isFuturePredictionActive })
 }
 
-export function refreshStore(appState: any) {
-  return createAction('REFRESH_STORE', appState)
+export function refreshStore(
+  payload: {
+    userID: string
+  } & PartialStateSnapshot,
+) {
+  return createAction('REFRESH_STORE', payload)
 }

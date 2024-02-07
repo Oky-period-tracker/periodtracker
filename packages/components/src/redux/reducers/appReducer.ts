@@ -58,6 +58,15 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
         deviceId: action.payload?.app?.deviceId ? action.payload.app.deviceId : uuidv4(),
       }
     }
+    case 'REFRESH_STORE': {
+      if (!action?.payload?.app) {
+        return state
+      }
+      return {
+        ...state,
+        ...action.payload.app,
+      }
+    }
     case 'SET_THEME':
       return {
         ...state,

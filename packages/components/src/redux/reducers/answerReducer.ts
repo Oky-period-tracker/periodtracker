@@ -3,6 +3,13 @@ import { DailyCard } from '../../types'
 import { combineReducers } from 'redux'
 import { toShortISO } from '../../services/dateUtils'
 
+export interface VerifiedDates {
+  [utcShortISO: string]: {
+    periodDay: null | boolean
+    utcDateTime: string
+  }
+}
+
 export interface AnswerForUserState {
   surveys: {
     [id: string]: {
@@ -29,12 +36,7 @@ export interface AnswerForUserState {
   cards: {
     [utcShortISO: string]: DailyCard
   }
-  verifiedDates: {
-    [utcShortISO: string]: {
-      periodDay: null | boolean
-      utcDateTime: string
-    }
-  }
+  verifiedDates: VerifiedDates
   notes: {
     [utcShortISO: string]: {
       notes: string
@@ -126,6 +128,15 @@ function cardsReducer(state = {}, action: Actions): AnswerForUserState['cards'] 
   return state
 }
 function periodVerifyReducer(state = {}, action: Actions): AnswerForUserState['verifiedDates'] {
+  if (action.type === 'REFRESH_STORE') {
+    if (!action?.payload?.verifiedDates) {
+      return state
+    }
+    return {
+      ...action.payload.verifiedDates,
+    }
+  }
+
   if (action.type === 'ANSWER_VERIFY_DATES') {
     const keyCard = toShortISO(action.payload.utcDateTime)
     const answersToInsert = []
@@ -191,6 +202,12 @@ export function answerReducer(state: AnswerState = {}, action: Actions): AnswerS
     }
   }
   if (action.type === 'ANSWER_NOTES_CARD') {
+    return {
+      ...state,
+      [action.payload.userID]: answerForUserReducer(state[action.payload.userID], action),
+    }
+  }
+  if (action.type === 'REFRESH_STORE') {
     return {
       ...state,
       [action.payload.userID]: answerForUserReducer(state[action.payload.userID], action),

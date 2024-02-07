@@ -10,6 +10,16 @@ const initialState: PredictionState = null
 
 export function predictionReducer(state = initialState, action: Actions): PredictionState {
   switch (action.type) {
+    case 'REFRESH_STORE': {
+      if (!action?.payload?.prediction) {
+        return state
+      }
+      return {
+        ...state,
+        ...action.payload.prediction,
+      }
+    }
+
     case 'SET_PREDICTION_ENGINE_STATE':
       return action.payload.predictionState.toJSON()
 

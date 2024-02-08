@@ -39,6 +39,20 @@ export function ProfileScreen({ navigation }) {
   const { id: theme } = useTheme()
   const dispatch = useDispatch()
 
+  // Force rerender when History changes
+  // Fixes UI issue, cycle items being squashed when new ones added
+  // TODO: implement a better solution
+  const [refreshing, refresh] = React.useState(false)
+  React.useEffect(() => {
+    refresh(true)
+  }, [History])
+  React.useEffect(() => {
+    if (!refreshing) {
+      return
+    }
+    refresh(false)
+  }, [refreshing])
+
   const connectAccountCount = useSelector((state) => state.auth.connectAccountAttempts)
   const dateOfBirth = moment(currentUser.dateOfBirth)
 
@@ -56,7 +70,7 @@ export function ProfileScreen({ navigation }) {
     setError(true)
   }, [connectAccountCount, error, errorCode])
 
-  if (!currentUser) {
+  if (!currentUser || refreshing) {
     return <Empty />
   }
 

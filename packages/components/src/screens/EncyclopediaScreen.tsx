@@ -14,10 +14,10 @@ import _ from 'lodash'
 import { Avatar } from '../components/common/Avatar/Avatar'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { encyclopediaScreenText } from '../config'
-import analytics from '@react-native-firebase/analytics'
-import { VideoData } from '../types'
 import { useDispatch } from 'react-redux'
 import { logCategoryView, logSubCategoryView } from '../redux/actions'
+import analytics from '@react-native-firebase/analytics'
+import { VideoData } from '../types'
 
 export function EncyclopediaScreen({ navigation }) {
   const categories = useSelector(selectors.allCategoriesSelector)

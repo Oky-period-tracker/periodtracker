@@ -3,14 +3,23 @@ import styled from 'styled-components/native'
 import { Text, TextWithoutTranslation } from '../../components/common/Text'
 import { translate, capitalizeFLetter } from '../../i18n'
 import { assets } from '../../assets'
-import { Dimensions } from 'react-native'
-
-const width = Dimensions.get('window').width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 export const OnboardingCard = ({ image, heading, content }) => {
+  const aspectRatio = 0.93
+
+  const { screenWidth, screenHeight } = useScreenDimensions()
+
+  let width = screenWidth * 0.95
+  let height = width / aspectRatio
+  if (height > screenHeight) {
+    height = screenHeight * 0.8
+    width = height * aspectRatio
+  }
+
   return (
     <Container>
-      <Card>
+      <Card style={{ width, height }}>
         <WelcomeContainer>
           <LaunchContainer>
             <LaunchLogo resizeMode="contain" source={assets.static.launch_icon} />
@@ -48,8 +57,6 @@ const ContentText = styled(Text)`
 `
 
 const Card = styled.View`
-  height: 420px;
-  width: ${width * 0.95};
   elevation: 4;
   background-color: #fff;
   padding-horizontal: 20px;

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { CircleProgress } from './mainScreen/CircleProgress'
 import styled from 'styled-components/native'
@@ -26,6 +26,8 @@ import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import moment from 'moment'
 import { FlowerButton, FlowerModal } from '../optional/Flower'
+import { IS_TABLET } from '../config/tablet'
+import { useOrientation } from '../hooks/useOrientation'
 
 export function MainScreen({ navigation }) {
   const { data } = useInfiniteScroll()
@@ -72,37 +74,35 @@ const MainScreenActual = React.memo(() => {
   const { onFertile, onPeriod } = useTodayPrediction()
   const [isFlowerModalVisible, setFlowerModalVisible] = React.useState(false)
 
+  const orientation = useOrientation()
+  const wheelSectionWidth = IS_TABLET ? (orientation === 'LANDSCAPE' ? '35%' : '40%') : '65%'
+
   return (
     <BackgroundTheme>
       <TopSeparator>
         {onFertile && !onPeriod && (
           <InformationButton
             icon={assets.static.icons.infoBlue}
-            iconStyle={{ height: 25, width: 25 }}
-            style={{
-              marginTop: 'auto',
-              marginBottom: 'auto',
-              marginRight: 20,
-              alignSelf: 'flex-end',
-            }}
+            iconStyle={styles.icon}
+            style={styles.info}
           />
         )}
       </TopSeparator>
       <MiddleSection>
         <AvatarSection>
-          <Row style={{ zIndex: 999 }}>
+          <Row>
             <CircleProgress
               isCalendarTextVisible={true}
               onPress={() => navigate('Calendar', { verifiedPeriodsData: allCardsData })}
               fillColor="#FFC900"
               emptyFill="#F49200"
-              style={{ alignSelf: 'flex-start', marginLeft: 15 }}
+              style={styles.circle}
             />
-            <FlowerButton style={{ marginStart: 16 }} onPress={() => setFlowerModalVisible(true)} />
+            <FlowerButton style={styles.flowerButton} onPress={() => setFlowerModalVisible(true)} />
           </Row>
-          <Avatar style={{ position: 'absolute', top: Platform.OS === 'ios' ? 120 : 90 }} />
+          <Avatar style={styles.avatar} />
         </AvatarSection>
-        <WheelSection>
+        <WheelSection style={{ width: wheelSectionWidth }}>
           <CircularSelection
             {...{ data, index, isActive, currentIndex, absoluteIndex }}
             fetchCardValues={getCardAnswersValues}
@@ -131,6 +131,7 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
+  justify-content: space-between;
 `
 const AvatarSection = styled.View`
   flex-direction: column;
@@ -146,16 +147,41 @@ const Row = styled.View`
 `
 const WheelSection = styled.View`
   height: 100%;
-  width: 65%;
   align-items: center;
   justify-content: center;
   flex-direction: row;
 `
+
 const CarouselSection = styled.View`
   height: 30%;
-  padding-bottom: 20px;
+  padding-bottom: ${IS_TABLET ? 40 : 20}px;
   width: 100%;
   align-items: center;
   justify-content: center;
   flex-direction: row;
 `
+
+const styles = StyleSheet.create({
+  icon: {
+    height: 25,
+    width: 25,
+  },
+  info: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    marginRight: 20,
+    alignSelf: 'flex-end',
+  },
+  flowerButton: {
+    marginStart: 16,
+  },
+  avatar: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 120 : 90,
+  },
+  circle: {
+    alignSelf: 'flex-start',
+    marginLeft: 15,
+    backgroundColor: 'red',
+  },
+})

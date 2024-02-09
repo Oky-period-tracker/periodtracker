@@ -191,5 +191,9 @@
   "Response": "Response",
   "analytics_description_1": "Ciertas métricas incluidas en estos análisis se basan en datos que no se recopilaron en versiones anteriores de la aplicación. Como resultado, estas cifras reflejan predominantemente la actividad de la versión más reciente de la aplicación. No se registró información relativa al uso antes de la fecha de actualización. Además, los usuarios que no han actualizado a la versión más reciente de la aplicación no aportan estos datos de seguimiento específicos.",
   "analytics_description_2": "El número 'total' de usuarios es cada usuario almacenado en la tabla de usuarios. Los usuarios cuentan como 'activos' si han realizado al menos una de las acciones enumeradas, dentro del período de tiempo seleccionado anteriormente.",
-  "analytics_description_3": "Essas tabelas apresentam um instantâneo atual da atividade do usuário e não rastreiam alterações ao longo do tempo. Como resultado, a aplicação de filtros de data não alterará os dados exibidos."
+  "analytics_description_3": "Essas tabelas apresentam um instantâneo atual da atividade do usuário e não rastreiam alterações ao longo do tempo. Como resultado, a aplicação de filtros de data não alterará os dados exibidos.",
+  "Youtube Id": "Youtube Id",
+  "Asset name": "Nombre del activo",
+  "Videos": "Videos",
+  "Add Video": "Añadir video"
 }

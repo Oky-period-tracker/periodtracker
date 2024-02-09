@@ -7,6 +7,7 @@ import { Avatar } from '../../components/common/Avatar/Avatar'
 import { assets } from '../../assets'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
+import { IS_TABLET } from '../../config/tablet'
 
 export function JourneyCard({
   question,
@@ -153,8 +154,7 @@ const WhiteContainer = styled.View`
   flex: 1;
   width: 100%;
   background-color: #fff;
-  padding-vertical: 25px;
-  padding-horizontal: 30px;
+  padding: ${IS_TABLET ? '56px' : '28px'};
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   align-items: center;

@@ -41,13 +41,13 @@ export const TextInputSettings = ({
         {isValid && !hasError ? (
           <Icon
             source={assets.static.icons.tick}
-            style={{ position: 'absolute', right: -30, bottom: 5 }}
+            style={{ position: 'absolute', right: 0, bottom: 5 }}
           />
         ) : null}
         {hasError ? (
           <Icon
             source={assets.static.icons.closeLine}
-            style={{ position: 'absolute', right: -30, bottom: 5 }}
+            style={{ position: 'absolute', right: 0, bottom: 5 }}
           />
         ) : null}
       </Row>

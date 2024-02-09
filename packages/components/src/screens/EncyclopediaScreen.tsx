@@ -28,6 +28,7 @@ export function EncyclopediaScreen({ navigation }) {
   const [activeCategories, setActiveCategory] = React.useState([])
   const [isVideoTabActive, setVideoTabActive] = React.useState(false)
   const [filteredCategories, setFilteredCategories] = React.useState(categories)
+  // TODO_ALEX redundant useState?
   const [shownCategories, setShownCategories] = React.useState(categories)
   const [searching, setSearching] = React.useState(false)
   const [position] = React.useState(new Animated.Value(0))
@@ -35,6 +36,7 @@ export function EncyclopediaScreen({ navigation }) {
   const dispatch = useDispatch()
 
   const categoryNames = categories.map((item) => item?.name)
+  // TODO_ALEX redundant useState & useEffect?
   const [textArray, setTextArray] = React.useState(categoryNames)
   useTextToSpeechHook({ navigation, text: encyclopediaScreenText(categories) })
 

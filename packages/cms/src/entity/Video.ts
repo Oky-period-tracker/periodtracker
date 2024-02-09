@@ -14,9 +14,6 @@ export class Video {
   @Column({ nullable: true })
   assetName: string | null
 
-  @Column()
-  parent_category: string
-
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   date_created: string
 

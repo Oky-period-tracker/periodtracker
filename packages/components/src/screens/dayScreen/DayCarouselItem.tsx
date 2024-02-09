@@ -48,7 +48,7 @@ export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }
         </TitleText>
         <ContentText>{contentText[cardName]}</ContentText>
       </Row>
-      <Row style={{ height: 50, width: '100%', marginBottom: 5 }}>
+      <Row style={{ minHeight: 50, width: '100%', marginBottom: 5 }}>
         {dataEntry.onPeriod && (
           <Icon source={source} style={{ height: 30, width: 30, marginRight: 10 }} />
         )}

@@ -12,11 +12,7 @@ import { navigate } from '../services/navigationService'
 import { useInfiniteScroll } from './mainScreen/wheelCarousel/useInfiniteScroll'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { mainScreenSpeech } from '../config'
-import {
-  useTodayPrediction,
-  useHistoryPrediction,
-  useFullState,
-} from '../components/context/PredictionProvider'
+import { useTodayPrediction, useHistoryPrediction } from '../components/context/PredictionProvider'
 import { useRandomText } from '../hooks/useRandomText'
 import { InformationButton } from '../components/common/InformationButton'
 import { assets } from '../assets'
@@ -47,7 +43,6 @@ const MainScreenContainer = ({ navigation }) => {
   const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
   const userID = useSelector(selectors.currentUserSelector).id
-  const fullState = useFullState()
   const history = useHistoryPrediction()
   const currentUser = useSelector(selectors.currentUserSelector)
 
@@ -62,15 +57,9 @@ const MainScreenContainer = ({ navigation }) => {
 
 const MainScreenActual = React.memo(() => {
   const { data, index, isActive, currentIndex, absoluteIndex } = useInfiniteScroll()
-  // TODO_ALEX: DO NOT USE HOOKS LIKE THIS
-  const renamedUseSelector = useSelector
-  const allCardsData = renamedUseSelector((state) => selectors.allCardAnswersSelector(state))
-  const getCardAnswersValues = (inputDay: any) => {
-    const verifiedPeriodDaysData = renamedUseSelector((state) =>
-      selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDay.date)),
-    )
-    return verifiedPeriodDaysData
-  }
+
+  const allCardsData = useSelector((state) => selectors.allCardAnswersSelector(state))
+
   const { onFertile, onPeriod } = useTodayPrediction()
   const [isFlowerModalVisible, setFlowerModalVisible] = React.useState(false)
 
@@ -103,10 +92,7 @@ const MainScreenActual = React.memo(() => {
           <Avatar style={styles.avatar} />
         </AvatarSection>
         <WheelSection style={{ width: wheelSectionWidth }}>
-          <CircularSelection
-            {...{ data, index, isActive, currentIndex, absoluteIndex }}
-            fetchCardValues={getCardAnswersValues}
-          />
+          <CircularSelection {...{ data, index, isActive, currentIndex, absoluteIndex }} />
           <CenterCard />
         </WheelSection>
       </MiddleSection>

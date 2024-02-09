@@ -1,7 +1,22 @@
 import React from 'react'
-import { TouchableOpacity, Image, StyleSheet } from 'react-native'
-import { assets } from '../../../assets/index'
 import { IS_TABLET } from '../../../config/tablet'
+import {
+  TouchableOpacity,
+  Image,
+  ImageProps,
+  TouchableOpacityProps,
+  StyleSheet,
+} from 'react-native'
+import { assets } from '../../../assets'
+
+type Props = Omit<ImageProps, 'source'> & {
+  name: string
+  onPress: () => void
+  width?: number
+  height?: number
+  touchableStyle?: TouchableOpacityProps['style']
+  disabled?: boolean
+}
 
 const defaultSize = IS_TABLET ? 32 : 20
 
@@ -13,7 +28,7 @@ export const IconButton = ({
   touchableStyle = null,
   disabled = false,
   ...props
-}) => {
+}: Props) => {
   return (
     <TouchableOpacity
       disabled={disabled}

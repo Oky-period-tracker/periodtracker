@@ -3,6 +3,8 @@ import { Actions } from '../types'
 import { currentLocale } from '../../i18n'
 import DeviceInfo from 'react-native-device-info'
 import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from '@oky/core'
+import { v4 as uuidv4 } from 'uuid'
+import { RehydrateAction, REHYDRATE } from 'redux-persist'
 
 export interface AppState {
   appLocale: string
@@ -22,6 +24,8 @@ export interface AppState {
   verifiedDates: any
   predicted_cycles: any
   predicted_periods: any
+  deviceId?: string
+  dailyCardLastUsed?: number
 }
 
 const initialState: AppState = {
@@ -42,17 +46,16 @@ const initialState: AppState = {
   verifiedDates: [],
   predicted_cycles: [],
   predicted_periods: [],
+  deviceId: uuidv4(),
 }
 
-export function appReducer(state = initialState, action: Actions): AppState {
+export function appReducer(state = initialState, action: Actions | RehydrateAction): AppState {
   switch (action.type) {
-    case 'REFRESH_STORE': {
-      if (!action?.payload?.app) {
-        return state
-      }
+    case REHYDRATE: {
       return {
         ...state,
-        ...action.payload.app,
+        ...(action.payload && action.payload.app),
+        deviceId: action.payload?.app?.deviceId ? action.payload.app.deviceId : uuidv4(),
       }
     }
     case 'SET_THEME':
@@ -121,6 +124,12 @@ export function appReducer(state = initialState, action: Actions): AppState {
         ...state,
         verifiedDates: action.payload.date,
       }
+    case 'DAILY_CARD_USED': {
+      return {
+        ...state,
+        dailyCardLastUsed: new Date().getTime(),
+      }
+    }
     default:
       return state
   }

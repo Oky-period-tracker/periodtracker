@@ -40,4 +40,6 @@ export class SignupRequest {
     message: 'Secret answer is too short',
   })
   public readonly secretAnswer: string
+
+  public readonly dateSignedUp: string
 }

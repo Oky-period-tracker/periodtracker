@@ -15,8 +15,9 @@ import { Avatar } from '../components/common/Avatar/Avatar'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { encyclopediaScreenText } from '../config'
 import analytics from '@react-native-firebase/analytics'
-import { fetchNetworkConnectionStatus } from '../services/network'
 import { VideoData } from '../types'
+import { useDispatch } from 'react-redux'
+import { logCategoryView, logSubCategoryView } from '../redux/actions'
 
 export function EncyclopediaScreen({ navigation }) {
   const categories = useSelector(selectors.allCategoriesSelector)
@@ -30,7 +31,8 @@ export function EncyclopediaScreen({ navigation }) {
   const [shownCategories, setShownCategories] = React.useState(categories)
   const [searching, setSearching] = React.useState(false)
   const [position] = React.useState(new Animated.Value(0))
-  const currentUser = useSelector(selectors.currentUserSelector)
+
+  const dispatch = useDispatch()
 
   const categoryNames = categories.map((item) => item?.name)
   const [textArray, setTextArray] = React.useState(categoryNames)
@@ -48,15 +50,6 @@ export function EncyclopediaScreen({ navigation }) {
     const paddingToBottom = 20
     return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom
   }
-
-  React.useEffect(() => {
-    if (fetchNetworkConnectionStatus() && currentUser) {
-      analytics().logEvent('users_accessing_encyclopedia', { user: currentUser })
-    }
-    setShownCategories(categories)
-    setActiveCategory([])
-    setFilteredCategories(categories)
-  }, [categories])
 
   React.useEffect(() => {
     if (!_.isEmpty(activeCategories)) {
@@ -142,11 +135,8 @@ export function EncyclopediaScreen({ navigation }) {
                   title={category.name}
                   tags={category.tags}
                   onPress={() => {
-                    analytics().logScreenView({
-                      screen_class: 'ActiveCateogrey',
-                      screen_name: 'CategoriesTapCount',
-                    })
                     setActiveCategory(isActive ? [] : [i])
+                    dispatch(logCategoryView({ categoryId: category.id }))
                   }}
                   {...{ isActive }}
                 />
@@ -155,22 +145,19 @@ export function EncyclopediaScreen({ navigation }) {
               onChange={() => true}
               renderContent={(category: any) => (
                 <Row>
-                  {category.subCategories.map((subCategory) => (
+                  {category.subCategories.map((subCategoryId) => (
                     <SubCategoryCard
-                      key={subCategory}
+                      key={subCategoryId}
                       title={
                         (
-                          subCategories.find((item) => item?.id === subCategory) || {
+                          subCategories.find((item) => item?.id === subCategoryId) || {
                             name: 'no_name',
                           }
                         ).name
                       }
                       onPress={() => {
-                        analytics().logScreenView({
-                          screen_class: 'ActiveSubCateogrey',
-                          screen_name: 'SubCategoriesTapCount',
-                        })
-                        navigate('Articles', { subCategory })
+                        navigate('Articles', { subCategory: subCategoryId })
+                        dispatch(logSubCategoryView({ subCategoryId }))
                       }}
                     />
                   ))}

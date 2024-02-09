@@ -182,6 +182,6 @@ const styles = StyleSheet.create({
   circle: {
     alignSelf: 'flex-start',
     marginLeft: 15,
-    backgroundColor: 'red',
+    backgroundColor: '#FF8C00',
   },
 })

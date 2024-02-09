@@ -17,6 +17,7 @@ export function loginSuccess({
     password,
     secretQuestion,
     secretAnswer,
+    dateSignedUp,
   },
 }) {
   return createAction('LOGIN_SUCCESS', {
@@ -32,6 +33,7 @@ export function loginSuccess({
       password,
       secretQuestion,
       secretAnswer,
+      dateSignedUp,
     },
   })
 }
@@ -47,6 +49,7 @@ export function loginSuccessAsGuestAccount({
   password,
   secretQuestion,
   secretAnswer,
+  dateSignedUp,
 }) {
   return createAction('LOGIN_SUCCESS_AS_GUEST_ACCOUNT', {
     id,
@@ -59,6 +62,7 @@ export function loginSuccessAsGuestAccount({
     password,
     secretQuestion,
     secretAnswer,
+    dateSignedUp,
   })
 }
 
@@ -120,6 +124,7 @@ export function createAccountSuccess({
     province,
     secretQuestion,
     secretAnswer,
+    dateSignedUp,
   },
 }) {
   return createAction('CREATE_ACCOUNT_SUCCESS', {
@@ -135,6 +140,7 @@ export function createAccountSuccess({
       password,
       secretQuestion,
       secretAnswer,
+      dateSignedUp,
     },
   })
 }

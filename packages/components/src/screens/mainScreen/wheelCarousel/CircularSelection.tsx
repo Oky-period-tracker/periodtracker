@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Dimensions, View, ActivityIndicator } from 'react-native'
+import { View } from 'react-native'
 import Animated from 'react-native-reanimated'
 import { transformOrigin } from 'react-native-redash'
 import { CircularElement } from './CircularElement'
@@ -14,14 +14,13 @@ import { ThemedModal } from '../../../components/common/ThemedModal'
 import { SpinLoader } from '../../../components/common/SpinLoader'
 import moment from 'moment'
 import { ReduxState } from '../../../redux/store'
+import { IS_TABLET } from '../../../config/tablet'
+import { useOrientation } from '../../../hooks/useOrientation'
+import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 
 const reduxState = (state: ReduxState) => state
 
 const { interpolate } = Animated
-const height = 0.55 * Dimensions.get('window').height
-const width = 0.65 * Dimensions.get('window').width
-const D = height / 1.6
-const innerR = D / 2
 
 export function CircularSelection({
   data,
@@ -32,6 +31,18 @@ export function CircularSelection({
   disableInteraction = false,
   fetchCardValues,
 }) {
+  const { screenWidth, screenHeight } = useScreenDimensions()
+  const orientation = useOrientation()
+
+  const heightMultiplier = IS_TABLET && orientation === 'PORTRAIT' ? 0.6 : 0.55
+
+  const height = screenHeight * heightMultiplier
+
+  const width = IS_TABLET ? 0.6 * screenWidth : 0.65 * screenWidth
+
+  const D = height / 1.6
+  const innerR = D / 2
+
   const [isVisible, setIsVisible] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const l = Math.sin(Math.PI / data.length)
@@ -44,6 +55,7 @@ export function CircularSelection({
     inputRange: [0, data.length],
     outputRange: [0, -2 * Math.PI],
   })
+
   const isTutorialOneOn = useSelector(selectors.isTutorialOneActiveSelector)
   const checkIfWarning = useCheckDayWarning()
   // automatically close the modal if the wheel start scrolling
@@ -123,8 +135,8 @@ export function CircularSelection({
                 setIsVisible(true)
               }}
               style={{
-                height: 60,
-                width: 80,
+                height: 100,
+                width: 100,
                 marginTop: cy,
               }}
             />

@@ -1,10 +1,13 @@
 import Modal from 'react-native-modal'
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { IconButton } from './buttons/IconButton'
+import { translate } from '../../i18n'
 
 export function ThemedModal({
   isVisible,
   setIsVisible,
+  includeCloseButton = true,
   children,
   onModalHide = () => null,
   onModalWillShow = () => null,
@@ -19,6 +22,13 @@ export function ThemedModal({
     <Modal
       isVisible={isVisible}
       backdropOpacity={backdropOpacity}
+      customBackdrop={
+        <TouchableOpacity
+          onPress={onBackdropPress}
+          importantForAccessibility="no-hide-descendants"
+          style={styles.backdrop}
+        />
+      }
       // @ts-ignore
       animationIn={animationIn}
       // @ts-ignore
@@ -33,7 +43,27 @@ export function ThemedModal({
       hideModalContentWhileAnimating={true}
       useNativeDriver={true}
     >
+      {includeCloseButton ? (
+        <IconButton
+          name="close"
+          accessibilityLabel="close"
+          onPress={() => setIsVisible(false)}
+          touchableStyle={styles.close}
+        />
+      ) : null}
       {children}
     </Modal>
   )
 }
+
+const styles = StyleSheet.create({
+  close: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+  backdrop: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
+})

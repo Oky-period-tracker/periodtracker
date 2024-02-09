@@ -2,13 +2,11 @@ import _ from 'lodash'
 import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
 import { httpClient } from '../../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../../services/network'
-import { extractReducerState } from '../sync'
-import { exportReducerNames } from '../reducers'
 import { version as storeVersion, ReduxState } from '../store'
 import * as actions from '../actions'
 import * as selectors from '../selectors'
 import messaging from '@react-native-firebase/messaging'
-import { ExtractActionFromActionType } from '../types'
+import { PartialStateSnapshot } from '../types/partialStore'
 
 function* syncAppState() {
   let lastAppState
@@ -18,13 +16,19 @@ function* syncAppState() {
     yield delay(60 * 1000)
 
     const appToken = yield select(selectors.appTokenSelector)
-    if (!appToken) {
+    const currentUser = yield select(selectors.currentUserSelector)
+
+    if (!appToken || !currentUser) {
       // not logged
       continue
     }
 
     const state: ReduxState = yield select()
-    const appState = extractReducerState(state, exportReducerNames)
+    const appState: PartialStateSnapshot = {
+      app: state.app,
+      prediction: state.prediction,
+      verifiedDates: state.answer[currentUser?.id]?.verifiedDates,
+    }
 
     if (_.isEqual(appState, lastAppState)) {
       // bailout, nothing changed from last sync
@@ -42,8 +46,6 @@ function* syncAppState() {
         appState,
         appToken,
       })
-
-      const temp = yield put(actions.syncStore())
 
       lastAppState = appState
     } catch (err) {

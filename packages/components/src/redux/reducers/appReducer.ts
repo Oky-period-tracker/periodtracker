@@ -21,7 +21,7 @@ export interface AppState {
   isFuturePredictionActive: boolean
   theme: ThemeName
   avatar: AvatarName
-  verifiedDates: any
+  verifiedDates: any // unused(?)
   predicted_cycles: any
   predicted_periods: any
   deviceId?: string
@@ -56,6 +56,15 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
         ...state,
         ...(action.payload && action.payload.app),
         deviceId: action.payload?.app?.deviceId ? action.payload.app.deviceId : uuidv4(),
+      }
+    }
+    case 'REFRESH_STORE': {
+      if (!action?.payload?.app) {
+        return state
+      }
+      return {
+        ...state,
+        ...action.payload.app,
       }
     }
     case 'SET_THEME':
@@ -119,11 +128,7 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
         ...state,
         isFuturePredictionActive: action.payload.isFuturePredictionActive,
       }
-    case 'VERIFY_PERIOD_DAY':
-      return {
-        ...state,
-        verifiedDates: action.payload.date,
-      }
+
     case 'DAILY_CARD_USED': {
       return {
         ...state,

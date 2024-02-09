@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
+import { AppAssets } from '@oky/core'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 import { Platform } from 'react-native'
 import { IS_TABLET } from '../../config/tablet'
-import { AppAssets } from '@oky/core'
 
 export const NavigationBar = ({
   focused,

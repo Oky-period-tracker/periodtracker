@@ -13,6 +13,7 @@ export interface User {
   password: string
   secretQuestion: string
   secretAnswer: string
+  dateSignedUp: string
   isGuest: boolean
 }
 
@@ -71,6 +72,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
           password: action.payload.user.password,
           secretQuestion: action.payload.user.secretQuestion,
           secretAnswer: action.payload.user.secretAnswer,
+          dateSignedUp: action.payload.user.dateSignedUp,
           isGuest: false,
         },
       }
@@ -92,6 +94,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
           password: action.payload.password,
           secretQuestion: action.payload.secretQuestion,
           secretAnswer: action.payload.secretAnswer,
+          dateSignedUp: action.payload.dateSignedUp,
           isGuest: true,
         },
       }

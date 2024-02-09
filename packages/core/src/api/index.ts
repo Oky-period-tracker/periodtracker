@@ -25,6 +25,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       password,
       secretQuestion,
       secretAnswer,
+      dateSignedUp,
       preferredId = null,
     }: any) => {
       const response: AxiosResponse<types.SignupResponse> = await axios.post(
@@ -39,6 +40,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
           password,
           secretAnswer,
           secretQuestion,
+          dateSignedUp,
           preferredId,
         },
       )

@@ -14,7 +14,15 @@ var directDownloads = JSON.parse($('#directDownloadsJSON').text())
 $('#currentCountry').change(() => {
   dashBarChart(usersProvinces[$('#currentCountry').val()], 'usersProvincesGraph')
 })
-const loadInitialChart = ({usersGenders, usersLocations,usersAgeGroups, usersCountries, usersProvinces, userShares, directDownloads}) => {
+const loadInitialChart = ({
+  usersGenders,
+  usersLocations,
+  usersAgeGroups,
+  usersCountries,
+  usersProvinces,
+  userShares,
+  directDownloads,
+}) => {
   dashPieChart(
     {
       Male: usersGenders[0].total_male,
@@ -46,19 +54,27 @@ const loadInitialChart = ({usersGenders, usersLocations,usersAgeGroups, usersCou
 
 $(document).ready(() => {
   console.log(usersProvinces)
-  loadInitialChart({usersGenders, usersLocations,usersAgeGroups, usersCountries, usersProvinces, userShares, directDownloads});
+  loadInitialChart({
+    usersGenders,
+    usersLocations,
+    usersAgeGroups,
+    usersCountries,
+    usersProvinces,
+    userShares,
+    directDownloads,
+  })
   dashLineChart(userShares, 'userShareGraph')
   dashLineChart(directDownloads, 'directDownloadsGraph')
 })
 
-$('#graphModal').on('show.bs.modal', event => {
+$('#graphModal').on('show.bs.modal', (event) => {
   const button = $(event.relatedTarget) // Button that triggered the modal
   var request = button.data('value') // Extract info from data-* attributes
   const requestInfo = switchActions(request)
   renderPieChart(requestInfo.chartDataFormat, 'chartDiv')
 })
 
-$('#graphModal').on('hide.bs.modal', event => {
+$('#graphModal').on('hide.bs.modal', (event) => {
   !!chart ? chart.dispose() : null
 })
 
@@ -103,7 +119,7 @@ $('#downloadCSV').on('click', () => {
 })
 
 exportToCsv = (filename, rows) => {
-  var processRow = function(row) {
+  var processRow = function (row) {
     var finalVal = ''
     for (var j = 0; j < row.length; j++) {
       var innerValue = row[j] === null ? '' : row[j].toString()
@@ -143,7 +159,7 @@ exportToCsv = (filename, rows) => {
   }
 }
 
-switchActions = input => {
+switchActions = (input) => {
   switch (input) {
     case 'userLocation':
       return {
@@ -163,14 +179,14 @@ switchActions = input => {
     case 'usersAgeGroups':
       return {
         chartDataFormat: {
-            'Under 10': usersAgeGroups[0].under_10,
-            '10 to 11': usersAgeGroups[0].between_10_11,
-            '12 - 13': usersAgeGroups[0].between_12_13,
-            '14 - 15': usersAgeGroups[0].between_14_15,
-            '16 - 17': usersAgeGroups[0].between_16_17,
-            '18 - 19': usersAgeGroups[0].between_18_19,
-            '20 - 21': usersAgeGroups[0].between_20_21,
-            'Over 22': usersAgeGroups[0].greater_than_22,
+          'Under 10': usersAgeGroups[0].under_10,
+          '10 to 11': usersAgeGroups[0].between_10_11,
+          '12 - 13': usersAgeGroups[0].between_12_13,
+          '14 - 15': usersAgeGroups[0].between_14_15,
+          '16 - 17': usersAgeGroups[0].between_16_17,
+          '18 - 19': usersAgeGroups[0].between_18_19,
+          '20 - 21': usersAgeGroups[0].between_20_21,
+          'Over 22': usersAgeGroups[0].greater_than_22,
         },
       }
     case 'usersCountries':
@@ -237,7 +253,7 @@ renderPieChart = (data, location) => {
   pieSeries.legendSettings.valueText = '{value.value} '
   pieSeries.slices.template.states.getKey('hover').properties.shiftRadius = 0
   pieSeries.slices.template.states.getKey('hover').properties.scale = 1.1
-  chart.legend.scrollable = true;
+  chart.legend.scrollable = true
 }
 
 dashPieChart = (data, location) => {
@@ -317,25 +333,24 @@ dashBarChart = (data, location) => {
   categoryAxis.dataFields.category = 'answer'
   categoryAxis.renderer.grid.template.location = 0
   categoryAxis.renderer.minGridDistance = 50
-  categoryAxis.events.on("sizechanged", function(ev) {
-    var axis = ev.target;
-      var cellWidth = axis.pixelWidth / (axis.endIndex - axis.startIndex);
-      if (cellWidth < axis.renderer.labels.template.maxWidth) {
-        axis.renderer.labels.template.rotation = -20;
-        axis.renderer.labels.template.horizontalCenter = "right";
-        axis.renderer.labels.template.verticalCenter = "middle";
-      }
-      else {
-        axis.renderer.labels.template.rotation = 0;
-        axis.renderer.labels.template.horizontalCenter = "middle";
-        axis.renderer.labels.template.verticalCenter = "top";
-      }
-    });
-  var label = categoryAxis.renderer.labels.template;
-  label.wrap = true;
-  label.truncate = true;
-  label.maxWidth = 200;
-  categoryAxis.renderer.labels.template.adapter.add('dy', function(dy, target) {
+  categoryAxis.events.on('sizechanged', function (ev) {
+    var axis = ev.target
+    var cellWidth = axis.pixelWidth / (axis.endIndex - axis.startIndex)
+    if (cellWidth < axis.renderer.labels.template.maxWidth) {
+      axis.renderer.labels.template.rotation = -20
+      axis.renderer.labels.template.horizontalCenter = 'right'
+      axis.renderer.labels.template.verticalCenter = 'middle'
+    } else {
+      axis.renderer.labels.template.rotation = 0
+      axis.renderer.labels.template.horizontalCenter = 'middle'
+      axis.renderer.labels.template.verticalCenter = 'top'
+    }
+  })
+  var label = categoryAxis.renderer.labels.template
+  label.wrap = true
+  label.truncate = true
+  label.maxWidth = 200
+  categoryAxis.renderer.labels.template.adapter.add('dy', function (dy, target) {
     if (target.dataItem && target.dataItem.index & (2 == 2)) {
       return dy + 25
     }
@@ -383,32 +398,33 @@ dashLineChart = (data, location) => {
   //chart.scrollbarY = new am4core.Scrollbar();
   lineChart.scrollbarX = new am4core.Scrollbar()
 }
+
 //global filter for analytics page
-const filterAnalyticsPage = ({gender, location}) => {
-  $.ajax({
-    url: `/analytics-management?gender=${gender}&location=${location}`,
-    type: 'get',
-    headers: { Accept: 'application/json'},
-    success: result => {
-       usersLocations = result.usersLocations;
-        usersGenders = result.usersGenders;
-        usersAgeGroups = result.usersAgeGroups;
-        usersCountries = result.usersCountries;
-        usersProvinces = result.usersProvinces;
-        userShares = result.usersShares;
-        directDownloads = result.directDownloads
-      loadInitialChart({...result});
-    },
-    error: error => {
-      console.log(error)
-    },
-  })
-}
-$('#currentGender').on('change', e => {
-  let location = $('#currentLoc').val();
-  filterAnalyticsPage({location, gender: e.target.value})
-})
-$('#currentLoc').on('change',e => {
-  let gender = $('#currentGender').val();
-  filterAnalyticsPage({gender, location: e.target.value});
-})
+// const filterAnalyticsPage = ({gender, location}) => {
+//   $.ajax({
+//     url: `/analytics-management?gender=${gender}&location=${location}`,
+//     type: 'get',
+//     headers: { Accept: 'application/json'},
+//     success: result => {
+//        usersLocations = result.usersLocations;
+//         usersGenders = result.usersGenders;
+//         usersAgeGroups = result.usersAgeGroups;
+//         usersCountries = result.usersCountries;
+//         usersProvinces = result.usersProvinces;
+//         userShares = result.usersShares;
+//         directDownloads = result.directDownloads
+//       loadInitialChart({...result});
+//     },
+//     error: error => {
+//       console.log(error)
+//     },
+//   })
+// }
+// $('#currentGender').on('change', e => {
+//   let location = $('#currentLoc').val();
+//   filterAnalyticsPage({location, gender: e.target.value})
+// })
+// $('#currentLoc').on('change',e => {
+//   let gender = $('#currentGender').val();
+//   filterAnalyticsPage({gender, location: e.target.value});
+// })

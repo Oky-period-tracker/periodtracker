@@ -10,22 +10,45 @@
   <div class="mainContentContainer">
     <div class="homeTopTextContainer">
       <h2><%= __('Analytics Dashboard')%></h2>
-      <select class="custom-select filter-select" id="currentGender" aria-placeholder="Gender">
-        <option value="">Gender</option>
-        <% ['Male', 'Female', 'Other'].forEach((item, index) =>{ %>
-        <option value="<%= item %>" <%= item == query.gender ? "selected" : '' %>><%= item %></option>
-        <% }) %>
-      </select>
-      <select class="custom-select filter-select" id="currentLoc" title="Location">
-        <option value="">Location</option>
-        <% ['Rural', 'Urban'].forEach((item, index) =>{ %>
-        <option value="<%= item %>" <%= item == query.location ? "selected" : '' %>><%= item %></option>
-        <% }) %>
-      </select>
       <button id="downloadCSV" class="btn btn-primary">
         <%= __('Download Results')%>
     </button>
-    </div>
+  </div>
+  
+    <form id="dateFilterForm">
+      <div class="form-group mr-3">
+        <label for="dateFrom" class="date-picker-label mr-1">Date from</label>
+        <input type="date" class="date-picker" id="dateFrom" name="dateFrom" value="<%= dateFrom %>">
+      </div>
+
+      <div class="form-group mr-3">
+        <label for="dateTo" class="date-picker-label mr-1">Date to</label>
+        <input type="date" class="date-picker"  id="dateTo" name="dateTo" value="<%= dateTo %>">
+      </div>
+
+      <div class="form-group">
+        <select class="custom-select filter-select" id="currentGender" aria-placeholder="Gender" name="gender">
+          <option value="">Gender</option>
+          <% ['Male', 'Female', 'Other'].forEach((item, index) =>{ %>
+          <option value="<%= item %>" <%= item == query.gender ? "selected" : '' %>><%= item %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <select class="custom-select filter-select" id="currentLoc" title="Location" name="location">
+          <option value="">Location</option>
+          <% ['Rural', 'Urban'].forEach((item, index) =>{ %>
+          <option value="<%= item %>" <%= item == query.location ? "selected" : '' %>><%= item %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <button class="btn btn-primary">Apply filters</button>
+      </div>
+    </form>
+
     <div style="flex-direction: column; justify-content: center;"  class="homeTableContainer">
         <div class="row">
           <div class="col-lg-6">
@@ -127,9 +150,171 @@
                 </div>
               </div>
         </div>
+
+        <p class="description mb-3 mt-3"><%= __('analytics_description_1')%></p>
+
+        <p class="description mb-3 mt-3"><%= __('analytics_description_2')%></p>
+
+        <!-- SCREEN VIEWS -->
+        <table class="table table-striped table-borderless tableFixHead table-responsive">
+          <thead>
+            <tr>
+              <th colspan="8">
+                <div class="table-heading">Screen views</div>
+              </th>
+            </tr>
+            <tr class="th-secondary">
+              <th>Feature</th>
+              <th>Definition</th>
+              <th>Number of unique users</th>
+              <th>Number of views</th>
+              <th>Number of views while logged out</th>
+              <th>% of total active users</th>
+              <th>% of total users</th>
+              <th>% of total views</th>
+            </tr>
+          </thead>
+          <% screenUsage.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.feature %></td>
+              <td><%= row.definition %></td>
+              <td class="center"><%= row.uniqueUsers %></td>
+              <td class="center"><%= row.views %></td>
+              <td class="center"><%= row.loggedOutViews %></td>
+              <td class="center"><%= row.activeUsersPercentage %></td>
+              <td class="center"><%= row.uniqueUsersPercentage %></td>
+              <td class="center"><%= row.viewsPercentage %></td>
+            </tr>
+          <% }) %>
+        </table>
+
+        <!-- (SUB)CATEGORY VIEWS -->
+        <table class="table table-striped table-borderless tableFixHead table-responsive">
+          <thead>
+            <tr>
+              <th colspan="8">
+                <div class="table-heading">Encyclopedia Usage</div>
+              </th>
+            </tr>
+            <tr class="th-secondary">
+              <th>Feature</th>
+              <th>Definition</th>
+              <th>Number of unique users</th>
+              <th>Number of views</th>
+              <th>Number of views while logged out</th>
+              <th>% of total active users</th>
+              <th>% of total users</th>
+              <th>% of total views</th>
+            </tr>
+          </thead>
+          <% encyclopediaUsage.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.feature %></td>
+              <td><%= row.definition %></td>
+              <td class="center"><%= row.uniqueUsers %></td>
+              <td class="center"><%= row.views %></td>
+              <td class="center"><%= row.loggedOutViews %></td>
+              <td class="center"><%= row.activeUsersPercentage %></td>
+              <td class="center"><%= row.uniqueUsersPercentage %></td>
+              <td class="center"><%= row.viewsPercentage %></td>
+            </tr>
+          <% }) %>
+        </table>
+
+        <!-- PREDICTION -->
+        <table class="table table-striped table-borderless tableFixHead table-responsive">
+          <thead>
+            <tr>          
+              <th colspan="7">
+                <div class="table-heading">App Usage</div>
+              </th>
+            </tr>
+            <tr class="th-secondary">              
+              <th>Feature</th>
+              <th>Definition</th>
+              <th>Number of unique users</th>
+              <th>Number of views</th>
+              <th>% of total active users</th>
+              <th>% of total users</th>
+              <th>% of total views</th>
+            </tr>
+          </thead>
+          <% usage.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.feature %></td>
+              <td><%= row.definition %></td>
+              <td class="center"><%= row.uniqueUsers %></td>
+              <td class="center"><%= row.views %></td>
+              <td class="center"><%= row.activeUsersPercentage %></td>
+              <td class="center"><%= row.uniqueUsersPercentage %></td>
+              <td class="center"><%= row.viewsPercentage %></td>
+            </tr>
+          <% }) %>
+        </table>
+
+        <p class="description mb-3 mt-3"><%= __('analytics_description_3')%></p>
+
+        <table class="table table-striped table-borderless table-responsive">
+          <thead>
+            <tr>
+              <th>Avatars</th>
+              <th>Number of unique users</th>
+            </tr>
+          </thead>
+
+          <% countAvatars.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.avatar %></td>
+              <td class="center"><%= row.user_count %></td>
+            </tr>
+          <% }) %>
+        </table>
+
+        <table class="table table-striped table-borderless table-responsive">
+          <thead>
+            <tr>
+              <th>Theme</th>
+              <th>Number of unique users</th>
+            </tr>
+          </thead>
+
+          <% countThemes.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.theme %></td>
+              <td class="center"><%= row.user_count %></td>
+            </tr>
+          <% }) %>
+        </table>
+
+        <table class="table table-striped table-borderless table-responsive">
+          <thead>
+            <tr>
+              <th>Locale</th>
+              <th>Number of unique users</th>
+            </tr>
+          </thead>
+
+          <% countLocales.forEach((row) =>{ %>
+            <tr>
+              <td><%= row.locale %></td>
+              <td class="center"><%= row.user_count %></td>
+            </tr>
+          <% }) %>
+        </table>
+
+        <br />
+        <br />
+        <br />
     </div>
   </div>
 </div>
+<script>
+  document.querySelectorAll('.datepicker').forEach(node => {
+    node.datepicker({
+        uiLibrary: 'bootstrap4'
+    })
+  })
+</script>
 <span id="userLocationsJSON" hidden>
     <%= JSON.stringify(usersLocations); %>
 </span>

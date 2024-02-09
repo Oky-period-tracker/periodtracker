@@ -7,11 +7,9 @@ import { capitalizeFLetter } from '../../i18n'
 export const Category = ({ title, tags, onPress, isActive = false }) => {
   return (
     <CategoryContainer onPress={onPress}>
-      <TitleContainer>
-        <Title style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>
-          {capitalizeFLetter(title.trim())}
-        </Title>
-      </TitleContainer>
+      <Title style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>
+        {capitalizeFLetter(title.trim())}
+      </Title>
       <TagsContainer>
         <EmojiSelector
           title={tags.primary.name}
@@ -79,6 +77,7 @@ export const VideoCategory = ({ onPress, isActive = false }) => {
 const CategoryContainer = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 15px;
@@ -88,13 +87,7 @@ const CategoryContainer = styled.TouchableOpacity`
   border-radius: 10px;
   margin-vertical: 5px;
   margin-horizontal: 3px;
-  height: 80px;
-`
-
-const TitleContainer = styled.View`
-  width: 200px;
-  height: 100%;
-  justify-content: center;
+  min-height: 80px;
 `
 
 const TagsContainer = styled.View`

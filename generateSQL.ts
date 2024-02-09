@@ -6,6 +6,7 @@ const columnNames = {
   category: ['id', 'title', 'primary_emoji', 'primary_emoji_name', 'lang'],
   subcategory: ['id', 'title', 'parent_category', 'lang'],
   article: ['id', 'category', 'subcategory', 'article_heading', 'article_text', 'live', 'lang'],
+  video: ['id', 'title', 'youtubeId', 'assetName', 'live', 'lang'],
   quiz: [
     'id',
     'topic',
@@ -33,11 +34,13 @@ const toColumnsString = (columns: string[]) => {
   return columns.map((col) => `"${col}"`).join(', ')
 }
 
-const toValuesString = (values: Array<Array<string | number>>) => {
+const toValuesString = (values: Array<Array<string | number | null>>) => {
   return values
     .map((valuesArray) => {
       return `(${valuesArray
-        .map((v) => (typeof v === 'number' ? v : `'${escapeSingleQuotes(v)}'`))
+        .map((v) =>
+          typeof v === 'number' ? v : v === null ? `null` : `'${escapeSingleQuotes(v)}'`,
+        )
         .join(', ')})`
     })
     .join(', ')
@@ -164,6 +167,25 @@ const getQuiz = (content: StaticContent) => {
   }, [])
 }
 
+const getVideos = (content: StaticContent) => {
+  if (!content.videos) {
+    return []
+  }
+
+  return Object.values(content.videos.byId).reduce<string[][]>((acc, video) => {
+    const valuesArray = [
+      video.id,
+      video.title,
+      video.youtubeId ?? null,
+      video.assetName ?? null,
+      video.live ? '1' : '0',
+      content.locale,
+    ]
+
+    return [...acc, valuesArray]
+  }, [])
+}
+
 const getDidYouKnows = (content: StaticContent) => {
   return Object.values(content.didYouKnows.byId).reduce<string[][]>((acc, entry) => {
     const valuesArray = [
@@ -242,6 +264,7 @@ locales.forEach((locale) => {
     category: categoryValues,
     subcategory: subCategoryValues,
     article: articleValues,
+    video: getVideos(contentData),
     quiz: getQuiz(contentData),
     did_you_know: getDidYouKnows(contentData),
     help_center: getHelpCenters(contentData),

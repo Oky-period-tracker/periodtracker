@@ -44,7 +44,6 @@ export class VideoController {
     videoToUpdate.title = request.body.title
     videoToUpdate.youtubeId = request.body.youtubeId
     videoToUpdate.assetName = request.body.assetName
-    videoToUpdate.parent_category = request.body.parent_category
     videoToUpdate.live = booleanFromString
     videoToUpdate.lang = request.user.lang
 

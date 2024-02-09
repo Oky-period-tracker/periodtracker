@@ -45,7 +45,6 @@ export function fromEncyclopedia({
               },
             },
             subCategories: [],
-            videos: [],
           },
         },
         allIds: dataShape.categories.allIds.concat(item.cat_id),
@@ -109,13 +108,6 @@ export function fromEncyclopedia({
         },
       },
       allIds: dataShape.videos.allIds.concat(item.id),
-    }
-
-    const categoryVideos = dataShape.categories.byId[item.parent_category]?.videos || []
-
-    dataShape.categories.byId[item.parent_category] = {
-      ...dataShape.categories.byId[item.parent_category],
-      videos: [...categoryVideos, item.id],
     }
   })
 

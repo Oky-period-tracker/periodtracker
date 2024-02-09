@@ -1,5 +1,4 @@
 import React from 'react'
-import { IS_TABLET } from '../../../config/tablet'
 import {
   TouchableOpacity,
   Image,
@@ -8,6 +7,7 @@ import {
   StyleSheet,
 } from 'react-native'
 import { assets } from '../../../assets'
+import { IS_TABLET } from '../../../config/tablet'
 
 type Props = Omit<ImageProps, 'source'> & {
   name: string

@@ -23,6 +23,8 @@ export function AvatarSelectItem({
       }}
     >
       <Image
+        source={getAsset(`avatars.${avatarName}.${type}`)}
+        resizeMode="contain"
         style={{
           width: '100%',
           height: '100%',
@@ -30,7 +32,6 @@ export function AvatarSelectItem({
           aspectRatio: 1,
           resizeMode: 'contain',
         }}
-        source={getAsset(`avatars.${avatarName}.${type}`)}
       />
     </View>
   )

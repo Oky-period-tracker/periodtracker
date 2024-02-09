@@ -20,7 +20,6 @@
           <thead>
             <tr>
             <th style="width: 10%"><%= __('Title')%></th>
-              <th style="width: 10%"><%= __('Parent category')%></th>
               <th style="width: 10%"><%= __('Youtube Id')%></th>
               <th style="width: 10%"><%= __('Asset name')%></th>
               <th style="width: 10%"><%= __('Live')%></th>
@@ -32,14 +31,6 @@
               <p id="errorVideoUniq1" style="display: none;">title is duplicate</p>
               <p id="errorVideo1" style="display: none;">max 40 characters</p>
               <p id="countdown">remaining</p>
-            </td>
-            <td style="width: 10%">
-              <select class="custom-select" id="colVideo1TableModal">
-                <% categories.forEach((item, index) =>{ %>
-                <option value="<%= item.id %>"><%= item.title %></option>
-                <% }) %>
-              </select>
-              <p id="errorVideo2" style="display: none;">required field</p>
             </td>
             <td style="width: 10%">
               <input type="text" class="form-control" id="colVideo2TableModal" />

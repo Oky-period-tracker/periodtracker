@@ -24,20 +24,17 @@ $('#videoModal').on('show.bs.modal', (event) => {
 
   $('.modal-title').text(videoInfo.title)
   $('#colVideo0TableModal').val(videoInfo.title)
-  $('#colVideo1TableModal').val(videoInfo.parent_category)
   $('#colVideo2TableModal').val(videoInfo.youtubeId)
   $('#colVideo3TableModal').val(videoInfo.assetName)
   $('#colVideo4TableModal').prop('checked', videoInfo.live)
   $('#videoID').text(videoId)
   $('#countdown').text(40 - videoInfo.title.length + ' characters remaining.')
-  // handleSubCategorySelect(videoInfo.category_id)
 })
 
 $('#btnVideoConfirm').on('click', () => {
   const videoID = $('#videoID').text()
   const data = {
     title: $('#colVideo0TableModal').val(),
-    parent_category: $('#colVideo1TableModal').val(),
     youtubeId: $('#colVideo2TableModal').val(),
     assetName: $('#colVideo3TableModal').val(),
     live: $('#colVideo4TableModal').prop('checked'),
@@ -46,7 +43,6 @@ $('#btnVideoConfirm').on('click', () => {
   if (
     data.title === '' ||
     data.title.length > 40 ||
-    data.parent_category === '' ||
     (data.youtubeId === '' && data.assetName === '')
   ) {
     console.log('*** ERROR')
@@ -109,7 +105,6 @@ $(document).on('click', '.liveCheckbox', () => {
 
   const data = {
     title: videoInfo.title,
-    parent_category: videoInfo.parent_category,
     youtubeId: videoInfo.youtubeId,
     assetName: videoInfo.title,
     live: button.prop('checked'),

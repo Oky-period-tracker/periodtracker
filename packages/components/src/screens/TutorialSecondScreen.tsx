@@ -9,7 +9,7 @@ import { CenterCard } from './mainScreen/CenterCard'
 import { Avatar } from '../components/common/Avatar/Avatar'
 import { useInfiniteScroll } from './mainScreen/wheelCarousel/useInfiniteScroll'
 import { navigateAndReset } from '../services/navigationService'
-import { Animated, Dimensions, Image, Platform, View } from 'react-native'
+import { Animated, Image, Platform } from 'react-native'
 import { useDispatch } from 'react-redux'
 import * as actions from '../redux/actions'
 import { Text } from '../components/common/Text'
@@ -26,14 +26,17 @@ import Tts from 'react-native-tts'
 import { translate } from '../i18n'
 import { FlowerAssetDemo, flowerAssets } from '../optional/Flower'
 import { PrimaryButton } from '../components/common/buttons/PrimaryButton'
+import { useScreenDimensions } from '../hooks/useScreenDimensions'
+import { useOrientation } from '../hooks/useOrientation'
+import { IS_TABLET } from '../config/tablet'
 
-const screenHeight = Dimensions.get('screen').height
-const screenWidth = Dimensions.get('screen').width
 const arrowSize = 55
 
 // I apologize to anyone who gets to this level of error checking on the sequencing of this component.
 // Deadline pressure had mounted beyond compare and it was working stably, It definitely can be simplified and made more declarative
 export function TutorialSecondScreen({ navigation }) {
+  const { screenWidth, screenHeight } = useScreenDimensions()
+  const orientation = useOrientation()
   const { data, isActive, index, currentIndex, absoluteIndex } = useInfiniteScroll()
   const [step, setStep] = React.useState(0)
   const [loading, setLoading] = React.useState(false)
@@ -57,6 +60,14 @@ export function TutorialSecondScreen({ navigation }) {
     return percentage * dimension - arrowSize / 2
   }
 
+  let cardWidth = 0.5 * screenWidth
+  const maxCardWidth = 320
+  if (cardWidth > maxCardWidth) {
+    cardWidth = maxCardWidth
+  }
+
+  const offset = cardWidth - 80
+
   const stepInfo = {
     '0': {
       text: `tutorial_9`,
@@ -72,7 +83,7 @@ export function TutorialSecondScreen({ navigation }) {
       text: `tutorial_10`,
       heading: `tutorial_10_content`,
       animationPositionEnd: {
-        x: normalizePosition(0.1, screenWidth),
+        x: normalizePosition(0.5, screenWidth) - offset,
         y: normalizePosition(0.5, screenHeight),
         z: 270,
       },
@@ -127,13 +138,14 @@ export function TutorialSecondScreen({ navigation }) {
         position: { x: 0, y: normalizePosition(0.12, screenHeight) },
       },
     },
+    // This is used to animated out after the last step
     '6': {
       text: `dummy`,
       heading: `dummy`,
       animationPositionEnd: { x: -screenWidth, y: normalizePosition(0.12, screenHeight), z: 180 },
       demonstrationComponent: {
         isAvailable: true,
-        position: { x: -500, y: normalizePosition(0.15, screenHeight) },
+        position: { x: -1500, y: normalizePosition(0.15, screenHeight) },
       },
     },
     '7': {
@@ -390,11 +402,15 @@ export function TutorialSecondScreen({ navigation }) {
     })
   }
 
+  const wheelSectionWidth = IS_TABLET ? (orientation === 'LANDSCAPE' ? '35%' : '40%') : '65%'
+
   return (
     <BackgroundTheme>
       <Container>
         <TopSeparator />
         <MiddleSection>
+          <Overlay />
+
           <AvatarSection {...{ step }}>
             {step !== 6 ? (
               <CircleProgress
@@ -425,9 +441,8 @@ export function TutorialSecondScreen({ navigation }) {
             ) : null}
 
             <Avatar style={{ position: 'absolute', top: 90, zIndex: 0, elevation: 0 }} />
-            <Overlay />
           </AvatarSection>
-          <WheelSection {...{ step }} style={{ width: Platform.OS === 'ios' ? '70%' : '65%' }}>
+          <WheelSection {...{ step }} style={{ width: wheelSectionWidth }}>
             <CircularSelection
               {...{
                 data,
@@ -440,7 +455,6 @@ export function TutorialSecondScreen({ navigation }) {
               fetchCardValues={getCardAnswersValues}
             />
             <CenterCard style={{ elevation: 0 }} />
-            <Overlay />
           </WheelSection>
         </MiddleSection>
         <CarouselSection {...{ step }}>
@@ -452,10 +466,9 @@ export function TutorialSecondScreen({ navigation }) {
               currentIndex,
               absoluteIndex,
               disableInteraction: true,
+              showOverlay: step !== 0 && step !== 1 && step !== 2,
             }}
           />
-
-          {step !== 0 && step !== 1 && step !== 2 && <Overlay style={{ height: '100%' }} />}
         </CarouselSection>
       </Container>
       <Empty />
@@ -560,6 +573,7 @@ const MiddleSection = styled.View`
   height: 60%;
   width: 100%;
   flex-direction: row;
+  justify-content: space-between;
 `
 const AvatarSection = styled.View<{ step: number }>`
   height: 100%;
@@ -568,15 +582,12 @@ const AvatarSection = styled.View<{ step: number }>`
 `
 const WheelSection = styled.View`
   height: 100%;
-  width: 65%;
   align-items: center;
-  elevation: 0;
-  z-index: 0
   justify-content: center;
-  background-color: transparent;
   flex-direction: row;
 `
 const CarouselSection = styled.View<{ step: number }>`
+  z-index: 11;
   height: 30%;
   width: 100%;
   flex-direction: row;

@@ -13,7 +13,7 @@ import { TextInput } from '../../components/common/TextInput'
 import { SurveyInformationButton } from '../../components/common/SurveyInformationButton'
 import { PrimaryButton } from '../../components/common/buttons/PrimaryButton'
 
-const { width } = Dimensions.get('window')
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 // TODO_ALEX: survey
 
@@ -43,6 +43,8 @@ export const SurveyCard = React.memo<{
     showEndButton,
     onEndPress,
   }) => {
+    const { screenWidth: width } = useScreenDimensions()
+
     const [title, setTitle] = React.useState('')
     const [titlePlaceholder, setTitlePlaceholder] = React.useState('type_answer_placeholder')
     const [isSkip, setSkip] = React.useState(null)

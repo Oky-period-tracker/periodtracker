@@ -10,7 +10,7 @@ export class AboutController {
       where: { lang: request.params.lang },
     })
     const latest = allAboutVersions[allAboutVersions.length - 1]
-    return latest.json_dump
+    return latest?.json_dump || []
   }
 
   async all(request: Request, response: Response, next: NextFunction) {

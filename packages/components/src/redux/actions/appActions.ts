@@ -63,11 +63,3 @@ export function refreshStore(
 ) {
   return createAction('REFRESH_STORE', payload)
 }
-
-export function syncStore() {
-  return createAction('SYNC_STORE')
-}
-
-export function verifyPeriodDayByUser(date: any) {
-  return createAction('VERIFY_PERIOD_DAY', { date })
-}

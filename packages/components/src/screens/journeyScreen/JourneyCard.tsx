@@ -6,8 +6,8 @@ import { WheelPickerContent } from '../../components/WheelPickerContent'
 import { Avatar } from '../../components/common/Avatar/Avatar'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
-import { IS_TABLET } from '../../config/tablet'
 import { getAsset } from '../../services/asset'
+import { IS_TABLET } from '../../config/tablet'
 
 export function JourneyCard({
   question,

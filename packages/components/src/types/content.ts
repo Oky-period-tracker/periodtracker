@@ -200,4 +200,5 @@ export interface StaticContent {
   about: About
   allSurveys: AllSurveys
   completedSurveys: CompletedSurveys
+  videos?: Videos
 }

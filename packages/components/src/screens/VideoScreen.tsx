@@ -111,7 +111,7 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
     )
   }
 
-  return null
+  return <View style={styles.bundleVideo} />
 }
 
 const styles = StyleSheet.create({

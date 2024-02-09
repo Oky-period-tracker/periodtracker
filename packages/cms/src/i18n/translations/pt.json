@@ -190,5 +190,9 @@
   "Video Management": "Video Management",
   "analytics_description_1": "Certas métricas incluídas nessas análises são baseadas em dados que não foram coletados em versões anteriores do aplicativo. Como resultado, estes números refletem predominantemente a atividade da versão mais recente do aplicativo. As informações relativas ao uso antes da data de atualização não foram registradas. Além disso, os usuários que não atualizaram para a versão mais recente do aplicativo não contribuem com esses dados de rastreamento específicos.",
   "analytics_description_2": "O número 'total' de usuários é cada usuário armazenado na tabela de usuários. Os usuários contam como 'ativos' se realizarem pelo menos uma das ações listadas, dentro do período de tempo selecionado acima.",
-  "analytics_description_3": "Essas tabelas apresentam um instantâneo atual da atividade do usuário e não rastreiam alterações ao longo do tempo. Como resultado, a aplicação de filtros de data não alterará os dados exibidos."
+  "analytics_description_3": "Essas tabelas apresentam um instantâneo atual da atividade do usuário e não rastreiam alterações ao longo do tempo. Como resultado, a aplicação de filtros de data não alterará os dados exibidos.",
+  "Youtube Id": "Youtube Id",
+  "Asset name": "Nome do ativo",
+  "Videos": "Vídeos",
+  "Add Video": "Adicionar vídeo"
 }

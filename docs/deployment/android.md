@@ -21,6 +21,12 @@ Check that the APPLICATION_ID in `app/build.gradle` is correct.
 
 Ensure that your google-services.json file in /packages/mobile/android/app/ is correct and is registered with the correct APPLICATION_ID
 
+When you have changed the APPLICATION_ID, run this command to update other android configuration files with this id
+
+```bash
+yarn update-android-app-id
+```
+
 Check the values in `/packages/mobile/.env.production` file are correct.
 
 Add to `packages/mobile/android/local.properties`:

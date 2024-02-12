@@ -35,3 +35,9 @@ To change the bundle ID (iOS) of your app, please change it directly in the untr
 Do not change the bundle ID in Xcode because that will affect the `project.pbxproj` file. This way everyone can be using different bundle IDs without needing to commit changes to `project.pbxproj` on separate branches.
 
 To change the android application ID, please the APPLICATION_ID variable directly in the untracked `gradle.properties` file
+
+When you have changed the APPLICATION_ID, run this command to update other android configuration files with this id
+
+```bash
+yarn update-android-app-id
+```

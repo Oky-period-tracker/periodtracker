@@ -1,4 +1,4 @@
-package com.oky;
+package {APPLICATION_ID};
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

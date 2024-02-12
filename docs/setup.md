@@ -69,6 +69,12 @@ You will need to enter your application id / bundle id. The values of these ids 
 - APPLICATION_ID for android: `/packages/mobile/android/gradle.properties`
 - PRODUCT_BUNDLE_IDENTIFIER for iOS: `/packages/mobile/ios/release.xcconfig`
 
+When you have changed the APPLICATION_ID, run this command to update other android configuration files with this id
+
+```bash
+yarn update-android-app-id
+```
+
 You will need to have 2 apps via the [firebase console](https://console.firebase.google.com/), within your new project. An iOS app and Android app, for the react native app. Download the config files for each app and place them in the correct location, the steps can be found [here](https://learn.buildfire.com/en/articles/2060582-how-to-set-up-your-firebase-certificates-for-ios-and-android).
 
 For the CMS, go to:

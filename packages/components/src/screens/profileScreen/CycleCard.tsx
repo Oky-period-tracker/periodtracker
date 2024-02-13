@@ -116,6 +116,7 @@ const CycleCardContainer = styled.View`
   elevation: 3;
   margin-horizontal: 3px;
   border-radius: 10px;
+  min-height: 140px;
 `
 
 const CycleCardHeader = styled.View`

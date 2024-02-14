@@ -46,6 +46,15 @@ const initialState: AppState = {
 
 export function appReducer(state = initialState, action: Actions): AppState {
   switch (action.type) {
+    case 'REFRESH_STORE': {
+      if (!action?.payload?.app) {
+        return state
+      }
+      return {
+        ...state,
+        ...action.payload.app,
+      }
+    }
     case 'SET_THEME':
       return {
         ...state,

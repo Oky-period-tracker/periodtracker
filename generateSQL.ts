@@ -101,7 +101,7 @@ const getEncyclopedia = (content: StaticContent) => {
               subCategory.id,
               article.title,
               article.content,
-              article.live ? '1' : '0',
+              article.live === false ? '0' : '1',
               content.locale,
             ]
 

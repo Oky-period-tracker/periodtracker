@@ -37,6 +37,7 @@
     "run:android": "yarn clean:mobile && yarn workspace @oky/mobile run android && yarn reverse:all-ports",
     "clean:mobile": "yarn workspace @oky/mobile run clean:android",
     "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets",
+    "modules:checkout": "./bin/modules/checkout.sh",
     "copy-config": "./bin/setup/config.sh",
     "update-android-app-id": "ts-node update-android-app-id.ts"
   },

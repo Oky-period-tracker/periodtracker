@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { combineReducers } from 'redux'
-import { syncReducers } from '../sync'
 import { Actions } from '../types'
 
 import { analyticsReducer } from './analyticsReducer'
@@ -10,22 +9,15 @@ import { authReducer } from './authReducer'
 import { contentReducer } from './contentReducer'
 import { predictionReducer } from './predictionReducer'
 
-export const exportReducerNames = ['app', 'prediction']
-
-const reducer = combineReducers(
-  syncReducers(
-    {
-      analytics: analyticsReducer,
-      answer: answerReducer,
-      app: appReducer,
-      auth: authReducer,
-      content: contentReducer,
-      prediction: predictionReducer,
-      // flower: flowerReducer, TODO: Flower state should be saved per user
-    },
-    exportReducerNames,
-  ),
-)
+const reducer = combineReducers({
+  analytics: analyticsReducer,
+  answer: answerReducer,
+  app: appReducer,
+  auth: authReducer,
+  content: contentReducer,
+  prediction: predictionReducer,
+  // flower: flowerReducer, TODO: Flower state should be saved per user
+})
 
 export function rootReducer(state, action: Actions) {
   switch (action.type) {

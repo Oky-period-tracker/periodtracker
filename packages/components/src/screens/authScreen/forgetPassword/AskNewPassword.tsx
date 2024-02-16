@@ -12,7 +12,7 @@ import {
   validatePassword,
   verifyStoreCredentials,
 } from '../../../services/auth'
-import { useSelector } from '../../../redux/useSelector'
+import { useSelector } from '../../../hooks/useSelector'
 import * as actions from '../../../redux/actions'
 import * as selectors from '../../../redux/selectors'
 import { useDispatch } from 'react-redux'

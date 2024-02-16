@@ -5,13 +5,13 @@ import { translate } from '../../i18n'
 import { TouchableOpacity } from 'react-native'
 import _ from 'lodash'
 import moment from 'moment'
-import { useSelector } from 'react-redux'
 import * as selectors from '../../redux/selectors'
 import {
   useTodayPrediction,
   useActualCurrentStartDateSelector,
 } from '../../components/context/PredictionProvider'
 import { getAsset } from '../../services/asset'
+import { useSelector } from '../../hooks/useSelector'
 
 function checkForVerifiedDay(cardValues) {
   if (_.has(cardValues, 'periodDay')) {

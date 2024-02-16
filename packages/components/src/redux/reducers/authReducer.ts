@@ -77,7 +77,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         },
       }
 
-    case 'LOGIN_SUCCESS_AS_GUEST_ACCOUNT':
+    case 'CREATE_GUEST_ACCOUNT_SUCCESS':
       return {
         ...state,
         appToken: null,

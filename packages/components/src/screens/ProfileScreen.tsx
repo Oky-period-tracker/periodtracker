@@ -40,7 +40,7 @@ export function ProfileScreen({ navigation }) {
   const dispatch = useDispatch()
 
   const connectAccountCount = useSelector((state) => state.auth.connectAccountAttempts)
-  const dateOfBirth = moment(currentUser.dateOfBirth)
+  const dateOfBirth = moment(currentUser?.dateOfBirth)
 
   useTextToSpeechHook({
     navigation,

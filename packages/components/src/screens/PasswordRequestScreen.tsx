@@ -14,16 +14,25 @@ import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
 import { StyleSheet } from 'react-native'
 import { IS_TABLET } from '../config/tablet'
+import { hash } from '../services/hash'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
   const user = useSelector(selectors.currentUserSelector)
+  const storeCredentials = useSelector((s) => s.access.storeCredentials)
   const [loading, setLoading] = React.useState(false)
   const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)
   const [nameError, setNameError] = React.useState(false)
   const [name, setName] = React.useState(user.name)
   const [password, setPassword] = React.useState('')
+
+  const usernameHash = hash(user.name)
+  const salt = storeCredentials[usernameHash]?.passwordSalt
+
+  if (!salt) {
+    // TODO_ALEX: handle this case, navigate away?
+  }
 
   return (
     <BackgroundTheme>
@@ -63,6 +72,16 @@ export function PasswordRequestScreen() {
                     requestAnimationFrame(() => {
                       navigateAndReset('MainStack', null)
                     })
+
+                    const keys = {
+                      key: usernameHash,
+                      secretKey: hash(trimmedPassword + salt),
+                    }
+
+                    // TODO_ALEX Consider moving to MainScreen for safer transition
+                    setTimeout(() => {
+                      dispatch(actions.setStoreKeys(keys))
+                    }, 1000)
                   } else if (trimmedPassword === user.password && name !== user.name) {
                     setLoading(false)
                     setPasswordError(false)

@@ -1,38 +1,38 @@
 import { applyMiddleware, createStore } from 'redux'
-import { PersistConfig, persistReducer, persistStore } from 'redux-persist'
+import { persistReducer, persistStore } from 'redux-persist'
 import { encryptTransform } from 'redux-persist-transform-encrypt'
 import storage from 'redux-persist/lib/storage'
 import createSagaMiddleware from 'redux-saga'
 import { composeWithDevTools } from 'remote-redux-devtools'
-import { rootReducer } from './reducers'
-import { rootSaga } from './sagas'
-import { config } from './config'
 
-const encryptor = encryptTransform({
-  secretKey: config.REDUX_ENCRYPT_KEY,
-  onError(error) {
-    // Handle the error.
-  },
-})
+// Function to create an encryptor
+const createEncryptor = (secretKey) =>
+  encryptTransform({
+    secretKey,
+    onError(error) {
+      // Handle the error.
+    },
+  })
 
 export const version = -1
 
-export function configureStore(key = 'primary') {
-  const persistConfig: PersistConfig = {
+export function configureStore({ key, secretKey, rootReducer, rootSaga }) {
+  const encryptor = createEncryptor(secretKey)
+
+  const persistConfig = {
     version,
     key,
     storage,
     timeout: 10000,
     throttle: 500,
-    blacklist: [],
+    blacklist: ['keys'],
     transforms: [encryptor],
   }
+
   const persistedReducer = persistReducer(persistConfig, rootReducer)
   const composeEnhancers = composeWithDevTools({
-    //  port: 8081,
     realtime: true,
     port: 8000,
-    hostname: '', // add your computer's IP
   })
   const sagaMiddleware = createSagaMiddleware()
 
@@ -44,5 +44,3 @@ export function configureStore(key = 'primary') {
 
   return { store, persistor }
 }
-
-export type ReduxState = ReturnType<typeof rootReducer>

@@ -8,8 +8,12 @@ import { appReducer } from './appReducer'
 import { authReducer } from './authReducer'
 import { contentReducer } from './contentReducer'
 import { predictionReducer } from './predictionReducer'
+import { accessReducer } from './accessReducer'
+import { keysReducer } from './keysReducer'
 
 const reducer = combineReducers({
+  keys: keysReducer,
+  access: accessReducer,
   analytics: analyticsReducer,
   answer: answerReducer,
   app: appReducer,
@@ -23,9 +27,11 @@ export function rootReducer(state, action: Actions) {
   switch (action.type) {
     case 'LOGOUT':
       // @ts-ignore
-      return reducer(_.pick(state, 'app', 'content', 'answer'), action)
+      return reducer(_.pick(state, 'app', 'content', 'answer', 'access'), action)
 
     default:
       return reducer(state, action)
   }
 }
+
+export type ReduxState = ReturnType<typeof rootReducer>

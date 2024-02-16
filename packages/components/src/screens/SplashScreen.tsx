@@ -3,7 +3,7 @@ import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PageContainer } from '../components/layout/PageContainer'
 import { assets } from '../assets/index'
 import styled from 'styled-components/native'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import * as selectors from '../redux/selectors'
 import * as actions from '../redux/actions'
 import { navigateAndReset } from '../services/navigationService'
@@ -15,6 +15,7 @@ import { useAlert } from '../components/context/AlertContext'
 import { httpClient } from '../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import messaging from '@react-native-firebase/messaging'
+import { useSelector } from '../hooks/useSelector'
 
 export function SplashScreen() {
   const dispatch = useDispatch()

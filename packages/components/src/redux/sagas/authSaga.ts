@@ -4,7 +4,7 @@ import { Alert } from 'react-native'
 import { v4 as uuidv4 } from 'uuid'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
-import { ReduxState } from '../store'
+import { ReduxState } from '../reducers'
 import * as actions from '../actions'
 import * as selectors from '../selectors'
 import { navigateAndReset } from '../../services/navigationService'
@@ -13,6 +13,7 @@ import moment from 'moment'
 import { closeOutTTs } from '../../services/textToSpeech'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import { PartialStateSnapshot } from '../types/partialStore'
+import { hash } from '../../services/hash'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -120,12 +121,61 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         errorMessage = error.response.data.message
       }
     }
+
+    // Attempt offline login
+    const usernameHash = hash(name)
+    const storeCredentials = yield select((s) => s.access.storeCredentials)
+    const credential = storeCredentials[usernameHash]
+
+    if (credential) {
+      // ???????????????
+      // Switch stores here ?
+      // Change boolean to trigger switch in coordinator ?
+      // Somehow need to pass the keys to the coordinator though
+      // yield put(
+      //   actions.loginOfflineSuccess({
+      //     appToken: null,
+      //     user: {
+      //       id: user.id,
+      //       name,
+      //       dateOfBirth: user.dateOfBirth,
+      //       gender: user.gender,
+      //       location: user.location,
+      //       country: user.country,
+      //       province: user.province,
+      //       secretQuestion: user.secretQuestion,
+      //       secretAnswer: user.secretAnswer,
+      //       password,
+      //     },
+      //   }),
+      // )
+      // return
+    }
+
     yield put(
       actions.loginFailure({
         error: errorMessage,
       }),
     )
   }
+}
+
+function* onLoginSuccess(action: ExtractActionFromActionType<'LOGIN_SUCCESS'>) {
+  const storeCredentials = yield select((s) => s.access.storeCredentials)
+  const usernameHash = hash(action.payload.user.name)
+  const salt = storeCredentials[usernameHash]?.passwordSalt
+
+  if (!salt) {
+    // TODO_ALEX ???
+    // Cant just return because they could have online account from another device that they're logging in to
+  }
+
+  const keys = {
+    key: usernameHash,
+    secretKey: hash(action.payload.user.password + salt),
+  }
+
+  yield put(actions.setStoreKeys(keys))
 }
 
 function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACCOUNT_REQUEST'>) {
@@ -187,8 +237,19 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     yield put(actions.setAuthError({ error: errorStatusCode }))
     yield put(actions.createAccountFailure())
 
+    // Check username is not already taken
+    const usernameHash = hash(name)
+    const storeCredentials = yield select((s) => s.access.storeCredentials)
+    const credential = storeCredentials[usernameHash]
+
+    if (credential) {
+      // username already taken
+      // yield put(secureActions.setAuthError({ error: errorStatusCode }))
+      return
+    }
+
     yield put(
-      actions.loginSuccessAsGuestAccount({
+      actions.createGuestAccountSuccess({
         id: id || uuidv4(),
         name,
         dateOfBirth,
@@ -226,6 +287,7 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
     }),
   )
 }
+
 function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACCOUNT_REQUEST'>) {
   const { setLoading } = action.payload
   const state: ReduxState = yield select()
@@ -313,6 +375,7 @@ export function* authSaga() {
     takeLatest(REHYDRATE, onRehydrate),
     takeLatest('LOGOUT_REQUEST', onLogoutRequest),
     takeLatest('LOGIN_REQUEST', onLoginRequest),
+    takeLatest('LOGIN_SUCCESS', onLoginSuccess),
     takeLatest('DELETE_ACCOUNT_REQUEST', onDeleteAccountRequest),
     takeLatest('CREATE_ACCOUNT_REQUEST', onCreateAccountRequest),
     takeLatest('CREATE_ACCOUNT_SUCCESS', onCreateAccountSuccess),

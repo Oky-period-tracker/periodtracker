@@ -42,7 +42,7 @@ const MainScreenContainer = ({ navigation }) => {
   const theme = useTheme()
   const todayInfo = useTodayPrediction()
   const dispatch = useDispatch()
-  const userID = useSelector(selectors.currentUserSelector).id
+  const userID = useSelector(selectors.currentUserSelector)?.id
   const history = useHistoryPrediction()
   const currentUser = useSelector(selectors.currentUserSelector)
 
@@ -51,6 +51,7 @@ const MainScreenContainer = ({ navigation }) => {
     dispatch(actions.fetchSurveyContentRequest(userID))
   }, [])
 
+  // TODO: Cant use hook like this?
   useRandomText({ navigation })
   return <MainScreenActual key={theme.id} />
 }

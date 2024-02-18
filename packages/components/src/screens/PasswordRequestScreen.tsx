@@ -89,7 +89,7 @@ export function PasswordRequestScreen() {
                 />
               </Container>
               <Touchable onPress={onConfirm}>
-                <HeaderText>confirm</HeaderText>
+                <HeaderText style={styles.confirmButton}>confirm</HeaderText>
               </Touchable>
             </LowerContent>
           </Container>

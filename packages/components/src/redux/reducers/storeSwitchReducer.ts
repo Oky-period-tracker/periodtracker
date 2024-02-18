@@ -17,6 +17,12 @@ const initialState: StoreSwitchState = {
 
 export function storeSwitchReducer(state = initialState, action: Actions): StoreSwitchState {
   switch (action.type) {
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        migrationComplete: true,
+      }
+
     case 'SET_STORE_KEYS':
       return {
         ...state,

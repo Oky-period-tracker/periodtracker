@@ -46,6 +46,13 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         ..._.pick(initialState, ['error', 'isLoggingIn', 'loginFailedCount', 'isCreatingAccount']),
       }
 
+    case 'MIGRATE_STORE': {
+      return {
+        ...state,
+        ...(action.payload.state?.auth || {}),
+      }
+    }
+
     case 'LOGIN_REQUEST':
       return {
         ...state,

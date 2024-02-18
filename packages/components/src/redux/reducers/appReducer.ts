@@ -58,6 +58,12 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
         deviceId: action.payload?.app?.deviceId ? action.payload.app.deviceId : uuidv4(),
       }
     }
+    case 'MIGRATE_STORE': {
+      return {
+        ...state,
+        ...(action.payload.state?.app || {}),
+      }
+    }
     case 'REFRESH_STORE': {
       if (!action?.payload?.app) {
         return state

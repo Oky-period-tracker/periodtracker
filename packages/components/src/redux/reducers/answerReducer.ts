@@ -176,6 +176,17 @@ const answerForUserReducer = combineReducers<AnswerForUserState, Actions>({
 })
 
 export function answerReducer(state: AnswerState = {}, action: Actions): AnswerState {
+  if (
+    action.type === 'MIGRATE_STORE' &&
+    action.payload?.userId &&
+    action.payload.state?.answer?.[action?.payload?.userId]
+  ) {
+    return {
+      ...state,
+      [action.payload.userId]: action.payload.state.answer[action.payload.userId],
+    }
+  }
+
   // TODO_ALEX: survey
   if (action.type === 'ANSWER_SURVEY') {
     return {

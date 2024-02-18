@@ -9,6 +9,13 @@ const initialState: PredictionState = null
 
 export function predictionReducer(state = initialState, action: Actions): PredictionState {
   switch (action.type) {
+    case 'MIGRATE_STORE': {
+      return {
+        ...state,
+        ...(action.payload.state?.prediction || {}),
+      }
+    }
+
     case 'REFRESH_STORE': {
       if (!action?.payload?.prediction) {
         return state

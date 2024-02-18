@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { combineReducers } from 'redux'
-import { Actions } from '../types'
 
 import { analyticsReducer } from './analyticsReducer'
 import { answerReducer } from './answerReducer'
@@ -23,25 +22,7 @@ export const allReducers = {
   // flower: flowerReducer, TODO: Flower state should be saved per user
 }
 
-const reducer = combineReducers(allReducers)
-
-export function rootReducer(state, action: Actions) {
-  switch (action.type) {
-    case 'MIGRATE_STORE':
-      return {
-        ...state,
-        // @ts-ignore
-        ...action.payload,
-        storeSwitch: {
-          ...state.storeSwitch,
-          migrationComplete: true,
-        },
-      }
-
-    default:
-      return reducer(state, action)
-  }
-}
+export const rootReducer = combineReducers(allReducers)
 
 export type ReduxState = ReturnType<typeof rootReducer>
 

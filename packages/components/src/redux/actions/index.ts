@@ -9,8 +9,9 @@ export * from './commonActions'
 export * from './contentActions'
 export * from './predictionActions'
 
-export function migrateStore(
-  payload: any, // ReduxState
-) {
+export function migrateStore(payload: {
+  userId: string
+  state: any // ReduxState
+}) {
   return createAction('MIGRATE_STORE', payload)
 }

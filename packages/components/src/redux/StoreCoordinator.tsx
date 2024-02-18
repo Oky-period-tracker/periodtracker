@@ -60,7 +60,7 @@ const hasMigrated = async () => {
   return persistKeys.length > 1
 }
 
-const migrationBlacklist: ReduxStateProperties[] = [
+const migrationBlacklist: Array<ReduxStateProperties | '_persist'> = [
   '_persist',
   'access',
   'analytics', // TODO:?
@@ -272,7 +272,9 @@ export function StoreCoordinator({ children }) {
         migrationBlacklist,
       ) as ReduxPersistState
 
-      redux.store.dispatch(actions.migrateStore(stateToMigrate))
+      const userId = stateToMigrate?.auth?.user?.id
+
+      redux.store.dispatch(actions.migrateStore({ userId, state: stateToMigrate }))
 
       setTimeout(onTimeout, interval)
       attempts++

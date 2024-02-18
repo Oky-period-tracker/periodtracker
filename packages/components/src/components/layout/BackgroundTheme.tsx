@@ -27,7 +27,7 @@ export function BackgroundTheme({ theme = null, ...props }) {
 }
 
 export function DefaultBackgroundTheme({ ...props }) {
-  const backgroundImage = getAsset(`assets.backgrounds.${defaultTheme}.default`)
+  const backgroundImage = getAsset(`backgrounds.${defaultTheme}.default`)
   return <Background source={backgroundImage} {...props} />
 }
 

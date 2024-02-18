@@ -1,5 +1,5 @@
+import { ReduxState } from '../reducers'
 import { VerifiedDates } from '../reducers/answerReducer'
-import { ReduxState } from '../store'
 
 /*  
     Please note: 

@@ -16,6 +16,7 @@ import moment from 'moment'
 import { IS_TABLET } from '../../../config/tablet'
 import { useOrientation } from '../../../hooks/useOrientation'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
+import { ReduxState } from '../../../redux/reducers'
 
 const { interpolate } = Animated
 

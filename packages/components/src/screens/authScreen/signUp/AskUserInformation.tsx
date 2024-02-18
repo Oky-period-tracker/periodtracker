@@ -11,6 +11,9 @@ import { useDebounce } from '../../../hooks/useDebounce'
 import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
 import { AppAssets } from '@oky/core'
+import { useSelector } from '../../../hooks/useSelector'
+import { hash } from '../../../services/auth'
+import * as selectors from '../../../redux/selectors'
 
 export function AskUserInformation({ step, heightInner }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
@@ -24,8 +27,19 @@ export function AskUserInformation({ step, heightInner }) {
   const { name, password, passwordConfirm, gender } = state
   const [debouncedName] = useDebounce(name, 500) // to stop fast typing calls
 
+  const storeCredentials = useSelector(selectors.storeCredentialsSelector)
+
   React.useEffect(() => {
     let ignore = false
+
+    // Check local store credentials
+    const credentials = storeCredentials[hash(name)]
+    if (credentials) {
+      setNameNotAvailable(true)
+      return
+    }
+
+    // Check online
     async function checkUserNameAvailability() {
       try {
         const response = await httpClient.getUserInfo(name)
@@ -53,7 +67,8 @@ export function AskUserInformation({ step, heightInner }) {
     return (
       password.length >= minPasswordLength &&
       passwordConfirm === password &&
-      name.length >= minNameLength
+      name.length >= minNameLength &&
+      !nameNotAvailable
     )
   }
 

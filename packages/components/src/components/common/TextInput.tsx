@@ -27,6 +27,7 @@ export const TextInput = ({
   errorContent = 'No message',
   placeholderColor = '#28b9cb',
   infoAccessibilityLabel = '',
+  editable = true,
 }) => {
   const [isVisible, setIsVisible] = React.useState(false)
   return (
@@ -47,6 +48,7 @@ export const TextInput = ({
             style={{ color: '#555', ...inputStyle }}
             secureTextEntry={secureTextEntry}
             value={value}
+            editable={editable}
           />
           {isValid && !hasError && (
             <Icon

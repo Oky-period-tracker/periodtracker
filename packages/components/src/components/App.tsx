@@ -2,7 +2,6 @@ import 'react-native-get-random-values' // Required for uuid package
 import React from 'react'
 import { AppProvider } from './AppProvider'
 import AppNavigator from '../navigators/AppNavigator'
-import { configureStore } from '../redux/store'
 import { setTopLevelNavigator } from '../services/navigationService'
 import { notificationListener } from '../services/notifications'
 import { SafeAreaView } from 'react-navigation'
@@ -10,8 +9,6 @@ import SplashScreen from 'react-native-splash-screen'
 import { Platform, StatusBar } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
 import { IS_TABLET } from '../config/tablet'
-
-const { persistor, store } = configureStore()
 
 export default function App() {
   React.useEffect(() => {
@@ -34,7 +31,7 @@ export default function App() {
   }, [])
 
   return (
-    <AppProvider store={store} persistor={persistor}>
+    <AppProvider>
       <StatusBar hidden />
       <SafeAreaView
         forceInset={{ horizontal: 'never', vertical: 'never' }}

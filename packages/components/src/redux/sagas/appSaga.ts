@@ -2,11 +2,12 @@ import _ from 'lodash'
 import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
 import { httpClient } from '../../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../../services/network'
-import { version as storeVersion, ReduxState } from '../store'
+import { version as storeVersion } from '../store'
 import * as actions from '../actions'
 import * as selectors from '../selectors'
 import messaging from '@react-native-firebase/messaging'
 import { PartialStateSnapshot } from '../types/partialStore'
+import { ReduxState } from '../reducers'
 
 function* syncAppState() {
   let lastAppState

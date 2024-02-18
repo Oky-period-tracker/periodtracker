@@ -80,28 +80,31 @@ export const profileScreenSpeech = ({
   dateOfBirth,
   selectedAvatar,
   theme,
-}) => [
-  translate('arrow_button'),
-  translate('profile'),
-  translate('name'),
-  currentUser.name,
-  translate('age'),
-  translate(dateOfBirth.format('MMM')) + ' ' + dateOfBirth.format('YYYY'),
-  translate('gender'),
-  translate(currentUser.gender),
-  translate('green_btn_with_two_arrows'),
-  translate('location'),
-  translate(currentUser.location),
-  translate('green_btn_with_two_arrows'),
-  translate('cycle_length'),
-  todayInfo.cycleLength.toString() + translate('days'),
-  translate('period_length'),
-  todayInfo?.periodLength?.toString() + translate('days'),
-  // translate(`selected_avatar`),
-  translate(selectedAvatar),
-  // translate('selected_theme'),
-  translate(theme),
-]
+}) => {
+  if (!currentUser) return [translate('arrow_button'), translate('profile')]
+  return [
+    translate('arrow_button'),
+    translate('profile'),
+    translate('name'),
+    currentUser.name,
+    translate('age'),
+    translate(dateOfBirth.format('MMM')) + ' ' + dateOfBirth.format('YYYY'),
+    translate('gender'),
+    translate(currentUser.gender),
+    translate('green_btn_with_two_arrows'),
+    translate('location'),
+    translate(currentUser.location),
+    translate('green_btn_with_two_arrows'),
+    translate('cycle_length'),
+    todayInfo.cycleLength.toString() + translate('days'),
+    translate('period_length'),
+    todayInfo?.periodLength?.toString() + translate('days'),
+    // translate(`selected_avatar`),
+    translate(selectedAvatar),
+    // translate('selected_theme'),
+    translate(theme),
+  ]
+}
 
 export const settingsScreenText = ({ hasTtsActive }) => [
   translate('settings'),

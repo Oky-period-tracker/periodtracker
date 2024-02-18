@@ -5,7 +5,6 @@ import * as actions from '../redux/actions'
 import { Text } from '../components/common/Text'
 import { TextInput } from '../components/common/TextInput'
 import * as selectors from '../redux/selectors'
-import { navigateAndReset } from '../services/navigationService'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { PageContainer } from '../components/layout/PageContainer'
 import { useSelector } from '../hooks/useSelector'
@@ -14,16 +13,55 @@ import { SpinLoader } from '../components/common/SpinLoader'
 import _ from 'lodash'
 import { StyleSheet } from 'react-native'
 import { IS_TABLET } from '../config/tablet'
+import { formatPassword, verifyStoreCredentials } from '../services/auth'
 
 export function PasswordRequestScreen() {
   const dispatch = useDispatch()
+  const username = useSelector(selectors.lastLoggedInUsernameSelector)
   const user = useSelector(selectors.currentUserSelector)
+  const storeCredentials = useSelector(selectors.storeCredentialsSelector)
+
   const [loading, setLoading] = React.useState(false)
-  const [valid, setValid] = React.useState(false)
   const [passwordError, setPasswordError] = React.useState(false)
-  const [nameError, setNameError] = React.useState(false)
-  const [name, setName] = React.useState(user.name)
+  const [name, setName] = React.useState(username ?? user?.name)
   const [password, setPassword] = React.useState('')
+
+  const onConfirm = () => {
+    setLoading(true)
+
+    const passwordCorrect = verifyStoreCredentials({
+      username: name,
+      password,
+      storeCredentials,
+    })
+
+    const legacyPasswordCorrect = verifyLegacyPassword()
+
+    if (!passwordCorrect && !legacyPasswordCorrect) {
+      setLoading(false)
+      setPasswordError(true)
+      return
+    }
+
+    dispatch(
+      actions.initiateStoreSwitch({
+        username: name,
+        password,
+      }),
+    )
+  }
+
+  const verifyLegacyPassword = () => {
+    if (!user) {
+      return false
+    }
+    const enteredPassword = formatPassword(password)
+    return enteredPassword === user?.password
+  }
+
+  const onBack = () => {
+    dispatch(actions.clearLastLogin())
+  }
 
   return (
     <BackgroundTheme>
@@ -39,57 +77,26 @@ export function PasswordRequestScreen() {
                   style={styles.input}
                   onChange={(text) => setName(text)}
                   label="name"
-                  isValid={valid}
-                  hasError={nameError}
                   value={name}
+                  editable={false}
                 />
                 <TextInput
                   onChange={(text) => setPassword(text)}
                   label="password"
                   secureTextEntry={true}
-                  isValid={valid}
                   hasError={passwordError}
                   value={password}
                 />
               </Container>
-              <Touchable
-                onPress={() => {
-                  const trimmedPassword = _.toLower(password).trim()
-                  setLoading(true)
-                  if (trimmedPassword === user.password && name === user.name) {
-                    setNameError(false)
-                    setPasswordError(false)
-                    setValid(true)
-                    requestAnimationFrame(() => {
-                      navigateAndReset('MainStack', null)
-                    })
-                  } else if (trimmedPassword === user.password && name !== user.name) {
-                    setLoading(false)
-                    setPasswordError(false)
-                    setNameError(true)
-                  } else if (trimmedPassword !== user.password && name === user.name) {
-                    setLoading(false)
-                    setNameError(false)
-                    setPasswordError(true)
-                  } else {
-                    setNameError(true)
-                    setPasswordError(true)
-                    setLoading(false)
-                  }
-                }}
-              >
-                <HeaderText style={styles.confirmButton}>confirm</HeaderText>
+              <Touchable onPress={onConfirm}>
+                <HeaderText>confirm</HeaderText>
               </Touchable>
             </LowerContent>
           </Container>
         </KeyboardAwareAvoidance>
         <Row>
           <Column>
-            <TouchableText
-              onPress={() => {
-                dispatch(actions.logoutRequest())
-              }}
-            >
+            <TouchableText onPress={onBack}>
               <Text style={styles.text}>back_to_signup</Text>
             </TouchableText>
           </Column>

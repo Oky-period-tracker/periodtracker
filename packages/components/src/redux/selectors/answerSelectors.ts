@@ -1,10 +1,9 @@
-import { ReduxState } from '../store'
-// import { allSurveysSelectors, allQuizzesSelectors } from './contentSelectors'
 import { allQuizzesSelectors } from './contentSelectors'
 
 import { Moment } from 'moment'
 import { toShortISO } from '../../services/dateUtils'
 import _ from 'lodash'
+import { ReduxState } from '../reducers'
 
 const s = (state: ReduxState) => state.answer
 
@@ -50,12 +49,13 @@ export const cardAnswerSelector = (state: ReduxState, date: Moment) => {
 export const verifyPeriodDaySelectorWithDate = (state: ReduxState, date: Moment) => {
   if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
   if (!s(state)[state.auth.user.id]) return {}
-  if(s(state)[state.auth.user.id]?.verifiedDates){
-    return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)] 
-  } else return {}
+  if (s(state)[state.auth.user.id]?.verifiedDates) {
+    return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)]
+  }
+  return {}
   // return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)] || {}
 }
-export const allCardAnswersSelector = (state: ReduxState) => {  
+export const allCardAnswersSelector = (state: ReduxState) => {
   if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
   if (!s(state)[state.auth.user.id]) return {}
   return s(state)[state.auth.user.id]?.verifiedDates || {}

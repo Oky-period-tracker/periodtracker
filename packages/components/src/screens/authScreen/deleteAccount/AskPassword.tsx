@@ -6,6 +6,7 @@ import { useMultiStepForm, formActions } from '../../../components/common/MultiS
 import { DeleteFormLayout } from './DeleteFormLayout'
 import { httpClient } from '../../../services/HttpClient'
 import _ from 'lodash'
+import { formatPassword } from '../../../services/auth'
 
 export function AskPassword({ step }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
@@ -13,7 +14,7 @@ export function AskPassword({ step }) {
     try {
       await httpClient.deleteUserFromPassword({
         name: state.name,
-        password: _.toLower(state.password).trim(),
+        password: formatPassword(state.password),
       })
       dispatch({ formAction: formActions.goToStep('completed') })
     } catch (error) {

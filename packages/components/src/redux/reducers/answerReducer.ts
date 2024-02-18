@@ -1,7 +1,7 @@
 import { Actions } from '../types'
-import { DailyCard } from '../../types'
 import { combineReducers } from 'redux'
 import { toShortISO } from '../../services/dateUtils'
+import { DailyCard } from '../../types'
 
 export interface VerifiedDates {
   [utcShortISO: string]: {

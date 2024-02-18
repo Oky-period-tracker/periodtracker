@@ -10,7 +10,7 @@ import { PersistPartial } from 'redux-persist'
 import { hash } from '../services/auth'
 import { SimpleSplashScreen } from '../screens/SplashScreen'
 import _ from 'lodash'
-import Storage from '../storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 type ReduxPersistState = ReduxState & PersistPartial
 
@@ -38,13 +38,22 @@ const StoreCoordinatorContext = React.createContext<Context>({
   },
 })
 
+const getAllKeys = async () => {
+  try {
+    return await AsyncStorage.getAllKeys()
+  } catch (e) {
+    // error reading value
+    return []
+  }
+}
+
 const checkStoreExists = async (usernameHash: string) => {
-  const keys = await Storage.getAllKeys()
+  const keys = await getAllKeys()
   return keys.includes(`persist:${usernameHash}`)
 }
 
 const hasMigrated = async () => {
-  const keys = await Storage.getAllKeys()
+  const keys = await getAllKeys()
   const persistKeys = keys.filter((key) => {
     return key.startsWith('persist:')
   })

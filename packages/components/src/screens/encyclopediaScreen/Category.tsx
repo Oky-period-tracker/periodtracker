@@ -109,12 +109,7 @@ const VideoCategoryContainer = styled.TouchableOpacity`
 `
 
 const TitleContainer = styled.View`
-  width: 200px;
-  height: 100%;
-  justify-content: center;
-  margin-vertical: 4px;
-  margin-horizontal: 4px;
-  min-height: 80px;
+  flex: 1;
 `
 
 const TagsContainer = styled.View`

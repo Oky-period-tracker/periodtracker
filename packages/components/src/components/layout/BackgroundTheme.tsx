@@ -4,6 +4,7 @@ import { useTheme } from '../context/ThemeContext'
 import { useTodayPrediction } from '../context/PredictionProvider'
 import { assets } from '../../assets'
 import { ThemeName, defaultTheme } from '@oky/core'
+import { getAsset } from '../../services/asset'
 
 function getBackgroundImage(theme: ThemeName, onPeriod: boolean) {
   const background = assets.backgrounds[theme]
@@ -26,9 +27,7 @@ export function BackgroundTheme({ theme = null, ...props }) {
 }
 
 export function DefaultBackgroundTheme({ ...props }) {
-  // TODO_ALEX getAsset() safely
-  const backgroundImage = assets.backgrounds[defaultTheme].default
-
+  const backgroundImage = getAsset(`assets.backgrounds.${defaultTheme}.default`)
   return <Background source={backgroundImage} {...props} />
 }
 

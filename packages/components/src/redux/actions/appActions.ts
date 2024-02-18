@@ -1,7 +1,5 @@
 import { AvatarName, ThemeName } from '@oky/core'
 import { createAction } from '../helpers'
-import { ReduxState } from '../store'
-import { VerifiedDates } from '../reducers/answerReducer'
 import { PartialStateSnapshot } from '../types/partialStore'
 
 export function setTheme(theme: ThemeName) {

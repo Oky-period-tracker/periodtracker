@@ -8,37 +8,17 @@ import { Icon } from '../../components/common/Icon'
 import { SelectBox } from '../../components/common/SelectBox'
 import { DateOfBirthInput } from '../../components/common/DateOfBirthInput'
 import { assets } from '../../assets/index'
-import { useSelector } from '../../hooks/useSelector'
-import * as selectors from '../../redux/selectors'
-import { useDispatch } from 'react-redux'
 import { BackOneScreen } from '../../services/navigationService'
 import { TextInputSettings } from '../../components/common/TextInputSettings'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
 import { Text } from '../../components/common/Text'
 import { translate } from '../../i18n'
 import _ from 'lodash'
-import { useScreenDimensions } from '../../hooks/useScreenDimensions'
-import { IS_TABLET } from '../../config/tablet'
-import {
-  decrypt,
-  encrypt,
-  formatPassword,
-  hash,
-  validatePassword,
-  verifyStoreCredentials,
-} from '../../services/auth'
 import { EditSecretQuestionModal } from './EditSecretQuestionModal'
 import { EditPasswordModal } from './EditPasswordModal'
 import { useEditProfile } from './useEditProfile'
-
-const minPasswordLength = 1
-const secretQuestions = [
-  'secret_question',
-  `favourite_actor`,
-  `favourite_teacher`,
-  `childhood_hero`,
-]
-const inputWidth = deviceWidth - 180
+import { IS_TABLET } from '../../config/tablet'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 function showAlert(message) {
   Alert.alert(
@@ -69,6 +49,8 @@ function showAcceptAlert(message) {
   )
 }
 
+const maxWidth = 800
+
 export function EditProfileScreen() {
   const { screenWidth } = useScreenDimensions()
   const percentWidth = IS_TABLET ? 0.75 : 1
@@ -79,27 +61,6 @@ export function EditProfileScreen() {
   }
 
   inputWidth -= 180 // 180 is the width of the icon
-
-  const dispatch = useDispatch()
-  const reduxDispatch = useDispatch()
-  const currentUser = useSelector(selectors.currentUserSelector)
-
-  const [name, setName] = React.useState(currentUser.name)
-  const [dateOfBirth, setDateOfBirth] = React.useState(currentUser.dateOfBirth)
-  const [gender, setGender] = React.useState(currentUser.gender)
-  const [location, setLocation] = React.useState(currentUser.location)
-
-  const remainingGenders = ['Female', 'Male', 'Other'].filter((item) => {
-    return item !== currentUser.gender
-  })
-  const remainingLocations = ['Urban', 'Rural'].filter((item) => {
-    return item !== currentUser.location
-  })
-  remainingLocations.unshift(currentUser.location)
-
-  const onConfirm = () => {
-    //
-  }
 
   const {
     onConfirm,
@@ -189,23 +150,14 @@ export function EditProfileScreen() {
                 hasError={false}
               />
             </Row>
-            <Row style={{ marginBottom: 10 }}>
-              <Icon
-                source={assets.static.icons.lockL}
-                style={{ marginRight: 38, height: 57, width: 57 }}
-              />
+            <Row style={styles.row}>
+              <Icon source={assets.static.icons.lockL} style={styles.icon} />
               <ChangeSecretButton onPress={() => setIsPasswordModalVisible(true)}>
                 <ConfirmText>change_secret</ConfirmText>
               </ChangeSecretButton>
             </Row>
             <Row style={styles.row}>
               <Icon source={assets.static.icons.shieldL} style={styles.icon} />
-              <ChangeSecretButton onPress={() => setSecretIsVisible(true)}>
-            <Row style={{ marginBottom: 10 }}>
-              <Icon
-                source={assets.static.icons.shieldL}
-                style={{ marginRight: 38, height: 57, width: 57 }}
-              />
               <ChangeSecretButton onPress={() => setIsSecretModalVisible(true)}>
                 <ConfirmText>change_secret</ConfirmText>
               </ChangeSecretButton>
@@ -213,7 +165,7 @@ export function EditProfileScreen() {
           </Container>
         </KeyboardAwareAvoidance>
         <ConfirmButton onPress={onConfirm}>
-          <ConfirmText style={{ color: '#000' }}>confirm</ConfirmText>
+          <ConfirmText style={styles.confirm}>confirm</ConfirmText>
         </ConfirmButton>
       </PageContainer>
 
@@ -253,6 +205,17 @@ const Row = styled.View`
   margin-bottom: 4px;
 `
 
+const Confirm = styled.TouchableOpacity`
+  width: 100%;
+  height: 45px;
+  border-radius: 22.5px;
+  background-color: #a2c72d;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+`
+
 const ChangeSecretButton = styled.TouchableOpacity`
   width: 100%;
   max-width: 200px;
@@ -277,6 +240,17 @@ const ConfirmButton = styled.TouchableOpacity`
   elevation: 4;
 `
 
+const CardModal = styled.View`
+  width: 90%;
+  height: 400px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding-horizontal: 20px;
+  padding-vertical: 20px;
+  align-items: center;
+  justify-content: space-around;
+  align-self: center;
+`
 const ConfirmText = styled(Text)`
   font-family: Roboto-Black;
   text-align: center;

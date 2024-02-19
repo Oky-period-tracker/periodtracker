@@ -248,14 +248,14 @@ CREATE VIEW "periodtracker"."answered_quizzes" AS SELECT (periodtracker.app_even
    FROM periodtracker.app_event
   WHERE ((periodtracker.app_event.type)::text = 'ANSWER_QUIZ'::text);
 
-CREATE VIEW "periodtracker"."answered_surveys" AS SELECT (periodtracker.app_event.payload ->> 'id'::text) AS id,
+CREATE OR REPLACE VIEW "periodtracker"."answered_surveys" AS SELECT (periodtracker.app_event.payload ->> 'id'::text) AS id,
     (periodtracker.app_event.payload ->> 'questions'::text) AS question,
     (periodtracker.app_event.payload ->> 'answerID'::text) AS answerid,
     (periodtracker.app_event.payload ->> 'answer'::text) AS answer,
     (periodtracker.app_event.payload ->> 'utcDateTime'::text) AS date,
     (periodtracker.app_event.payload ->> 'isCompleted'::text) AS iscompleted,
     (periodtracker.app_event.payload ->> 'isSurveyAnswered'::text) AS issurveyanswered,
-    (periodtracker.app_event.payload ->> 'userID'::text) AS user_id,
+    (periodtracker.app_event.payload ->> 'user_id'::text) AS user_id, -- Changed from 'userID' to 'user_id'
     (periodtracker.app_event.payload ->> 'questions'::text) AS questions
-   FROM periodtracker.app_event
-  WHERE ((periodtracker.app_event.type)::text = 'ANSWER_SURVEY'::text);
+FROM periodtracker.app_event
+WHERE ((periodtracker.app_event.type)::text = 'ANSWER_SURVEY'::text);

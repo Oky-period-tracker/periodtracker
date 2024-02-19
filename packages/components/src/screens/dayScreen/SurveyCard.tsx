@@ -247,6 +247,7 @@ export const SurveyCard = React.memo<{
             <LowerContentButton
               onPress={() => {
                 selectAnswer(title, isSkip)
+                setTitle('')
               }}
             >
               <HeaderText>skip</HeaderText>
@@ -255,6 +256,7 @@ export const SurveyCard = React.memo<{
             <LowerContentButton
               onPress={() => {
                 selectAnswer(title, isSkip)
+                setTitle('')
               }}
             >
               <HeaderText>submit</HeaderText>

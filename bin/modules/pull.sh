@@ -15,8 +15,8 @@ git submodule add $translations_url $translations_path
 git submodule add $delete_account_url $delete_account_path
 
 # Optional modules
+[ -n "$github_config_url" ] && git submodule add $github_config_url $github_config_path
 [ -n "$flower_url" ] && git submodule add $flower_url $flower_path
-
 
 # Use the latest commits
 git submodule update --remote

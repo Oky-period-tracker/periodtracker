@@ -9,4 +9,5 @@ k8s_url="git@github.com:Oky-period-tracker/periodtracker_k8s-whitelabelled.git"
 delete_account_url="git@github.com:Oky-period-tracker/periodtracker_delete_account-whitelabelled.git"
 
 # Optional
+# github_config_url=""
 # flower_url="git@github.com:Oky-period-tracker/periodtracker_flower.git"

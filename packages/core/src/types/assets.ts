@@ -27,6 +27,24 @@ export interface AppAssets {
     spin_load_face: ImageSourcePropType
     spin_load_circle: ImageSourcePropType
     icons: {
+      filter: ImageSourcePropType
+      Oo: ImageSourcePropType
+      OoGrey: ImageSourcePropType
+      Hindi: ImageSourcePropType
+      HindiGrey: ImageSourcePropType
+      mobility: ImageSourcePropType
+      mobilityGrey: ImageSourcePropType
+      seeing: ImageSourcePropType
+      seeingGrey: ImageSourcePropType
+      hearing: ImageSourcePropType
+      hearingGrey: ImageSourcePropType
+      communication: ImageSourcePropType
+      communicationGrey: ImageSourcePropType
+      cognition: ImageSourcePropType
+      cognitionGrey: ImageSourcePropType
+      self_care: ImageSourcePropType
+      self_careGrey: ImageSourcePropType
+      no_difficulty: ImageSourcePropType
       settingsIcon: ImageSourcePropType
       cloudsIcn: ImageSourcePropType
       information: ImageSourcePropType
@@ -128,6 +146,12 @@ export interface AppAssets {
   general: {
     aboutBanner: Record<Locale, ImageSourcePropType>
     calendarStatic: Record<Locale, ImageSourcePropType>
+    encylopediaAvatars: ImageSourcePropType
+    tripleClouds: ImageSourcePropType
+    avatarClouds: ImageSourcePropType
+    saveIcon: ImageSourcePropType
+    hidePassword: ImageSourcePropType
+    showPassword: ImageSourcePropType
   }
   lottie: {
     avatars: Record<AvatarName, AnimatedLottieViewProps['source']>

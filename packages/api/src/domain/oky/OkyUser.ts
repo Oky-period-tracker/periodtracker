@@ -9,9 +9,16 @@ interface OkyUserProps {
   id: string
   name: HashedName
   dateOfBirth: Date
-  gender: 'Female' | 'Male' | 'Other'
+  gender?: 'Female' | 'Male' | 'Other'
+  genderIdentity?: 'Oo' | 'Hindi' | 'Other'
+  isPwd: string
+  accommodationRequirement?: string
+  religion: string
+  encyclopediaVersion: string
   location: string
   country: string
+  isProfileUpdateSkipped?: boolean
+  city: string
   province: string
   password: HashedPassword
   memorable: MemorableQuestion
@@ -30,16 +37,35 @@ export class OkyUser {
   @Column({ name: 'date_of_birth' })
   private dateOfBirth: Date
 
-  @Column({ name: 'gender' })
+  @Column({ name: 'gender', nullable: true })
   private gender: string
+
+  @Column({ name: 'genderIdentity', nullable: true })
+  private genderIdentity: string
+
+  @Column({ name: 'isPwd' })
+  private isPwd: string
+
+  @Column({ name: 'accommodationRequirement', nullable: true })
+  private accommodationRequirement?: string
+
+  @Column({ name: 'religion' })
+  private religion: string
+
+  @Column({ name: 'encyclopediaVersion' })
+  private encyclopediaVersion: string
 
   @Column({ name: 'location' })
   private location: string
 
-  @Column({ name: 'country', default: '00', nullable: true })
+  // @TODO:PH default kept in submodule?
+  @Column({ name: 'country', default: 'PH', nullable: true })
   private country: string
 
-  @Column({ name: 'province', default: '0', nullable: true })
+  @Column({ name: 'city', default: '', nullable: true })
+  private city: string
+
+  @Column({ name: 'province', default: '', nullable: true })
   private province: string
 
   @Column((type) => HashedPassword)
@@ -47,6 +73,9 @@ export class OkyUser {
 
   @Column((type) => MemorableQuestion)
   private memorable: MemorableQuestion
+
+  @Column({ name: 'isProfileUpdateSkipped', default: false, nullable: true })
+  private isProfileUpdateSkipped: boolean
 
   @Column({ name: 'store', type: 'json', nullable: true })
   private store: null | {
@@ -67,24 +96,39 @@ export class OkyUser {
         name,
         dateOfBirth,
         gender,
+        genderIdentity,
+        isPwd,
+        accommodationRequirement,
+        religion,
+        encyclopediaVersion,
         location,
         country,
+        city,
         province,
         password,
+        isProfileUpdateSkipped,
         memorable,
         dateSignedUp,
       } = props
 
       this.id = id
       this.name = name
+      this.country = country
       this.dateOfBirth = dateOfBirth
       this.gender = gender
+      this.genderIdentity = genderIdentity
+      this.isPwd = isPwd
+      this.accommodationRequirement = accommodationRequirement
+      this.religion = religion
+      this.encyclopediaVersion = encyclopediaVersion
       this.location = location
       this.country = country
+      this.city = city
       this.province = province
       this.password = password
       this.memorable = memorable
       this.store = null
+      this.isProfileUpdateSkipped = isProfileUpdateSkipped
       this.dateSignedUp = dateSignedUp
     }
   }
@@ -94,8 +138,14 @@ export class OkyUser {
     name,
     dateOfBirth,
     gender,
+    genderIdentity,
+    isPwd,
+    accommodationRequirement,
+    religion,
+    encyclopediaVersion,
     location,
     country,
+    city,
     province,
     plainPassword,
     secretQuestion,
@@ -107,8 +157,14 @@ export class OkyUser {
     name: string
     dateOfBirth: Date
     gender: 'Male' | 'Female' | 'Other'
+    genderIdentity: 'Oo' | 'Hindi' | 'Other'
+    isPwd: string
+    accommodationRequirement?: string
+    religion: string
+    encyclopediaVersion: string
     location: string
     country: string
+    city: string
     province: string
     plainPassword: string
     secretQuestion: string
@@ -133,8 +189,14 @@ export class OkyUser {
       name: hashedName,
       dateOfBirth,
       gender,
+      genderIdentity,
+      isPwd,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
       location,
       country,
+      city,
       province,
       password,
       memorable,
@@ -154,14 +216,28 @@ export class OkyUser {
     name,
     dateOfBirth,
     gender,
+    genderIdentity,
+    isPwd,
+    accommodationRequirement,
+    religion,
+    city,
+    encyclopediaVersion,
     location,
+    isProfileUpdateSkipped,
     secretQuestion,
   }: {
     name: string
     dateOfBirth: Date
     gender: 'Male' | 'Female' | 'Other'
+    genderIdentity: 'Oo' | 'Hindi' | 'Other'
+    isPwd: string
+    accommodationRequirement?: string
+    religion: string
+    encyclopediaVersion: string
     location: string
+    city: string
     secretQuestion: string
+    isProfileUpdateSkipped?: boolean
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -171,7 +247,14 @@ export class OkyUser {
     this.name = hashedName
     this.dateOfBirth = dateOfBirth
     this.gender = gender
+    this.genderIdentity = genderIdentity
+    this.isPwd = isPwd
+    this.city = city
+    this.accommodationRequirement = accommodationRequirement
+    this.religion = religion
+    this.encyclopediaVersion = encyclopediaVersion
     this.location = location
+    this.isProfileUpdateSkipped = isProfileUpdateSkipped
     this.memorable = await this.memorable.changeQuestion(secretQuestion)
   }
 
@@ -212,11 +295,36 @@ export class OkyUser {
     return this.gender
   }
 
+  public getGenderIdentity() {
+    return this.genderIdentity
+  }
+
+  public getIsPwd() {
+    return this.isPwd
+  }
+
+  public getAccommodationRequirement() {
+    return this.accommodationRequirement
+  }
+
+  public getReligion() {
+    return this.religion
+  }
+
+  public getEncyclopediaVersion() {
+    return this.encyclopediaVersion
+  }
+
   public getLocation() {
     return this.location
   }
+
   public getCountry() {
     return this.country
+  }
+
+  public getCity() {
+    return this.city
   }
 
   public getProvince() {
@@ -229,6 +337,10 @@ export class OkyUser {
 
   public getHashedMemorableAnswer() {
     return this.memorable.secretAnswerHashed
+  }
+
+  public getIsProfileUpdateSkipped() {
+    return this.isProfileUpdateSkipped
   }
 
   public getStore() {

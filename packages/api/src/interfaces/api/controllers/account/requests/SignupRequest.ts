@@ -17,11 +17,30 @@ export class SignupRequest {
   @IsIn(['Male', 'Female', 'Other'])
   public readonly gender: 'Male' | 'Female' | 'Other'
 
+  // @TODO:PH
+  @IsNotEmpty()
+  @IsIn(['Oo', 'Hindi', 'Other'])
+  public readonly genderIdentity: 'Oo' | 'Hindi' | 'Other'
+
+  @IsNotEmpty()
+  public readonly isPwd: string
+
+  public readonly accommodationRequirement?: string
+
+  @IsNotEmpty()
+  public readonly religion: string
+
+  @IsNotEmpty()
+  public readonly encyclopediaVersion: string
+
   @IsNotEmpty()
   public readonly location: string
 
   @IsNotEmpty()
   public readonly country: string
+
+  @IsNotEmpty()
+  public readonly city: string
 
   @IsNotEmpty()
   public readonly province: string

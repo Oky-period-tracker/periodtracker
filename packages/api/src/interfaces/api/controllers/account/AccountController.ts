@@ -44,8 +44,14 @@ export class AccountController {
       name,
       dateOfBirth,
       gender,
+      genderIdentity,
+      isPwd,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
       location,
       country,
+      city,
       province,
       password,
       secretQuestion,
@@ -63,8 +69,14 @@ export class AccountController {
       name,
       dateOfBirth: new Date(dateOfBirth),
       gender,
+      genderIdentity,
+      isPwd,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
       location,
       country,
+      city,
       province,
       plainPassword: password,
       secretQuestion,
@@ -141,13 +153,36 @@ export class AccountController {
     @CurrentUser({ required: true }) userId: string,
     @Body() request: EditInfoRequest,
   ) {
-    const { name, gender, dateOfBirth, location, secretQuestion } = request
+    const {
+      name,
+      gender,
+      genderIdentity,
+      isPwd,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
+      dateOfBirth,
+      location,
+      secretQuestion,
+      city,
+    } = request
+    let isProfileUpdateSkipped = false
+    if (!city) {
+      isProfileUpdateSkipped = true
+    }
     await this.okyUserApplicationService.editInfo({
       userId,
       name,
       gender,
+      genderIdentity,
+      isPwd,
+      accommodationRequirement,
+      religion,
+      city,
+      encyclopediaVersion,
       dateOfBirth: new Date(dateOfBirth),
       location,
+      isProfileUpdateSkipped,
       secretQuestion,
     })
 
@@ -187,11 +222,18 @@ export class AccountController {
       id: user.getId(),
       dateOfBirth: user.getDateOfBirth(),
       gender: user.getGender(),
+      genderIdentity: user.getGenderIdentity(),
+      isPwd: user.getIsPwd(),
+      accommodationRequirement: user.getAccommodationRequirement(),
+      religion: user.getReligion(),
+      encyclopediaVersion: user.getEncyclopediaVersion(),
       location: user.getLocation(),
       country: user.getCountry(),
+      city: user.getCity(),
       province: user.getProvince(),
       secretQuestion: user.getMemorableQuestion(),
       secretAnswer: user.getHashedMemorableAnswer(),
+      isProfileUpdateSkipped: user.getIsProfileUpdateSkipped(),
       dateSignedUp: user.getDateSignedUp(),
     }
 

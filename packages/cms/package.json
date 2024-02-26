@@ -50,7 +50,6 @@
     "psgc": "^2.1.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "0.2.41",
-    "uuid": "^3.3.2",
     "xlsx": "^0.18.5",
     "typescript": "4.7.4",
     "uuid": "9.0.0"

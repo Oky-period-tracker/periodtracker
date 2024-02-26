@@ -17,6 +17,9 @@ import ormconfig from '../ormconfig'
 import { DataController } from './controller/DataController'
 import multer from 'multer'
 import { cmsLocales } from './i18n/options'
+// import { run } from './projections/populate' // @TODO:PH
+
+import * as formUpload from 'express-fileupload'
 
 createConnection(ormconfig)
   .then(() => {
@@ -92,7 +95,9 @@ createConnection(ormconfig)
     app.use('/mobile/suggestions', cors())
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
+      // databaseURL: 'https://oky-app.firebaseio.com', // @TODO:PH
     })
+
     // ============================ Upload  =======================================
 
     const upload = multer({ storage: multer.memoryStorage() })
@@ -123,21 +128,38 @@ createConnection(ormconfig)
       dataController.uploadProvincesSheet,
     )
 
+    app.use(formUpload.default())
+
     // ============================ Routes  =======================================
     Routes.forEach((route) => {
-      ;(app as any)[route.method](route.route, (req: Request, res: Response, next: any) => {
-        const result = new (route.controller as any)()[route.action](req, res, next)
-        if (result instanceof Promise) {
-          result.then((_result) =>
-            _result !== null && _result !== undefined ? res.send(_result) : undefined,
-          )
-        } else if (result !== null && result !== undefined) {
-          res.json(result)
+      ;(app as any)[route.method](route.route, async (req: Request, res: Response, next: any) => {
+        try {
+          const instance = new (route.controller as any)()
+          const method = instance[route.action]
+          const rawResult = method.apply(instance, [req, res, next])
+          const result = await rawResult
+          if (result !== null && result !== undefined) {
+            if (rawResult instanceof Promise) {
+              if (result?.isFile) {
+                // do not return a response since we handle the stream when sending a file to client
+                return
+              }
+              res.send(result)
+            } else {
+              res.json(result)
+            }
+          }
+        } catch (e) {
+          res.json({
+            error: true,
+            message: e.message,
+          })
+          console.warn(e)
         }
       })
     })
 
-    app.listen(5000)
-    console.log('Server started on port 5000')
+    app.listen(env.api.port)
+    console.log(`Server started on port ${env.api.port}`)
   })
   .catch((error) => console.log(error))

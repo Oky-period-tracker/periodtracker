@@ -13,4 +13,7 @@ export class Subcategory {
 
   @Column()
   lang: string
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date_created: string
 }

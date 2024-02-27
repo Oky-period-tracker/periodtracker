@@ -3,11 +3,13 @@ import { HelpCenterResponse } from '../api/types'
 interface HelpCenterResponseItem {
   id: number
   title: string
+  providerName: string
   caption: string
   contactOne: string
   contactTwo: string
   address: string
   website: string
+  websites: string
   lang: string
 }
 export interface HelpCenters extends Array<HelpCenterResponseItem> {}

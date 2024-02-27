@@ -28,7 +28,7 @@ export class Question {
   @Column()
   response: string
 
-  @Column()
+  @Column({ nullable: true })
   next_question: string
 
   @Column()

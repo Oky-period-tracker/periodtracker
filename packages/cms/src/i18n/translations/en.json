@@ -194,5 +194,15 @@
 	"Youtube Id": "Youtube Id",
 	"Asset name": "Asset name",
 	"Videos": "Videos",
-	"Add Video": "Add Video"
+	"Add Video": "Add Video",
+	"Age Restriction": "Age Restriction",
+	"Order": "Order",
+	"Voice Over": "Voice Over",
+	"All Ages": "All Ages",
+	"Age 12": "Age 12",
+	"Age 16": "Age 16",
+	"Bulk import/export": "Bulk import/export",
+	"Provider Name": "Provider Name",
+	"Province": "Province",
+	"City": "City"
 }

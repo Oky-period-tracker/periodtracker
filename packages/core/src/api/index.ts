@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
 import * as types from './types'
-export * from './types'
 
 export function createHttpClient(endpoint: string, cmsEndpoint: string, { predictionEndpoint }) {
   return {
@@ -19,8 +18,14 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       name,
       dateOfBirth,
       gender,
+      genderIdentity,
+      isPwd,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
       location,
       country,
+      city,
       province,
       password,
       secretQuestion,
@@ -34,8 +39,14 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
           name,
           dateOfBirth,
           gender,
+          genderIdentity,
+          isPwd,
+          accommodationRequirement,
+          religion,
+          encyclopediaVersion,
           location,
           country,
+          city,
           province,
           password,
           secretAnswer,
@@ -92,12 +103,18 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       )
       return response.data
     },
+    fetchProvinces: async () => {
+      const response: AxiosResponse<any> = await axios.get(`${cmsEndpoint}/provinces`)
+
+      return response.data
+    },
     editUserInfo: async ({
       appToken,
       name,
       dateOfBirth,
       gender,
       location,
+      city,
       secretQuestion,
     }: any) => {
       const response: AxiosResponse<{}> = await axios.post(
@@ -107,6 +124,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
           dateOfBirth,
           gender,
           location,
+          city,
           secretQuestion,
         },
         {
@@ -136,6 +154,10 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       )
       return response.data
     },
+    fetchHelpCenterAttributes: async () => {
+      const response: AxiosResponse<any> = await axios.get(`${cmsEndpoint}/help-center-attributes`)
+      return response.data
+    },
     fetchEncyclopedia: async ({ locale }) => {
       const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
         `${cmsEndpoint}/mobile/articles/${locale}`,
@@ -157,6 +179,40 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
     fetchPrivacyPolicy: async ({ locale }: any) => {
       const response: AxiosResponse<types.PrivacyResponse> = await axios.get(
         `${cmsEndpoint}/mobile/privacy-policy/${locale}`,
+      )
+
+      return response.data
+    },
+    saveHelpCenter: async ({ helpCenterId, token }) => {
+      const response: AxiosResponse<types.HelpCenterResponse> = await axios.post(
+        `${endpoint}/user-help-center`,
+        { helpCenterId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+
+      return response.data
+    },
+    fetchSavedHelpCenters: async ({ token }) => {
+      const response: AxiosResponse<types.HelpCenterResponse> = await axios.get(
+        `${endpoint}/user-help-center`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      return response.data
+    },
+    unsaveHelpCenter: async ({ helpCenterId, user, token }) => {
+      const response: AxiosResponse<types.HelpCenterResponse> = await axios.delete(
+        `${endpoint}/user-help-center/${helpCenterId}`,
+        {
+          headers: { Authorization: `Bearer ${token}`, 'x-user': user },
+        },
       )
 
       return response.data

@@ -9,6 +9,9 @@ export interface EncyclopediaResponseItem {
   primary_emoji: string
   primary_emoji_name: string
   lang: string
+  isAgeRestricted: string
+  ageRestrictionLevel: string
+  contentFilter: string
   live: boolean
 }
 export interface EncyclopediaResponse extends Array<EncyclopediaResponseItem> {}
@@ -37,6 +40,8 @@ interface QuizResponseItem {
   right_answer_response: string
   lang: string
   live: boolean
+  ageRestrictionLevel: string
+  contentFilter: string
 }
 export interface QuizzesResponse extends Array<QuizResponseItem> {}
 
@@ -68,6 +73,8 @@ interface DidYouKnowResponseItem {
   content: string
   lang: string
   live: boolean
+  ageRestrictionLevel: string
+  contentFilter: string
 }
 export interface DidYouKnowsResponse extends Array<DidYouKnowResponseItem> {}
 
@@ -80,6 +87,7 @@ interface HelpCenterResponseItem {
   address: string
   website: string
   lang: string
+  province: any
 }
 export interface HelpCenterResponse extends Array<HelpCenterResponseItem> {}
 
@@ -90,7 +98,14 @@ export interface LoginResponse {
     name: string
     dateOfBirth: string
     gender: 'Male' | 'Female' | 'Other'
+    genderIdentity: 'Oo' | 'Hindi' | 'Other'
+    isPwd: string
+    accommodationRequirement?: string
+    religion: string
+    encyclopediaVersion: string
+    isProfileUpdateSkipped?: boolean
     location: string
+    city?: string
     country: string
     province: string
     secretQuestion: string
@@ -110,6 +125,12 @@ export interface SignupResponse {
     name: string
     dateOfBirth: string
     gender: 'Male' | 'Female' | 'Other'
+    genderIdentity: 'Oo' | 'Hindi' | 'Other'
+    isPwd: string
+    accommodationRequirement?: string
+    religion: string
+    encyclopediaVersion: string
+    city: string
     location: string
     country: string
     province: string
@@ -151,3 +172,10 @@ export type AboutBannerConditionalResponse =
   | {
       shouldUpdate: false
     }
+
+export interface HelpCenterAttributesResponse {
+  id: number
+  attributeName: string
+  description: string
+  isActive: boolean
+}

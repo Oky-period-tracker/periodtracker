@@ -10,8 +10,8 @@ export interface EncyclopediaResponseItem {
   primary_emoji_name: string
   lang: string
   isAgeRestricted: string
-  ageRestrictionLevel: string
-  contentFilter: string
+  ageRestrictionLevel: number
+  contentFilter: number
   live: boolean
 }
 export interface EncyclopediaResponse extends Array<EncyclopediaResponseItem> {}
@@ -40,8 +40,8 @@ interface QuizResponseItem {
   right_answer_response: string
   lang: string
   live: boolean
-  ageRestrictionLevel: string
-  contentFilter: string
+  ageRestrictionLevel: number
+  contentFilter: number
 }
 export interface QuizzesResponse extends Array<QuizResponseItem> {}
 
@@ -73,8 +73,8 @@ interface DidYouKnowResponseItem {
   content: string
   lang: string
   live: boolean
-  ageRestrictionLevel: string
-  contentFilter: string
+  ageRestrictionLevel: number
+  contentFilter: number
 }
 export interface DidYouKnowsResponse extends Array<DidYouKnowResponseItem> {}
 

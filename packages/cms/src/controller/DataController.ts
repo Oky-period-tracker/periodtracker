@@ -192,6 +192,9 @@ export class DataController {
         article_text: '',
         primary_emoji: item.primary_emoji,
         primary_emoji_name: item.primary_emoji_name,
+        isAgeRestricted: item.isAgeRestricted,
+        ageRestrictionLevel: item.ageRestrictionLevel,
+        contentFilter: item.contentFilter,
         live: item.live,
       }
     })

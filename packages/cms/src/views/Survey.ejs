@@ -1,5 +1,16 @@
 <%- include('partials/Header') %> 
-<%- include('modals/SurveyModal', {headings: [__('S.No'),__('Question'), __('Option 1'),__('Option 2'),__('Option 3'),__('Option 4'),__('Option 5'), __('Actions') ], errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20 characters','max 20 characters','max 20 characters']}) %>
+<%- include('modals/SurveyModal', {
+headings: {
+  'S.No': __('S.No'),
+  Question: __('Question'),
+  'Option 1': __('Option 1'),
+  'Option 2': __('Option 2'),
+  'Option 3': __('Option 3'),
+  'Option 4': __('Option 4'),
+  'Option 5': __('Option 5'),
+  Actions: __('Actions'),
+}, 
+errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20 characters','max 20 characters','max 20 characters']}) %>
 <%- include('modals/GraphModal') %>
 <div class="homePageContainer">
   <div class="sideBar">

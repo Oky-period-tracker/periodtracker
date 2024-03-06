@@ -22,7 +22,7 @@ const columnNames = {
     'lang',
   ],
   did_you_know: ['id', 'title', 'content', 'isAgeRestricted', 'live', 'lang'],
-  help_center: ['id', 'title', 'caption', 'contactOne', 'contactTwo', 'address', 'website', 'lang'],
+  help_center: ['title', 'caption', 'contactOne', 'contactTwo', 'address', 'website', 'lang'],
   avatar_messages: ['id', 'content', 'live', 'lang'],
   privacy_policy: ['json_dump', 'timestamp', 'lang'],
   terms_and_conditions: ['json_dump', 'timestamp', 'lang'],
@@ -204,7 +204,6 @@ const getDidYouKnows = (content: StaticContent) => {
 const getHelpCenters = (content: StaticContent) => {
   return content.helpCenters.map((entry) => {
     return [
-      entry.id,
       entry.title,
       entry.caption,
       entry.contactOne,

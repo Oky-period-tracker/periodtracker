@@ -14,7 +14,7 @@
         <table class="table table-borderless modal-table">
           <thead>
             <tr>
-              <% headings.forEach((heading, index)=>{ %>
+              <% Object.entries(headings).forEach(([key, heading], index)=>{ %>
                 <% if(heading =='Actions' ) { %>
                   <th style="width: 20%">
                     <%= heading %>
@@ -30,11 +30,11 @@
           </thead>
           <tbody id="surveyTbody"  class="survey_tbody" style="overflow-y: scroll">
             <tr class="question_parent d-none" style="border-bottom: solid 5px #eee;">              
-              <% headings.forEach((item, index)=>{ %>
-                <% if(item=='S.No' ) { %>
+              <% Object.entries(headings).forEach(([key, heading], index)=>{ %>
+                <% if(key=='S.No' ) { %>
                   <td>1</td>
                 <% } %>  
-                <% if(item=='Actions' ) { %>
+                <% if(key=='Actions' ) { %>
                   <td style="width: 20%">
                     <input name="id" class="id_input" hidden/>
                     <div id="surveyResponseTypeBtn" style="display: inline-block;">
@@ -48,17 +48,17 @@
                     <button class="btn handle-sort" style="padding: 0 3px;"><i class="fas fa-sort"></i></button>
                   </td>
                 <% } %>
-                <% if(item !='S.No' && item !='Actions' && item !='Next que' ) { %>
+                <% if(key !='S.No' && key !='Actions' && key !='Next que' ) { %>
                   <td >
-                    <textarea class="form-control input_field validate__input <%= item =='Question' ? 'textarea__input' : 'option__input' %>" data-length="<%= item== 'Question' ? 65 : 20 %>" name="<%= item %>" required="<%= item =='Question' ? true : false%>" rows="2" id="<%= 'col'+index+'TableModal' %>"></textarea>
+                    <textarea class="form-control input_field validate__input <%= key =='Question' ? 'textarea__input' : 'option__input' %>" data-length="<%= key== 'Question' ? 65 : 20 %>" name="<%= key %>" required="<%= key =='Question' ? true : false%>" rows="2" id="<%= 'col'+index+'TableModal' %>"></textarea>
                     <% if(errors && errors.length !==0){ %>
                       <p id="error<%=index%>" style="display: none;">
                         <%= errors[index] %>
                       </p>
                     <% } %>
                     <p class="countdown-warning" id="countdown<%=index %>" style="display: none;">remaining</p>
-                    <% if(item !='Question' && item !='Response' ) { %>
-                      <small>Next Question <i class="fa fa-down-arrow"></i></small><input  min="0" type="number" class="validate__input form-control next_question_field" data-name="<%= item %>" name="next_question" id="<%= 'col'+index+'TableModal' %>" />
+                    <% if(key !='Question' && key !='Response' ) { %>
+                      <small>Next Question <i class="fa fa-down-arrow"></i></small><input  min="0" type="number" class="validate__input form-control next_question_field" data-name="<%= key %>" name="next_question" id="<%= 'col'+index+'TableModal' %>" />
                     <% } %>                    
                   </td>
                 <% } %>

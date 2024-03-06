@@ -27,11 +27,11 @@ export function fromEncyclopedia({
       allIds: [],
     },
   }
-  let previousCat = ''
-  let previousSubCat = ''
+
   encyclopediaResponse.forEach((item) => {
     // main category
-    if (item.category_title !== previousCat) {
+    const categoryAlreadyExists = dataShape.categories.byId[item.cat_id]
+    if (!categoryAlreadyExists) {
       dataShape.categories = {
         byId: {
           ...dataShape.categories.byId,
@@ -51,7 +51,8 @@ export function fromEncyclopedia({
       }
     }
     // Subcategory
-    if (item.subcategory_title !== previousSubCat) {
+    const subcategoryAlreadyExists = dataShape.subCategories.byId[item.subcat_id]
+    if (!subcategoryAlreadyExists) {
       dataShape.subCategories = {
         byId: {
           ...dataShape.subCategories.byId,
@@ -89,9 +90,6 @@ export function fromEncyclopedia({
       ...dataShape.subCategories.byId[item.subcat_id],
       articles: dataShape.subCategories.byId[item.subcat_id].articles.concat(item.id),
     }
-
-    previousCat = item.category_title
-    previousSubCat = item.subcategory_title
   })
 
   // === VIDEOS === //

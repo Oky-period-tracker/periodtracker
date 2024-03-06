@@ -9,6 +9,7 @@ import Orientation from 'react-native-orientation-locker'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { translate } from '../i18n'
 import { BackOneScreen } from '../services/navigationService'
+import { IS_TABLET } from '../config/tablet'
 
 export const VideoScreen = ({ navigation }) => {
   return (
@@ -75,6 +76,10 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   React.useEffect(() => {
     Orientation.unlockAllOrientations()
     return () => {
+      if (IS_TABLET) {
+        return
+      }
+
       Orientation.lockToPortrait()
     }
   }, [])

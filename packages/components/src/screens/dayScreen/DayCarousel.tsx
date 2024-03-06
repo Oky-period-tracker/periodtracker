@@ -16,10 +16,11 @@ import { ThemedModal } from '../../components/common/ThemedModal'
 import { ColourButtons } from '../mainScreen/ColourButtons'
 import { SpinLoader } from '../../components/common/SpinLoader'
 import { navigateAndReset } from '../../services/navigationService'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
-const screenWidth = Dimensions.get('window').width
 // TODO_ALEX: survey
 export function DayCarousel({ navigation, dataEntry }) {
+  const { screenWidth } = useScreenDimensions()
   const dispatch = useDispatch()
   const [textToSpeak, setTextToSpeak] = React.useState([])
   const [isVisible, setIsVisible] = React.useState(false)
@@ -36,7 +37,6 @@ export function DayCarousel({ navigation, dataEntry }) {
     // ...((!_.isEmpty(unansweredSurveys) || answeredSurvey) && { survey: null }),
     ...(dataEntry.date.day() % 2 === 0 && !dataEntry.onPeriod && { quiz: null }), // this is to change the order of cards based on the day (it alternates between days and when on periods the quiz cards should go to the end)
     ...(dataEntry.date.day() % 2 !== 0 && !dataEntry.onPeriod && { didYouKnow: null }),
-    // TODO_ALEX: move into submodule?
     mood: {
       happy: '😊',
       blah: '😑',
@@ -74,6 +74,7 @@ export function DayCarousel({ navigation, dataEntry }) {
   }
 
   const [endSurvey, setEndSurvey] = React.useState(false)
+  const [showEndButton, setShowEndButton] = React.useState(false)
   const [surveyTempQuestions, setSurveyTempQuestions] = React.useState(null)
   const [currentSurveyQuestionIndex, setCurrentQuestionIndex] = React.useState(null)
   const [answeredSurvey, setAnsweredSurveyQuestions] = React.useState(null)
@@ -198,6 +199,10 @@ export function DayCarousel({ navigation, dataEntry }) {
     }
   }
 
+  const onEndPress = () => {
+    setEndSurvey(true)
+  }
+
   const getNextQuestion = (currQuestion, isProcced, selectedOptionIndex, answersArray) => {
     if (currQuestion?.next_question) {
       const nextQuestionKeys = Object.keys(currQuestion.next_question)
@@ -221,9 +226,9 @@ export function DayCarousel({ navigation, dataEntry }) {
         nextQuestionValues[selectedOptionIndex] === ''
       ) {
         setSurveyTempQuestions(lastQuestion)
-        setTimeout(() => {
-          setEndSurvey(true)
-        }, 5000)
+
+        setShowEndButton(true)
+
         dispatch(
           actions.answerSurvey({
             id: newSurveys?.id,
@@ -234,16 +239,15 @@ export function DayCarousel({ navigation, dataEntry }) {
             utcDateTime: dataEntry.date,
           }),
         )
-        setTimeout(() => {
-          if (allSurveys?.length) {
-            const tempData = allSurveys
-            const tempCompletedSurveys = completedSurveys ? completedSurveys : []
-            dispatch(actions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
 
-            tempData.shift()
-            dispatch(actions.updateAllSurveyContent(tempData))
-          }
-        }, 2000)
+        if (allSurveys?.length) {
+          const tempData = allSurveys
+          const tempCompletedSurveys = completedSurveys ? completedSurveys : []
+          dispatch(actions.updateCompletedSurveys([tempData[0], ...tempCompletedSurveys]))
+
+          tempData.shift()
+          dispatch(actions.updateAllSurveyContent(tempData))
+        }
       } else {
         let nextQuestionIndex
         // prettier-ignore
@@ -287,6 +291,8 @@ export function DayCarousel({ navigation, dataEntry }) {
                 selectAnswer={item?.is_multiple ? onSelectSurvey : onOpenAnswer}
                 startSurveyQuestion={currentSurveyQuestionIndex === null ? false : true}
                 endSurvey={onEndSurvey}
+                showEndButton={showEndButton}
+                onEndPress={onEndPress}
               />
             )
           }}

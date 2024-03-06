@@ -127,6 +127,14 @@ For example:
 Label may not always be required:
 `periodtracker_flower`
 
+## Git Branches
+
+To change branches across all submodules at once use this command
+
+```bash
+yarn modules:checkout branch-name
+```
+
 ## Optional submodules
 
 Not all submodules are required to run the project. Optional features can be included or excluded by changing the urls in the [urls.sh](../bin//modules/urls.sh) file.

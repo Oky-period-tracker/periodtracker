@@ -27,7 +27,9 @@ import { JourneyScreen } from '../screens/JourneyScreen'
 import { FindHelpScreen } from '../screens/FindHelpScreen'
 import { PasswordRequestScreen } from '../screens/PasswordRequestScreen'
 import { VideoScreen } from '../screens/VideoScreen'
-import { VideosScreen } from '../screens/VideosScreen'
+import { getRouteName, setTopLevelNavigator } from '../services/navigationService'
+import { useDispatch } from 'react-redux'
+import { logScreenView } from '../redux/actions'
 
 const TutorialFirstStack = createStackNavigator(
   { TutorialFirstScreen },
@@ -74,7 +76,6 @@ const EncyclopediaStack = createStackNavigator(
   {
     Encyclopedia: EncyclopediaScreen,
     Articles: ArticlesScreen,
-    Videos: VideosScreen,
     FindHelp: FindHelpScreen,
   },
   { headerMode: 'none', initialRouteName: 'Encyclopedia' },
@@ -129,7 +130,7 @@ const MainStack = createBottomTabNavigator(
   },
 )
 
-const AppNavigator = createStackNavigator(
+const Navigator = createStackNavigator(
   {
     SplashScreen,
     OnboardingScreen,
@@ -146,4 +147,31 @@ const AppNavigator = createStackNavigator(
   },
 )
 
-export default createAppContainer(AppNavigator)
+const Navigation = createAppContainer(Navigator)
+
+const SCREENS_TO_TRACK = ['MainScreen', 'ProfileScreen', 'Encyclopedia', 'Calendar']
+
+const AppNavigator = () => {
+  const dispatch = useDispatch()
+
+  return (
+    <Navigation
+      ref={(navigatorRef) => {
+        setTopLevelNavigator(navigatorRef)
+      }}
+      onNavigationStateChange={(_, currentState) => {
+        const screenName = getRouteName(currentState)
+        if (!screenName) {
+          return
+        }
+        if (!SCREENS_TO_TRACK.includes(screenName)) {
+          return
+        }
+        dispatch(logScreenView({ screenName }))
+      }}
+      key="app-navigator"
+    />
+  )
+}
+
+export default AppNavigator

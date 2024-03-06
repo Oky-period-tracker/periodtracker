@@ -65,6 +65,7 @@ buck-out/
 # Firebase
 ios/GoogleService-Info.plist
 android/app/google-services.json
+android/app/google-services.json.*
 
 # Android application Id files
 android/app/BUCK

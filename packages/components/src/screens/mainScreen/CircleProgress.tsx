@@ -30,7 +30,9 @@ export const CircleProgress = ({
         <DayText>days</DayText>
       </TextContainer>
       {isCalendarTextVisible && (
-        <DayText style={{ fontSize: 10, position: 'absolute', bottom: -15 }}>calendar</DayText>
+        <DayText style={{ fontSize: 10, position: 'absolute', bottom: -20, width: 100 }}>
+          calendar
+        </DayText>
       )}
     </TouchableContainer>
   )
@@ -44,20 +46,20 @@ const TouchableContainer = styled.TouchableOpacity<{ size: number }>`
 `
 
 const NumberText = styled.Text`
-  height: 17px;
+  min-height: 17px;
   font-size: 14;
   text-align: center;
   font-family: Roboto-Black;
 `
 
 const DayText = styled(Text)`
-  height: 14px;
+  min-height: 14px;
   font-size: 11;
   text-align: center;
   color: #000;
 `
 const TextContainer = styled.View<{ size: number }>`
-  height: ${(props) => props.size};
+  min-height: ${(props) => props.size};
   position: absolute;
   justify-content: center;
   align-items: center;

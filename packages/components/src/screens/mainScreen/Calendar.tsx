@@ -1,5 +1,5 @@
 import React from 'react'
-import { Animated, Easing, Dimensions } from 'react-native'
+import { Animated } from 'react-native'
 import styled from 'styled-components/native'
 import moment from 'moment'
 import { BackgroundTheme } from '../../components/layout/BackgroundTheme'
@@ -23,17 +23,20 @@ import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { calendarScreenSpeech } from '../../config'
 import { useSelector } from 'react-redux'
 import * as selectors from '../../redux/selectors'
-
-const width = Dimensions.get('window').width
-const height = Dimensions.get('window').height
-
-// const calendarHeight = 0.71 * height
-const calendarWidth = 0.95 * width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
+import { getDeviceFontScale } from '../../services/font'
 
 const startDate = moment().startOf('day').subtract(24, 'months')
 const endDate = moment().startOf('day').add(12, 'months')
 
+const FONT_SCALE = getDeviceFontScale()
+const OVAL_ASPECT_RATIO = 90 / 40
+
 export const Calendar = ({ navigation }) => {
+  const { screenWidth: width, screenHeight: height } = useScreenDimensions()
+
+  const calendarWidth = 0.95 * width
+
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
   const verifiedPeriodsData = useSelector((state: any) => selectors.allCardAnswersSelector(state))
   const highlightedDates = useCalculateStatusForDateRange(
@@ -163,7 +166,7 @@ export const Calendar = ({ navigation }) => {
     <BackgroundTheme>
       <Header screenTitle="calendar" />
       <Container>
-        <CalendarContainer>
+        <CalendarContainer width={calendarWidth}>
           <CalendarList
             handleMonthChange={handleMonthChange}
             currentMonth={currentMonth}
@@ -241,7 +244,6 @@ const CalendarText = styled.View`
 `
 const CalendarContainer = styled.View`
   height: 400px;
-  width: ${calendarWidth};
   align-self: center;
   align-items: center;
   justify-content: center;
@@ -280,8 +282,8 @@ const Triangle = styled.View`
   z-index: 100;
 `
 const LongButton = styled.TouchableOpacity`
-  height: 70px;
-  width: 270px;
+  height: ${FONT_SCALE === 'NORMAL' ? 70 : 100}px;
+  aspect-ratio: ${OVAL_ASPECT_RATIO};
   margin-top: 20px;
   align-items: center;
   align-self: center;

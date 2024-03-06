@@ -9,7 +9,7 @@ import * as selectors from '../../redux/selectors'
 import * as actions from '../../redux/actions/index'
 import { useDispatch } from 'react-redux'
 import { navigateAndReset } from '../../services/navigationService'
-import { TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from '../../components/common/Text'
 import Share from 'react-native-share'
 import { translate } from '../../i18n'
@@ -47,7 +47,6 @@ export function AccessScreen({ navigation }) {
       <PageContainer>
         <Header screenTitle="access_setting" />
         <Container>
-          {/* // @TODO: LANGUAGES This is commented in case the client wants multiple languages */}
           <ListItem
             title="language"
             subtitle="language_subtitle"
@@ -61,17 +60,8 @@ export function AccessScreen({ navigation }) {
                     })
                   }
                 }}
-                textStyle={{ fontSize: 16, fontStyle: 'normal', color: '#fff' }}
-                style={{
-                  height: 55,
-                  width: 100,
-                  alignSelf: 'center',
-                  marginTop: 20,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#a2c72d',
-                }}
+                textStyle={styles.languageButtonText}
+                style={styles.languageButton}
               />
             )}
           />
@@ -94,8 +84,8 @@ export function AccessScreen({ navigation }) {
           <ListItem
             title="share"
             subtitle="share_qr_description"
-            style={{ paddingBottom: 10 }}
-            innerStyle={{ borderBottomWidth: 0 }}
+            style={styles.lastItem}
+            innerStyle={styles.lastItemInner}
             renderControls={() => (
               <ShareButton onPress={() => shareLink()}>
                 <ShareButtonText>share_setting</ShareButtonText>
@@ -121,15 +111,6 @@ const Container = styled.View`
 const Empty = styled.View`
   flex: 1;
 `
-const TutorialText = styled(Text)`
-  width: 70%;
-  color: #f49200;
-  align-self: center;
-  font-size: 20;
-  font-family: Roboto-Black;
-  top: -30%;
-  text-align: center;
-`
 
 const ShareButtonText = styled(Text)`
   font-size: 16;
@@ -147,10 +128,27 @@ const ShareButton = styled(TouchableOpacity)`
   justify-content: center;
   background-color: #a2c72d;
 `
-const ErrorText = styled(Text)`
-  font-size: 12;
-  color: red;
-  position: absolute;
-  top: -30px;
-  left: -20px;
-`
+
+const styles = StyleSheet.create({
+  languageButton: {
+    height: 55,
+    width: 100,
+    alignSelf: 'center',
+    marginTop: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#a2c72d',
+  },
+  languageButtonText: {
+    fontSize: 16,
+    fontStyle: 'normal',
+    color: '#fff',
+  },
+  lastItem: {
+    paddingBottom: 10,
+  },
+  lastItemInner: {
+    borderBottomWidth: 0,
+  },
+})

@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
-import { Dimensions } from 'react-native'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
-const screenWidth = Dimensions.get('screen').width
 export const SubCategoryCard = ({ title, onPress }) => {
+  const { screenWidth } = useScreenDimensions()
+
   return (
     <SubCategoryContainer
       activeOpacity={0.8}
@@ -16,24 +17,14 @@ export const SubCategoryCard = ({ title, onPress }) => {
   )
 }
 
-export const VideoSubCategoryCard = ({ title, onPress }) => {
-  return (
-    <SubCategoryContainer
-      activeOpacity={0.8}
-      onPress={onPress}
-      style={{ left: 0.05 * screenWidth, width: 0.87 * screenWidth }}
-    >
-      <VideoTitle>{title}</VideoTitle>
-    </SubCategoryContainer>
-  )
-}
-
 const SubCategoryContainer = styled.TouchableOpacity`
-  height: 65px;
+  min-height: 65px;
   justify-content: center;
   align-items: flex-start;
-  padding-left: 21;
-  padding-right: 36;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   background-color: #fff;
   elevation: 3;
   border-radius: 10px;
@@ -42,12 +33,6 @@ const SubCategoryContainer = styled.TouchableOpacity`
 `
 
 const Title = styled(TextWithoutTranslation)`
-  font-family: Roboto-Black;
-  color: #ff9e00;
-  font-size: 18;
-`
-
-const VideoTitle = styled(Text)`
   font-family: Roboto-Black;
   color: #ff9e00;
   font-size: 18;

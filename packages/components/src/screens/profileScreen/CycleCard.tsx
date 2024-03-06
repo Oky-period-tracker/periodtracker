@@ -19,7 +19,7 @@ export const CycleCard = ({ item, cycleNumber }) => {
   return (
     <CycleCardContainer>
       <CycleCardHeader>
-        <Col style={{ flexDirection: 'row', flex: 2 }}>
+        <Col style={{ flexDirection: 'row', flex: 0 }}>
           <Icon source={assets.static.icons.cycle} />
           <Text
             style={{
@@ -34,7 +34,7 @@ export const CycleCard = ({ item, cycleNumber }) => {
           </Text>
           <CycleCardHeadingText>{cycleNumber}</CycleCardHeadingText>
         </Col>
-        <Col style={{ flexDirection: 'row', alignItems: 'center', flex: 2 }}>
+        <Col style={{ flexDirection: 'row', alignItems: 'center', flex: 0 }}>
           <CycleCardHeadingText>{item.cycleLength}</CycleCardHeadingText>
           <Text style={{ fontSize: 12, color: 'white', marginLeft: 3 }}>day_cycle</Text>
         </Col>
@@ -63,7 +63,6 @@ export const CycleCard = ({ item, cycleNumber }) => {
         </Col>
         <Col
           style={{
-            flex: 3,
             height: '100%',
             flexDirection: 'row',
             alignItems: 'center',
@@ -108,6 +107,7 @@ const Col = styled.View``
 
 const Row = styled.View`
   flex-direction: row;
+  flex-wrap: wrap;
 `
 
 const CycleCardContainer = styled.View`
@@ -116,13 +116,16 @@ const CycleCardContainer = styled.View`
   elevation: 3;
   margin-horizontal: 3px;
   border-radius: 10px;
+  min-height: 140px;
 `
 
 const CycleCardHeader = styled.View`
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  flex: 1;
   width: 100%;
-  height: 40px;
+  min-height: 40px;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   background-color: #e3629b;

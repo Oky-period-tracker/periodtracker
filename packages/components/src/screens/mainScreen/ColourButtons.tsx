@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components/native'
 import { useTheme } from '../../components/context/ThemeContext'
 import { Text } from '../../components/common/Text'
@@ -9,7 +9,7 @@ import {
   useUndoPredictionEngine,
   useIsActiveSelector,
   useHistoryPrediction,
-  useFullState,
+  usePredictionEngineState,
 } from '../../components/context/PredictionProvider'
 import { View, Platform, TouchableOpacity, ImageBackground } from 'react-native'
 import { assets } from '../../assets'
@@ -72,12 +72,10 @@ export function ColourButtons({
     selectors.verifyPeriodDaySelectorWithDate(state, moment(inputDayStr)),
   ) as any
 
-  const fullState = useFullState()
+  const predictionFullState = usePredictionEngineState()
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
-
-  // TODO_ALEX this useState is redundant
-  const [futurePredictionStatus, setFuturePredictionStatus] = useState(false)
+  const futurePredictionStatus = hasFuturePredictionActive?.futurePredictionStatus
 
   React.useEffect(() => {
     if (moment(inputDay).diff(moment(currentCycleInfo.cycleStart), 'days') < 0) {
@@ -85,9 +83,6 @@ export function ColourButtons({
     }
   }, [addNewCycleHistory])
 
-  React.useEffect(() => {
-    setFuturePredictionStatus(hasFuturePredictionActive?.futurePredictionStatus)
-  }, [])
   const minimizeToTutorial = () => {
     hide()
     setTimeout(
@@ -113,8 +108,8 @@ export function ColourButtons({
         const tempHistory = [...history]
         const tempPeriodsCycles = []
         const tempPeriodsLength = []
-        tempPeriodsCycles.push(fullState.currentCycle.cycleLength)
-        tempPeriodsLength.push(fullState.currentCycle.periodLength)
+        tempPeriodsCycles.push(predictionFullState.currentCycle.cycleLength)
+        tempPeriodsLength.push(predictionFullState.currentCycle.periodLength)
         tempHistory.forEach((item) => {
           tempPeriodsCycles.push(item.cycleLength)
           tempPeriodsLength.push(item.periodLength)
@@ -132,13 +127,15 @@ export function ColourButtons({
             cycle_lengths: tempPeriodsCycles,
             period_lengths: tempPeriodsLength,
             age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
-            predictionFullState: fullState,
+            predictionFullState,
             futurePredictionStatus,
           }),
         )
       }
     }
-    appDispatch(actions.updateFuturePrediction(futurePredictionStatus, fullState.currentCycle))
+    appDispatch(
+      actions.updateFuturePrediction(futurePredictionStatus, predictionFullState.currentCycle),
+    )
   }
 
   const actionPink = decisionProcessPeriod({
@@ -432,34 +429,11 @@ const Row = styled.View`
   justify-content: space-between;
 `
 
-const Button = styled.TouchableOpacity`
-  height: 85px;
-  width: 85px;
-  align-items: center;
-  justify-content: center;
-`
-
-const LongButton = styled.TouchableOpacity`
-  height: 90px;
-  width: 120px;
-  margin-top: 20px;
-  align-items: center;
-  justify-content: center;
-`
-
-const InnerText = styled(Text)`
-  color: white;
-  font-size: 14;
-  position: absolute;
-  text-align: center;
-  font-family: Roboto-Black;
-`
-
 const InstructionText = styled(Text)`
   color: white;
   font-size: 13;
   width: 75%;
-  margin-top: 50%;
+  margin-top: 80px;
   margin-bottom: 20px;
   text-align: center;
 `
@@ -470,19 +444,6 @@ const HeadingText = styled(Text)`
   margin-bottom: 50px;
   text-align: center;
   font-family: Roboto-Black;
-`
-
-const Mask = styled.ImageBackground`
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-`
-
-const Column = styled.View`
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 `
 
 const RNText = styled.Text`

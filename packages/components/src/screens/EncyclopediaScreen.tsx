@@ -5,8 +5,8 @@ import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
-import { Category } from './encyclopediaScreen/Category'
-import { SubCategoryCard, VideoSubCategoryCard } from './encyclopediaScreen/SubCategoryCard'
+import { Category, VideoCategory } from './encyclopediaScreen/Category'
+import { SubCategoryCard } from './encyclopediaScreen/SubCategoryCard'
 import Accordion from 'react-native-collapsible/Accordion'
 import { navigate } from '../services/navigationService'
 import { SearchBar } from './encyclopediaScreen/SearchBar'
@@ -14,22 +14,29 @@ import _ from 'lodash'
 import { Avatar } from '../components/common/Avatar/Avatar'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { encyclopediaScreenText } from '../config'
+import { useDispatch } from 'react-redux'
+import { logCategoryView, logSubCategoryView } from '../redux/actions'
 import analytics from '@react-native-firebase/analytics'
-import { fetchNetworkConnectionStatus } from '../services/network'
+import { VideoData } from '../types'
 
 export function EncyclopediaScreen({ navigation }) {
   const categories = useSelector(selectors.allCategoriesSelector)
   const articles = useSelector(selectors.allArticlesSelector)
+  const videos = useSelector(selectors.allVideosSelector)
   const subCategories = useSelector(selectors.allSubCategoriesSelector)
   const subCategoriesObject = useSelector(selectors.allSubCategoriesObjectSelector)
   const [activeCategories, setActiveCategory] = React.useState([])
+  const [isVideoTabActive, setVideoTabActive] = React.useState(false)
   const [filteredCategories, setFilteredCategories] = React.useState(categories)
+  // TODO_ALEX redundant useState?
   const [shownCategories, setShownCategories] = React.useState(categories)
   const [searching, setSearching] = React.useState(false)
   const [position] = React.useState(new Animated.Value(0))
-  const currentUser = useSelector(selectors.currentUserSelector)
+
+  const dispatch = useDispatch()
 
   const categoryNames = categories.map((item) => item?.name)
+  // TODO_ALEX redundant useState & useEffect?
   const [textArray, setTextArray] = React.useState(categoryNames)
   useTextToSpeechHook({ navigation, text: encyclopediaScreenText(categories) })
 
@@ -45,15 +52,6 @@ export function EncyclopediaScreen({ navigation }) {
     const paddingToBottom = 20
     return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom
   }
-
-  React.useEffect(() => {
-    if (fetchNetworkConnectionStatus() && currentUser) {
-      analytics().logEvent('users_accessing_encyclopedia', { user: currentUser })
-    }
-    setShownCategories(categories)
-    setActiveCategory([])
-    setFilteredCategories(categories)
-  }, [categories])
 
   React.useEffect(() => {
     if (!_.isEmpty(activeCategories)) {
@@ -93,6 +91,44 @@ export function EncyclopediaScreen({ navigation }) {
               articles,
             }}
           />
+          {!_.isEmpty(videos) && (
+            <Accordion
+              sections={[{ videos }]}
+              renderHeader={(video: any, i, isActive) => (
+                <VideoCategory
+                  onPress={() => {
+                    // TODO_ALEX: analytics?
+                    analytics().logScreenView({
+                      screen_class: 'ActiveCateogrey',
+                      screen_name: 'CategoriesTapCount',
+                    })
+                    setVideoTabActive((current) => !current)
+                  }}
+                  {...{ isActive: isVideoTabActive }}
+                />
+              )}
+              activeSections={isVideoTabActive ? [0] : []}
+              onChange={() => true}
+              renderContent={(item: { videos: VideoData[] }) => (
+                <Row>
+                  {item.videos.map((videoData) => (
+                    <SubCategoryCard
+                      key={`${videoData.title}-videos}`}
+                      title={videoData.title}
+                      // TODO_ALEX: analytics?
+                      onPress={() => {
+                        analytics().logScreenView({
+                          screen_class: 'ActiveSubCateogrey',
+                          screen_name: 'SubCategoriesTapCount',
+                        })
+                        navigate('VideoScreen', { videoData })
+                      }}
+                    />
+                  ))}
+                </Row>
+              )}
+            />
+          )}
           {!_.isEmpty(filteredCategories) && (
             <Accordion
               sections={!_.isEmpty(filteredCategories) ? filteredCategories : shownCategories}
@@ -101,11 +137,8 @@ export function EncyclopediaScreen({ navigation }) {
                   title={category.name}
                   tags={category.tags}
                   onPress={() => {
-                    analytics().logScreenView({
-                      screen_class: 'ActiveCateogrey',
-                      screen_name: 'CategoriesTapCount',
-                    })
                     setActiveCategory(isActive ? [] : [i])
+                    dispatch(logCategoryView({ categoryId: category.id }))
                   }}
                   {...{ isActive }}
                 />
@@ -114,35 +147,19 @@ export function EncyclopediaScreen({ navigation }) {
               onChange={() => true}
               renderContent={(category: any) => (
                 <Row>
-                  {category?.videos && category?.videos.length > 0 ? (
-                    <VideoSubCategoryCard
-                      key={`${category.name}-videos}`}
-                      title={'videos'}
-                      onPress={() => {
-                        analytics().logScreenView({
-                          screen_class: 'ActiveSubCateogrey',
-                          screen_name: 'SubCategoriesTapCount',
-                        })
-                        navigate('Videos', { categoryId: category.id })
-                      }}
-                    />
-                  ) : null}
-                  {category.subCategories.map((subCategory) => (
+                  {category.subCategories.map((subCategoryId) => (
                     <SubCategoryCard
-                      key={subCategory}
+                      key={subCategoryId}
                       title={
                         (
-                          subCategories.find((item) => item?.id === subCategory) || {
+                          subCategories.find((item) => item?.id === subCategoryId) || {
                             name: 'no_name',
                           }
                         ).name
                       }
                       onPress={() => {
-                        analytics().logScreenView({
-                          screen_class: 'ActiveSubCateogrey',
-                          screen_name: 'SubCategoriesTapCount',
-                        })
-                        navigate('Articles', { subCategory })
+                        navigate('Articles', { subCategory: subCategoryId })
+                        dispatch(logSubCategoryView({ subCategoryId }))
                       }}
                     />
                   ))}

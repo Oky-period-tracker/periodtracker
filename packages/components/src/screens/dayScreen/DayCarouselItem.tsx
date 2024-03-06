@@ -1,5 +1,4 @@
 import React from 'react'
-import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { TitleText } from '../../components/common/TitleText'
 import { assets } from '../../assets/index'
@@ -10,12 +9,18 @@ import * as selectors from '../../redux/selectors'
 import { useSelector } from '../../hooks/useSelector'
 import { useColor } from '../../hooks/useColor'
 import { translate } from '../../i18n'
-
-const deviceWidth = Dimensions.get('window').width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
+import { useDispatch } from 'react-redux'
+import { logDailyCardUse } from '../../redux/actions'
 
 export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }) {
-  const selectedEmojis = useSelector((state) => selectors.cardAnswerSelector(state, dataEntry.date))
+  const { screenWidth: deviceWidth } = useScreenDimensions()
 
+  const selectedEmojis = useSelector((state) => selectors.cardAnswerSelector(state, dataEntry.date))
+  const currentUser = useSelector(selectors.currentUserSelector)
+  const dailyCardLastUsed = useSelector(selectors.dailyCardLastUsed) as number | undefined
+
+  const dispatch = useDispatch()
   const color = useColor(dataEntry.onPeriod, dataEntry.onFertile)
   const source = selectedEmojis[cardName]
     ? assets.static.icons.starOrange.full
@@ -43,7 +48,7 @@ export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }
         </TitleText>
         <ContentText>{contentText[cardName]}</ContentText>
       </Row>
-      <Row style={{ height: 50, width: '100%', marginBottom: 5 }}>
+      <Row style={{ minHeight: 50, width: '100%', marginBottom: 5 }}>
         {dataEntry.onPeriod && (
           <Icon source={source} style={{ height: 30, width: 30, marginRight: 10 }} />
         )}
@@ -58,7 +63,17 @@ export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }
           <EmojiContainer key={ind}>
             <EmojiSelector
               color={color}
-              onPress={() => onPress(cardName, item)}
+              onPress={() => {
+                onPress(cardName, item)
+
+                const now = new Date().getTime()
+                const oneDay = 24 * 60 * 60 * 1000
+                const timeSinceLastUse = now - dailyCardLastUsed
+                if (dailyCardLastUsed && timeSinceLastUse < oneDay) {
+                  return
+                }
+                dispatch(logDailyCardUse({ userId: currentUser.id }))
+              }}
               isActive={
                 Array.isArray(selectedEmojis[cardName])
                   ? selectedEmojis[cardName].includes(item)

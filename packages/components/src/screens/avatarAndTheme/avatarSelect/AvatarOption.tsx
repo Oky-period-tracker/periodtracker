@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity } from 'react-native'
 import styled from 'styled-components/native'
 import { AvatarSelectItem } from '../AvatarSelectItem'
 import { Icon } from '../../../components/common/Icon'
@@ -26,7 +26,7 @@ export function AvatarOption({
       <AvatarName style={{ textTransform: 'capitalize', ...nameStyle }}>{avatar}</AvatarName>
       {isSelected && (
         <Tick>
-          <Icon source={assets.static.icons.tick} style={{ width: 20, height: 15 }} />
+          <Icon source={assets.static.icons.tick} style={styles.icon} />
         </Tick>
       )}
     </Option>
@@ -35,7 +35,10 @@ export function AvatarOption({
 
 const Option = styled(TouchableOpacity)<{ isSelected: boolean }>`
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  width: 24%;
+  max-width: 100px;
+  max-height: 100px;
 `
 
 const Tick = styled.View`
@@ -53,3 +56,7 @@ const AvatarName = styled(Text)`
   top: 2px;
   position: absolute;
 `
+
+const styles = StyleSheet.create({
+  icon: { width: 20, height: 20 },
+})

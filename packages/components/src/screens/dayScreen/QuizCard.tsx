@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { Dimensions } from 'react-native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { TitleText } from '../../components/common/TitleText'
@@ -9,8 +8,7 @@ import _ from 'lodash'
 import * as selectors from '../../redux/selectors'
 import * as actions from '../../redux/actions'
 import { useDispatch } from 'react-redux'
-
-const deviceWidth = Dimensions.get('window').width
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 
 function useQuiz() {
   const unansweredQuizzes = useSelector(selectors.quizzesWithoutAnswersSelector)
@@ -26,6 +24,7 @@ function useQuiz() {
 }
 
 export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEntry, index }) => {
+  const { screenWidth: deviceWidth } = useScreenDimensions()
   const dispatch = useDispatch()
   const userID = useSelector(selectors.currentUserSelector).id
   const selectedQuestion = useQuiz()
@@ -53,7 +52,7 @@ export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEnt
                 }),
               )
             }
-            numberOfLines={2}
+            numberOfLines={3}
             isActive={false}
             style={{
               flexDirection: 'row',

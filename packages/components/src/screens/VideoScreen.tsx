@@ -4,11 +4,12 @@ import YoutubePlayer from 'react-native-youtube-iframe'
 import { Header } from '../components/common/Header'
 import { assets } from '../assets'
 import { VideoData } from '../types'
-import { Alert, StyleSheet, View } from 'react-native'
+import { Alert, Dimensions, StyleSheet, View } from 'react-native'
 import Orientation from 'react-native-orientation-locker'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { translate } from '../i18n'
 import { BackOneScreen } from '../services/navigationService'
+import { IS_TABLET } from '../config/tablet'
 
 export const VideoScreen = ({ navigation }) => {
   return (
@@ -75,6 +76,10 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
   React.useEffect(() => {
     Orientation.unlockAllOrientations()
     return () => {
+      if (IS_TABLET) {
+        return
+      }
+
       Orientation.lockToPortrait()
     }
   }, [])
@@ -92,16 +97,26 @@ export const VideoPlayer = ({ navigation }: { navigation: any }) => {
     )
   }
 
-  // Youtube video
+  const videoAspectRatio = 16 / 9 // Aspect ratios might need to be saved in VideoData object if they vary
+
+  let videoWidth = screenWidth
+  let videoHeight = videoWidth / videoAspectRatio
+
+  if (screenWidth > screenHeight) {
+    videoHeight = screenHeight
+    videoWidth = videoHeight * videoAspectRatio
+  }
+
   if (canPlayYoutubeVideo) {
+    // Youtube video
     return (
       <View style={styles.youtubeContainer}>
-        <YoutubePlayer width={screenWidth} height={screenHeight * 0.75} videoId={youtubeId} />
+        <YoutubePlayer width={videoWidth} height={videoHeight} videoId={youtubeId} />
       </View>
     )
   }
 
-  return null
+  return <View style={styles.bundleVideo} />
 }
 
 const styles = StyleSheet.create({

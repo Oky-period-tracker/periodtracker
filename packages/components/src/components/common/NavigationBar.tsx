@@ -1,16 +1,25 @@
 import React from 'react'
-import { Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
+import { AppAssets } from '@oky/core'
+import { useScreenDimensions } from '../../hooks/useScreenDimensions'
+import { Platform } from 'react-native'
+import { IS_TABLET } from '../../config/tablet'
 
-const deviceWidth = Dimensions.get('window').width
+export const NavigationBar = ({
+  focused,
+  name,
+}: {
+  focused: boolean
+  name: keyof AppAssets['static']['icons']['tabs']
+}) => {
+  const { screenWidth } = useScreenDimensions()
 
-export const NavigationBar = ({ focused, name }) => {
   return (
     <Column
       style={{
         backgroundColor: focused ? '#F5F5F5' : '#F1F1F1',
-        width: deviceWidth / 4,
+        width: screenWidth / 4,
       }}
     >
       <ImageWrapper accessibilityLabel={name} style={{ elevation: focused ? 5 : 0 }}>
@@ -27,8 +36,8 @@ export const NavigationBar = ({ focused, name }) => {
 const Column = styled.View`
   justify-content: center;
   align-items: center;
-  height: 56px;
-  margin-bottom: 5;
+  height: ${IS_TABLET ? '80' : '56'}px;
+  margin-bottom: ${IS_TABLET && Platform.OS === 'ios' ? '0' : '5'}px;
   border-left-width: 0.5px;
   border-right-width: 0.5px;
   border-color: #e1e2e2;

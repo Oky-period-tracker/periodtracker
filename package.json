@@ -34,9 +34,10 @@
     "postinstall": "yarn install:pods && test -n \"$NOYARNPOSTINSTALL\" || (patch-package && jetifier && sed -e 's:node ./node_modules/react-native/cli.js config:yarn run --silent react-native config:g' -i.bak node_modules/@react-native-community/cli-platform-android/native_modules.gradle)",
     "deploy:k8s": "yarn test && ./.k8s/deploy-k8s.sh",
     "deploy:android": "yarn workspace @oky/mobile run deploy:android",
-    "run:android": "yarn clean:mobile && yarn workspace @oky/mobile run android",
+    "run:android": "yarn clean:mobile && yarn workspace @oky/mobile run android && yarn reverse:all-ports",
     "clean:mobile": "yarn workspace @oky/mobile run clean:android",
     "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets",
+    "modules:checkout": "./bin/modules/checkout.sh",
     "copy-config": "./bin/setup/config.sh",
     "update-android-app-id": "ts-node update-android-app-id.ts"
   },

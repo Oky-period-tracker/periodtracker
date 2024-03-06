@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
-import { TextWithoutTranslation } from '../../components/common/Text'
+import { Text, TextWithoutTranslation } from '../../components/common/Text'
 import { capitalizeFLetter } from '../../i18n'
 
 export const Category = ({ title, tags, onPress, isActive = false }) => {
@@ -40,25 +40,72 @@ export const Category = ({ title, tags, onPress, isActive = false }) => {
   )
 }
 
+export const VideoCategory = ({ onPress, isActive = false }) => {
+  const tags = { primary: { name: 'videos', emoji: '🎥' } }
+
+  return (
+    <VideoCategoryContainer onPress={onPress}>
+      <TitleContainer>
+        <VideosTitle style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>videos</VideosTitle>
+      </TitleContainer>
+      <TagsContainer>
+        <EmojiSelector
+          title={tags.primary.name}
+          isActive={isActive}
+          isTextVisible={true}
+          emoji={tags.primary.emoji}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            marginBottom: null,
+          }}
+          emojiStyle={{ fontSize: 20 }}
+          textStyle={{
+            position: 'absolute',
+            bottom: -10,
+            fontSize: 8,
+            zIndex: 45,
+            elevation: 6,
+          }}
+          color="#e3629b"
+          onPress={onPress}
+        />
+      </TagsContainer>
+    </VideoCategoryContainer>
+  )
+}
+
 const CategoryContainer = styled.TouchableOpacity`
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   background-color: #fff;
   elevation: 5;
   border-radius: 10px;
-  margin-vertical: 5px;
-  margin-horizontal: 3px;
-  height: 80px;
+  margin-vertical: 4px;
+  margin-horizontal: 4px;
+  min-height: 80px;
 `
 
-const TitleContainer = styled.View`
-  width: 200px;
-  height: 100%;
-  justify-content: center;
+const VideoCategoryContainer = styled.TouchableOpacity`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  background-color: #ffe6e3;
+  elevation: 5;
+  border-radius: 10px;
+  margin-vertical: 4px;
+  margin-horizontal: 4px;
+  min-height: 120px;
 `
 
 const TagsContainer = styled.View`
@@ -67,10 +114,18 @@ const TagsContainer = styled.View`
   width: 50px;
   justify-content: center;
   align-items: center;
-  align-self: flex-end;
+`
+
+const TitleContainer = styled.View`
+  flex: 1;
 `
 
 const Title = styled(TextWithoutTranslation)`
   font-family: Roboto-Black;
   font-size: 18;
+`
+
+const VideosTitle = styled(Text)`
+  font-family: Roboto-Black;
+  font-size: 22;
 `

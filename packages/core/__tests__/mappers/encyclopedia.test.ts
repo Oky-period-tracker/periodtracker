@@ -41,7 +41,6 @@ describe('fromEncyclopedia', () => {
         },
       },
       subCategories: ['1-1'],
-      videos: [],
     })
     expect(result.subCategories.byId['1-1']).toEqual({
       id: '1-1',

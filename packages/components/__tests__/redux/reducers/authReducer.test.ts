@@ -23,6 +23,8 @@ describe('authReducer', () => {
     password: _.toLower('00AAaa').trim(),
     secretQuestion: 'favourite_teacher',
     secretAnswer: _.toLower('secret_answer').trim(),
+    dateSignedUp: new Date().toISOString(),
+    dateAccountSaved: new Date().toISOString(),
   }
 
   it('returns the initial state', () => {

@@ -1,5 +1,12 @@
 import { env } from '../env'
 
+/* 
+  Re: 
+  TRIM(BOTH ' ' FROM column_name::text)::uuid
+  This pattern is used because some uuid columns have white space on the end, causing type errors
+  A better fix is to ensure that uuid columns never have white space, and to update prod databases, trimming all the existing ids with whitespace
+*/
+
 const schema = env.db.schema
 
 const partials = {
@@ -82,9 +89,9 @@ export const analyticsQueries = {
     SELECT answered_surveys.id,answered_surveys.questions, answered_surveys.user_id
     FROM ${schema}.answered_surveys
     left outer join ${schema}.oky_user 
-    ON oky_user.id = answered_surveys.user_id::uuid 
+    ON TRIM(BOTH ' ' FROM oky_user.id::text)::uuid = TRIM(BOTH ' ' FROM answered_surveys.user_id::text)::uuid 
     WHERE
-      (oky_user.id = answered_surveys.user_id::uuid AND answered_surveys.isSurveyAnswered = 'true')
+      (TRIM(BOTH ' ' FROM oky_user.id::text)::uuid = TRIM(BOTH ' ' FROM answered_surveys.user_id::text)::uuid AND answered_surveys.isSurveyAnswered = 'true')
     GROUP BY answered_surveys.id, answered_surveys.questions, answered_surveys.user_id
   ;`,
   usersShares: `
@@ -118,9 +125,9 @@ export const analyticsQueries = {
       STRING_AGG(questions, ' ,')
     FROM ${schema}.answered_surveys
     full outer join ${schema}.oky_user 
-      ON oky_user.id = answered_surveys.user_id::uuid 
+      ON TRIM(BOTH ' ' FROM oky_user.id::text)::uuid = TRIM(BOTH ' ' FROM answered_surveys.user_id::text)::uuid 
     WHERE
-      (oky_user.id = answered_surveys.user_id::uuid)
+      (TRIM(BOTH ' ' FROM oky_user.id::text)::uuid = TRIM(BOTH ' ' FROM answered_surveys.user_id::text)::uuid)
       AND (answered_surveys.isSurveyAnswered = 'true')
       AND (oky_user.gender = $1 OR $1 IS NULL) 
       AND (oky_user.location= $2 OR $2 IS NULL)
@@ -134,7 +141,7 @@ export const analyticsQueries = {
   countActiveUsers: `
   SELECT COUNT(DISTINCT user_id)
   FROM ${schema}.app_event
-  INNER JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
+  INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
     ${partials.and_event_date}
@@ -147,7 +154,7 @@ export const analyticsQueries = {
   countScreenViews: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
   FROM ${schema}.app_event
-  INNER JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
+  INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE app_event.type = 'SCREEN_VIEWED'
     AND oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
@@ -171,7 +178,7 @@ export const analyticsQueries = {
     Count(DISTINCT app_event.user_id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = true) AS unique_user_switched_on, 
     Count(DISTINCT app_event.user_id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = false) AS unique_user_switched_off
   FROM ${schema}.app_event
-  INNER JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
+  INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE type = 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE'
     AND oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
@@ -187,9 +194,9 @@ export const analyticsQueries = {
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
   FROM ${schema}.category c
   LEFT JOIN ${schema}.app_event
-    ON app_event.type = 'CATEGORY_VIEWED' AND c.id = (app_event.payload->>'categoryId')::uuid
+    ON app_event.type = 'CATEGORY_VIEWED' AND TRIM(BOTH ' ' FROM c.id::text)::uuid = TRIM(BOTH ' ' FROM app_event.payload->>'categoryId'::text)::uuid
   LEFT JOIN ${schema}.oky_user
-    ON app_event.user_id::uuid = oky_user.id
+    ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
     AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
@@ -206,7 +213,7 @@ export const analyticsQueries = {
   FROM ${schema}.subcategory s
   LEFT JOIN ${schema}.app_event
     ON app_event.type = 'SUBCATEGORY_VIEWED' AND s.id = (app_event.payload->>'subCategoryId')::uuid
-    LEFT JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
+    LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
     WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
     AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
@@ -215,7 +222,7 @@ export const analyticsQueries = {
   countDailyCardUsage: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
   FROM ${schema}.app_event
-  INNER JOIN ${schema}.oky_user ON app_event.user_id::uuid = oky_user.id
+  INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE app_event.type = 'DAILY_CARD_USED'
     AND oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)

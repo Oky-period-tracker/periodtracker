@@ -11,3 +11,4 @@ yarn-debug.log*
 yarn-error.log*
 .env
 firebase-config.json
+firebase-config.json.*

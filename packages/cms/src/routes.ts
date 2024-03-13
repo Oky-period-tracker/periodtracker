@@ -186,6 +186,12 @@ export const Routes = [
     controller: ArticleController,
     action: 'remove',
   },
+  {
+    method: 'put',
+    route: '/articles',
+    controller: ArticleController,
+    action: 'bulkUpdate',
+  },
   // ------------ Videos Api ----------------
   {
     method: 'get',

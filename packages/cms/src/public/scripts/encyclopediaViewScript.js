@@ -1,5 +1,5 @@
 // =============== Modal Population ========================
-$('#articleModal').on('show.bs.modal', event => {
+$('#articleModal').on('show.bs.modal', (event) => {
   $('#error1').hide()
   $('#error2').hide()
   $('#errorTitle2').hide()
@@ -13,14 +13,15 @@ $('#articleModal').on('show.bs.modal', event => {
     $('#col1TableModal').val('')
     $('#col2TableModal').val('')
     $('#col3TableModal').val('')
+    $('#contentFilterDropdownForm').val('0')
+    $('#ageRestrictionLevelForm').val('0')
     $('#col4TableModal').prop('checked', false)
     $('#itemID').text(0)
-    $('#countdown2').text(70 + ' characters remaining.')
     $('#col1TableModal').attr('disabled', true)
     return
   }
   var articles = JSON.parse($('#articlesJSON').text())
-  var articleInfo = articles.find(item => {
+  var articleInfo = articles.find((item) => {
     return item.id === articleId
   })
 
@@ -30,12 +31,14 @@ $('#articleModal').on('show.bs.modal', event => {
   $('#col2TableModal').val(articleInfo.article_heading)
   $('#col3TableModal').val(articleInfo.article_text)
   $('#col4TableModal').prop('checked', articleInfo.live)
+  $('#contentFilterDropdownForm').val(articleInfo.contentFilter)
+  $('#ageRestrictionLevelForm').val(articleInfo.ageRestrictionLevel)
   $('#itemID').text(articleId)
-  $('#countdown2').text(70- articleInfo.article_heading.length + ' characters remaining.')
-  handleSubCategorySelect(articleInfo.category_id);
+  $('#countdown2').text(70 - articleInfo.article_heading.length + ' characters remaining.')
+  handleSubCategorySelect(articleInfo.category_id)
 })
 
-$('#categoryModal').on('show.bs.modal', event => {
+$('#categoryModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var categoryId = button.data('value') // Extract info from data-* attributes
   $('#errorCat1').hide()
@@ -50,7 +53,7 @@ $('#categoryModal').on('show.bs.modal', event => {
     return
   }
   var categories = JSON.parse($('#categoriesJSON').text())
-  var categoryInfo = categories.find(item => {
+  var categoryInfo = categories.find((item) => {
     return item.id === categoryId
   })
 
@@ -61,7 +64,7 @@ $('#categoryModal').on('show.bs.modal', event => {
   $('#itemID').text(categoryId)
 })
 
-$('#subcategoryModal').on('show.bs.modal', event => {
+$('#subcategoryModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var subcategoryId = button.data('value') // Extract info from data-* attributes
   $('#errorSubcat1').hide()
@@ -74,7 +77,7 @@ $('#subcategoryModal').on('show.bs.modal', event => {
     return
   }
   var subcategories = JSON.parse($('#subcategoriesJSON').text())
-  var subcategoryInfo = subcategories.find(item => {
+  var subcategoryInfo = subcategories.find((item) => {
     return item.id === subcategoryId
   })
 
@@ -93,14 +96,11 @@ $('#btnArticleEditConfirm').on('click', () => {
     article_heading: $('#col2TableModal').val(),
     article_text: $('#col3TableModal').val(),
     live: $('#col4TableModal').prop('checked'),
+    contentFilter: $('#contentFilterDropdownForm').val(),
+    ageRestrictionLevel: $('#ageRestrictionLevelForm').val(),
   }
-  if (
-    data.category === '' ||
-    data.subcategory === '' ||
-    data.article_heading === '' ||
-    data.article_heading.length > 70 ||
-    data.article_text === ''
-  ) {
+
+  if (!data.category || !data.subcategory || !data.article_heading || !data.article_text) {
     $('#error1').show()
     $('#error2').show()
     $('#error3').show()
@@ -111,16 +111,12 @@ $('#btnArticleEditConfirm').on('click', () => {
     url: '/articles' + (articleID === '0' ? '' : '/' + articleID),
     type: articleID === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
-      if (result.isExist){
-        $('#errorTitle2').show();
-      } else {
-        $('#articleModal').modal('hide')
-        $('#infoArticleModal').modal('show')
-        setTimeout(() => location.reload(), 1500)
-      }
+    success: (result) => {
+      $('#articleModal').modal('hide')
+      $('#infoArticleModal').modal('show')
+      $('#infoArticleModal').on('hide.bs.modal', () => location.reload())
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -144,10 +140,10 @@ $('#btnCategoryConfirm').on('click', () => {
     url: '/categories' + (categoryId === '0' ? '' : '/' + categoryId),
     type: categoryId === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -169,21 +165,21 @@ $('#btnSubcategoryConfirm').on('click', () => {
     url: '/subcategories' + (categoryId === '0' ? '' : '/' + categoryId),
     type: categoryId === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
 })
 
 // ==================== Live check =============================
-$(document).on('click','.liveCheckbox', () => {
+$(document).on('click', '.liveCheckbox', () => {
   var button = $(event.target) // Button that triggered the modal
   var articleId = button.data('value') // Extract info from data-* attributes
   var articles = JSON.parse($('#articlesJSON').text())
-  var articleInfo = articles.find(item => {
+  var articleInfo = articles.find((item) => {
     return item.id === articleId
   })
   const data = {
@@ -198,34 +194,31 @@ $(document).on('click','.liveCheckbox', () => {
     url: '/articles/' + articleId,
     type: 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
 })
 
 // ==================== Deletion =============================
-
-$('.deleteArticle').on('click', event => {
-  var button = $(event.currentTarget) // currentTarget is the outer
-  var articleId = button.data('value') // Extract info from data-* attributes
+function deleteArticle(id) {
   var result = confirm('Are you sure? This will permanently delete the item')
   if (result) {
     $.ajax({
-      url: '/articles/' + articleId,
+      url: '/articles/' + id,
       type: 'DELETE',
-      success: result => {
+      success: (result) => {
         location.reload()
       },
-      error: error => {
+      error: (error) => {
         console.log(error)
       },
     })
   }
-})
+}
 
 //===================== Sorting and Filtering =========================
 
@@ -235,12 +228,12 @@ var articleList = $('#articles')
 var articles = articleList.children()
 var sortStatus = [false, false]
 var filteredArticles = false
-var sort = function(child) {
+var sort = function (child) {
   filteredArticles = filteredArticles ? filteredArticles : articles
   if (!sortStatus[child]) {
     var sortList = Array.prototype.sort.bind(filteredArticles)
 
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[child].innerHTML
       var bText = b.children[child].innerHTML
       if (aText < bText) {
@@ -254,7 +247,7 @@ var sort = function(child) {
     sortStatus[child] = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredArticles)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[child].innerHTML
       var bText = b.children[child].innerHTML
       if (aText > bText) {
@@ -273,12 +266,12 @@ var sort = function(child) {
 
 var sortDateStatus = false
 var filteredItems = false
-var sortDate = function({ column }) {
+var sortDate = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : articles
 
   if (!sortDateStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = new Date(a.children[column].innerHTML)
       var bText = new Date(b.children[column].innerHTML)
       if (aText < bText) {
@@ -292,7 +285,7 @@ var sortDate = function({ column }) {
     sortDateStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = new Date(a.children[column].innerHTML)
       var bText = new Date(b.children[column].innerHTML)
       if (aText > bText) {
@@ -316,23 +309,24 @@ $('#subCategoryTag').click(() => sort(1))
 
 var filterButton = $('#filterButton')
 var filteredArticles = false
-filterButton.click(event => {
+filterButton.click((event) => {
   event.preventDefault()
-  var filterText = $('#filterInput')
-    .val()
-    .toLowerCase()
-    .trim()
+  var filterText = $('#filterInput').val().toLowerCase().trim()
   if (filterText == '') {
     articleList.empty().prepend(articles)
     return
   }
   filteredArticles = articles.filter((index, elem) =>
-  new Array(articles[0].children.length).fill().some((_, childIndex) => elem.children[childIndex].innerText.toLowerCase().includes(filterText.toLowerCase()))
+    new Array(articles[0].children.length)
+      .fill()
+      .some((_, childIndex) =>
+        elem.children[childIndex].innerText.toLowerCase().includes(filterText.toLowerCase()),
+      ),
   )
   articleList.empty().prepend(filteredArticles)
 })
 
-$('#clearFilter').click(event => {
+$('#clearFilter').click((event) => {
   $('#filterInput').val('')
   articleList.empty().prepend(articles)
   filteredArticles = false
@@ -347,7 +341,7 @@ function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
     countdownElement.text(remaining + ' characters remaining.')
   }
 
-  $(document).ready(function($) {
+  $(document).ready(function ($) {
     updateCountdown()
     tableElement.change(updateCountdown)
     tableElement.keyup(updateCountdown)
@@ -360,15 +354,302 @@ makeUpdateCountdown({
   maxLength: 70,
 })
 //control subcategory select
-$('#col0TableModal').change(event => {
-  $('#col1TableModal').val('');
-  var catId = event.target.value;
-  handleSubCategorySelect(catId);
+$('#col0TableModal').change((event) => {
+  $('#col1TableModal').val('')
+  var catId = event.target.value
+  handleSubCategorySelect(catId)
 })
 const handleSubCategorySelect = (catId) => {
-  $('#col1TableModal').attr('disabled', false);
-  $('#col1TableModal').children().map((_, child) => {
-    if (child.dataset.id == catId) $(child).css('display', 'block');
-    else $(child).css('display', 'none')
+  $('#col1TableModal').attr('disabled', false)
+  $('#col1TableModal')
+    .children()
+    .map((_, child) => {
+      if (child.dataset.id == catId) $(child).css('display', 'block')
+      else $(child).css('display', 'none')
+    })
+}
+
+$(document).ready(() => {
+  const articles = $('#articlesJSON').html()
+  const categories = $('#categoriesJSON').html()
+  const subCategories = $('#subcategoriesJSON').html()
+
+  const data = {
+    articles,
+    categories,
+    subCategories,
+  }
+
+  initializeDataTable(data)
+})
+
+var rowReorderResult = null
+const initializeDataTable = (result) => {
+  const { articles, categories, subCategories } = result
+
+  const data = JSON.parse(articles).map((article, articleKey) => {
+    JSON.parse(categories).forEach((category) => {
+      if (article.category_id === category.id) {
+        articles[articleKey].categoryPayload = category
+      }
+    })
+
+    JSON.parse(subCategories).forEach((subCategory) => {
+      if (article.subcategory === subCategory.id) {
+        articles[articleKey].subcategoryPayload = subCategory
+      }
+    })
+
+    return article
   })
+
+  const columns = [
+    { data: 'sortingKey' },
+    {
+      data: 'categoryTag',
+      render: (_, __, rowPayload) => {
+        return rowPayload.category_title
+      },
+    },
+    {
+      data: 'subcategoryTag',
+      render: (_, __, rowPayload) => {
+        return rowPayload.subcategory_title
+      },
+    },
+    { data: 'article_heading' },
+    {
+      data: 'article_text',
+      render: (_, __, rowPayload) => {
+        return makeLinksClickable(rowPayload.article_text)
+      },
+    },
+    {
+      data: 'voiceOverUrl',
+      render: (_, __, rowPayload) => {
+        return `
+          <td
+            class="voice-over-column"
+            data-source="article"
+            data-id="${rowPayload.id}"
+            data-json="${JSON.stringify(rowPayload)}"
+          >
+            <input type="file" />
+          </td>
+        `
+      },
+      createdCell: (td, cellData, rowData, row, col) => {
+        $(td).attr('class', 'voice-over-column')
+        $(td).attr('data-source', 'article')
+        $(td).attr('data-id', rowData.id)
+        $(td).attr('data-json', JSON.stringify(rowData))
+      },
+    },
+    {
+      data: 'contentFilter',
+      render: (rowValue, _, rowPayload) => {
+        if (rowValue === 0) {
+          return 'All'
+        }
+
+        if (rowValue === 1) {
+          return 'Generic'
+        }
+
+        if (rowValue === 2) {
+          return 'Islamic Perspective'
+        }
+      },
+    },
+    {
+      data: 'ageRestrictionLevel',
+      render: (_, __, rowPayload) => {
+        const { isAgeRestricted, ageRestrictionLevel } = rowPayload
+
+        if (!isAgeRestricted && ageRestrictionLevel === 0) {
+          return 'All ages'
+        }
+
+        if (ageRestrictionLevel >= 10 && ageRestrictionLevel <= 13) {
+          return '10 to 13'
+        }
+
+        if (ageRestrictionLevel >= 14 && ageRestrictionLevel <= 16) {
+          return '14 and up'
+        }
+
+        if (ageRestrictionLevel >= 17) {
+          return '17 and up'
+        }
+      },
+    },
+  ]
+
+  $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
+
+  // remove spaces
+  $('.filters th').html('')
+
+  const table = $('#articleTable').DataTable({
+    columns,
+    data,
+    orderCellsTop: true,
+    fixedHeader: true,
+    autoWidth: false,
+    rowReorder: {
+      dataSrc: 'sortingKey',
+    },
+    lengthMenu: [25, 50, 75, 100, 200],
+    initComplete: function () {
+      var api = this.api()
+
+      api
+        .columns()
+        .eq(0)
+        .each(function (colIdx) {
+          // Set the header cell to contain the input element
+          var cell = $('.filters th').eq($(api.column(colIdx).header()).index())
+
+          const colName = api.column(colIdx).header().getAttribute('aria-label')
+          if (
+            $(api.column(colIdx).header()).index() >= 0 &&
+            colName !== 'Order' &&
+            !colName.includes('Voice Over')
+          ) {
+            $(cell).html(`<input type="text" id="encyclopedia_filter_${colIdx}" />`)
+          }
+
+          // On every keypress in this input
+          $('input', $('.filters th').eq($(api.column(colIdx).header()).index()))
+            .off('keyup change')
+            .on('change', function (e) {
+              //save filter details - generalScript
+              saveFilter(colIdx, $(this).val(), 'encyclopedia')
+              // Get the search value
+
+              $(this).attr('title', $(this).val())
+              var regexr = '({search})' //$(this).parents('th').find('select').val();
+              // Search the column for that value
+              api
+                .column(colIdx)
+                .search(
+                  this.value != '' ? regexr.replace('{search}', '(((' + this.value + ')))') : '',
+                  this.value != '',
+                  this.value == '',
+                )
+                .draw()
+            })
+            .on('keyup', function (e) {
+              e.stopPropagation()
+
+              $(this).trigger('change')
+              $(this).focus()[0]
+            })
+        })
+
+      // initializeVoiceOver()
+    },
+    columnDefs: [
+      {
+        orderable: false,
+        searchable: false,
+        sortable: false,
+        className: 'reorder',
+        targets: 0,
+      },
+      {
+        targets: 8, //column number in array
+        searchable: false,
+        render: (_, __, row) => {
+          return `
+           <div class="d-flex">
+               <button
+                 type="button"
+                 class="btn btn-sm"
+                 data-toggle="modal"
+                 data-target="#articleModal"
+                 data-value="${row.id}"
+               >
+                 <i class="fas fa-edit" aria-hidden="true"></i>
+               </button>
+               <button type="button" onclick="deleteArticle('${row.id}')" class="deleteArticle btn btn-sm" data-value="${row.id}">
+                 <i class="fas fa-trash" aria-hidden="true"></i>
+               </button>
+           </div>
+         `
+        },
+      },
+      {
+        targets: 9, //column number in array
+        searchable: false,
+        render: (_, __, row) => {
+          return `
+           <label class="switch">
+             <input data-value="${row.id}" class='liveCheckbox' type="checkbox" ${
+            row.live ? 'checked' : ''
+          }/>
+             <span class="slider round"></span>
+           </label>
+         `
+        },
+      },
+    ],
+  })
+
+  table.on('row-reorder', function (e, diff, edit) {
+    let result = `
+      Reorder started on row: 
+        <span class="text-warning">
+        ${edit.triggerRow.data().sortingKey} - ${edit.triggerRow.data().article_heading} 
+        </span>
+      <br />`
+
+    for (var i = 0, ien = diff.length; i < ien; i++) {
+      var rowData = table.row(diff[i].node).data()
+      diff[i].toUpdate = rowData
+      result += `
+        <span class="text-success">
+          ${rowData.article_heading} 
+        </span>
+        updated to be in position
+        <span class="text-success"> 
+          ${diff[i].newData} 
+        </span>
+        <span class="text-warning"> 
+          (was ${diff[i].oldData})
+        </span>
+        <br />
+        `
+    }
+    rowReorderResult = diff.map((d) => d.toUpdate)
+    $('#rowReorderModal').modal({ show: true })
+    $('#rowReorderConfirmationBody').html(result)
+  })
+
+  // loadFilters('encyclopedia')
+}
+
+const saveReorder = (isSave) => {
+  if (!isSave) {
+    location.reload()
+  }
+
+  $.ajax({
+    url: '/articles',
+    type: 'PUT',
+    data: { rowReorderResult },
+    success: (result) => {
+      location.reload()
+    },
+    error: (error) => {
+      console.log(error)
+    },
+  })
+}
+
+function makeLinksClickable(text) {
+  return text.replace(
+    /(https?:\/\/[^\s]+)/g,
+    '<a href="$1" target="_blank" style="color: #0056b3">$1</a>',
+  )
 }

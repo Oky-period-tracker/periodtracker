@@ -3,12 +3,20 @@ import { NextFunction, Request, Response } from 'express'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
+import { bulkUpdateRowReorder } from '../helpers/common'
 
 export class ArticleController {
   private articleRepository = getRepository(Article)
 
   async all(request: Request, response: Response, next: NextFunction) {
-    return this.articleRepository.find({ where: { lang: request.user.lang } })
+    return this.articleRepository.find({
+      where: {
+        lang: request.user.lang,
+      },
+      order: {
+        sortingKey: 'ASC',
+      },
+    })
   }
   async mobileArticlesByLanguage(request: Request, response: Response, next: NextFunction) {
     return this.articleRepository.query(
@@ -27,7 +35,7 @@ export class ArticleController {
       ON ar.subcategory = sc.id::varchar
       WHERE ar.lang = $1
       AND ar.live = true
-      ORDER BY ca.title, sc.title ASC
+      ORDER BY ca.title, sc.title ASC, ar."sortingKey"
       `,
       [request.params.lang],
     )
@@ -74,5 +82,20 @@ export class ArticleController {
     const articleToRemove = await this.articleRepository.findOne(request.params.id)
     await this.articleRepository.remove(articleToRemove)
     return articleToRemove
+  }
+
+  async bulkUpdate(request: Request, response: Response, next: NextFunction) {
+    if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
+      return await bulkUpdateRowReorder(this.articleRepository, request.body.rowReorderResult)
+    }
+
+    return await this.articleRepository.find({
+      where: {
+        lang: request.params.lang,
+      },
+      order: {
+        sortingKey: 'ASC',
+      },
+    })
   }
 }

@@ -234,13 +234,14 @@ export class RenderController {
 
   async renderEncyclopedia(request: Request, response: Response, next: NextFunction) {
     const articles = await this.articleRepository.query(
-      `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created 
+      `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created, ar.*
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 
       ON ar.category = ca.id::varchar
       INNER JOIN ${env.db.schema}.subcategory sc  
       ON ar.subcategory = sc.id::varchar
-      WHERE ar.lang = $1`,
+      WHERE ar.lang = $1
+      ORDER BY ar."sortingKey"`,
       [request.user.lang],
     )
     const categories = await this.categoryRepository.find({

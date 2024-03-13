@@ -13,10 +13,9 @@ $('#articleModal').on('show.bs.modal', (event) => {
     $('#col1TableModal').val('')
     $('#col2TableModal').val('')
     $('#col3TableModal').val('')
-    $('#contentFilterDropdownForm').val('0')
-    $('#ageRestrictionLevelForm').val('0')
     $('#col4TableModal').prop('checked', false)
     $('#itemID').text(0)
+    $('#countdown2').text(70 + ' characters remaining.')
     $('#col1TableModal').attr('disabled', true)
     return
   }
@@ -31,8 +30,6 @@ $('#articleModal').on('show.bs.modal', (event) => {
   $('#col2TableModal').val(articleInfo.article_heading)
   $('#col3TableModal').val(articleInfo.article_text)
   $('#col4TableModal').prop('checked', articleInfo.live)
-  $('#contentFilterDropdownForm').val(articleInfo.contentFilter)
-  $('#ageRestrictionLevelForm').val(articleInfo.ageRestrictionLevel)
   $('#itemID').text(articleId)
   $('#countdown2').text(70 - articleInfo.article_heading.length + ' characters remaining.')
   handleSubCategorySelect(articleInfo.category_id)
@@ -96,11 +93,15 @@ $('#btnArticleEditConfirm').on('click', () => {
     article_heading: $('#col2TableModal').val(),
     article_text: $('#col3TableModal').val(),
     live: $('#col4TableModal').prop('checked'),
-    contentFilter: $('#contentFilterDropdownForm').val(),
-    ageRestrictionLevel: $('#ageRestrictionLevelForm').val(),
   }
 
-  if (!data.category || !data.subcategory || !data.article_heading || !data.article_text) {
+  if (
+    !data.category ||
+    !data.subcategory ||
+    !data.article_heading ||
+    data.article_heading.length > 70 ||
+    !data.article_text
+  ) {
     $('#error1').show()
     $('#error2').show()
     $('#error3').show()
@@ -112,9 +113,13 @@ $('#btnArticleEditConfirm').on('click', () => {
     type: articleID === '0' ? 'POST' : 'PUT',
     data: data,
     success: (result) => {
-      $('#articleModal').modal('hide')
-      $('#infoArticleModal').modal('show')
-      $('#infoArticleModal').on('hide.bs.modal', () => location.reload())
+      if (result.isExist) {
+        $('#errorTitle2').show()
+      } else {
+        $('#articleModal').modal('hide')
+        $('#infoArticleModal').modal('show')
+        setTimeout(() => location.reload(), 1500)
+      }
     },
     error: (error) => {
       console.log(error)
@@ -424,66 +429,9 @@ const initializeDataTable = (result) => {
         return makeLinksClickable(rowPayload.article_text)
       },
     },
-    {
-      data: 'voiceOverUrl',
-      render: (_, __, rowPayload) => {
-        return `
-          <td
-            class="voice-over-column"
-            data-source="article"
-            data-id="${rowPayload.id}"
-            data-json="${JSON.stringify(rowPayload)}"
-          >
-            <input type="file" />
-          </td>
-        `
-      },
-      createdCell: (td, cellData, rowData, row, col) => {
-        $(td).attr('class', 'voice-over-column')
-        $(td).attr('data-source', 'article')
-        $(td).attr('data-id', rowData.id)
-        $(td).attr('data-json', JSON.stringify(rowData))
-      },
-    },
-    {
-      data: 'contentFilter',
-      render: (rowValue, _, rowPayload) => {
-        if (rowValue === 0) {
-          return 'All'
-        }
-
-        if (rowValue === 1) {
-          return 'Generic'
-        }
-
-        if (rowValue === 2) {
-          return 'Islamic Perspective'
-        }
-      },
-    },
-    {
-      data: 'ageRestrictionLevel',
-      render: (_, __, rowPayload) => {
-        const { isAgeRestricted, ageRestrictionLevel } = rowPayload
-
-        if (!isAgeRestricted && ageRestrictionLevel === 0) {
-          return 'All ages'
-        }
-
-        if (ageRestrictionLevel >= 10 && ageRestrictionLevel <= 13) {
-          return '10 to 13'
-        }
-
-        if (ageRestrictionLevel >= 14 && ageRestrictionLevel <= 16) {
-          return '14 and up'
-        }
-
-        if (ageRestrictionLevel >= 17) {
-          return '17 and up'
-        }
-      },
-    },
   ]
+
+  console.log(columns.length)
 
   $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
 
@@ -503,49 +451,7 @@ const initializeDataTable = (result) => {
     initComplete: function () {
       var api = this.api()
 
-      api
-        .columns()
-        .eq(0)
-        .each(function (colIdx) {
-          // Set the header cell to contain the input element
-          var cell = $('.filters th').eq($(api.column(colIdx).header()).index())
-
-          const colName = api.column(colIdx).header().getAttribute('aria-label')
-          if (
-            $(api.column(colIdx).header()).index() >= 0 &&
-            colName !== 'Order' &&
-            !colName.includes('Voice Over')
-          ) {
-            $(cell).html(`<input type="text" id="encyclopedia_filter_${colIdx}" />`)
-          }
-
-          // On every keypress in this input
-          $('input', $('.filters th').eq($(api.column(colIdx).header()).index()))
-            .off('keyup change')
-            .on('change', function (e) {
-              //save filter details - generalScript
-              saveFilter(colIdx, $(this).val(), 'encyclopedia')
-              // Get the search value
-
-              $(this).attr('title', $(this).val())
-              var regexr = '({search})' //$(this).parents('th').find('select').val();
-              // Search the column for that value
-              api
-                .column(colIdx)
-                .search(
-                  this.value != '' ? regexr.replace('{search}', '(((' + this.value + ')))') : '',
-                  this.value != '',
-                  this.value == '',
-                )
-                .draw()
-            })
-            .on('keyup', function (e) {
-              e.stopPropagation()
-
-              $(this).trigger('change')
-              $(this).focus()[0]
-            })
-        })
+      api.columns().eq(0)
 
       // initializeVoiceOver()
     },
@@ -558,7 +464,7 @@ const initializeDataTable = (result) => {
         targets: 0,
       },
       {
-        targets: 8, //column number in array
+        targets: columns.length, //column number in array
         searchable: false,
         render: (_, __, row) => {
           return `
@@ -580,7 +486,7 @@ const initializeDataTable = (result) => {
         },
       },
       {
-        targets: 9, //column number in array
+        targets: columns.length + 1, //column number in array
         searchable: false,
         render: (_, __, row) => {
           return `

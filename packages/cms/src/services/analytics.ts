@@ -212,7 +212,7 @@ export const analyticsQueries = {
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
   FROM ${schema}.subcategory s
   LEFT JOIN ${schema}.app_event
-    ON app_event.type = 'SUBCATEGORY_VIEWED' AND s.id = (app_event.payload->>'subCategoryId')::uuid
+    ON app_event.type = 'SUBCATEGORY_VIEWED' AND TRIM(BOTH ' ' FROM s.id) = TRIM(BOTH ' ' FROM app_event.payload->>'subCategoryId'::text)::uuid
     LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
     WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
     AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))

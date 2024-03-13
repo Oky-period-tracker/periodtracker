@@ -192,5 +192,7 @@
   "Youtube Id": "Youtube Id",
   "Asset name": "Nombre del activo",
   "Videos": "Videos",
-  "Add Video": "Añadir video"
+  "Add Video": "Añadir video",
+  "app_release_date": "Fecha de lanzamiento de la aplicación",
+  "Order": "Orden"
 }

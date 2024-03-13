@@ -191,5 +191,7 @@
   "Youtube Id": "Youtube Id",
   "Asset name": "Имя актива",
   "Videos": "Видео",
-  "Add Video": "Добавить видео"
+  "Add Video": "Добавить видео",
+  "app_release_date": "Дата выхода приложения",
+  "Order": "Порядок сортировки"
 }

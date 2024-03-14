@@ -84,7 +84,7 @@ export class ArticleController {
     return articleToRemove
   }
 
-  async bulkUpdate(request: Request, response: Response, next: NextFunction) {
+  async reorderRows(request: Request, response: Response, next: NextFunction) {
     if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
       return await bulkUpdateRowReorder(this.articleRepository, request.body.rowReorderResult)
     }

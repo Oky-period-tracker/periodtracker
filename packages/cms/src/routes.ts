@@ -196,7 +196,7 @@ export const Routes = [
     method: 'put',
     route: '/articles',
     controller: ArticleController,
-    action: 'bulkUpdate',
+    action: 'reorderRows',
   },
   // ------------ Videos Api ----------------
   {
@@ -264,7 +264,7 @@ export const Routes = [
     method: 'put',
     route: '/categories',
     controller: CategoryController,
-    action: 'bulkUpdate',
+    action: 'reorderRows',
   },
   // ------------ Subcategories Api ----------------
   {
@@ -301,7 +301,7 @@ export const Routes = [
     method: 'put',
     route: '/subcategories',
     controller: SubcategoryController,
-    action: 'bulkUpdate',
+    action: 'reorderRows',
   },
   // ------------ Quizzes Api ----------------
   {

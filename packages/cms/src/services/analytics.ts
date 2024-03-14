@@ -142,7 +142,9 @@ export const analyticsQueries = {
   SELECT COUNT(DISTINCT user_id)
   FROM ${schema}.app_event
   INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
-  WHERE oky_user.gender = COALESCE($1, oky_user.gender)
+  WHERE app_event.type = 'SCREEN_VIEWED'
+    AND app_event.payload->>'screenName' = 'MainScreen'
+    AND oky_user.gender = COALESCE($1, oky_user.gender)
     AND oky_user.location = COALESCE($2, oky_user.location)
     ${partials.and_event_date}
   ;`,

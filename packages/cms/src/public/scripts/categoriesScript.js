@@ -25,30 +25,6 @@ $('#categoryModal').on('show.bs.modal', (event) => {
   $('#itemID').text(categoryId)
 })
 
-$('#subcategoryModal').on('show.bs.modal', (event) => {
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  var subcategoryId = button.data('value') // Extract info from data-* attributes
-  $('#errorSubcat1').hide()
-  $('#errorSubcat2').hide()
-  $('#errorSubcatUniq1').hide()
-  if (subcategoryId === 0) {
-    $('.modal-title').text('Insert New Sub Category')
-    $('#colSubcategory0TableModal').val('')
-    $('#colSubcategory1TableModal').val('')
-    $('#itemID').text(0)
-    return
-  }
-  var subcategories = JSON.parse($('#subcategoriesJSON').text())
-  var subcategoryInfo = subcategories.find((item) => {
-    return item.id === subcategoryId
-  })
-
-  $('.modal-title').text(subcategoryInfo.title)
-  $('#colSubcategory0TableModal').val(subcategoryInfo.title)
-  $('#colSubcategory1TableModal').val(subcategoryInfo.parent_category_id)
-  $('#itemID').text(subcategoryId)
-})
-
 $('#btnCategoryConfirm').on('click', () => {
   const categoryId = $('#itemID').text()
   const data = {
@@ -90,35 +66,6 @@ $('#btnCategoryConfirm').on('click', () => {
   })
 })
 
-$('#btnSubcategoryConfirm').on('click', () => {
-  const subcategoryId = $('#itemID').text()
-  const data = {
-    title: $('#colSubcategory0TableModal').val(),
-    parent_category: $('#colSubcategory1TableModal').val(),
-  }
-  if (data.title === '' || data.title.length >= 40 || data.parent_category === '') {
-    $('#errorSubcat1').show()
-    $('#errorSubcat2').show()
-    return
-  }
-  // if the article ID is 0 we are creating a new entry
-  $.ajax({
-    url: '/subcategories' + (subcategoryId === '0' ? '' : '/' + subcategoryId),
-    type: subcategoryId === '0' ? 'POST' : 'PUT',
-    data: data,
-    success: (result) => {
-      if (result.duplicate) {
-        $('#errorSubcatUniq1').css('display', 'block')
-        return false
-      }
-      location.reload()
-    },
-    error: (error) => {
-      console.log(error)
-    },
-  })
-})
-
 $('.deleteCategory').on('click', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var categoryId = button.data('value') // Extract info from data-* attributes
@@ -126,24 +73,6 @@ $('.deleteCategory').on('click', (event) => {
   if (result) {
     $.ajax({
       url: '/categories/' + categoryId,
-      type: 'DELETE',
-      success: (result) => {
-        location.reload()
-      },
-      error: (error) => {
-        console.log(error)
-      },
-    })
-  }
-})
-
-$('.deleteSubcategory').on('click', (event) => {
-  var button = $(event.currentTarget) // currentTarget is the outer
-  var subcategoryId = button.data('value') // Extract info from data-* attributes
-  var result = confirm('Are you sure? This will permanently delete the item')
-  if (result) {
-    $.ajax({
-      url: '/subcategories/' + subcategoryId,
       type: 'DELETE',
       success: (result) => {
         location.reload()
@@ -178,12 +107,6 @@ makeUpdateCountdown({
   countdownElement: $('#countdown2'),
   tableElement: $('#colCategory1TableModal'),
   maxLength: 25,
-})
-
-makeUpdateCountdown({
-  countdownElement: $('#countdown3'),
-  tableElement: $('#colSubcategory0TableModal'),
-  maxLength: 40,
 })
 
 $(document).ready(() => {

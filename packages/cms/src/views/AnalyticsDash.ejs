@@ -152,6 +152,7 @@
         </div>
 
         <p class="description mb-3 mt-3"><%= __('analytics_description_1')%></p>
+        <p class="description mb-3 mt-3"><%= __('app_release_date')%>: <%= appReleaseDate %></p>
 
         <p class="description mb-3 mt-3"><%= __('analytics_description_2')%></p>
 
@@ -335,6 +336,24 @@
 </span>
 <span id="directDownloadsJSON" hidden>
     <%= JSON.stringify(directDownloads); %>
+</span>
+<span id="screenUsageJSON" hidden>
+  <%= JSON.stringify(screenUsage); %>
+</span>
+<span id="encyclopediaUsageJSON" hidden>
+  <%= JSON.stringify(encyclopediaUsage); %>
+</span>
+<span id="usageJSON" hidden>
+  <%= JSON.stringify(usage); %>
+</span>
+<span id="countAvatarsJSON" hidden>
+  <%= JSON.stringify(countAvatars); %>
+</span>
+<span id="countThemesJSON" hidden>
+  <%= JSON.stringify(countThemes); %>
+</span>
+<span id="countLocalesJSON" hidden>
+  <%= JSON.stringify(countLocales); %>
 </span>
 <script type="application/javascript" src="/scripts/analyticsScript.js"></script>
 <%- include('partials/Footer') %>

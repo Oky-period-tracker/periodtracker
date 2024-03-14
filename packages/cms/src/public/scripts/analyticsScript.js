@@ -60,7 +60,6 @@ const loadInitialChart = ({
 }
 
 $(document).ready(() => {
-  console.log(usersProvinces)
   loadInitialChart({
     usersGenders,
     usersLocations,
@@ -101,7 +100,6 @@ $('#downloadCSV').on('click', () => {
   const themes = countThemes.map((item) => Object.values(item))
   const locales = countLocales.map((item) => Object.values(item))
 
-  console.log(avatars)
   const rows = [
     ['User Gender'],
     ['Male', 'Female', 'Prefer not to say'],

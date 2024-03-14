@@ -431,8 +431,6 @@ const initializeDataTable = (result) => {
     },
   ]
 
-  console.log(columns.length)
-
   $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
 
   // remove spaces

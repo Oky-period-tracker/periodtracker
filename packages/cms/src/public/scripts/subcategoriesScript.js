@@ -168,17 +168,17 @@ function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
   })
 }
 
-makeUpdateCountdown({
-  countdownElement: $('#countdown1'),
-  tableElement: $('#colCategory0TableModal'),
-  maxLength: 35,
-})
+// makeUpdateCountdown({
+//   countdownElement: $('#countdown1'),
+//   tableElement: $('#colCategory0TableModal'),
+//   maxLength: 35,
+// })
 
-makeUpdateCountdown({
-  countdownElement: $('#countdown2'),
-  tableElement: $('#colCategory1TableModal'),
-  maxLength: 25,
-})
+// makeUpdateCountdown({
+//   countdownElement: $('#countdown2'),
+//   tableElement: $('#colCategory1TableModal'),
+//   maxLength: 25,
+// })
 
 makeUpdateCountdown({
   countdownElement: $('#countdown3'),
@@ -187,13 +187,13 @@ makeUpdateCountdown({
 })
 
 $(document).ready(() => {
-  const categories = JSON.parse($('#categoriesJSON').html())
-  initializeCategoriesDataTable(categories)
+  const subCategories = JSON.parse($('#subcategoriesJSON').html())
+  initializeSubcategoriesDataTable(subCategories)
 })
 
-var categoryRowReorderResult = null
+var subcategoryRowReorderResult = null
 
-const initializeCategoriesDataTable = (data) => {
+const initializeSubcategoriesDataTable = (data) => {
   const columns = [
     { data: 'sortingKey' },
     {
@@ -203,20 +203,14 @@ const initializeCategoriesDataTable = (data) => {
       },
     },
     {
-      data: 'primary_emoji_name',
+      data: 'parent_category',
       render: (_, __, rowPayload) => {
-        return rowPayload.primary_emoji_name
-      },
-    },
-    {
-      data: 'primary_emoji',
-      render: (_, __, rowPayload) => {
-        return rowPayload.primary_emoji
+        return rowPayload.parent_category
       },
     },
   ]
 
-  const table = $('#categoryTable').DataTable({
+  const table = $('#subcategoryTable').DataTable({
     columns,
     data,
     orderCellsTop: true,
@@ -245,20 +239,23 @@ const initializeCategoriesDataTable = (data) => {
         render: (_, __, row) => {
           return `
            <div class="d-flex">
+            <button
+              type="button"
+              class="btn"
+              data-toggle="modal"
+              data-target="#subcategoryModal"
+              data-value="${row.id}"
+            >
+              <i class="fas fa-edit" aria-hidden="true"></i>
+            </button>
 
-           <button
-           type="button"
-           class="btn"
-           data-toggle="modal"
-           data-target="#categoryModal"
-           data-value="${row.id}"
-         >
-           <i class="fas fa-edit" aria-hidden="true"></i>
-         </button>
-
-         <button type="button" class="btn deleteCategory" data-value="${row.id}">
-           <i class="fas fa-trash" aria-hidden="true"></i>
-         </button>             
+            <button
+              type="button"
+              class="btn deleteSubcategory"
+              data-value="${row.id}"
+            >
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>
            </div>
          `
         },
@@ -305,21 +302,21 @@ const initializeCategoriesDataTable = (data) => {
         <br />
         `
     }
-    categoryRowReorderResult = diff.map((d) => d.toUpdate)
-    $('#categoryRowReorderModal').modal({ show: true })
-    $('#categoryRowReorderConfirmationBody').html(result)
+    subcategoryRowReorderResult = diff.map((d) => d.toUpdate)
+    $('#subcategoryRowReorderModal').modal({ show: true })
+    $('#subcategoryRowReorderConfirmationBody').html(result)
   })
 }
 
-const saveCategoryReorder = (isSave) => {
+const saveSubcategoryReorder = (isSave) => {
   if (!isSave) {
     location.reload()
   }
 
   $.ajax({
-    url: '/categories',
+    url: '/subcategories',
     type: 'PUT',
-    data: { rowReorderResult: categoryRowReorderResult },
+    data: { rowReorderResult: subcategoryRowReorderResult },
     success: (result) => {
       location.reload()
     },

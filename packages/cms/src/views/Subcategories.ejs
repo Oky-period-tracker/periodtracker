@@ -1,0 +1,44 @@
+<%- include('partials/Header') %>
+<!-- force new line -->
+<%- include(`modals/SubcategoryModal`, { categories }) %>
+<div class="homePageContainer">
+  <div class="sideBar">
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <%- currentUser.lang %>
+    <div class="homeTopTextContainer">
+      <a href="/encyclopedia">
+        <i class="fas fa-arrow-left back_arrow" aria-hidden="true"></i>
+      </a>
+      <h2><%= __('Subcategories')%></h2>   
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#subcategoryModal"
+        data-value="0"
+      >
+      <%= __('Add Subcategory')%>
+      </button>
+    </div>
+    <div class="articleContainer">
+      <table id="subcategoryTable" class="table">
+      <thead>
+          <tr>
+            <th style="width: 2.5%" id="order"><%= __('Order')%></th>
+            <th style="width: 30%"><%= __('Subcategory Title')%></th>
+            <th style="width: 30%"><%= __('Parent Category')%></th>
+            <th style="width: 2.5%"><%= __('Edit')%></th>
+            <th style="width: 2.5%"><%= __('Delete')%></th>
+          </tr>
+      </thead>
+    </table>
+  </div>
+
+  </div>
+  <span id="categoriesJSON" hidden><%= JSON.stringify(categories); %> </span>
+  <span id="subcategoriesJSON" hidden><%= JSON.stringify(subcategories); %> </span>
+  <script type="application/javascript" src="/scripts/subcategoriesScript.js"></script>
+</div>
+<%- include('partials/Footer') %>

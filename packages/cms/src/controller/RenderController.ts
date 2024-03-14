@@ -23,7 +23,7 @@ import { AboutBanner } from '../entity/AboutBanner'
 import { Question } from '../entity/Question'
 import { env } from '../env'
 import { Video } from '../entity/Video'
-import { cmsLanguages } from '../i18n/options'
+import { cmsLanguages, appReleaseDate } from '../i18n/options'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -320,6 +320,7 @@ export class RenderController {
     }, {})
     if ('application/json' === request.get('accept')) {
       return {
+        appReleaseDate,
         query: request.query,
         usersLocations,
         usersGenders,
@@ -340,6 +341,7 @@ export class RenderController {
     }
 
     return this.render(response, 'AnalyticsDash', {
+      appReleaseDate,
       query: request.query,
       usersLocations,
       usersGenders,

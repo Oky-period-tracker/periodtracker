@@ -35,7 +35,7 @@ export class ArticleController {
       ON ar.subcategory = sc.id::varchar
       WHERE ar.lang = $1
       AND ar.live = true
-      ORDER BY ca.title, sc.title ASC, ar."sortingKey"
+      ORDER BY ca."sortingKey" ASC, sc."sortingKey" ASC, ar."sortingKey" ASC
       `,
       [request.params.lang],
     )

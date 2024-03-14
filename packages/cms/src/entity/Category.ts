@@ -16,4 +16,7 @@ export class Category {
 
   @Column()
   lang: string
+
+  @Column({ generated: 'increment' })
+  sortingKey: number
 }

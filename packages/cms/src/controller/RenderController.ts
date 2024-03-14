@@ -463,7 +463,8 @@ export class RenderController {
       INNER JOIN ${env.db.schema}.subcategory sc  
       ON ar.subcategory = sc.id::varchar
       WHERE ar.lang = $1
-      ORDER BY ar."sortingKey"`,
+      ORDER BY ca."sortingKey" ASC, sc."sortingKey" ASC, ar."sortingKey" ASC
+      `,
       [request.user.lang],
     )
     const categories = await this.categoryRepository.find({
@@ -475,19 +476,32 @@ export class RenderController {
     this.render(response, 'Encyclopedia', { articles, categories, subcategories })
   }
 
-  async renderCatSubcatManagement(request: Request, response: Response, next: NextFunction) {
+  async renderCategoriesManagement(request: Request, response: Response, next: NextFunction) {
     const categories = await this.categoryRepository.find({
       where: { lang: request.user.lang },
+      order: { sortingKey: 'ASC' },
     })
+
+    this.render(response, 'Categories', { categories })
+  }
+
+  async renderSubcategoriesManagement(request: Request, response: Response, next: NextFunction) {
+    const categories = await this.categoryRepository.find({
+      where: { lang: request.user.lang },
+      order: { sortingKey: 'ASC' },
+    })
+
     const subcategories = await this.subcategoryRepository.query(
-      `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id
+      `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id, sc."sortingKey"
       FROM ${env.db.schema}.subcategory sc
       INNER JOIN ${env.db.schema}.category ca
       ON sc.parent_category = ca.id::varchar
-      WHERE sc.lang = $1`,
+      WHERE sc.lang = $1
+      ORDER BY sc."sortingKey" ASC
+      `,
       [request.user.lang],
     )
-    this.render(response, 'CatSubcat', { categories, subcategories })
+    this.render(response, 'Subcategories', { categories, subcategories })
   }
 
   async renderVideoManagement(request: Request, response: Response, next: NextFunction) {

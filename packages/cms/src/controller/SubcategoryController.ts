@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import { Subcategory } from '../entity/Subcategory'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
+import { bulkUpdateRowReorder } from '../helpers/common'
 
 export class SubcategoryController {
   private subCategoryRepository = getRepository(Subcategory)
@@ -55,5 +56,20 @@ export class SubcategoryController {
     await this.subCategoryRepository.remove(subCategoryToRemove)
     await this.articleRepository.remove(articlesToRemove)
     return subCategoryToRemove
+  }
+
+  async bulkUpdate(request: Request, response: Response, next: NextFunction) {
+    if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
+      return await bulkUpdateRowReorder(this.subCategoryRepository, request.body.rowReorderResult)
+    }
+
+    return await this.subCategoryRepository.find({
+      where: {
+        lang: request.params.lang,
+      },
+      order: {
+        sortingKey: 'ASC',
+      },
+    })
   }
 }

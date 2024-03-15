@@ -51,9 +51,7 @@ $('#btnSubcategoryConfirm').on('click', () => {
   })
 })
 
-$('.deleteSubcategory').on('click', (event) => {
-  var button = $(event.currentTarget) // currentTarget is the outer
-  var subcategoryId = button.data('value') // Extract info from data-* attributes
+function deleteSubcategory(subcategoryId) {
   var result = confirm('Are you sure? This will permanently delete the item')
   if (result) {
     $.ajax({
@@ -67,7 +65,7 @@ $('.deleteSubcategory').on('click', (event) => {
       },
     })
   }
-})
+}
 
 function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
   function updateCountdown() {
@@ -140,7 +138,6 @@ const initializeSubcategoriesDataTable = (data) => {
         searchable: false,
         render: (_, __, row) => {
           return `
-           <div class="d-flex">
             <button
               type="button"
               class="btn"
@@ -150,15 +147,6 @@ const initializeSubcategoriesDataTable = (data) => {
             >
               <i class="fas fa-edit" aria-hidden="true"></i>
             </button>
-
-            <button
-              type="button"
-              class="btn deleteSubcategory"
-              data-value="${row.id}"
-            >
-              <i class="fas fa-trash" aria-hidden="true"></i>
-            </button>
-           </div>
          `
         },
       },
@@ -167,12 +155,11 @@ const initializeSubcategoriesDataTable = (data) => {
         searchable: false,
         render: (_, __, row) => {
           return `
-           <label class="switch">
-             <input data-value="${row.id}" class='liveCheckbox' type="checkbox" ${
-            row.live ? 'checked' : ''
-          }/>
-             <span class="slider round"></span>
-           </label>
+          <button
+          type="button" onclick="deleteSubcategory('${row.id}')" class="btn btn-sm"
+          >
+            <i class="fas fa-trash" aria-hidden="true"></i>
+          </button>
          `
         },
       },

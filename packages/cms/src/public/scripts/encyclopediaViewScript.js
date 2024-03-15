@@ -271,42 +271,7 @@ var sort = function (child) {
 
 var sortDateStatus = false
 var filteredItems = false
-var sortDate = function ({ column }) {
-  filteredItems = filteredItems ? filteredItems : articles
 
-  if (!sortDateStatus) {
-    var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function (a, b) {
-      var aText = new Date(a.children[column].innerHTML)
-      var bText = new Date(b.children[column].innerHTML)
-      if (aText < bText) {
-        return -1
-      }
-      if (aText > bText) {
-        return 1
-      }
-      return 0
-    })
-    sortDateStatus = true
-  } else {
-    var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function (a, b) {
-      var aText = new Date(a.children[column].innerHTML)
-      var bText = new Date(b.children[column].innerHTML)
-      if (aText > bText) {
-        return -1
-      }
-      if (aText < bText) {
-        return 1
-      }
-      return 0
-    })
-    sortDateStatus = false
-  }
-  articleList.append(filteredItems)
-}
-
-$('#dateSort').click(() => sortDate({ column: 7 }))
 $('#categoryTag').click(() => sort(0))
 $('#subCategoryTag').click(() => sort(1))
 
@@ -429,6 +394,12 @@ const initializeDataTable = (result) => {
         return makeLinksClickable(rowPayload.article_text)
       },
     },
+    {
+      data: 'date_created', // Assuming 'article_date' is the key in your data
+      render: function (_, __, rowPayload) {
+        return new Date(rowPayload.date_created).toLocaleDateString() // Formatting the date
+      },
+    },
   ]
 
   $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
@@ -529,8 +500,6 @@ const initializeDataTable = (result) => {
     $('#rowReorderModal').modal({ show: true })
     $('#rowReorderConfirmationBody').html(result)
   })
-
-  // loadFilters('encyclopedia')
 }
 
 const saveReorder = (isSave) => {

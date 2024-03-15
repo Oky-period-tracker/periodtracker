@@ -1,4 +1,7 @@
-#helpCenterTable_wrapper, #articleTable_wrapper {
+#helpCenterTable_wrapper,
+#articleTable_wrapper,
+#categoryTable_wrapper,
+#subcategoryTable_wrapper {
   text-align: initial;
 }
 
@@ -8,7 +11,7 @@
 
 .filters th input {
   border-radius: 8px;
-  border: 1px solid #D0D5DD;
+  border: 1px solid #d0d5dd;
 }
 
 #result {
@@ -23,14 +26,16 @@
 }
 
 .even td {
-  background: #F2F2F2;
+  background: #f2f2f2;
 }
 
-#helpCenterTable td, #articleTable td {
+#helpCenterTable td,
+#articleTable td {
   font-size: 12px;
 }
 
-#helpCenterTable th, #articleTable th {
+#helpCenterTable th,
+#articleTable th {
   text-align: center;
   font-size: 14px;
 }
@@ -47,19 +52,23 @@
   border-radius: 8px;
 }
 
-.dataTables_filter label, .dataTables_length label, .dataTables_info {
-  color: #3579F6;
+.dataTables_filter label,
+.dataTables_length label,
+.dataTables_info {
+  color: #3579f6;
   font-size: 14px;
 }
 
-.previous a, .next a, .page-item a {
+.previous a,
+.next a,
+.page-item a {
   border: none;
   font-size: 14px;
 }
 
 .page-item.active .page-link {
   border-radius: 8px;
-  background: #3579F6;
+  background: #3579f6;
 }
 
 .page-link:hover {
@@ -68,18 +77,19 @@
 
 .page-item.active .page-link {
   border-radius: 8px;
-  background: #3579F6;
+  background: #3579f6;
 }
 
 /* TODO - do this to all data tables since all tables are overriden initially */
-#helpCenterTable, #articleTable { 
+#helpCenterTable,
+#articleTable {
   border-collapse: separate !important;
   border-spacing: 0 !important;
   overflow-y: unset !important;
 }
 
-
-.helpCenterContainer, .articleContainer {
+.helpCenterContainer,
+.articleContainer {
   padding: 15px;
 }
 
@@ -91,11 +101,12 @@
   text-align: initial;
 }
 
-#order::before, #order::after {
+#order::before,
+#order::after {
   display: none;
 }
 
 .select-filter {
-  border: 1px solid #D0D5DD;
+  border: 1px solid #d0d5dd;
   border-radius: 8px;
 }

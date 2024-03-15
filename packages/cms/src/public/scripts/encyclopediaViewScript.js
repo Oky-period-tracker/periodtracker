@@ -437,25 +437,31 @@ const initializeDataTable = (result) => {
         searchable: false,
         render: (_, __, row) => {
           return `
-           <div class="d-flex">
-               <button
-                 type="button"
-                 class="btn btn-sm"
-                 data-toggle="modal"
-                 data-target="#articleModal"
-                 data-value="${row.id}"
-               >
-                 <i class="fas fa-edit" aria-hidden="true"></i>
-               </button>
-               <button type="button" onclick="deleteArticle('${row.id}')" class="btn btn-sm">
-                 <i class="fas fa-trash" aria-hidden="true"></i>
-               </button>
-           </div>
+            <button
+              type="button"
+              class="btn btn-sm"
+              data-toggle="modal"
+              data-target="#articleModal"
+              data-value="${row.id}"
+            >
+              <i class="fas fa-edit" aria-hidden="true"></i>
+            </button>
          `
         },
       },
       {
         targets: columns.length + 1, //column number in array
+        searchable: false,
+        render: (_, __, row) => {
+          return `
+            <button type="button" onclick="deleteArticle('${row.id}')" class="btn btn-sm">
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>
+         `
+        },
+      },
+      {
+        targets: columns.length + 2, //column number in array
         searchable: false,
         render: (_, __, row) => {
           return `

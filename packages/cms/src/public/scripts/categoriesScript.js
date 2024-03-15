@@ -66,9 +66,7 @@ $('#btnCategoryConfirm').on('click', () => {
   })
 })
 
-$('.deleteCategory').on('click', (event) => {
-  var button = $(event.currentTarget) // currentTarget is the outer
-  var categoryId = button.data('value') // Extract info from data-* attributes
+function deleteCategory(categoryId) {
   var result = confirm('Are you sure? This will permanently delete the item')
   if (result) {
     $.ajax({
@@ -82,7 +80,7 @@ $('.deleteCategory').on('click', (event) => {
       },
     })
   }
-})
+}
 
 function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
   function updateCountdown() {
@@ -167,22 +165,15 @@ const initializeCategoriesDataTable = (data) => {
         searchable: false,
         render: (_, __, row) => {
           return `
-           <div class="d-flex">
-
-           <button
-           type="button"
-           class="btn"
-           data-toggle="modal"
-           data-target="#categoryModal"
-           data-value="${row.id}"
-         >
-           <i class="fas fa-edit" aria-hidden="true"></i>
-         </button>
-
-         <button type="button" class="btn deleteCategory" data-value="${row.id}">
-           <i class="fas fa-trash" aria-hidden="true"></i>
-         </button>             
-           </div>
+            <button
+            type="button"
+            class="btn"
+            data-toggle="modal"
+            data-target="#categoryModal"
+            data-value="${row.id}"
+          >
+            <i class="fas fa-edit" aria-hidden="true"></i>
+          </button>
          `
         },
       },
@@ -191,12 +182,9 @@ const initializeCategoriesDataTable = (data) => {
         searchable: false,
         render: (_, __, row) => {
           return `
-           <label class="switch">
-             <input data-value="${row.id}" class='liveCheckbox' type="checkbox" ${
-            row.live ? 'checked' : ''
-          }/>
-             <span class="slider round"></span>
-           </label>
+            <button type="button" onclick="deleteCategory('${row.id}')" class="btn btn-sm">
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>  
          `
         },
       },

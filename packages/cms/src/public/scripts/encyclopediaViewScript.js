@@ -447,7 +447,7 @@ const initializeDataTable = (result) => {
                >
                  <i class="fas fa-edit" aria-hidden="true"></i>
                </button>
-               <button type="button" onclick="deleteArticle('${row.id}')" class="deleteArticle btn btn-sm" data-value="${row.id}">
+               <button type="button" onclick="deleteArticle('${row.id}')" class="btn btn-sm">
                  <i class="fas fa-trash" aria-hidden="true"></i>
                </button>
            </div>

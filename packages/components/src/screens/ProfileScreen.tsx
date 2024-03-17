@@ -129,20 +129,7 @@ export function ProfileScreen({ navigation }) {
                         textStyle={styles.white}
                         onPress={() => {
                           setError(false)
-                          dispatch(
-                            actions.convertGuestAccount({
-                              id: currentUser.id,
-                              name: currentUser.name,
-                              dateOfBirth: currentUser.dateOfBirth,
-                              gender: currentUser.gender,
-                              location: currentUser.location,
-                              country: currentUser.country,
-                              province: currentUser.province,
-                              password: currentUser.password,
-                              secretQuestion: currentUser.secretQuestion,
-                              secretAnswer: currentUser.secretAnswer,
-                            }),
-                          )
+                          dispatch(actions.convertGuestAccount(currentUser))
                         }}
                       >
                         connect_account

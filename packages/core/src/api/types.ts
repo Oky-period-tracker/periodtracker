@@ -96,6 +96,13 @@ export interface LoginResponse {
     secretQuestion: string
     secretAnswer: string
     dateSignedUp: string
+    genderIdentity?: 'Oo' | 'Hindi' | 'Other'
+    isPwd?: string
+    accommodationRequirement?: string
+    religion?: string
+    encyclopediaVersion?: string
+    isProfileUpdateSkipped?: boolean
+    city?: string
   }
   store: {
     storeVersion: number
@@ -115,6 +122,13 @@ export interface SignupResponse {
     province: string
     secretQuestion: string
     secretAnswer: string
+    genderIdentity?: 'Oo' | 'Hindi' | 'Other'
+    isPwd?: string
+    accommodationRequirement?: string
+    religion?: string
+    encyclopediaVersion?: string
+    isProfileUpdateSkipped?: boolean
+    city?: string
   }
 }
 

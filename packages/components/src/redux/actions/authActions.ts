@@ -1,69 +1,16 @@
 import { createAction } from '../helpers'
+import { User } from '../reducers/authReducer'
 
 export function loginRequest({ name, password }) {
   return createAction('LOGIN_REQUEST', { name, password })
 }
 
-export function loginSuccess({
-  appToken,
-  user: {
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    secretQuestion,
-    secretAnswer,
-    dateSignedUp,
-  },
-}) {
-  return createAction('LOGIN_SUCCESS', {
-    appToken,
-    user: {
-      id,
-      name,
-      dateOfBirth,
-      gender,
-      location,
-      country,
-      province,
-      password,
-      secretQuestion,
-      secretAnswer,
-      dateSignedUp,
-    },
-  })
+export function loginSuccess(payload: { appToken?: string; user: User }) {
+  return createAction('LOGIN_SUCCESS', payload)
 }
 
-export function loginSuccessAsGuestAccount({
-  id,
-  name,
-  dateOfBirth,
-  gender,
-  location,
-  country,
-  province,
-  password,
-  secretQuestion,
-  secretAnswer,
-  dateSignedUp,
-}) {
-  return createAction('LOGIN_SUCCESS_AS_GUEST_ACCOUNT', {
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    secretQuestion,
-    secretAnswer,
-    dateSignedUp,
-  })
+export function loginSuccessAsGuestAccount(payload: User) {
+  return createAction('LOGIN_SUCCESS_AS_GUEST_ACCOUNT', payload)
 }
 
 export function loginFailure({ error }) {
@@ -78,30 +25,8 @@ export function logout() {
   return createAction('LOGOUT')
 }
 
-export function createAccountRequest({
-  id = null,
-  name,
-  dateOfBirth,
-  gender,
-  location,
-  country,
-  province,
-  password,
-  secretQuestion,
-  secretAnswer,
-}) {
-  return createAction('CREATE_ACCOUNT_REQUEST', {
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    secretQuestion,
-    secretAnswer,
-  })
+export function createAccountRequest(payload: User) {
+  return createAction('CREATE_ACCOUNT_REQUEST', payload)
 }
 export function deleteAccountRequest({ name, password, setLoading }) {
   return createAction('DELETE_ACCOUNT_REQUEST', {
@@ -111,88 +36,20 @@ export function deleteAccountRequest({ name, password, setLoading }) {
   })
 }
 
-export function createAccountSuccess({
-  appToken,
-  user: {
-    id,
-    name,
-    password,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    secretQuestion,
-    secretAnswer,
-    dateSignedUp,
-  },
-}) {
-  return createAction('CREATE_ACCOUNT_SUCCESS', {
-    appToken,
-    user: {
-      id,
-      name,
-      dateOfBirth,
-      gender,
-      location,
-      country,
-      province,
-      password,
-      secretQuestion,
-      secretAnswer,
-      dateSignedUp,
-    },
-  })
+export function createAccountSuccess(payload: { appToken?: string; user: User }) {
+  return createAction('CREATE_ACCOUNT_SUCCESS', payload)
 }
 
 export function createAccountFailure() {
   return createAction('CREATE_ACCOUNT_FAILURE')
 }
 
-export function convertGuestAccount({
-  id,
-  name,
-  dateOfBirth,
-  gender,
-  location,
-  country,
-  province,
-  password,
-  secretQuestion,
-  secretAnswer,
-}) {
-  return createAction('CONVERT_GUEST_ACCOUNT', {
-    id,
-    name,
-    password,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    secretQuestion,
-    secretAnswer,
-  })
+export function convertGuestAccount(payload: User) {
+  return createAction('CONVERT_GUEST_ACCOUNT', payload)
 }
 
-export function editUser({
-  name = null,
-  dateOfBirth = null,
-  gender = null,
-  location = null,
-  password = null,
-  secretQuestion = null,
-  secretAnswer = null,
-}) {
-  return createAction('EDIT_USER', {
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    password,
-    secretQuestion,
-    secretAnswer,
-  })
+export function editUser(payload: Partial<User>) {
+  return createAction('EDIT_USER', payload)
 }
 
 export function journeyCompletion({ data = null }) {

@@ -30,33 +30,7 @@ function* onRehydrate() {
 }
 
 function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUEST_ACCOUNT'>) {
-  const {
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    secretAnswer,
-    secretQuestion,
-  } = action.payload
-
-  yield put(
-    actions.createAccountRequest({
-      id,
-      name,
-      dateOfBirth,
-      gender,
-      location,
-      country,
-      province,
-      password,
-      secretAnswer,
-      secretQuestion,
-    }),
-  )
+  yield put(actions.createAccountRequest(action.payload))
 }
 
 function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
@@ -79,17 +53,9 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       actions.loginSuccess({
         appToken,
         user: {
-          id: user.id,
-          name,
-          dateOfBirth: user.dateOfBirth,
-          gender: user.gender,
-          location: user.location,
-          country: user.country,
-          province: user.province,
-          secretQuestion: user.secretQuestion,
-          secretAnswer: user.secretAnswer,
-          dateSignedUp: user.dateSignedUp,
+          ...user,
           password,
+          isGuest: false,
         },
       }),
     )
@@ -130,33 +96,13 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 
 function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACCOUNT_REQUEST'>) {
   const dateSignedUp = moment.utc().toISOString()
+  const { id, name, password } = action.payload
 
-  const {
-    id,
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    secretAnswer,
-    secretQuestion,
-  } = action.payload
   try {
     const { appToken, user }: Await<ReturnType<typeof httpClient.signup>> = yield httpClient.signup(
       {
-        name,
-        password,
-        dateOfBirth,
-        gender,
-        location,
-        country,
-        province,
-        secretAnswer,
-        secretQuestion,
+        ...action.payload,
         preferredId: id || null,
-        dateSignedUp,
       },
     )
     if (!appToken || !user || !user.id) {
@@ -167,17 +113,11 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
       actions.createAccountSuccess({
         appToken,
         user: {
-          id: user.id,
+          ...user,
           name,
-          dateOfBirth: user.dateOfBirth,
-          gender: user.gender,
-          location: user.location,
-          country: user.country,
-          province: user.province,
-          secretQuestion: user.secretQuestion,
-          secretAnswer: user.secretAnswer,
           password,
           dateSignedUp,
+          isGuest: false,
         },
       }),
     )
@@ -189,17 +129,9 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
 
     yield put(
       actions.loginSuccessAsGuestAccount({
+        ...action.payload,
         id: id || uuidv4(),
-        name,
-        dateOfBirth,
-        gender,
-        location,
-        country,
-        province,
-        password,
-        secretAnswer,
-        secretQuestion,
-        dateSignedUp,
+        isGuest: true,
       }),
     )
   }
@@ -211,17 +143,8 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
     actions.loginSuccess({
       appToken,
       user: {
-        id: user.id,
-        name: user.name,
-        dateOfBirth: user.dateOfBirth,
-        gender: user.gender,
-        location: user.location,
-        country: user.country,
-        province: user.province,
-        password: user.password,
-        secretQuestion: user.secretQuestion,
-        secretAnswer: user.secretAnswer,
-        dateSignedUp: user.dateSignedUp,
+        ...user,
+        isProfileUpdateSkipped: false,
       },
     }),
   )
@@ -288,6 +211,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
       // console.log( error);
     }
   }
+
   const stateToSet = PredictionState.fromData({
     isActive: data[0].answer === 'Yes' ? true : false,
     startDate: moment(data[1].answer, 'DD-MMM-YYYY'),

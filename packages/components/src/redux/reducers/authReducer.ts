@@ -17,12 +17,10 @@ export interface User {
   isGuest: boolean
   //
   genderIdentity?: string
-  isPwd?: string
   accommodationRequirement?: string
   religion?: string
   encyclopediaVersion?: string
   isProfileUpdateSkipped?: boolean
-  city?: string
 }
 
 export interface AuthState {

@@ -1,0 +1,21 @@
+export const customComponentsAssets = {
+  seeing: require('./images/btn-eye-clr.png'),
+  seeingGrey: require('./images/btn-eye-def.png'),
+  hearing: require('./images/btn-hear-clr.png'),
+  hearingGrey: require('./images/btn-ear-def.png'),
+  communication: require('./images/btn-communicate-clr.png'),
+  communicationGrey: require('./images/btn-communicate-def.png'),
+  cognition: require('./images/btn-brain.png'),
+  cognitionGrey: require('./images/btn-brain-def.png'),
+  self_care: require('./images/btn-soap-clr.png'),
+  self_careGrey: require('./images/btn-soap-def.png'),
+  no_difficulty: require('./images/btn-okay-hand.png'),
+  genderIdentity: {
+    Other: require('./images/btn-shh.png'),
+    OtherGrey: require('./images/btn-shh-def.png'),
+    Yes: require('./images/btn-rainbow.png'),
+    YesGrey: require('./images/btn-rainbow-def.png'),
+    No: require('./images/btn-smile.png'),
+    NoGrey: require('./images/btn-smile-def.png'),
+  },
+}

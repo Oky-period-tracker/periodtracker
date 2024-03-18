@@ -57,8 +57,7 @@ export function AskUserInformation({ step, heightInner }) {
     'other_religion',
   ]
 
-  type GenderIdentityOption = 'Yes' | 'No' | 'Other'
-  const genderIdentityOptions: GenderIdentityOption[] = ['Yes', 'No', 'Other']
+  const genderIdentityOptions = ['Yes', 'No', 'Other']
 
   React.useEffect(() => {
     let ignore = false

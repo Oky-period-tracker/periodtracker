@@ -97,12 +97,10 @@ export interface LoginResponse {
     secretAnswer: string
     dateSignedUp: string
     genderIdentity?: 'Yes' | 'No' | 'Other'
-    isPwd?: string
     accommodationRequirement?: string
     religion?: string
     encyclopediaVersion?: string
     isProfileUpdateSkipped?: boolean
-    city?: string
   }
   store: {
     storeVersion: number
@@ -123,12 +121,10 @@ export interface SignupResponse {
     secretQuestion: string
     secretAnswer: string
     genderIdentity?: 'Yes' | 'No' | 'Other'
-    isPwd?: string
     accommodationRequirement?: string
     religion?: string
     encyclopediaVersion?: string
     isProfileUpdateSkipped?: boolean
-    city?: string
   }
 }
 

@@ -52,11 +52,9 @@ const defaultState: SignUpState = {
   dateOfBirth: '',
   //
   genderIdentity: null,
-  isPwd: 'No',
   accommodationRequirement: null,
   religion: 'undisclosed_religion',
   encyclopediaVersion: 'No',
-  city: '',
 }
 
 const initialState = FAST_SIGN_UP ? fastSignUpInitialState : defaultState

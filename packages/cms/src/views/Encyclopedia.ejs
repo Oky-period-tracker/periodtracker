@@ -13,39 +13,29 @@
     <%- currentUser.lang %>
     <div class="homeTopTextContainer">
       <h2 style="margin-right: 10;"><%= __('Encyclopedia')%></h2>      
-      <form class="form-inline">
-        <div class="input-group" style="position: relative;">
-          <input type="text" class="form-control" id="filterInput" style="padding-right: 30px;">
-          <button type="button" class="close" id="clearFilter">
-              <span aria-hidden="true">×</span>
-          </button>
-          <div class="input-group-append">
-            <button type="submit" class="btn btn-primary" id="filterButton" style="margin-left: 0;"><%= __('Filter')%></button>
-          </div>
-        </div>
-      </form>
+
       <button
         type="button"
         class="btn btn-primary"
-        id="dateSort"
-      >
-        <%= __('Sort by Date') %>
-      </button>
-      <button
-        type="button"
-        class="btn btn-primary"
-        onclick="location.href='/catsubcat-management';"
+        onclick="location.href='/categories-management';"
       >
       <%= __('Category Management') %>
       </button>
       <button
       type="button"
       class="btn btn-primary"
-      onclick="location.href='/video-management';"
-
+      onclick="location.href='/subcategories-management';"
     >
-    <%= __('Video Management') %>
+    <%= __('Subcategory Management') %>
     </button>
+    <button
+    type="button"
+    class="btn btn-primary"
+    onclick="location.href='/video-management';"
+
+  >
+  <%= __('Video Management') %>
+  </button>
       <button
         type="button"
         class="btn btn-primary"
@@ -57,58 +47,23 @@
       </button>
 
     </div>
-    <div class="homeTableContainer">
-      <table class="table table-striped table-borderless tableFixHead table-responsive">
-        <thead>
+    <div class="articleContainer">
+      <table id="articleTable" class="table">
+      <thead>
           <tr>
-            <th style="width: 15%" class="pointer" id="categoryTag"><%= __('Category Tag') %></th>
-            <th style="width: 15%" class="pointer" id="subCategoryTag"><%= __('Subcategory Tag') %></th>
-            <th style="width: 15%"><%= __('Article Heading') %></th>
-            <th style="width: 50%"><%= __('Article Text') %></th>
-            <th style="width: 2.5%"><%= __('Edit') %></th>
-            <th style="width: 2.5%"><%= __('Delete') %></th>
-            <th style="width: 2.5%"><%= __('Live') %></th>
+              <th style="width: 2.5%" id="order"><%= __('Order')%></th>
+              <th style="width: 5%"><%= __('Category Tag')%></th>
+              <th style="width: 5%"><%= __('Subcategory Tag')%></th>
+              <th style="width: 20%" ><%= __('Article Heading')%></th>
+              <th style="width: 50%" ><%= __('Article Text')%></th>
+              <th style="width: 50%" ><%= __('Date')%></th>
+              <th style="width: 2.5%"><%= __('Edit')%></th>
+              <th style="width: 2.5%"><%= __('Delete')%></th>
+              <th style="width: 2.5%"><%= __('Live')%></th>
           </tr>
-        </thead>
-        <tbody style="overflow-y: scroll" id="articles">
-          <% articles.forEach((article) =>{ %>
-          <tr>
-            <td><%= article.category_title %></td>
-            <td><%= article.subcategory_title %></td>
-            <td><%= article.article_heading %></td>
-            <td><%= article.article_text %></td>
-            <td>
-              <button
-                type="button"
-                class="btn"
-                data-toggle="modal"
-                data-target="#articleModal"
-                data-value="<%= article.id %>"
-              >
-              <i class="fas fa-edit" aria-hidden="true"></i>
-              </button>
-            </td>
-            <td>
-              <button type="button" class="btn deleteArticle" data-value="<%= article.id %>">
-                <i class="fas fa-trash" aria-hidden="true"></i>
-              </button>
-            </td>
-            <td>
-              <label class="switch">
-                <input data-value="<%= article.id %>" class='liveCheckbox' type="checkbox" 
-                <%if(article.live) {%>
-                  checked
-                <% }%>
-                />
-                <span class="slider round"></span>
-              </label>
-            </td>
-            <td hidden><%= article.date_created %></td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
-    </div>
+      </thead>
+    </table>
+  </div>
   </div>
   <span id="articlesJSON" hidden><%= JSON.stringify(articles); %> </span>
   <span id="categoriesJSON" hidden><%= JSON.stringify(categories); %> </span>

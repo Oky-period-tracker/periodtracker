@@ -196,5 +196,9 @@
   "Asset name": "Nombre del activo",
   "Videos": "Videos",
   "Add Video": "Añadir video",
-  "app_release_date": "Fecha de lanzamiento de la aplicación"
+  "app_release_date": "Fecha de lanzamiento de la aplicación",
+  "Order": "Orden",
+  "Subcategory Management": "Gestión por subcategorías",
+  "Subcategories": "Subcategorías",
+  "Categories": "Categorías"
 }

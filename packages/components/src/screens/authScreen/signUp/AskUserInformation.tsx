@@ -3,7 +3,6 @@ import { Animated, ScrollView } from 'react-native'
 import styled from 'styled-components/native'
 import { Text, TextWithoutTranslation } from '../../../components/common/Text'
 import { TextInput } from '../../../components/common/TextInput'
-import { VerticalSelectBox } from '../../../components/common/VerticalSelectBox'
 import { SignUpFormLayout } from './SignUpFormLayout'
 import { useMultiStepForm, formActions } from '../../../components/common/MultiStepForm'
 import { httpClient } from '../../../services/HttpClient'
@@ -11,10 +10,9 @@ import { useDebounce } from '../../../hooks/useDebounce'
 import { formHeights } from './FormHeights'
 import { translate } from '../../../i18n'
 import { SegmentControl } from '../../../components/common/SegmentControl'
-import { AccommodationRequirementSelectItem } from '../../../components/common/AccommodationRequirementSelectItem'
-import { BodyFontSize, SubTitleFontSize } from '../../../fonts/fontsGlobal'
+import { SubTitleFontSize } from '../../../fonts/fontsGlobal'
 import { AppAssets } from '@oky/core'
-import { GenderIdentitySelectItem } from '../../../components/common/GenderIdentitySelectItem'
+import { CustomSignUp } from '../../../optional/CustomComponents'
 
 export function AskUserInformation({ step, heightInner }) {
   const scrollViewRef = React.useRef(null)
@@ -26,38 +24,8 @@ export function AskUserInformation({ step, heightInner }) {
   const minNameLength = 3
   const [usernameError, setUsernameError] = React.useState(false)
   const [passcodeMatchError, setPasscodeMatchError] = React.useState(false)
-  const {
-    name,
-    password,
-    passwordConfirm,
-    gender,
-    genderIdentity,
-    isPwd,
-    accommodationRequirement,
-    encyclopediaVersion,
-    religion,
-  } = state
+  const { name, password, passwordConfirm, gender } = state
   const [debouncedName] = useDebounce(name, 500) // to stop fast typing calls
-
-  const disabilityQs = [
-    'seeing',
-    'hearing',
-    'mobility',
-    'self_care',
-    'communication',
-    'no_difficulty',
-  ]
-
-  const religionOptions = [
-    'undisclosed_religion',
-    'catholic',
-    'islam',
-    'born_again_christian',
-    'iglesia_ni_cristo',
-    'other_religion',
-  ]
-
-  const genderIdentityOptions = ['Yes', 'No', 'Other']
 
   React.useEffect(() => {
     let ignore = false
@@ -171,94 +139,7 @@ export function AskUserInformation({ step, heightInner }) {
             })}
           </Row>
 
-          <GenderIdentityText>your_gender_identity</GenderIdentityText>
-          <Row>
-            {genderIdentityOptions.map((value) => {
-              return (
-                <GenderIdentitySelectItem
-                  key={value}
-                  genderIdentity={value}
-                  isActive={genderIdentity === value}
-                  onPress={() =>
-                    dispatch({ type: 'change-form-data', inputName: 'genderIdentity', value })
-                  }
-                />
-              )
-            })}
-          </Row>
-
-          <DisabilityText>disability_question</DisabilityText>
-
-          <Column>
-            {disabilityQs.map((value) => (
-              <AccommodationRequirementSelectItem
-                key={value}
-                accommodationRequirement={value}
-                isActive={accommodationRequirement === value}
-                onPress={() =>
-                  dispatch({
-                    type: 'change-form-data',
-                    inputName: 'accommodationRequirement',
-                    value,
-                  })
-                }
-              />
-            ))}
-          </Column>
-
-          <ReligionText>religion_question</ReligionText>
-          <VerticalSelectBox
-            items={religionOptions.map((option) => (option ? option : ''))}
-            containerStyle={{
-              height: 45,
-              borderRadius: 22.5,
-            }}
-            height={45}
-            maxLength={20}
-            buttonStyle={{ right: 5, bottom: 7 }}
-            onValueChange={(value) => {
-              dispatch({ type: 'change-form-data', inputName: 'religion', value })
-
-              if (value === 'islam') {
-                dispatch({
-                  type: 'change-form-data',
-                  inputName: 'encyclopediaVersion',
-                  value: 'Yes',
-                })
-              } else {
-                dispatch({
-                  type: 'change-form-data',
-                  inputName: 'encyclopediaVersion',
-                  value: 'No',
-                })
-              }
-            }}
-            hasError={true} // this is to permanently display the i button
-            errorHeading="religion_perspective_heading"
-            errorContent="religion_perspective_content"
-          />
-
-          {religion !== 'islam' && religion === 'undisclosed_religion' && (
-            <>
-              <EncyclopediaVersionText>encyclopedia_version_question</EncyclopediaVersionText>
-              <VerticalSelectBox
-                items={['No', 'Yes'].map((option) => (option ? option : ''))}
-                containerStyle={{
-                  height: 45,
-                  borderRadius: 22.5,
-                }}
-                height={45}
-                maxLength={20}
-                buttonStyle={{ right: 5, bottom: 7 }}
-                onValueChange={(value) =>
-                  dispatch({ type: 'change-form-data', inputName: 'encyclopediaVersion', value })
-                }
-                hasError={encyclopediaVersion === 'Yes'}
-                errorHeading="islamic_perspective_heading"
-                errorContent="islamic_perspective_content"
-              />
-            </>
-          )}
+          <CustomSignUp dispatch={dispatch} state={state} />
 
           <TextInput
             onChange={(value) =>
@@ -295,13 +176,6 @@ export function AskUserInformation({ step, heightInner }) {
   )
 }
 
-const Column = styled.View`
-  width: 80%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  margin-bottom: 10px;
-`
 const Row = styled.View`
   width: 80%;
   flex-direction: row;
@@ -328,39 +202,4 @@ const ErrorMessage = styled(TextWithoutTranslation)`
   font-size: 12
   margin-top: 10px;
   color: red;
-`
-
-const GenderIdentityText = styled(Text)`
-  font-family: Roboto-Regular;
-  font-size: ${SubTitleFontSize};
-  margin-bottom: 10px;
-  margin-top: 20px;
-  color: #28b9cb;
-  text-align: center;
-`
-
-const DisabilityText = styled(Text)`
-  font-family: Roboto-Regular;
-  font-size: ${SubTitleFontSize};
-  margin-bottom: 10px;
-  margin-top: 20px;
-  color: #28b9cb;
-  text-align: center;
-`
-
-const ReligionText = styled(Text)`
-  font-family: Roboto-Regular;
-  font-size: ${SubTitleFontSize};
-  margin-bottom: 10px;
-  margin-top: 20px;
-  color: #28b9cb;
-`
-
-const EncyclopediaVersionText = styled(Text)`
-  font-family: Roboto-Regular;
-  font-size: ${BodyFontSize};
-  margin-bottom: 10px;
-  margin-top: 40px;
-  color: #28b9cb;
-  text-align: center;
 `

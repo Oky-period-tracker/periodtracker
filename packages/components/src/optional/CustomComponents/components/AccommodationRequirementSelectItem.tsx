@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { assets } from '../../assets/index'
-import { BodyFontSize } from '../../fonts/fontsGlobal'
+import { assets } from '../../../assets/index'
+import { BodyFontSize } from '../../../fonts/fontsGlobal'
 import { View, Text } from 'react-native'
-import { translate } from '../../i18n'
+import { translate } from '../../../i18n'
 
 export const AccommodationRequirementSelectItem = ({
   accommodationRequirement,

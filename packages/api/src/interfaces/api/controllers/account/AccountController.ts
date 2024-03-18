@@ -51,6 +51,10 @@ export class AccountController {
       secretQuestion,
       secretAnswer,
       dateSignedUp,
+      genderIdentity,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
     }: SignupRequest,
   ) {
     if (country === null || country === '00') {
@@ -71,6 +75,10 @@ export class AccountController {
       secretAnswer,
       dateSignedUp,
       dateAccountSaved: new Date().toISOString(),
+      genderIdentity,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
     })
 
     return this.signTokenResponse(user)

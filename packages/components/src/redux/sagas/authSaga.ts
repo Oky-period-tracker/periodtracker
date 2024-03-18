@@ -144,7 +144,6 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
       appToken,
       user: {
         ...user,
-        isProfileUpdateSkipped: false,
       },
     }),
   )

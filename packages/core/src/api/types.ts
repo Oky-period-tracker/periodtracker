@@ -96,11 +96,11 @@ export interface LoginResponse {
     secretQuestion: string
     secretAnswer: string
     dateSignedUp: string
-    genderIdentity?: 'Yes' | 'No' | 'Other'
+    // Optional
+    genderIdentity?: string
     accommodationRequirement?: string
     religion?: string
     encyclopediaVersion?: string
-    isProfileUpdateSkipped?: boolean
   }
   store: {
     storeVersion: number
@@ -120,11 +120,11 @@ export interface SignupResponse {
     province: string
     secretQuestion: string
     secretAnswer: string
-    genderIdentity?: 'Yes' | 'No' | 'Other'
+    // Optional
+    genderIdentity?: string
     accommodationRequirement?: string
     religion?: string
     encyclopediaVersion?: string
-    isProfileUpdateSkipped?: boolean
   }
 }
 

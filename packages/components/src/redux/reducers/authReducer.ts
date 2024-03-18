@@ -15,12 +15,11 @@ export interface User {
   secretAnswer: string
   dateSignedUp: string
   isGuest: boolean
-  //
+  // Optional
   genderIdentity?: string
   accommodationRequirement?: string
   religion?: string
   encyclopediaVersion?: string
-  isProfileUpdateSkipped?: boolean
 }
 
 export interface AuthState {

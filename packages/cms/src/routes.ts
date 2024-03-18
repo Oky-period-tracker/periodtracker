@@ -59,9 +59,15 @@ export const Routes = [
   },
   {
     method: 'get',
-    route: '/catsubcat-management',
+    route: '/categories-management',
     controller: RenderController,
-    action: 'renderCatSubcatManagement',
+    action: 'renderCategoriesManagement',
+  },
+  {
+    method: 'get',
+    route: '/subcategories-management',
+    controller: RenderController,
+    action: 'renderSubcategoriesManagement',
   },
   {
     method: 'get',
@@ -186,6 +192,12 @@ export const Routes = [
     controller: ArticleController,
     action: 'remove',
   },
+  {
+    method: 'put',
+    route: '/articles',
+    controller: ArticleController,
+    action: 'reorderRows',
+  },
   // ------------ Videos Api ----------------
   {
     method: 'get',
@@ -248,6 +260,12 @@ export const Routes = [
     controller: CategoryController,
     action: 'remove',
   },
+  {
+    method: 'put',
+    route: '/categories',
+    controller: CategoryController,
+    action: 'reorderRows',
+  },
   // ------------ Subcategories Api ----------------
   {
     method: 'get',
@@ -278,6 +296,12 @@ export const Routes = [
     route: '/subcategories/:id',
     controller: SubcategoryController,
     action: 'remove',
+  },
+  {
+    method: 'put',
+    route: '/subcategories',
+    controller: SubcategoryController,
+    action: 'reorderRows',
   },
   // ------------ Quizzes Api ----------------
   {

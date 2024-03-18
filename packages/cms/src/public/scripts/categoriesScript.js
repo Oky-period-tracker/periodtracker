@@ -1,4 +1,4 @@
-$('#categoryModal').on('show.bs.modal', event => {
+$('#categoryModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var categoryId = button.data('value') // Extract info from data-* attributes
   $('#errorCat1').hide()
@@ -14,7 +14,7 @@ $('#categoryModal').on('show.bs.modal', event => {
     return
   }
   var categories = JSON.parse($('#categoriesJSON').text())
-  var categoryInfo = categories.find(item => {
+  var categoryInfo = categories.find((item) => {
     return item.id === categoryId
   })
 
@@ -23,30 +23,6 @@ $('#categoryModal').on('show.bs.modal', event => {
   $('#colCategory1TableModal').val(categoryInfo.primary_emoji_name)
   $('#colCategory2TableModal').val(categoryInfo.primary_emoji)
   $('#itemID').text(categoryId)
-})
-
-$('#subcategoryModal').on('show.bs.modal', event => {
-  var button = $(event.relatedTarget) // Button that triggered the modal
-  var subcategoryId = button.data('value') // Extract info from data-* attributes
-  $('#errorSubcat1').hide()
-  $('#errorSubcat2').hide()
-  $('#errorSubcatUniq1').hide();
-  if (subcategoryId === 0) {
-    $('.modal-title').text('Insert New Sub Category')
-    $('#colSubcategory0TableModal').val('')
-    $('#colSubcategory1TableModal').val('')
-    $('#itemID').text(0)
-    return
-  }
-  var subcategories = JSON.parse($('#subcategoriesJSON').text())
-  var subcategoryInfo = subcategories.find(item => {
-    return item.id === subcategoryId
-  })
-
-  $('.modal-title').text(subcategoryInfo.title)
-  $('#colSubcategory0TableModal').val(subcategoryInfo.title)
-  $('#colSubcategory1TableModal').val(subcategoryInfo.parent_category_id)
-  $('#itemID').text(subcategoryId)
 })
 
 $('#btnCategoryConfirm').on('click', () => {
@@ -73,85 +49,38 @@ $('#btnCategoryConfirm').on('click', () => {
     url: '/categories' + (categoryId === '0' ? '' : '/' + categoryId),
     type: categoryId === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
-      if (result.duplicate){
-        if (result.category.title == result.body.title) $('#errorCatuniq1').css('display', 'block');
-        if (result.category.primary_emoji_name == result.body.primary_emoji_name) $('#errorCatuniq2').css('display', 'block');
-        if (result.category.primary_emoji == result.body.primary_emoji) $('#errorCatuniq3').css('display', 'block');
+    success: (result) => {
+      if (result.duplicate) {
+        if (result.category.title == result.body.title) $('#errorCatuniq1').css('display', 'block')
+        if (result.category.primary_emoji_name == result.body.primary_emoji_name)
+          $('#errorCatuniq2').css('display', 'block')
+        if (result.category.primary_emoji == result.body.primary_emoji)
+          $('#errorCatuniq3').css('display', 'block')
         return false
       }
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
 })
 
-$('#btnSubcategoryConfirm').on('click', () => {
-  const subcategoryId = $('#itemID').text()
-  const data = {
-    title: $('#colSubcategory0TableModal').val(),
-    parent_category: $('#colSubcategory1TableModal').val(),
-  }
-  if (data.title === '' || data.title.length >= 40 || data.parent_category === '') {
-    $('#errorSubcat1').show()
-    $('#errorSubcat2').show()
-    return
-  }
-  // if the article ID is 0 we are creating a new entry
-  $.ajax({
-    url: '/subcategories' + (subcategoryId === '0' ? '' : '/' + subcategoryId),
-    type: subcategoryId === '0' ? 'POST' : 'PUT',
-    data: data,
-    success: result => {
-      if (result.duplicate){
-        $('#errorSubcatUniq1').css('display', 'block');
-        return false
-      }
-      location.reload()
-    },
-    error: error => {
-      console.log(error)
-    },
-  })
-})
-
-$('.deleteCategory').on('click', event => {
-  var button = $(event.currentTarget) // currentTarget is the outer
-  var categoryId = button.data('value') // Extract info from data-* attributes
+function deleteCategory(categoryId) {
   var result = confirm('Are you sure? This will permanently delete the item')
   if (result) {
     $.ajax({
       url: '/categories/' + categoryId,
       type: 'DELETE',
-      success: result => {
+      success: (result) => {
         location.reload()
       },
-      error: error => {
+      error: (error) => {
         console.log(error)
       },
     })
   }
-})
-
-$('.deleteSubcategory').on('click', event => {
-  var button = $(event.currentTarget) // currentTarget is the outer
-  var subcategoryId = button.data('value') // Extract info from data-* attributes
-  var result = confirm('Are you sure? This will permanently delete the item')
-  if (result) {
-    $.ajax({
-      url: '/subcategories/' + subcategoryId,
-      type: 'DELETE',
-      success: result => {
-        location.reload()
-      },
-      error: error => {
-        console.log(error)
-      },
-    })
-  }
-})
+}
 
 function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
   function updateCountdown() {
@@ -159,7 +88,7 @@ function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
     countdownElement.text(remaining + ' characters remaining.')
   }
 
-  $(document).ready(function($) {
+  $(document).ready(function ($) {
     updateCountdown()
     tableElement.change(updateCountdown)
     tableElement.keyup(updateCountdown)
@@ -178,8 +107,135 @@ makeUpdateCountdown({
   maxLength: 25,
 })
 
-makeUpdateCountdown({
-  countdownElement: $('#countdown3'),
-  tableElement: $('#colSubcategory0TableModal'),
-  maxLength: 40,
+$(document).ready(() => {
+  const categories = JSON.parse($('#categoriesJSON').html())
+  initializeCategoriesDataTable(categories)
 })
+
+var categoryRowReorderResult = null
+
+const initializeCategoriesDataTable = (data) => {
+  const columns = [
+    { data: 'sortingKey' },
+    {
+      data: 'title',
+      render: (_, __, rowPayload) => {
+        return rowPayload.title
+      },
+    },
+    {
+      data: 'primary_emoji_name',
+      render: (_, __, rowPayload) => {
+        return rowPayload.primary_emoji_name
+      },
+    },
+    {
+      data: 'primary_emoji',
+      render: (_, __, rowPayload) => {
+        return rowPayload.primary_emoji
+      },
+    },
+  ]
+
+  const table = $('#categoryTable').DataTable({
+    columns,
+    data,
+    orderCellsTop: true,
+    fixedHeader: true,
+    autoWidth: false,
+    rowReorder: {
+      dataSrc: 'sortingKey',
+    },
+    lengthMenu: [25, 50, 75, 100, 200],
+    initComplete: function () {
+      var api = this.api()
+
+      api.columns().eq(0)
+    },
+    columnDefs: [
+      {
+        orderable: false,
+        searchable: false,
+        sortable: false,
+        className: 'reorder',
+        targets: 0,
+      },
+      {
+        targets: columns.length, //column number in array
+        searchable: false,
+        render: (_, __, row) => {
+          return `
+            <button
+            type="button"
+            class="btn"
+            data-toggle="modal"
+            data-target="#categoryModal"
+            data-value="${row.id}"
+          >
+            <i class="fas fa-edit" aria-hidden="true"></i>
+          </button>
+         `
+        },
+      },
+      {
+        targets: columns.length + 1, //column number in array
+        searchable: false,
+        render: (_, __, row) => {
+          return `
+            <button type="button" onclick="deleteCategory('${row.id}')" class="btn btn-sm">
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>  
+         `
+        },
+      },
+    ],
+  })
+
+  table.on('row-reorder', function (e, diff, edit) {
+    let result = `
+      Reorder started on row: 
+        <span class="text-warning">
+        ${edit.triggerRow.data().sortingKey} - ${edit.triggerRow.data().title} 
+        </span>
+      <br />`
+
+    for (var i = 0, ien = diff.length; i < ien; i++) {
+      var rowData = table.row(diff[i].node).data()
+      diff[i].toUpdate = rowData
+      result += `
+        <span class="text-success">
+          ${rowData.title} 
+        </span>
+        updated to be in position
+        <span class="text-success"> 
+          ${diff[i].newData} 
+        </span>
+        <span class="text-warning"> 
+          (was ${diff[i].oldData})
+        </span>
+        <br />
+        `
+    }
+    categoryRowReorderResult = diff.map((d) => d.toUpdate)
+    $('#categoryRowReorderModal').modal({ show: true })
+    $('#categoryRowReorderConfirmationBody').html(result)
+  })
+}
+
+const saveCategoryReorder = (isSave) => {
+  if (!isSave) {
+    location.reload()
+  }
+
+  $.ajax({
+    url: '/categories',
+    type: 'PUT',
+    data: { rowReorderResult: categoryRowReorderResult },
+    success: (result) => {
+      location.reload()
+    },
+    error: (error) => {
+      console.log(error)
+    },
+  })
+}

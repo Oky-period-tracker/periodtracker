@@ -42,4 +42,9 @@ export class SignupRequest {
   public readonly secretAnswer: string
 
   public readonly dateSignedUp: string
+
+  public readonly genderIdentity: string
+  public readonly accommodationRequirement: string
+  public readonly religion: string
+  public readonly encyclopediaVersion: string
 }

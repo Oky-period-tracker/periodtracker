@@ -96,7 +96,7 @@ export interface LoginResponse {
     secretQuestion: string
     secretAnswer: string
     dateSignedUp: string
-    genderIdentity?: 'Oo' | 'Hindi' | 'Other'
+    genderIdentity?: 'Yes' | 'No' | 'Other'
     isPwd?: string
     accommodationRequirement?: string
     religion?: string
@@ -122,7 +122,7 @@ export interface SignupResponse {
     province: string
     secretQuestion: string
     secretAnswer: string
-    genderIdentity?: 'Oo' | 'Hindi' | 'Other'
+    genderIdentity?: 'Yes' | 'No' | 'Other'
     isPwd?: string
     accommodationRequirement?: string
     religion?: string

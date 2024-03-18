@@ -16,7 +16,7 @@ git submodule add $delete_account_url $delete_account_path
 
 # Optional modules
 [ -n "$flower_url" ] && git submodule add $flower_url $flower_path
-
+[ -n "$custom_components_url" ] && git submodule add $custom_components_url $custom_components_path
 
 # Use the latest commits
 git submodule update --remote

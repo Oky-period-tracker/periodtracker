@@ -10,3 +10,4 @@ delete_account_path="packages/delete-account"
 
 # Optional
 flower_path="packages/components/src/optional/Flower"
+custom_components_path="packages/components/src/optional/CustomComponents"

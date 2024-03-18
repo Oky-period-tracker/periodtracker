@@ -9,7 +9,7 @@ interface OkyUserProps {
   id: string
   name: HashedName
   dateOfBirth: Date
-  gender: 'Female' | 'Male' | 'Other'
+  gender?: 'Female' | 'Male' | 'Other'
   location: string
   country: string
   province: string
@@ -17,6 +17,11 @@ interface OkyUserProps {
   memorable: MemorableQuestion
   dateSignedUp: string
   dateAccountSaved: string
+  // Optional
+  genderIdentity?: string
+  accommodationRequirement?: string
+  religion?: string
+  encyclopediaVersion?: string
 }
 
 @Entity()
@@ -30,7 +35,7 @@ export class OkyUser {
   @Column({ name: 'date_of_birth' })
   private dateOfBirth: Date
 
-  @Column({ name: 'gender' })
+  @Column({ name: 'gender', nullable: true })
   private gender: string
 
   @Column({ name: 'location' })
@@ -60,6 +65,18 @@ export class OkyUser {
   @Column({ name: 'date_account_saved' })
   private dateAccountSaved: string
 
+  @Column({ name: 'genderIdentity', nullable: true })
+  private genderIdentity: string
+
+  @Column({ name: 'accommodationRequirement', nullable: true })
+  private accommodationRequirement?: string
+
+  @Column({ name: 'religion' })
+  private religion: string
+
+  @Column({ name: 'encyclopediaVersion' })
+  private encyclopediaVersion: string
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -73,6 +90,10 @@ export class OkyUser {
         password,
         memorable,
         dateSignedUp,
+        genderIdentity,
+        accommodationRequirement,
+        religion,
+        encyclopediaVersion,
       } = props
 
       this.id = id
@@ -86,6 +107,10 @@ export class OkyUser {
       this.memorable = memorable
       this.store = null
       this.dateSignedUp = dateSignedUp
+      this.genderIdentity = genderIdentity
+      this.accommodationRequirement = accommodationRequirement
+      this.religion = religion
+      this.encyclopediaVersion = encyclopediaVersion
     }
   }
 
@@ -102,6 +127,10 @@ export class OkyUser {
     secretAnswer,
     dateSignedUp,
     dateAccountSaved,
+    genderIdentity,
+    accommodationRequirement,
+    religion,
+    encyclopediaVersion,
   }: {
     id: string
     name: string
@@ -115,6 +144,11 @@ export class OkyUser {
     secretAnswer: string
     dateSignedUp: string
     dateAccountSaved: string
+    // Optional
+    genderIdentity?: string
+    accommodationRequirement?: string
+    religion?: string
+    encyclopediaVersion?: string
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -140,6 +174,10 @@ export class OkyUser {
       memorable,
       dateSignedUp,
       dateAccountSaved,
+      genderIdentity,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
     })
   }
 
@@ -156,12 +194,21 @@ export class OkyUser {
     gender,
     location,
     secretQuestion,
+    genderIdentity,
+    accommodationRequirement,
+    religion,
+    encyclopediaVersion,
   }: {
     name: string
     dateOfBirth: Date
     gender: 'Male' | 'Female' | 'Other'
     location: string
     secretQuestion: string
+    // Optional
+    genderIdentity?: string
+    accommodationRequirement?: string
+    religion?: string
+    encyclopediaVersion?: string
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -173,6 +220,10 @@ export class OkyUser {
     this.gender = gender
     this.location = location
     this.memorable = await this.memorable.changeQuestion(secretQuestion)
+    this.genderIdentity = genderIdentity
+    this.accommodationRequirement = accommodationRequirement
+    this.religion = religion
+    this.encyclopediaVersion = encyclopediaVersion
   }
 
   public async editSecretAnswer(previousSecretAnswer: string, nextSecretAnswer: string) {
@@ -215,6 +266,7 @@ export class OkyUser {
   public getLocation() {
     return this.location
   }
+
   public getCountry() {
     return this.country
   }
@@ -227,6 +279,10 @@ export class OkyUser {
     return this.memorable.secretQuestion
   }
 
+  public getDateSignedUp() {
+    return this.dateSignedUp
+  }
+
   public getHashedMemorableAnswer() {
     return this.memorable.secretAnswerHashed
   }
@@ -235,7 +291,19 @@ export class OkyUser {
     return this.store
   }
 
-  public getDateSignedUp() {
-    return this.dateSignedUp
+  public getGenderIdentity() {
+    return this.genderIdentity
+  }
+
+  public getAccommodationRequirement() {
+    return this.accommodationRequirement
+  }
+
+  public getReligion() {
+    return this.religion
+  }
+
+  public getEncyclopediaVersion() {
+    return this.encyclopediaVersion
   }
 }

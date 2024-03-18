@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { assets } from '../../assets/index'
-import { translate } from '../../i18n'
+import { assets } from '../../../assets/index'
+import { translate } from '../../../i18n'
 
 export const GenderIdentitySelectItem = ({ genderIdentity, onPress, isActive = false }) => {
   const opacity = 0.4 + Number(isActive) * 0.6

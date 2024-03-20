@@ -41,7 +41,6 @@ export class PrivacyPolicyController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     const aboutToRemove = await this.privacyPolicyRepository.findOne(request.params.id)
-    console.log(aboutToRemove)
     await this.privacyPolicyRepository.remove(aboutToRemove)
     return aboutToRemove
   }

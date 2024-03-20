@@ -869,7 +869,6 @@ const generateSingleTabSheetFromArray = (data, tabName, maxColumns = 3) => {
   }
 
   const headers = [...Object.entries(data[0]).map((item) => item[0])]
-  console.log(headers)
   const dataArray = data.map((item) => [...Object.values(item)])
   const sheetArray = [headers, ...dataArray]
 

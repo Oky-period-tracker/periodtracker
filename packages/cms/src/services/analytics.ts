@@ -193,7 +193,8 @@ export const analyticsQueries = {
     COUNT(*) AS total_view_count,
     COUNT(DISTINCT app_event.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
-    COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
+    COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count,
+    c.lang AS category_lang
   FROM ${schema}.category c
   LEFT JOIN ${schema}.app_event
     ON app_event.type = 'CATEGORY_VIEWED' AND TRIM(BOTH ' ' FROM c.id::text)::uuid = TRIM(BOTH ' ' FROM app_event.payload->>'categoryId'::text)::uuid
@@ -211,7 +212,8 @@ export const analyticsQueries = {
     COUNT(*) AS total_view_count,
     COUNT(DISTINCT app_event.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
-    COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count
+    COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count,
+    s.lang AS subcategory_lang
   FROM ${schema}.subcategory s
   LEFT JOIN ${schema}.app_event
     ON app_event.type = 'SUBCATEGORY_VIEWED' AND TRIM(BOTH ' ' FROM s.id::text)::uuid = TRIM(BOTH ' ' FROM app_event.payload->>'subCategoryId'::text)::uuid

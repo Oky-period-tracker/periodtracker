@@ -236,6 +236,7 @@ export class RenderController {
         activeUsersPercentage: calculatePercentage(category.unique_user_count, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(category.unique_user_count, totalUsers),
         viewsPercentage: calculatePercentage(category.total_view_count, totalCategoryViews),
+        lang: category.category_lang,
       }
     })
 
@@ -249,6 +250,7 @@ export class RenderController {
         activeUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalUsers),
         viewsPercentage: calculatePercentage(subCategory.total_view_count, totalSubCategoryViews),
+        lang: subCategory.subcategory_lang,
       }
     })
 

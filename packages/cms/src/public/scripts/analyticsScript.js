@@ -153,6 +153,7 @@ $('#downloadCSV').on('click', () => {
       '% of total active users',
       '% of total users',
       '% of total views',
+      'Language',
     ],
     ...encyclopediaUse,
     [''],

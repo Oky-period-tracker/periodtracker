@@ -283,25 +283,6 @@ export class RenderController {
     this.render(response, 'Category', { categories, subcategories })
   }
 
-  async renderSubcategoriesManagement(request: Request, response: Response, next: NextFunction) {
-    const categories = await this.categoryRepository.find({
-      where: { lang: request.user.lang },
-      order: { sortingKey: 'ASC' },
-    })
-
-    const subcategories = await this.subcategoryRepository.query(
-      `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id, sc."sortingKey"
-      FROM ${env.db.schema}.subcategory sc
-      INNER JOIN ${env.db.schema}.category ca
-      ON sc.parent_category = ca.id::varchar
-      WHERE sc.lang = $1
-      ORDER BY sc."sortingKey" ASC
-      `,
-      [request.user.lang],
-    )
-    this.render(response, 'Subcategories', { categories, subcategories })
-  }
-
   async renderSubcategoryManagement(request: Request, response: Response, next: NextFunction) {
     const subcategories = await this.subcategoryRepository.find({
       where: { id: request.params.id },

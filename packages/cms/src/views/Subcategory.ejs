@@ -17,6 +17,16 @@
       </a>
       <h2><%= subcategories[0]?.title%></h2> 
 
+      <button
+      type="button"
+      class="btn btn-primary"
+      data-toggle="modal"
+      data-target="#articleModal"
+      data-value="0"
+    >
+    <%= __('Add Article') %>
+    </button>
+
     </div>
     <div class="articleContainer">
       <table id="articleTable" class="table">

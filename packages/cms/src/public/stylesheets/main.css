@@ -37,7 +37,8 @@ h2 {
   position: fixed; /* Set the navbar to fixed position */
   top: 0; /* Position the navbar at the top of the page */
 }
-.navbar a {
+.navbar a,
+.table a {
   color: rgb(64, 135, 216);
 }
 .navbar h5 {

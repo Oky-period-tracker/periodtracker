@@ -65,9 +65,21 @@ export const Routes = [
   },
   {
     method: 'get',
+    route: '/categories-management/:id',
+    controller: RenderController,
+    action: 'renderCategoryManagement',
+  },
+  {
+    method: 'get',
     route: '/subcategories-management',
     controller: RenderController,
     action: 'renderSubcategoriesManagement',
+  },
+  {
+    method: 'get',
+    route: '/subcategories-management/:id',
+    controller: RenderController,
+    action: 'renderSubcategoryManagement',
   },
   {
     method: 'get',

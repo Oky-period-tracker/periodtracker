@@ -120,7 +120,10 @@ const initializeCategoriesDataTable = (data) => {
     {
       data: 'title',
       render: (_, __, rowPayload) => {
-        return rowPayload.title
+        return `
+          <a href="/categories-management/${rowPayload.id}">
+            ${rowPayload.title}
+          </a>`
       },
     },
     {
@@ -159,6 +162,16 @@ const initializeCategoriesDataTable = (data) => {
         sortable: false,
         className: 'reorder',
         targets: 0,
+      },
+      {
+        targets: 1, //column number in array
+        render: (_, __, row) => {
+          return `
+            <a href="/categories-management/${row.id}">
+            ${row.title}
+            </a>
+         `
+        },
       },
       {
         targets: columns.length, //column number in array

@@ -485,6 +485,26 @@ export class RenderController {
     this.render(response, 'Categories', { categories })
   }
 
+  async renderCategoryManagement(request: Request, response: Response, next: NextFunction) {
+    const categories = await this.categoryRepository.find({
+      where: { id: request.params.id },
+    })
+
+    const subcategories = await this.subcategoryRepository.query(
+      `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id, sc."sortingKey"
+      FROM ${env.db.schema}.subcategory sc
+      INNER JOIN ${env.db.schema}.category ca
+      ON sc.parent_category = ca.id::varchar
+      WHERE sc.lang = $1
+      AND sc.parent_category = $2
+      ORDER BY sc."sortingKey" ASC
+      `,
+      [request.user.lang, request.params.id],
+    )
+
+    this.render(response, 'Category', { categories, subcategories })
+  }
+
   async renderSubcategoriesManagement(request: Request, response: Response, next: NextFunction) {
     const categories = await this.categoryRepository.find({
       where: { lang: request.user.lang },
@@ -502,6 +522,33 @@ export class RenderController {
       [request.user.lang],
     )
     this.render(response, 'Subcategories', { categories, subcategories })
+  }
+
+  async renderSubcategoryManagement(request: Request, response: Response, next: NextFunction) {
+    const subcategories = await this.subcategoryRepository.find({
+      where: { id: request.params.id },
+    })
+
+    const categories = await this.categoryRepository.find({
+      where: { id: subcategories[0].parent_category },
+      order: { sortingKey: 'ASC' },
+    })
+
+    const articles = await this.articleRepository.query(
+      `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created, ar.*
+      FROM ${env.db.schema}.article ar 
+      INNER JOIN ${env.db.schema}.category ca 
+      ON ar.category = ca.id::varchar
+      INNER JOIN ${env.db.schema}.subcategory sc  
+      ON ar.subcategory = sc.id::varchar
+      WHERE ar.lang = $1
+      AND sc.id = $2
+      ORDER BY ca."sortingKey" ASC, sc."sortingKey" ASC, ar."sortingKey" ASC
+      `,
+      [request.user.lang, request.params.id],
+    )
+
+    this.render(response, 'Subcategory', { categories, subcategories, articles })
   }
 
   async renderVideoManagement(request: Request, response: Response, next: NextFunction) {

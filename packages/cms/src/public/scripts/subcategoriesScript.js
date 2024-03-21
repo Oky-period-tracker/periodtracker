@@ -99,7 +99,10 @@ const initializeSubcategoriesDataTable = (data) => {
     {
       data: 'title',
       render: (_, __, rowPayload) => {
-        return rowPayload.title
+        return `
+          <a href="/subcategories-management/${rowPayload.id}">
+            ${rowPayload.title}
+          </a>`
       },
     },
     {

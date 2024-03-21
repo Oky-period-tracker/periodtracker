@@ -66,8 +66,9 @@ export function SignUp({ heightInner }) {
     dispatch(
       actions.createAccountRequest({
         id: uuidv4(),
-
         ...user,
+        password: _.toLower(user.password).trim(),
+        secretAnswer: _.toLower(user.secretAnswer).trim(),
       }),
     )
     navigate('AvatarAndThemeScreen', { signingUp: true, newUser: { gender: user.gender } }) // @TODO: wait on isCreatingAccount

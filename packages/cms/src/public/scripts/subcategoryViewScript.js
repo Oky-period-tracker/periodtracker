@@ -378,7 +378,11 @@ const initializeDataTable = (result) => {
     {
       data: 'categoryTag',
       render: (_, __, rowPayload) => {
-        return rowPayload.category_title
+        return `
+          <a href="/categories-management/${rowPayload.category_id}">
+            ${rowPayload.category_title}
+          </a>
+          `
       },
     },
     {

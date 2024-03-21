@@ -94,13 +94,12 @@ $('#btnArticleEditConfirm').on('click', () => {
     article_text: $('#col3TableModal').val(),
     live: $('#col4TableModal').prop('checked'),
   }
-
   if (
-    !data.category ||
-    !data.subcategory ||
-    !data.article_heading ||
+    data.category === '' ||
+    data.subcategory === '' ||
+    data.article_heading === '' ||
     data.article_heading.length > 70 ||
-    !data.article_text
+    data.article_text === ''
   ) {
     $('#error1').show()
     $('#error2').show()
@@ -209,11 +208,14 @@ $(document).on('click', '.liveCheckbox', () => {
 })
 
 // ==================== Deletion =============================
-function deleteArticle(id) {
+
+$('.deleteArticle').on('click', (event) => {
+  var button = $(event.currentTarget) // currentTarget is the outer
+  var articleId = button.data('value') // Extract info from data-* attributes
   var result = confirm('Are you sure? This will permanently delete the item')
   if (result) {
     $.ajax({
-      url: '/articles/' + id,
+      url: '/articles/' + articleId,
       type: 'DELETE',
       success: (result) => {
         location.reload()
@@ -223,7 +225,7 @@ function deleteArticle(id) {
       },
     })
   }
-}
+})
 
 //===================== Sorting and Filtering =========================
 
@@ -271,7 +273,42 @@ var sort = function (child) {
 
 var sortDateStatus = false
 var filteredItems = false
+var sortDate = function ({ column }) {
+  filteredItems = filteredItems ? filteredItems : articles
 
+  if (!sortDateStatus) {
+    var sortList = Array.prototype.sort.bind(filteredItems)
+    sortList(function (a, b) {
+      var aText = new Date(a.children[column].innerHTML)
+      var bText = new Date(b.children[column].innerHTML)
+      if (aText < bText) {
+        return -1
+      }
+      if (aText > bText) {
+        return 1
+      }
+      return 0
+    })
+    sortDateStatus = true
+  } else {
+    var sortList = Array.prototype.sort.bind(filteredItems)
+    sortList(function (a, b) {
+      var aText = new Date(a.children[column].innerHTML)
+      var bText = new Date(b.children[column].innerHTML)
+      if (aText > bText) {
+        return -1
+      }
+      if (aText < bText) {
+        return 1
+      }
+      return 0
+    })
+    sortDateStatus = false
+  }
+  articleList.append(filteredItems)
+}
+
+$('#dateSort').click(() => sortDate({ column: 7 }))
 $('#categoryTag').click(() => sort(0))
 $('#subCategoryTag').click(() => sort(1))
 
@@ -337,198 +374,4 @@ const handleSubCategorySelect = (catId) => {
       if (child.dataset.id == catId) $(child).css('display', 'block')
       else $(child).css('display', 'none')
     })
-}
-
-$(document).ready(() => {
-  const articles = $('#articlesJSON').html()
-  const categories = $('#categoriesJSON').html()
-  const subCategories = $('#subcategoriesJSON').html()
-
-  const data = {
-    articles,
-    categories,
-    subCategories,
-  }
-
-  initializeDataTable(data)
-})
-
-var rowReorderResult = null
-const initializeDataTable = (result) => {
-  const { articles, categories, subCategories } = result
-
-  const data = JSON.parse(articles).map((article, articleKey) => {
-    JSON.parse(categories).forEach((category) => {
-      if (article.category_id === category.id) {
-        articles[articleKey].categoryPayload = category
-      }
-    })
-
-    JSON.parse(subCategories).forEach((subCategory) => {
-      if (article.subcategory === subCategory.id) {
-        articles[articleKey].subcategoryPayload = subCategory
-      }
-    })
-
-    return article
-  })
-
-  const columns = [
-    { data: 'sortingKey' },
-    {
-      data: 'categoryTag',
-      render: (_, __, rowPayload) => {
-        return rowPayload.category_title
-      },
-    },
-    {
-      data: 'subcategoryTag',
-      render: (_, __, rowPayload) => {
-        return rowPayload.subcategory_title
-      },
-    },
-    { data: 'article_heading' },
-    {
-      data: 'article_text',
-      render: (_, __, rowPayload) => {
-        return makeLinksClickable(rowPayload.article_text)
-      },
-    },
-    {
-      data: 'date_created', // Assuming 'article_date' is the key in your data
-      render: function (_, __, rowPayload) {
-        return new Date(rowPayload.date_created).toLocaleDateString() // Formatting the date
-      },
-    },
-  ]
-
-  $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
-
-  // remove spaces
-  $('.filters th').html('')
-
-  const table = $('#articleTable').DataTable({
-    columns,
-    data,
-    orderCellsTop: true,
-    fixedHeader: true,
-    autoWidth: false,
-    rowReorder: {
-      dataSrc: 'sortingKey',
-    },
-    lengthMenu: [25, 50, 75, 100, 200],
-    initComplete: function () {
-      var api = this.api()
-
-      api.columns().eq(0)
-
-      // initializeVoiceOver()
-    },
-    columnDefs: [
-      {
-        orderable: false,
-        searchable: false,
-        sortable: false,
-        className: 'reorder',
-        targets: 0,
-      },
-      {
-        targets: columns.length, //column number in array
-        searchable: false,
-        render: (_, __, row) => {
-          return `
-            <button
-              type="button"
-              class="btn btn-sm"
-              data-toggle="modal"
-              data-target="#articleModal"
-              data-value="${row.id}"
-            >
-              <i class="fas fa-edit" aria-hidden="true"></i>
-            </button>
-         `
-        },
-      },
-      {
-        targets: columns.length + 1, //column number in array
-        searchable: false,
-        render: (_, __, row) => {
-          return `
-            <button type="button" onclick="deleteArticle('${row.id}')" class="btn btn-sm">
-              <i class="fas fa-trash" aria-hidden="true"></i>
-            </button>
-         `
-        },
-      },
-      {
-        targets: columns.length + 2, //column number in array
-        searchable: false,
-        render: (_, __, row) => {
-          return `
-           <label class="switch">
-             <input data-value="${row.id}" class='liveCheckbox' type="checkbox" ${
-            row.live ? 'checked' : ''
-          }/>
-             <span class="slider round"></span>
-           </label>
-         `
-        },
-      },
-    ],
-  })
-
-  table.on('row-reorder', function (e, diff, edit) {
-    let result = `
-      Reorder started on row: 
-        <span class="text-warning">
-        ${edit.triggerRow.data().sortingKey} - ${edit.triggerRow.data().article_heading} 
-        </span>
-      <br />`
-
-    for (var i = 0, ien = diff.length; i < ien; i++) {
-      var rowData = table.row(diff[i].node).data()
-      diff[i].toUpdate = rowData
-      result += `
-        <span class="text-success">
-          ${rowData.article_heading} 
-        </span>
-        updated to be in position
-        <span class="text-success"> 
-          ${diff[i].newData} 
-        </span>
-        <span class="text-warning"> 
-          (was ${diff[i].oldData})
-        </span>
-        <br />
-        `
-    }
-    rowReorderResult = diff.map((d) => d.toUpdate)
-    $('#rowReorderModal').modal({ show: true })
-    $('#rowReorderConfirmationBody').html(result)
-  })
-}
-
-const saveReorder = (isSave) => {
-  if (!isSave) {
-    location.reload()
-  }
-
-  $.ajax({
-    url: '/articles',
-    type: 'PUT',
-    data: { rowReorderResult },
-    success: (result) => {
-      location.reload()
-    },
-    error: (error) => {
-      console.log(error)
-    },
-  })
-}
-
-function makeLinksClickable(text) {
-  return text.replace(
-    /(https?:\/\/[^\s]+)/g,
-    '<a href="$1" target="_blank" style="color: #0056b3">$1</a>',
-  )
 }

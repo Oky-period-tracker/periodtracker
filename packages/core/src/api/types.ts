@@ -96,6 +96,11 @@ export interface LoginResponse {
     secretQuestion: string
     secretAnswer: string
     dateSignedUp: string
+    // Optional
+    genderIdentity?: string
+    accommodationRequirement?: string
+    religion?: string
+    encyclopediaVersion?: string
   }
   store: {
     storeVersion: number
@@ -115,6 +120,11 @@ export interface SignupResponse {
     province: string
     secretQuestion: string
     secretAnswer: string
+    // Optional
+    genderIdentity?: string
+    accommodationRequirement?: string
+    religion?: string
+    encyclopediaVersion?: string
   }
 }
 

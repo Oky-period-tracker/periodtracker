@@ -11,6 +11,7 @@ import {
 } from '@oky/core'
 import _ from 'lodash'
 import { flowerTranslations } from '../optional/Flower'
+import { customComponentsTranslations } from '../optional/CustomComponents'
 
 type TranslationObject = Record<Locale, Record<string, string>>
 
@@ -37,6 +38,7 @@ export const allTranslations = combineTranslations([
   (localeTranslations as unknown) as TranslationObject,
   (themeTranslations as unknown) as TranslationObject,
   flowerTranslations,
+  customComponentsTranslations,
 ])
 
 export function translate(key) {

@@ -17,13 +17,14 @@ const secretQuestions = [
 
 export function AskPassword({ step, heightInner }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
-  const { selectedQuestion, answer } = state
+  const { secretQuestion, secretAnswer } = state
+
   const [notValid, setNotValid] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const minPasswordLength = 1
 
   function checkValidity() {
-    return selectedQuestion !== '' && answer.length >= minPasswordLength
+    return secretQuestion !== '' && secretAnswer.length >= minPasswordLength
   }
   if (loading) {
     return null
@@ -65,7 +66,7 @@ export function AskPassword({ step, heightInner }) {
           maxLength={20}
           buttonStyle={{ right: 5, bottom: 7 }}
           onValueChange={(value) =>
-            dispatch({ type: 'change-form-data', inputName: 'selectedQuestion', value })
+            dispatch({ type: 'change-form-data', inputName: 'secretQuestion', value })
           }
           hasError={true} // this is to permanently display the i button
           errorHeading="secret_q_error_heading"
@@ -73,12 +74,14 @@ export function AskPassword({ step, heightInner }) {
         />
         <TextInput
           inputStyle={{ color: '#555' }}
-          onChange={(value) => dispatch({ type: 'change-form-data', inputName: 'answer', value })}
+          onChange={(value) =>
+            dispatch({ type: 'change-form-data', inputName: 'secretAnswer', value })
+          }
           label="secret_answer"
-          isValid={answer.length >= minPasswordLength}
-          hasError={notValid && !(answer.length >= minPasswordLength)}
+          isValid={secretAnswer.length >= minPasswordLength}
+          hasError={notValid && !(secretAnswer.length >= minPasswordLength)}
           showInfoButton={true}
-          value={answer}
+          value={secretAnswer}
           errorHeading="secret_error_heading"
           errorContent="secret_error_content"
         />

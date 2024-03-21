@@ -11,4 +11,9 @@ export interface SignupCommand {
   secretAnswer: string
   dateSignedUp: string
   dateAccountSaved: string
+  // Optional
+  genderIdentity?: string
+  accommodationRequirement?: string
+  religion?: string
+  encyclopediaVersion?: string
 }

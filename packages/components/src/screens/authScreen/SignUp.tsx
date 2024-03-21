@@ -11,6 +11,11 @@ import { navigate } from '../../services/navigationService'
 import * as actions from '../../redux/actions'
 import _ from 'lodash'
 import { FAST_SIGN_UP } from '../../config'
+import { User } from '../../redux/reducers/authReducer'
+
+type SignUpState = Omit<User, 'id' | 'dateSignedUp' | 'isGuest'> & {
+  passwordConfirm: string
+}
 
 const randomLetters = () => {
   const letters = 'abcdefghijklmnopqrstuvwxyz'
@@ -21,12 +26,12 @@ const randomLetters = () => {
   }`
 }
 
-const fastSignUpInitialState = {
+const fastSignUpInitialState: SignUpState = {
   name: randomLetters(),
   password: 'aaa',
   passwordConfirm: 'aaa',
-  selectedQuestion: 'favourite_actor',
-  answer: 'a',
+  secretQuestion: 'favourite_actor',
+  secretAnswer: 'a',
   gender: 'Female',
   location: 'Urban',
   country: 'AF',
@@ -34,17 +39,22 @@ const fastSignUpInitialState = {
   dateOfBirth: '2015-12-31T17:00:00.000Z',
 }
 
-const defaultState = {
+const defaultState: SignUpState = {
   name: '',
   password: '',
   passwordConfirm: '',
-  selectedQuestion: '',
-  answer: '',
+  secretQuestion: '',
+  secretAnswer: '',
   gender: 'Female',
   location: 'Urban',
   country: null,
   province: null,
   dateOfBirth: '',
+  //
+  genderIdentity: null,
+  accommodationRequirement: null,
+  religion: 'undisclosed_religion',
+  encyclopediaVersion: 'No',
 }
 
 const initialState = FAST_SIGN_UP ? fastSignUpInitialState : defaultState
@@ -52,32 +62,16 @@ const initialState = FAST_SIGN_UP ? fastSignUpInitialState : defaultState
 export function SignUp({ heightInner }) {
   const dispatch = useDispatch()
 
-  const createAccount = ({
-    name,
-    dateOfBirth,
-    gender,
-    location,
-    country,
-    province,
-    password,
-    selectedQuestion,
-    answer,
-  }) => {
+  const createAccount = (user: User) => {
     dispatch(
       actions.createAccountRequest({
         id: uuidv4(),
-        name,
-        dateOfBirth,
-        gender,
-        location,
-        country,
-        province,
-        password: _.toLower(password).trim(),
-        secretQuestion: selectedQuestion,
-        secretAnswer: _.toLower(answer).trim(),
+        ...user,
+        password: _.toLower(user.password).trim(),
+        secretAnswer: _.toLower(user.secretAnswer).trim(),
       }),
     )
-    navigate('AvatarAndThemeScreen', { signingUp: true, newUser: { gender } }) // @TODO: wait on isCreatingAccount
+    navigate('AvatarAndThemeScreen', { signingUp: true, newUser: { gender: user.gender } }) // @TODO: wait on isCreatingAccount
   }
   return (
     <MultiStepForm

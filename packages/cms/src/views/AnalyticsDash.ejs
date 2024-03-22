@@ -79,6 +79,23 @@
             </div>
           </div>	
         </div>
+
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading"><%= __('Users Disability')%></div>
+                <div  class="panel-body">
+                  <div class="graphContainer" id="usersDisabilityGraph" ></div>
+                  <a href="#" class="fill-div"         
+                  data-toggle="modal"
+                  data-target="#graphModal"
+                  data-value="userDisability"
+                  ></a>
+                </div>
+            </div>
+          </div>
+        </div>
+
         <div style="height: 310px;" class="row">
             <div class="col-lg-12">
                 <div class="panel panel-primary">
@@ -336,5 +353,10 @@
 <span id="directDownloadsJSON" hidden>
     <%= JSON.stringify(directDownloads); %>
 </span>
+
+<span id="usersDisabilitiesJSON" hidden>
+  <%= JSON.stringify(usersDisabilities); %>
+</span>
+
 <script type="application/javascript" src="/scripts/analyticsScript.js"></script>
 <%- include('partials/Footer') %>

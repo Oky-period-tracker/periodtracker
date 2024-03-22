@@ -265,4 +265,13 @@ export const analyticsQueries = {
   GROUP BY 
     store->'appState'->'app'->>'locale'
   ;`,
+  // TODO:add date check also  (?)
+  usersDisabilities: `
+  SELECT "accommodationRequirement", count(*) as value 
+  FROM ${schema}.oky_user 
+  WHERE (gender = $1 OR $1 IS NULL) 
+    AND (location= $2 OR $2 IS NULL)
+    ${partials.and_date_account_saved}
+  group by 1 
+  `,
 }

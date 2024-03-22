@@ -10,6 +10,7 @@ var usersCountries = JSON.parse($('#usersCountriesJSON').text())
 var usersProvinces = JSON.parse($('#usersProvincesJSON').text())
 var userShares = JSON.parse($('#usersSharesJSON').text())
 var directDownloads = JSON.parse($('#directDownloadsJSON').text())
+var usersDisabilities = JSON.parse($('#usersDisabilitiesJSON').text())
 
 $('#currentCountry').change(() => {
   dashBarChart(usersProvinces[$('#currentCountry').val()], 'usersProvincesGraph')
@@ -50,16 +51,20 @@ const loadInitialChart = ({
   )
   dashBarChart(usersCountries, 'userCountriesGraph')
   dashBarChart(usersProvinces[$('#currentCountry').val()], 'usersProvincesGraph')
+
+  usersDisabilities.others = usersDisabilities.null
+  delete usersDisabilities.null
+  dashPieChart(usersDisabilities, 'usersDisabilityGraph')
 }
 
 $(document).ready(() => {
-  console.log(usersProvinces)
   loadInitialChart({
     usersGenders,
     usersLocations,
     usersAgeGroups,
     usersCountries,
     usersProvinces,
+    usersDisabilities,
     userShares,
     directDownloads,
   })

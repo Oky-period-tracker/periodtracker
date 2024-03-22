@@ -275,7 +275,6 @@ export const analyticsQueries = {
   GROUP BY 
     store->'appState'->'app'->>'locale'
   ;`,
-  // TODO:add date check also  (?)
   usersDisabilities: `
   SELECT "accommodationRequirement", count(*) as value 
   FROM ${schema}.oky_user 

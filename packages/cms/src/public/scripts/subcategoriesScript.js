@@ -95,11 +95,19 @@ var subcategoryRowReorderResult = null
 
 const initializeSubcategoriesDataTable = (data) => {
   const columns = [
-    { data: 'sortingKey' },
+    {
+      data: 'sortingKey',
+      render: (_, __, ___, meta) => {
+        return meta.row + 1
+      },
+    },
     {
       data: 'title',
       render: (_, __, rowPayload) => {
-        return rowPayload.title
+        return `
+          <a href="/subcategories-management/${rowPayload.id}">
+            ${rowPayload.title}
+          </a>`
       },
     },
     {
@@ -183,10 +191,10 @@ const initializeSubcategoriesDataTable = (data) => {
         </span>
         updated to be in position
         <span class="text-success"> 
-          ${diff[i].newData} 
+          ${diff[i].newPosition + 1} 
         </span>
         <span class="text-warning"> 
-          (was ${diff[i].oldData})
+          (was ${diff[i].oldPosition + 1})
         </span>
         <br />
         `

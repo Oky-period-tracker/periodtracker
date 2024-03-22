@@ -400,7 +400,11 @@ const initializeDataTable = (result) => {
     {
       data: 'article_text',
       render: (_, __, rowPayload) => {
-        return makeLinksClickable(rowPayload.article_text)
+        let text = rowPayload.article_text
+        if (text.length > 140) {
+          text = text.substring(0, 140) + '...'
+        }
+        return makeLinksClickable(text)
       },
     },
     {

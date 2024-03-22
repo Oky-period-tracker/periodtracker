@@ -10,6 +10,7 @@ var usersCountries = JSON.parse($('#usersCountriesJSON').text())
 var usersProvinces = JSON.parse($('#usersProvincesJSON').text())
 var userShares = JSON.parse($('#usersSharesJSON').text())
 var directDownloads = JSON.parse($('#directDownloadsJSON').text())
+var usersDisabilities = JSON.parse($('#usersDisabilitiesJSON').text())
 
 var screenUsage = JSON.parse($('#screenUsageJSON').text())
 var encyclopediaUsage = JSON.parse($('#encyclopediaUsageJSON').text())
@@ -57,6 +58,10 @@ const loadInitialChart = ({
   )
   dashBarChart(usersCountries, 'userCountriesGraph')
   dashBarChart(usersProvinces[$('#currentCountry').val()], 'usersProvincesGraph')
+
+  usersDisabilities.others = usersDisabilities.null
+  delete usersDisabilities.null
+  dashPieChart(usersDisabilities, 'usersDisabilityGraph')
 }
 
 $(document).ready(() => {
@@ -66,6 +71,7 @@ $(document).ready(() => {
     usersAgeGroups,
     usersCountries,
     usersProvinces,
+    usersDisabilities,
     userShares,
     directDownloads,
   })

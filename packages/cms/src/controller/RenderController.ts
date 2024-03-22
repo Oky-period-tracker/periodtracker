@@ -91,6 +91,16 @@ export class RenderController {
       await entityManager.query(analyticsQueries.countActiveUsers, params)
     )[0]
 
+    const preUsersDisabilities = await entityManager.query(
+      analyticsQueries.usersDisabilities,
+      params,
+    )
+
+    const usersDisabilities = preUsersDisabilities.reduce((obj, item) => {
+      obj[item.accommodationRequirement] = item.value
+      return obj
+    }, {})
+
     const countAvatars = await entityManager.query(analyticsQueries.countAvatars, [
       gender,
       location,
@@ -336,6 +346,7 @@ export class RenderController {
         usersCountries,
         usersProvinces,
         usersShares,
+        usersDisabilities,
         directDownloads,
         screenUsage,
         usage,
@@ -357,6 +368,7 @@ export class RenderController {
       usersCountries,
       usersProvinces,
       usersShares,
+      usersDisabilities,
       directDownloads,
       screenUsage,
       usage,

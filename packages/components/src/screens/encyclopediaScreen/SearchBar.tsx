@@ -11,7 +11,7 @@ import * as selectors from '../../redux/selectors'
 import { translate } from '../../i18n'
 import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
-export const SearchBar = async ({
+export const SearchBar = ({
   setFilteredCategories,
   setActiveCategory,
   categories,

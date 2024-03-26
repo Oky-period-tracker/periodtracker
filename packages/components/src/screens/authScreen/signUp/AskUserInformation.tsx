@@ -66,8 +66,14 @@ export function AskUserInformation({ step, heightInner }) {
 
   const genders: Array<keyof AppAssets['static']['icons']> = ['Male', 'Female', 'Other']
 
+  const validationChecker =
+    password.length >= minPasswordLength &&
+    passwordConfirm === password &&
+    name.length >= minNameLength
+
   return (
     <SignUpFormLayout
+      isValid={validationChecker}
       onSubmit={() => {
         if (!checkValidity()) {
           setNotValid(true)

@@ -22,6 +22,7 @@ export function AskUserConfirmation({ step, heightInner }) {
 
   return (
     <SignUpFormLayout
+      isValid={isAgreed}
       isButtonDisabled={!isAgreed}
       onSubmit={() => {
         setLoading(true)

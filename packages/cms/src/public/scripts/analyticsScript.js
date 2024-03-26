@@ -266,6 +266,10 @@ switchActions = (input) => {
       return {
         chartDataFormat: usersProvinces[$('#currentCountry').val()],
       }
+    case 'userDisability':
+      return {
+        chartDataFormat: usersDisabilities,
+      }
   }
 }
 

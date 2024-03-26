@@ -19,10 +19,14 @@ export function TermsScreen({ navigation }) {
     const isLast = i === termsAndConditions.length - 1
 
     if (item.type === 'HEADING') {
-      return <HeadingText>{item.content}</HeadingText>
+      return <HeadingText key={`terms_item_${i}`}>{item.content}</HeadingText>
     }
     if (item.type === 'CONTENT') {
-      return <ContentText style={isLast && styles.last}>{item.content}</ContentText>
+      return (
+        <ContentText key={`terms_item_${i}`} style={isLast && styles.last}>
+          {item.content}
+        </ContentText>
+      )
     }
   })
 

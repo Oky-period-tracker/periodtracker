@@ -9,6 +9,7 @@ import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
 import { translate } from '../../i18n'
+import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
 export const SearchBar = ({
   setFilteredCategories,
@@ -48,7 +49,8 @@ export const SearchBar = ({
             placeholder: translate('type_to_search'),
             keyboardType: 'default',
             returnKeyType: 'search',
-            onChangeText: (text) => {
+            onChangeText: async (text) => {
+              await hapticAndSoundFeedback('key')
               setSearchStr(text)
               setActiveCategory([])
               const filteredResults = handleSearchResult(

@@ -14,6 +14,7 @@ import { SpinLoader } from '../../../components/common/SpinLoader'
 import { useOrientation } from '../../../hooks/useOrientation'
 import { IS_TABLET } from '../../../config/tablet'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
+import { hapticAndSoundFeedback } from '../../../services/tonefeedback'
 
 export function Carousel({
   data,
@@ -130,6 +131,7 @@ export function Carousel({
         {!disableInteraction && (
           <PanGesture isX={true} ratio={width} {...{ isActive, absoluteIndex }}>
             <TouchableOpacity
+              onPressIn={() => hapticAndSoundFeedback('general')}
               onPress={() => {
                 if (isTutorialTwoOn) {
                   setIsVisible(true)

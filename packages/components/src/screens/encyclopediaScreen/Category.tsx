@@ -3,10 +3,16 @@ import styled from 'styled-components/native'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { Text, TextWithoutTranslation } from '../../components/common/Text'
 import { capitalizeFLetter } from '../../i18n'
+import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
 export const Category = ({ title, tags, onPress, isActive = false }) => {
   return (
-    <CategoryContainer onPress={onPress}>
+    <CategoryContainer
+      onPress={async () => {
+        await hapticAndSoundFeedback('general')
+        onPress()
+      }}
+    >
       <TitleContainer>
         <Title style={{ color: isActive ? '#e3629b' : '#ff9e00' }}>
           {capitalizeFLetter(title.trim())}

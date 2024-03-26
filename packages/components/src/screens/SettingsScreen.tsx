@@ -19,6 +19,7 @@ import analytics from '@react-native-firebase/analytics'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import { useTodayPrediction } from '../components/context/PredictionProvider'
 import { StyleSheet } from 'react-native'
+import { hapticAndSoundFeedback } from '../services/tonefeedback'
 
 export function SettingsScreen({ navigation }) {
   const dispatch = useDispatch()
@@ -33,21 +34,26 @@ export function SettingsScreen({ navigation }) {
     text: settingsScreenText({ hasTtsActive }),
   })
 
+  const onHandlePress = (screen: string) => {
+    hapticAndSoundFeedback('general')
+    navigate(screen, null)
+  }
+
   return (
     <BackgroundTheme>
       <ScrollContainer>
         <Header showGoBackButton={false} screenTitle="settings" />
         <Container>
-          <NavigationLink onPress={() => navigate('AboutScreen', null)}>
+          <NavigationLink onPress={() => onHandlePress('AboutScreen')}>
             <ListItem title="about" description="about_info" />
           </NavigationLink>
-          <NavigationLink onPress={() => navigate('TermsScreen', null)}>
+          <NavigationLink onPress={() => onHandlePress('TermsScreen')}>
             <ListItem title="t_and_c" description="t_and_c_info" />
           </NavigationLink>
-          <NavigationLink onPress={() => navigate('PrivacyScreen', null)}>
+          <NavigationLink onPress={() => onHandlePress('PrivacyScreen')}>
             <ListItem title="privacy_policy" description="privacy_info" />
           </NavigationLink>
-          <NavigationLink onPress={() => navigate('AccessScreen', null)}>
+          <NavigationLink onPress={() => onHandlePress('AccessScreen')}>
             <ListItem title="access_setting" description="settings_info" />
           </NavigationLink>
           {/* <ListItem

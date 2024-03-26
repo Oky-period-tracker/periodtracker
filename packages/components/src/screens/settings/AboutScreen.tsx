@@ -31,10 +31,14 @@ export const AboutScreen = ({ navigation }) => {
           {aboutContent.map((item, i) => {
             const isLast = i === aboutContent.length - 1
             if (item.type === 'HEADING') {
-              return <HeadingText>{item.content}</HeadingText>
+              return <HeadingText key={`content_item_${i}`}>{item.content}</HeadingText>
             }
             if (item.type === 'CONTENT') {
-              return <TextStyle style={isLast && styles.lastItem}>{item.content}</TextStyle>
+              return (
+                <TextStyle key={`content_item_${i}`} style={isLast && styles.lastItem}>
+                  {item.content}
+                </TextStyle>
+              )
             }
           })}
         </Container>

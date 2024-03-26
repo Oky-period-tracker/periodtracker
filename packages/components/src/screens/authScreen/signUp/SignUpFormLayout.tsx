@@ -10,8 +10,8 @@ export function SignUpFormLayout({
   isValid = true,
 }: React.PropsWithChildren<{
   onSubmit: () => void
-  isButtonDisabled: boolean
-  isValid: boolean
+  isButtonDisabled?: boolean
+  isValid?: boolean
 }>) {
   const tone = isValid ? 'general' : 'warning'
 

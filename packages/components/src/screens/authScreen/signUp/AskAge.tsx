@@ -42,6 +42,7 @@ export function AskAge({ step, heightInner }) {
 
   return (
     <SignUpFormLayout
+      isValid={checkValidity()}
       onSubmit={() => {
         if (!checkValidity()) {
           setNotValid(true)

@@ -34,23 +34,9 @@ export function SettingsScreen({ navigation }) {
     text: settingsScreenText({ hasTtsActive }),
   })
 
-  const onHandlePress = (navToggled: string) => {
+  const onHandlePress = (screen: string) => {
     hapticAndSoundFeedback('general')
-
-    switch (navToggled) {
-      case 'About':
-        navigate('AboutScreen', null)
-        break
-      case 'Terms':
-        navigate('TermsScreen', null)
-        break
-      case 'Privacy':
-        navigate('PrivacyScreen', null)
-        break
-      case 'Access':
-        navigate('AccessScreen', null)
-        break
-    }
+    navigate(screen, null)
   }
 
   return (

@@ -2,6 +2,7 @@ import React from 'react'
 import { assets } from '../../assets/index'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation } from './Text'
+import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
 // @TODO: provide the rights interface
 interface Props {
@@ -37,6 +38,7 @@ export const EmojiSelector = React.memo<Props>(
     return (
       <Container
         disabled={disabled}
+        onPressIn={() => hapticAndSoundFeedback('general')}
         onPress={onPress}
         style={{
           ...style,

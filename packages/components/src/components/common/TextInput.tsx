@@ -6,6 +6,7 @@ import { translate } from '../../i18n'
 import { TouchableOpacity } from 'react-native'
 import { Text } from './Text'
 import { ThemedModal } from './ThemedModal'
+import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
 export const TextInput = ({
   onChange = null,
@@ -40,7 +41,10 @@ export const TextInput = ({
             placeholder={translate(label)}
             multiline={multiline}
             numberOfLines={numberOfLines}
-            onChangeText={onChange}
+            onChangeText={async (val) => {
+              await hapticAndSoundFeedback('key')
+              onChange(val)
+            }}
             onEndEditing={onEndEditing}
             placeholderTextColor={placeholderColor || '#28b9cb'}
             keyboardType={keyboardType || 'default'}

@@ -6,6 +6,7 @@
   "description": "Period tracker CMS, with Express, typescript, TypeORM and ejs",
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
+    "@types/express-fileupload": "^1.4.1",
     "@types/express-session": "^1.17.4",
     "@types/jquery": "^3.5.10",
     "@types/node": "^17.0.2",
@@ -28,6 +29,7 @@
     "ejs": "^3.1.7",
     "exceljs": "^4.3.0",
     "express": "^4.17.2",
+    "express-fileupload": "^1.4.0",
     "express-session": "^1.17.2",
     "firebase": "^9.6.1",
     "firebase-admin": "11.11.0",

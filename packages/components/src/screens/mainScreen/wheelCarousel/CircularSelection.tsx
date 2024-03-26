@@ -16,6 +16,7 @@ import moment from 'moment'
 import { IS_TABLET } from '../../../config/tablet'
 import { useOrientation } from '../../../hooks/useOrientation'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
+import { hapticAndSoundFeedback } from '../../../services/tonefeedback'
 
 const { interpolate } = Animated
 
@@ -134,6 +135,7 @@ export function CircularSelection({
             {...{ isActive, absoluteIndex }}
           >
             <TouchableOpacity
+              onPressIn={() => hapticAndSoundFeedback('general')}
               onPress={() => {
                 if (isTutorialOneOn) {
                   navigateToTutorial()

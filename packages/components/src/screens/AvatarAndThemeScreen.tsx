@@ -16,6 +16,7 @@ import styled from 'styled-components/native'
 import { Text } from '../components/common/Text'
 import { ScrollView } from 'react-native-gesture-handler'
 import { themeNames, avatarNames } from '@oky/core'
+import { hapticAndSoundFeedback } from '../services/tonefeedback'
 
 export function AvatarAndThemeScreen({ navigation }) {
   const signingUp = navigation.getParam('signingUp')
@@ -29,6 +30,16 @@ export function AvatarAndThemeScreen({ navigation }) {
   React.useEffect(() => {
     setLoading(false)
   }, [id])
+
+  const confirmSignUp = () => {
+    if (!signingUp) {
+      BackOneScreen()
+      return
+    }
+
+    hapticAndSoundFeedback('general')
+    navigate('JourneyScreen', { newUser })
+  }
 
   return (
     <BackgroundTheme>
@@ -57,10 +68,7 @@ export function AvatarAndThemeScreen({ navigation }) {
             }}
           />
           <ButtonContainer>
-            <PrimaryButton
-              style={styles.flex}
-              onPress={() => (signingUp ? navigate('JourneyScreen', { newUser }) : BackOneScreen())}
-            >
+            <PrimaryButton style={styles.flex} onPress={confirmSignUp}>
               confirm
             </PrimaryButton>
           </ButtonContainer>

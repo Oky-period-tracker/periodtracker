@@ -17,6 +17,7 @@ import { SpinLoader } from '../../components/common/SpinLoader'
 import { LanguageSelect } from '../../components/common/LanguageSelect'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { acessSettingsScreenText, WEBSITE_URL } from '../../config'
+import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
 export function AccessScreen({ navigation }) {
   const locale = useSelector(selectors.currentLocaleSelector)
@@ -70,6 +71,7 @@ export function AccessScreen({ navigation }) {
             subtitle="tutorial_subtitle"
             renderControls={() => (
               <ShareButton
+                onPressIn={() => hapticAndSoundFeedback('general')}
                 onPress={() => {
                   setLoading(true)
                   requestAnimationFrame(() => {
@@ -87,7 +89,10 @@ export function AccessScreen({ navigation }) {
             style={styles.lastItem}
             innerStyle={styles.lastItemInner}
             renderControls={() => (
-              <ShareButton onPress={() => shareLink()}>
+              <ShareButton
+                onPressIn={() => hapticAndSoundFeedback('general')}
+                onPress={() => shareLink()}
+              >
                 <ShareButtonText>share_setting</ShareButtonText>
               </ShareButton>
             )}

@@ -44,6 +44,7 @@ export function AskLocation({ step, createAccount }) {
 
   return (
     <SignUpFormLayout
+      isValid={checkValidity()}
       onSubmit={() => {
         if (!checkValidity()) {
           setNotValid(true)

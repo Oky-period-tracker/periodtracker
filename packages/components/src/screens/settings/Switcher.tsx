@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
 import { Text } from '../../components/common/Text'
+import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
 export const Switcher = ({ value = false, onSwitch }) => {
   return (
@@ -10,7 +11,10 @@ export const Switcher = ({ value = false, onSwitch }) => {
         <Button
           activeOpacity={0.9}
           style={{ backgroundColor: value ? '#A2C72D' : '#EDEDED' }}
-          onPress={() => onSwitch(true)}
+          onPress={() => {
+            hapticAndSoundFeedback('general')
+            onSwitch(true)
+          }}
         >
           <Background source={assets.static.icons.roundedMask}>
             <Icon source={assets.static.icons.tick} style={{ opacity: value ? 1 : 0.6 }} />
@@ -22,7 +26,10 @@ export const Switcher = ({ value = false, onSwitch }) => {
         <Button
           activeOpacity={0.9}
           style={{ backgroundColor: value ? '#EDEDED' : '#E3629B' }}
-          onPress={() => onSwitch(false)}
+          onPress={() => {
+            hapticAndSoundFeedback('general')
+            onSwitch(false)
+          }}
         >
           <Background source={assets.static.icons.roundedMask}>
             <Icon resizeMode="contain" source={assets.static.icons.closeLine} />

@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
+import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
 export const SubCategoryCard = ({ title, onPress }) => {
   const { screenWidth } = useScreenDimensions()
@@ -9,7 +10,10 @@ export const SubCategoryCard = ({ title, onPress }) => {
   return (
     <SubCategoryContainer
       activeOpacity={0.8}
-      onPress={onPress}
+      onPress={() => {
+        hapticAndSoundFeedback('general')
+        onPress()
+      }}
       style={{ left: 0.05 * screenWidth, width: 0.87 * screenWidth }}
     >
       <Title>{title}</Title>

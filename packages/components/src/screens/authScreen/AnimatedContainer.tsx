@@ -10,6 +10,7 @@ import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
 import { IS_TABLET } from '../../config/tablet'
+import { hapticAndSoundFeedback } from '../../services/tonefeedback'
 
 const { Value } = Animated
 
@@ -28,6 +29,7 @@ export function AnimatedContainer({ toggled }) {
         duration: 350,
         useNativeDriver: true,
       }).start()
+      hapticAndSoundFeedback('close')
     }
     toggled(expanded)
     setViewable(expanded)

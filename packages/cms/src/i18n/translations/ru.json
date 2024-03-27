@@ -195,6 +195,14 @@
   "Asset name": "Имя актива",
   "Videos": "Видео",
   "Add Video": "Добавить видео",
-  "app_release_date": "Дата выхода приложения",
-  "Order": "Порядок сортировки"
+  "Order": "Порядок сортировки",
+  "Subcategory Management": "Subcategory Management",
+  "Categories": "Categories",
+  "Subcategories": "Subcategories",
+  "Date": "Date",
+  "Users Disability": "Users Disability",
+  "Bulk import/export": "Bulk import/export",
+  "Provider Name": "Provider Name",
+  "Province": "Province",
+  "City": "City"
 }

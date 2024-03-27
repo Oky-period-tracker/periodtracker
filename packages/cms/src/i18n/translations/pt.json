@@ -195,6 +195,14 @@
   "Asset name": "Nome do ativo",
   "Videos": "Vídeos",
   "Add Video": "Adicionar vídeo",
-  "app_release_date": "Data de lançamento do aplicativo",
-  "Order": "Ordem"
+  "Order": "Ordem",
+  "Subcategory Management": "Subcategory Management",
+  "Subcategories": "Subcategories",
+  "Categories": "Categories",
+  "Date": "Date",
+  "Users Disability": "Users Disability",
+  "Bulk import/export": "Bulk import/export",
+  "Provider Name": "Provider Name",
+  "Province": "Province",
+  "City": "City"
 }

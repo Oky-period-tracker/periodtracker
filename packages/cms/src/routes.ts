@@ -18,6 +18,7 @@ import { TermsAndConditionsController } from './controller/TermsAndConditionsCon
 import { PrivacyPolicyController } from './controller/PrivacyPolicyController'
 import { DataController } from './controller/DataController'
 import { VideoController } from './controller/VideoController'
+import { HelpCenterAttributesController } from './controller/HelpCenterAttributesController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -468,9 +469,58 @@ export const Routes = [
     action: 'update',
   },
   {
+    method: 'put',
+    route: '/help-center',
+    controller: HelpCenterController,
+    action: 'bulkUpdate',
+  },
+  {
     method: 'delete',
     route: '/help-center/:id',
     controller: HelpCenterController,
+    action: 'remove',
+  },
+  {
+    method: 'get',
+    route: '/help-center-template',
+    controller: HelpCenterController,
+    action: 'getTemplate',
+  },
+  {
+    method: 'post',
+    route: '/help-center-template',
+    controller: HelpCenterController,
+    action: 'bulkUpdateViaFile',
+  },
+  // ------------ Help Center Attributes Api ----------------
+  {
+    method: 'get',
+    route: '/help-center-attributes',
+    controller: HelpCenterAttributesController,
+    action: 'all',
+  },
+  {
+    method: 'get',
+    route: '/help-center-attributes/:id',
+    controller: HelpCenterAttributesController,
+    action: 'one',
+  },
+  {
+    method: 'post',
+    route: '/help-center-attributes',
+    controller: HelpCenterAttributesController,
+    action: 'save',
+  },
+  {
+    method: 'put',
+    route: '/help-center-attributes/:id',
+    controller: HelpCenterAttributesController,
+    action: 'update',
+  },
+  {
+    method: 'delete',
+    route: '/help-center-attributes/:id',
+    controller: HelpCenterAttributesController,
     action: 'remove',
   },
 

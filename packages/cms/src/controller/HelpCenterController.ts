@@ -128,7 +128,7 @@ export class HelpCenterController {
             case 'Provider name':
               cell.value = helpCenter.title
               break
-            case 'Websites':
+            case 'Website':
               cell.value = helpCenter.website
               break
             case 'Available Nationwide?':
@@ -257,7 +257,7 @@ export class HelpCenterController {
 
       if (updated.length) {
         const query = `
-            INSERT INTO oky_en.help_center (id, "title", caption, "contactOne", "contactTwo", address, websites, city, province, lang, "isAvailableNationwide", "primaryAttributeId", "otherAttributes")
+            INSERT INTO oky_en.help_center (id, "title", caption, "contactOne", "contactTwo", address, website, city, province, lang, "isAvailableNationwide", "primaryAttributeId", "otherAttributes")
             VALUES ${finalPlaceholder}
             ON CONFLICT (id) DO UPDATE
             SET "title" = EXCLUDED."title",
@@ -265,7 +265,7 @@ export class HelpCenterController {
                 "contactOne" = EXCLUDED."contactOne",
                 "contactTwo" = EXCLUDED."contactTwo",
                 address = EXCLUDED.address,
-                websites = EXCLUDED.websites,
+                website = EXCLUDED.website,
                 city = EXCLUDED.city,
                 province = EXCLUDED.province,
                 lang = EXCLUDED.lang,

@@ -6,9 +6,11 @@
     {
       "path": "packages/cms"
     },
-
     {
       "path": "packages/components"
+    },
+    {
+      "path": "packages/components/src/optional"
     },
     {
       "path": "packages/core"

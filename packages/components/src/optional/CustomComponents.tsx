@@ -16,4 +16,17 @@ try {
   //
 }
 
-export { customComponentsTranslations, CustomSignUp }
+let CustomHelpCenter = {
+  Screen: undefined,
+  Card: undefined,
+}
+try {
+  CustomHelpCenter = {
+    Screen: require('./CustomComponents/components/CustomHelpCenter').FindHelpScreen,
+    Card: require('./CustomComponents/components/CustomHelpCenter/NeedHelpCard').NeedHelpCard,
+  }
+} catch (e) {
+  //
+}
+
+export { customComponentsTranslations, CustomSignUp, CustomHelpCenter }

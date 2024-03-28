@@ -16,6 +16,7 @@ import * as actions from '../actions'
 import _ from 'lodash'
 import messaging from '@react-native-firebase/messaging'
 import { closeOutTTs } from '../../services/textToSpeech'
+import { HelpCenterAttributesResponse } from '@oky/core/src/api/types'
 
 function* onRehydrate(action: RehydrateAction) {
   const locale = yield select(selectors.currentLocaleSelector)
@@ -138,12 +139,18 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     return fromAvatarMessages(avatarMessages)
   }
 
+  function* fetchHelpCenterAttributes() {
+    const helpCenterAttributes: HelpCenterAttributesResponse[] = yield httpClient.fetchHelpCenterAttributes()
+    return { helpCenterAttributes }
+  }
+
   try {
     const { articles, categories, subCategories, videos } = yield fetchEncyclopedia()
     const { quizzes } = yield fetchQuizzes()
     const { didYouKnows } = yield fetchDidYouKnows()
     const { helpCenters } = yield fetchHelpCenters()
     const { avatarMessages } = yield fetchAvatarMessages()
+    const { helpCenterAttributes } = yield fetchHelpCenterAttributes()
     const privacyPolicy = yield fetchPrivacyPolicy()
     const termsAndConditions = yield fetchTermsAndConditions()
     const about = yield fetchAbout()
@@ -173,6 +180,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
         about: _.isEmpty(about) ? staleContent[locale].about : about,
         aboutBanner: aboutBannerData?.aboutBanner,
         aboutBannerTimestamp: aboutBannerData?.aboutBannerTimestamp,
+        helpCenterAttributes: helpCenterAttributes || [],
       }),
     )
   } catch (error) {
@@ -189,7 +197,6 @@ function* onSetLocale(action: ExtractActionFromActionType<'SET_LOCALE'>) {
   const { locale } = action.payload
   const isTtsActive = yield select(selectors.isTtsActiveSelector)
   if (isTtsActive) {
-    // TODO_ALEX why?
     yield call(closeOutTTs)
     yield put(actions.setTtsActive(false))
   }

@@ -30,6 +30,7 @@ import { VideoScreen } from '../screens/VideoScreen'
 import { getRouteName, setTopLevelNavigator } from '../services/navigationService'
 import { useDispatch } from 'react-redux'
 import { logScreenView } from '../redux/actions'
+import { CustomHelpCenter } from '../optional/CustomComponents'
 
 const TutorialFirstStack = createStackNavigator(
   { TutorialFirstScreen },
@@ -76,7 +77,7 @@ const EncyclopediaStack = createStackNavigator(
   {
     Encyclopedia: EncyclopediaScreen,
     Articles: ArticlesScreen,
-    FindHelp: FindHelpScreen,
+    FindHelp: CustomHelpCenter?.Screen ?? FindHelpScreen,
   },
   { headerMode: 'none', initialRouteName: 'Encyclopedia' },
 )

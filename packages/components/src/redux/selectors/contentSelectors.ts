@@ -110,3 +110,7 @@ export const allDidYouKnowsSelectors = (state: ReduxState) => {
 
   return filteredArray
 }
+
+export const helpCenterAttributeSelectors = (state: ReduxState) => {
+  return s(state)?.helpCenterAttributes || []
+}

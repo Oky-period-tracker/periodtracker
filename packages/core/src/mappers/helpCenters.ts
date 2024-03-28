@@ -5,7 +5,7 @@ interface HelpCenterResponseItem {
   title: string
   caption: string
   contactOne: string
-  contactTwo: string
+  contactTwo?: string
   address: string
   website: string
   lang: string

@@ -76,7 +76,7 @@ interface HelpCenterResponseItem {
   title: string
   caption: string
   contactOne: string
-  contactTwo: string
+  contactTwo?: string
   address: string
   website: string
   lang: string
@@ -161,3 +161,10 @@ export type AboutBannerConditionalResponse =
   | {
       shouldUpdate: false
     }
+
+export interface HelpCenterAttributesResponse {
+  id: number
+  attributeName: string
+  description: string
+  isActive: boolean
+}

@@ -18,6 +18,7 @@ import { useDispatch } from 'react-redux'
 import { logCategoryView, logSubCategoryView } from '../redux/actions'
 import analytics from '@react-native-firebase/analytics'
 import { VideoData } from '../types'
+import { CustomHelpCenter } from '../optional/CustomComponents'
 
 export function EncyclopediaScreen({ navigation }) {
   const categories = useSelector(selectors.allCategoriesSelector)
@@ -65,6 +66,8 @@ export function EncyclopediaScreen({ navigation }) {
     setTextArray(categoryNames)
   }, [activeCategories])
 
+  const HelpCenterCard = CustomHelpCenter.Card ?? HelpCard
+
   return (
     <BackgroundTheme>
       <PageContainer>
@@ -91,6 +94,9 @@ export function EncyclopediaScreen({ navigation }) {
               articles,
             }}
           />
+
+          <HelpCenterCard isVisible={!searching} position={position} />
+
           {!_.isEmpty(videos) && (
             <Accordion
               sections={[{ videos }]}
@@ -169,20 +175,27 @@ export function EncyclopediaScreen({ navigation }) {
           )}
           <EmptyFill />
         </ScrollView>
-        {!searching && (
-          <AnimatedContainer style={{ transform: [{ translateY: position }] }}>
-            <FloatingContainer onPress={() => navigate('FindHelp', null)}>
-              <Avatar
-                stationary={true}
-                disable={true}
-                textShown={'find help'}
-                isProgressVisible={false}
-              />
-            </FloatingContainer>
-          </AnimatedContainer>
-        )}
       </PageContainer>
     </BackgroundTheme>
+  )
+}
+
+const HelpCard = ({ isVisible, position }: { isVisible: boolean; position: Animated.Value }) => {
+  if (!isVisible) {
+    return null
+  }
+
+  return (
+    <AnimatedContainer style={{ transform: [{ translateY: position }], zIndex: 9999999 }}>
+      <FloatingContainer onPress={() => navigate('FindHelp', null)}>
+        <Avatar
+          stationary={true}
+          disable={true}
+          textShown={'find help'}
+          isProgressVisible={false}
+        />
+      </FloatingContainer>
+    </AnimatedContainer>
   )
 }
 

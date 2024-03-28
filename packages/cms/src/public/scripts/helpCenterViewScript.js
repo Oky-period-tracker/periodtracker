@@ -16,24 +16,17 @@ $(document).ready(() => {
   prepareAttributes()
 
   // Prepare province api
-  $.ajax({
-    url: `/provinces`,
-    type: 'GET',
-    success: (result) => {
-      const provinces = result
-      provinces.sort(function (a, b) {
-        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-      })
-      $.each(provinces, function (i, province) {
-        $('#provinceDropdown').append($('<option />').val(province.name).text(province.name))
-        if (!$('#provinceDropdown').find(':selected').val()) {
-          $('#cityDropdown').attr('disabled', true)
-        }
-      })
-    },
-    error: (error) => {
-      console.log(error)
-    },
+
+  var provinces = JSON.parse($('#provincesJSON').text())
+
+  provinces.sort(function (a, b) {
+    return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+  })
+  $.each(provinces, function (i, province) {
+    $('#provinceDropdown').append($('<option />').val(province.name).text(province.name))
+    if (!$('#provinceDropdown').find(':selected').val()) {
+      $('#cityDropdown').attr('disabled', true)
+    }
   })
 
   // prepare form validator

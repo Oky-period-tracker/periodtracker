@@ -11,6 +11,7 @@ export const SwiperContainer = React.forwardRef<
     pagingEnabled?: boolean
     setIndex?: (args) => void
     onIndexChange?: () => void
+    customDotMarginBottom?: number
   }
 >(
   (
@@ -19,11 +20,17 @@ export const SwiperContainer = React.forwardRef<
       style = {},
       scrollEnabled = null,
       pagingEnabled = null,
-      setIndex = _ => null,
+      setIndex = (_) => null,
       onIndexChange = () => null,
+      customDotMarginBottom,
     },
     ref,
   ) => {
+    let androidMargin = 20
+    if (customDotMarginBottom) {
+      androidMargin = customDotMarginBottom
+    }
+
     return (
       <Swiper
         style={{ ...style }}
@@ -32,7 +39,7 @@ export const SwiperContainer = React.forwardRef<
         pagingEnabled={pagingEnabled || false}
         removeClippedSubviews={false}
         loop={false}
-        onIndexChanged={ind => {
+        onIndexChanged={(ind) => {
           onIndexChange()
           setIndex(ind)
         }}
@@ -42,7 +49,7 @@ export const SwiperContainer = React.forwardRef<
           width: 18,
           height: 18,
           borderRadius: 10,
-          marginBottom: Platform.OS === 'ios' ? 10 : 20,
+          marginBottom: Platform.OS === 'ios' ? 10 : androidMargin,
           elevation: 2,
         }}
         activeDotStyle={{
@@ -50,7 +57,7 @@ export const SwiperContainer = React.forwardRef<
           height: 18,
           borderRadius: 10,
           elevation: 6,
-          marginBottom: Platform.OS === 'ios' ? 10 : 20,
+          marginBottom: Platform.OS === 'ios' ? 10 : androidMargin,
         }}
         ref={ref}
       >

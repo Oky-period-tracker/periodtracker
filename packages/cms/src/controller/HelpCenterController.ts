@@ -4,10 +4,10 @@ import { HelpCenter } from '../entity/HelpCenter'
 import { excelHelpCenterColumns, getExcelData, getFormContents } from '../helpers/HelpCenterService'
 import { bulkUpdateRowReorder } from '../helpers/common'
 import { HelpCenterAttributes } from '../entity/HelpCenterAttributes'
-// import { provinces } from 'psgc'
 import ExcelJS from 'exceljs'
 import fs from 'fs'
 import path from 'path'
+import { helpCenterProvinces } from '../optional'
 
 export class HelpCenterController {
   private helpCenterRepository = getRepository(HelpCenter)
@@ -33,22 +33,22 @@ export class HelpCenterController {
       },
     })
 
-    // const prov = provinces.all()
     const helpCenterAttributes = await this.helpCenterAttributeRepository.find()
 
-    // helpCenters.forEach((helpCenter, hIndex) => {
-    //   prov?.forEach((province) => {
-    //     if (province.name === helpCenter.province) {
-    //       helpCenters[hIndex].province = province
-    //     }
+    helpCenters.forEach((helpCenter, hIndex) => {
+      helpCenterProvinces?.forEach((province) => {
+        if (province.name === helpCenter.province) {
+          helpCenters[hIndex].province = province
+        }
+      })
 
-    //     helpCenterAttributes.forEach((attrib) => {
-    //       if (attrib.id === helpCenter.primaryAttributeId) {
-    //         helpCenters[hIndex].attributeName = attrib.attributeName
-    //       }
-    //     })
-    //   })
-    // })
+      helpCenterAttributes.forEach((attrib) => {
+        if (attrib.id === helpCenter.primaryAttributeId) {
+          helpCenters[hIndex].attributeName = attrib.attributeName
+        }
+      })
+    })
+
     return helpCenters
   }
 
@@ -125,7 +125,7 @@ export class HelpCenterController {
             case 'Address':
               cell.value = helpCenter.address
               break
-            case 'Provider name':
+            case 'Title':
               cell.value = helpCenter.title
               break
             case 'Website':

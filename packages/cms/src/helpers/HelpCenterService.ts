@@ -132,7 +132,7 @@ export const getExcelData = (
 
 export const excelHelpCenterColumns = [
   { name: 'id', value: 'A' },
-  { name: 'Provider name', value: 'B' },
+  { name: 'Title', value: 'B' },
   { name: 'Caption', value: 'C' },
   { name: 'Contact 1', value: 'D' },
   { name: 'Contact 2', value: 'E' },

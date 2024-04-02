@@ -67,30 +67,13 @@ createConnection(ormconfig)
     })
 
     // ======================= i18n Configuration =============================
+    Routes.forEach((route) => {
+      if (route.isPublic) {
+        return
+      }
+      app.use(route.route, Authentication.isLoggedIn)
+    })
 
-    app.use('/quizzes', Authentication.isLoggedIn)
-    app.use('/encyclopedia', Authentication.isLoggedIn)
-    app.use('/data', Authentication.isLoggedIn)
-    app.use('/articles', Authentication.isLoggedIn)
-    app.use('/user', Authentication.isLoggedIn)
-    app.use('/quiz-management', Authentication.isLoggedIn)
-    app.use('/user-management', Authentication.isLoggedIn)
-    app.use('/survey-management', Authentication.isLoggedIn)
-    app.use('/didyouknow-management', Authentication.isLoggedIn)
-    app.use('/suggestions-management', Authentication.isLoggedIn)
-    app.use('/categories-management', Authentication.isLoggedIn)
-    app.use('/categories-management/:id', Authentication.isLoggedIn)
-    app.use('/subcategories-management/:id', Authentication.isLoggedIn)
-    app.use('/notifications-management', Authentication.isLoggedIn)
-    app.use('/analytics-management', Authentication.isLoggedIn)
-    app.use('/help-center-management', Authentication.isLoggedIn)
-    app.use('/privacy-policy-management', Authentication.isLoggedIn)
-    app.use('/about', Authentication.isLoggedIn)
-    app.use('/about-management', Authentication.isLoggedIn)
-    app.use('/about-banner-management', Authentication.isLoggedIn)
-    app.use('/terms-and-conditions-management', Authentication.isLoggedIn)
-    app.use('/avatar-message-management', Authentication.isLoggedIn)
-    app.use('/video-management', Authentication.isLoggedIn)
     app.use('/mobile/suggestions', cors())
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),

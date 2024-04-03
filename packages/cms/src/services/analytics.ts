@@ -154,31 +154,27 @@ export const analyticsQueries = {
   WHERE app_event.type = $1
   ;`,
   countScreenViews: `
-  SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
+  SELECT 
+    COUNT(*) AS count, 
+    COUNT(DISTINCT oky_user.id) AS unique_user_count,
+    COUNT(*) FILTER (WHERE oky_user.id IS NOT NULL) AS logged_in_view_count,
+    COUNT(*) FILTER (WHERE oky_user.id IS NULL) AS logged_out_view_count
   FROM ${schema}.app_event
-  INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
+  LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE app_event.type = 'SCREEN_VIEWED'
-    AND oky_user.gender = COALESCE($1, oky_user.gender)
-    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND (oky_user.gender IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
+    AND (oky_user.location IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
     AND app_event.payload->>'screenName' = $5
-  ;`,
-  countNonLoggedInScreenViews: `
-  SELECT COUNT(*) AS count, COUNT(DISTINCT metadata->>'deviceId') AS unique_device_count
-  FROM ${schema}.app_event
-  WHERE type = 'SCREEN_VIEWED'
-    AND user_id IS NULL
-    AND (app_event.metadata->>'date')::timestamp BETWEEN COALESCE($1, '1970-01-01'::timestamp) AND COALESCE($2, '9999-12-31'::timestamp)
-    AND payload->>'screenName' = $3
   ;`,
   countPredictionSettingsChanges: `
   SELECT 
     Count(*) AS total_changes, 
     Count(*) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = true) AS switched_on, 
     Count(*) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = false) AS switched_off,
-    Count(DISTINCT app_event.user_id) AS total_unique_user_changes, 
-    Count(DISTINCT app_event.user_id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = true) AS unique_user_switched_on, 
-    Count(DISTINCT app_event.user_id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = false) AS unique_user_switched_off
+    Count(DISTINCT oky_user.id) AS total_unique_user_changes, 
+    Count(DISTINCT oky_user.id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = true) AS unique_user_switched_on, 
+    Count(DISTINCT oky_user.id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = false) AS unique_user_switched_off
   FROM ${schema}.app_event
   INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE type = 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE'
@@ -191,8 +187,9 @@ export const analyticsQueries = {
     c.id AS category_id,
     c.title AS category_name,
     COUNT(*) AS total_view_count,
-    COUNT(DISTINCT app_event.user_id) AS unique_user_count,
-    COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
+    COUNT(*) FILTER (WHERE oky_user.id IS NOT NULL) AS logged_in_view_count,
+    COUNT(DISTINCT oky_user.id) AS unique_user_count,
+    COUNT(*) FILTER (WHERE oky_user.id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count,
     c.lang AS category_lang
   FROM ${schema}.category c
@@ -210,8 +207,9 @@ export const analyticsQueries = {
     s.id AS subcategory_id,
     s.title AS subcategory_name,
     COUNT(*) AS total_view_count,
-    COUNT(DISTINCT app_event.user_id) AS unique_user_count,
-    COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
+    COUNT(*) FILTER (WHERE oky_user.id IS NOT NULL) AS logged_in_view_count,
+    COUNT(DISTINCT oky_user.id) AS unique_user_count,
+    COUNT(*) FILTER (WHERE oky_user.id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count,
     s.lang AS subcategory_lang
   FROM ${schema}.subcategory s

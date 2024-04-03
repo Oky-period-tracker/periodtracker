@@ -180,7 +180,10 @@ export class RenderController {
           totalActiveUsers,
         ),
         uniqueUsersPercentage: calculatePercentage(mainScreenViews.unique_user_count, totalUsers),
-        viewsPercentage: calculatePercentage(mainScreenViews.count, totalScreenViews),
+        viewsPercentage: calculatePercentage(
+          mainScreenViews.logged_in_view_count,
+          totalScreenViews,
+        ),
       },
       {
         feature: 'Profile screen',
@@ -196,7 +199,10 @@ export class RenderController {
           profileScreenViews.unique_user_count,
           totalUsers,
         ),
-        viewsPercentage: calculatePercentage(profileScreenViews.count, totalScreenViews),
+        viewsPercentage: calculatePercentage(
+          profileScreenViews.logged_in_view_count,
+          totalScreenViews,
+        ),
       },
       {
         feature: 'Encyclopedia screen',
@@ -212,7 +218,11 @@ export class RenderController {
           encyclopediaScreenViews.unique_user_count,
           totalUsers,
         ),
-        viewsPercentage: calculatePercentage(encyclopediaScreenViews.count, totalScreenViews),
+        viewsPercentage: calculatePercentage(
+          parseInt(encyclopediaScreenViews.logged_in_view_count, 10) +
+            parseInt(encyclopediaScreenViews.logged_out_view_count, 10),
+          totalScreenViews,
+        ),
       },
       {
         feature: 'Calendar screen',
@@ -228,7 +238,10 @@ export class RenderController {
           calendarScreenViews.unique_user_count,
           totalUsers,
         ),
-        viewsPercentage: calculatePercentage(calendarScreenViews.count, totalScreenViews),
+        viewsPercentage: calculatePercentage(
+          calendarScreenViews.logged_in_view_count,
+          totalScreenViews,
+        ),
       },
     ]
 
@@ -241,7 +254,11 @@ export class RenderController {
         loggedOutViews: category.logged_out_view_count,
         activeUsersPercentage: calculatePercentage(category.unique_user_count, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(category.unique_user_count, totalUsers),
-        viewsPercentage: calculatePercentage(category.total_view_count, totalCategoryViews),
+        viewsPercentage: calculatePercentage(
+          parseInt(category.logged_in_view_count, 10) +
+            parseInt(category.logged_out_view_count, 10),
+          totalCategoryViews,
+        ),
         lang: category.category_lang,
       }
     })
@@ -255,7 +272,11 @@ export class RenderController {
         loggedOutViews: subCategory.logged_out_view_count,
         activeUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalUsers),
-        viewsPercentage: calculatePercentage(subCategory.total_view_count, totalSubCategoryViews),
+        viewsPercentage: calculatePercentage(
+          parseInt(subCategory.logged_in_view_count, 10) +
+            parseInt(subCategory.logged_out_view_count, 10),
+          totalSubCategoryViews,
+        ),
         lang: subCategory.subcategory_lang,
       }
     })

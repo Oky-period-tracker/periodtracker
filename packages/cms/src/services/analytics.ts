@@ -148,17 +148,18 @@ export const analyticsQueries = {
     AND oky_user.location = COALESCE($2, oky_user.location)
     ${partials.and_event_date}
   ;`,
+  // The filter is used to exclude users who have been deleted
   countTotalForEvent: `
-  SELECT COUNT(*)
+  SELECT COUNT(*) FILTER (WHERE app_event.user_id IS NULL OR oky_user.id IS NOT NULL)
   FROM ${schema}.app_event
+  LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE app_event.type = $1
   ;`,
   countScreenViews: `
   SELECT 
-    COUNT(*) AS count, 
     COUNT(DISTINCT oky_user.id) AS unique_user_count,
     COUNT(*) FILTER (WHERE oky_user.id IS NOT NULL) AS logged_in_view_count,
-    COUNT(*) FILTER (WHERE oky_user.id IS NULL) AS logged_out_view_count
+    COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count
   FROM ${schema}.app_event
   LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE app_event.type = 'SCREEN_VIEWED'
@@ -186,10 +187,9 @@ export const analyticsQueries = {
   SELECT
     c.id AS category_id,
     c.title AS category_name,
-    COUNT(*) AS total_view_count,
     COUNT(*) FILTER (WHERE oky_user.id IS NOT NULL) AS logged_in_view_count,
     COUNT(DISTINCT oky_user.id) AS unique_user_count,
-    COUNT(*) FILTER (WHERE oky_user.id IS NULL) AS logged_out_view_count,
+    COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count,
     c.lang AS category_lang
   FROM ${schema}.category c
@@ -206,10 +206,9 @@ export const analyticsQueries = {
   SELECT
     s.id AS subcategory_id,
     s.title AS subcategory_name,
-    COUNT(*) AS total_view_count,
     COUNT(*) FILTER (WHERE oky_user.id IS NOT NULL) AS logged_in_view_count,
     COUNT(DISTINCT oky_user.id) AS unique_user_count,
-    COUNT(*) FILTER (WHERE oky_user.id IS NULL) AS logged_out_view_count,
+    COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count,
     s.lang AS subcategory_lang
   FROM ${schema}.subcategory s

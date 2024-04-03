@@ -87,10 +87,6 @@ export class RenderController {
     // Active users
     const { count: totalUsers } = (await entityManager.query(analyticsQueries.countUsers))[0]
 
-    const { count: totalActiveUsers } = (
-      await entityManager.query(analyticsQueries.countActiveUsers, params)
-    )[0]
-
     const countAvatars = await entityManager.query(analyticsQueries.countAvatars, [
       gender,
       location,
@@ -119,6 +115,8 @@ export class RenderController {
     const mainScreenViews = (
       await entityManager.query(analyticsQueries.countScreenViews, [...params, 'MainScreen'])
     )[0]
+
+    const totalActiveUsers = mainScreenViews.unique_user_count
 
     // Profile screen
     const profileScreenViews = (

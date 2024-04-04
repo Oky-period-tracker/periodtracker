@@ -154,16 +154,20 @@ export const analyticsQueries = {
   WHERE app_event.type = $1
   ;`,
   countScreenViews: `
-  SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
+  SELECT 
+    COUNT(*) AS count, 
+    COUNT(DISTINCT user_id) AS unique_user_count,
+    COUNT(*) FILTER (WHERE user_id IS NOT NULL) AS logged_in_view_count,
+    COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count
   FROM ${schema}.app_event
-  INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
+  LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE app_event.type = 'SCREEN_VIEWED'
-    AND oky_user.gender = COALESCE($1, oky_user.gender)
-    AND oky_user.location = COALESCE($2, oky_user.location)
+    AND ($1::text IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
+    AND ($2::text IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
     AND app_event.payload->>'screenName' = $5
   ;`,
-  countNonLoggedInScreenViews: `
+  countLoggedOutScreenViews: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT metadata->>'deviceId') AS unique_device_count
   FROM ${schema}.app_event
   WHERE type = 'SCREEN_VIEWED'
@@ -180,10 +184,10 @@ export const analyticsQueries = {
     Count(DISTINCT app_event.user_id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = true) AS unique_user_switched_on, 
     Count(DISTINCT app_event.user_id) FILTER (WHERE (app_event.payload->>'isFuturePredictionActive')::boolean = false) AS unique_user_switched_off
   FROM ${schema}.app_event
-  INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
+  LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE type = 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE'
-    AND oky_user.gender = COALESCE($1, oky_user.gender)
-    AND oky_user.location = COALESCE($2, oky_user.location)
+  AND ($1::text IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
+  AND ($2::text IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
   ;`,
   countCategoryViews: `
@@ -191,6 +195,7 @@ export const analyticsQueries = {
     c.id AS category_id,
     c.title AS category_name,
     COUNT(*) AS total_view_count,
+    COUNT(*) FILTER (WHERE app_event.user_id IS NOT NULL) AS logged_in_view_count,
     COUNT(DISTINCT app_event.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count,
@@ -200,8 +205,8 @@ export const analyticsQueries = {
     ON app_event.type = 'CATEGORY_VIEWED' AND TRIM(BOTH ' ' FROM c.id::text)::uuid = TRIM(BOTH ' ' FROM app_event.payload->>'categoryId'::text)::uuid
   LEFT JOIN ${schema}.oky_user
     ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
-  WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
-    AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
+  WHERE ($1::text IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
+    AND ($2::text IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
   GROUP BY c.id, c.title
   ;`,
@@ -210,6 +215,7 @@ export const analyticsQueries = {
     s.id AS subcategory_id,
     s.title AS subcategory_name,
     COUNT(*) AS total_view_count,
+    COUNT(*) FILTER (WHERE oky_user.id IS NOT NULL) AS logged_in_view_count,
     COUNT(DISTINCT app_event.user_id) AS unique_user_count,
     COUNT(*) FILTER (WHERE app_event.user_id IS NULL) AS logged_out_view_count,
     COUNT(DISTINCT app_event.metadata->>'deviceId') FILTER (WHERE app_event.metadata->>'deviceId' IS NOT NULL) AS unique_device_count,
@@ -218,18 +224,18 @@ export const analyticsQueries = {
   LEFT JOIN ${schema}.app_event
     ON app_event.type = 'SUBCATEGORY_VIEWED' AND TRIM(BOTH ' ' FROM s.id::text)::uuid = TRIM(BOTH ' ' FROM app_event.payload->>'subCategoryId'::text)::uuid
     LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
-    WHERE (oky_user.id IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
-    AND (oky_user.id IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
+    WHERE ($1::text IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
+    AND ($2::text IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
   GROUP BY s.id, s.title
   ;`,
   countDailyCardUsage: `
   SELECT COUNT(*) AS count, COUNT(DISTINCT user_id) AS unique_user_count
   FROM ${schema}.app_event
-  INNER JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
+  LEFT JOIN ${schema}.oky_user ON TRIM(BOTH ' ' FROM app_event.user_id::text)::uuid = TRIM(BOTH ' ' FROM oky_user.id::text)::uuid
   WHERE app_event.type = 'DAILY_CARD_USED'
-    AND oky_user.gender = COALESCE($1, oky_user.gender)
-    AND oky_user.location = COALESCE($2, oky_user.location)
+  AND ($1::text IS NULL OR oky_user.gender = COALESCE($1, oky_user.gender))
+  AND ($2::text IS NULL OR oky_user.location = COALESCE($2, oky_user.location))
     ${partials.and_event_date}
   ;`,
   countAvatars: `

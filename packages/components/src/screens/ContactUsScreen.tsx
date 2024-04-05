@@ -18,7 +18,7 @@ import { ThemedModal } from '../components/common/ThemedModal'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { contactUsScreenText } from '../config'
 import { navigate } from '../services/navigationService'
-import { hapticAndSoundFeedback } from '../services/tonefeedback'
+import { useHapticAndSound } from '../hooks/useHapticAndSound'
 
 const Reasons = ['reason', 'report_bug', 'request_topic', 'Other', 'problem_app']
 
@@ -32,6 +32,8 @@ export function ContactUsScreen({ navigation }) {
   const [error, setError] = React.useState(false)
   const [isVisible, setIsVisible] = React.useState(false)
   useTextToSpeechHook({ navigation, text: contactUsScreenText({ isVisible }) })
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   async function sendForm() {
     setError(false)
     setIsVisible(false)

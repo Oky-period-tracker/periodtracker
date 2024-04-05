@@ -8,7 +8,7 @@ import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
 import { getAsset } from '../../services/asset'
 import { IS_TABLET } from '../../config/tablet'
-import { hapticAndSoundFeedback } from '../../services/tonefeedback'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export function JourneyCard({
   question,
@@ -32,6 +32,7 @@ export function JourneyCard({
   rightButtonTitle = 'i_remember',
 }) {
   const selectedAvatar = useSelector(selectors.currentAvatarSelector)
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   const onHandleForget = () => {
     hapticAndSoundFeedback('close')

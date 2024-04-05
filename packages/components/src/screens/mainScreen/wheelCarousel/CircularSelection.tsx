@@ -16,7 +16,7 @@ import moment from 'moment'
 import { IS_TABLET } from '../../../config/tablet'
 import { useOrientation } from '../../../hooks/useOrientation'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
-import { hapticAndSoundFeedback } from '../../../services/tonefeedback'
+import { useHapticAndSound } from '../../../hooks/useHapticAndSound'
 
 const { interpolate } = Animated
 
@@ -30,6 +30,7 @@ export function CircularSelection({
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
   const orientation = useOrientation()
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   const heightMultiplier = IS_TABLET && orientation === 'PORTRAIT' ? 0.6 : 0.55
 

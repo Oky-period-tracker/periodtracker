@@ -16,7 +16,7 @@ import styled from 'styled-components/native'
 import { Text } from '../components/common/Text'
 import { ScrollView } from 'react-native-gesture-handler'
 import { themeNames, avatarNames } from '@oky/core'
-import { hapticAndSoundFeedback } from '../services/tonefeedback'
+import { useHapticAndSound } from '../hooks/useHapticAndSound'
 
 export function AvatarAndThemeScreen({ navigation }) {
   const signingUp = navigation.getParam('signingUp')
@@ -24,6 +24,8 @@ export function AvatarAndThemeScreen({ navigation }) {
   const [loading, setLoading] = React.useState(false)
   const selectedAvatar = useSelector(selectors.currentAvatarSelector)
   const dispatch = useDispatch()
+
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   const { id } = useTheme()
 

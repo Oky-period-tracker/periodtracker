@@ -26,6 +26,8 @@ export interface AppState {
   predicted_periods: any
   deviceId?: string
   dailyCardLastUsed?: number
+  isHapticActive?: boolean
+  isSoundActive?: boolean
 }
 
 const initialState: AppState = {
@@ -47,6 +49,8 @@ const initialState: AppState = {
   predicted_cycles: [],
   predicted_periods: [],
   deviceId: uuidv4(),
+  isHapticActive: true,
+  isSoundActive: true,
 }
 
 export function appReducer(state = initialState, action: Actions | RehydrateAction): AppState {
@@ -135,6 +139,16 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
         dailyCardLastUsed: new Date().getTime(),
       }
     }
+    case 'TOGGLE_HAPTIC':
+      return {
+        ...state,
+        isHapticActive: action.payload.isHapticActive,
+      }
+    case 'TOGGLE_SOUND':
+      return {
+        ...state,
+        isSoundActive: action.payload.isSoundActive,
+      }
     default:
       return state
   }

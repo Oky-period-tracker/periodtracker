@@ -2,9 +2,11 @@ import React from 'react'
 import styled from 'styled-components/native'
 import { assets } from '../../assets/index'
 import { Text } from '../../components/common/Text'
-import { hapticAndSoundFeedback } from '../../services/tonefeedback'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export const Switcher = ({ value = false, onSwitch }) => {
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   return (
     <Row>
       <Col>

@@ -3,13 +3,15 @@ import styled from 'styled-components/native'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { Text, TextWithoutTranslation } from '../../components/common/Text'
 import { capitalizeFLetter } from '../../i18n'
-import { hapticAndSoundFeedback } from '../../services/tonefeedback'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export const Category = ({ title, tags, onPress, isActive = false }) => {
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   return (
     <CategoryContainer
-      onPress={async () => {
-        await hapticAndSoundFeedback('general')
+      onPress={() => {
+        hapticAndSoundFeedback('general')
         onPress()
       }}
     >

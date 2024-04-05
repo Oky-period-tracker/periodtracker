@@ -17,12 +17,13 @@ import { SpinLoader } from '../../components/common/SpinLoader'
 import { LanguageSelect } from '../../components/common/LanguageSelect'
 import { useTextToSpeechHook } from '../../hooks/useTextToSpeechHook'
 import { acessSettingsScreenText, WEBSITE_URL } from '../../config'
-import { hapticAndSoundFeedback } from '../../services/tonefeedback'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export function AccessScreen({ navigation }) {
   const locale = useSelector(selectors.currentLocaleSelector)
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   const privacyContent = useSelector(selectors.privacyContent)
   const speechText = privacyContent.map((item) => item.content)

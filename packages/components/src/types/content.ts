@@ -164,7 +164,7 @@ interface CompletedSurveyItem {
   id: string
 }
 
-interface HelpCenterItem {
+export interface HelpCenterItem {
   id: number
   title: string
   caption: string
@@ -173,6 +173,17 @@ interface HelpCenterItem {
   address: string
   website: string
   lang: string
+  isAvailableNationwide?: boolean
+  primaryAttributeId?: string | number
+  otherAttributes?: string
+  isActive?: boolean
+  city?: string
+  province?: {
+    name: string
+    code: string
+  }
+  sotringKey?: number
+  attributeName?: string
 }
 export interface HelpCenters extends Array<HelpCenterItem> {}
 
@@ -184,6 +195,30 @@ interface ContentItem {
 export interface PrivacyPolicy extends Array<ContentItem> {}
 export interface TermsAndConditions extends Array<ContentItem> {}
 export interface About extends Array<ContentItem> {}
+
+export interface IHelpCenterAttributes {
+  id: number
+  attributeName: string
+  description: string
+  isActive: boolean
+}
+
+export enum HelpCenterUI {
+  HC = 'help-centers',
+  SAVED_HC = 'saved-help-centers',
+}
+
+export interface Provinces {
+  name: string
+  region: string
+  municipalities: Municipalities[]
+}
+
+export interface Municipalities {
+  name: string
+  province: string
+  city: boolean
+}
 
 export interface StaticContent {
   locale: string

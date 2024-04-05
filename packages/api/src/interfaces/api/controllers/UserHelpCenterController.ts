@@ -20,7 +20,7 @@ export class UserHelpCenterController {
 
   @Get('/')
   public async findAll(@CurrentUser({ required: true }) userId: string | null | number) {
-    return await this.userHelpCenterApplicationService.findAll({ userId })
+    return await this.userHelpCenterApplicationService.find({ userId })
   }
 
   @Post('/')
@@ -30,6 +30,15 @@ export class UserHelpCenterController {
     { helpCenterId }: any,
   ) {
     await this.userHelpCenterApplicationService.save({ userId, helpCenterId })
-    return this.userHelpCenterApplicationService.findAll({ userId })
+    return this.userHelpCenterApplicationService.find({ userId })
+  }
+
+  @Post('/bulkSave')
+  public async bulkSave(
+    @CurrentUser({ required: true }) userId: string | null | number,
+    @Body()
+    { helpCenterIds }: any,
+  ) {
+    return await this.userHelpCenterApplicationService.bulkSave({ helpCenterIds, userId })
   }
 }

@@ -19,11 +19,19 @@ try {
 let CustomHelpCenter = {
   Screen: undefined,
   Card: undefined,
+  reducer: (state) => state,
+  saga: function* helpCenterSaga() {
+    //
+  },
 }
 try {
   CustomHelpCenter = {
     Screen: require('./CustomComponents/components/CustomHelpCenter').FindHelpScreen,
     Card: require('./CustomComponents/components/CustomHelpCenter/NeedHelpCard').NeedHelpCard,
+    reducer: require('./CustomComponents/components/CustomHelpCenter/redux/helpCenterReducer')
+      .helpCenterReducer,
+    saga: require('./CustomComponents/components/CustomHelpCenter/redux/helpCenterSaga')
+      .helpCenterSaga,
   }
 } catch (e) {
   //

@@ -36,3 +36,7 @@ export const isFuturePredictionActiveSelector = (state: ReduxState) =>
 export const currentDeviceId = (state: ReduxState) => s(state)?.deviceId
 
 export const dailyCardLastUsed = (state: ReduxState) => s(state)?.dailyCardLastUsed
+
+export const isHapticActiveSelector = (state: ReduxState) => s(state).isHapticActive
+
+export const isSoundActiveSelector = (state: ReduxState) => s(state).isSoundActive

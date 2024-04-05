@@ -10,7 +10,7 @@ import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
 import { IS_TABLET } from '../../config/tablet'
-import { hapticAndSoundFeedback } from '../../services/tonefeedback'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 const { Value } = Animated
 
@@ -20,6 +20,8 @@ export function AnimatedContainer({ toggled }) {
   const innerOpacity = React.useRef(new Value(0))
   const [expanded, setExpanded] = React.useState(false)
   const [viewable, setViewable] = React.useState(true)
+
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   const toggle = () => {
     if (expanded) {

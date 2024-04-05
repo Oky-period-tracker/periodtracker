@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { Text } from '../../../components/common/Text'
-import { hapticAndSoundFeedback } from '../../../services/tonefeedback'
+import { useHapticAndSound } from '../../../hooks/useHapticAndSound'
 
 export function SignUpFormLayout({
   children,
@@ -13,6 +13,8 @@ export function SignUpFormLayout({
   isButtonDisabled?: boolean
   isValid?: boolean
 }>) {
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   const tone = isValid ? 'general' : 'warning'
 
   const handleOnPress = async () => {

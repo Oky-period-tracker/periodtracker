@@ -2,10 +2,11 @@ import React from 'react'
 import styled from 'styled-components/native'
 import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
-import { hapticAndSoundFeedback } from '../../services/tonefeedback'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export const SubCategoryCard = ({ title, onPress }) => {
   const { screenWidth } = useScreenDimensions()
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   return (
     <SubCategoryContainer

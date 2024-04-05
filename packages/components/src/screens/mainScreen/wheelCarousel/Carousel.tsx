@@ -14,7 +14,7 @@ import { SpinLoader } from '../../../components/common/SpinLoader'
 import { useOrientation } from '../../../hooks/useOrientation'
 import { IS_TABLET } from '../../../config/tablet'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
-import { hapticAndSoundFeedback } from '../../../services/tonefeedback'
+import { useHapticAndSound } from '../../../hooks/useHapticAndSound'
 
 export function Carousel({
   data,
@@ -27,6 +27,7 @@ export function Carousel({
 }) {
   const { screenWidth, screenHeight } = useScreenDimensions()
   const orientation = useOrientation()
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   let cardWidth = 0.5 * screenWidth
   let cardHeight: string | number = 0.2 * screenHeight

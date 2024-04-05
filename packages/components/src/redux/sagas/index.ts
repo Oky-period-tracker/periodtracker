@@ -5,6 +5,7 @@ import { appSaga } from './appSaga'
 import { authSaga } from './authSaga'
 import { contentSaga } from './contentSaga'
 import { smartPredictionbSaga } from './smartPredictionSaga'
+import { CustomHelpCenter } from '../../optional/CustomComponents'
 
 export function* rootSaga() {
   yield all([
@@ -13,5 +14,7 @@ export function* rootSaga() {
     fork(authSaga),
     fork(contentSaga),
     fork(smartPredictionbSaga),
+    // Optional modules
+    fork(CustomHelpCenter.saga),
   ])
 }

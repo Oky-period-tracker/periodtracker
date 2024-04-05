@@ -1,6 +1,6 @@
-import { Service, Inject } from 'typedi'
-import { getRepository } from 'typeorm'
-import { UserHelpCenter } from '../../domain/oky/UserHelpCenter'
+import { Service } from 'typedi'
+import { In, getRepository, Not } from 'typeorm'
+import { UserHelpCenter } from 'domain/oky/UserHelpCenter'
 
 @Service()
 export class UserHelpCenterApplicationService {
@@ -12,7 +12,7 @@ export class UserHelpCenterApplicationService {
     return this.repo.find({ where: { userId } })
   }
 
-  public async findAll({ userId }: any) {
+  public async find({ userId }: any) {
     return await this.repo.find({ where: { userId } })
   }
 
@@ -33,5 +33,37 @@ export class UserHelpCenterApplicationService {
       helpCenterId,
       lang: '',
     })
+  }
+
+  public async bulkSave({ helpCenterIds, userId }: any) {
+    const toDelete = await this.repo.find({
+      where: {
+        userId,
+        helpCenterId: Not(In(helpCenterIds)),
+      },
+    })
+
+    await this.repo.remove(toDelete)
+
+    const userHelpCenters = await this.repo.find({
+      where: {
+        userId,
+        helpCenterId: In(helpCenterIds),
+      },
+    })
+
+    if (userHelpCenters.length) {
+      const helpCenters = userHelpCenters.map((helpCenter) => {
+        return {
+          userId,
+          helpCenterId: helpCenter.id,
+          lang: '',
+        }
+      })
+
+      return helpCenters
+    }
+
+    return userHelpCenters
   }
 }

@@ -178,10 +178,10 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
 
       return response.data
     },
-    saveHelpCenter: async ({ helpCenterId, token }) => {
-      const response: AxiosResponse<types.HelpCenterResponse> = await axios.post(
-        `${endpoint}/user-help-center`,
-        { helpCenterId },
+    bulkSaveHelpCenter: async ({ helpCenterIds, token }) => {
+      const response: AxiosResponse<types.HelpCenterResponse[]> = await axios.post(
+        `${endpoint}/user-help-center/bulkSave`,
+        { helpCenterIds },
         {
           headers: {
             Authorization: `Bearer ${token}`,

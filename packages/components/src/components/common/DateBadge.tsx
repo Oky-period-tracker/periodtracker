@@ -12,7 +12,7 @@ import {
   useActualCurrentStartDateSelector,
 } from '../../components/context/PredictionProvider'
 import { getAsset } from '../../services/asset'
-import { hapticAndSoundFeedback } from '../../services/tonefeedback'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 function checkForVerifiedDay(cardValues) {
   if (_.has(cardValues, 'periodDay')) {
@@ -72,6 +72,8 @@ export function DateBadge({ dataEntry, style, textStyle = null, showModal, cardV
   const currentCycleInfo = useTodayPrediction()
   const actualCurrentStartDate = useActualCurrentStartDateSelector()
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
+
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   const source = useStatusForSource(
     dataEntry,

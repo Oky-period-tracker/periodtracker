@@ -1,0 +1,231 @@
+<!-- Modalhelp center add -->
+<div
+  class="modal fade bd-example-modal-lg"
+  id="helpCenterModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="helpCenterLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helpCenterLabel">Add/Edit Help Center</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <h5 class="modal-title text-primary mb-3" id="exampleModalLabel">Info</h5>
+        </div>
+        <form novalidate class="help-center-needs-validation" id="help-center-form">
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-12">
+                <label for="exampleInputEmail1" class="form-label">
+                  Title
+                  <span class="required"/>
+                </label>
+                <input type="text" name="title" class="form-control" id="title" aria-describedby="title" required>
+                <div class="invalid-feedback">
+                  This field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-12">
+                <label for="caption">Caption
+                  <span class="required"/>
+                </label>
+                <textarea class="form-control" name="caption" id="caption" style="height: 100px" required></textarea>
+                <div class="invalid-feedback">
+                  This field is required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="mb-3 form-check">
+                <input type="checkbox" value="1" class="form-check-input" id="isAvailableNationwide" name="isAvailableNationwide">
+                <label class="mb-0"  for="nationwide">Is available nationwide (virtual)</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="contactOne" class="form-label">
+                  Contact 1
+                  <span class="required" /> 
+                </label>
+                <input type="text" class="form-control" id="contact1" aria-describedby="emailHelp" required name="contactOne">
+                <div class="invalid-feedback">
+                  This field is required
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="contact2" class="form-label">Contact 2</label>
+                <input type="text" class="form-control" id="contactTwo" aria-describedby="emailHelp" name="contactTwo">
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-6">
+                <label for="province" class="form-label">
+                  Province
+                </label>
+                <select class="form-control" aria-label="Select province" required id="provinceDropdown" name="province" required>
+                  <option value="">Select Province</option>
+                </select>
+                <div class="invalid-feedback">
+                  This field is required
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="City" class="form-label">
+                  City
+                </label>
+                <select class="form-control" aria-label="Select province" required id="cityDropdown" name="city" required disabled>
+                  <option value="N/A">N/A</option>
+                </select>
+                <div class="invalid-feedback">
+                  This field is required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-12">
+                <label for="address" class="form-label">
+                  Address
+                  <span class="required" /> 
+                </label>
+                <input type="text" class="form-control" id="address" aria-describedby="emailHelp" required name="address">
+                <div class="invalid-feedback">
+                  This field is required
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3 website-root">
+            <div id="website-section">
+              <label for="website" class="form-label">Website</label>
+              <div class="web-container">
+                <div class="row mt-2 website-input-group" id="website-input-group">
+                  <div class="col-md-10">
+                    <input type="text" class="no-validate" class="website" aria-describedby="emailHelp" name="website">
+                  </div>
+                  <div class="col-md-2">
+                    <button class="btn btn-danger text-white delete-button" type="button" onclick="deleteWebsite($(this))"><i class="fa-solid fa-trash"></i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-info text-white mt-2" style="text-decoration: none;" id="add-website-btn">
+              <i class="bi bi-plus"></i>Add Website
+            </button>
+          </div>
+          
+
+          <div class="row">
+            <h5 class="modal-title text-primary mb-3" id="exampleModalLabel">Attributes</h5>
+          </div>
+
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-12">
+                <label class="form-label">
+                  Primary attribute
+                  <span class="required" />
+                </label>
+                <select class="form-control" aria-label="Primary attribute select" id="primary-attribute-select" name="primaryAttribute" required>
+                  <option value="" disabled selected>Select attribute..</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <input type="number" hidden name="helpCenterId" value="0" id="formhelpCenterId"/>
+
+          <div class="row" id="other-attributes-container">
+            <div class="col-md-12">
+              <label class="form-label">Other attributes</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= __('Close')%></button>
+            <button type="submit" class="btn btn-primary" id="help-center-submit"><%= __('Confirm')%></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <span id="itemID" hidden></span>
+</div>
+
+<!-- modal confirmation row reorder -->
+<div class="modal fade" tabindex="-1" role="dialog" id="rowReorderModal">
+  <div class="modal-dialog" style="min-width: unset; text-align: initial;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are you sure you want to reorder?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="rowReorderConfirmationBody">
+        <p>Modal body text goes here.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="saveReorder(1)">Save changes</button>
+        <button type="button" class="btn btn-secondary" onclick="saveReorder(0)" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal bulk import -->
+<div class="modal fade" tabindex="-1" role="dialog" id="helpCenterModalImport">
+  <div class="modal-dialog" style="min-width: unset; text-align: initial;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Bulk Upload Help Centers</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body downloadTemplateContainer">
+        <button id="downloadTemplate" class="btn btn-success mb-3">
+          Download & edit the service providers
+          <i class="fa-solid fa-table"></i>
+        </button>
+        <p class="text text-sm text-warning">
+          Please double check excel values to prevent data errors. To delete, please use the system
+        </p>
+        <input 
+          type="file" 
+          id="helpCenterSpreadsheet" 
+          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+        />
+        <p>
+          <small class="text-danger mt-2" id="requiredExcel" hidden>Required to upload file before saving</small>
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="saveHelpCenterSpreadsheet">Save changes</button>
+        <button type="button" class="btn btn-secondary" id="closeSaveHelpCenterSpreadsheet" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

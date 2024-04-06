@@ -10,4 +10,6 @@ export interface PartialStateSnapshot {
   app?: ReduxState['app']
   prediction?: ReduxState['prediction']
   verifiedDates?: VerifiedDates // Not stored top level in redux
+  // Optional
+  helpCenters?: ReduxState['helpCenters']
 }

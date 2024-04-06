@@ -28,6 +28,8 @@ function* syncAppState() {
       app: state.app,
       prediction: state.prediction,
       verifiedDates: state.answer[currentUser?.id]?.verifiedDates,
+      // optional
+      helpCenters: state.helpCenters,
     }
 
     if (_.isEqual(appState, lastAppState)) {

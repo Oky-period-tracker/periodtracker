@@ -16,8 +16,8 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     primaryAttribute,
     otherAttributes,
     isActive,
-    city,
-    province,
+    place,
+    location,
   } = req.body
 
   if (helpCenterPayload) {
@@ -33,8 +33,8 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     helpCenterPayload.contactOne = contactOne
     helpCenterPayload.contactTwo = contactTwo
     helpCenterPayload.address = address
-    helpCenterPayload.city = city
-    helpCenterPayload.province = province
+    helpCenterPayload.place = place
+    helpCenterPayload.location = location
     helpCenterPayload.isAvailableNationwide = isAvailableNationwide ? true : false
     helpCenterPayload.primaryAttributeId = primaryAttribute
     helpCenterPayload.otherAttributes = otherAttributes
@@ -56,8 +56,8 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     otherAttributes,
     isActive: isActive ? true : false,
     lang: req.user.lang,
-    city,
-    province,
+    place,
+    location,
   }
 }
 
@@ -83,8 +83,8 @@ export const getExcelData = (
       primaryAttributeId,
       otherAttributes,
       lang,
-      city,
-      province,
+      place,
+      location,
     ] = cells
 
     const obj = {
@@ -95,8 +95,8 @@ export const getExcelData = (
       contactTwo,
       address,
       website,
-      city,
-      province,
+      place,
+      location,
       lang,
       isAvailableNationwide: Boolean(isAvailableNationwide),
       primaryAttributeId,

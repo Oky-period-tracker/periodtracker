@@ -451,6 +451,10 @@ const prepareEdit = (id) => {
           $(`#primary-attribute-select`).val(result[key])
         }
 
+        if (key == 'isActive') {
+          $('#isActive').attr('checked', !!result[key])
+        }
+
         if (key == 'website') {
           const website = result.website.split(',')
           let toAppend = `            

@@ -66,27 +66,29 @@ $('#provinceDropdown').on('change', (e, params) => {
   $('#cityDropdown').attr('disabled', true)
   $('#cityDropdown').empty()
 
+  var provinces = JSON.parse($('#provincesJSON').text())
+
   const selected = $('#provinceDropdown').find(':selected').val()
+
   if (selected) {
-    $.ajax({
-      url: `/provinces?search=${selected}`,
-      type: 'GET',
-      success: (result) => {
-        const province = result[0]
-        province.municipalities.sort(function (a, b) {
-          return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-        })
-        $.each(province.municipalities, function (i, city) {
-          $('#cityDropdown').append($(`<option id=${city.name}/>`).val(city.name).text(city.name))
-          if (params) {
-            if (params.cityCode === city.name) {
-              $(`#${city.name}`).attr('selected', true)
-            }
-          }
-        })
-        $('#cityDropdown').attr('disabled', false)
-      },
+    const province = provinces.find((item) => item.name === selected)
+
+    if (!province) {
+      return
+    }
+
+    province.municipalities.sort(function (a, b) {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
     })
+    $.each(province.municipalities, function (i, city) {
+      $('#cityDropdown').append($(`<option id=${city.name}/>`).val(city.name).text(city.name))
+      if (params) {
+        if (params.cityCode === city.name) {
+          $(`#${city.name}`).attr('selected', true)
+        }
+      }
+    })
+    $('#cityDropdown').attr('disabled', false)
   }
 })
 
@@ -185,7 +187,7 @@ $('#help-center-form').on('submit', (event) => {
 
   if (!isAvailableNationwide) {
     if (!provinceCity.province || !provinceCity.city) {
-      helpCenterError = `Please select a province, or select available nationwide`
+      helpCenterError = `Please select a province & city, or select available nationwide`
     }
   }
 

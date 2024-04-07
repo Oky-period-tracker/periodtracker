@@ -162,7 +162,7 @@ $('#help-center-form').on('submit', (event) => {
       (name === 'title' && !value) ||
       (name === 'caption' && !value) ||
       (name === 'contactOne' && !value) ||
-      (name === 'address' && !value) ||
+      // (name === 'address' && !value) ||
       (name === 'primaryAttribute' && !value)
     ) {
       helpCenterError = `Please enter a ${name}`
@@ -185,11 +185,11 @@ $('#help-center-form').on('submit', (event) => {
     }
   })
 
-  if (!isAvailableNationwide) {
-    if (!provinceCity.province || !provinceCity.city) {
-      helpCenterError = `Please select a province & city, or select available nationwide`
-    }
-  }
+  // if (!isAvailableNationwide) {
+  //   if (!provinceCity.province || !provinceCity.city) {
+  //     helpCenterError = `Please select a province & city, or select available nationwide`
+  //   }
+  // }
 
   if (!isAttribExist) {
     helpCenterError = 'Please select a primary attribute'

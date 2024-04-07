@@ -151,8 +151,8 @@ $('#help-center-form').on('submit', (event) => {
 
   let provinceCity = { province: '', city: '' }
   let isAvailableNationwide = false
-  let isValid = true
   let isAttribExist = false
+  let helpCenterError = ''
 
   output.forEach((o) => {
     const { name, value } = o
@@ -163,15 +163,15 @@ $('#help-center-form').on('submit', (event) => {
       (name === 'address' && !value) ||
       (name === 'primaryAttribute' && !value)
     ) {
-      isValid = false
-    }
-
-    if (name === 'primaryAttribute') {
-      isAttribExist = true
+      helpCenterError = `Please enter a ${name}`
     }
 
     if (name === 'isAvailableNationwide') {
       isAvailableNationwide = true
+    }
+
+    if (name === 'primaryAttribute') {
+      isAttribExist = true
     }
 
     if (name === 'province') {
@@ -185,21 +185,29 @@ $('#help-center-form').on('submit', (event) => {
 
   if (!isAvailableNationwide) {
     if (!provinceCity.province || !provinceCity.city) {
-      isValid = false
+      helpCenterError = `Please select a province, or select available nationwide`
     }
   }
 
-  if (isValid && isAttribExist) {
-    $.ajax({
-      ...payload,
-      success: (result) => {
-        location.reload()
-      },
-      error: (error) => {
-        console.log(error)
-      },
-    })
+  if (!isAttribExist) {
+    helpCenterError = 'Please select a primary attribute'
   }
+
+  if (helpCenterError) {
+    $('#helpCenterModalError').text(helpCenterError)
+    return
+  }
+
+  $.ajax({
+    ...payload,
+    success: (result) => {
+      location.reload()
+    },
+    error: (error) => {
+      $('#helpCenterModalError').text(error)
+      console.log(error)
+    },
+  })
 })
 
 $('#saveHelpCenterSpreadsheet').on('click', () => {
@@ -380,7 +388,7 @@ const initializeDataTable = (result) => {
     $('#rowReorderModal').modal({ show: true })
     $('#rowReorderConfirmationBody').html(result)
   })
-  loadFilters('helpCenters')
+  // loadFilters('helpCenters')
 }
 
 const deleteWebsite = (action) => {

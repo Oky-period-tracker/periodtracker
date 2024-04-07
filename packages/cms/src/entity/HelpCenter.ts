@@ -24,10 +24,10 @@ export class HelpCenter {
   website: string
 
   @Column({ nullable: true })
-  city: string
+  place: string
 
   @Column({ nullable: true })
-  province: string
+  location: string
 
   @Column()
   lang: string

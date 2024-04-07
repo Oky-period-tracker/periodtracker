@@ -7,7 +7,7 @@ import { HelpCenterAttributes } from '../entity/HelpCenterAttributes'
 import ExcelJS from 'exceljs'
 import fs from 'fs'
 import path from 'path'
-import { helpCenterProvinces } from '../optional'
+import { helpCenterLocations } from '../optional'
 
 export class HelpCenterController {
   private helpCenterRepository = getRepository(HelpCenter)
@@ -36,9 +36,9 @@ export class HelpCenterController {
     const helpCenterAttributes = await this.helpCenterAttributeRepository.find()
 
     helpCenters.forEach((helpCenter, hIndex) => {
-      helpCenterProvinces?.forEach((province) => {
-        if (province.name === helpCenter.province) {
-          helpCenters[hIndex].province = province
+      helpCenterLocations?.forEach((location) => {
+        if (location.name === helpCenter.location) {
+          helpCenters[hIndex].location = location
         }
       })
 
@@ -158,11 +158,11 @@ export class HelpCenterController {
             case 'Language':
               cell.value = helpCenter.lang
               break
-            case 'City':
-              cell.value = helpCenter.city
+            case 'Place':
+              cell.value = helpCenter.place
               break
-            case 'Province':
-              cell.value = helpCenter.province
+            case 'Location':
+              cell.value = helpCenter.location
               break
           }
         })
@@ -257,7 +257,7 @@ export class HelpCenterController {
 
       if (updated.length) {
         const query = `
-            INSERT INTO oky_en.help_center (id, "title", caption, "contactOne", "contactTwo", address, website, city, province, lang, "isAvailableNationwide", "primaryAttributeId", "otherAttributes")
+            INSERT INTO oky_en.help_center (id, "title", caption, "contactOne", "contactTwo", address, website, place, location, lang, "isAvailableNationwide", "primaryAttributeId", "otherAttributes")
             VALUES ${finalPlaceholder}
             ON CONFLICT (id) DO UPDATE
             SET "title" = EXCLUDED."title",
@@ -266,8 +266,8 @@ export class HelpCenterController {
                 "contactTwo" = EXCLUDED."contactTwo",
                 address = EXCLUDED.address,
                 website = EXCLUDED.website,
-                city = EXCLUDED.city,
-                province = EXCLUDED.province,
+                place = EXCLUDED.place,
+                location = EXCLUDED.location,
                 lang = EXCLUDED.lang,
                 "isAvailableNationwide" = EXCLUDED."isAvailableNationwide",
                 "primaryAttributeId" = EXCLUDED."primaryAttributeId",

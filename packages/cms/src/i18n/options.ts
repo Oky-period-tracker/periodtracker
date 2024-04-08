@@ -50,7 +50,6 @@ export const cmsLocales = cmsLanguages.map((lang) => lang.locale)
 let releaseDate = 'Unknown'
 try {
   releaseDate = require('@oky/core/src/modules/translations').appReleaseDate
-  console.log(require('@oky/core/src/modules/translations'))
 } catch (e) {
   //
 }

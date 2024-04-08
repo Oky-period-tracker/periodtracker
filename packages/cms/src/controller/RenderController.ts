@@ -116,44 +116,31 @@ export class RenderController {
     )[0]
 
     // Main screen
-    const { count: totalMainScreenViews, unique_user_count: uniqueUserMainScreenViews } = (
+    const mainScreenViews = (
       await entityManager.query(analyticsQueries.countScreenViews, [...params, 'MainScreen'])
     )[0]
 
     // Profile screen
-    const { count: totalProfileScreenViews, unique_user_count: uniqueUserProfileScreenViews } = (
+    const profileScreenViews = (
       await entityManager.query(analyticsQueries.countScreenViews, [...params, 'ProfileScreen'])
     )[0]
 
     // Encyclopedia screen
-    const {
-      count: totalEncyclopediaScreenViews,
-      unique_user_count: uniqueUserEncyclopediaScreenViews,
-    } = (
+    const encyclopediaScreenViews = (
       await entityManager.query(analyticsQueries.countScreenViews, [...params, 'Encyclopedia'])
     )[0]
 
-    const {
-      count: nonLoggedInEncyclopediaViews,
-      unique_device_count: uniqueDeviceNonLoggedInEncyclopediaViews,
-    } = (
-      await entityManager.query(analyticsQueries.countNonLoggedInScreenViews, [
-        dateFrom,
-        dateTo,
-        'Encyclopedia',
-      ])
+    // Calendar screen
+    const calendarScreenViews = (
+      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'Calendar'])
     )[0]
 
     const categoryViews = await entityManager.query(analyticsQueries.countCategoryViews, params)
+
     const subCategoryViews = await entityManager.query(
       analyticsQueries.countSubCategoryViews,
       params,
     )
-
-    // Calendar screen
-    const { count: totalCalendarScreenViews, unique_user_count: uniqueUserCalendarScreenViews } = (
-      await entityManager.query(analyticsQueries.countScreenViews, [...params, 'Calendar'])
-    )[0]
 
     // Daily cards
     const { count: countDailyCardUsage, unique_user_count: countUniqueUserDailyCardUsage } = (
@@ -173,7 +160,8 @@ export class RenderController {
       feature: string
       definition: string
       uniqueUsers: number
-      views: number
+      views?: number
+      loggedInViews?: number
       loggedOutViews?: number | string
       activeUsersPercentage: number | string
       uniqueUsersPercentage: number | string
@@ -184,45 +172,63 @@ export class RenderController {
       {
         feature: 'Main screen',
         definition: 'Screen viewed',
-        uniqueUsers: uniqueUserMainScreenViews,
-        views: totalMainScreenViews,
+        uniqueUsers: mainScreenViews.unique_user_count,
+        loggedInViews: mainScreenViews.logged_in_view_count,
         loggedOutViews: '-', // Inaccessible to logged out users
-        activeUsersPercentage: calculatePercentage(uniqueUserMainScreenViews, totalActiveUsers),
-        uniqueUsersPercentage: calculatePercentage(uniqueUserMainScreenViews, totalUsers),
-        viewsPercentage: calculatePercentage(totalMainScreenViews, totalScreenViews),
+        activeUsersPercentage: calculatePercentage(
+          mainScreenViews.unique_user_count,
+          totalActiveUsers,
+        ),
+        uniqueUsersPercentage: calculatePercentage(mainScreenViews.unique_user_count, totalUsers),
+        viewsPercentage: calculatePercentage(mainScreenViews.count, totalScreenViews),
       },
       {
         feature: 'Profile screen',
         definition: 'Screen viewed',
-        uniqueUsers: uniqueUserProfileScreenViews,
-        views: totalProfileScreenViews,
+        uniqueUsers: profileScreenViews.unique_user_count,
+        loggedInViews: profileScreenViews.logged_in_view_count,
         loggedOutViews: '-', // Inaccessible to logged out users
-        activeUsersPercentage: calculatePercentage(uniqueUserProfileScreenViews, totalActiveUsers),
-        uniqueUsersPercentage: calculatePercentage(uniqueUserProfileScreenViews, totalUsers),
-        viewsPercentage: calculatePercentage(totalProfileScreenViews, totalScreenViews),
+        activeUsersPercentage: calculatePercentage(
+          profileScreenViews.unique_user_count,
+          totalActiveUsers,
+        ),
+        uniqueUsersPercentage: calculatePercentage(
+          profileScreenViews.unique_user_count,
+          totalUsers,
+        ),
+        viewsPercentage: calculatePercentage(profileScreenViews.count, totalScreenViews),
       },
       {
         feature: 'Encyclopedia screen',
         definition: 'Screen viewed',
-        uniqueUsers: uniqueUserEncyclopediaScreenViews,
-        views: totalEncyclopediaScreenViews,
-        loggedOutViews: nonLoggedInEncyclopediaViews,
+        uniqueUsers: encyclopediaScreenViews.unique_user_count,
+        loggedInViews: encyclopediaScreenViews.logged_in_view_count,
+        loggedOutViews: encyclopediaScreenViews.logged_out_view_count,
         activeUsersPercentage: calculatePercentage(
-          uniqueUserEncyclopediaScreenViews,
+          encyclopediaScreenViews.unique_user_count,
           totalActiveUsers,
         ),
-        uniqueUsersPercentage: calculatePercentage(uniqueUserEncyclopediaScreenViews, totalUsers),
-        viewsPercentage: calculatePercentage(totalEncyclopediaScreenViews, totalScreenViews),
+        uniqueUsersPercentage: calculatePercentage(
+          encyclopediaScreenViews.unique_user_count,
+          totalUsers,
+        ),
+        viewsPercentage: calculatePercentage(encyclopediaScreenViews.count, totalScreenViews),
       },
       {
         feature: 'Calendar screen',
         definition: 'Screen viewed',
-        uniqueUsers: uniqueUserCalendarScreenViews,
-        views: totalCalendarScreenViews,
+        uniqueUsers: calendarScreenViews.unique_user_count,
+        loggedInViews: calendarScreenViews.logged_in_view_count,
         loggedOutViews: '-', // Inaccessible to logged out users
-        activeUsersPercentage: calculatePercentage(uniqueUserCalendarScreenViews, totalActiveUsers),
-        uniqueUsersPercentage: calculatePercentage(uniqueUserCalendarScreenViews, totalUsers),
-        viewsPercentage: calculatePercentage(totalCalendarScreenViews, totalScreenViews),
+        activeUsersPercentage: calculatePercentage(
+          calendarScreenViews.unique_user_count,
+          totalActiveUsers,
+        ),
+        uniqueUsersPercentage: calculatePercentage(
+          calendarScreenViews.unique_user_count,
+          totalUsers,
+        ),
+        viewsPercentage: calculatePercentage(calendarScreenViews.count, totalScreenViews),
       },
     ]
 
@@ -231,11 +237,12 @@ export class RenderController {
         feature: category.category_name,
         definition: 'Category',
         uniqueUsers: category.unique_user_count,
-        views: category.total_view_count,
+        loggedInViews: category.logged_in_view_count,
         loggedOutViews: category.logged_out_view_count,
         activeUsersPercentage: calculatePercentage(category.unique_user_count, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(category.unique_user_count, totalUsers),
         viewsPercentage: calculatePercentage(category.total_view_count, totalCategoryViews),
+        lang: category.category_lang,
       }
     })
 
@@ -244,11 +251,12 @@ export class RenderController {
         feature: subCategory.subcategory_name,
         definition: 'Subcategory',
         uniqueUsers: subCategory.unique_user_count,
-        views: subCategory.total_view_count,
+        loggedInViews: subCategory.logged_in_view_count,
         loggedOutViews: subCategory.logged_out_view_count,
         activeUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalActiveUsers),
         uniqueUsersPercentage: calculatePercentage(subCategory.unique_user_count, totalUsers),
         viewsPercentage: calculatePercentage(subCategory.total_view_count, totalSubCategoryViews),
+        lang: subCategory.subcategory_lang,
       }
     })
 

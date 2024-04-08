@@ -67,7 +67,6 @@ export class AboutBannerController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     const aboutToRemove = await this.aboutBannerRepository.findOne(request.params.id)
-    console.log(aboutToRemove)
     await this.aboutBannerRepository.remove(aboutToRemove)
     return aboutToRemove
   }

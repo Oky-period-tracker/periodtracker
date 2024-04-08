@@ -196,5 +196,10 @@
   "Videos": "Videos",
   "Add Video": "Add Video",
   "app_release_date": "Date app released",
-  "Order": "Order"
+  "Order": "Order",
+  "Bulk import/export": "Bulk import/export",
+  "Provider Name": "Provider Name",
+  "Province": "Province",
+  "City": "City",
+  "Users Disability": "Users Disability"
 }

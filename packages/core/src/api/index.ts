@@ -178,40 +178,6 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
 
       return response.data
     },
-    saveHelpCenter: async ({ helpCenterId, token }) => {
-      const response: AxiosResponse<types.HelpCenterResponse> = await axios.post(
-        `${endpoint}/user-help-center`,
-        { helpCenterId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-
-      return response.data
-    },
-    fetchSavedHelpCenters: async ({ token }) => {
-      const response: AxiosResponse<types.HelpCenterResponse> = await axios.get(
-        `${endpoint}/user-help-center`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-      return response.data
-    },
-    unsaveHelpCenter: async ({ helpCenterId, user, token }) => {
-      const response: AxiosResponse<types.HelpCenterResponse> = await axios.delete(
-        `${endpoint}/user-help-center/${helpCenterId}`,
-        {
-          headers: { Authorization: `Bearer ${token}`, 'x-user': user },
-        },
-      )
-
-      return response.data
-    },
     fetchTermsAndConditions: async ({ locale }: any) => {
       const response: AxiosResponse<types.TermsAndConditionsResponse> = await axios.get(
         `${cmsEndpoint}/mobile/terms-and-conditions/${locale}`,

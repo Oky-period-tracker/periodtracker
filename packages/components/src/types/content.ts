@@ -208,16 +208,14 @@ export enum HelpCenterUI {
   SAVED_HC = 'saved-help-centers',
 }
 
-export interface Provinces {
+export interface Locations {
   name: string
   region: string
-  municipalities: Municipalities[]
+  places: Places[]
 }
 
-export interface Municipalities {
+export interface Places {
   name: string
-  province: string
-  city: boolean
 }
 
 export interface StaticContent {

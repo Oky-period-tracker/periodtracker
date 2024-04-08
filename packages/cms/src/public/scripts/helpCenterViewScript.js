@@ -15,17 +15,15 @@ $(document).ready(() => {
   // GET help center attributes
   prepareAttributes()
 
-  // Prepare province api
+  var locations = JSON.parse($('#locationsJSON').text())
 
-  var provinces = JSON.parse($('#provincesJSON').text())
-
-  provinces.sort(function (a, b) {
+  locations.sort(function (a, b) {
     return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
   })
-  $.each(provinces, function (i, province) {
-    $('#provinceDropdown').append($('<option />').val(province.name).text(province.name))
-    if (!$('#provinceDropdown').find(':selected').val()) {
-      $('#cityDropdown').attr('disabled', true)
+  $.each(locations, function (i, location) {
+    $('#locationDropdown').append($('<option />').val(location.name).text(location.name))
+    if (!$('#locationDropdown').find(':selected').val()) {
+      $('#placeDropdown').attr('disabled', true)
     }
   })
 
@@ -52,41 +50,43 @@ $(document).ready(() => {
 
   $('#isAvailableNationwide').on('change', (e) => {
     if (e.target.checked) {
-      $('#provinceDropdown').attr('disabled', true)
-      $('#provinceDropdown').val(null)
-      $('#cityDropdown').attr('disabled', true)
-      $('#cityDropdown').val(null)
+      $('#locationDropdown').attr('disabled', true)
+      $('#locationDropdown').val(null)
+      $('#placeDropdown').attr('disabled', true)
+      $('#placeDropdown').val(null)
     } else {
-      $('#provinceDropdown').removeAttr('disabled')
+      $('#locationDropdown').removeAttr('disabled')
     }
   })
 })
 
-$('#provinceDropdown').on('change', (e, params) => {
-  $('#cityDropdown').attr('disabled', true)
-  $('#cityDropdown').empty()
+$('#locationDropdown').on('change', (e, params) => {
+  $('#placeDropdown').attr('disabled', true)
+  $('#placeDropdown').empty()
 
-  const selected = $('#provinceDropdown').find(':selected').val()
+  var locations = JSON.parse($('#locationsJSON').text())
+
+  const selected = $('#locationDropdown').find(':selected').val()
+
   if (selected) {
-    $.ajax({
-      url: `/provinces?search=${selected}`,
-      type: 'GET',
-      success: (result) => {
-        const province = result[0]
-        province.municipalities.sort(function (a, b) {
-          return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-        })
-        $.each(province.municipalities, function (i, city) {
-          $('#cityDropdown').append($(`<option id=${city.name}/>`).val(city.name).text(city.name))
-          if (params) {
-            if (params.cityCode === city.name) {
-              $(`#${city.name}`).attr('selected', true)
-            }
-          }
-        })
-        $('#cityDropdown').attr('disabled', false)
-      },
+    const location = locations.find((item) => item.name === selected)
+
+    if (!location) {
+      return
+    }
+
+    location.places.sort(function (a, b) {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
     })
+    $.each(location.places, function (i, place) {
+      $('#placeDropdown').append($(`<option id=${place.name}/>`).val(place.name).text(place.name))
+      if (params) {
+        if (params.placeCode === place.name) {
+          $(`#${place.name}`).attr('selected', true)
+        }
+      }
+    })
+    $('#placeDropdown').attr('disabled', false)
   }
 })
 
@@ -149,10 +149,10 @@ $('#help-center-form').on('submit', (event) => {
     data: output,
   }
 
-  let provinceCity = { province: '', city: '' }
+  let locationPlace = { location: '', place: '' }
   let isAvailableNationwide = false
-  let isValid = true
   let isAttribExist = false
+  let helpCenterError = ''
 
   output.forEach((o) => {
     const { name, value } = o
@@ -160,46 +160,54 @@ $('#help-center-form').on('submit', (event) => {
       (name === 'title' && !value) ||
       (name === 'caption' && !value) ||
       (name === 'contactOne' && !value) ||
-      (name === 'address' && !value) ||
+      // (name === 'address' && !value) ||
       (name === 'primaryAttribute' && !value)
     ) {
-      isValid = false
-    }
-
-    if (name === 'primaryAttribute') {
-      isAttribExist = true
+      helpCenterError = `Please enter a ${name}`
     }
 
     if (name === 'isAvailableNationwide') {
       isAvailableNationwide = true
     }
 
-    if (name === 'province') {
-      provinceCity.province = value
+    if (name === 'primaryAttribute') {
+      isAttribExist = true
     }
 
-    if (name === 'city') {
-      provinceCity.city = value
+    if (name === 'location') {
+      locationPlace.location = value
+    }
+
+    if (name === 'place') {
+      locationPlace.place = value
     }
   })
 
-  if (!isAvailableNationwide) {
-    if (!provinceCity.province || !provinceCity.city) {
-      isValid = false
-    }
+  // if (!isAvailableNationwide) {
+  //   if (!locationPlace.location || !locationPlace.place) {
+  //     helpCenterError = `Please select a location & place, or select available nationwide`
+  //   }
+  // }
+
+  if (!isAttribExist) {
+    helpCenterError = 'Please select a primary attribute'
   }
 
-  if (isValid && isAttribExist) {
-    $.ajax({
-      ...payload,
-      success: (result) => {
-        location.reload()
-      },
-      error: (error) => {
-        console.log(error)
-      },
-    })
+  if (helpCenterError) {
+    $('#helpCenterModalError').text(helpCenterError)
+    return
   }
+
+  $.ajax({
+    ...payload,
+    success: (result) => {
+      location.reload()
+    },
+    error: (error) => {
+      $('#helpCenterModalError').text(error)
+      console.log(error)
+    },
+  })
 })
 
 $('#saveHelpCenterSpreadsheet').on('click', () => {
@@ -248,8 +256,8 @@ const initializeDataTable = (result) => {
     { data: 'contactOne' },
     { data: 'contactTwo' },
     { data: 'address' },
-    { data: 'province' },
-    { data: 'city' },
+    { data: 'location' },
+    { data: 'place' },
     { data: 'website' },
   ]
   $('#helpCenterTable thead tr').clone(true).addClass('filters').appendTo('#helpCenterTable thead')
@@ -380,7 +388,7 @@ const initializeDataTable = (result) => {
     $('#rowReorderModal').modal({ show: true })
     $('#rowReorderConfirmationBody').html(result)
   })
-  loadFilters('helpCenters')
+  // loadFilters('helpCenters')
 }
 
 const deleteWebsite = (action) => {
@@ -428,7 +436,7 @@ const prepareEdit = (id) => {
     type: 'GET',
     success: async (result) => {
       $('#formhelpCenterId').val(id)
-      $('#cityDropdown').attr('disabled', false)
+      $('#placeDropdown').attr('disabled', false)
       $('#helpCenterModal').modal({ show: true })
       for (key in result) {
         if (key !== 'website' && key !== 'otherAttributes' && key !== 'primaryAttributeId') {
@@ -441,6 +449,10 @@ const prepareEdit = (id) => {
 
         if (key == 'primaryAttributeId') {
           $(`#primary-attribute-select`).val(result[key])
+        }
+
+        if (key == 'isActive') {
+          $('#isActive').attr('checked', !!result[key])
         }
 
         if (key == 'website') {
@@ -473,8 +485,8 @@ const prepareEdit = (id) => {
           }
         }
 
-        if (key === 'province') {
-          $('#provinceDropdown').trigger('change', { cityCode: result['city'] })
+        if (key === 'location') {
+          $('#locationDropdown').trigger('change', { placeCode: result['place'] })
         }
       }
     },
@@ -490,21 +502,21 @@ $('#helpCenterModal').on('hidden.bs.modal', function () {
   const keys = [
     'address',
     'caption',
-    'city',
+    'place',
     'contactOne',
     'contactTwo',
     'id',
     'isAvailableNationwide',
     'title',
-    'province',
+    'location',
     'otherAttributes',
   ]
 
   keys.forEach((key) => {
     $(`[name='${key}']`).val('')
-    if (key === 'city') {
-      $(`#cityDropdown`).empty()
-      $(`#cityDropdown`).append('<option selected disabled>N/A</option>')
+    if (key === 'place') {
+      $(`#placeDropdown`).empty()
+      $(`#placeDropdown`).append('<option selected disabled>N/A</option>')
     }
     if (key === 'otherAttributes') {
       $('#other-attributes-container').html('')

@@ -79,21 +79,21 @@
           <div class="mb-3">
             <div class="row">
               <div class="col-md-6">
-                <label for="province" class="form-label">
-                  Province
+                <label for="location" class="form-label">
+                  Location
                 </label>
-                <select class="form-control" aria-label="Select province" required id="provinceDropdown" name="province" required>
-                  <option value="">Select Province</option>
+                <select class="form-control" aria-label="Select location" required id="locationDropdown" name="location" required>
+                  <option value="">Select Location</option>
                 </select>
                 <div class="invalid-feedback">
                   This field is required
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="City" class="form-label">
-                  City
+                <label for="place" class="form-label">
+                  Place
                 </label>
-                <select class="form-control" aria-label="Select province" required id="cityDropdown" name="city" required disabled>
+                <select class="form-control" aria-label="Select location" required id="placeDropdown" name="place" required disabled>
                   <option value="N/A">N/A</option>
                 </select>
                 <div class="invalid-feedback">
@@ -158,11 +158,20 @@
 
           <input type="number" hidden name="helpCenterId" value="0" id="formhelpCenterId"/>
 
+          <input type="checkbox" value="0" class="form-check-input" id="isActive" name="isActive">
+
           <div class="row" id="other-attributes-container">
             <div class="col-md-12">
               <label class="form-label">Other attributes</label>
             </div>
           </div>
+
+          <div class="row" id="other-attributes-container">
+            <div class="col-md-12 d-flex">
+              <label id="helpCenterModalError" class="form-label text-danger ml-auto"></label>
+            </div>
+          </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= __('Close')%></button>
             <button type="submit" class="btn btn-primary" id="help-center-submit"><%= __('Confirm')%></button>

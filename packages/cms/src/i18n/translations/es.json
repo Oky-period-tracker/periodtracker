@@ -205,5 +205,6 @@
   "Bulk import/export": "Bulk import/export",
   "Provider Name": "Provider Name",
   "Province": "Province",
-  "City": "City"
+  "City": "City",
+  "app_release_date": "Fecha de lanzamiento de la aplicación"
 }

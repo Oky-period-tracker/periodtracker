@@ -40,4 +40,10 @@ export class Quiz {
 
   @Column()
   lang: string
+
+  @Column({ default: 0 })
+  ageRestrictionLevel: number
+
+  @Column({ default: 0 })
+  contentFilter: number
 }

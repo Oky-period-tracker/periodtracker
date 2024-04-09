@@ -80,7 +80,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         loginFailedCount: 0,
         user: {
           ...action.payload,
-          isGuest: false,
+          isGuest: true,
         },
       }
 

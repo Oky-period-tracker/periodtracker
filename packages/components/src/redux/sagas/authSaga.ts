@@ -54,6 +54,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         appToken,
         user: {
           ...user,
+          name,
           password,
           isGuest: false,
         },

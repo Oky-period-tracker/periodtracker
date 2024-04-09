@@ -22,6 +22,8 @@ interface OkyUserProps {
   accommodationRequirement?: string
   religion?: string
   encyclopediaVersion?: string
+  city?: string
+  isProfileUpdateSkipped?: boolean
 }
 
 @Entity()
@@ -41,10 +43,14 @@ export class OkyUser {
   @Column({ name: 'location' })
   private location: string
 
-  @Column({ name: 'country', default: '00', nullable: true })
+  @Column({
+    name: 'country',
+    default: 'PH', // @TODO:PH default kept in submodule?
+    nullable: true,
+  })
   private country: string
 
-  @Column({ name: 'province', default: '0', nullable: true })
+  @Column({ name: 'province', default: '', nullable: true })
   private province: string
 
   @Column((type) => HashedPassword)
@@ -77,6 +83,12 @@ export class OkyUser {
   @Column({ name: 'encyclopediaVersion' })
   private encyclopediaVersion: string
 
+  @Column({ name: 'city', default: '', nullable: true })
+  private city: string
+
+  @Column({ name: 'isProfileUpdateSkipped', default: false, nullable: true })
+  private isProfileUpdateSkipped: boolean
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -94,6 +106,8 @@ export class OkyUser {
         accommodationRequirement,
         religion,
         encyclopediaVersion,
+        city,
+        isProfileUpdateSkipped,
       } = props
 
       this.id = id
@@ -111,6 +125,8 @@ export class OkyUser {
       this.accommodationRequirement = accommodationRequirement
       this.religion = religion
       this.encyclopediaVersion = encyclopediaVersion
+      this.city = city
+      this.isProfileUpdateSkipped = isProfileUpdateSkipped
     }
   }
 
@@ -131,6 +147,7 @@ export class OkyUser {
     accommodationRequirement,
     religion,
     encyclopediaVersion,
+    city,
   }: {
     id: string
     name: string
@@ -149,6 +166,7 @@ export class OkyUser {
     accommodationRequirement?: string
     religion?: string
     encyclopediaVersion?: string
+    city?: string
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -178,6 +196,7 @@ export class OkyUser {
       accommodationRequirement,
       religion,
       encyclopediaVersion,
+      city,
     })
   }
 
@@ -198,6 +217,8 @@ export class OkyUser {
     accommodationRequirement,
     religion,
     encyclopediaVersion,
+    isProfileUpdateSkipped,
+    city,
   }: {
     name: string
     dateOfBirth: Date
@@ -209,6 +230,8 @@ export class OkyUser {
     accommodationRequirement?: string
     religion?: string
     encyclopediaVersion?: string
+    city?: string
+    isProfileUpdateSkipped?: boolean
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -224,6 +247,8 @@ export class OkyUser {
     this.accommodationRequirement = accommodationRequirement
     this.religion = religion
     this.encyclopediaVersion = encyclopediaVersion
+    this.city = city
+    this.isProfileUpdateSkipped = isProfileUpdateSkipped
   }
 
   public async editSecretAnswer(previousSecretAnswer: string, nextSecretAnswer: string) {
@@ -305,5 +330,13 @@ export class OkyUser {
 
   public getEncyclopediaVersion() {
     return this.encyclopediaVersion
+  }
+
+  public getCity() {
+    return this.city
+  }
+
+  public getIsProfileUpdateSkipped() {
+    return this.isProfileUpdateSkipped
   }
 }

@@ -16,4 +16,5 @@ export interface SignupCommand {
   accommodationRequirement?: string
   religion?: string
   encyclopediaVersion?: string
+  city?: string
 }

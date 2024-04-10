@@ -196,13 +196,6 @@ export interface PrivacyPolicy extends Array<ContentItem> {}
 export interface TermsAndConditions extends Array<ContentItem> {}
 export interface About extends Array<ContentItem> {}
 
-export interface IHelpCenterAttributes {
-  id: number
-  attributeName: string
-  description: string
-  isActive: boolean
-}
-
 export enum HelpCenterUI {
   HC = 'help-centers',
   SAVED_HC = 'saved-help-centers',

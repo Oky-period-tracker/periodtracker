@@ -161,10 +161,3 @@ export type AboutBannerConditionalResponse =
   | {
       shouldUpdate: false
     }
-
-export interface HelpCenterAttributesResponse {
-  id: number
-  attributeName: string
-  description: string
-  isActive: boolean
-}

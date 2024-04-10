@@ -14,7 +14,6 @@ import {
   AllSurveys,
   CompletedSurveys,
   Videos,
-  IHelpCenterAttributes,
 } from '../../types'
 import { Actions } from '../types/index'
 
@@ -35,7 +34,6 @@ export interface ContentState {
   aboutBanner: string
   allSurveys: AllSurveys
   completedSurveys: CompletedSurveys
-  helpCenterAttributes: IHelpCenterAttributes[]
   videos?: Videos
 }
 
@@ -89,7 +87,6 @@ const initialState: ContentState = {
     byId: {},
     allIds: [],
   },
-  helpCenterAttributes: [],
 }
 
 export function contentReducer(state = initialState, action: Actions): ContentState {
@@ -121,7 +118,6 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
         aboutBannerTimestamp: shouldUpdateBanner
           ? action.payload.aboutBannerTimestamp
           : state.aboutBannerTimestamp,
-        helpCenterAttributes: action.payload.helpCenterAttributes,
       }
     }
 

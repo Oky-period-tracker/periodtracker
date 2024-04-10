@@ -3,15 +3,13 @@ import { NextFunction, Request, Response } from 'express'
 import { HelpCenter } from '../entity/HelpCenter'
 import { excelHelpCenterColumns, getExcelData, getFormContents } from '../helpers/HelpCenterService'
 import { bulkUpdateRowReorder } from '../helpers/common'
-import { HelpCenterAttributes } from '../entity/HelpCenterAttributes'
 import ExcelJS from 'exceljs'
 import fs from 'fs'
 import path from 'path'
-import { helpCenterLocations } from '../optional'
+import { helpCenterData } from '../optional'
 
 export class HelpCenterController {
   private helpCenterRepository = getRepository(HelpCenter)
-  private helpCenterAttributeRepository = getRepository(HelpCenterAttributes)
 
   async all(request: Request, response: Response, next: NextFunction) {
     return this.helpCenterRepository.find({
@@ -33,16 +31,14 @@ export class HelpCenterController {
       },
     })
 
-    const helpCenterAttributes = await this.helpCenterAttributeRepository.find()
-
     helpCenters.forEach((helpCenter, hIndex) => {
-      helpCenterLocations?.forEach((location) => {
+      helpCenterData.locations?.forEach((location) => {
         if (location.name === helpCenter.location) {
           helpCenters[hIndex].location = location
         }
       })
 
-      helpCenterAttributes.forEach((attrib) => {
+      helpCenterData.attributes.forEach((attrib) => {
         if (attrib.id === helpCenter.primaryAttributeId) {
           helpCenters[hIndex].attributeName = attrib.attributeName
         }
@@ -92,7 +88,6 @@ export class HelpCenterController {
 
   async getTemplate(request: Request, res: Response) {
     const helpCenters = await this.helpCenterRepository.find()
-    const helpCenterAttributes = await this.helpCenterAttributeRepository.find()
     if (helpCenters.length) {
       const filePath = path.join(__dirname, '../public/templates/help_center_template.xlsx')
       const workbook = new ExcelJS.Workbook()
@@ -135,7 +130,7 @@ export class HelpCenterController {
               cell.value = helpCenter.isAvailableNationwide ? 'Yes' : ''
               break
             case 'Primary Attribute':
-              helpCenterAttributes.forEach((attrib) => {
+              helpCenterData.attributes.forEach((attrib) => {
                 if (attrib.id === helpCenter.primaryAttributeId) {
                   cell.value = attrib.attributeName
                 }
@@ -145,7 +140,7 @@ export class HelpCenterController {
               let otherAttributes = ''
               if (helpCenter.otherAttributes) {
                 const others = helpCenter.otherAttributes.split(',')
-                helpCenterAttributes.forEach((attrib) => {
+                helpCenterData.attributes.forEach((attrib) => {
                   others.forEach((other) => {
                     if (attrib.id === Number(other)) {
                       otherAttributes += attrib.attributeName + ','
@@ -211,7 +206,7 @@ export class HelpCenterController {
       throw new Error('Excel worksheet does not match the template')
     }
 
-    const excelJSON = getExcelData(workbook, await this.helpCenterAttributeRepository.find())
+    const excelJSON = getExcelData(workbook, helpCenterData.attributes)
     const inserted: HelpCenter[] = []
     const updated = []
 

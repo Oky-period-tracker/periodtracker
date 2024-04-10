@@ -1,8 +1,8 @@
 import { HelpCenter } from 'entity/HelpCenter'
 import { Request } from 'express'
 import ExcelJS from 'exceljs'
-import { HelpCenterAttributes } from 'entity/HelpCenterAttributes'
 import * as fuzz from 'fuzzball'
+import { HelpCenterAttributes } from '@oky/core'
 
 export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) => {
   const {

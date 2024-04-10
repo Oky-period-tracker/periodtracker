@@ -18,7 +18,6 @@ import { TermsAndConditionsController } from './controller/TermsAndConditionsCon
 import { PrivacyPolicyController } from './controller/PrivacyPolicyController'
 import { DataController } from './controller/DataController'
 import { VideoController } from './controller/VideoController'
-import { HelpCenterAttributesController } from './controller/HelpCenterAttributesController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -491,38 +490,6 @@ export const Routes = [
     route: '/help-center-template',
     controller: HelpCenterController,
     action: 'bulkUpdateViaFile',
-  },
-  // ------------ Help Center Attributes Api ----------------
-  {
-    method: 'get',
-    route: '/help-center-attributes',
-    controller: HelpCenterAttributesController,
-    action: 'all',
-    isPublic: true,
-  },
-  {
-    method: 'get',
-    route: '/help-center-attributes-management/:id',
-    controller: HelpCenterAttributesController,
-    action: 'one',
-  },
-  {
-    method: 'post',
-    route: '/help-center-attributes-management',
-    controller: HelpCenterAttributesController,
-    action: 'save',
-  },
-  {
-    method: 'put',
-    route: '/help-center-attributes-management/:id',
-    controller: HelpCenterAttributesController,
-    action: 'update',
-  },
-  {
-    method: 'delete',
-    route: '/help-center-attributes-management/:id',
-    controller: HelpCenterAttributesController,
-    action: 'remove',
   },
 
   // ------------ Privacy Policy Api ----------------

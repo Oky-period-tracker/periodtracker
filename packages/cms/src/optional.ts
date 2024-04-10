@@ -1,9 +1,15 @@
 // tslint:disable:no-var-requires
-let helpCenterLocations = []
+let helpCenterData = {
+  locations: [],
+  attributes: [],
+}
 try {
-  helpCenterLocations = require('@oky/core/src/modules/translations/cms').helpCenterLocations
+  helpCenterData = {
+    locations: require('@oky/core/src/modules/translations/helpCenter').helpCenterLocations,
+    attributes: require('@oky/core/src/modules/translations/helpCenter').helpCenterAttributes,
+  }
 } catch (e) {
   //
 }
 
-export { helpCenterLocations }
+export { helpCenterData }

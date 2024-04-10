@@ -543,23 +543,20 @@ $('#helpCenterModal').on('hidden.bs.modal', function () {
 })
 
 const prepareAttributes = () => {
-  $.ajax({
-    url: '/help-center-attributes',
-    type: 'GET',
-    success: (result) => {
-      const primaryAttributeDropdown = $('#primary-attribute-select')
-      const otherAttributesContainer = $('#other-attributes-container')
-      $.each(result, (key, attribute) => {
-        if (attribute.isActive) {
-          primaryAttributeDropdown.append(
-            $('<option></option>')
-              .attr('value', attribute.id)
-              .attr('required', true)
-              .text(attribute.attributeName),
-          )
+  const attributes = JSON.parse($('#attributesJSON').text())
 
-          otherAttributesContainer.append(
-            ` <div class="col-md-6">
+  const primaryAttributeDropdown = $('#primary-attribute-select')
+  const otherAttributesContainer = $('#other-attributes-container')
+  $.each(attributes, (key, attribute) => {
+    primaryAttributeDropdown.append(
+      $('<option></option>')
+        .attr('value', attribute.id)
+        .attr('required', true)
+        .text(attribute.attributeName),
+    )
+
+    otherAttributesContainer.append(
+      ` <div class="col-md-6">
                   <div class="mb-3 form-check">
                     <input 
                       name="otherAttributes"
@@ -571,13 +568,7 @@ const prepareAttributes = () => {
                     <label class="mb-0" for="${attribute.attributeName}">${attribute.attributeName}</label>
                   </div>
                 </div>`,
-          )
-        }
-      })
-    },
-    error: (error) => {
-      console.log(error)
-    },
+    )
   })
 }
 

@@ -14,7 +14,6 @@ import {
   AllSurveys,
   CompletedSurveys,
   Videos,
-  IHelpCenterAttributes,
 } from '../../types'
 
 export function initStaleContent(payload: {
@@ -71,7 +70,6 @@ export function fetchContentSuccess(payload: {
   about: About
   aboutBanner?: string
   aboutBannerTimestamp?: number
-  helpCenterAttributes: IHelpCenterAttributes[]
 }) {
   return createAction('FETCH_CONTENT_SUCCESS', payload)
 }

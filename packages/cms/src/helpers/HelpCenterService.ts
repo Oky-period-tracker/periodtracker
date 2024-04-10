@@ -1,8 +1,8 @@
 import { HelpCenter } from 'entity/HelpCenter'
 import { Request } from 'express'
 import ExcelJS from 'exceljs'
-import { HelpCenterAttributes } from 'entity/HelpCenterAttributes'
 import * as fuzz from 'fuzzball'
+import { HelpCenterAttribute } from '@oky/core'
 
 export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) => {
   const {
@@ -63,7 +63,7 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
 
 export const getExcelData = (
   workbook: ExcelJS.Workbook,
-  helpCenterAttributes: HelpCenterAttributes[],
+  helpCenterAttributes: HelpCenterAttribute[],
 ) => {
   const excelData = []
   workbook.worksheets[0].eachRow({ includeEmpty: true }, (row) => {

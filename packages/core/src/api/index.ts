@@ -149,7 +149,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       )
       return response.data
     },
-    fetchHelpCenterAttributes: async () => {
+    fetchHelpCenterAttribute: async () => {
       const response: AxiosResponse<any> = await axios.get(`${cmsEndpoint}/help-center-attributes`)
       return response.data
     },

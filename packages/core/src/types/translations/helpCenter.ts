@@ -1,4 +1,4 @@
-export interface HelpCenterAttributes {
+export interface HelpCenterAttribute {
   id: number
   attributeName: string
 }

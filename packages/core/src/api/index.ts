@@ -1,7 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
-import qs from 'qs'
 import * as types from './types'
-export * from './types'
 
 export function createHttpClient(endpoint: string, cmsEndpoint: string, { predictionEndpoint }) {
   return {
@@ -31,6 +29,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       religion,
       encyclopediaVersion,
       preferredId = null,
+      city,
     }: any) => {
       const response: AxiosResponse<types.SignupResponse> = await axios.post(
         `${endpoint}/account/signup`,
@@ -50,6 +49,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
           religion,
           encyclopediaVersion,
           preferredId,
+          city,
         },
       )
       return response.data
@@ -111,6 +111,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       dateOfBirth,
       gender,
       location,
+      city,
       secretQuestion,
     }: any) => {
       const response: AxiosResponse<{}> = await axios.post(
@@ -120,6 +121,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
           dateOfBirth,
           gender,
           location,
+          city,
           secretQuestion,
         },
         {

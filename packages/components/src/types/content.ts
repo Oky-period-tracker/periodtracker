@@ -204,10 +204,10 @@ export enum HelpCenterUI {
 export interface Locations {
   name: string
   region: string
-  places: Places[]
+  places: Place[]
 }
 
-export interface Places {
+export interface Place {
   name: string
 }
 

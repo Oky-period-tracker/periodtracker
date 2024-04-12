@@ -26,6 +26,8 @@ export function fromDidYouKnows(response: DidYouKnowsResponse) {
             isAgeRestricted: didyouknow.isAgeRestricted,
             title: didyouknow.title,
             content: didyouknow.content,
+            ageRestrictionLevel: didyouknow?.ageRestrictionLevel,
+            contentFilter: didyouknow?.contentFilter,
           },
         },
         allIds: data.allIds.concat(id),

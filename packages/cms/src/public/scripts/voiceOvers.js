@@ -1,22 +1,22 @@
-const initializeVoiceOver = () => {
-  const columns = Array.from(document.querySelectorAll("td.voice-over-column"))
-  const columnItems = columns.map(el => {
-    const id = el.getAttribute("data-id")
-    const source = el.getAttribute("data-source")
-    const data = JSON.parse(el.getAttribute("data-json"))
+const initializeVoiceOver = (articles) => {
+  const columnItems = JSON.parse(articles).map(article => {
+    const id = article.id
+    const source = 'article'
+    const data = article
     return { 
       id, 
       source, 
       data,
       url: data.voiceOverUrl,
-      el, 
       loading: false,
       uploading: false,
     }
   })
   
-  function renderVoiceOverItem(item){
-    item.el.innerHTML = ""
+  columnItems.forEach(item => renderVoiceOverItem(item))
+} 
+ function renderVoiceOverItem(item){
+    $(`#article-${item.id}`).html('')
 
     if(item.uploading){
       renderInfo(item, "Uploading voice over...")
@@ -36,20 +36,21 @@ const initializeVoiceOver = () => {
   }
 
   function renderInfo(item, text){
-    item.el.innerHTML = text
+    $(`#article-${item.id}`).html(text)
   }
 
   function renderNoVoiceOver(item){
     const uploadButton = document.createElement("input")
     uploadButton.setAttribute("type", "file")
-    item.el.appendChild(uploadButton)
+    uploadButton.setAttribute("id", `upload-${item.id}`)
+    $(`#article-${item.id}`).append(uploadButton)
     uploadButton.addEventListener("change", (e) => {
       item.uploading = true
       renderVoiceOverItem(item)
       
       const file = e.target.files[0]
       const formData = new FormData()
-      formData.append("id", item.id)
+      formData.append("id", `${item.id} article-${item.id}`)
       formData.append("source", item.source)
       formData.append("file", file)
 
@@ -102,9 +103,6 @@ const initializeVoiceOver = () => {
       }
     })
 
-    item.el.appendChild(audioElement)
-    item.el.appendChild(removeButton)
+    $(`#article-${item.id}`).append(audioElement)
+    $(`#article-${item.id}`).append(removeButton)
   }
-
-  columnItems.forEach(item => renderVoiceOverItem(item))
-} 

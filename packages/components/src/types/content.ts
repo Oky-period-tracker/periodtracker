@@ -177,11 +177,8 @@ export interface HelpCenterItem {
   primaryAttributeId?: string | number
   otherAttributes?: string
   isActive?: boolean
-  city?: string
-  province?: {
-    name: string
-    code: string
-  }
+  place?: string
+  location?: Locations
   sotringKey?: number
   attributeName?: string
 }

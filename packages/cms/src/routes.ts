@@ -1,7 +1,6 @@
 import { RenderController } from './controller/RenderController'
 import { AccessController } from './controller/AccessController'
 import { ArticleController } from './controller/ArticleController'
-import { ContentController } from './controller/ContentController'
 import { QuizController } from './controller/QuizController'
 import { UserController } from './controller/UserController'
 import { DidYouKnowController } from './controller/DidYouKnowController'

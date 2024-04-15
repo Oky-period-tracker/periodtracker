@@ -10416,11 +10416,6 @@ pseudomap@^1.0.1, pseudomap@^1.0.2:
   resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
   integrity sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==
 
-psgc@^2.1.1:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/psgc/-/psgc-2.2.0.tgz#70fc1bb60bbfb554a4e9a378d2d246c251ec3aec"
-  integrity sha512-zwE/k903j5CZY5oPb9S3yRDVLYGczX0Bjwjf+REoZn00nM3tAF5M1cCCJUWcHaBxiXlTItV7BMBbTXLzhxnXww==
-
 pstree.remy@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/pstree.remy/-/pstree.remy-1.1.8.tgz#c242224f4a67c21f686839bbdb4ac282b8373d3a"

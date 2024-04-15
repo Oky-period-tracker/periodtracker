@@ -50,7 +50,7 @@
                 <% } %>
                 <% if(key !='S.No' && key !='Actions' && key !='Next que' ) { %>
                   <td >
-                    <textarea class="form-control input_field validate__input <%= key =='Question' ? 'textarea__input' : 'option__input' %>" data-length="<%= key== 'Question' ? 65 : 20 %>" name="<%= key %>" required="<%= key =='Question' ? true : false%>" rows="2" id="<%= 'col'+index+'TableModal' %>"></textarea>
+                    <textarea class="form-control input_field validate__input <%= key =='Question' ? 'textarea__input' : 'option__input' %>" data-length="<%= key== 'Question' ? 200 : 100 %>" name="<%= key %>" required="<%= key =='Question' ? true : false%>" rows="2" id="<%= 'col'+index+'TableModal' %>"></textarea>
                     <% if(errors && errors.length !==0){ %>
                       <p id="error<%=index%>" style="display: none;">
                         <%= errors[index] %>

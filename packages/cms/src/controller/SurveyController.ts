@@ -50,8 +50,8 @@ export class SurveyController {
       .from(Survey, 'survey')
       .where(
         `survey.lang=:lang and survey.live=:live AND survey.date_created BETWEEN :start_date AND :end_date AND survey.id NOT IN (:...ids)
-      AND (survey.isAgeRestricted=true AND DATE_PART('year', age(:end_date, oky_user.date_of_birth)) > 14 OR survey.isAgeRestricted=false)
-      `,
+        `,
+        // AND (survey.isAgeRestricted=true AND DATE_PART('year', age(:end_date, oky_user.date_of_birth)) > 14 OR survey.isAgeRestricted=false) // TODO:PH why remove this?
         {
           lang: request.params.lang,
           live: true,
@@ -60,7 +60,7 @@ export class SurveyController {
           ids,
         },
       )
-      .leftJoin('oky_user', 'oky_user', 'oky_user.id = :id', { id: request.query.user_id })
+      // .leftJoin('oky_user', 'oky_user', 'oky_user.id = :id', { id: request.query.user_id })  // TODO:PH why remove this?
       .leftJoinAndMapMany('survey.questions', Question, 'question', 'question.surveyId = survey.id')
       .select(['survey', 'question'])
       .getMany()
@@ -136,7 +136,7 @@ export class SurveyController {
       }
     }
     const surveyToUpdate = await this.surveyRepository.findOne(request.params.id)
-    surveyToUpdate.lang = request.user.lang
+    surveyToUpdate.lang = request.user.lang || env.defaultLocale
     if (request.body.live) surveyToUpdate.live = request.body.live === 'true'
     else surveyToUpdate.live = surveyToUpdate.live
     if (request.body.isAgeRestricted)

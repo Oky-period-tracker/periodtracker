@@ -33,7 +33,8 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
       </select>
       <select class="custom-select filter-select filter__form_select" id="currentAge" aria-placeholder="Gender">
         <option value="">Age</option>
-        <% [{
+        <!-- TODO:PH submodule  -->
+        <!-- <% [{
           'Under 10':  'under_10'},
           {'10 to 11': 'between_10_11'},
           {'12 - 13':  'between_12_13'},
@@ -41,7 +42,15 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
           {'16 - 17':  'between_16_17'},
           {'18 - 19':  'between_18_19'},
           {'20 - 21':  'between_20_21'},
-          {'Over 22':  'greater_than_22'}].forEach((item, index) =>{ %>
+          {'Over 22':  'greater_than_22'}].forEach((item, index) =>{ %> -->
+        <% [{
+          'Under 10':  'under_10'},
+          {'10 to 13': 'between_10_13'},
+          {'14 - 16':  'between_14_16'},
+          {'17 - 19':  'between_17_19'},
+          {'20 - 23':  'between_20_23'},
+          {'24 - 30':  'between_24_30'},
+          {'Over 30':  'greater_than_30'}].forEach((item, index) =>{ %>
         <option value="<%= Object.values(item)[0] %>" <%= Object.values(item)[0] == query.age ? "selected" : '' %>><%= Object.keys(item) %></option>
         <% }) %>
       </select>
@@ -76,22 +85,26 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
             <th style="width: 2%"><%= __('Data')%></th>
             <th style="width: 2.5%"><%= __('Response')%></th>
             <th style="width: 1%"><%= __('View')%></th>
+            <th style="width: 2.5%" class="pointer contentFilter"><%= __('Filter')%></th>
             <th style="width: 1%"><%= __('Edit')%></th>
             <th style="width: 1%"><%= __('Delete')%></th>
             <th style="width: 1%"><%= __('Live')%></th>
-            <th style="width: 2.5%"><%= __('Age Restricted')%></th>
+            <!-- TODO:PH Submodule age ranges -->
+            <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= __('All Ages')%></th>
+            <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= __('Age 12')%></th>
+            <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= __('Age 16')%></th>
           </tr>
         </thead>
         <tbody id="surveyContainer" style="overflow-y: scroll">
           <% surveys.forEach((item, index) =>{ %>
-          <tr class="surveyDataRow" id="surveyData__<%=item.id %>">
+          <tr class="surveyDataRow" id="surveyData__<%=item.id %>" data-json="<%= JSON.stringify(item) %>">
             <td><%= index+1 %></td>
             <td><%= item.id %></td>
             <td>
               <%= item.questions.length %>
             </td>
-            <td><%= moment(item.date_created).format("DD/MM/YYYY") %></td>
-            <td><%= moment(item.date_created).add(1, 'months').format("DD/MM/YYYY") %></td>
+            <td><%= item.date_created.getDate()%>/<%= item.date_created.getMonth()+1%>/<%= item.date_created.getFullYear() %></td>
+            <td><span hidden><%= new Date(item.date_created.setMonth(item.date_created.getMonth()+2)).getDate() %></span><%= new Date(item.date_created).getDate()%>/<%= new Date(item.date_created).getMonth() %>/<%= new Date(item.date_created).getFullYear() %></td>
             <td>
               <button
                 type="button"
@@ -108,6 +121,14 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
               <button class="btn show__questions" type="button" data-id="#survey<%=item.id %>">
                 <i class="fas fa-eye" aria-hidden="true"></i>
               </button>
+            </td>
+            <td>
+              <select 
+                class="content-filter-dropdown"
+                data-source="survey"
+                data-id="<%= item.id %>"
+                data-level="<%= item.contentFilter %>"
+                data></select>
             </td>
             <td>
               <button
@@ -135,7 +156,7 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
                 <span class="slider round"></span>
               </label>
             </td>
-            <td>
+            <!-- <td>
               <label class="switch">
                 <input data-value="<%= item.id %>" data-name="isAgeRestricted" class='ageRestrictionCheckbox' type="checkbox" 
                 <%if(item.isAgeRestricted) {%>
@@ -144,7 +165,37 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
                 />
                 <span class="slider round"></span>
               </label>
+            </td> -->
+
+            
+            <td>
+              <input 
+                class="age-restriction-level-radio"
+                data-source="survey"
+                data-id="<%= item.id %>"
+                data-level="0"
+                type="radio" 
+                name="age-<%= item.id %>" <%if(item.ageRestrictionLevel == 0){%>checked<%}%>/>
             </td>
+            <td>
+              <input 
+                class="age-restriction-level-radio"
+                data-source="survey"
+                data-id="<%= item.id %>"
+                data-level="1"
+                type="radio" 
+                name="age-<%= item.id %>" <%if(item.ageRestrictionLevel == 1){%>checked<%}%>/>
+            </td>
+            <td>
+              <input 
+                class="age-restriction-level-radio"
+                data-source="survey"
+                data-id="<%= item.id %>"
+                data-level="2"
+                type="radio" 
+                name="age-<%= item.id %>" <%if(item.ageRestrictionLevel == 2){%>checked<%}%>/>
+            </td>
+
             <td hidden><%= item.date_created %></td>
           </tr>
           <tr>

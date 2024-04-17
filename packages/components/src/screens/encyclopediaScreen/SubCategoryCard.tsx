@@ -4,9 +4,19 @@ import { TextWithoutTranslation, Text } from '../../components/common/Text'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
-export const SubCategoryCard = ({ title, onPress }) => {
+export const SubCategoryCard = ({
+  title,
+  onPress,
+  isSelected,
+}: {
+  title: string
+  onPress: () => void
+  isSelected?: boolean
+}) => {
   const { screenWidth } = useScreenDimensions()
   const hapticAndSoundFeedback = useHapticAndSound()
+
+  const color = isSelected ? '#e3629b' : '#ff9e00'
 
   return (
     <SubCategoryContainer
@@ -17,7 +27,7 @@ export const SubCategoryCard = ({ title, onPress }) => {
       }}
       style={{ left: 0.05 * screenWidth, width: 0.87 * screenWidth }}
     >
-      <Title>{title}</Title>
+      <Title style={{ color }}>{title}</Title>
     </SubCategoryContainer>
   )
 }

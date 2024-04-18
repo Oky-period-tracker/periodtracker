@@ -11,5 +11,7 @@ export function Text({ children, style = null, enableTranslate = true, ...props 
 }
 
 export function TextWithoutTranslation(props) {
-  return <Text style={{ color: '#000' }} enableTranslate={false} {...props} />
+  const color = props?.color ? props.color : '#000'
+
+  return <Text style={{ color }} enableTranslate={false} {...props} />
 }

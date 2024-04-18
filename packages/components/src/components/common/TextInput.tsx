@@ -71,7 +71,7 @@ export const TextInput = ({
             onEndEditing={onEndEditing}
             placeholderTextColor={placeholderColor || '#28b9cb'}
             keyboardType={keyboardType || 'default'}
-            style={[{ color: '#555' }, ...inputStyle]}
+            style={[{ color: '#555', ...inputStyle }]}
             secureTextEntry={secureTextEntry}
             value={value}
           />

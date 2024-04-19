@@ -11,18 +11,21 @@ import { useSelector } from '../../../hooks/useSelector'
 import * as selectors from '../../../redux/selectors'
 import { translate } from '../../../i18n'
 import { FAST_SIGN_UP } from '../../../config'
-import { AppAssets } from '@oky/core'
+import { AppAssets, countries, provinces } from '@oky/core'
 
 export function AskLocation({ step, createAccount }) {
   const [{ app: state }, dispatch] = useMultiStepForm()
   const lang = useSelector(selectors.currentLocaleSelector)
   const { country, province, location } = state
-  const [derivedCountry, setDerivedCountry] = React.useState(
+
+  const [derivedCountry, setDerivedCountry] = React.useState<{ code: string; item: string }>(
     FAST_SIGN_UP ? { code: 'AF', item: 'Afghanistan' } : null,
   )
+
   const [derivedProvince, setDerivedProvince] = React.useState(
     FAST_SIGN_UP ? { code: '15', item: 'Ghazni' } : null,
   )
+
   const [notValid, setNotValid] = React.useState(false)
 
   React.useEffect(() => {
@@ -41,6 +44,41 @@ export function AskLocation({ step, createAccount }) {
   }
 
   const locations: Array<keyof AppAssets['static']['icons']> = ['Urban', 'Rural']
+
+  const filteredCountryCode = derivedCountry ? derivedCountry.code : null
+
+  const serializeLocation = (obj: { item: string; code: string }) => {
+    if (!obj) return
+    const { item, code } = obj
+    return `${item}, ${code}`
+  }
+
+  const deserializeLocation = (serializedLocation: string) => {
+    const [item, code] = serializedLocation.split(', ')
+    return { item, code }
+  }
+
+  const countryItems = React.useMemo(() => {
+    return _.uniq(
+      Object.entries(countries).map(([code, c]) => serializeLocation({ item: c[lang], code })),
+    )
+  }, [filteredCountryCode])
+
+  const provinceItems = React.useMemo(() => {
+    if (filteredCountryCode) {
+      const filteredProvinces = provinces.filter(
+        ({ code, uid }) => code === filteredCountryCode || uid === 0,
+      )
+
+      return _.uniq(
+        filteredProvinces.map((item) =>
+          serializeLocation({ item: item[lang], code: item.uid.toString() }),
+        ),
+      )
+    }
+
+    return _.uniq(provinces.map((item) => serializeLocation({ item: item[lang], code: item.code })))
+  }, [filteredCountryCode])
 
   return (
     <SignUpFormLayout
@@ -63,22 +101,24 @@ export function AskLocation({ step, createAccount }) {
         }}
       >
         <ModalSearchBox
+          currentItem={derivedCountry?.item}
+          items={countryItems}
           isValid={derivedCountry !== null}
           hasError={notValid && derivedCountry === null}
-          lang={lang}
           containerStyle={{
             height: 45,
             borderRadius: 22.5,
             marginBottom: 10,
           }}
-          location={derivedCountry}
-          onSelection={setDerivedCountry}
+          onSelection={(value) => setDerivedCountry(deserializeLocation(value))}
           height={45}
-          buttonStyle={{ right: 5, bottom: 7 }}
+          placeholder={'country'}
           searchInputPlaceholder={`search_country`}
           accessibilityLabel={translate('search_country')}
         />
         <ModalSearchBox
+          currentItem={derivedProvince?.item}
+          items={provinceItems}
           isValid={derivedProvince !== null}
           hasError={notValid && derivedProvince === null}
           containerStyle={{
@@ -86,13 +126,11 @@ export function AskLocation({ step, createAccount }) {
             borderRadius: 22.5,
             marginBottom: 10,
           }}
-          lang={lang}
-          isCountrySelector={false}
-          filterCountry={derivedCountry}
-          location={derivedProvince}
-          onSelection={setDerivedProvince}
+          onSelection={(value) => {
+            setDerivedProvince(deserializeLocation(value))
+          }}
           height={45}
-          buttonStyle={{ right: 5, bottom: 7 }}
+          placeholder={'province'}
           searchInputPlaceholder={`search_province`}
         />
         <LocationText>location</LocationText>

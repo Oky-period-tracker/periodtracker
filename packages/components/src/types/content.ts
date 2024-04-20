@@ -7,6 +7,9 @@ export interface Articles {
       category: string
       subCategory: string
       live?: boolean
+      isAgeRestricted: boolean
+      ageRestrictionLevel: number
+      contentFilter: number
     }
   }
   allIds: string[]
@@ -49,7 +52,6 @@ export interface Categories {
           emoji: string
         }
       }
-      videos?: string[]
       subCategories: string[]
     }
   }
@@ -75,6 +77,8 @@ export interface DidYouKnows {
       title: string
       content: string
       live?: boolean
+      ageRestrictionLevel: number
+      contentFilter: number
     }
   }
   allIds: string[]
@@ -83,7 +87,6 @@ export interface DidYouKnows {
 export interface Quiz {
   id: string
   isAgeRestricted: boolean
-  topic?: string
   question: string
   answers: Array<{
     text: string
@@ -94,7 +97,8 @@ export interface Quiz {
     correct: string
     in_correct: string
   }
-  live?: boolean
+  ageRestrictionLevel: number
+  contentFilter: number
 }
 
 export interface Quizzes {
@@ -179,9 +183,10 @@ export interface HelpCenterItem {
   isActive?: boolean
   place?: string
   location?: Locations
-  sotringKey?: number
+  sortingKey?: number
   attributeName?: string
 }
+
 export interface HelpCenters extends Array<HelpCenterItem> {}
 
 interface ContentItem {

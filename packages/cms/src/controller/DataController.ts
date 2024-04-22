@@ -437,24 +437,52 @@ export class DataController {
       return response.status(400).send('No file was uploaded.')
     }
 
-    const locale = request.body.locale?.length ? request.body.locale : request.user.lang
+    // const locale = request.body.locale?.length ? request.body.locale : request.user.lang
+    const locale = 'en'
+
+    const sheetNamesBlacklist = ['Read me!', 'Topic summary']
+
+    const encyclopediaSheetNames = [
+      'Module 1 Menstruation',
+      'Module 2 Management',
+      'Module 3 Health',
+      'Module 4 Puberty',
+      'Module 5 Family Planning',
+      'Module 6 Boys & Relationships',
+      'Module 7 Myths & Feelings',
+      'Module 8 Periods&Life',
+      'Module 9 Personal Identity',
+      'Module 10 Violence&Staying Safe',
+      'Module 11 My Rights',
+      'Module 12 Mental Health',
+      'Module 13 COVID-19',
+      'Module 14 Using Oky',
+      'Content Not Live in Global App',
+    ]
+    // 'Module 15 User Stories',
+
+    const otherSheetNames = ['Help Centres', 'Content Sources']
 
     // Create a workbook from the xlsx data
     const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
 
-    const otherSheetNames = [
-      'Quizzes',
-      'Did you know',
-      'Help',
-      'Avatars',
-      'Privacy',
-      'Terms',
-      'About',
-    ]
+    // console.log('***', workbook.SheetNames)
 
-    const encyclopediaSheetNames = workbook.SheetNames.filter(
-      (name) => !otherSheetNames.includes(name),
-    )
+    // const otherSheetNames = [
+    //   'Quizzes',
+    //   'Did you know',
+    //   'Help',
+    //   'Avatars',
+    //   'Privacy',
+    //   'Terms',
+    //   'About',
+    // ]
+
+    // const encyclopediaSheetNames = workbook.SheetNames.filter(
+    //   (name) => !otherSheetNames.includes(name),
+    // )
+
+    //
 
     const encyclopediaJson = encyclopediaSheetNames.reduce((acc, name) => {
       const worksheet = workbook.Sheets[name]
@@ -465,49 +493,102 @@ export class DataController {
       return [...acc, ...sheetJson]
     }, [])
 
-    const otherJson = otherSheetNames.reduce((acc, name) => {
-      const worksheet = workbook.Sheets[name]
-      if (!worksheet) {
-        return acc
+    // console.log('*** encyclopediaJson', encyclopediaJson)
+
+    const transformedJSON = []
+
+    let category_title = ''
+    let cat_id = ''
+    let primary_emoji = ''
+    let subcategory_title = ''
+    let subcat_id = ''
+
+    encyclopediaJson.forEach((row) => {
+      const no = row['No.'] ?? row['__EMPTY'] ?? undefined
+      const noString = no ? no.toString() : ''
+      // try {
+      const digits = noString ? noString.split('.').length : 0
+
+      const isCat = digits === 1
+      const isSubcat = digits === 2
+      const isArticle = digits === 3
+
+      // console.log('*** ', digits, { isCat, isSubcat, isArticle })
+
+      if (isCat) {
+        category_title = row['TOPIC AREA']
+        cat_id = uuidv4()
+        primary_emoji =
+          row[
+            'Suggested user age range (countries can advise). Note: there is currently no feature on the CMS to restrict the encyclopedia content by age - only the quizzes and did you knows. In the absence of this, COs and partners can decide which content to make live and which not to'
+          ]
+        return
       }
-      const sheetJson = xlsx.utils.sheet_to_json(worksheet)
-      const json = removeOriginals(sheetJson)
-      return { ...acc, [name]: json }
-    }, {})
 
-    // Generate new Ids for everything if it is a new locale
-    const isNewLocale = !content[locale]
+      if (isSubcat) {
+        subcategory_title = row['TOPIC AREA']
+        subcat_id = uuidv4()
+        return
+      }
 
-    const { articles, categories, subCategories } = formatEncyclopediaData(
-      encyclopediaJson,
-      isNewLocale,
-    )
+      if (!isArticle) {
+        return
+      }
 
-    const quizzesJson = replaceIdsInJson(
-      otherJson['Quizzes'],
-      otherJson['Quizzes'].map((item) => item.id),
-      isNewLocale,
-    )
+      transformedJSON.push({
+        id: uuidv4(),
+        category_title,
+        cat_id,
+        subcategory_title,
+        subcat_id,
+        article_heading: row['Questions'],
+        article_text: row['Answers'],
+        primary_emoji,
+        primary_emoji_name: row['Emoji tag'],
+        lang: 'en',
+      })
+    })
 
-    const { quizzes } = fromQuizzes(quizzesJson)
+    // const otherJson = otherSheetNames.reduce((acc, name) => {
+    //   const worksheet = workbook.Sheets[name]
+    //   if (!worksheet) {
+    //     return acc
+    //   }
+    //   const sheetJson = xlsx.utils.sheet_to_json(worksheet)
+    //   const json = removeOriginals(sheetJson)
+    //   return { ...acc, [name]: json }
+    // }, {})
 
-    const didYouKnowsJson = replaceIdsInJson(
-      otherJson['Did you know'],
-      otherJson['Did you know'].map((item) => item.id),
-      isNewLocale,
-    )
+    // // Generate new Ids for everything if it is a new locale
+    // const isNewLocale = !content[locale]
 
-    const { didYouKnows } = fromDidYouKnows(didYouKnowsJson)
+    const { articles, categories, subCategories } = formatEncyclopediaData(transformedJSON, false)
 
-    const avatarMessagesJson = replaceIdsInJson(
-      otherJson['Avatars'],
-      otherJson['Avatars'].map((item) => item.id),
-      isNewLocale,
-    )
+    // const quizzesJson = replaceIdsInJson(
+    //   otherJson['Quizzes'],
+    //   otherJson['Quizzes'].map((item) => item.id),
+    //   isNewLocale,
+    // )
 
-    const { avatarMessages } = fromAvatarMessages(avatarMessagesJson)
+    // const { quizzes } = fromQuizzes(quizzesJson)
 
-    // ========== File ========== //
+    // const didYouKnowsJson = replaceIdsInJson(
+    //   otherJson['Did you know'],
+    //   otherJson['Did you know'].map((item) => item.id),
+    //   isNewLocale,
+    // )
+
+    // const { didYouKnows } = fromDidYouKnows(didYouKnowsJson)
+
+    // const avatarMessagesJson = replaceIdsInJson(
+    //   otherJson['Avatars'],
+    //   otherJson['Avatars'].map((item) => item.id),
+    //   isNewLocale,
+    // )
+
+    // const { avatarMessages } = fromAvatarMessages(avatarMessagesJson)
+
+    // // ========== File ========== //
     const fileContent = `
       // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
       import { StaticContent } from '../../../types'
@@ -517,13 +598,13 @@ export class DataController {
         categories: ${JSON.stringify(categories)},
         subCategories: ${JSON.stringify(subCategories)},
         articles: ${JSON.stringify(articles)},
-        quizzes: ${JSON.stringify(quizzes)},
-        didYouKnows: ${JSON.stringify(didYouKnows)},
-        helpCenters: ${JSON.stringify(otherJson['Help'])},
-        avatarMessages: ${JSON.stringify(avatarMessages)},
-        privacyPolicy: ${JSON.stringify(otherJson['Privacy'])},
-        termsAndConditions: ${JSON.stringify(otherJson['Terms'])},
-        about: ${JSON.stringify(otherJson['About'])},
+        quizzes: { byId: {}, allIds: [] },
+        didYouKnows: { byId: {}, allIds: [] },
+        helpCenters: [],
+        avatarMessages: [],
+        privacyPolicy: [],
+        termsAndConditions: [],
+        about: [],
         aboutBanner: '',
       }
       `
@@ -534,6 +615,8 @@ export class DataController {
     response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
     response.setHeader('Content-type', 'text/plain')
     response.send(fileContent) // Send the file data as a response
+
+    // response.send(transformedJSON)
   }
 
   async generateAppTranslationsSheet(request: Request, response: Response, next: NextFunction) {

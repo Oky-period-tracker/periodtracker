@@ -50,6 +50,11 @@ export function Login() {
       </Container>
       <Touchable
         onPress={() => {
+          if (!password || !name) {
+            hapticAndSoundFeedback('warning')
+            return
+          }
+
           setLoading(true)
           requestAnimationFrame(() => {
             dispatch(actions.loginRequest({ name, password: _.toLower(password).trim() }))

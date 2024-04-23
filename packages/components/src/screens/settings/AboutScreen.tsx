@@ -16,6 +16,7 @@ export const AboutScreen = ({ navigation }) => {
   const aboutBanner = useSelector(selectors.aboutBanner)
   const locale = useSelector(selectors.currentLocaleSelector)
 
+  // TODO:PH ph has 2 about banner images, need to combine into 1 image
   const iconSource = aboutBanner ? { uri: aboutBanner } : assets.general.aboutBanner[locale]
 
   useTextToSpeechHook({ navigation, text: aboutScreenText() })

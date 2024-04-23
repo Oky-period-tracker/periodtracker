@@ -519,4 +519,6 @@ export interface AppTranslations {
   profile_update_text?: string
   profile_update_formTitle?: string
   profile_update_formError?: string
+  //
+  disclaimer?: string
 }

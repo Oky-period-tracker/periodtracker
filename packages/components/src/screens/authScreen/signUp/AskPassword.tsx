@@ -57,6 +57,10 @@ export function AskPassword({ step, heightInner }) {
           overflow: 'hidden',
         }}
       >
+        {/* TODO:PH */}
+        {/* {formSubmitted && !selectedQuestion && (
+          <ErrorMessage>Pakisagutan ang bahaging ito</ErrorMessage>
+        )} */}
         <VerticalSelectBox
           items={secretQuestions.map((questions) => (questions ? questions : ''))}
           containerStyle={{
@@ -73,6 +77,8 @@ export function AskPassword({ step, heightInner }) {
           errorHeading="secret_q_error_heading"
           errorContent="secret_que_info"
         />
+        {/* TODO:PH */}
+        {/* {formSubmitted && !answer && <ErrorMessage>Pakisagutan ang bahaging ito</ErrorMessage>} */}
         <TextInput
           inputStyle={{ color: '#555' }}
           onChange={(value) =>
@@ -96,3 +102,8 @@ const Container = styled.View`
   justify-content: center;
   align-items: center;
 `
+// const ErrorMessage = styled(TextWithoutTranslation)`
+//   font-size: 12
+//   margin-top: 10px;
+//   color: red;
+// `

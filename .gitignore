@@ -7,3 +7,4 @@ yarn-error.log
 /bin/modules/urls.sh
 *.env
 config
+packages/app/.expo

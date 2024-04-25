@@ -20,6 +20,7 @@ export interface User {
   accommodationRequirement?: string
   religion?: string
   encyclopediaVersion?: string
+  city?: string
 }
 
 export interface AuthState {

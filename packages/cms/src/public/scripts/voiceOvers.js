@@ -1,6 +1,4 @@
 const initializeVoiceOver = (articles) => {
-  console.log('initializeVoiceOver', articles)
-
   const columnItems = JSON.parse(articles).map((article) => {
     const id = article.id
     const source = 'article'
@@ -9,7 +7,7 @@ const initializeVoiceOver = (articles) => {
       id,
       source,
       data,
-      url: data.voiceOverUrl,
+      url: data.voiceOverKey,
       loading: false,
       uploading: false,
     }
@@ -18,31 +16,21 @@ const initializeVoiceOver = (articles) => {
   columnItems.forEach((item) => renderVoiceOverItem(item))
 }
 function renderVoiceOverItem(item) {
-  // console.log('renderVoiceOverItem', item)
-
   $(`#article-${item.id}`).html('')
 
   if (item.uploading) {
-    console.log('A')
-
     renderInfo(item, 'Uploading voice over...')
     return
   }
 
   if (item.loading) {
-    console.log('B')
-
     renderInfo(item, 'Loading...')
     return
   }
 
-  if (item.data.voiceOverUrl) {
-    console.log('C')
-
+  if (item.data.voiceOverKey) {
     renderHasVoiceOver(item)
   } else {
-    console.log('D')
-
     renderNoVoiceOver(item)
   }
 }
@@ -55,7 +43,6 @@ function renderNoVoiceOver(item) {
   const uploadButton = document.createElement('input')
   uploadButton.setAttribute('type', 'file')
   uploadButton.setAttribute('id', `upload-${item.id}`)
-  console.log($(`#article-${item.id}`))
   $(`#article-${item.id}`).append(uploadButton)
   uploadButton.addEventListener('change', (e) => {
     item.uploading = true
@@ -67,8 +54,6 @@ function renderNoVoiceOver(item) {
     formData.append('source', item.source)
     formData.append('file', file)
 
-    console.log('uploading file ...', formData)
-
     axios
       .post('/api/voice-over/article/upload', formData, {
         headers: {
@@ -77,17 +62,12 @@ function renderNoVoiceOver(item) {
       })
       .then(({ data }) => {
         item.data = data
-        console.log('response', data)
       })
       .catch((error) => {
-        console.log('error', error)
-
         console.warn(error)
         alert('Something went wrong with uploading the file!')
       })
       .then(() => {
-        console.log('finished')
-
         item.uploading = false
         renderVoiceOverItem(item)
       })
@@ -96,7 +76,7 @@ function renderNoVoiceOver(item) {
 
 function renderHasVoiceOver(item) {
   //
-  const voiceOverUrl = window.VOICE_OVER_BASE_URL + item.data.voiceOverUrl
+  const voiceOverUrl = `${window.VOICE_OVER_BASE_URL}/${item.data.voiceOverKey}`
 
   const audioElement = document.createElement('audio')
   audioElement.setAttribute('controls', '')

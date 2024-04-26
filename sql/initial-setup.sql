@@ -338,7 +338,6 @@ ADD "sortingKey" integer DEFAULT nextval('periodtracker.help_center_sorting_key'
 ----
 
 ALTER TABLE "periodtracker".article
-ADD "voiceOverUrl" text DEFAULT NULL,
 ADD "voiceOverKey" text DEFAULT NULL;
 
 

@@ -80,7 +80,6 @@ export class ArticleVoiceOverController {
     const newTarget = {
       ...target,
       voiceOverKey: Key,
-      voiceOverUrl: '/' + Key,
     }
     console.log('*** upload C')
 
@@ -109,7 +108,6 @@ export class ArticleVoiceOverController {
     const newTarget = {
       ...target,
       voiceOverKey: null,
-      voiceOverUrl: null,
     }
 
     await this.articleRepository.save(newTarget)

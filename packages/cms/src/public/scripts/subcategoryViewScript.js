@@ -414,7 +414,7 @@ const initializeDataTable = (result) => {
       },
     },
     {
-      data: 'voiceOverUrl',
+      data: 'voiceOverKey',
       render: (_, __, rowPayload) => {
         return `
           <td

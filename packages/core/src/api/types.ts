@@ -9,6 +9,9 @@ export interface EncyclopediaResponseItem {
   primary_emoji: string
   primary_emoji_name: string
   lang: string
+  isAgeRestricted: boolean
+  ageRestrictionLevel: number
+  contentFilter: number
   live: boolean
 }
 export interface EncyclopediaResponse extends Array<EncyclopediaResponseItem> {}
@@ -37,6 +40,8 @@ interface QuizResponseItem {
   right_answer_response: string
   lang: string
   live: boolean
+  ageRestrictionLevel: number
+  contentFilter: number
 }
 export interface QuizzesResponse extends Array<QuizResponseItem> {}
 
@@ -68,6 +73,8 @@ interface DidYouKnowResponseItem {
   content: string
   lang: string
   live: boolean
+  ageRestrictionLevel: number
+  contentFilter: number
 }
 export interface DidYouKnowsResponse extends Array<DidYouKnowResponseItem> {}
 
@@ -80,7 +87,20 @@ interface HelpCenterResponseItem {
   address: string
   website: string
   lang: string
+  location?: Location
+  place?: string
 }
+
+export interface Location {
+  name: string
+  region: string
+  places: Place[]
+}
+
+export interface Place {
+  name: string
+}
+
 export interface HelpCenterResponse extends Array<HelpCenterResponseItem> {}
 
 export interface LoginResponse {
@@ -101,6 +121,8 @@ export interface LoginResponse {
     accommodationRequirement?: string
     religion?: string
     encyclopediaVersion?: string
+    city?: string
+    isProfileUpdateSkipped?: boolean
   }
   store: {
     storeVersion: number
@@ -125,6 +147,7 @@ export interface SignupResponse {
     accommodationRequirement?: string
     religion?: string
     encyclopediaVersion?: string
+    city?: string
   }
 }
 

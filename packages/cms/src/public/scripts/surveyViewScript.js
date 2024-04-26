@@ -198,7 +198,7 @@ $('#btnEditConfirm').on('click', (e) => {
     type: surveyId === '0' ? 'POST' : 'PUT',
     data: data,
     success: result => {
-      location.reload()
+      location.reload();
     },
     error: error => {
       console.log(error)
@@ -308,14 +308,25 @@ $('#graphModal').on('hide.bs.modal', event => {
   $('#downloadSigleCsvData').addClass('d-none')
   !!chart ? chart.dispose() : null
 })
+
+// TODO:PH move age group data into submodule / .en
+// const AGE_GROUP_DATA= {'under_10': 'Under 10',
+// 'between_10_11': 'Between 10 To 11',
+// 'between_12_13': 'Between 12 To 13',
+// 'between_14_15': 'Between 14 To 15',
+// 'between_16_17': 'Between 16 To 17',
+// 'between_18_19': 'Between 18 To 19',
+// 'between_20_21': 'Between 20 To 21',
+// 'greater_than_22': 'Greater Than 22'};
+
 const AGE_GROUP_DATA= {'under_10': 'Under 10',
-'between_10_11': 'Between 10 To 11',
-'between_12_13': 'Between 12 To 13',
-'between_14_15': 'Between 14 To 15',
-'between_16_17': 'Between 16 To 17',
-'between_18_19': 'Between 18 To 19',
-'between_20_21': 'Between 20 To 21',
-'greater_than_22': 'Greater Than 22'};
+'under_10': 'Under 10',
+'between_10_13': 'Between 10 To 13',
+'between_14_16': 'Between 14 To 16',
+'between_17_19': 'Between 17 To 19',
+'between_20_23': 'Between 20 To 23',
+'between_24_30': 'Between 24 To 30',
+'greater_than_30': 'Greater Than 30'};
 
 $(document).on('click', '#downloadSurveySigleCsvData', function (e) {
   var answeredSurveys = filteredSurveyData.length ? filteredSurveyData : JSON.parse($('#answeredSurveysJSON').text())
@@ -326,17 +337,17 @@ $(document).on('click', '#downloadSurveySigleCsvData', function (e) {
   var surveys = JSON.parse($('#surveysJSON').text());
   const relevantSurvey = surveys.find(sur => sur.id === currentSurveyId);
   var rows = []
-  rows.push(['ID', 'Gender', 'Location', 'Country', 'Age Group', 'Question','Response'])
+  rows.push(['ID', 'Gender', 'Location', 'Age Group', 'Question','Response'])
   surveyAnsweredList.map(surveyAnswered => {
     let age_group = Object.keys(AGE_GROUP_DATA).find(e => surveyAnswered[e] == '1');
     let userID = surveyAnswered.user_id ? surveyAnswered.user_id.split('-').reverse()[0] : 'N/A'
-  if (surveyAnswered && surveyAnswered.questions && surveyAnswered.string_agg) {
-    const questions = JSON.parse(surveyAnswered.questions)
-    questions.sort((a,b)=> a.sort_number - b.sort_number).map(question =>{        
-      rows.push([userID,surveyAnswered.gender, surveyAnswered.location, surveyAnswered.country, AGE_GROUP_DATA[age_group] || 'N/A', question.question, question.answer])
-    })
-  }
-})
+    if (surveyAnswered && surveyAnswered.questions) {
+      const questions = JSON.parse(surveyAnswered.questions)
+      questions.sort((a,b)=> a.sort_number - b.sort_number).map(question =>{       
+        rows.push([userID,surveyAnswered.gender, surveyAnswered.location, AGE_GROUP_DATA[age_group] || 'N/A', question.question, question.answer || question.response])
+      })
+    }
+  })
   exportToCsv('Survey Analytics', rows)
 })
 
@@ -345,14 +356,14 @@ $('#downloadCsv').on('click', () => {
   // var surveys = JSON.parse($('#surveysJSON').text())
   // var relevantSurvey = ''
   var rows = [];
-  rows.push(['ID', 'SurveyId', 'Gender', 'Location', 'Country', 'Age Group', 'Question','Response'])
+  rows.push(['ID', 'SurveyId', 'Gender', 'Location', 'Age Group', 'Question','Response'])
   answeredSurveys.map(surveyAnswered => {
     let age_group = Object.keys(AGE_GROUP_DATA).find(e => surveyAnswered[e] == '1');
     let userID = surveyAnswered.user_id ? surveyAnswered.user_id.split('-').reverse()[0] : 'N/A'
-    if (surveyAnswered && surveyAnswered.questions && surveyAnswered.string_agg) {
+    if (surveyAnswered && surveyAnswered.questions) {
       const questions = JSON.parse(surveyAnswered.questions)
       questions.sort((a,b)=> a.sort_number - b.sort_number).map(question =>{        
-        rows.push([userID,surveyAnswered.id, surveyAnswered.gender, surveyAnswered.location, surveyAnswered.country, AGE_GROUP_DATA[age_group] || 'N/A', question.question, question.answer])
+        rows.push([userID,surveyAnswered.id, surveyAnswered.gender, surveyAnswered.location, AGE_GROUP_DATA[age_group] || 'N/A', question.question, question.answer || question.response])
       })
     }
   })
@@ -570,36 +581,36 @@ $('#surveyQuestion').click(() => sortAlphabetically({ column: 0 }))
 makeUpdateCountdown({
   countdownElement: $('#countdown1'),
   tableElement: $('#col1TableModal'),
-  maxLength: 65,
+  maxLength: 200,
 })
 
 makeUpdateCountdown({
   countdownElement: $('#countdown2'),
   tableElement: $('#col2TableModal'),
-  maxLength: 20,
+  maxLength: 100,
 })
 makeUpdateCountdown({
   countdownElement: $('#countdown3'),
   tableElement: $('#col3TableModal'),
-  maxLength: 20,
+  maxLength: 100,
 })
 
 makeUpdateCountdown({
   countdownElement: $('#countdown4'),
   tableElement: $('#col4TableModal'),
-  maxLength: 20,
+  maxLength: 100,
 })
 
 makeUpdateCountdown({
   countdownElement: $('#countdown5'),
   tableElement: $('#col5TableModal'),
-  maxLength: 20,
+  maxLength: 100,
 })
 
 makeUpdateCountdown({
   countdownElement: $('#countdown6'),
   tableElement: $('#col6TableModal'),
-  maxLength: 20,
+  maxLength: 100,
 })
 //====================is multiple options ==========================//
 $(document).on('click', '.isMultipleCheckbox', function (event) {
@@ -670,11 +681,11 @@ $('.show__questions').on('click', function (e) {
   //data-toggle="collapse" data-target="#survey<%=item.id %>" aria-expanded="false" aria-controls="survey<%=item.id %>"
 })
 $(document).on('keydown', '.question_parent .validate__input', function (e){
-  const totalCount = e.target.name == 'Question' ? 65 : 20;
+  const totalCount = e.target.name == 'Question' ? 200 : 100;
   if (e.target.value.length >= totalCount && e.originalEvent.key.length === 1 && !e.originalEvent.ctrlKey && !e.originalEvent.shiftKey) return false;
 })
 $(document).on('keyup', '.question_parent .validate__input', function (e){
-  const totalCount = e.target.name == 'Question' ? 65 : 20;
+  const totalCount = e.target.name == 'Question' ? 200 : 100;
   if($(e.target).hasClass('input_field') && e.target.value.length <= totalCount) {    
     e.target.nextElementSibling.nextElementSibling.textContent= `${totalCount - e.target.value.length} characters remaining`
   }

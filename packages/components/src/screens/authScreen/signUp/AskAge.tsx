@@ -67,6 +67,10 @@ export function AskAge({ step, heightInner }) {
           overflow: 'hidden',
         }}
       >
+        {/* TODO:PH */}
+        {/* {formSubmitted && !monthSelected && (
+          <ErrorMessage>Pakisagutan ang bahaging ito</ErrorMessage>
+        )} */}
         <AgeContentPicker
           onPress={() => {
             setFlag(true)
@@ -86,6 +90,10 @@ export function AskAge({ step, heightInner }) {
           </TouchableOpacity>
           <LocationText>{monthSelected === '' ? 'month_of_birth' : monthSelected}</LocationText>
         </AgeContentPicker>
+        {/* TODO:PH */}
+        {/* {formSubmitted && !yearSelected && (
+          <ErrorMessage>Pakisagutan ang bahaging ito</ErrorMessage>
+        )} */}
         <AgeContentPicker
           onPress={() => {
             setFlag(false)
@@ -279,3 +287,9 @@ const TextContent = styled(Text)`
   font-size: 16;
   margin-bottom: 10px;
 `
+// TODO:PH
+// const ErrorMessage = styled(TextWithoutTranslation)`
+//   font-size: 12
+//   margin-top: 10px;
+//   color: red;
+//   `

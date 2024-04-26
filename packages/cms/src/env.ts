@@ -28,10 +28,17 @@ export const env = {
     database: process.env.DATABASE_NAME,
     schema: process.env.DATABASE_SCHEMA,
     synchronize: toBool(process.env.DATABASE_SYNCHRONIZE),
+    // projection: toBool(process.env.DATABASE_PROJECTION), // @TODO:PH
     logging: toBool(process.env.DATABASE_LOGGING),
   },
   api: {
     port: normalizePort(process.env.CMS_PORT) || 5000,
-    // port: 5001,
+  },
+  aws: {
+    acccessKey: process.env.AWS_ACCESS_KEY_ID,
+    secretKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+    s3BaseUrl: process.env.AWS_S3_BASE_URL,
+    s3Bucket: process.env.AWS_S3_BUCKET,
   },
 }

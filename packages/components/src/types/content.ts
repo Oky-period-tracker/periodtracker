@@ -1,13 +1,18 @@
+export interface Article {
+  id: string
+  title: string
+  content: string
+  category: string
+  subCategory: string
+  live?: boolean
+  isAgeRestricted: boolean
+  ageRestrictionLevel: number
+  contentFilter: number
+}
+
 export interface Articles {
   byId: {
-    [id: string]: {
-      id: string
-      title: string
-      content: string
-      category: string
-      subCategory: string
-      live?: boolean
-    }
+    [id: string]: Article
   }
   allIds: string[]
 }
@@ -49,7 +54,6 @@ export interface Categories {
           emoji: string
         }
       }
-      videos?: string[]
       subCategories: string[]
     }
   }
@@ -75,6 +79,8 @@ export interface DidYouKnows {
       title: string
       content: string
       live?: boolean
+      ageRestrictionLevel: number
+      contentFilter: number
     }
   }
   allIds: string[]
@@ -83,7 +89,6 @@ export interface DidYouKnows {
 export interface Quiz {
   id: string
   isAgeRestricted: boolean
-  topic?: string
   question: string
   answers: Array<{
     text: string
@@ -94,7 +99,8 @@ export interface Quiz {
     correct: string
     in_correct: string
   }
-  live?: boolean
+  ageRestrictionLevel: number
+  contentFilter: number
 }
 
 export interface Quizzes {
@@ -177,14 +183,12 @@ export interface HelpCenterItem {
   primaryAttributeId?: string | number
   otherAttributes?: string
   isActive?: boolean
-  city?: string
-  province?: {
-    name: string
-    code: string
-  }
-  sotringKey?: number
+  place?: string
+  location?: Locations
+  sortingKey?: number
   attributeName?: string
 }
+
 export interface HelpCenters extends Array<HelpCenterItem> {}
 
 interface ContentItem {
@@ -204,10 +208,10 @@ export enum HelpCenterUI {
 export interface Locations {
   name: string
   region: string
-  places: Places[]
+  places: Place[]
 }
 
-export interface Places {
+export interface Place {
   name: string
 }
 

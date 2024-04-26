@@ -14,6 +14,16 @@ export class EditInfoRequest {
   @IsIn(['Male', 'Female', 'Other'])
   public readonly gender: 'Male' | 'Female' | 'Other'
 
+  public readonly genderIdentity?: string
+
+  public readonly accommodationRequirement?: string
+
+  public readonly religion?: string
+
+  public readonly encyclopediaVersion?: string
+
+  public readonly city?: string
+
   @IsNotEmpty()
   public readonly location: string
 

@@ -23,6 +23,8 @@
               <th style="width: 20%"><%= __('Subcategory')%></th>
               <th style="width: 20%"><%= __('Article Title')%> </th>
               <th style="width: 40%"><%= __('Article Content')%> </th>
+              <th style="width: 40%"><%= __('Filter')%> </th>
+              <th style="width: 40%"><%= __('Age Restriction')%> </th>
               <th style="width: 10%"><%= __('Live')%></th>
             </tr>
           </thead>
@@ -45,13 +47,33 @@
             </td>
             <td style="width: 10%">
               <textarea class="form-control" rows="8" id="col2TableModal"></textarea>
-              <p id="countdown2">remaining</p>
               <p id="errorTitle2" style="display: none;">title is already exist</p>
               <p id="error3" style="display: none;">max 70 characters</p>
             </td>
             <td style="width: 10%">
               <textarea class="form-control" id="col3TableModal" cols="45" rows="15"></textarea>
               <p id="error4" style="display: none;">required field</p>
+            </td>
+            <td>
+                <select 
+                  id="contentFilterDropdownForm"
+                  class="contentFilterDropdown"
+                  data-source="article"
+                >
+                <!-- TODO:PH move to array in submodule -->
+                <option value="0">All</option>
+                <option value="1">Generic</option>
+                <option value="2">Islamic Perspective</option>
+              </select>
+            </td>
+            <td>
+              <select class="ageRestrictionLevel" id="ageRestrictionLevelForm" data-source="article">
+                <!-- TODO:PH move to array in submodule -->
+                <option value="0">All ages</option>
+                <option value="10">10 to 13</option>
+                <option value="14">14 and up</option>
+                <option value="17">17 and up</option>
+              </select>
             </td>
             <td >
                 <label class="switch">

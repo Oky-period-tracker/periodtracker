@@ -5,4 +5,10 @@ export interface EditInfoCommand {
   gender: 'Male' | 'Female' | 'Other'
   location: string
   secretQuestion: string
+  genderIdentity?: string
+  accommodationRequirement?: string
+  religion?: string
+  encyclopediaVersion?: string
+  city?: string
+  isProfileUpdateSkipped?: boolean
 }

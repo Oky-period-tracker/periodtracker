@@ -85,6 +85,7 @@ export function decisionProcessNonPeriod({
   }
 
   if (diffFromStart >= 0 && diffFromStart < selectedDayInfo.periodLength / 2) {
+    // TODO:PH this is different in PH repo
     return {
       type: 'adjust-mens-end',
       day: inputDay.clone().subtract(1, 'days'),

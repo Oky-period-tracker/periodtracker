@@ -40,6 +40,8 @@ export function fromQuizzes(response: QuizzesResponse) {
             correct: quiz.right_answer_response,
             in_correct: quiz.wrong_answer_response,
           },
+          ageRestrictionLevel: quiz?.ageRestrictionLevel,
+          contentFilter: quiz?.contentFilter,
         },
       },
       allIds: data.allIds.concat(quiz.id),

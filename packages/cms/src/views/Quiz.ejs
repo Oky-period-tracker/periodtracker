@@ -59,15 +59,18 @@
             <th style="width: 27.5%"><%= __('Wrong Answer Response')%></th>
             <th style="width: 27.5%"><%= __('Right Answer Response')%></th>
             <th style="width: 2.5%"><%= __('Data')%></th>
+            <th style="width: 2.5%" class="pointer contentFilter"><%= __('Filter')%></th>
             <th style="width: 2.5%"><%= __('Edit')%></th>
             <th style="width: 2.5%"><%= __('Delete')%></th>
-            <th style="width: 2.5%" class="pointer"  id="ageRestricted"><%= __('Age Restricted')%> </th>
+            <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= __('All Ages')%></th>
+            <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= __('Age 12')%></th>
+            <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= __('Age 16')%></th>
             <th style="width: 2.5%"><%= __('Live')%></th>
           </tr>
         </thead>
         <tbody style="overflow-y: scroll" id="quizzesContainer">
           <% quizzes.forEach((quiz) =>{ %>
-          <tr>
+          <tr data-json="<%= JSON.stringify(quiz.item) %>">
             <td><%= quiz.topic %></td>
             <td><%= quiz.question %></td>
             <td><%= quiz.option1 %></td>
@@ -88,6 +91,14 @@
               </button>
             </td>
             <td>
+              <select 
+                class="content-filter-dropdown"
+                data-source="quiz"
+                data-id="<%= quiz.id %>"
+                data-level="<%= quiz.contentFilter %>"
+                data></select>
+            </td>
+            <td>
               <button
                 type="button"
                 class="btn"
@@ -103,16 +114,35 @@
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
             </td>
+
             <td>
-              <label class="switch">
-                <input data-value="<%= quiz.id %>" class='ageRestrictionCheckbox' type="checkbox" 
-                <%if(quiz.isAgeRestricted) {%>
-                  checked
-                <% }%>
-                />
-                <span class="slider round"></span>
-              </label>
+              <input 
+                class="age-restriction-level-radio"
+                data-source="quiz"
+                data-id="<%= quiz.id %>"
+                data-level="0"
+                type="radio" 
+                name="age-<%= quiz.id %>" <%if(quiz.ageRestrictionLevel == 0){%>checked<%}%>/>
             </td>
+            <td>
+              <input 
+                class="age-restriction-level-radio"
+                data-source="quiz"
+                data-id="<%= quiz.id %>"
+                data-level="1"
+                type="radio" 
+                name="age-<%= quiz.id %>" <%if(quiz.ageRestrictionLevel == 1){%>checked<%}%>/>
+            </td>
+            <td>
+              <input 
+                class="age-restriction-level-radio"
+                data-source="quiz"
+                data-id="<%= quiz.id %>"
+                data-level="2"
+                type="radio" 
+                name="age-<%= quiz.id %>" <%if(quiz.ageRestrictionLevel == 2){%>checked<%}%>/>
+            </td>
+
             <td>
               <label class="switch">
                 <input data-value="<%= quiz.id %>" class='liveCheckbox' type="checkbox" 

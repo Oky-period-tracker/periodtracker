@@ -60,6 +60,7 @@ export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }
         style={{ height: '40%', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}
       >
         {Object.keys(content).map((item, ind) => (
+          // TODO:PH useMemo & useCallback
           <EmojiContainer key={ind}>
             <EmojiSelector
               color={color}

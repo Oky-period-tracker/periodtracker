@@ -26,8 +26,14 @@ export class HelpCenter {
   @Column({ nullable: true })
   place: string
 
-  @Column({ nullable: true })
-  location: string
+  @Column({ name: 'location', type: 'json', nullable: true })
+  location: {
+    name: string
+    region: string
+    places: Array<{
+      name: string
+    }>
+  }
 
   @Column()
   lang: string

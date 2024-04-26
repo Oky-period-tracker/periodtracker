@@ -157,6 +157,7 @@ export class HelpCenterController {
               cell.value = helpCenter.place
               break
             case 'Location':
+              // @ts-ignore // TODO:PH
               cell.value = helpCenter.location
               break
           }

@@ -44,6 +44,9 @@ export function DayCarousel({ navigation, dataEntry }) {
       stressed: '😤',
       worried: '😟',
       fabulous: '😎',
+      lazy: '🥱',
+      iritable: '😒',
+      angry: '😡',
     },
     body: {
       tired: '💤',
@@ -52,6 +55,9 @@ export function DayCarousel({ navigation, dataEntry }) {
       spots: '💢',
       headache: '⚡',
       sore_breasts: '🍒',
+      bloated: '💨',
+      back_pain: '🏋🏽‍♀️',
+      okay: '👌🏽',
     },
     activity: {
       exercise: '🏃',
@@ -60,6 +66,9 @@ export function DayCarousel({ navigation, dataEntry }) {
       socialising: '👋',
       "couldn't sleep": '😴',
       'unhealthy food': '🍰',
+      music: '🎧',
+      study: '📖',
+      video: '🍿',
     },
     flow: {
       none: '🌂',

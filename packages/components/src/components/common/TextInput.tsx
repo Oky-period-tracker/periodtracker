@@ -3,7 +3,7 @@ import styled from 'styled-components/native'
 import { Icon } from './Icon'
 import { assets } from '../../assets/index'
 import { translate } from '../../i18n'
-import { TouchableOpacity } from 'react-native'
+import { TextInputProps, TextProps, TouchableOpacity, ViewProps } from 'react-native'
 import { Text } from './Text'
 import { ThemedModal } from './ThemedModal'
 import { useHapticAndSound } from '../../hooks/useHapticAndSound'
@@ -28,6 +28,26 @@ export const TextInput = ({
   errorContent = 'No message',
   placeholderColor = '#28b9cb',
   infoAccessibilityLabel = '',
+}: {
+  onChange?: (value: string) => void
+  onEndEditing?: () => void
+  label?: string
+  secureTextEntry?: boolean
+  hasError?: boolean
+  isValid?: boolean
+  style?: ViewProps['style']
+  inputStyle?: any // @TODO:
+  keyboardType?: TextInputProps['keyboardType']
+  onFocus?: () => void
+  onBlur?: () => void
+  multiline?: boolean
+  showInfoButton?: boolean
+  numberOfLines?: number
+  value?: string
+  errorHeading?: string
+  errorContent?: string
+  placeholderColor?: string
+  infoAccessibilityLabel?: string
 }) => {
   const hapticAndSoundFeedback = useHapticAndSound()
 
@@ -51,7 +71,7 @@ export const TextInput = ({
             onEndEditing={onEndEditing}
             placeholderTextColor={placeholderColor || '#28b9cb'}
             keyboardType={keyboardType || 'default'}
-            style={{ color: '#555', ...inputStyle }}
+            style={[{ color: '#555', ...inputStyle }]}
             secureTextEntry={secureTextEntry}
             value={value}
           />

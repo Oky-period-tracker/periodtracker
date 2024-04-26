@@ -1,5 +1,5 @@
 // Update variable content in Modal when it shows from the edit button
-$('#dynamicModal').on('show.bs.modal', event => {
+$('#dynamicModal').on('show.bs.modal', (event) => {
   $('#errorCat409').hide()
   var button = $(event.relatedTarget) // Button that triggered the modal
   var userId = button.data('value') // Extract info from data-* attributes
@@ -15,7 +15,7 @@ $('#dynamicModal').on('show.bs.modal', event => {
     return
   }
   var users = JSON.parse($('#usersJSON').text())
-  var userInfo = users.find(item => {
+  var userInfo = users.find((item) => {
     return item.id === userId
   })
   $('.modal-title').text(userInfo.username)
@@ -33,24 +33,24 @@ $('#btnEditConfirm').on('click', () => {
     username: $('#col0TableModal').val(),
     password: $('#col1TableModal').val(),
     type: $('#col2TableModal').val(),
-    lang: 'en',
+    lang: 'en', // TODO:PH use default locale from env
   }
   // if the article ID is 0 we are creating a new entry
   $.ajax({
     url: '/user' + (userID === '0' ? '' : '/' + userID),
     type: userID === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
       $('#errorCat409').show()
     },
   })
 })
 
-$('.deleteUser').on('click', event => {
+$('.deleteUser').on('click', (event) => {
   var button = $(event.currentTarget)
   var userID = button.data('value')
   var result = confirm('Are you sure? This will permanently delete the item')
@@ -58,10 +58,10 @@ $('.deleteUser').on('click', event => {
     $.ajax({
       url: '/user/' + userID,
       type: 'DELETE',
-      success: result => {
+      success: (result) => {
         location.reload()
       },
-      error: error => {
+      error: (error) => {
         console.log(error)
       },
     })
@@ -74,12 +74,12 @@ var userList = $('#users')
 var users = userList.children()
 var sortStatus = false
 var filteredItems = false
-var sort = function({ column }) {
+var sort = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : users
   if (!sortStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
 
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = new Date(a.children[column].innerHTML)
       var bText = new Date(b.children[column].innerHTML)
       if (aText < bText) {
@@ -93,7 +93,7 @@ var sort = function({ column }) {
     sortStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = new Date(a.children[column].innerHTML)
       var bText = new Date(b.children[column].innerHTML)
       if (aText > bText) {
@@ -113,7 +113,7 @@ $('.pointer').click(() => sort({ column: 3 }))
 
 //Filtering
 
-$('#clearFilter').click(event => {
+$('#clearFilter').click((event) => {
   $('#filterInput').val('')
   userList.empty().prepend(users)
   filteredItems = false

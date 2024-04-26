@@ -278,12 +278,12 @@ CREATE TABLE "periodtracker"."video" (
 
 
 -- Default existing users NULL
-ALTER TABLE oky_user
+ALTER TABLE "periodtracker".oky_user
 ADD date_signed_up timestamp DEFAULT NULL,
 ADD date_account_saved timestamp DEFAULT NULL;
 
 -- Change default for new users to now
-ALTER TABLE oky_user ALTER COLUMN date_account_saved SET DEFAULT now();
+ALTER TABLE "periodtracker".oky_user ALTER COLUMN date_account_saved SET DEFAULT now();
 
 
 --------------------------------------------------------------------------------------------------------
@@ -295,7 +295,7 @@ DROP COLUMN "parent_category";
 
 CREATE SEQUENCE periodtracker.category_sorting_key INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775806 START 1 CACHE 1;
 
-ALTER TABLE category
+ALTER TABLE "periodtracker".category
 ADD "sortingKey" integer DEFAULT nextval('periodtracker.category_sorting_key') NOT NULL;
 
 
@@ -315,7 +315,7 @@ ADD "sortingKey" integer DEFAULT nextval('periodtracker.article_sorting_key') NO
 
 --------------------------------------------------------------------------------------------------------
 
-ALTER TABLE oky_user
+ALTER TABLE "periodtracker".oky_user
 ADD "genderIdentity" text DEFAULT NULL,
 ADD "accommodationRequirement" text DEFAULT NULL,
 ADD "religion" text DEFAULT NULL,
@@ -335,6 +335,36 @@ ADD "isActive" boolean DEFAULT false,
 ADD "sortingKey" integer DEFAULT nextval('periodtracker.help_center_sorting_key') NOT NULL;
 
 
+--------------------------------------------------------------------------------------------------------
+
+ALTER TABLE "periodtracker".oky_user
+ADD city text DEFAULT NULL,
+ADD isProfileUpdateSkipped text DEFAULT NULL;
+
+ALTER TABLE "periodtracker".article
+ADD "isAgeRestricted" boolean DEFAULT false,
+ADD "ageRestrictionLevel" integer DEFAULT 0,
+ADD "contentFilter" integer DEFAULT 0,
+ADD "voiceOverUrl" text DEFAULT NULL,
+ADD "voiceOverKey" text DEFAULT NULL;
+
+ALTER TABLE "periodtracker".category
+ADD date_created timestamp DEFAULT now() NOT NULL;
+
+ALTER TABLE "periodtracker".did_you_know
+ADD "ageRestrictionLevel" integer DEFAULT 0,
+ADD "contentFilter" integer DEFAULT 0;
+
+ALTER TABLE "periodtracker".quiz
+ADD "ageRestrictionLevel" integer DEFAULT 0,
+ADD "contentFilter" integer DEFAULT 0;
+
+ALTER TABLE "periodtracker".subcategory
+ADD date_created timestamp DEFAULT now() NOT NULL;
+
+ALTER TABLE "periodtracker".survey
+ADD "ageRestrictionLevel" integer DEFAULT 0,
+ADD "contentFilter" integer DEFAULT 0;
 
 
 

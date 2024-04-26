@@ -19,4 +19,7 @@ export class Category {
 
   @Column({ generated: 'increment' })
   sortingKey: number
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  date_created: string
 }

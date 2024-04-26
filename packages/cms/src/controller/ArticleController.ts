@@ -27,7 +27,10 @@ export class ArticleController {
       ar.article_text, 
       ca.primary_emoji,
       ca.primary_emoji_name,
-      ar.lang 
+      ar.lang,
+      ar."isAgeRestricted",
+      ar."ageRestrictionLevel",
+      ar."contentFilter"
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 
       ON ar.category = ca.id::varchar
@@ -55,6 +58,7 @@ export class ArticleController {
     const articleToSave = request.body
     articleToSave.lang = request.user.lang
     articleToSave.id = uuid()
+    articleToSave.live = request.body.live === 'true'
     await this.articleRepository.save(articleToSave)
     return articleToSave
   }
@@ -72,6 +76,9 @@ export class ArticleController {
     articleToUpdate.subcategory = request.body.subcategory
     articleToUpdate.article_heading = request.body.article_heading
     articleToUpdate.article_text = request.body.article_text
+    articleToUpdate.contentFilter = request.body.contentFilter
+    articleToUpdate.ageRestrictionLevel = Number(request.body.ageRestrictionLevel)
+    articleToUpdate.isAgeRestricted = request.body.ageRestrictionLevel === '0' ? false : true
     articleToUpdate.live = booleanFromString
     articleToUpdate.lang = request.user.lang
     await this.articleRepository.save(articleToUpdate)

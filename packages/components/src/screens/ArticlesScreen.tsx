@@ -1,18 +1,58 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import { FlatList } from 'react-native'
+import { isEmpty } from 'lodash'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import { Header } from '../components/common/Header'
-import { TextWithoutTranslation } from '../components/common/Text'
+import { Text, TextWithoutTranslation } from '../components/common/Text'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
+import HTML from 'react-native-render-html'
+import moment from 'moment'
+import { cleanHTML } from '../services/html'
+import { User } from '../redux/reducers/authReducer'
+import { Article } from '../types'
+
+const canAccessArticle = (article: Article, user?: User) => {
+  // @TODO:PH standardise this ?
+  /**
+   * Content Filter Levels
+   * 0 - Available to all
+   * 1 - Show only to Muslims
+   * 2 - Show only to non-Muslims
+   */
+  if (isEmpty(user) && article.contentFilter === 0) {
+    return true
+  }
+
+  if (isEmpty(user) && article.contentFilter !== 0) {
+    return false
+  }
+
+  const age = moment().diff(moment(user.dateOfBirth), 'years')
+
+  if (article.isAgeRestricted && age < article.ageRestrictionLevel) {
+    return false
+  }
+
+  if (user.encyclopediaVersion === 'Yes' && article.contentFilter === 1) {
+    return false
+  }
+
+  if (user.encyclopediaVersion !== 'Yes' && article.contentFilter === 2) {
+    return false
+  }
+
+  return true
+}
 
 const ArticleItem = ({ article, index, articles }) => {
   const articleObject = useSelector((state) => selectors.articleByIDSelector(state, article))
+  const currentUser = useSelector(selectors.currentUserSelector)
 
-  if (!articleObject) {
+  if (!canAccessArticle(article, currentUser)) {
     return null
   }
 
@@ -30,7 +70,10 @@ const ArticleItem = ({ article, index, articles }) => {
       <Row style={{ alignItems: 'center' }}>
         <ArticleTitle style={{ fontSize: 14 }}>{articleObject.title}</ArticleTitle>
       </Row>
-      <ArticleContent>{articleObject.content}</ArticleContent>
+      <HTML source={{ html: cleanHTML(articleObject.content) }} />
+      {articleObject.content.indexOf('*') !== -1 && (
+        <Disclaimer style={{ fontSize: 10, marginTop: 20 }}>disclaimer</Disclaimer>
+      )}
     </ArticleContainer>
   )
 }
@@ -96,7 +139,7 @@ const ArticleTitle = styled(TextWithoutTranslation)`
   padding-bottom: 5;
 `
 
-const ArticleContent = styled(TextWithoutTranslation)`
+const Disclaimer = styled(Text)`
   text-align: left;
   color: #1c1c1c;
 `

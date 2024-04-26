@@ -1,5 +1,5 @@
 // Update variable content in Modal when it shows from the edit button
-$('#dynamicModal').on('show.bs.modal', event => {
+$('#dynamicModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var didyouknowID = button.data('value') // Extract info from data-* attributes
   if (didyouknowID === 0) {
@@ -10,7 +10,7 @@ $('#dynamicModal').on('show.bs.modal', event => {
     return
   }
   var didYouKnows = JSON.parse($('#didYouKnowsJSON').text())
-  var didYouKnowInfo = didYouKnows.find(item => {
+  var didYouKnowInfo = didYouKnows.find((item) => {
     return item.id === didyouknowID
   })
 
@@ -40,12 +40,12 @@ $('#btnEditConfirm').on('click', () => {
     url: '/didyouknow' + (didyouknowID === '0' ? '' : '/' + didyouknowID),
     type: didyouknowID === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       $('#dynamicModal').modal('hide')
       $('#infoArticleModal').modal('show')
       setTimeout(() => location.reload(), 1500)
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -66,7 +66,7 @@ $('.ageRestrictionCheckbox').on('click', () => {
 
 function changeRelevantDidYouKnow(didyouknowID, key, value) {
   var didYouKnows = JSON.parse($('#didYouKnowsJSON').text())
-  var didYouKnowInfo = didYouKnows.find(item => {
+  var didYouKnowInfo = didYouKnows.find((item) => {
     return item.id === didyouknowID
   })
 
@@ -81,10 +81,10 @@ function changeRelevantDidYouKnow(didyouknowID, key, value) {
     url: '/didyouknow/' + didyouknowID,
     type: 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -92,7 +92,7 @@ function changeRelevantDidYouKnow(didyouknowID, key, value) {
 
 // ==================== Delete =============================
 
-$('.deleteDidYouKnow').on('click', event => {
+$('.deleteDidYouKnow').on('click', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var didyouknowID = button.data('value') // Extract info from data-* attributes
   var result = confirm('Are you sure? This will permanently delete the item')
@@ -100,10 +100,10 @@ $('.deleteDidYouKnow').on('click', event => {
     $.ajax({
       url: '/didyouknow/' + didyouknowID,
       type: 'DELETE',
-      success: result => {
+      success: (result) => {
         location.reload()
       },
-      error: error => {
+      error: (error) => {
         console.log(error)
       },
     })
@@ -116,12 +116,12 @@ var filteredItems = false
 var sortAlphabetStatus = false
 var sortAgeStatus = false
 
-var sortAlphabetically = function({ column }) {
+var sortAlphabetically = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : items
   if (!sortAlphabetStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
 
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].innerHTML
       var bText = b.children[column].innerHTML
       if (aText < bText) {
@@ -135,7 +135,7 @@ var sortAlphabetically = function({ column }) {
     sortAlphabetStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].innerHTML
       var bText = b.children[column].innerHTML
       if (aText > bText) {
@@ -151,11 +151,11 @@ var sortAlphabetically = function({ column }) {
   filterList.append(filteredItems)
 }
 
-var sortAge = function({ column }) {
+var sortAge = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : items
   if (!sortAgeStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
       var bText = b.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
       if (aText < bText) {
@@ -169,7 +169,7 @@ var sortAge = function({ column }) {
     sortAgeStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
       var bText = b.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
       if (aText > bText) {
@@ -185,9 +185,24 @@ var sortAge = function({ column }) {
   filterList.append(filteredItems)
 }
 
+const sortAgeRestriction = function () {
+  filteredItems = filteredItems ? filteredItems : items
+  filteredItems = filteredItems.sort((a, b) => {
+    const aData = JSON.parse(a.getAttribute('data-json'))
+    const bData = JSON.parse(b.getAttribute('data-json'))
+    let output = aData.ageRestrictionLevel - bData.ageRestrictionLevel
+    sortAgeStatus = !sortAgeStatus
+    output = sortAgeStatus ? output : -output
+    console.log(output, aData.ageRestrictionLevel, bData.ageRestrictionLevel)
+    return output
+  })
+  filterList.append(filteredItems)
+}
+
 $('#didYouKnowTopic').click(() => sortAlphabetically({ column: 0 }))
 $('#didYouKnowContent').click(() => sortAlphabetically({ column: 1 }))
 $('#ageRestricted').click(() => sortAge({ column: 4 }))
+$('.ageRestrictionLevel').click(() => sortAgeRestriction())
 
 // =========================================================
 
@@ -197,7 +212,7 @@ function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
     countdownElement.text(remaining + ' characters remaining.')
   }
 
-  $(document).ready(function($) {
+  $(document).ready(function ($) {
     updateCountdown()
     tableElement.change(updateCountdown)
     tableElement.keyup(updateCountdown)

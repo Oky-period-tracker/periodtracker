@@ -483,7 +483,18 @@ export class RenderController {
 
   async renderEncyclopedia(request: Request, response: Response, next: NextFunction) {
     const articles = await this.articleRepository.query(
-      `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created, ar.*
+      `SELECT 
+        ar.id, 
+        ca.title as category_title, 
+        ca.id as category_id, 
+        sc.title as subcategory_title, 
+        sc.id as subcategory_id, 
+        ar.article_heading, 
+        ar.article_text, 
+        ar.live as live, 
+        ca.primary_emoji, 
+        ar.lang, ar.date_created,
+        ar.*
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 
       ON ar.category = ca.id::varchar
@@ -500,7 +511,12 @@ export class RenderController {
     const subcategories = await this.subcategoryRepository.find({
       where: { lang: request.user.lang },
     })
-    this.render(response, 'Encyclopedia', { articles, categories, subcategories })
+    this.render(response, 'Encyclopedia', {
+      articles,
+      categories,
+      subcategories,
+      VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
+    })
   }
 
   async renderCategoriesManagement(request: Request, response: Response, next: NextFunction) {

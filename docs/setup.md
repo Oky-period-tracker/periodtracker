@@ -111,3 +111,30 @@ AWS_REGION=eu-west-2
 AWS_S3_BASE_URL=https://your_subdomain.cloudfront.net
 AWS_S3_BUCKET=your_bucket_name
 ```
+
+Create a kubectl secret with your keys
+
+```bash
+kubectl create secret generic aws-credentials --from-literal=AWS_ACCESS_KEY_ID=<your-access-key-id> --from-literal=AWS_SECRET_ACCESS_KEY=<your-secret-access-key> --namespace=<your-namespace>
+```
+
+Update your cms.yaml file before your deploy
+
+```yaml
+- name: AWS_ACCESS_KEY_ID
+    valueFrom:
+    secretKeyRef:
+        name: aws-credentials
+        key: AWS_ACCESS_KEY_ID
+- name: AWS_SECRET_ACCESS_KEY
+    valueFrom:
+    secretKeyRef:
+        name: aws-credentials
+        key: AWS_SECRET_ACCESS_KEY
+- name: AWS_REGION
+    value: 'eu-west-2'
+- name: AWS_S3_BASE_URL
+    value: 'https://your_subdomain.cloudfront.net'
+- name: AWS_S3_BUCKET
+    value: 'your_bucket_name'
+```

@@ -413,6 +413,29 @@ const initializeDataTable = (result) => {
         return new Date(rowPayload.date_created).toLocaleDateString() // Formatting the date
       },
     },
+    {
+      data: 'voiceOverUrl',
+      render: (_, __, rowPayload) => {
+        return `
+          <td
+            class="voice-over-column"
+            data-source="article"
+            data-id="${rowPayload.id}"
+            data-json="${JSON.stringify(rowPayload)}"
+          >
+            <input type="file" id="upload-${rowPayload.id}"/>
+          </td>
+        `
+      },
+      createdCell: (td, cellData, rowData, row, col) => {
+        $(td).attr('class', 'voice-over-column')
+        $(td).attr('data-source', 'article')
+        $(td).attr('data-id', rowData.id)
+        $(td).attr('data-json', JSON.stringify(rowData))
+        $(td).attr('id', `article-${rowData.id}`)
+        $(td)[0].firstElementChild.setAttribute('id', `upload-${rowData.id}`)
+      },
+    },
   ]
 
   $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
@@ -435,7 +458,7 @@ const initializeDataTable = (result) => {
 
       api.columns().eq(0)
 
-      // initializeVoiceOver()
+      initializeVoiceOver(articles)
     },
     columnDefs: [
       {

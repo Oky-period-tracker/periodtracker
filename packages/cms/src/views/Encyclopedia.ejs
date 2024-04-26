@@ -114,5 +114,10 @@
   <span id="categoriesJSON" hidden><%= JSON.stringify(categories); %> </span>
   <span id="subcategoriesJSON" hidden><%= JSON.stringify(subcategories); %> </span>
   <script type="application/javascript" src="/scripts/encyclopediaViewScript.js"></script>
+  <script type="application/javascript" src="/scripts/voiceOvers.js"></script>
+    <!-- VOICE OVER SETUP -->
+    <script>
+      window.VOICE_OVER_BASE_URL = "<%= VOICE_OVER_BASE_URL %>"
+    </script>
 </div>
 <%- include('partials/Footer') %>

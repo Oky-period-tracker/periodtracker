@@ -1,5 +1,5 @@
 const initializeVoiceOver = (articles) => {
-  // console.log('initializeVoiceOver', articles)
+  console.log('initializeVoiceOver', articles)
 
   const columnItems = JSON.parse(articles).map((article) => {
     const id = article.id

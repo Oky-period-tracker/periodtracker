@@ -57,10 +57,14 @@ function* syncAppState() {
 }
 
 function* onRequestStoreFirebaseKey() {
-  if (yield fetchNetworkConnectionStatus()) {
-    // no internet connection
-    const firebaseToken = yield messaging().getToken()
-    yield put(actions.storeFirebaseKey(firebaseToken))
+  try {
+    if (yield fetchNetworkConnectionStatus()) {
+      // no internet connection
+      const firebaseToken = yield messaging().getToken()
+      yield put(actions.storeFirebaseKey(firebaseToken))
+    }
+  } catch (e) {
+    console.error(e)
   }
 }
 

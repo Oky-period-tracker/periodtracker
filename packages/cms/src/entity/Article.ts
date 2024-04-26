@@ -26,6 +26,12 @@ export class Article {
   @Column()
   lang: string
 
+  @Column({ nullable: true })
+  voiceOverUrl: string
+
+  @Column({ nullable: true })
+  voiceOverKey: string
+
   @Column({ generated: 'increment' })
   sortingKey: number
 }

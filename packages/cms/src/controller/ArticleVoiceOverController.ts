@@ -49,8 +49,6 @@ export class ArticleVoiceOverController {
       throw new Error('Access denied')
     }
 
-    console.log('*** upload A')
-
     const id = request.body.id
     // @TODO:PH
     // @ts-ignore
@@ -66,7 +64,6 @@ export class ArticleVoiceOverController {
     if (typeof target.voiceOverKey === 'string' && target.voiceOverKey.length > 0) {
       await this.removeFileFromS3(target.voiceOverKey)
     }
-    console.log('*** upload B')
 
     const Key = `${target.id.trim()}-${file.name.replace(/[^a-z0-9.-_]/gim, '')}`.toLowerCase()
     await this.getS3Client().send(
@@ -81,10 +78,8 @@ export class ArticleVoiceOverController {
       ...target,
       voiceOverKey: Key,
     }
-    console.log('*** upload C')
 
     await this.articleRepository.save(newTarget)
-    console.log('*** upload D')
 
     return newTarget
   }

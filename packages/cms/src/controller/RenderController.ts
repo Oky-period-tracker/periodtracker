@@ -500,7 +500,12 @@ export class RenderController {
     const subcategories = await this.subcategoryRepository.find({
       where: { lang: request.user.lang },
     })
-    this.render(response, 'Encyclopedia', { articles, categories, subcategories })
+    this.render(response, 'Encyclopedia', {
+      articles,
+      categories,
+      subcategories,
+      VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
+    })
   }
 
   async renderCategoriesManagement(request: Request, response: Response, next: NextFunction) {
@@ -556,7 +561,12 @@ export class RenderController {
       [request.user.lang, request.params.id],
     )
 
-    this.render(response, 'Subcategory', { categories, subcategories, articles })
+    this.render(response, 'Subcategory', {
+      categories,
+      subcategories,
+      articles,
+      VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
+    })
   }
 
   async renderVideoManagement(request: Request, response: Response, next: NextFunction) {

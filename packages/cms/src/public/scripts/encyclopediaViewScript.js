@@ -375,3 +375,6 @@ const handleSubCategorySelect = (catId) => {
       else $(child).css('display', 'none')
     })
 }
+
+var articlesJSON = $('#articlesJSON').text()
+initializeVoiceOver(articlesJSON)

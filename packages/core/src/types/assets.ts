@@ -27,6 +27,7 @@ export interface AppAssets {
     spin_load_face: ImageSourcePropType
     spin_load_circle: ImageSourcePropType
     icons: {
+      play: ImageSourcePropType
       settingsIcon: ImageSourcePropType
       cloudsIcn: ImageSourcePropType
       information: ImageSourcePropType

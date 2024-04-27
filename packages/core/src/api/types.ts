@@ -8,6 +8,7 @@ export interface EncyclopediaResponseItem {
   article_text: string
   primary_emoji: string
   primary_emoji_name: string
+  voiceOverKey?: string | null
   lang: string
   live: boolean
 }

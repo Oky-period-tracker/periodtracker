@@ -8,9 +8,13 @@ import * as selectors from '../redux/selectors'
 import { Header } from '../components/common/Header'
 import { TextWithoutTranslation } from '../components/common/Text'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
+import { IconButton } from '../components/common/buttons/IconButton'
+import { useSound } from '../components/context/SoundContext'
+import { AWS_S3_BASE_URL } from '../config'
 
 const ArticleItem = ({ article, index, articles }) => {
   const articleObject = useSelector((state) => selectors.articleByIDSelector(state, article))
+  const { playSound } = useSound()
 
   if (!articleObject) {
     return null
@@ -26,6 +30,12 @@ const ArticleItem = ({ article, index, articles }) => {
     >
       <Row style={{ alignItems: 'center' }}>
         <ArticleTitle>{articleObject.subCategory}</ArticleTitle>
+        {articleObject?.voiceOverKey && (
+          <IconButton
+            onPress={() => playSound(`${AWS_S3_BASE_URL}/${articleObject.voiceOverKey}`)}
+            name="play"
+          />
+        )}
       </Row>
       <Row style={{ alignItems: 'center' }}>
         <ArticleTitle style={{ fontSize: 14 }}>{articleObject.title}</ArticleTitle>
@@ -94,6 +104,7 @@ const ArticleTitle = styled(TextWithoutTranslation)`
   font-family: Roboto-Black;
   color: #e3629b;
   padding-bottom: 5;
+  margin-right: auto;
 `
 
 const ArticleContent = styled(TextWithoutTranslation)`

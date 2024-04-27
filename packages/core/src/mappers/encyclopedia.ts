@@ -81,6 +81,7 @@ export function fromEncyclopedia({
           content: item.article_text,
           category: item.category_title,
           subCategory: item.subcategory_title,
+          voiceOverKey: item?.voiceOverKey,
         },
       },
       allIds: dataShape.articles.allIds.concat(item.id),

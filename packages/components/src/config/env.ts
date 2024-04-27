@@ -7,5 +7,7 @@ export const WEBSITE_URL = env.WEBSITE_URL
 
 export const HAPTIC_AND_SOUND_ENABLED = env.HAPTIC_AND_SOUND_ENABLED || false
 
+export const AWS_S3_BASE_URL = env.AWS_S3_BASE_URL || ''
+
 // Development purposes only
 export const FAST_SIGN_UP = false

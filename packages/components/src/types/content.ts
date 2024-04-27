@@ -6,6 +6,7 @@ export interface Articles {
       content: string
       category: string
       subCategory: string
+      voiceOverKey?: string
       live?: boolean
     }
   }

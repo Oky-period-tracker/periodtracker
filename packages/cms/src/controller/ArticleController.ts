@@ -27,6 +27,7 @@ export class ArticleController {
       ar.article_text, 
       ca.primary_emoji,
       ca.primary_emoji_name,
+      ar."voiceOverKey",
       ar.lang 
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 

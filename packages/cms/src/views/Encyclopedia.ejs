@@ -65,7 +65,9 @@
             <th style="width: 15%" class="pointer" id="subCategoryTag"><%= __('Subcategory Tag') %></th>
             <th style="width: 15%"><%= __('Article Heading') %></th>
             <th style="width: 50%"><%= __('Article Text') %></th>
-            <th style="width: 2.5%"><%= __('Voice Over') %></th>
+            <% if(VOICE_OVER_BASE_URL){ %>
+              <th style="width: 2.5%"><%= __('Voice Over') %></th>
+           <% } %>
             <th style="width: 2.5%"><%= __('Edit') %></th>
             <th style="width: 2.5%"><%= __('Delete') %></th>
             <th style="width: 2.5%"><%= __('Live') %></th>
@@ -78,15 +80,17 @@
             <td><a href="/subcategories-management/<%= article.subcategory_id %>"><%= article.subcategory_title %></a></td>
             <td><%= article.article_heading %></td>
             <td><%= article.article_text %></td>
-            <td
-            id="article-<%= article.id %>"
-              class="voice-over-column"
-              data-source="article"
-              data-id="<%= article.id %>"
-              data-json="<%= JSON.stringify(article) %>"
-            >
-              <input type="file" id="upload-<%= article.id %>"/>
-            </td>
+            <% if(VOICE_OVER_BASE_URL){ %>
+              <td
+              id="article-<%= article.id %>"
+                class="voice-over-column"
+                data-source="article"
+                data-id="<%= article.id %>"
+                data-json="<%= JSON.stringify(article) %>"
+              >
+                <input type="file" id="upload-<%= article.id %>"/>
+              </td>
+           <% } %>
             <td>
               <button
                 type="button"

@@ -413,30 +413,35 @@ const initializeDataTable = (result) => {
         return new Date(rowPayload.date_created).toLocaleDateString() // Formatting the date
       },
     },
-    {
-      data: 'voiceOverKey',
-      render: (_, __, rowPayload) => {
-        return `
-          <td
-            class="voice-over-column"
-            data-source="article"
-            data-id="${rowPayload.id}"
-            data-json="${JSON.stringify(rowPayload)}"
-          >
-            <input type="file" id="upload-${rowPayload.id}"/>
-          </td>
-        `
-      },
-      createdCell: (td, cellData, rowData, row, col) => {
-        $(td).attr('class', 'voice-over-column')
-        $(td).attr('data-source', 'article')
-        $(td).attr('data-id', rowData.id)
-        $(td).attr('data-json', JSON.stringify(rowData))
-        $(td).attr('id', `article-${rowData.id}`)
-        $(td)[0].firstElementChild.setAttribute('id', `upload-${rowData.id}`)
-      },
-    },
   ]
+
+  const voiceOverColumn = {
+    data: 'voiceOverKey',
+    render: (_, __, rowPayload) => {
+      return `
+        <td
+          class="voice-over-column"
+          data-source="article"
+          data-id="${rowPayload.id}"
+          data-json="${JSON.stringify(rowPayload)}"
+        >
+          <input type="file" id="upload-${rowPayload.id}"/>
+        </td>
+      `
+    },
+    createdCell: (td, cellData, rowData, row, col) => {
+      $(td).attr('class', 'voice-over-column')
+      $(td).attr('data-source', 'article')
+      $(td).attr('data-id', rowData.id)
+      $(td).attr('data-json', JSON.stringify(rowData))
+      $(td).attr('id', `article-${rowData.id}`)
+      $(td)[0].firstElementChild.setAttribute('id', `upload-${rowData.id}`)
+    },
+  }
+
+  if (window.VOICE_OVER_BASE_URL) {
+    columns.push(voiceOverColumn)
+  }
 
   $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
 

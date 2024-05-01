@@ -6,6 +6,7 @@ import { translate } from '../../i18n'
 import { TouchableOpacity } from 'react-native'
 import { Text } from './Text'
 import { ThemedModal } from './ThemedModal'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export const TextInput = ({
   onChange = null,
@@ -28,7 +29,10 @@ export const TextInput = ({
   placeholderColor = '#28b9cb',
   infoAccessibilityLabel = '',
 }) => {
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   const [isVisible, setIsVisible] = React.useState(false)
+
   return (
     <>
       <FormControl style={style}>
@@ -40,7 +44,10 @@ export const TextInput = ({
             placeholder={translate(label)}
             multiline={multiline}
             numberOfLines={numberOfLines}
-            onChangeText={onChange}
+            onChangeText={(val) => {
+              hapticAndSoundFeedback('key')
+              onChange(val)
+            }}
             onEndEditing={onEndEditing}
             placeholderTextColor={placeholderColor || '#28b9cb'}
             keyboardType={keyboardType || 'default'}

@@ -8,6 +8,7 @@ import {
 } from 'react-native'
 import { assets } from '../../../assets'
 import { IS_TABLET } from '../../../config/tablet'
+import { useHapticAndSound } from '../../../hooks/useHapticAndSound'
 
 type Props = Omit<ImageProps, 'source'> & {
   name: string
@@ -29,10 +30,13 @@ export const IconButton = ({
   disabled = false,
   ...props
 }: Props) => {
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   return (
     <TouchableOpacity
       disabled={disabled}
       style={[styles.default, touchableStyle]}
+      onPressIn={() => hapticAndSoundFeedback('close')}
       onPress={onPress}
     >
       <Image source={assets.static.icons[name]} style={{ width, height }} {...props} />

@@ -189,7 +189,6 @@ function* onSetLocale(action: ExtractActionFromActionType<'SET_LOCALE'>) {
   const { locale } = action.payload
   const isTtsActive = yield select(selectors.isTtsActiveSelector)
   if (isTtsActive) {
-    // TODO_ALEX why?
     yield call(closeOutTTs)
     yield put(actions.setTtsActive(false))
   }

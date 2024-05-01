@@ -8,6 +8,7 @@ import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
 import { getAsset } from '../../services/asset'
 import { IS_TABLET } from '../../config/tablet'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export function JourneyCard({
   question,
@@ -31,6 +32,28 @@ export function JourneyCard({
   rightButtonTitle = 'i_remember',
 }) {
   const selectedAvatar = useSelector(selectors.currentAvatarSelector)
+  const hapticAndSoundFeedback = useHapticAndSound()
+
+  const onHandleForget = () => {
+    hapticAndSoundFeedback('close')
+    onForget()
+  }
+
+  const onHandleRemember = () => {
+    hapticAndSoundFeedback('general')
+    onRemember()
+  }
+
+  const onHandleChange = () => {
+    hapticAndSoundFeedback('close')
+    onChange()
+  }
+
+  const onHandleConfirm = () => {
+    hapticAndSoundFeedback('general')
+    onConfirm()
+  }
+
   return (
     <>
       {status === 'initial' && (
@@ -44,8 +67,8 @@ export function JourneyCard({
             <BigOrangeText>{question}</BigOrangeText>
           </WhiteContainer>
           <ButtonContainer>
-            <LeftButton onPress={onForget} title={leftButtonTitle} />
-            <RightButton onPress={onRemember} title={rightButtonTitle} />
+            <LeftButton onPress={onHandleForget} title={leftButtonTitle} />
+            <RightButton onPress={onHandleRemember} title={rightButtonTitle} />
           </ButtonContainer>
         </Container>
       )}
@@ -115,8 +138,10 @@ export function JourneyCard({
             </Text>
           </WhiteContainer>
           <ButtonContainer>
-            {pickerType !== 'non_period' && <LeftButton onPress={onChange} title={'change'} />}
-            <RightButton onPress={onConfirm} title={'confirm'} />
+            {pickerType !== 'non_period' && (
+              <LeftButton onPress={onHandleChange} title={'change'} />
+            )}
+            <RightButton onPress={onHandleConfirm} title={'confirm'} />
           </ButtonContainer>
         </Container>
       )}

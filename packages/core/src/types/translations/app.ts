@@ -448,4 +448,8 @@ export interface AppTranslations {
   videos: string
   internet_required_title: string
   internet_required_text: string
+  // ===== OPTIONAL ===== //
+  // HAPTIC_AND_SOUND
+  haptic_request?: string
+  sound_request?: string
 }

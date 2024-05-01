@@ -63,3 +63,11 @@ export function refreshStore(
 ) {
   return createAction('REFRESH_STORE', payload)
 }
+
+export function toggleHaptic(isHapticActive: boolean) {
+  return createAction('TOGGLE_HAPTIC', { isHapticActive })
+}
+
+export function toggleSound(isSoundActive: boolean) {
+  return createAction('TOGGLE_SOUND', { isSoundActive })
+}

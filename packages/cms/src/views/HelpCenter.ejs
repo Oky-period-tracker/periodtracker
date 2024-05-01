@@ -1,6 +1,6 @@
 <%- include('partials/Header') %> 
-<%- include('modals/DynamicModal', {headings: [ __('Title'), __('Caption'), __('Contact 1'), __('Contact 2'), __('Address'), __('Website')], errors: []})%>
-<div class="homePageContainer">
+<%- include('modals/HelpCenterModal')%>
+<div class="homePageContainer" id="helpCenterSection">
   <div class="sideBar">
     <%- include('partials/SideTab') %> 
   </div>
@@ -11,60 +11,51 @@
         type="button"
         class="btn btn-primary"
         data-toggle="modal"
-        data-target="#dynamicModal"
+        data-target="#helpCenterModalImport"
+        data-value="0"
+      >
+      <i class="fa-solid fa-upload"></i>
+      <%= __('Bulk import/export')%>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#helpCenterModal"
         data-value="0"
       >
       <%= __('Add Help Center')%>
       </button>
     </div>
     
-    <div class="homeTableContainer">
-      <table class="table table-borderless table-striped tableFixHead table-responsive">
-        <thead >
+    <div class="helpCenterContainer">
+        <table id="helpCenterTable" class="table">
+        <thead>
             <tr>
-                <th style="width: 10%"><%= __('Title')%></th>
-                <th style="width: 20%"><%= __('Caption')%></th>
-                <th style="width: 15%"><%= __('Contact')%> 1</th>
-                <th style="width: 15%"><%= __('Contact')%> 2</th>
-                <th style="width: 15%"><%= __('Address')%></th>
-                <th style="width: 15%"><%= __('Website')%></th>
-                <th style="width: 5%"><%= __('Edit')%></th>
-                <th style="width: 5%"><%= __('Delete')%></th>
+                <th id="order"><%= __('Order')%></th>
+                <th><%= __('Provider Name')%></th>
+                <th ><%= __('Caption')%></th>
+                <th ><%= __('Contact')%> 1</th>
+                <th ><%= __('Contact')%> 2</th>
+                <th ><%= __('Address')%></th>
+                <th><%= __('Province')%></th>
+                <th><%= __('City')%></th>
+                <th><%= __('Website')%></th>
+                <th><%= __('Actions')%></th>
+                <th><%= __('Live')%></th>
             </tr>
         </thead>
-        <tbody style="overflow-y: scroll">
-          <% helpCenters.forEach((item, index) => { %>
-          <tr>
-            <td><%= item.title %></td>
-            <td><%= item.caption %></td>
-            <td><%= item.contactOne %></td>
-            <td><%= item.contactTwo %></td>
-            <td><%= item.address %></td>
-            <td><%= item.website %></td>
-            <td>
-              <button
-                type="button"
-                class="btn"
-                data-toggle="modal"
-                data-target="#dynamicModal"
-                data-value="<%= item.id %>"
-              >
-                <i class="fas fa-edit" aria-hidden="true"></i>
-              </button>
-            </td>
-            <td>
-              <button type="button" class="btn deleteHelpCenter" data-value="<%= item.id %>">
-                <i class="fas fa-trash" aria-hidden="true"></i>
-              </button>
-            </td>
-          </tr>
-          <% }) %>
-        </tbody>
       </table>
     </div>
   </div>
   <span id="helpCentersJSON" hidden>
     <%= JSON.stringify(helpCenters); %>
+  </span>
+  <span id="locationsJSON" hidden>
+    <%= JSON.stringify(locations); %>
+  </span>
+  <span id="attributesJSON" hidden>
+    <%= JSON.stringify(attributes); %>
   </span>
   <script type="application/javascript" src="/scripts/helpCenterViewScript.js"></script>
 </div>

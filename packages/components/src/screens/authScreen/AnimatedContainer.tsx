@@ -10,6 +10,7 @@ import { Icon } from '../../components/common/Icon'
 import { assets } from '../../assets/index'
 import { KeyboardAwareAvoidance } from '../../components/common/KeyboardAwareAvoidance'
 import { IS_TABLET } from '../../config/tablet'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 const { Value } = Animated
 
@@ -20,6 +21,8 @@ export function AnimatedContainer({ toggled }) {
   const [expanded, setExpanded] = React.useState(false)
   const [viewable, setViewable] = React.useState(true)
 
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   const toggle = () => {
     if (expanded) {
       setExpanded((val) => !val)
@@ -28,6 +31,7 @@ export function AnimatedContainer({ toggled }) {
         duration: 350,
         useNativeDriver: true,
       }).start()
+      hapticAndSoundFeedback('close')
     }
     toggled(expanded)
     setViewable(expanded)

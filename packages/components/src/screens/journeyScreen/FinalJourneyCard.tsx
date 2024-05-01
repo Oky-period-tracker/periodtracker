@@ -7,6 +7,7 @@ import * as actions from '../../redux/actions/index'
 import { useDispatch } from 'react-redux'
 import moment from 'moment'
 import { SpinLoader } from '../../components/common/SpinLoader'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 const getQuestionAnswer = ({ card, index, questionAnswers }) => {
   if (card.answerType === 'string') {
@@ -30,6 +31,8 @@ const getQuestionAnswer = ({ card, index, questionAnswers }) => {
 export function FinalJourneyCard({ cards, questionAnswers, goToQuestion }) {
   const dispatch = useDispatch()
   const [loading, setLoading] = React.useState(false)
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   return (
     <FinalSurveyCard>
       <WhiteContainer>
@@ -71,6 +74,7 @@ export function FinalJourneyCard({ cards, questionAnswers, goToQuestion }) {
       </WhiteContainer>
       <ButtonContainer>
         <TouchableOpacity
+          onPressIn={() => hapticAndSoundFeedback('general')}
           onPress={() => {
             setLoading(true)
             requestAnimationFrame(() => {

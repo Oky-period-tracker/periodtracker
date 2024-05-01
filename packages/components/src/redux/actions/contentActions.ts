@@ -39,6 +39,7 @@ export function fetchSurveyContentRequest(userID: string) {
 export function fetchSurveyContentSuccess(payload: { surveys: Surveys }) {
   return createAction('FETCH_SURVEY_CONTENT_SUCCESS', payload)
 }
+
 export function updateAllSurveyContent(allSurveys: AllSurveys) {
   return createAction('UPDATE_ALL_SURVEYS_CONTENT', {
     allSurveys,

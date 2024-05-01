@@ -24,6 +24,7 @@ import { Question } from '../entity/Question'
 import { env } from '../env'
 import { Video } from '../entity/Video'
 import { cmsLanguages, appReleaseDate } from '../i18n/options'
+import { helpCenterData } from '../optional'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -90,6 +91,16 @@ export class RenderController {
     const { count: totalActiveUsers } = (
       await entityManager.query(analyticsQueries.countActiveUsers, params)
     )[0]
+
+    const preUsersDisabilities = await entityManager.query(
+      analyticsQueries.usersDisabilities,
+      params,
+    )
+
+    const usersDisabilities = preUsersDisabilities.reduce((obj, item) => {
+      obj[item.accommodationRequirement] = item.value
+      return obj
+    }, {})
 
     const countAvatars = await entityManager.query(analyticsQueries.countAvatars, [
       gender,
@@ -336,6 +347,7 @@ export class RenderController {
         usersCountries,
         usersProvinces,
         usersShares,
+        usersDisabilities,
         directDownloads,
         screenUsage,
         usage,
@@ -357,6 +369,7 @@ export class RenderController {
       usersCountries,
       usersProvinces,
       usersShares,
+      usersDisabilities,
       directDownloads,
       screenUsage,
       usage,
@@ -385,7 +398,11 @@ export class RenderController {
     const helpCenters = await this.helpCenterRepository.find({
       where: { lang: request.user.lang },
     })
-    this.render(response, 'HelpCenter', { helpCenters })
+    this.render(response, 'HelpCenter', {
+      helpCenters,
+      locations: helpCenterData.locations,
+      attributes: helpCenterData.attributes,
+    })
   }
 
   async renderAbout(request: Request, response: Response, next: NextFunction) {
@@ -466,13 +483,15 @@ export class RenderController {
 
   async renderEncyclopedia(request: Request, response: Response, next: NextFunction) {
     const articles = await this.articleRepository.query(
-      `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created 
+      `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created, ar.*
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 
       ON ar.category = ca.id::varchar
       INNER JOIN ${env.db.schema}.subcategory sc  
       ON ar.subcategory = sc.id::varchar
-      WHERE ar.lang = $1`,
+      WHERE ar.lang = $1
+      ORDER BY ca."sortingKey" ASC, sc."sortingKey" ASC, ar."sortingKey" ASC
+      `,
       [request.user.lang],
     )
     const categories = await this.categoryRepository.find({
@@ -481,22 +500,73 @@ export class RenderController {
     const subcategories = await this.subcategoryRepository.find({
       where: { lang: request.user.lang },
     })
-    this.render(response, 'Encyclopedia', { articles, categories, subcategories })
+    this.render(response, 'Encyclopedia', {
+      articles,
+      categories,
+      subcategories,
+      VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
+    })
   }
 
-  async renderCatSubcatManagement(request: Request, response: Response, next: NextFunction) {
+  async renderCategoriesManagement(request: Request, response: Response, next: NextFunction) {
     const categories = await this.categoryRepository.find({
       where: { lang: request.user.lang },
+      order: { sortingKey: 'ASC' },
     })
+
+    this.render(response, 'Categories', { categories })
+  }
+
+  async renderCategoryManagement(request: Request, response: Response, next: NextFunction) {
+    const categories = await this.categoryRepository.find({
+      where: { id: request.params.id },
+    })
+
     const subcategories = await this.subcategoryRepository.query(
-      `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id
+      `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id, sc."sortingKey"
       FROM ${env.db.schema}.subcategory sc
       INNER JOIN ${env.db.schema}.category ca
       ON sc.parent_category = ca.id::varchar
-      WHERE sc.lang = $1`,
-      [request.user.lang],
+      WHERE sc.lang = $1
+      AND sc.parent_category = $2
+      ORDER BY sc."sortingKey" ASC
+      `,
+      [request.user.lang, request.params.id],
     )
-    this.render(response, 'CatSubcat', { categories, subcategories })
+
+    this.render(response, 'Category', { categories, subcategories })
+  }
+
+  async renderSubcategoryManagement(request: Request, response: Response, next: NextFunction) {
+    const subcategories = await this.subcategoryRepository.find({
+      where: { id: request.params.id },
+    })
+
+    const categories = await this.categoryRepository.find({
+      where: { id: subcategories[0].parent_category },
+      order: { sortingKey: 'ASC' },
+    })
+
+    const articles = await this.articleRepository.query(
+      `SELECT ar.id, ca.title as category_title, ca.id as category_id, sc.title as subcategory_title, sc.id as subcategory_id, ar.article_heading, ar.article_text, ar.live as live, ca.primary_emoji, ar.lang, ar.date_created, ar.*
+      FROM ${env.db.schema}.article ar 
+      INNER JOIN ${env.db.schema}.category ca 
+      ON ar.category = ca.id::varchar
+      INNER JOIN ${env.db.schema}.subcategory sc  
+      ON ar.subcategory = sc.id::varchar
+      WHERE ar.lang = $1
+      AND sc.id = $2
+      ORDER BY ca."sortingKey" ASC, sc."sortingKey" ASC, ar."sortingKey" ASC
+      `,
+      [request.user.lang, request.params.id],
+    )
+
+    this.render(response, 'Subcategory', {
+      categories,
+      subcategories,
+      articles,
+      VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
+    })
   }
 
   async renderVideoManagement(request: Request, response: Response, next: NextFunction) {

@@ -35,13 +35,16 @@
     "react-native-device-info": "^7.3.1",
     "react-native-fast-image": "^7.0.2",
     "react-native-gesture-handler": "^1.4.1",
+    "react-native-haptic-feedback": "^2.0.3",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
     "react-native-localize": "^1.2.0",
     "react-native-modal": "^11.5.4",
+    "react-native-multiple-select": "^0.5.12",
     "react-native-push-notification": "^8.1.1",
     "react-native-reanimated": "1.2.0",
     "react-native-redash": "^7.5.1",
     "react-native-share": "8.2.1",
+    "react-native-sound": "^0.11.2",
     "react-native-svg": "^9.9.3",
     "react-native-swiper": "^1.6.0",
     "react-native-tts": "^3.0.0",
@@ -50,7 +53,8 @@
     "react-native-youtube-iframe": "2.3.0",
     "react-native-webview": "13.6.0",
     "react-native-video": "5.2.1",
-    "react-native-orientation-locker": "1.3.0"
+    "react-native-orientation-locker": "1.3.0",
+    "react-native-vector-icons": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

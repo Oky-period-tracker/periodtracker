@@ -13,12 +13,13 @@ import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import { translate } from '../i18n/index'
 import { SpinLoader } from '../components/common/SpinLoader'
-import { settingsScreenText } from '../config'
+import { HAPTIC_AND_SOUND_ENABLED, settingsScreenText } from '../config'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import analytics from '@react-native-firebase/analytics'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import { useTodayPrediction } from '../components/context/PredictionProvider'
 import { StyleSheet } from 'react-native'
+import { useHapticAndSound } from '../hooks/useHapticAndSound'
 
 export function SettingsScreen({ navigation }) {
   const dispatch = useDispatch()
@@ -28,26 +29,35 @@ export function SettingsScreen({ navigation }) {
   const hasTtsActive = useSelector(selectors.isTtsActiveSelector)
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
 
+  const hapticAndSoundFeedback = useHapticAndSound()
+  const hasHaptic = useSelector(selectors.isHapticActiveSelector)
+  const hasSound = useSelector(selectors.isSoundActiveSelector)
+
   useTextToSpeechHook({
     navigation,
     text: settingsScreenText({ hasTtsActive }),
   })
+
+  const onHandlePress = (screen: string) => {
+    hapticAndSoundFeedback('general')
+    navigate(screen, null)
+  }
 
   return (
     <BackgroundTheme>
       <ScrollContainer>
         <Header showGoBackButton={false} screenTitle="settings" />
         <Container>
-          <NavigationLink onPress={() => navigate('AboutScreen', null)}>
+          <NavigationLink onPress={() => onHandlePress('AboutScreen')}>
             <ListItem title="about" description="about_info" />
           </NavigationLink>
-          <NavigationLink onPress={() => navigate('TermsScreen', null)}>
+          <NavigationLink onPress={() => onHandlePress('TermsScreen')}>
             <ListItem title="t_and_c" description="t_and_c_info" />
           </NavigationLink>
-          <NavigationLink onPress={() => navigate('PrivacyScreen', null)}>
+          <NavigationLink onPress={() => onHandlePress('PrivacyScreen')}>
             <ListItem title="privacy_policy" description="privacy_info" />
           </NavigationLink>
-          <NavigationLink onPress={() => navigate('AccessScreen', null)}>
+          <NavigationLink onPress={() => onHandlePress('AccessScreen')}>
             <ListItem title="access_setting" description="settings_info" />
           </NavigationLink>
           {/* <ListItem
@@ -68,6 +78,34 @@ export function SettingsScreen({ navigation }) {
               />
             )}
           /> */}
+          {HAPTIC_AND_SOUND_ENABLED ? (
+            <>
+              <ListItem
+                title="haptic_request"
+                renderControls={() => (
+                  <Switcher
+                    value={hasHaptic}
+                    onSwitch={(val) => {
+                      dispatch(actions.toggleHaptic(val))
+                    }}
+                  />
+                )}
+                description="haptic_request"
+              />
+              <ListItem
+                title="sound_request"
+                renderControls={() => (
+                  <Switcher
+                    value={hasSound}
+                    onSwitch={(val) => {
+                      dispatch(actions.toggleSound(val))
+                    }}
+                  />
+                )}
+                description="sound_request"
+              />
+            </>
+          ) : null}
           <ListItem
             title="future_prediciton"
             description="future_prediciton_info"

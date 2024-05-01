@@ -8,6 +8,7 @@ export interface EncyclopediaResponseItem {
   article_text: string
   primary_emoji: string
   primary_emoji_name: string
+  voiceOverKey?: string | null
   lang: string
   live: boolean
 }
@@ -76,7 +77,7 @@ interface HelpCenterResponseItem {
   title: string
   caption: string
   contactOne: string
-  contactTwo: string
+  contactTwo?: string
   address: string
   website: string
   lang: string
@@ -96,6 +97,11 @@ export interface LoginResponse {
     secretQuestion: string
     secretAnswer: string
     dateSignedUp: string
+    // Optional
+    genderIdentity?: string
+    accommodationRequirement?: string
+    religion?: string
+    encyclopediaVersion?: string
   }
   store: {
     storeVersion: number
@@ -115,6 +121,11 @@ export interface SignupResponse {
     province: string
     secretQuestion: string
     secretAnswer: string
+    // Optional
+    genderIdentity?: string
+    accommodationRequirement?: string
+    religion?: string
+    encyclopediaVersion?: string
   }
 }
 

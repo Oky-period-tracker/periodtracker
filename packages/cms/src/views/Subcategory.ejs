@@ -1,0 +1,60 @@
+<%- include('partials/Header') %>
+<!-- force new line -->
+<%- include('modals/ArticleModal', { categories, subcategories}) %> 
+<%- include('modals/CategoryModal') %>
+<!-- force new line -->
+<%- include(`modals/SubcategoryModal`, { categories }) %>
+<%- include('modals/InfoModal') %>
+<div class="homePageContainer">
+  <div class="sideBar">
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <%- currentUser.lang %>
+    <div class="homeTopTextContainer">
+      <a href="javascript:history.back()">
+        <i class="fas fa-arrow-left back_arrow" aria-hidden="true"></i>
+      </a>
+      <h2><%= subcategories[0]?.title%></h2> 
+
+      <button
+      type="button"
+      class="btn btn-primary"
+      data-toggle="modal"
+      data-target="#articleModal"
+      data-value="0"
+    >
+    <%= __('Add Article') %>
+    </button>
+
+    </div>
+    <div class="articleContainer">
+      <table id="articleTable" class="table">
+      <thead>
+          <tr>
+              <th style="width: 2.5%" id="order"><%= __('Order')%></th>
+              <th style="width: 5%"><%= __('Category Tag')%></th>
+              <th style="width: 5%"><%= __('Subcategory Tag')%></th>
+              <th style="width: 20%" ><%= __('Article Heading')%></th>
+              <th style="width: 50%" ><%= __('Article Text')%></th>
+              <th style="width: 50%" ><%= __('Date')%></th>
+              <th style="width: 2.5%"><%= __('Voice Over')%></th>
+              <th style="width: 2.5%"><%= __('Edit')%></th>
+              <th style="width: 2.5%"><%= __('Delete')%></th>
+              <th style="width: 2.5%"><%= __('Live')%></th>
+          </tr>
+      </thead>
+    </table>
+  </div>
+  </div>
+  <span id="articlesJSON" hidden><%= JSON.stringify(articles); %> </span>
+  <span id="categoriesJSON" hidden><%= JSON.stringify(categories); %> </span>
+  <span id="subcategoriesJSON" hidden><%= JSON.stringify(subcategories); %> </span>
+  <script type="application/javascript" src="/scripts/voiceOvers.js"></script>
+  <!-- VOICE OVER SETUP -->
+  <script>
+    window.VOICE_OVER_BASE_URL = "<%= VOICE_OVER_BASE_URL %>"
+  </script>
+  <script type="application/javascript" src="/scripts/subcategoryViewScript.js"></script>
+</div>
+<%- include('partials/Footer') %>

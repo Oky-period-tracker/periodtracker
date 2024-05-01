@@ -9,6 +9,7 @@ import * as selectors from '../../redux/selectors'
 import * as actions from '../../redux/actions'
 import { useDispatch } from 'react-redux'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 function useQuiz() {
   const unansweredQuizzes = useSelector(selectors.quizzesWithoutAnswersSelector)
@@ -29,6 +30,7 @@ export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEnt
   const userID = useSelector(selectors.currentUserSelector).id
   const selectedQuestion = useQuiz()
   const answeredQuestion = useSelector((state) => selectors.quizAnswerByDate(state, dataEntry.date))
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   const QuizContent = () => {
     return selectedQuestion.answers.map((item, ind) => {
@@ -37,7 +39,8 @@ export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEnt
         <EmojiContainer key={ind}>
           <EmojiSelector
             color={'pink'}
-            onPress={() =>
+            onPress={() => {
+              hapticAndSoundFeedback('general')
               dispatch(
                 actions.answerQuiz({
                   id: selectedQuestion.id,
@@ -51,7 +54,7 @@ export const QuizCard = React.memo<{ dataEntry: any; index: number }>(({ dataEnt
                   utcDateTime: dataEntry.date,
                 }),
               )
-            }
+            }}
             numberOfLines={3}
             isActive={false}
             style={{

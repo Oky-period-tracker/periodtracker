@@ -1,5 +1,5 @@
 // =============== Modal Population ========================
-$('#articleModal').on('show.bs.modal', event => {
+$('#articleModal').on('show.bs.modal', (event) => {
   $('#error1').hide()
   $('#error2').hide()
   $('#errorTitle2').hide()
@@ -20,7 +20,7 @@ $('#articleModal').on('show.bs.modal', event => {
     return
   }
   var articles = JSON.parse($('#articlesJSON').text())
-  var articleInfo = articles.find(item => {
+  var articleInfo = articles.find((item) => {
     return item.id === articleId
   })
 
@@ -31,11 +31,11 @@ $('#articleModal').on('show.bs.modal', event => {
   $('#col3TableModal').val(articleInfo.article_text)
   $('#col4TableModal').prop('checked', articleInfo.live)
   $('#itemID').text(articleId)
-  $('#countdown2').text(70- articleInfo.article_heading.length + ' characters remaining.')
-  handleSubCategorySelect(articleInfo.category_id);
+  $('#countdown2').text(70 - articleInfo.article_heading.length + ' characters remaining.')
+  handleSubCategorySelect(articleInfo.category_id)
 })
 
-$('#categoryModal').on('show.bs.modal', event => {
+$('#categoryModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var categoryId = button.data('value') // Extract info from data-* attributes
   $('#errorCat1').hide()
@@ -50,7 +50,7 @@ $('#categoryModal').on('show.bs.modal', event => {
     return
   }
   var categories = JSON.parse($('#categoriesJSON').text())
-  var categoryInfo = categories.find(item => {
+  var categoryInfo = categories.find((item) => {
     return item.id === categoryId
   })
 
@@ -61,7 +61,7 @@ $('#categoryModal').on('show.bs.modal', event => {
   $('#itemID').text(categoryId)
 })
 
-$('#subcategoryModal').on('show.bs.modal', event => {
+$('#subcategoryModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var subcategoryId = button.data('value') // Extract info from data-* attributes
   $('#errorSubcat1').hide()
@@ -74,7 +74,7 @@ $('#subcategoryModal').on('show.bs.modal', event => {
     return
   }
   var subcategories = JSON.parse($('#subcategoriesJSON').text())
-  var subcategoryInfo = subcategories.find(item => {
+  var subcategoryInfo = subcategories.find((item) => {
     return item.id === subcategoryId
   })
 
@@ -111,16 +111,16 @@ $('#btnArticleEditConfirm').on('click', () => {
     url: '/articles' + (articleID === '0' ? '' : '/' + articleID),
     type: articleID === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
-      if (result.isExist){
-        $('#errorTitle2').show();
+    success: (result) => {
+      if (result.isExist) {
+        $('#errorTitle2').show()
       } else {
         $('#articleModal').modal('hide')
         $('#infoArticleModal').modal('show')
         setTimeout(() => location.reload(), 1500)
       }
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -144,10 +144,10 @@ $('#btnCategoryConfirm').on('click', () => {
     url: '/categories' + (categoryId === '0' ? '' : '/' + categoryId),
     type: categoryId === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -169,21 +169,21 @@ $('#btnSubcategoryConfirm').on('click', () => {
     url: '/subcategories' + (categoryId === '0' ? '' : '/' + categoryId),
     type: categoryId === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
 })
 
 // ==================== Live check =============================
-$(document).on('click','.liveCheckbox', () => {
+$(document).on('click', '.liveCheckbox', () => {
   var button = $(event.target) // Button that triggered the modal
   var articleId = button.data('value') // Extract info from data-* attributes
   var articles = JSON.parse($('#articlesJSON').text())
-  var articleInfo = articles.find(item => {
+  var articleInfo = articles.find((item) => {
     return item.id === articleId
   })
   const data = {
@@ -198,10 +198,10 @@ $(document).on('click','.liveCheckbox', () => {
     url: '/articles/' + articleId,
     type: 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -209,7 +209,7 @@ $(document).on('click','.liveCheckbox', () => {
 
 // ==================== Deletion =============================
 
-$('.deleteArticle').on('click', event => {
+$('.deleteArticle').on('click', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var articleId = button.data('value') // Extract info from data-* attributes
   var result = confirm('Are you sure? This will permanently delete the item')
@@ -217,10 +217,10 @@ $('.deleteArticle').on('click', event => {
     $.ajax({
       url: '/articles/' + articleId,
       type: 'DELETE',
-      success: result => {
+      success: (result) => {
         location.reload()
       },
-      error: error => {
+      error: (error) => {
         console.log(error)
       },
     })
@@ -235,12 +235,12 @@ var articleList = $('#articles')
 var articles = articleList.children()
 var sortStatus = [false, false]
 var filteredArticles = false
-var sort = function(child) {
+var sort = function (child) {
   filteredArticles = filteredArticles ? filteredArticles : articles
   if (!sortStatus[child]) {
     var sortList = Array.prototype.sort.bind(filteredArticles)
 
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[child].innerHTML
       var bText = b.children[child].innerHTML
       if (aText < bText) {
@@ -254,7 +254,7 @@ var sort = function(child) {
     sortStatus[child] = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredArticles)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[child].innerHTML
       var bText = b.children[child].innerHTML
       if (aText > bText) {
@@ -273,12 +273,12 @@ var sort = function(child) {
 
 var sortDateStatus = false
 var filteredItems = false
-var sortDate = function({ column }) {
+var sortDate = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : articles
 
   if (!sortDateStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = new Date(a.children[column].innerHTML)
       var bText = new Date(b.children[column].innerHTML)
       if (aText < bText) {
@@ -292,7 +292,7 @@ var sortDate = function({ column }) {
     sortDateStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = new Date(a.children[column].innerHTML)
       var bText = new Date(b.children[column].innerHTML)
       if (aText > bText) {
@@ -316,23 +316,24 @@ $('#subCategoryTag').click(() => sort(1))
 
 var filterButton = $('#filterButton')
 var filteredArticles = false
-filterButton.click(event => {
+filterButton.click((event) => {
   event.preventDefault()
-  var filterText = $('#filterInput')
-    .val()
-    .toLowerCase()
-    .trim()
+  var filterText = $('#filterInput').val().toLowerCase().trim()
   if (filterText == '') {
     articleList.empty().prepend(articles)
     return
   }
   filteredArticles = articles.filter((index, elem) =>
-  new Array(articles[0].children.length).fill().some((_, childIndex) => elem.children[childIndex].innerText.toLowerCase().includes(filterText.toLowerCase()))
+    new Array(articles[0].children.length)
+      .fill()
+      .some((_, childIndex) =>
+        elem.children[childIndex].innerText.toLowerCase().includes(filterText.toLowerCase()),
+      ),
   )
   articleList.empty().prepend(filteredArticles)
 })
 
-$('#clearFilter').click(event => {
+$('#clearFilter').click((event) => {
   $('#filterInput').val('')
   articleList.empty().prepend(articles)
   filteredArticles = false
@@ -347,7 +348,7 @@ function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
     countdownElement.text(remaining + ' characters remaining.')
   }
 
-  $(document).ready(function($) {
+  $(document).ready(function ($) {
     updateCountdown()
     tableElement.change(updateCountdown)
     tableElement.keyup(updateCountdown)
@@ -360,15 +361,20 @@ makeUpdateCountdown({
   maxLength: 70,
 })
 //control subcategory select
-$('#col0TableModal').change(event => {
-  $('#col1TableModal').val('');
-  var catId = event.target.value;
-  handleSubCategorySelect(catId);
+$('#col0TableModal').change((event) => {
+  $('#col1TableModal').val('')
+  var catId = event.target.value
+  handleSubCategorySelect(catId)
 })
 const handleSubCategorySelect = (catId) => {
-  $('#col1TableModal').attr('disabled', false);
-  $('#col1TableModal').children().map((_, child) => {
-    if (child.dataset.id == catId) $(child).css('display', 'block');
-    else $(child).css('display', 'none')
-  })
+  $('#col1TableModal').attr('disabled', false)
+  $('#col1TableModal')
+    .children()
+    .map((_, child) => {
+      if (child.dataset.id == catId) $(child).css('display', 'block')
+      else $(child).css('display', 'none')
+    })
 }
+
+var articlesJSON = $('#articlesJSON').text()
+initializeVoiceOver(articlesJSON)

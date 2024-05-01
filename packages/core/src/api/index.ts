@@ -26,6 +26,10 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       secretQuestion,
       secretAnswer,
       dateSignedUp,
+      genderIdentity,
+      accommodationRequirement,
+      religion,
+      encyclopediaVersion,
       preferredId = null,
     }: any) => {
       const response: AxiosResponse<types.SignupResponse> = await axios.post(
@@ -41,6 +45,10 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
           secretAnswer,
           secretQuestion,
           dateSignedUp,
+          genderIdentity,
+          accommodationRequirement,
+          religion,
+          encyclopediaVersion,
           preferredId,
         },
       )
@@ -92,6 +100,11 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       )
       return response.data
     },
+    fetchProvinces: async () => {
+      const response: AxiosResponse<any> = await axios.get(`${cmsEndpoint}/provinces`)
+
+      return response.data
+    },
     editUserInfo: async ({
       appToken,
       name,
@@ -134,6 +147,10 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       const response: AxiosResponse<types.AvatarMessagesResponse> = await axios.get(
         `${cmsEndpoint}/mobile/avatar-messages/${locale}`,
       )
+      return response.data
+    },
+    fetchHelpCenterAttribute: async () => {
+      const response: AxiosResponse<any> = await axios.get(`${cmsEndpoint}/help-center-attributes`)
       return response.data
     },
     fetchEncyclopedia: async ({ locale }) => {

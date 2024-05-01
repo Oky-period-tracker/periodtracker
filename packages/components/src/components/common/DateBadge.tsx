@@ -12,6 +12,7 @@ import {
   useActualCurrentStartDateSelector,
 } from '../../components/context/PredictionProvider'
 import { getAsset } from '../../services/asset'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 function checkForVerifiedDay(cardValues) {
   if (_.has(cardValues, 'periodDay')) {
@@ -72,6 +73,8 @@ export function DateBadge({ dataEntry, style, textStyle = null, showModal, cardV
   const actualCurrentStartDate = useActualCurrentStartDateSelector()
   const hasFuturePredictionActive = useSelector(selectors.isFuturePredictionSelector)
 
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   const source = useStatusForSource(
     dataEntry,
     themeName,
@@ -101,6 +104,7 @@ export function DateBadge({ dataEntry, style, textStyle = null, showModal, cardV
       accessibilityLabel={`${dataEntry.date.format('DD')}\n${translate(
         dataEntry.date.format('MMM'),
       )}`}
+      onPressIn={() => hapticAndSoundFeedback('general')}
       onPress={() => {
         showModal()
       }}

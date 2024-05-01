@@ -9,7 +9,7 @@ import i18n from 'i18n'
 import cors from 'cors'
 import { Strategy } from 'passport-local'
 import cookieParser from 'cookie-parser'
-import session from 'express-session'
+import session from 'cookie-session'
 import { Authentication } from './access/authentication'
 import * as admin from 'firebase-admin'
 import { env } from './env'
@@ -17,6 +17,9 @@ import ormconfig from '../ormconfig'
 import { DataController } from './controller/DataController'
 import multer from 'multer'
 import { cmsLocales } from './i18n/options'
+// import { run } from './projections/populate' // @TODO:PH
+
+import * as formUpload from 'express-fileupload'
 
 createConnection(ormconfig)
   .then(() => {
@@ -67,32 +70,19 @@ createConnection(ormconfig)
     })
 
     // ======================= i18n Configuration =============================
+    Routes.forEach((route) => {
+      if (route.isPublic) {
+        return
+      }
+      app.use(route.route, Authentication.isLoggedIn)
+    })
 
-    app.use('/quizzes', Authentication.isLoggedIn)
-    app.use('/encyclopedia', Authentication.isLoggedIn)
-    app.use('/data', Authentication.isLoggedIn)
-    app.use('/articles', Authentication.isLoggedIn)
-    app.use('/user', Authentication.isLoggedIn)
-    app.use('/quiz-management', Authentication.isLoggedIn)
-    app.use('/user-management', Authentication.isLoggedIn)
-    app.use('/survey-management', Authentication.isLoggedIn)
-    app.use('/didyouknow-management', Authentication.isLoggedIn)
-    app.use('/suggestions-management', Authentication.isLoggedIn)
-    app.use('/catsubcat-management', Authentication.isLoggedIn)
-    app.use('/notifications-management', Authentication.isLoggedIn)
-    app.use('/analytics-management', Authentication.isLoggedIn)
-    app.use('/help-center-management', Authentication.isLoggedIn)
-    app.use('/privacy-policy-management', Authentication.isLoggedIn)
-    app.use('/about', Authentication.isLoggedIn)
-    app.use('/about-management', Authentication.isLoggedIn)
-    app.use('/about-banner-management', Authentication.isLoggedIn)
-    app.use('/terms-and-conditions-management', Authentication.isLoggedIn)
-    app.use('/avatar-message-management', Authentication.isLoggedIn)
-    app.use('/video-management', Authentication.isLoggedIn)
     app.use('/mobile/suggestions', cors())
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
+      // databaseURL: 'https://oky-app.firebaseio.com', // @TODO:PH
     })
+
     // ============================ Upload  =======================================
 
     const upload = multer({ storage: multer.memoryStorage() })
@@ -123,21 +113,38 @@ createConnection(ormconfig)
       dataController.uploadProvincesSheet,
     )
 
+    app.use(formUpload.default())
+
     // ============================ Routes  =======================================
     Routes.forEach((route) => {
-      ;(app as any)[route.method](route.route, (req: Request, res: Response, next: any) => {
-        const result = new (route.controller as any)()[route.action](req, res, next)
-        if (result instanceof Promise) {
-          result.then((_result) =>
-            _result !== null && _result !== undefined ? res.send(_result) : undefined,
-          )
-        } else if (result !== null && result !== undefined) {
-          res.json(result)
+      ;(app as any)[route.method](route.route, async (req: Request, res: Response, next: any) => {
+        try {
+          const instance = new (route.controller as any)()
+          const method = instance[route.action]
+          const rawResult = method.apply(instance, [req, res, next])
+          const result = await rawResult
+          if (result !== null && result !== undefined) {
+            if (rawResult instanceof Promise) {
+              if (result?.isFile) {
+                // do not return a response since we handle the stream when sending a file to client
+                return
+              }
+              res.send(result)
+            } else {
+              res.json(result)
+            }
+          }
+        } catch (e) {
+          res.json({
+            error: true,
+            message: e.message,
+          })
+          console.warn(e)
         }
       })
     })
 
-    app.listen(5000)
-    console.log('Server started on port 5000')
+    app.listen(env.api.port)
+    console.log(`Server started on port ${env.api.port}`)
   })
   .catch((error) => console.log(error))

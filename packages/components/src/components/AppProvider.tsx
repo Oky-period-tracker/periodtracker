@@ -7,6 +7,7 @@ import { DisplayTextProvider } from './context/DisplayTextContext'
 import { PredictionProvider } from './context/PredictionProvider'
 import { AlertContextProvider } from './context/AlertContext'
 import { FlowerProvider } from '../optional/Flower'
+import { SoundProvider } from './context/SoundContext'
 
 export const AppProvider = ({ children, store, persistor }) => (
   <ReduxProvider store={store}>
@@ -16,7 +17,9 @@ export const AppProvider = ({ children, store, persistor }) => (
           <PredictionProvider>
             <FlowerProvider>
               <AlertContextProvider>
-                <DisplayTextProvider>{children}</DisplayTextProvider>
+                <DisplayTextProvider>
+                  <SoundProvider>{children}</SoundProvider>
+                </DisplayTextProvider>
               </AlertContextProvider>
             </FlowerProvider>
           </PredictionProvider>

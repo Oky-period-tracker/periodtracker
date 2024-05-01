@@ -7,6 +7,7 @@ import * as actions from '../../redux/actions'
 import { useSelector } from '../../hooks/useSelector'
 import { SpinLoader } from '../../components/common/SpinLoader'
 import _ from 'lodash'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export function Login() {
   const dispatch = useDispatch()
@@ -16,9 +17,14 @@ export function Login() {
   const [name, setName] = React.useState('')
   const [password, setPassword] = React.useState('')
 
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   React.useEffect(() => {
     if (loginError) {
       setLoading(false)
+      hapticAndSoundFeedback('warning')
+    } else if (!isLoggingIn) {
+      hapticAndSoundFeedback('general')
     }
   }, [isLoggingIn])
 

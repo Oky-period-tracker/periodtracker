@@ -18,6 +18,7 @@ import { TermsAndConditionsController } from './controller/TermsAndConditionsCon
 import { PrivacyPolicyController } from './controller/PrivacyPolicyController'
 import { DataController } from './controller/DataController'
 import { VideoController } from './controller/VideoController'
+import { ArticleVoiceOverController } from './controller/ArticleVoiceOverController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -26,12 +27,14 @@ export const Routes = [
     route: '/',
     controller: RenderController,
     action: 'renderLogin',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/login',
     controller: RenderController,
     action: 'renderLogin',
+    isPublic: true,
   },
   {
     method: 'get',
@@ -59,9 +62,21 @@ export const Routes = [
   },
   {
     method: 'get',
-    route: '/catsubcat-management',
+    route: '/categories-management',
     controller: RenderController,
-    action: 'renderCatSubcatManagement',
+    action: 'renderCategoriesManagement',
+  },
+  {
+    method: 'get',
+    route: '/categories-management/:id',
+    controller: RenderController,
+    action: 'renderCategoryManagement',
+  },
+  {
+    method: 'get',
+    route: '/subcategories-management/:id',
+    controller: RenderController,
+    action: 'renderSubcategoryManagement',
   },
   {
     method: 'get',
@@ -141,6 +156,7 @@ export const Routes = [
     route: '/login',
     controller: AccessController,
     action: 'login',
+    isPublic: true,
   },
   {
     method: 'post',
@@ -184,6 +200,31 @@ export const Routes = [
     method: 'delete',
     route: '/articles/:id',
     controller: ArticleController,
+    action: 'remove',
+  },
+  {
+    method: 'put',
+    route: '/articles',
+    controller: ArticleController,
+    action: 'reorderRows',
+  },
+  // ------------ Voice Over ----------------
+  {
+    method: 'get',
+    route: '/api/voice-over/article',
+    controller: ArticleVoiceOverController,
+    action: 'get',
+  },
+  {
+    method: 'post',
+    route: '/api/voice-over/article/upload',
+    controller: ArticleVoiceOverController,
+    action: 'upload',
+  },
+  {
+    method: 'post',
+    route: '/api/voice-over/article/remove',
+    controller: ArticleVoiceOverController,
     action: 'remove',
   },
   // ------------ Videos Api ----------------
@@ -248,6 +289,12 @@ export const Routes = [
     controller: CategoryController,
     action: 'remove',
   },
+  {
+    method: 'put',
+    route: '/categories',
+    controller: CategoryController,
+    action: 'reorderRows',
+  },
   // ------------ Subcategories Api ----------------
   {
     method: 'get',
@@ -278,6 +325,12 @@ export const Routes = [
     route: '/subcategories/:id',
     controller: SubcategoryController,
     action: 'remove',
+  },
+  {
+    method: 'put',
+    route: '/subcategories',
+    controller: SubcategoryController,
+    action: 'reorderRows',
   },
   // ------------ Quizzes Api ----------------
   {
@@ -435,10 +488,28 @@ export const Routes = [
     action: 'update',
   },
   {
+    method: 'put',
+    route: '/help-center',
+    controller: HelpCenterController,
+    action: 'bulkUpdate',
+  },
+  {
     method: 'delete',
     route: '/help-center/:id',
     controller: HelpCenterController,
     action: 'remove',
+  },
+  {
+    method: 'get',
+    route: '/help-center-template',
+    controller: HelpCenterController,
+    action: 'getTemplate',
+  },
+  {
+    method: 'post',
+    route: '/help-center-template',
+    controller: HelpCenterController,
+    action: 'bulkUpdateViaFile',
   },
 
   // ------------ Privacy Policy Api ----------------
@@ -584,84 +655,98 @@ export const Routes = [
     route: '/mobile/articles/:lang',
     controller: ArticleController,
     action: 'mobileArticlesByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/videos/:lang',
     controller: VideoController,
     action: 'allLive',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/avatar-messages/:lang',
     controller: AvatarMessageController,
     action: 'mobileAvatarMessagesByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/quizzes/:lang',
     controller: QuizController,
     action: 'mobileQuizzesByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/didyouknows/:lang',
     controller: DidYouKnowController,
     action: 'mobileDidYouKnowByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/surveys/:lang',
     controller: SurveyController,
     action: 'mobileSurveysByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/new-surveys/:lang',
     controller: SurveyController,
     action: 'newMobileSurveysByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/notification/:lang',
     controller: NotificationController,
     action: 'mobileNotificationsByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/help-center/:lang',
     controller: HelpCenterController,
     action: 'mobileHelpCenterByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/privacy-policy/:lang',
     controller: PrivacyPolicyController,
     action: 'mobilePrivacyPolicyByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/terms-and-conditions/:lang',
     controller: TermsAndConditionsController,
     action: 'mobileTermsAndConditionsByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/about/:lang',
     controller: AboutController,
     action: 'mobileAboutByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/about-banner/:lang',
     controller: AboutBannerController,
     action: 'mobileAboutBannerByLanguage',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/about-banner-conditional/:lang',
     controller: AboutBannerController,
     action: 'mobileAboutBannerByLanguageConditional',
+    isPublic: true,
   },
 
   // ------- suggestion Api -------
@@ -688,12 +773,14 @@ export const Routes = [
     route: '/mobile/suggestions',
     controller: SuggestionController,
     action: 'save',
+    isPublic: true,
   },
   {
     method: 'get',
     route: '/mobile/permanent-notification/:ver&:lang&:user',
     controller: NotificationController,
     action: 'mobilePermanentNotifications',
+    isPublic: true,
   },
   // ------- Notification api -------
   {

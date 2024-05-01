@@ -34,7 +34,7 @@
       <button
         type="button"
         class="btn btn-primary"
-        onclick="location.href='/catsubcat-management';"
+        onclick="location.href='/categories-management';"
       >
       <%= __('Category Management') %>
       </button>
@@ -65,6 +65,9 @@
             <th style="width: 15%" class="pointer" id="subCategoryTag"><%= __('Subcategory Tag') %></th>
             <th style="width: 15%"><%= __('Article Heading') %></th>
             <th style="width: 50%"><%= __('Article Text') %></th>
+            <% if(VOICE_OVER_BASE_URL){ %>
+              <th style="width: 2.5%"><%= __('Voice Over') %></th>
+           <% } %>
             <th style="width: 2.5%"><%= __('Edit') %></th>
             <th style="width: 2.5%"><%= __('Delete') %></th>
             <th style="width: 2.5%"><%= __('Live') %></th>
@@ -73,10 +76,21 @@
         <tbody style="overflow-y: scroll" id="articles">
           <% articles.forEach((article) =>{ %>
           <tr>
-            <td><%= article.category_title %></td>
-            <td><%= article.subcategory_title %></td>
+            <td><a href="/categories-management/<%= article.category_id %>"><%= article.category_title %></a></td>
+            <td><a href="/subcategories-management/<%= article.subcategory_id %>"><%= article.subcategory_title %></a></td>
             <td><%= article.article_heading %></td>
             <td><%= article.article_text %></td>
+            <% if(VOICE_OVER_BASE_URL){ %>
+              <td
+              id="article-<%= article.id %>"
+                class="voice-over-column"
+                data-source="article"
+                data-id="<%= article.id %>"
+                data-json="<%= JSON.stringify(article) %>"
+              >
+                <input type="file" id="upload-<%= article.id %>"/>
+              </td>
+           <% } %>
             <td>
               <button
                 type="button"
@@ -113,6 +127,11 @@
   <span id="articlesJSON" hidden><%= JSON.stringify(articles); %> </span>
   <span id="categoriesJSON" hidden><%= JSON.stringify(categories); %> </span>
   <span id="subcategoriesJSON" hidden><%= JSON.stringify(subcategories); %> </span>
+  <script type="application/javascript" src="/scripts/voiceOvers.js"></script>
+    <!-- VOICE OVER SETUP -->
+    <script>
+      window.VOICE_OVER_BASE_URL = "<%= VOICE_OVER_BASE_URL %>"
+    </script>
   <script type="application/javascript" src="/scripts/encyclopediaViewScript.js"></script>
 </div>
 <%- include('partials/Footer') %>

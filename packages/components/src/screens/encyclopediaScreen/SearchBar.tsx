@@ -9,6 +9,7 @@ import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
 import { translate } from '../../i18n'
+import { useHapticAndSound } from '../../hooks/useHapticAndSound'
 
 export const SearchBar = ({
   setFilteredCategories,
@@ -24,6 +25,7 @@ export const SearchBar = ({
   const [emojiFilter, updateEmojiFilter] = React.useState([])
   const locale = useSelector(selectors.currentLocaleSelector)
   const emojiList = useSelector(selectors.allCategoryEmojis)
+  const hapticAndSoundFeedback = useHapticAndSound()
 
   return (
     <>
@@ -49,6 +51,7 @@ export const SearchBar = ({
             keyboardType: 'default',
             returnKeyType: 'search',
             onChangeText: (text) => {
+              hapticAndSoundFeedback('key')
               setSearchStr(text)
               setActiveCategory([])
               const filteredResults = handleSearchResult(

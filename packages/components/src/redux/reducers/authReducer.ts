@@ -15,6 +15,11 @@ export interface User {
   secretAnswer: string
   dateSignedUp: string
   isGuest: boolean
+  // Optional
+  genderIdentity?: string
+  accommodationRequirement?: string
+  religion?: string
+  encyclopediaVersion?: string
 }
 
 export interface AuthState {
@@ -62,17 +67,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         loginFailedCount: 0,
         connectAccountAttempts: 0,
         user: {
-          id: action.payload.user.id,
-          name: action.payload.user.name,
-          dateOfBirth: action.payload.user.dateOfBirth,
-          gender: action.payload.user.gender,
-          location: action.payload.user.location,
-          country: action.payload.user.country,
-          province: action.payload.user.province,
-          password: action.payload.user.password,
-          secretQuestion: action.payload.user.secretQuestion,
-          secretAnswer: action.payload.user.secretAnswer,
-          dateSignedUp: action.payload.user.dateSignedUp,
+          ...action.payload.user,
           isGuest: false,
         },
       }
@@ -84,17 +79,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         isLoggingIn: false,
         loginFailedCount: 0,
         user: {
-          id: action.payload.id,
-          name: action.payload.name,
-          dateOfBirth: action.payload.dateOfBirth,
-          gender: action.payload.gender,
-          location: action.payload.location,
-          country: action.payload.country,
-          province: action.payload.province,
-          password: action.payload.password,
-          secretQuestion: action.payload.secretQuestion,
-          secretAnswer: action.payload.secretAnswer,
-          dateSignedUp: action.payload.dateSignedUp,
+          ...action.payload,
           isGuest: true,
         },
       }

@@ -5,12 +5,14 @@ import TermsScreen from "../../screens/TermsScreen";
 import AboutScreen from "../../screens/AboutScreen";
 import PrivacyScreen from "../../screens/PrivacyScreen";
 import ContactUsScreen from "../../screens/ContactUsScreen";
+import SettingsScreen from "../../screens/SettingsScreen";
 
 const Stack = createNativeStackNavigator();
 
 function SettingsStack() {
   return (
     <Stack.Navigator initialRouteName={"SettingsScreen"}>
+      <Stack.Screen name={"SettingsScreen"} component={SettingsScreen} />
       <Stack.Screen name={"AccessScreen"} component={AccessScreen} />
       <Stack.Screen name={"TermsScreen"} component={TermsScreen} />
       <Stack.Screen name={"AboutScreen"} component={AboutScreen} />

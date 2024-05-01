@@ -129,12 +129,6 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
         isFuturePredictionActive: action.payload.isFuturePredictionActive,
       }
 
-    case 'DAILY_CARD_USED': {
-      return {
-        ...state,
-        dailyCardLastUsed: new Date().getTime(),
-      }
-    }
     default:
       return state
   }

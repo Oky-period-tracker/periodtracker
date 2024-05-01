@@ -7,19 +7,3 @@ export function queueEvent(payload: { id: string; type: string; payload: any; me
 export function resetQueue() {
   return createAction('RESET_QUEUE')
 }
-
-export function logScreenView(payload: { screenName: string }) {
-  return createAction('SCREEN_VIEWED', payload)
-}
-
-export function logCategoryView(payload: { categoryId: string }) {
-  return createAction('CATEGORY_VIEWED', payload)
-}
-
-export function logSubCategoryView(payload: { subCategoryId: string }) {
-  return createAction('SUBCATEGORY_VIEWED', payload)
-}
-
-export function logDailyCardUse(payload: { userId: string }) {
-  return createAction('DAILY_CARD_USED', payload)
-}

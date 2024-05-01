@@ -11,7 +11,6 @@ import { useColor } from '../../hooks/useColor'
 import { translate } from '../../i18n'
 import { useScreenDimensions } from '../../hooks/useScreenDimensions'
 import { useDispatch } from 'react-redux'
-import { logDailyCardUse } from '../../redux/actions'
 
 export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }) {
   const { screenWidth: deviceWidth } = useScreenDimensions()
@@ -72,7 +71,6 @@ export function DayCarouselItem({ content, cardName, dataEntry, onPress, index }
                 if (dailyCardLastUsed && timeSinceLastUse < oneDay) {
                   return
                 }
-                dispatch(logDailyCardUse({ userId: currentUser.id }))
               }}
               isActive={
                 Array.isArray(selectedEmojis[cardName])

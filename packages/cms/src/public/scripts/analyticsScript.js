@@ -11,13 +11,6 @@ var usersProvinces = JSON.parse($('#usersProvincesJSON').text())
 var userShares = JSON.parse($('#usersSharesJSON').text())
 var directDownloads = JSON.parse($('#directDownloadsJSON').text())
 
-var screenUsage = JSON.parse($('#screenUsageJSON').text())
-var encyclopediaUsage = JSON.parse($('#encyclopediaUsageJSON').text())
-var appUsage = JSON.parse($('#usageJSON').text())
-var countAvatars = JSON.parse($('#countAvatarsJSON').text())
-var countThemes = JSON.parse($('#countThemesJSON').text())
-var countLocales = JSON.parse($('#countLocalesJSON').text())
-
 $('#currentCountry').change(() => {
   dashBarChart(usersProvinces[$('#currentCountry').val()], 'usersProvincesGraph')
 })
@@ -92,14 +85,6 @@ $('#downloadCSV').on('click', () => {
   const totalShares = userShares.reduce((a, b) => a + parseInt(b.value), 0)
   const totalDownloads = directDownloads.reduce((a, b) => a + parseInt(b.value), 0)
 
-  const screenUse = screenUsage.map((item) => Object.values(item))
-  const encyclopediaUse = encyclopediaUsage.map((item) => Object.values(item))
-  const appUse = appUsage.map((item) => Object.values(item))
-
-  const avatars = countAvatars.map((item) => Object.values(item))
-  const themes = countThemes.map((item) => Object.values(item))
-  const locales = countLocales.map((item) => Object.values(item))
-
   const rows = [
     ['User Gender'],
     ['Male', 'Female', 'Prefer not to say'],
@@ -129,54 +114,6 @@ $('#downloadCSV').on('click', () => {
     [totalShares],
     ['User Downloads'],
     [totalDownloads],
-    [''],
-    ['Screen views'],
-    [
-      'Feature',
-      'Definition',
-      'Number of unique users',
-      'Number of logged-in views',
-      'Number of logged-out views',
-      '% of total active users',
-      '% of total users',
-      '% of total views',
-    ],
-    ...screenUse,
-    [''],
-    ['Encyclopedia Usage'],
-    [
-      'Feature',
-      'Definition',
-      'Number of unique users',
-      'Number of logged-in views',
-      'Number of logged-out views',
-      '% of total active users',
-      '% of total users',
-      '% of total views',
-      'Language',
-    ],
-    ...encyclopediaUse,
-    [''],
-    ['App Usage'],
-    [
-      'Feature',
-      'Definition',
-      'Number of unique users',
-      'Number of views',
-      '% of total active users',
-      '% of total users',
-      '% of total views',
-    ],
-    ...appUse,
-    [''],
-    ['Avatars', 'Number of unique users'],
-    ...avatars,
-    [''],
-    ['Theme', 'Number of unique users'],
-    ...themes,
-    [''],
-    ['Locale', 'Number of unique users'],
-    ...locales,
   ]
   exportToCsv(`User Analytics_${new Date().toLocaleDateString()}`, rows)
 })

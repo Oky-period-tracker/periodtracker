@@ -29,7 +29,6 @@ import { PasswordRequestScreen } from '../screens/PasswordRequestScreen'
 import { VideoScreen } from '../screens/VideoScreen'
 import { getRouteName, setTopLevelNavigator } from '../services/navigationService'
 import { useDispatch } from 'react-redux'
-import { logScreenView } from '../redux/actions'
 
 const TutorialFirstStack = createStackNavigator(
   { TutorialFirstScreen },
@@ -167,7 +166,6 @@ const AppNavigator = () => {
         if (!SCREENS_TO_TRACK.includes(screenName)) {
           return
         }
-        dispatch(logScreenView({ screenName }))
       }}
       key="app-navigator"
     />

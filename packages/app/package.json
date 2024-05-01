@@ -10,13 +10,15 @@
     "ts:check": "tsc"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
-    "@react-navigation/bottom-tabs": "^6.5.20",
     "@types/react": "~18.2.45",
     "expo": "~50.0.14",
     "expo-constants": "~15.4.6",
+    "expo-device": "~5.9.4",
     "expo-linking": "~6.2.2",
+    "expo-screen-orientation": "~6.4.1",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-native": "0.73.6",

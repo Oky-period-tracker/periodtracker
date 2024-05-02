@@ -15,7 +15,6 @@ import { Avatar } from '../components/common/Avatar/Avatar'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { encyclopediaScreenText } from '../config'
 import { useDispatch } from 'react-redux'
-import { logCategoryView, logSubCategoryView } from '../redux/actions'
 import analytics from '@react-native-firebase/analytics'
 import { VideoData } from '../types'
 
@@ -138,7 +137,6 @@ export function EncyclopediaScreen({ navigation }) {
                   tags={category.tags}
                   onPress={() => {
                     setActiveCategory(isActive ? [] : [i])
-                    dispatch(logCategoryView({ categoryId: category.id }))
                   }}
                   {...{ isActive }}
                 />
@@ -159,7 +157,6 @@ export function EncyclopediaScreen({ navigation }) {
                       }
                       onPress={() => {
                         navigate('Articles', { subCategory: subCategoryId })
-                        dispatch(logSubCategoryView({ subCategoryId }))
                       }}
                     />
                   ))}

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { View, Text } from "react-native";
 import { Button } from "../../components/Button";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 function SettingsScreen({ navigation }) {
   return (
@@ -23,9 +24,13 @@ function SettingsScreen({ navigation }) {
         onPress={() => navigation.navigate("PrivacyScreen")}
       />
       <Button
+        style={{ width: 160 }}
         title="ContactUsScreen"
         onPress={() => navigation.navigate("ContactUsScreen")}
       />
+      <Button style={{ width: 40, height: 40 }}>
+        <FontAwesome size={20} name="user" color={"white"} />
+      </Button>
     </View>
   );
 }

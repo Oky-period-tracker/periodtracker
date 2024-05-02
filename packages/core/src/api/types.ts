@@ -8,6 +8,9 @@ export interface EncyclopediaResponseItem {
   article_text: string
   primary_emoji: string
   primary_emoji_name: string
+  contentFilter?: number
+  isAgeRestricted?: boolean
+  ageRestrictionLevel?: number
   voiceOverKey?: string | null
   lang: string
   live: boolean

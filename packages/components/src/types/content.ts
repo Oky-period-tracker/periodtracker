@@ -1,14 +1,19 @@
+export interface Article {
+  id: string
+  title: string
+  content: string
+  category: string
+  subCategory: string
+  isAgeRestricted: boolean
+  ageRestrictionLevel: number
+  contentFilter: number
+  voiceOverKey?: string
+  live?: boolean
+}
+
 export interface Articles {
   byId: {
-    [id: string]: {
-      id: string
-      title: string
-      content: string
-      category: string
-      subCategory: string
-      voiceOverKey?: string
-      live?: boolean
-    }
+    [id: string]: Article
   }
   allIds: string[]
 }

@@ -11,43 +11,7 @@ import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { IconButton } from '../components/common/buttons/IconButton'
 import { useSound } from '../components/context/SoundContext'
 import { AWS_S3_BASE_URL } from '../config'
-import { Article } from '../types'
-import { User } from '../redux/reducers/authReducer'
-import { isEmpty } from 'lodash'
-import moment from 'moment'
-
-const canAccessArticle = (article: Article, user?: User) => {
-  // @TODO:PH standardise this ?
-  /**
-   * Content Filter Levels
-   * 0 - Available to all
-   * 1 - Show only to Muslims
-   * 2 - Show only to non-Muslims
-   */
-  if (isEmpty(user) && article.contentFilter === 0) {
-    return true
-  }
-
-  if (isEmpty(user) && article.contentFilter !== 0) {
-    return false
-  }
-
-  const age = moment().diff(moment(user.dateOfBirth), 'years')
-
-  if (article.isAgeRestricted && age < article.ageRestrictionLevel) {
-    return false
-  }
-
-  if (user.encyclopediaVersion === 'Yes' && article.contentFilter === 1) {
-    return false
-  }
-
-  if (user.encyclopediaVersion !== 'Yes' && article.contentFilter === 2) {
-    return false
-  }
-
-  return true
-}
+import { canAccessArticle } from '../services/restriction'
 
 const ArticleItem = ({ article, index, articles }) => {
   const currentUser = useSelector(selectors.currentUserSelector)

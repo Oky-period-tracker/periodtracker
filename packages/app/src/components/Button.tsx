@@ -4,26 +4,83 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
   View,
+  ViewProps,
 } from "react-native";
+
+type ButtonStatus = "primary" | "secondary";
 
 export const Button = ({
   style,
   children,
   title,
+  status = "primary",
   ...props
 }: TouchableOpacityProps & {
   title?: string;
+  status?: ButtonStatus;
 }) => {
+  const colors = palette[status];
+
   return (
-    <TouchableOpacity style={[styles.container, style]} {...props}>
-      <View style={styles.highlight}></View>
-      <View style={styles.shadow}></View>
-      <View style={styles.body}>
-        {children}
+    <TouchableOpacity
+      style={[styles.container, { backgroundColor: colors.base }, style]}
+      {...props}
+    >
+      <View
+        style={[styles.highlight, { backgroundColor: colors.highlight }]}
+      ></View>
+      <View style={[styles.shadow, { backgroundColor: colors.shadow }]}></View>
+      <View style={[styles.body, { backgroundColor: colors.base }]}>
+        {children ? children : null}
         {title ? <Text>{title}</Text> : null}
       </View>
     </TouchableOpacity>
   );
+};
+
+export const UntouchableButton = ({
+  style,
+  children,
+  title,
+  status = "primary",
+  ...props
+}: ViewProps & {
+  title?: string;
+  status?: ButtonStatus;
+}) => {
+  const colors = palette[status];
+
+  return (
+    <View
+      style={[styles.container, { backgroundColor: colors.base }, style]}
+      {...props}
+    >
+      <View
+        style={[styles.highlight, { backgroundColor: colors.highlight }]}
+      ></View>
+      <View style={[styles.shadow, { backgroundColor: colors.shadow }]}></View>
+      <View style={[styles.body, { backgroundColor: colors.base }]}>
+        {children ? children : null}
+        {title ? <Text>{title}</Text> : null}
+      </View>
+    </View>
+  );
+};
+
+const palette: Record<
+  ButtonStatus,
+  { base: string; highlight: string; shadow: string }
+> = {
+  primary: {
+    base: "#97C800",
+    highlight: "#fff",
+    shadow: "#00A65A",
+  },
+  secondary: {
+    base: "#D1D0D2",
+    highlight: "#fff",
+    shadow: "#B7B6B6",
+  },
 };
 
 const styles = StyleSheet.create({

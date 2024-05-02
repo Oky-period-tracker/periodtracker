@@ -2,16 +2,41 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+
 import ProfileStack from "./stacks/ProfileStack";
 import HomeStack from "./stacks/HomeStack";
 import EncyclopediaStack from "./stacks/EncyclopediaStack";
 import SettingsStack from "./stacks/SettingsStack";
+import { UntouchableButton } from "../components/Button";
 
 const Tab = createBottomTabNavigator();
 
 const options = {
   tabBarShowLabel: false,
   headerShown: false,
+  tabBarItemStyle: {
+    backgroundColor: "#F1F1F1",
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    borderColor: "#F5F5F5",
+  },
+};
+
+const TabIcon = ({
+  focused,
+  children,
+}: {
+  children: React.ReactNode;
+  focused: boolean;
+}) => {
+  return (
+    <UntouchableButton
+      status={focused ? "primary" : "secondary"}
+      style={{ width: 40, height: 40 }}
+    >
+      {children}
+    </UntouchableButton>
+  );
 };
 
 function RootNavigator() {
@@ -23,8 +48,10 @@ function RootNavigator() {
           component={ProfileStack}
           options={{
             ...options,
-            tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="user" color={color} />
+            tabBarIcon: ({ focused, size }) => (
+              <TabIcon focused={focused}>
+                <FontAwesome size={size} name={"user"} color={"#fff"} />
+              </TabIcon>
             ),
           }}
         />
@@ -33,8 +60,10 @@ function RootNavigator() {
           component={HomeStack}
           options={{
             ...options,
-            tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="home" color={color} />
+            tabBarIcon: ({ focused, size }) => (
+              <TabIcon focused={focused}>
+                <FontAwesome size={size} name={"home"} color={"#fff"} />
+              </TabIcon>
             ),
           }}
         />
@@ -43,8 +72,10 @@ function RootNavigator() {
           component={EncyclopediaStack}
           options={{
             ...options,
-            tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="book" color={color} />
+            tabBarIcon: ({ focused, size }) => (
+              <TabIcon focused={focused}>
+                <FontAwesome size={size} name={"book"} color={"#fff"} />
+              </TabIcon>
             ),
           }}
         />
@@ -53,8 +84,10 @@ function RootNavigator() {
           component={SettingsStack}
           options={{
             ...options,
-            tabBarIcon: ({ color }) => (
-              <FontAwesome size={28} name="gear" color={color} />
+            tabBarIcon: ({ focused, size }) => (
+              <TabIcon focused={focused}>
+                <FontAwesome size={size} name={"gear"} color={"#fff"} />
+              </TabIcon>
             ),
           }}
         />

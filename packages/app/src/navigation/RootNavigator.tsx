@@ -7,7 +7,7 @@ import ProfileStack from "./stacks/ProfileStack";
 import HomeStack from "./stacks/HomeStack";
 import EncyclopediaStack from "./stacks/EncyclopediaStack";
 import SettingsStack from "./stacks/SettingsStack";
-import { UntouchableButton } from "../components/Button";
+import { TabIcon } from "./components/TabIcon";
 
 const Tab = createBottomTabNavigator();
 
@@ -20,23 +20,6 @@ const options = {
     borderLeftWidth: 1,
     borderColor: "#F5F5F5",
   },
-};
-
-const TabIcon = ({
-  focused,
-  children,
-}: {
-  children: React.ReactNode;
-  focused: boolean;
-}) => {
-  return (
-    <UntouchableButton
-      status={focused ? "primary" : "secondary"}
-      style={{ width: 40, height: 40 }}
-    >
-      {children}
-    </UntouchableButton>
-  );
 };
 
 function RootNavigator() {

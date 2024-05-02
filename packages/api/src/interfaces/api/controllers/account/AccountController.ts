@@ -149,7 +149,7 @@ export class AccountController {
     @CurrentUser({ required: true }) userId: string,
     @Body() request: EditInfoRequest,
   ) {
-    const { name, gender, dateOfBirth, location, secretQuestion } = request
+    const { name, gender, dateOfBirth, location, secretQuestion, encyclopediaVersion } = request
     await this.okyUserApplicationService.editInfo({
       userId,
       name,
@@ -157,6 +157,7 @@ export class AccountController {
       dateOfBirth: new Date(dateOfBirth),
       location,
       secretQuestion,
+      encyclopediaVersion,
     })
 
     return { userId }
@@ -201,6 +202,7 @@ export class AccountController {
       secretQuestion: user.getMemorableQuestion(),
       secretAnswer: user.getHashedMemorableAnswer(),
       dateSignedUp: user.getDateSignedUp(),
+      encyclopediaVersion: user.getEncyclopediaVersion(),
     }
 
     const appToken = jwt.sign(userDescriptor, env.app.secret, {

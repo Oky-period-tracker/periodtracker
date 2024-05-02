@@ -37,6 +37,10 @@ const fastSignUpInitialState: SignUpState = {
   country: 'AF',
   province: '0',
   dateOfBirth: '2015-12-31T17:00:00.000Z',
+  genderIdentity: null,
+  accommodationRequirement: null,
+  religion: 'undisclosed_religion',
+  encyclopediaVersion: 'No',
 }
 
 const defaultState: SignUpState = {

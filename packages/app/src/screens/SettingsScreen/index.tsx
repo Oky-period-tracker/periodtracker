@@ -1,5 +1,6 @@
 import * as React from "react";
-import { View, Text, Button } from "react-native";
+import { View, Text } from "react-native";
+import { Button } from "../../components/Button";
 
 function SettingsScreen({ navigation }) {
   return (

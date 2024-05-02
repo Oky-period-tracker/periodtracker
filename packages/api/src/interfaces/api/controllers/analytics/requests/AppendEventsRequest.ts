@@ -14,7 +14,7 @@ export class AppendEventsRequest {
   public readonly events: any[]
 
   public getEvents() {
-    const after = this.events
+    return this.events
       .filter((event) => !eventsToIgnore.includes(event.type)) // Stop saving these events to the DB
       .map((event) => {
         const { id: localId, ...rest } = event
@@ -24,7 +24,5 @@ export class AppendEventsRequest {
           ...rest,
         }
       })
-
-    return after
   }
 }

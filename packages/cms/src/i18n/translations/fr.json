@@ -188,12 +188,8 @@
   "Survey ID": "Survey ID",
   "Data Management": "Data Management",
   "Video Management": "Video Management",
-  "analytics_description_1": "Certaines mesures incluses dans ces analyses sont basées sur des données qui n'ont pas été collectées dans les versions antérieures de l'application. Par conséquent, ces chiffres reflètent principalement l’activité de la version la plus récente de l’application. Les informations relatives à l'utilisation avant la date de mise à jour n'ont pas été enregistrées. De plus, les utilisateurs qui n'ont pas mis à jour vers la version la plus récente de l'application ne fournissent pas ces données de suivi spécifiques.",
-  "analytics_description_2": "Le nombre « total » d'utilisateurs correspond à chaque utilisateur stocké dans la table des utilisateurs. Les utilisateurs sont considérés comme « actifs » s’ils ont effectué au moins une des actions répertoriées, dans la période que vous avez sélectionnée ci-dessus.",
-  "analytics_description_3": "Ces tableaux présentent un instantané actuel de l'activité des utilisateurs et ne suivent pas les modifications au fil du temps. Par conséquent, l’application de filtres de date ne modifiera pas les données affichées.",
   "Youtube Id": "Youtube Id",
   "Asset name": "Nom de l'actif",
   "Videos": "Vidéos",
-  "Add Video": "Ajouter une vidéo",
-  "app_release_date": "Date app released"
+  "Add Video": "Ajouter une vidéo"
 }

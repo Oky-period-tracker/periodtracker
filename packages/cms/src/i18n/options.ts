@@ -41,17 +41,3 @@ export const cmsLanguages = [
 ]
 
 export const cmsLocales = cmsLanguages.map((lang) => lang.locale)
-
-/* 
-  Do not edit the date here,
-  Create a cms.ts file in your translations submodule and add:
-  export const appReleaseDate = 'your_date'
-*/
-let releaseDate = 'Unknown'
-try {
-  releaseDate = require('@oky/core/src/modules/translations').appReleaseDate
-} catch (e) {
-  //
-}
-
-export const appReleaseDate = releaseDate

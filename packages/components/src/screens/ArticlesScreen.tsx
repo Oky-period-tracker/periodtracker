@@ -12,6 +12,8 @@ import { IconButton } from '../components/common/buttons/IconButton'
 import { useSound } from '../components/context/SoundContext'
 import { AWS_S3_BASE_URL } from '../config'
 import { canAccessArticle } from '../services/restriction'
+import HTML from 'react-native-render-html'
+import { cleanHTML } from '../services/html'
 
 const ArticleItem = ({ article, index, articles }) => {
   const currentUser = useSelector(selectors.currentUserSelector)
@@ -42,7 +44,7 @@ const ArticleItem = ({ article, index, articles }) => {
       <Row style={{ alignItems: 'center' }}>
         <ArticleTitle style={{ fontSize: 14 }}>{articleObject.title}</ArticleTitle>
       </Row>
-      <ArticleContent>{articleObject.content}</ArticleContent>
+      <HTML source={{ html: cleanHTML(articleObject.content) }} />
     </ArticleContainer>
   )
 }
@@ -107,9 +109,4 @@ const ArticleTitle = styled(TextWithoutTranslation)`
   color: #e3629b;
   padding-bottom: 5;
   margin-right: auto;
-`
-
-const ArticleContent = styled(TextWithoutTranslation)`
-  text-align: left;
-  color: #1c1c1c;
 `

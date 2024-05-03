@@ -6,6 +6,7 @@ import {
   lockAsync,
   unlockAsync,
 } from "expo-screen-orientation";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 function App() {
   React.useEffect(() => {
@@ -20,7 +21,11 @@ function App() {
     };
   }, []);
 
-  return <RootNavigator />;
+  return (
+    <SafeAreaProvider>
+      <RootNavigator />
+    </SafeAreaProvider>
+  );
 }
 
 export default App;

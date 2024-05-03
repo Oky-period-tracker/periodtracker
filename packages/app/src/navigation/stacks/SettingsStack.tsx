@@ -1,25 +1,48 @@
 import * as React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import NavigationStack, { StackConfig } from "../NavigationStack";
+import SettingsScreen from "../../screens/SettingsScreen";
 import AccessScreen from "../../screens/AccessScreen";
 import TermsScreen from "../../screens/TermsScreen";
 import AboutScreen from "../../screens/AboutScreen";
 import PrivacyScreen from "../../screens/PrivacyScreen";
 import ContactUsScreen from "../../screens/ContactUsScreen";
-import SettingsScreen from "../../screens/SettingsScreen";
 
-const Stack = createNativeStackNavigator();
+const config: StackConfig = {
+  initialRouteName: "EncyclopediaScreen",
+  screens: [
+    {
+      title: "Settings",
+      name: "SettingsScreen",
+      Component: SettingsScreen,
+    },
+    {
+      title: "Access",
+      name: "AccessScreen",
+      Component: AccessScreen,
+    },
+    {
+      title: "Terms & Conditions",
+      name: "TermsScreen",
+      Component: TermsScreen,
+    },
+    {
+      title: "About",
+      name: "AboutScreen",
+      Component: AboutScreen,
+    },
+    {
+      title: "Privacy",
+      name: "PrivacyScreen",
+      Component: PrivacyScreen,
+    },
+    {
+      title: "Contact Us",
+      name: "ContactUsScreen",
+      Component: ContactUsScreen,
+    },
+  ],
+};
 
-function SettingsStack() {
-  return (
-    <Stack.Navigator initialRouteName={"SettingsScreen"}>
-      <Stack.Screen name={"SettingsScreen"} component={SettingsScreen} />
-      <Stack.Screen name={"AccessScreen"} component={AccessScreen} />
-      <Stack.Screen name={"TermsScreen"} component={TermsScreen} />
-      <Stack.Screen name={"AboutScreen"} component={AboutScreen} />
-      <Stack.Screen name={"PrivacyScreen"} component={PrivacyScreen} />
-      <Stack.Screen name={"ContactUsScreen"} component={ContactUsScreen} />
-    </Stack.Navigator>
-  );
-}
+const SettingsStack = () => <NavigationStack config={config} />;
 
 export default SettingsStack;

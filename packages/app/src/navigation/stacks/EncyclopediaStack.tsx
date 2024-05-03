@@ -1,24 +1,36 @@
 import * as React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import EncyclopediaScreen from "../../screens/EncyclopediaScreen";
 import ArticlesScreen from "../../screens/ArticlesScreen";
 import FindHelpScreen from "../../screens/FindHelpScreen";
 import VideoScreen from "../../screens/VideoScreen";
+import NavigationStack, { StackConfig } from "../NavigationStack";
 
-const Stack = createNativeStackNavigator();
+const config: StackConfig = {
+  initialRouteName: "EncyclopediaScreen",
+  screens: [
+    {
+      title: "Encyclopedia",
+      name: "EncyclopediaScreen",
+      Component: EncyclopediaScreen,
+    },
+    {
+      title: "Articles",
+      name: "ArticlesScreen",
+      Component: ArticlesScreen,
+    },
+    {
+      title: "Find Help",
+      name: "FindHelpScreen",
+      Component: FindHelpScreen,
+    },
+    {
+      title: "Video",
+      name: "VideoScreen",
+      Component: VideoScreen,
+    },
+  ],
+};
 
-function EncyclopediaStack() {
-  return (
-    <Stack.Navigator initialRouteName={"EncyclopediaScreen"}>
-      <Stack.Screen
-        name={"EncyclopediaScreen"}
-        component={EncyclopediaScreen}
-      />
-      <Stack.Screen name={"ArticlesScreen"} component={ArticlesScreen} />
-      <Stack.Screen name={"FindHelpScreen"} component={FindHelpScreen} />
-      <Stack.Screen name={"VideoScreen"} component={VideoScreen} />
-    </Stack.Navigator>
-  );
-}
+const EncyclopediaStack = () => <NavigationStack config={config} />;
 
 export default EncyclopediaStack;

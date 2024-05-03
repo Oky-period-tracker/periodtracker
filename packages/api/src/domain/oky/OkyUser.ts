@@ -21,7 +21,7 @@ interface OkyUserProps {
   genderIdentity?: string
   accommodationRequirement?: string
   religion?: string
-  encyclopediaVersion?: string
+  contentSelection?: number
 }
 
 @Entity()
@@ -74,8 +74,8 @@ export class OkyUser {
   @Column({ name: 'religion' })
   private religion: string
 
-  @Column({ name: 'encyclopediaVersion' })
-  private encyclopediaVersion: string
+  @Column({ name: 'contentSelection' })
+  private contentSelection: number
 
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
@@ -93,7 +93,7 @@ export class OkyUser {
         genderIdentity,
         accommodationRequirement,
         religion,
-        encyclopediaVersion,
+        contentSelection,
       } = props
 
       this.id = id
@@ -110,7 +110,7 @@ export class OkyUser {
       this.genderIdentity = genderIdentity
       this.accommodationRequirement = accommodationRequirement
       this.religion = religion
-      this.encyclopediaVersion = encyclopediaVersion
+      this.contentSelection = contentSelection
     }
   }
 
@@ -130,7 +130,7 @@ export class OkyUser {
     genderIdentity,
     accommodationRequirement,
     religion,
-    encyclopediaVersion,
+    contentSelection,
   }: {
     id: string
     name: string
@@ -148,7 +148,7 @@ export class OkyUser {
     genderIdentity?: string
     accommodationRequirement?: string
     religion?: string
-    encyclopediaVersion?: string
+    contentSelection?: number
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -177,7 +177,7 @@ export class OkyUser {
       genderIdentity,
       accommodationRequirement,
       religion,
-      encyclopediaVersion,
+      contentSelection,
     })
   }
 
@@ -197,7 +197,7 @@ export class OkyUser {
     genderIdentity,
     accommodationRequirement,
     religion,
-    encyclopediaVersion,
+    contentSelection,
   }: {
     name: string
     dateOfBirth: Date
@@ -208,7 +208,7 @@ export class OkyUser {
     genderIdentity?: string
     accommodationRequirement?: string
     religion?: string
-    encyclopediaVersion?: string
+    contentSelection?: number
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -223,7 +223,7 @@ export class OkyUser {
     this.genderIdentity = genderIdentity
     this.accommodationRequirement = accommodationRequirement
     this.religion = religion
-    this.encyclopediaVersion = encyclopediaVersion
+    this.contentSelection = contentSelection
   }
 
   public async editSecretAnswer(previousSecretAnswer: string, nextSecretAnswer: string) {
@@ -303,7 +303,7 @@ export class OkyUser {
     return this.religion
   }
 
-  public getEncyclopediaVersion() {
-    return this.encyclopediaVersion
+  public getContentSelection() {
+    return this.contentSelection
   }
 }

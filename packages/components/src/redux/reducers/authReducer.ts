@@ -19,7 +19,7 @@ export interface User {
   genderIdentity?: string
   accommodationRequirement?: string
   religion?: string
-  encyclopediaVersion?: string
+  contentSelection?: number
 }
 
 export interface AuthState {

@@ -50,7 +50,7 @@ export class OkyUserApplicationService {
     genderIdentity,
     accommodationRequirement,
     religion,
-    encyclopediaVersion,
+    contentSelection,
   }: SignupCommand) {
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
     if (await this.okyUserRepository.byId(id)) {
@@ -78,7 +78,7 @@ export class OkyUserApplicationService {
       genderIdentity,
       accommodationRequirement,
       religion,
-      encyclopediaVersion,
+      contentSelection,
     })
     return this.okyUserRepository.save(user)
   }
@@ -147,7 +147,7 @@ export class OkyUserApplicationService {
       genderIdentity: user.getGenderIdentity(),
       accommodationRequirement: user.getAccommodationRequirement(),
       religion: user.getReligion(),
-      encyclopediaVersion: user.getEncyclopediaVersion(),
+      contentSelection: user.getContentSelection(),
     })
 
     return this.okyUserRepository.save(user)

@@ -28,6 +28,9 @@ export class ArticleController {
       ca.primary_emoji,
       ca.primary_emoji_name,
       ar."voiceOverKey",
+      ar."isAgeRestricted",
+      ar."ageRestrictionLevel",
+      ar."contentFilter",
       ar.lang 
       FROM ${env.db.schema}.article ar 
       INNER JOIN ${env.db.schema}.category ca 
@@ -73,6 +76,10 @@ export class ArticleController {
     articleToUpdate.subcategory = request.body.subcategory
     articleToUpdate.article_heading = request.body.article_heading
     articleToUpdate.article_text = request.body.article_text
+    articleToUpdate.contentFilter = request.body.contentFilter
+    articleToUpdate.ageRestrictionLevel = Number(request.body.ageRestrictionLevel)
+    // TODO:PH isAgeRestricted is redundant?
+    articleToUpdate.isAgeRestricted = request.body.ageRestrictionLevel === '0' ? false : true
     articleToUpdate.live = booleanFromString
     articleToUpdate.lang = request.user.lang
     await this.articleRepository.save(articleToUpdate)

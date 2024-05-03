@@ -11,12 +11,14 @@ import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { IconButton } from '../components/common/buttons/IconButton'
 import { useSound } from '../components/context/SoundContext'
 import { AWS_S3_BASE_URL } from '../config'
+import { canAccessArticle } from '../services/restriction'
 
 const ArticleItem = ({ article, index, articles }) => {
+  const currentUser = useSelector(selectors.currentUserSelector)
   const articleObject = useSelector((state) => selectors.articleByIDSelector(state, article))
   const { playSound } = useSound()
 
-  if (!articleObject) {
+  if (!canAccessArticle(articleObject, currentUser)) {
     return null
   }
 

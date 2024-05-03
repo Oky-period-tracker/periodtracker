@@ -15,5 +15,5 @@ export interface SignupCommand {
   genderIdentity?: string
   accommodationRequirement?: string
   religion?: string
-  encyclopediaVersion?: string
+  contentSelection?: number
 }

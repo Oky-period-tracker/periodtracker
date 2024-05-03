@@ -24,7 +24,7 @@ import { Question } from '../entity/Question'
 import { env } from '../env'
 import { Video } from '../entity/Video'
 import { cmsLanguages, appReleaseDate } from '../i18n/options'
-import { helpCenterData } from '../optional'
+import { helpCenterData, contentFilterOptions, ageRestrictionOptions } from '../optional'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -504,6 +504,8 @@ export class RenderController {
       articles,
       categories,
       subcategories,
+      contentFilterOptions,
+      ageRestrictionOptions,
       VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
     })
   }
@@ -565,6 +567,8 @@ export class RenderController {
       categories,
       subcategories,
       articles,
+      contentFilterOptions,
+      ageRestrictionOptions,
       VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
     })
   }

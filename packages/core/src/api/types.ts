@@ -8,6 +8,9 @@ export interface EncyclopediaResponseItem {
   article_text: string
   primary_emoji: string
   primary_emoji_name: string
+  contentFilter?: number
+  isAgeRestricted?: boolean
+  ageRestrictionLevel?: number
   voiceOverKey?: string | null
   lang: string
   live: boolean
@@ -101,7 +104,7 @@ export interface LoginResponse {
     genderIdentity?: string
     accommodationRequirement?: string
     religion?: string
-    encyclopediaVersion?: string
+    contentSelection?: number
   }
   store: {
     storeVersion: number
@@ -125,7 +128,7 @@ export interface SignupResponse {
     genderIdentity?: string
     accommodationRequirement?: string
     religion?: string
-    encyclopediaVersion?: string
+    contentSelection?: number
   }
 }
 

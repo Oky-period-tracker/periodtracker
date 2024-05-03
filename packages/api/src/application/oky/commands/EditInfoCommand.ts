@@ -5,4 +5,5 @@ export interface EditInfoCommand {
   gender: 'Male' | 'Female' | 'Other'
   location: string
   secretQuestion: string
+  contentSelection?: number
 }

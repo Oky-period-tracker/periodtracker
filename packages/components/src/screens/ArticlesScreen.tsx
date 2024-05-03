@@ -18,7 +18,7 @@ const ArticleItem = ({ article, index, articles }) => {
   const articleObject = useSelector((state) => selectors.articleByIDSelector(state, article))
   const { playSound } = useSound()
 
-  if (!articleObject || !canAccessArticle(articleObject, currentUser)) {
+  if (!canAccessArticle(articleObject, currentUser)) {
     return null
   }
 

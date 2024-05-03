@@ -62,6 +62,9 @@ const handleVersionRestriction = (article: Article, user?: User) => {
 }
 
 export const canAccessArticle = (article: Article, user?: User) => {
+  if (!article) {
+    return false
+  }
   const passesAgeRestriction = handleAgeRestriction(article, user)
   const passesVersionRestriction = handleVersionRestriction(article, user)
   return passesAgeRestriction && passesVersionRestriction

@@ -6,7 +6,7 @@ import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { useSelector } from '../hooks/useSelector'
 import * as selectors from '../redux/selectors'
 import { Header } from '../components/common/Header'
-import { TextWithoutTranslation } from '../components/common/Text'
+import { Text, TextWithoutTranslation } from '../components/common/Text'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { IconButton } from '../components/common/buttons/IconButton'
 import { useSound } from '../components/context/SoundContext'
@@ -45,6 +45,9 @@ const ArticleItem = ({ article, index, articles }) => {
         <ArticleTitle style={{ fontSize: 14 }}>{articleObject.title}</ArticleTitle>
       </Row>
       <HTML source={{ html: cleanHTML(articleObject.content) }} />
+      {articleObject.content.indexOf('*') !== -1 && (
+        <Disclaimer style={{ fontSize: 10, marginTop: 20 }}>disclaimer</Disclaimer>
+      )}
     </ArticleContainer>
   )
 }
@@ -109,4 +112,9 @@ const ArticleTitle = styled(TextWithoutTranslation)`
   color: #e3629b;
   padding-bottom: 5;
   margin-right: auto;
+`
+
+const Disclaimer = styled(Text)`
+  text-align: left;
+  color: #1c1c1c;
 `

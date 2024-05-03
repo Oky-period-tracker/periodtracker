@@ -104,7 +104,7 @@ export interface LoginResponse {
     genderIdentity?: string
     accommodationRequirement?: string
     religion?: string
-    encyclopediaVersion?: string
+    contentSelection?: number
   }
   store: {
     storeVersion: number
@@ -128,7 +128,7 @@ export interface SignupResponse {
     genderIdentity?: string
     accommodationRequirement?: string
     religion?: string
-    encyclopediaVersion?: string
+    contentSelection?: number
   }
 }
 

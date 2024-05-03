@@ -5,5 +5,5 @@ export interface EditInfoCommand {
   gender: 'Male' | 'Female' | 'Other'
   location: string
   secretQuestion: string
-  encyclopediaVersion?: string
+  contentSelection?: number
 }

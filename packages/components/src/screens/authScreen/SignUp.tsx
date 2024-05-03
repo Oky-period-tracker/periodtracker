@@ -40,7 +40,7 @@ const fastSignUpInitialState: SignUpState = {
   genderIdentity: null,
   accommodationRequirement: null,
   religion: 'undisclosed_religion',
-  encyclopediaVersion: 'No',
+  contentSelection: 0,
 }
 
 const defaultState: SignUpState = {
@@ -58,7 +58,7 @@ const defaultState: SignUpState = {
   genderIdentity: null,
   accommodationRequirement: null,
   religion: 'undisclosed_religion',
-  encyclopediaVersion: 'No',
+  contentSelection: 0,
 }
 
 const initialState = FAST_SIGN_UP ? fastSignUpInitialState : defaultState

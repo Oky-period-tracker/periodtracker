@@ -20,5 +20,5 @@ export class EditInfoRequest {
   @IsNotEmpty()
   public readonly secretQuestion: string
 
-  public readonly encyclopediaVersion?: string
+  public readonly contentSelection?: number
 }

@@ -49,5 +49,5 @@ export class SignupRequest {
 
   public readonly religion: string
 
-  public readonly encyclopediaVersion?: string
+  public readonly contentSelection?: number
 }

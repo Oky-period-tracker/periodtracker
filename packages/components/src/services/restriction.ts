@@ -4,9 +4,9 @@ import { Article } from '../types'
 import moment from 'moment'
 
 const handleAgeRestriction = (article: Article, user?: User) => {
-  const maxAgeRestriction = 18
+  const defaultAgeRestriction = 15
   const isAgeRestricted = article.isAgeRestricted || article?.ageRestrictionLevel !== 0
-  const ageRestrictionLevel = article?.ageRestrictionLevel ?? maxAgeRestriction
+  const ageRestrictionLevel = article?.ageRestrictionLevel ?? defaultAgeRestriction
 
   if (!isAgeRestricted) {
     // No restriction

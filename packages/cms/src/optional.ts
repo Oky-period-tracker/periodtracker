@@ -12,4 +12,30 @@ try {
   //
 }
 
-export { helpCenterData }
+let contentFilterOptions = [
+  {
+    value: 0,
+    description: 'All',
+  },
+]
+
+try {
+  contentFilterOptions = require('@oky/core/src/modules/translations/cms').contentFilterOptions
+} catch (e) {
+  //
+}
+
+let ageRestrictionOptions = [
+  {
+    value: 0,
+    description: 'All',
+  },
+]
+
+try {
+  ageRestrictionOptions = require('@oky/core/src/modules/translations/cms').ageRestrictionOptions
+} catch (e) {
+  //
+}
+
+export { helpCenterData, contentFilterOptions, ageRestrictionOptions }

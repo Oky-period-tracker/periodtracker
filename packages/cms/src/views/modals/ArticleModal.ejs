@@ -62,19 +62,16 @@
                 class="contentFilterDropdown"
                 data-source="article"
               >
-              <!-- TODO:PH move to array in submodule -->
-              <option value="0">All</option>
-              <option value="1">Generic</option>
-              <option value="2">Islamic Perspective</option>
+              <% contentFilterOptions.forEach((item) =>{ %>
+                <option value="<%-item.value%>"><%-item.description%></option>
+              <% }) %>
             </select>
           </td>
           <td>
             <select class="ageRestrictionLevel" id="ageRestrictionLevelForm" data-source="article">
-              <!-- TODO:PH move to array in submodule -->
-              <option value="0">All ages</option>
-              <option value="10">10 and up</option>
-              <option value="14">14 and up</option>
-              <option value="17">17 and up</option>
+                <% ageRestrictionOptions.forEach((item) =>{ %>
+                  <option value="<%-item.value%>"><%-item.description%></option>
+                <% }) %>
             </select>
           </td>
           

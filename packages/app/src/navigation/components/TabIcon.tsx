@@ -1,3 +1,4 @@
+import { StyleSheet } from "react-native";
 import { UntouchableButton } from "../../components/Button";
 
 export const TabIcon = ({
@@ -10,9 +11,16 @@ export const TabIcon = ({
   return (
     <UntouchableButton
       status={focused ? "primary" : "basic"}
-      style={{ width: 40, height: 40 }}
+      style={styles.tabIcon}
     >
       {children}
     </UntouchableButton>
   );
 };
+
+const styles = StyleSheet.create({
+  tabIcon: {
+    width: 40,
+    height: 40,
+  },
+});

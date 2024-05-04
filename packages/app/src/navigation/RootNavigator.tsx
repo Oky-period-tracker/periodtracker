@@ -11,6 +11,12 @@ import { TabIcon } from "./components/TabIcon";
 
 const Tab = createBottomTabNavigator();
 
+const screenOptions = {
+  tabBarStyle: {
+    height: 60,
+  },
+};
+
 const options = {
   tabBarShowLabel: false,
   headerShown: false,
@@ -25,7 +31,10 @@ const options = {
 function RootNavigator() {
   return (
     <NavigationContainer>
-      <Tab.Navigator initialRouteName={"HomeStack"}>
+      <Tab.Navigator
+        initialRouteName={"HomeStack"}
+        screenOptions={screenOptions}
+      >
         <Tab.Screen
           name={"ProfileStack"}
           component={ProfileStack}

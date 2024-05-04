@@ -44,7 +44,12 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
         ? subcategories.map((subcategory) => (
             <TouchableOpacity
               style={styles.subcategory}
-              onPress={() => navigation.navigate("ArticlesScreen")}
+              onPress={() =>
+                navigation.navigate("ArticlesScreen", {
+                  title: subcategory.name,
+                  subcategoryId: subcategory.id,
+                })
+              }
             >
               <Text>{subcategory.name}</Text>
             </TouchableOpacity>

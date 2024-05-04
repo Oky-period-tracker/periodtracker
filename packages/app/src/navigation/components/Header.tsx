@@ -4,9 +4,16 @@ import { Button } from "../../components/Button";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-export const Header = ({ navigation, options }: NativeStackHeaderProps) => {
+export const Header = ({
+  navigation,
+  route,
+  options,
+}: NativeStackHeaderProps) => {
   const currentRoutes = navigation.getState().routes;
   const showBackButton = currentRoutes.length > 1;
+
+  // @ts-ignore @TODO: fixme
+  const title = route.params?.title ?? options.title;
 
   return (
     <SafeAreaView>
@@ -16,7 +23,7 @@ export const Header = ({ navigation, options }: NativeStackHeaderProps) => {
             <FontAwesome size={12} name={"arrow-left"} color={"#fff"} />
           </Button>
         ) : null}
-        <Text style={styles.title}>{options.title}</Text>
+        <Text style={styles.title}>{title}</Text>
       </View>
     </SafeAreaView>
   );

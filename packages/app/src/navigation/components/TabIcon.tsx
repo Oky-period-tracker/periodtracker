@@ -9,7 +9,7 @@ export const TabIcon = ({
 }) => {
   return (
     <UntouchableButton
-      status={focused ? "primary" : "secondary"}
+      status={focused ? "primary" : "basic"}
       style={{ width: 40, height: 40 }}
     >
       {children}

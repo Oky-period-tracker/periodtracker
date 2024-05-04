@@ -7,7 +7,7 @@ import {
   ViewProps,
 } from "react-native";
 
-type ButtonStatus = "primary" | "secondary";
+type ButtonStatus = "primary" | "secondary" | "basic";
 
 export const Button = ({
   style,
@@ -77,6 +77,11 @@ const palette: Record<
     shadow: "#00A65A",
   },
   secondary: {
+    base: "#FF8C00",
+    highlight: "#FFC26A",
+    shadow: "#BD6600",
+  },
+  basic: {
     base: "#D1D0D2",
     highlight: "#fff",
     shadow: "#B7B6B6",

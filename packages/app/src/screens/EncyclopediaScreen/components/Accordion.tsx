@@ -14,7 +14,7 @@ function Accordion() {
   return (
     <ScrollView style={styles.accordionContainer}>
       {data.categories.allIds.map((categoryId) => (
-        <AccordionItem categoryId={categoryId} />
+        <AccordionItem key={categoryId} categoryId={categoryId} />
       ))}
     </ScrollView>
   );

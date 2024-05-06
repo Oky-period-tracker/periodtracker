@@ -47,6 +47,8 @@ export class RenderController {
   // Apply global render options to all views here
   globalRenderOptions = {
     cmsLanguages,
+    ageRestrictionOptions,
+    contentFilterOptions,
   }
 
   async render(
@@ -505,7 +507,6 @@ export class RenderController {
       categories,
       subcategories,
       contentFilterOptions,
-      ageRestrictionOptions,
       VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
     })
   }
@@ -568,7 +569,6 @@ export class RenderController {
       subcategories,
       articles,
       contentFilterOptions,
-      ageRestrictionOptions,
       VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
     })
   }

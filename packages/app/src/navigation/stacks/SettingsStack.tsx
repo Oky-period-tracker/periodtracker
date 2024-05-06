@@ -8,7 +8,7 @@ import PrivacyScreen from "../../screens/PrivacyScreen";
 import ContactUsScreen from "../../screens/ContactUsScreen";
 
 const config: StackConfig = {
-  initialRouteName: "EncyclopediaScreen",
+  initialRouteName: "SettingsScreen",
   screens: [
     {
       title: "Settings",

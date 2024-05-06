@@ -44,11 +44,16 @@ const handleVersionRestriction = (article: Article, user?: User) => {
   return user.contentSelection === article.contentFilter
 }
 
-export const canAccessArticle = (article: Article, user?: User) => {
+export const canAccessContent = (article: Article, user?: User) => {
   if (!article) {
     return false
   }
   const passesAgeRestriction = handleAgeRestriction(article, user)
   const passesVersionRestriction = handleVersionRestriction(article, user)
   return passesAgeRestriction && passesVersionRestriction
+}
+
+// common column is 'ageRestrictionLevel' i.e Article, HelpCenter
+export const filterContent = (user, repository) => {
+  return repository.filter((item) => canAccessContent(user, item))
 }

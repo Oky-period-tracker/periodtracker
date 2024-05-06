@@ -19,6 +19,7 @@ import { logCategoryView, logSubCategoryView } from '../redux/actions'
 import analytics from '@react-native-firebase/analytics'
 import { VideoData } from '../types'
 import { CustomHelpCenter } from '../optional/CustomComponents'
+import { filterContent } from '../services/restriction'
 
 export function EncyclopediaScreen({ navigation }) {
   const categories = useSelector(selectors.allCategoriesSelector)
@@ -33,6 +34,9 @@ export function EncyclopediaScreen({ navigation }) {
   const [shownCategories, setShownCategories] = React.useState(categories)
   const [searching, setSearching] = React.useState(false)
   const [position] = React.useState(new Animated.Value(0))
+
+  const currentUser = useSelector(selectors.currentUserSelector)
+  const filteredArticles = filterContent(currentUser.dateOfBirth, articles)
 
   const dispatch = useDispatch()
 
@@ -91,7 +95,7 @@ export function EncyclopediaScreen({ navigation }) {
               shownCategories,
               searching,
               setSearching,
-              articles,
+              articles: filteredArticles,
             }}
           />
 

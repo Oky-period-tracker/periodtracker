@@ -11,7 +11,7 @@ import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { IconButton } from '../components/common/buttons/IconButton'
 import { useSound } from '../components/context/SoundContext'
 import { AWS_S3_BASE_URL } from '../config'
-import { canAccessArticle } from '../services/restriction'
+import { canAccessContent } from '../services/restriction'
 import HTML from 'react-native-render-html'
 import { cleanHTML } from '../services/html'
 
@@ -20,7 +20,7 @@ const ArticleItem = ({ article, index, articles }) => {
   const articleObject = useSelector((state) => selectors.articleByIDSelector(state, article))
   const { playSound } = useSound()
 
-  if (!canAccessArticle(articleObject, currentUser)) {
+  if (!canAccessContent(articleObject, currentUser)) {
     return null
   }
 

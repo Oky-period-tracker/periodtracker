@@ -30,6 +30,8 @@ export function EncyclopediaScreen({ navigation }) {
   const [activeCategories, setActiveCategory] = React.useState([])
   const [isVideoTabActive, setVideoTabActive] = React.useState(false)
   const [filteredCategories, setFilteredCategories] = React.useState(categories)
+  const [filteredSubCategories, setFilteredSubCategories] = React.useState(null)
+
   // TODO_ALEX redundant useState?
   const [shownCategories, setShownCategories] = React.useState(categories)
   const [searching, setSearching] = React.useState(false)
@@ -72,6 +74,14 @@ export function EncyclopediaScreen({ navigation }) {
 
   const HelpCenterCard = CustomHelpCenter.Card ?? HelpCard
 
+  const isSubCategorySelected = (item) => {
+    if (filteredSubCategories) {
+      const isSelected = filteredSubCategories.find((subCat) => subCat.id === item)
+      return isSelected
+    }
+    return undefined
+  }
+
   return (
     <BackgroundTheme>
       <PageContainer>
@@ -96,6 +106,7 @@ export function EncyclopediaScreen({ navigation }) {
               searching,
               setSearching,
               articles: filteredArticles,
+              setFilteredSubCategories,
             }}
           />
 
@@ -160,6 +171,7 @@ export function EncyclopediaScreen({ navigation }) {
                   {category.subCategories.map((subCategoryId) => (
                     <SubCategoryCard
                       key={subCategoryId}
+                      isSelected={isSubCategorySelected(subCategoryId)}
                       title={
                         (
                           subCategories.find((item) => item?.id === subCategoryId) || {

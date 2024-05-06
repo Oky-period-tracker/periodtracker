@@ -1,6 +1,7 @@
 import * as React from "react";
 import { View, Text, Button, StyleSheet, ScrollView } from "react-native";
 import { data } from "../EncyclopediaScreen/data";
+import { Screen } from "../../components/Screen";
 
 function ArticlesScreen({ navigation, route }) {
   const subcategoryId = route.params.subcategoryId;
@@ -10,15 +11,7 @@ function ArticlesScreen({ navigation, route }) {
   );
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "red",
-        padding: 12,
-      }}
-    >
+    <Screen>
       <ScrollView style={styles.scrollView}>
         {articles.map((article) => {
           return (
@@ -30,7 +23,7 @@ function ArticlesScreen({ navigation, route }) {
           );
         })}
       </ScrollView>
-    </View>
+    </Screen>
   );
 }
 
@@ -38,7 +31,7 @@ export default ArticlesScreen;
 
 const styles = StyleSheet.create({
   scrollView: {
-    width: "90%",
+    width: "100%",
     height: "100%",
   },
   card: {

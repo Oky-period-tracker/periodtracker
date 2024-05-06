@@ -2,23 +2,17 @@ import * as React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { data } from "../EncyclopediaScreen/data";
 import { InfoDisplay } from "../../components/InfoDisplay";
+import { Screen } from "../../components/Screen";
 
 function AboutScreen({ navigation }) {
   const content = data.about;
 
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        backgroundColor: "red",
-        padding: 12,
-      }}
-    >
+    <Screen>
       <ScrollView style={styles.scrollView}>
         <InfoDisplay content={content} />
       </ScrollView>
-    </View>
+    </Screen>
   );
 }
 

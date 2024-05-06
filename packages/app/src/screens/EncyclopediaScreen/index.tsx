@@ -2,20 +2,13 @@ import * as React from "react";
 import { View } from "react-native";
 
 import Accordion from "./components/Accordion";
+import { Screen } from "../../components/Screen";
 
 function EncyclopediaScreen({ navigation }) {
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "red",
-        padding: 12,
-      }}
-    >
+    <Screen>
       <Accordion />
-    </View>
+    </Screen>
   );
 }
 

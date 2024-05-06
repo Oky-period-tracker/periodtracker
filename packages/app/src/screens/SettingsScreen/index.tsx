@@ -1,10 +1,11 @@
 import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Button } from "../../components/Button";
+import { Screen } from "../../components/Screen";
 
 function SettingsScreen({ navigation }) {
   return (
-    <View style={styles.screen}>
+    <Screen>
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.segment}
@@ -82,7 +83,7 @@ function SettingsScreen({ navigation }) {
           onPress={() => navigation.navigate("ContactUsScreen")}
         />
       </View>
-    </View>
+    </Screen>
   );
 }
 
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     borderWidth: 1,
-    width: "80%",
+    width: "100%",
     overflow: "hidden",
   },
   segment: {

@@ -2,17 +2,11 @@ import * as React from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { UntouchableButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Screen } from "../../components/Screen";
 
 function ProfileScreen({ navigation }) {
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        backgroundColor: "red",
-        padding: 12,
-      }}
-    >
+    <Screen>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           <View style={styles.row}>
@@ -141,7 +135,7 @@ function ProfileScreen({ navigation }) {
           <View style={styles.cycleCardBody}></View>
         </View>
       </ScrollView>
-    </View>
+    </Screen>
   );
 }
 

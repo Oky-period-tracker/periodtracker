@@ -4,7 +4,7 @@ import { Header } from '../../components/common/Header'
 import { RoundedInput } from '../../components/common/RoundedInput'
 import { IconButton } from '../../components/common/buttons/IconButton'
 import styled from 'styled-components/native'
-import { handleCategoriesFilter, handleSearchResult } from './searchFunctions'
+import { handleCategoriesFilter, handleFuseSearchResult } from './searchFunctions'
 import { EmojiSelector } from '../../components/common/EmojiSelector'
 import { useSelector } from '../../hooks/useSelector'
 import * as selectors from '../../redux/selectors'
@@ -19,6 +19,7 @@ export const SearchBar = ({
   shownCategories,
   searching,
   setSearching,
+  setFilteredSubCategories,
   articles,
 }) => {
   const [searchStr, setSearchStr] = React.useState('')
@@ -50,17 +51,20 @@ export const SearchBar = ({
             placeholder: translate('type_to_search'),
             keyboardType: 'default',
             returnKeyType: 'search',
+            placeholderTextColor: 'rgba(0,0,0,0.4)',
             onChangeText: (text) => {
               hapticAndSoundFeedback('key')
               setSearchStr(text)
               setActiveCategory([])
-              const filteredResults = handleSearchResult(
+              const filteredResults = handleFuseSearchResult(
                 text,
                 categories,
                 subCategories,
                 articles,
                 locale,
+                setFilteredSubCategories,
               )
+
               setFilteredCategories(filteredResults)
             },
             onFocus: () => {
@@ -124,6 +128,7 @@ export const SearchBar = ({
                         subCategories,
                         articles,
                         locale,
+                        setFilteredSubCategories,
                       ),
                     )
                     updateEmojiFilter(

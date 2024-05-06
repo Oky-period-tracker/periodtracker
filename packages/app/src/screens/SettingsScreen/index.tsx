@@ -90,12 +90,6 @@ function SettingsScreen({ navigation }) {
 export default SettingsScreen;
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "red",
-  },
   container: {
     backgroundColor: "#fff",
     borderRadius: 20,

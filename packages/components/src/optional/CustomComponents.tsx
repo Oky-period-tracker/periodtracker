@@ -19,7 +19,7 @@ try {
 let CustomHelpCenter = {
   Screen: undefined,
   Card: undefined,
-  reducer: (state) => state,
+  reducer: (state = null) => state,
 }
 try {
   CustomHelpCenter = {

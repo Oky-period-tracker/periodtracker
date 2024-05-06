@@ -1,5 +1,11 @@
 import * as React from "react";
-import { View, StyleSheet, Text, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { UntouchableButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
@@ -9,7 +15,10 @@ function ProfileScreen({ navigation }) {
     <Screen>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
-          <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => navigation.navigate("EditProfileScreen")}
+          >
             <View style={styles.column}>
               <UntouchableButton style={styles.icon}>
                 <FontAwesome size={28} name={"user"} color={"#fff"} />
@@ -31,7 +40,7 @@ function ProfileScreen({ navigation }) {
                 <Text style={[styles.text, styles.bold]}>Urban</Text>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.hr}></View>
 
@@ -57,7 +66,10 @@ function ProfileScreen({ navigation }) {
 
           <View style={styles.hr}></View>
 
-          <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => navigation.navigate("AvatarAndThemeScreen")}
+          >
             <View style={styles.column}>
               <UntouchableButton style={styles.icon}>
                 <FontAwesome size={28} name={"user"} color={"#fff"} />
@@ -76,7 +88,7 @@ function ProfileScreen({ navigation }) {
                 <Text style={[styles.text, styles.bold]}>Hills</Text>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.cycleCard}>

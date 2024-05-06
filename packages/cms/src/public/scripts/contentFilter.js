@@ -1,11 +1,5 @@
 var contentFilterOptions = JSON.parse($('#contentFilterJSON').text())
-console.log('***', contentFilterOptions)
-// // TODO:PH make this generic / move to submodule
-// const contentFilterOptions = [
-//   [0, 'All'],
-//   [1, 'Generic'],
-//   [2, 'Islamic Perspective'],
-// ]
+
 const initializeContentFilter = () => {
   const dropdowns = Array.from(document.querySelectorAll('select.content-filter-dropdown'))
   for (let dropdown of dropdowns) {

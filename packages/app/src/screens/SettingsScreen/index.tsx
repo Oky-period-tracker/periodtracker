@@ -71,17 +71,16 @@ function SettingsScreen({ navigation }) {
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button status={"secondary"} title={"Log out"} />
-        <Button
-          status={"basic"}
-          title={"Delete Account"}
-          style={styles.deleteButton}
-        />
+        <Button status={"secondary"}>Log out</Button>
+        <Button status={"basic"} style={styles.deleteButton}>
+          Delete Account
+        </Button>
         <Button
           status={"primary"}
-          title={"Contact Us"}
           onPress={() => navigation.navigate("ContactUsScreen")}
-        />
+        >
+          Contact Us
+        </Button>
       </View>
     </Screen>
   );

@@ -16,7 +16,7 @@ function AccessScreen({ navigation }) {
             <Text>Change the language Oky uses:</Text>
           </View>
           <View style={styles.segmentRight}>
-            <Button title={"English"} />
+            <Button>English</Button>
           </View>
         </TouchableOpacity>
 
@@ -30,7 +30,7 @@ function AccessScreen({ navigation }) {
           </View>
           <View style={styles.segmentRight}></View>{" "}
           <View style={styles.segmentRight}>
-            <Button title={"Launch"} />
+            <Button>Launch</Button>
           </View>
         </TouchableOpacity>
 
@@ -43,7 +43,7 @@ function AccessScreen({ navigation }) {
             <Text>Share Oky with your friends</Text>
           </View>
           <View style={styles.segmentRight}>
-            <Button title={"Share"} />
+            <Button>Share</Button>
           </View>
         </TouchableOpacity>
       </View>

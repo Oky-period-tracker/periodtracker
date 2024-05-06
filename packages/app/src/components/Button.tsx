@@ -11,15 +11,20 @@ type ButtonStatus = "primary" | "secondary" | "basic";
 
 export const Button = ({
   style,
-  children,
-  title,
   status = "primary",
   ...props
 }: TouchableOpacityProps & {
-  title?: string;
   status?: ButtonStatus;
 }) => {
   const colors = palette[status];
+
+  const children = props.children ? (
+    typeof props.children === "string" ? (
+      <Text>{props.children}</Text>
+    ) : (
+      props.children
+    )
+  ) : null;
 
   return (
     <TouchableOpacity
@@ -31,8 +36,7 @@ export const Button = ({
       ></View>
       <View style={[styles.shadow, { backgroundColor: colors.shadow }]}></View>
       <View style={[styles.body, { backgroundColor: colors.base }]}>
-        {children ? children : null}
-        {title ? <Text>{title}</Text> : null}
+        {children}
       </View>
     </TouchableOpacity>
   );

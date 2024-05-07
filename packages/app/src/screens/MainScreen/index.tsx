@@ -6,6 +6,9 @@ function MainScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>MainScreen</Text>
+      <Button onPress={() => navigation.navigate("CalendarScreen")}>
+        Calendar
+      </Button>
     </View>
   );
 }

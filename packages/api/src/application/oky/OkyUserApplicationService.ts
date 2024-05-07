@@ -152,7 +152,7 @@ export class OkyUserApplicationService {
       accommodationRequirement: user.getAccommodationRequirement(),
       religion: user.getReligion(),
       contentSelection: user.getContentSelection(),
-      city: user.getCity(),
+      city,
     })
 
     return this.okyUserRepository.save(user)

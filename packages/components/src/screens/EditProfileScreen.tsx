@@ -24,6 +24,9 @@ import { translate } from '../i18n'
 import _ from 'lodash'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { IS_TABLET } from '../config/tablet'
+import { ASK_CITY } from '../config'
+import { ModalSearchBox } from '../components/common/ModalSearchBox'
+import { helpCenterLocations } from '@oky/core'
 
 const minPasswordLength = 1
 const secretQuestions = [
@@ -97,6 +100,7 @@ export function EditProfileScreen() {
   const [secretQuestion, setSecretQuestion] = React.useState(currentUser.secretQuestion)
   const [isVisible, setIsVisible] = React.useState(false)
   const [secretIsVisible, setSecretIsVisible] = React.useState(false)
+  const [city, setCity] = React.useState({ code: currentUser?.city, item: currentUser?.province })
 
   const remainingGenders = ['Female', 'Male', 'Other'].filter((item) => {
     return item !== currentUser.gender
@@ -107,13 +111,33 @@ export function EditProfileScreen() {
   remainingLocations.unshift(currentUser.location)
   const [showPasscode, setShowPasscode] = React.useState(false)
 
+  const serializeLocation = (obj: { item: string; code: string }) => {
+    if (!obj) return
+    const { item, code } = obj
+    return `${item}, ${code}`
+  }
+
+  const deserializeLocation = (serializedLocation: string) => {
+    const [item, code] = serializedLocation.split(', ')
+    return { item, code }
+  }
+
+  const cities = React.useMemo(() => {
+    // -------------- Cities -----------------------
+    // TODO:PH filter based on users province (?)
+    return helpCenterLocations
+      ?.flatMap((item) => item.places)
+      ?.map((itemCity: any) => serializeLocation({ item: itemCity.name, code: itemCity.name }))
+  }, [])
+
   const tryToEditUserInfo = async () => {
     const hasInfoChanged =
       name !== currentUser.name ||
       dateOfBirth !== currentUser.dateOfBirth ||
       gender !== currentUser.gender ||
       location !== currentUser.location ||
-      secretQuestion !== currentUser.secretQuestion
+      secretQuestion !== currentUser.secretQuestion ||
+      city.code !== currentUser.city
     if (!hasInfoChanged) {
       return null
     }
@@ -126,6 +150,7 @@ export function EditProfileScreen() {
         gender,
         location,
         secretQuestion,
+        city: city.code,
       })
 
       dispatch(
@@ -135,6 +160,7 @@ export function EditProfileScreen() {
           gender,
           location,
           secretQuestion,
+          city: city.code,
         }),
       )
     } catch (err) {
@@ -224,6 +250,7 @@ export function EditProfileScreen() {
           password,
           location,
           secretQuestion,
+          city: city.code,
           secretAnswer:
             secretAnswer === '' ? currentUser.secretAnswer : _.toLower(secretAnswer).trim(),
         }),
@@ -240,6 +267,10 @@ export function EditProfileScreen() {
       }
     }
   }
+
+  const defaultLabel = { code: translate('selectItemCity'), item: translate('selectItemCity') }
+  // const citylabel =
+  //   city.code === '' && (currentUser.city === '' || currentUser.city === '00') ? defaultLabel : city
 
   return (
     <BackgroundTheme>
@@ -306,6 +337,31 @@ export function EditProfileScreen() {
                 hasError={false}
               />
             </Row>
+            {ASK_CITY ? (
+              <Row>
+                <Icon
+                  source={assets.static.icons.locationL}
+                  style={{ marginRight: 38, height: 57, width: 57 }}
+                />
+                <ModalSearchBox
+                  currentItem={city?.code}
+                  items={cities}
+                  isValid={city !== null}
+                  hasError={notValid && city === null}
+                  containerStyle={{
+                    height: 45,
+                    borderRadius: 22.5,
+                    marginBottom: 10,
+                  }}
+                  onSelection={(value) => {
+                    setCity(deserializeLocation(value))
+                  }}
+                  height={45}
+                  placeholder={'city'}
+                  searchInputPlaceholder={`search_city`}
+                />
+              </Row>
+            ) : null}
             <Row style={styles.row}>
               <Icon source={assets.static.icons.lockL} style={styles.icon} />
               <TextInputSettings

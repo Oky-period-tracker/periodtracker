@@ -2,7 +2,7 @@ import * as React from "react";
 import NavigationStack, { StackConfig } from "../NavigationStack";
 import MainScreen from "../../screens/MainScreen";
 import DayScreen from "../../screens/DayScreen";
-import Calendar from "../../screens/Calendar";
+import CalendarScreen from "../../screens/CalendarScreen";
 import TutorialFirstScreen from "../../screens/TutorialFirstScreen";
 import TutorialSecondScreen from "../../screens/TutorialSecondScreen";
 
@@ -22,7 +22,7 @@ const config: StackConfig = {
     {
       title: "Calendar",
       name: "Calendar",
-      Component: Calendar,
+      Component: CalendarScreen,
     },
     {
       title: "Tutorial",

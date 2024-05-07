@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Calendar } from "react-native-calendars";
+import { Calendar, CalendarProps } from "react-native-calendars";
 import { StyleSheet, View } from "react-native";
 import { UntouchableButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -14,16 +14,8 @@ function CalendarScreen({ navigation }) {
           onDayPress={(day) => {
             setSelected(day.dateString);
           }}
-          style={{
-            borderRadius: 20,
-            width: "100%",
-            height: "100%",
-          }}
-          theme={{
-            monthTextColor: "#f49200",
-            textMonthFontSize: 20,
-            textMonthFontWeight: "bold",
-          }}
+          style={styles.calendar}
+          theme={theme}
           renderArrow={(direction) => {
             return (
               <UntouchableButton style={styles.arrowButton}>
@@ -44,6 +36,12 @@ function CalendarScreen({ navigation }) {
 
 export default CalendarScreen;
 
+const theme: CalendarProps["theme"] = {
+  monthTextColor: "#f49200",
+  textMonthFontSize: 20,
+  textMonthFontWeight: "bold",
+};
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
@@ -54,11 +52,13 @@ const styles = StyleSheet.create({
   },
   container: {
     borderRadius: 20,
-    padding: 8,
+    padding: 12,
     overflow: "hidden",
-    backgroundColor: "white",
+    maxHeight: 400,
   },
   calendar: {
+    borderRadius: 20,
+    overflow: "hidden",
     width: "100%",
     height: "100%",
   },

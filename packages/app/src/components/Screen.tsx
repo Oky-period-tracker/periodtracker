@@ -1,7 +1,11 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewProps } from "react-native";
 
-export const Screen = ({ children }: React.PropsWithChildren) => {
-  return <View style={styles.screen}>{children}</View>;
+export const Screen = ({ children, style, ...props }: ViewProps) => {
+  return (
+    <View style={[styles.screen, style]} {...props}>
+      {children}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

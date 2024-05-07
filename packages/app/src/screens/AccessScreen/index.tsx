@@ -28,7 +28,7 @@ function AccessScreen({ navigation }) {
             <Text style={styles.title}>Tutorial</Text>
             <Text>Get instructions on how to use Oky</Text>
           </View>
-          <View style={styles.segmentRight}></View>{" "}
+          <View style={styles.segmentRight}></View>
           <View style={styles.segmentRight}>
             <Button>Launch</Button>
           </View>

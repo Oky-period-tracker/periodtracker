@@ -344,3 +344,8 @@ ADD "voiceOverKey" text DEFAULT NULL;
 
 ALTER TABLE oky_user
 ADD COLUMN "contentSelection" INT DEFAULT 0;
+
+----
+
+ALTER TABLE oky_user
+ADD COLUMN "city" text DEFAULT '';

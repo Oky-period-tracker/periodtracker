@@ -9,5 +9,9 @@ export const HAPTIC_AND_SOUND_ENABLED = env.HAPTIC_AND_SOUND_ENABLED || false
 
 export const AWS_S3_BASE_URL = env.AWS_S3_BASE_URL || ''
 
+// Sign up & edit profile
+export const ASK_COUNTRY = env.ASK_COUNTRY ?? true
+export const ASK_CITY = env.ASK_CITY || false
+
 // Development purposes only
 export const FAST_SIGN_UP = false

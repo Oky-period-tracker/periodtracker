@@ -55,6 +55,7 @@ export class AccountController {
       accommodationRequirement,
       religion,
       contentSelection,
+      city,
     }: SignupRequest,
   ) {
     if (country === null || country === '00') {
@@ -79,6 +80,7 @@ export class AccountController {
       accommodationRequirement,
       religion,
       contentSelection,
+      city,
     })
 
     return this.signTokenResponse(user)
@@ -149,7 +151,12 @@ export class AccountController {
     @CurrentUser({ required: true }) userId: string,
     @Body() request: EditInfoRequest,
   ) {
-    const { name, gender, dateOfBirth, location, secretQuestion, contentSelection } = request
+    const { name, gender, dateOfBirth, secretQuestion, location, contentSelection, city } = request
+    // TODO:PH
+    // let isProfileUpdateSkipped = false
+    // if (!city) {
+    //   isProfileUpdateSkipped = true
+    // }
     await this.okyUserApplicationService.editInfo({
       userId,
       name,
@@ -158,6 +165,7 @@ export class AccountController {
       location,
       secretQuestion,
       contentSelection,
+      city,
     })
 
     return { userId }
@@ -202,7 +210,9 @@ export class AccountController {
       secretQuestion: user.getMemorableQuestion(),
       secretAnswer: user.getHashedMemorableAnswer(),
       dateSignedUp: user.getDateSignedUp(),
+      genderIdentity: user.getGenderIdentity(),
       contentSelection: user.getContentSelection(),
+      city: user.getCity(),
     }
 
     const appToken = jwt.sign(userDescriptor, env.app.secret, {

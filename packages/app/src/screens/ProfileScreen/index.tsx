@@ -9,6 +9,7 @@ import {
 import { UntouchableButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
+import { Hr } from "../../components/Hr";
 
 function ProfileScreen({ navigation }) {
   return (
@@ -42,7 +43,7 @@ function ProfileScreen({ navigation }) {
             </View>
           </TouchableOpacity>
 
-          <View style={styles.hr}></View>
+          <Hr />
 
           <View style={styles.row}>
             <View style={styles.column}>
@@ -64,7 +65,7 @@ function ProfileScreen({ navigation }) {
             </View>
           </View>
 
-          <View style={styles.hr}></View>
+          <Hr />
 
           <TouchableOpacity
             style={styles.row}
@@ -183,11 +184,6 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: "bold",
-  },
-  hr: {
-    width: "100%",
-    height: 1,
-    backgroundColor: "#f0f0f0",
   },
   cycleCard: {
     backgroundColor: "#fff",

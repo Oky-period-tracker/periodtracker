@@ -27,6 +27,8 @@ import moment from 'moment'
 import { ThemedModal } from '../components/common/ThemedModal'
 import { getDeviceFontScale } from '../services/font'
 
+import { CustomProfileScreenWidget } from '../optional/CustomComponents'
+
 export function ProfileScreen({ navigation }) {
   const History = useHistoryPrediction()
   const selectedAvatar = useSelector(selectors.currentAvatarSelector)
@@ -201,6 +203,8 @@ export function ProfileScreen({ navigation }) {
           <TextContent>connect_account_info</TextContent>
         </CardPicker>
       </ThemedModal>
+
+      <CustomProfileScreenWidget />
     </BackgroundTheme>
   )
 }

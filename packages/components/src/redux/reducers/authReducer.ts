@@ -21,6 +21,7 @@ export interface User {
   religion?: string
   contentSelection?: number
   city?: string
+  isProfileUpdateSkipped?: boolean
 }
 
 export interface AuthState {

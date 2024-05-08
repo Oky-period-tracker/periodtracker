@@ -32,4 +32,12 @@ try {
   //
 }
 
-export { customComponentsTranslations, CustomSignUp, CustomHelpCenter }
+let CustomProfileScreenWidget = () => null
+try {
+  CustomProfileScreenWidget = require('./CustomComponents/components/CustomProfileScreenWidget')
+    .CustomProfileScreenWidget
+} catch (e) {
+  //
+}
+
+export { customComponentsTranslations, CustomSignUp, CustomHelpCenter, CustomProfileScreenWidget }

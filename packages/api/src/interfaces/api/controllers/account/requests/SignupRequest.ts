@@ -50,4 +50,6 @@ export class SignupRequest {
   public readonly religion: string
 
   public readonly contentSelection?: number
+
+  public readonly city?: string
 }

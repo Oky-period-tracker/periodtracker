@@ -22,6 +22,7 @@ interface OkyUserProps {
   accommodationRequirement?: string
   religion?: string
   contentSelection?: number
+  city?: string
 }
 
 @Entity()
@@ -77,6 +78,9 @@ export class OkyUser {
   @Column({ name: 'contentSelection' })
   private contentSelection: number
 
+  @Column({ name: 'city', default: '', nullable: true })
+  private city: string
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -94,6 +98,7 @@ export class OkyUser {
         accommodationRequirement,
         religion,
         contentSelection,
+        city,
       } = props
 
       this.id = id
@@ -111,6 +116,7 @@ export class OkyUser {
       this.accommodationRequirement = accommodationRequirement
       this.religion = religion
       this.contentSelection = contentSelection
+      this.city = city
     }
   }
 
@@ -131,6 +137,7 @@ export class OkyUser {
     accommodationRequirement,
     religion,
     contentSelection,
+    city,
   }: {
     id: string
     name: string
@@ -149,6 +156,7 @@ export class OkyUser {
     accommodationRequirement?: string
     religion?: string
     contentSelection?: number
+    city?: string
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -178,6 +186,7 @@ export class OkyUser {
       accommodationRequirement,
       religion,
       contentSelection,
+      city,
     })
   }
 
@@ -198,6 +207,7 @@ export class OkyUser {
     accommodationRequirement,
     religion,
     contentSelection,
+    city,
   }: {
     name: string
     dateOfBirth: Date
@@ -209,6 +219,7 @@ export class OkyUser {
     accommodationRequirement?: string
     religion?: string
     contentSelection?: number
+    city?: string
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -224,6 +235,7 @@ export class OkyUser {
     this.accommodationRequirement = accommodationRequirement
     this.religion = religion
     this.contentSelection = contentSelection
+    this.city = city
   }
 
   public async editSecretAnswer(previousSecretAnswer: string, nextSecretAnswer: string) {
@@ -305,5 +317,9 @@ export class OkyUser {
 
   public getContentSelection() {
     return this.contentSelection
+  }
+
+  public getCity() {
+    return this.city
   }
 }

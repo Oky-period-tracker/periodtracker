@@ -21,4 +21,6 @@ export class EditInfoRequest {
   public readonly secretQuestion: string
 
   public readonly contentSelection?: number
+
+  public readonly city?: string
 }

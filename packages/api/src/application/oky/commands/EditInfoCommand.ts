@@ -6,4 +6,5 @@ export interface EditInfoCommand {
   location: string
   secretQuestion: string
   contentSelection?: number
+  city?: string
 }

@@ -105,6 +105,7 @@ export interface LoginResponse {
     accommodationRequirement?: string
     religion?: string
     contentSelection?: number
+    city?: string
   }
   store: {
     storeVersion: number
@@ -129,6 +130,7 @@ export interface SignupResponse {
     accommodationRequirement?: string
     religion?: string
     contentSelection?: number
+    city?: string
   }
 }
 

@@ -8,77 +8,47 @@ import { TextInput } from './TextInput'
 import _ from 'lodash'
 import { FlatList } from 'react-native-gesture-handler'
 import { translate } from '../../i18n'
-import { countries, defaultLocale, provinces } from '@oky/core'
+import { ActivityIndicator, Text, View, ViewProps, ViewStyle } from 'react-native'
 
 export const ModalSearchBox = ({
-  lang = defaultLocale as string, // TODO: FIXME
-  hasError = false,
-  containerStyle = null,
-  itemStyle = null,
-  height = 45,
-  buttonStyle = null,
-  location = null,
-  isCountrySelector = true,
+  items = [],
+  currentItem,
+  placeholder,
+  onSelection,
   searchInputPlaceholder = '',
   accessibilityLabel = '',
-  filterCountry = null,
-  onSelection = (val) => null,
+  height = 45,
+  containerStyle,
   isValid,
+  hasError = false,
+}: {
+  items: string[]
+  currentItem?: string
+  placeholder: string
+  onSelection: (item: string) => void
+  searchInputPlaceholder: string
+  accessibilityLabel?: string
+  height?: number
+  containerStyle?: ViewStyle
+  isValid: boolean
+  hasError?: boolean
 }) => {
   const [isVisible, setIsVisible] = React.useState(false)
-  const filteredCountryCode = filterCountry ? filterCountry.code : null
-  const serializeLocation = ({ item, code }: { item: string; code: string }) => {
-    return `${item}, ${code}`
-  }
 
-  const deserializeLocation = (serializedLocation: string) => {
-    const [item, code] = serializedLocation.split(', ')
-    return { item, code }
-  }
-
-  const currentItem = location !== null ? serializeLocation(location) : null
-  const items = React.useMemo(() => {
-    if (isCountrySelector) {
-      return _.uniq(
-        Object.entries(countries).map(([code, country]) =>
-          serializeLocation({ item: country[lang], code }),
-        ),
-      )
-    }
-    // -------------- Provinces -----------------------
-    if (filteredCountryCode) {
-      const filteredProvinces = provinces.filter(
-        ({ code, uid }) => code === filteredCountryCode || uid === 0,
-      )
-
-      return _.uniq(
-        filteredProvinces.map((province) =>
-          serializeLocation({ item: province[lang], code: province.uid.toString() }),
-        ),
-      )
-    }
-
-    return _.uniq(
-      provinces.map((province) => serializeLocation({ item: province[lang], code: province.code })),
-    )
-  }, [filteredCountryCode])
-
-  const selectThenGoBack = (item: string) => {
-    onSelection(deserializeLocation(item))
+  const selectAndClose = (item: string) => {
+    onSelection(item)
     setIsVisible(false)
   }
 
   return (
     <>
-      <FormControl style={{ height, ...containerStyle }}>
+      <FormControl style={{ height, borderRadius: 22.5, marginBottom: 10, ...containerStyle }}>
         <Row
           accessibilityLabel={accessibilityLabel}
           onPress={() => setIsVisible(true)}
           style={{ height, alignItems: 'center', justifyContent: 'center' }}
         >
-          <SelectedItem style={[itemStyle, { color: '#28b9cb' }]}>
-            {location ? location.item : translate(isCountrySelector ? 'country' : 'province')}
-          </SelectedItem>
+          <SelectedItem style={[{ color: '#28b9cb' }]}>{currentItem ?? placeholder}</SelectedItem>
         </Row>
         {isValid && !hasError && (
           <Icon
@@ -100,9 +70,8 @@ export const ModalSearchBox = ({
           <SearchList
             items={items}
             value={currentItem}
-            onPress={selectThenGoBack}
+            onPress={selectAndClose}
             searchInputPlaceholder={searchInputPlaceholder}
-            resultNotFoundErrorMessage={`No result found. Check your spelling, or find the nearest larger city.`} // @TODO: translation
           />
         </CardPicker>
       </ThemedModal>
@@ -112,10 +81,14 @@ export const ModalSearchBox = ({
 
 const SearchList = ({
   items,
-  onPress,
   value,
+  onPress,
   searchInputPlaceholder,
-  resultNotFoundErrorMessage,
+}: {
+  items: string[]
+  value?: string
+  onPress: (item: string) => void
+  searchInputPlaceholder: string
 }) => {
   const [searchText, setSearchText] = React.useState('')
 
@@ -124,14 +97,13 @@ const SearchList = ({
 
     const matchPartialResult = (item: string) => {
       const normalizedItem = item.toLowerCase()
-
       return (
         normalizedItem.startsWith(normalizedSearchText) ||
         normalizedSearchText.startsWith(normalizedItem)
       )
     }
 
-    return items.filter(matchPartialResult)
+    return items?.filter(matchPartialResult) ?? []
   }, [items, searchText])
 
   const onPressRef = React.useRef(onPress)
@@ -152,10 +124,6 @@ const SearchList = ({
     [value],
   )
 
-  const renderItemNotFound = () => {
-    return <ResultNotFoundText>{resultNotFoundErrorMessage}</ResultNotFoundText>
-  }
-
   return (
     <Container>
       <TextInput onChange={setSearchText} label={searchInputPlaceholder} value={searchText} />
@@ -165,7 +133,6 @@ const SearchList = ({
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={'handled'}
-        ListEmptyComponent={renderItemNotFound}
         numColumns={1}
       />
     </Container>
@@ -197,7 +164,7 @@ const SelectedItem = styled(TextWithoutTranslation)`
   font-size: 15;
 `
 
-const ResultNotFoundText = styled(TextWithoutTranslation)`
+const ResultNotFoundText = styled(Text)`
   justify-content: center;
   font-family: Roboto-Regular;
   text-align: center;

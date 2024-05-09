@@ -16,4 +16,5 @@ export interface SignupCommand {
   accommodationRequirement?: string
   religion?: string
   contentSelection?: number
+  city?: string
 }

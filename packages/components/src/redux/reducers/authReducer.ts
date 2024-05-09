@@ -20,6 +20,8 @@ export interface User {
   accommodationRequirement?: string
   religion?: string
   contentSelection?: number
+  city?: string
+  isProfileUpdateSkipped?: boolean
 }
 
 export interface AuthState {

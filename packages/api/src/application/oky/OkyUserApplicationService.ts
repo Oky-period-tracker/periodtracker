@@ -51,6 +51,7 @@ export class OkyUserApplicationService {
     accommodationRequirement,
     religion,
     contentSelection,
+    city,
   }: SignupCommand) {
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
     if (await this.okyUserRepository.byId(id)) {
@@ -79,6 +80,7 @@ export class OkyUserApplicationService {
       accommodationRequirement,
       religion,
       contentSelection,
+      city,
     })
     return this.okyUserRepository.save(user)
   }
@@ -132,12 +134,14 @@ export class OkyUserApplicationService {
     location,
     gender,
     secretQuestion,
+    city,
   }: EditInfoCommand) {
     const user = await this.okyUserRepository.byId(userId)
     if (!user) {
       throw new Error(`Cannot edit info for missing ${userId} user`)
     }
 
+    // TODO:PH
     await user.editInfo({
       name,
       dateOfBirth,
@@ -148,6 +152,7 @@ export class OkyUserApplicationService {
       accommodationRequirement: user.getAccommodationRequirement(),
       religion: user.getReligion(),
       contentSelection: user.getContentSelection(),
+      city,
     })
 
     return this.okyUserRepository.save(user)

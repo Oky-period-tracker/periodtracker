@@ -17,6 +17,7 @@ SUBMODULE_PATHS=(
     $k8s_path
     $delete_account_path
     $flower_path
+    $custom_components_path
 )
 
 # Loop over the list of submodule paths

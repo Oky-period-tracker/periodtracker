@@ -21,7 +21,6 @@ export const ModalSearchBox = ({
   containerStyle,
   isValid,
   hasError = false,
-  isLoading = false,
 }: {
   items: string[]
   currentItem?: string
@@ -33,7 +32,6 @@ export const ModalSearchBox = ({
   containerStyle?: ViewStyle
   isValid: boolean
   hasError?: boolean
-  isLoading?: boolean
 }) => {
   const [isVisible, setIsVisible] = React.useState(false)
 
@@ -74,7 +72,6 @@ export const ModalSearchBox = ({
             value={currentItem}
             onPress={selectAndClose}
             searchInputPlaceholder={searchInputPlaceholder}
-            isLoading={isLoading}
           />
         </CardPicker>
       </ThemedModal>
@@ -87,13 +84,11 @@ const SearchList = ({
   value,
   onPress,
   searchInputPlaceholder,
-  isLoading,
 }: {
   items: string[]
   value?: string
   onPress: (item: string) => void
   searchInputPlaceholder: string
-  isLoading: boolean
 }) => {
   const [searchText, setSearchText] = React.useState('')
 
@@ -126,23 +121,9 @@ const SearchList = ({
         </ItemButton>
       )
     },
-    [value, isLoading],
+    [value],
   )
 
-  const renderItemNotFound = () => {
-    return (
-      <View>
-        {isLoading ? (
-          <>
-            <ActivityIndicator size={'large'} color="#28b9cb" />
-            <ResultNotFoundText>Fetching Data</ResultNotFoundText>
-          </>
-        ) : (
-          <ResultNotFoundText>{translate('search_no_result')}</ResultNotFoundText>
-        )}
-      </View>
-    )
-  }
   return (
     <Container>
       <TextInput onChange={setSearchText} label={searchInputPlaceholder} value={searchText} />
@@ -152,7 +133,6 @@ const SearchList = ({
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps={'handled'}
-        ListEmptyComponent={renderItemNotFound}
         numColumns={1}
       />
     </Container>

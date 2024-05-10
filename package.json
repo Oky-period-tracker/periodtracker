@@ -11,6 +11,7 @@
     "generate-content-files": "yarn generate-sql && yarn generate-live-ts",
     "provinces": "ts-node --transpile-only merge-provinces.ts",
     "countries": "ts-node --transpile-only merge-countries.ts",
+    "fetch-content": "ts-node --transpile-only fetch-content.ts",
     "copy-assets": "ts-node copyAssets.ts",
     "database-sync:enable": "ts-node setDatabaseSync.ts --enable",
     "database-sync:disable": "ts-node setDatabaseSync.ts --disable",

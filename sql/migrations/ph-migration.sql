@@ -19,3 +19,7 @@ WHERE metadata IS NULL OR metadata::text = '{}';
 -- DROP COLUMN 'accommodationRequirement',
 -- DROP COLUMN 'religion'
 -- DROP COLUMN 'contentSelection';
+
+
+-- TODO:PH Migrate UserHelpCenter table into oky_user.store ?
+-- Data will be lost for users who use a new device with no redux data, but otherwise will retain the data from redux, and that will be saved into the db via appSaga

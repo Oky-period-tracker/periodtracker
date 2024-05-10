@@ -15,7 +15,11 @@ export interface User {
   secretAnswer: string
   dateSignedUp: string
   isGuest: boolean
-  // Optional
+  metadata: UserMetadata
+}
+
+export interface UserMetadata {
+  // PH
   genderIdentity?: string
   accommodationRequirement?: string
   religion?: string

@@ -100,7 +100,10 @@ export function EditProfileScreen() {
   const [secretQuestion, setSecretQuestion] = React.useState(currentUser.secretQuestion)
   const [isVisible, setIsVisible] = React.useState(false)
   const [secretIsVisible, setSecretIsVisible] = React.useState(false)
-  const [city, setCity] = React.useState({ code: currentUser?.city, item: currentUser?.province })
+  const [city, setCity] = React.useState({
+    code: currentUser.metadata?.city,
+    item: currentUser?.province,
+  })
 
   const remainingGenders = ['Female', 'Male', 'Other'].filter((item) => {
     return item !== currentUser.gender
@@ -137,7 +140,7 @@ export function EditProfileScreen() {
       gender !== currentUser.gender ||
       location !== currentUser.location ||
       secretQuestion !== currentUser.secretQuestion ||
-      city.code !== currentUser.city
+      city.code !== currentUser.metadata?.city
     if (!hasInfoChanged) {
       return null
     }
@@ -150,7 +153,10 @@ export function EditProfileScreen() {
         gender,
         location,
         secretQuestion,
-        city: city.code,
+        metadata: {
+          ...currentUser.metadata,
+          city: city.code,
+        },
       })
 
       dispatch(
@@ -160,7 +166,10 @@ export function EditProfileScreen() {
           gender,
           location,
           secretQuestion,
-          city: city.code,
+          metadata: {
+            ...currentUser.metadata,
+            city: city.code,
+          },
         }),
       )
     } catch (err) {
@@ -250,9 +259,12 @@ export function EditProfileScreen() {
           password,
           location,
           secretQuestion,
-          city: city.code,
           secretAnswer:
             secretAnswer === '' ? currentUser.secretAnswer : _.toLower(secretAnswer).trim(),
+          metadata: {
+            ...currentUser.metadata,
+            city: city.code,
+          },
         }),
       )
       BackOneScreen()

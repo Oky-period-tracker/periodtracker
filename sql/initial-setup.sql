@@ -315,14 +315,6 @@ ADD "sortingKey" integer DEFAULT nextval('periodtracker.article_sorting_key') NO
 
 --------------------------------------------------------------------------------------------------------
 
-ALTER TABLE oky_user
-ADD "genderIdentity" text DEFAULT NULL,
-ADD "accommodationRequirement" text DEFAULT NULL,
-ADD "religion" text DEFAULT NULL,
-ADD "encyclopediaVersion" text DEFAULT NULL;
-
---------------------------------------------------------------------------------------------------------
-
 CREATE SEQUENCE periodtracker.help_center_sorting_key INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775806 START 1 CACHE 1;
 
 ALTER TABLE help_center
@@ -334,7 +326,6 @@ ADD "otherAttributes" text DEFAULT NULL,
 ADD "isActive" boolean DEFAULT false,
 ADD "sortingKey" integer DEFAULT nextval('periodtracker.help_center_sorting_key') NOT NULL;
 
-
 ----
 
 ALTER TABLE "periodtracker".article
@@ -343,9 +334,4 @@ ADD "voiceOverKey" text DEFAULT NULL;
 ----
 
 ALTER TABLE oky_user
-ADD COLUMN "contentSelection" INT DEFAULT 0;
-
-----
-
-ALTER TABLE oky_user
-ADD COLUMN "city" text DEFAULT '';
+ADD COLUMN metadata json DEFAULT '{}';

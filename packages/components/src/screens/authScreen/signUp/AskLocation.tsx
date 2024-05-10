@@ -40,7 +40,14 @@ export function AskLocation({ step, createAccount }) {
       return
     }
     if (derivedCity !== null && derivedCity.code !== city) {
-      dispatch({ type: 'change-form-data', inputName: 'city', value: derivedCity.code })
+      dispatch({
+        type: 'change-form-data',
+        inputName: 'metadata',
+        value: {
+          ...state.metadata,
+          city: derivedCity.code,
+        },
+      })
       return
     }
   }, [derivedCountry, derivedProvince, derivedCity])

@@ -26,12 +26,8 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       secretQuestion,
       secretAnswer,
       dateSignedUp,
-      genderIdentity,
-      accommodationRequirement,
-      religion,
-      contentSelection,
+      metadata,
       preferredId = null,
-      city,
     }: any) => {
       const response: AxiosResponse<types.SignupResponse> = await axios.post(
         `${endpoint}/account/signup`,
@@ -46,12 +42,8 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
           secretAnswer,
           secretQuestion,
           dateSignedUp,
-          genderIdentity,
-          accommodationRequirement,
-          religion,
-          contentSelection,
+          metadata,
           preferredId,
-          city,
         },
       )
       return response.data
@@ -114,7 +106,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       gender,
       location,
       secretQuestion,
-      city,
+      metadata,
     }: any) => {
       const response: AxiosResponse<{}> = await axios.post(
         `${endpoint}/account/edit-info`,
@@ -124,7 +116,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
           gender,
           location,
           secretQuestion,
-          city,
+          metadata,
         },
         {
           headers: { Authorization: `Bearer ${appToken}` },

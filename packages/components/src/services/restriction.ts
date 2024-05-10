@@ -36,12 +36,12 @@ const handleVersionRestriction = (article: Article, user?: User) => {
     return true
   }
 
-  if (isEmpty(user) || !user.contentSelection) {
+  if (isEmpty(user) || !user.metadata?.contentSelection) {
     // Cannot verify - Restricted
     return false
   }
 
-  return user.contentSelection === article.contentFilter
+  return user.metadata?.contentSelection === article.contentFilter
 }
 
 export const canAccessContent = (article: Article, user?: User) => {

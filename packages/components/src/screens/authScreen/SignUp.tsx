@@ -37,11 +37,13 @@ const fastSignUpInitialState: SignUpState = {
   country: 'AF',
   province: '0',
   dateOfBirth: '2015-12-31T17:00:00.000Z',
-  genderIdentity: null,
-  accommodationRequirement: null,
-  religion: 'undisclosed_religion',
-  contentSelection: 0,
-  city: '',
+  metadata: {
+    genderIdentity: null,
+    accommodationRequirement: null,
+    religion: 'undisclosed_religion',
+    contentSelection: 0,
+    city: '',
+  },
 }
 
 const defaultState: SignUpState = {
@@ -55,12 +57,13 @@ const defaultState: SignUpState = {
   country: null,
   province: null,
   dateOfBirth: '',
-  //
-  genderIdentity: null,
-  accommodationRequirement: null,
-  religion: 'undisclosed_religion',
-  contentSelection: 0,
-  city: '',
+  metadata: {
+    genderIdentity: null,
+    accommodationRequirement: null,
+    religion: 'undisclosed_religion',
+    contentSelection: 0,
+    city: '',
+  },
 }
 
 const initialState = FAST_SIGN_UP ? fastSignUpInitialState : defaultState

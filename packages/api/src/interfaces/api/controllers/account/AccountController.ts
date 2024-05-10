@@ -51,11 +51,7 @@ export class AccountController {
       secretQuestion,
       secretAnswer,
       dateSignedUp,
-      genderIdentity,
-      accommodationRequirement,
-      religion,
-      contentSelection,
-      city,
+      metadata,
     }: SignupRequest,
   ) {
     if (country === null || country === '00') {
@@ -76,11 +72,7 @@ export class AccountController {
       secretAnswer,
       dateSignedUp,
       dateAccountSaved: new Date().toISOString(),
-      genderIdentity,
-      accommodationRequirement,
-      religion,
-      contentSelection,
-      city,
+      metadata,
     })
 
     return this.signTokenResponse(user)
@@ -151,7 +143,7 @@ export class AccountController {
     @CurrentUser({ required: true }) userId: string,
     @Body() request: EditInfoRequest,
   ) {
-    const { name, gender, dateOfBirth, secretQuestion, location, contentSelection, city } = request
+    const { name, gender, dateOfBirth, secretQuestion, location, metadata } = request
     // TODO:PH
     // let isProfileUpdateSkipped = false
     // if (!city) {
@@ -164,8 +156,7 @@ export class AccountController {
       dateOfBirth: new Date(dateOfBirth),
       location,
       secretQuestion,
-      contentSelection,
-      city,
+      metadata,
     })
 
     return { userId }
@@ -210,9 +201,7 @@ export class AccountController {
       secretQuestion: user.getMemorableQuestion(),
       secretAnswer: user.getHashedMemorableAnswer(),
       dateSignedUp: user.getDateSignedUp(),
-      genderIdentity: user.getGenderIdentity(),
-      contentSelection: user.getContentSelection(),
-      city: user.getCity(),
+      metadata: user.getMetadata(),
     }
 
     const appToken = jwt.sign(userDescriptor, env.app.secret, {

@@ -17,7 +17,10 @@ interface OkyUserProps {
   memorable: MemorableQuestion
   dateSignedUp: string
   dateAccountSaved: string
-  // Optional
+  metadata: UserMetadata
+}
+
+export interface UserMetadata {
   genderIdentity?: string
   accommodationRequirement?: string
   religion?: string
@@ -66,20 +69,8 @@ export class OkyUser {
   @Column({ name: 'date_account_saved' })
   private dateAccountSaved: string
 
-  @Column({ name: 'genderIdentity', nullable: true })
-  private genderIdentity: string
-
-  @Column({ name: 'accommodationRequirement', nullable: true })
-  private accommodationRequirement?: string
-
-  @Column({ name: 'religion' })
-  private religion: string
-
-  @Column({ name: 'contentSelection' })
-  private contentSelection: number
-
-  @Column({ name: 'city', default: '', nullable: true })
-  private city: string
+  @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })
+  private metadata: UserMetadata
 
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
@@ -94,11 +85,7 @@ export class OkyUser {
         password,
         memorable,
         dateSignedUp,
-        genderIdentity,
-        accommodationRequirement,
-        religion,
-        contentSelection,
-        city,
+        metadata,
       } = props
 
       this.id = id
@@ -112,11 +99,7 @@ export class OkyUser {
       this.memorable = memorable
       this.store = null
       this.dateSignedUp = dateSignedUp
-      this.genderIdentity = genderIdentity
-      this.accommodationRequirement = accommodationRequirement
-      this.religion = religion
-      this.contentSelection = contentSelection
-      this.city = city
+      this.metadata = metadata
     }
   }
 
@@ -133,11 +116,7 @@ export class OkyUser {
     secretAnswer,
     dateSignedUp,
     dateAccountSaved,
-    genderIdentity,
-    accommodationRequirement,
-    religion,
-    contentSelection,
-    city,
+    metadata,
   }: {
     id: string
     name: string
@@ -151,12 +130,7 @@ export class OkyUser {
     secretAnswer: string
     dateSignedUp: string
     dateAccountSaved: string
-    // Optional
-    genderIdentity?: string
-    accommodationRequirement?: string
-    religion?: string
-    contentSelection?: number
-    city?: string
+    metadata: UserMetadata
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -182,11 +156,7 @@ export class OkyUser {
       memorable,
       dateSignedUp,
       dateAccountSaved,
-      genderIdentity,
-      accommodationRequirement,
-      religion,
-      contentSelection,
-      city,
+      metadata,
     })
   }
 
@@ -203,23 +173,14 @@ export class OkyUser {
     gender,
     location,
     secretQuestion,
-    genderIdentity,
-    accommodationRequirement,
-    religion,
-    contentSelection,
-    city,
+    metadata,
   }: {
     name: string
     dateOfBirth: Date
     gender: 'Male' | 'Female' | 'Other'
     location: string
     secretQuestion: string
-    // Optional
-    genderIdentity?: string
-    accommodationRequirement?: string
-    religion?: string
-    contentSelection?: number
-    city?: string
+    metadata: UserMetadata
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -231,11 +192,7 @@ export class OkyUser {
     this.gender = gender
     this.location = location
     this.memorable = await this.memorable.changeQuestion(secretQuestion)
-    this.genderIdentity = genderIdentity
-    this.accommodationRequirement = accommodationRequirement
-    this.religion = religion
-    this.contentSelection = contentSelection
-    this.city = city
+    this.metadata = metadata
   }
 
   public async editSecretAnswer(previousSecretAnswer: string, nextSecretAnswer: string) {
@@ -303,23 +260,7 @@ export class OkyUser {
     return this.store
   }
 
-  public getGenderIdentity() {
-    return this.genderIdentity
-  }
-
-  public getAccommodationRequirement() {
-    return this.accommodationRequirement
-  }
-
-  public getReligion() {
-    return this.religion
-  }
-
-  public getContentSelection() {
-    return this.contentSelection
-  }
-
-  public getCity() {
-    return this.city
+  public getMetadata() {
+    return this.metadata
   }
 }

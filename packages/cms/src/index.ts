@@ -80,7 +80,7 @@ createConnection(ormconfig)
     app.use('/mobile/suggestions', cors())
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
-      storageBucket: 'gs://periodtracker-cb22c.appspot.com',
+      storageBucket: env.storage.bucket,
       // databaseURL: 'https://oky-app.firebaseio.com', // @TODO:PH
     })
 

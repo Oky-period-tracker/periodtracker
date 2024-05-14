@@ -52,7 +52,6 @@ export class ArticleVoiceOverController {
       {
         metadata: {
           contentType: file.mimetype,
-          storageToken: env.storage.token, // TODO:PH Firebase rules arent working
         },
       },
       (err) => {

@@ -37,6 +37,5 @@ export const env = {
   storage: {
     bucket: process.env.STORAGE_BUCKET,
     baseUrl: process.env.STORAGE_BASE_URL,
-    token: process.env.STORAGE_TOKEN,
   },
 }

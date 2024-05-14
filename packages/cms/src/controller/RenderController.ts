@@ -25,6 +25,7 @@ import { env } from '../env'
 import { Video } from '../entity/Video'
 import { cmsLanguages, appReleaseDate } from '../i18n/options'
 import { helpCenterData, contentFilterOptions, ageRestrictionOptions } from '../optional'
+import { getStorage } from 'firebase-admin/storage'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -57,6 +58,8 @@ export class RenderController {
     options?: object,
     callback?: (err: Error, html: string) => void,
   ) {
+    console.log('*** ', { getStorage })
+    // Storage
     response.render(view, { ...this.globalRenderOptions, ...options }, callback)
   }
 
@@ -507,7 +510,7 @@ export class RenderController {
       categories,
       subcategories,
       contentFilterOptions,
-      VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
+      VOICE_OVER_BASE_URL: env.storage.baseUrl,
     })
   }
 
@@ -569,7 +572,7 @@ export class RenderController {
       subcategories,
       articles,
       contentFilterOptions,
-      VOICE_OVER_BASE_URL: env.aws.s3BaseUrl,
+      VOICE_OVER_BASE_URL: env.storage.baseUrl,
     })
   }
 

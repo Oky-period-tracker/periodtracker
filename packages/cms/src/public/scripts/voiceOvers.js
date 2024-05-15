@@ -76,7 +76,7 @@ function renderNoVoiceOver(item) {
 
 function renderHasVoiceOver(item) {
   //
-  const voiceOverUrl = `${window.VOICE_OVER_BASE_URL}/${item.data.voiceOverKey}`
+  const voiceOverUrl = `${window.VOICE_OVER_BASE_URL}${item.data.voiceOverKey}?alt=media`
 
   const audioElement = document.createElement('audio')
   audioElement.setAttribute('controls', '')

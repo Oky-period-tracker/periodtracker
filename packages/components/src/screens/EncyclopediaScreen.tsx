@@ -38,7 +38,7 @@ export function EncyclopediaScreen({ navigation }) {
   const [position] = React.useState(new Animated.Value(0))
 
   const currentUser = useSelector(selectors.currentUserSelector)
-  const filteredArticles = filterContent(currentUser.dateOfBirth, articles)
+  const filteredArticles = filterContent(currentUser, articles)
 
   const dispatch = useDispatch()
 

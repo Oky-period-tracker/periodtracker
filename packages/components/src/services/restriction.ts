@@ -13,7 +13,7 @@ const handleAgeRestriction = (article: Article, user?: User) => {
     return true
   }
 
-  if (isEmpty(user)) {
+  if (isEmpty(user) || !user) {
     // Cannot verify age - Restricted
     return false
   }
@@ -36,7 +36,7 @@ const handleVersionRestriction = (article: Article, user?: User) => {
     return true
   }
 
-  if (isEmpty(user) || !user.metadata?.contentSelection) {
+  if (isEmpty(user) || !user || !user.metadata?.contentSelection) {
     // Cannot verify - Restricted
     return false
   }

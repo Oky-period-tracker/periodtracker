@@ -8,8 +8,7 @@ import { ListItem } from '../components/common/ListItem'
 import { navigate } from '../services/navigationService'
 import { assets } from '../assets/index'
 import { Text } from '../components/common/Text'
-import analytics from '@react-native-firebase/analytics'
-import { fetchNetworkConnectionStatus } from '../services/network'
+import { SHOW_ENCYCLOPEDIA_LOGGED_OUT } from '../config'
 
 export function InfoScreen() {
   return (
@@ -39,16 +38,18 @@ export function InfoScreen() {
               />
             </NavigationLink>
           </NavigationContainer>
-          <NavigationContainer style={{ marginTop: 12 }}>
-            <Row
-              onPress={() => {
-                navigate('Encyclopedia', null)
-              }}
-            >
-              <Title style={{ textTransform: 'capitalize' }}>encyclopedia</Title>
-              <NewsIcon source={assets.static.icons.news} />
-            </Row>
-          </NavigationContainer>
+          {SHOW_ENCYCLOPEDIA_LOGGED_OUT ? (
+            <NavigationContainer style={{ marginTop: 12 }}>
+              <Row
+                onPress={() => {
+                  navigate('Encyclopedia', null)
+                }}
+              >
+                <Title style={{ textTransform: 'capitalize' }}>encyclopedia</Title>
+                <NewsIcon source={assets.static.icons.news} />
+              </Row>
+            </NavigationContainer>
+          ) : null}
         </Container>
       </PageContainer>
     </BackgroundTheme>

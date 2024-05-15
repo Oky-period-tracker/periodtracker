@@ -12,12 +12,14 @@ const sources = [
     source: './packages/components/src/assets/mobile/android',
     destination: './packages/mobile/android/app/src/main/res',
   },
+  {
+    name: 'fonts',
+    source: './packages/components/src/assets/mobile/fonts',
+    destination: './packages/mobile/android/app/src/main/assets/fonts',
+  },
 ]
 
-async function getFiles(
-  dirPath: string,
-  parentPath: string = '',
-): Promise<string[]> {
+async function getFiles(dirPath: string, parentPath: string = ''): Promise<string[]> {
   const entries = await fs.readdir(dirPath, { withFileTypes: true })
 
   const files = entries
@@ -36,7 +38,18 @@ async function getFiles(
   return files
 }
 
+const clearDestination = async (destination: string) => {
+  if (await fs.pathExists(destination)) {
+    await fs.rm(destination, { recursive: true, force: true })
+    await fs.mkdir(destination, { recursive: true })
+  } else {
+    await fs.mkdir(destination, { recursive: true })
+  }
+}
+
 const copyAssets = async ({ source, destination, name }) => {
+  await clearDestination(destination)
+
   const files = await getFiles(source)
 
   for (const relativePath of files) {
@@ -49,6 +62,14 @@ const copyAssets = async ({ source, destination, name }) => {
   console.log(`Copied ${name} assets`)
 }
 
-sources.forEach((folder) => {
-  copyAssets(folder)
-})
+const copyAllAssets = async () => {
+  for (const folder of sources) {
+    try {
+      await copyAssets(folder)
+    } catch (error) {
+      console.error(`Failed to copy assets for ${folder.name}:`, error)
+    }
+  }
+}
+
+copyAllAssets()

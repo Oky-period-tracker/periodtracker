@@ -12,12 +12,14 @@ const sources = [
     source: './packages/components/src/assets/mobile/android',
     destination: './packages/mobile/android/app/src/main/res',
   },
+  {
+    name: 'fonts',
+    source: './packages/components/src/assets/mobile/fonts',
+    destination: './packages/mobile/android/app/src/main/assets/fonts',
+  },
 ]
 
-async function getFiles(
-  dirPath: string,
-  parentPath: string = '',
-): Promise<string[]> {
+async function getFiles(dirPath: string, parentPath: string = ''): Promise<string[]> {
   const entries = await fs.readdir(dirPath, { withFileTypes: true })
 
   const files = entries

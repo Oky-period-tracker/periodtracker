@@ -81,4 +81,6 @@ android/gradle.properties
 
 # assets
 ios/oky/Images.xcassets
-ic_launcher.png
+android/app/src/main/res
+android/app/src/main/assets/fonts
+

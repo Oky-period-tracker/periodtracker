@@ -58,8 +58,6 @@ export class RenderController {
     options?: object,
     callback?: (err: Error, html: string) => void,
   ) {
-    console.log('*** ', { getStorage })
-    // Storage
     response.render(view, { ...this.globalRenderOptions, ...options }, callback)
   }
 

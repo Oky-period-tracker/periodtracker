@@ -10,7 +10,7 @@ import { Text, TextWithoutTranslation } from '../components/common/Text'
 import { useTextToSpeechHook } from '../hooks/useTextToSpeechHook'
 import { IconButton } from '../components/common/buttons/IconButton'
 import { useSound } from '../components/context/SoundContext'
-import { AWS_S3_BASE_URL } from '../config'
+import { STORAGE_BASE_URL } from '../config'
 import { canAccessContent } from '../services/restriction'
 import HTML from 'react-native-render-html'
 import { cleanHTML } from '../services/html'
@@ -36,7 +36,7 @@ const ArticleItem = ({ article, index, articles }) => {
         <ArticleTitle>{articleObject.subCategory}</ArticleTitle>
         {articleObject?.voiceOverKey && (
           <IconButton
-            onPress={() => playSound(`${AWS_S3_BASE_URL}/${articleObject.voiceOverKey}`)}
+            onPress={() => playSound(`${STORAGE_BASE_URL}${articleObject.voiceOverKey}?alt=media`)}
             name="play"
           />
         )}

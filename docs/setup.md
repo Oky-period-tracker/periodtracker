@@ -94,47 +94,52 @@ In order to be able to diagnose any issue and receive reports regarding instabil
 
 Add audio recordings for encyclopedia articles
 
-Create AWS account, search for S3 service, create a bucket, create an IAM access key & secret key.
+In the firebase console, set up cloud storage
 
-Search for cloudfront service and select your bucket under `Origin domain`
+Update your cms .env file with the following
 
-You can see your AWS_REGION in a dropdown on the top right of the AWS console, for example London is `eu-west-2`
+Copy paste your bucket name, eg `gs://periodtracker-example.appspot.com` from the firebase console and use that as your STORAGE_BUCKET
 
-Update your cms `.env` file with your values
+The STORAGE_BASE_URL is used to fetch your files from storage, this url includes your bucket name but without the `gs://` prefix, for example
 
-For example
+```
+https://firebasestorage.googleapis.com/v0/b/YOUR_BUCKET_NAME
+
+https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com
+```
 
 ```env
-AWS_ACCESS_KEY_ID=ALIB4CVF7922JZYVF7JL
-AWS_SECRET_ACCESS_KEY=jV/TGWJ2RVzdBJ/XYZhULqqysTAlKbTh/dWrPEKj
-AWS_REGION=eu-west-2
-AWS_S3_BASE_URL=https://your_subdomain.cloudfront.net
-AWS_S3_BUCKET=your_bucket_name
+STORAGE_BUCKET=gs://periodtracker-example.appspot.com
+STORAGE_BASE_URL=https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com
 ```
 
-Create a kubectl secret with your keys
+Similarly in the /mobile .env file, you need to add the STORAGE_BASE_URL, with the same value
 
-```bash
-kubectl create secret generic aws-credentials --from-literal=AWS_ACCESS_KEY_ID=<your-access-key-id> --from-literal=AWS_SECRET_ACCESS_KEY=<your-secret-access-key> --namespace=<your-namespace>
+```env
+STORAGE_BASE_URL=https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com
 ```
 
-Update your cms.yaml file before your deploy
+Set your firebase rules in the firebase console
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read: if true; // Anyone can read the files
+      allow write: if false; // Only the CMS can write files via firebase-admin which uses the keys in the json config to bypass this rule
+    }
+  }
+}
+```
+
+To deploy this, you need to update your cms.yaml file
+
+For example:
 
 ```yaml
-- name: AWS_ACCESS_KEY_ID
-    valueFrom:
-    secretKeyRef:
-        name: aws-credentials
-        key: AWS_ACCESS_KEY_ID
-- name: AWS_SECRET_ACCESS_KEY
-    valueFrom:
-    secretKeyRef:
-        name: aws-credentials
-        key: AWS_SECRET_ACCESS_KEY
-- name: AWS_REGION
-    value: 'eu-west-2'
-- name: AWS_S3_BASE_URL
-    value: 'https://your_subdomain.cloudfront.net'
-- name: AWS_S3_BUCKET
-    value: 'your_bucket_name'
+- name: STORAGE_BUCKET
+    value: 'gs://periodtracker-example.appspot.com'
+- name: STORAGE_BASE_URL
+    value: 'https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com'
 ```

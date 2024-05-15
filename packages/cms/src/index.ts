@@ -80,6 +80,7 @@ createConnection(ormconfig)
     app.use('/mobile/suggestions', cors())
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
+      storageBucket: env.storage.bucket,
       // databaseURL: 'https://oky-app.firebaseio.com', // @TODO:PH
     })
 

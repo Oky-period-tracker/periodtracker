@@ -34,11 +34,8 @@ export const env = {
     port: normalizePort(process.env.CMS_PORT) || 5000,
     // port: 5001,
   },
-  aws: {
-    acccessKey: process.env.AWS_ACCESS_KEY_ID,
-    secretKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-    s3BaseUrl: process.env.AWS_S3_BASE_URL,
-    s3Bucket: process.env.AWS_S3_BUCKET,
+  storage: {
+    bucket: process.env.STORAGE_BUCKET,
+    baseUrl: process.env.STORAGE_BASE_URL,
   },
 }

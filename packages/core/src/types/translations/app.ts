@@ -448,9 +448,12 @@ export interface AppTranslations {
   videos: string
   internet_required_title: string
   internet_required_text: string
-  disclaimer?: string // TODO:PH
   // ===== OPTIONAL ===== //
+  // articles
+  disclaimer?: string
   // HAPTIC_AND_SOUND
   haptic_request?: string
   sound_request?: string
+  // ASK_CITY
+  search_city?: string
 }

@@ -140,6 +140,7 @@ const SearchList = ({
 }
 
 const FormControl = styled.View`
+  flex: 1;
   width: 100%;
   background-color: #efefef;
 `

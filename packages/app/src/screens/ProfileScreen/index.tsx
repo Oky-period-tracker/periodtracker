@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "green",
+    backgroundColor: "#e3629b",
     width: "100%",
     height: " 33%",
     paddingHorizontal: 16,
@@ -202,13 +202,11 @@ const styles = StyleSheet.create({
   cycleCardBody: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "blue",
     flex: 1,
   },
   cycleCardBodyLeft: {
     width: "50%",
     height: "100%",
-    backgroundColor: "purple",
     flexDirection: "column",
     justifyContent: "center",
     padding: 16,
@@ -216,7 +214,6 @@ const styles = StyleSheet.create({
   cycleCardBodyRight: {
     width: "50%",
     height: "100%",
-    backgroundColor: "pink",
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",

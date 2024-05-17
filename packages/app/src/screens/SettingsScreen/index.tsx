@@ -99,24 +99,20 @@ const styles = StyleSheet.create({
   segment: {
     height: 100,
     width: "100%",
-    backgroundColor: "red",
     borderBottomWidth: 1,
     flexDirection: "row",
   },
   segmentLeft: {
-    backgroundColor: "green",
     alignItems: "center",
     justifyContent: "center",
     flexBasis: "30%",
   },
   segmentCenter: {
-    backgroundColor: "blue",
     justifyContent: "center",
     flex: 1,
     padding: 8,
   },
   segmentRight: {
-    backgroundColor: "pink",
     alignItems: "center",
     justifyContent: "center",
     flexBasis: "30%",

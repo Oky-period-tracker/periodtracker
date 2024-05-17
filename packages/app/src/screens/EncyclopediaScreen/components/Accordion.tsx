@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useToggle } from "../../../hooks/useToggle";
 import { data } from "../data";
-import { UntouchableButton } from "../../../components/Button";
+import { DisplayButton } from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 
 function Accordion() {
@@ -35,10 +35,10 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     <>
       <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
         <Text style={styles.categoryName}>{category.name}</Text>
-        <UntouchableButton
+        <DisplayButton
           status={"basic"}
           style={styles.categoryEmoji}
-        ></UntouchableButton>
+        ></DisplayButton>
       </TouchableOpacity>
       {expanded
         ? subcategories.map((subcategory) => (

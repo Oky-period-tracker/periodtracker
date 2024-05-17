@@ -1,7 +1,7 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
 import { Screen } from "../../components/Screen";
-import { UntouchableButton } from "../../components/Button";
+import { DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 function AvatarAndThemeScreen({ navigation }) {
@@ -9,9 +9,9 @@ function AvatarAndThemeScreen({ navigation }) {
     <Screen style={styles.screen}>
       <View style={styles.avatars}>
         <View style={styles.avatar}>
-          <UntouchableButton style={styles.check}>
+          <DisplayButton style={styles.check}>
             <FontAwesome size={12} name={"check"} color={"#fff"} />
-          </UntouchableButton>
+          </DisplayButton>
         </View>
         <View style={styles.avatar}></View>
         <View style={styles.avatar}></View>

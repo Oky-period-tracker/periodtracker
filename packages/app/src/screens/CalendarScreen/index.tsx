@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Calendar, CalendarProps } from "react-native-calendars";
 import { StyleSheet, View } from "react-native";
-import { UntouchableButton } from "../../components/Button";
+import { DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 function CalendarScreen({ navigation }) {
@@ -18,13 +18,13 @@ function CalendarScreen({ navigation }) {
           theme={theme}
           renderArrow={(direction) => {
             return (
-              <UntouchableButton style={styles.arrowButton}>
+              <DisplayButton style={styles.arrowButton}>
                 <FontAwesome
                   size={12}
                   name={`arrow-${direction}`}
                   color={"#fff"}
                 />
-              </UntouchableButton>
+              </DisplayButton>
             );
           }}
           // markedDates={markedDates}

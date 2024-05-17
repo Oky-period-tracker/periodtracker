@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { UntouchableButton } from "../../components/Button";
+import { DisplayButton } from "../../components/Button";
 
 export const TabIcon = ({
   focused,
@@ -9,12 +9,12 @@ export const TabIcon = ({
   focused: boolean;
 }) => {
   return (
-    <UntouchableButton
+    <DisplayButton
       status={focused ? "primary" : "basic"}
       style={styles.tabIcon}
     >
       {children}
-    </UntouchableButton>
+    </DisplayButton>
   );
 };
 

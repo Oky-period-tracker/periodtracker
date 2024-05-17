@@ -9,13 +9,48 @@ import {
 
 type ButtonStatus = "primary" | "secondary" | "basic";
 
+export type ButtonProps = ViewProps & {
+  onPress?: () => void;
+  status?: ButtonStatus;
+};
+
 export const Button = ({
+  style,
+  onPress,
+  status = "primary",
+  ...props
+}: ButtonProps) => {
+  const colors = palette[status];
+
+  return (
+    <TouchableOpacity
+      style={[styles.container, { backgroundColor: colors.base }, style]}
+      onPress={onPress}
+      {...props}
+    >
+      <ButtonInner status={status} {...props} />
+    </TouchableOpacity>
+  );
+};
+
+export const DisplayButton = ({
   style,
   status = "primary",
   ...props
-}: TouchableOpacityProps & {
-  status?: ButtonStatus;
-}) => {
+}: ButtonProps) => {
+  const colors = palette[status];
+
+  return (
+    <View
+      style={[styles.container, { backgroundColor: colors.base }, style]}
+      {...props}
+    >
+      <ButtonInner status={status} {...props} />
+    </View>
+  );
+};
+
+const ButtonInner = ({ status, ...props }: ButtonProps) => {
   const colors = palette[status];
 
   const children = props.children ? (
@@ -27,10 +62,7 @@ export const Button = ({
   ) : null;
 
   return (
-    <TouchableOpacity
-      style={[styles.container, { backgroundColor: colors.base }, style]}
-      {...props}
-    >
+    <>
       <View
         style={[styles.highlight, { backgroundColor: colors.highlight }]}
       ></View>
@@ -38,36 +70,7 @@ export const Button = ({
       <View style={[styles.body, { backgroundColor: colors.base }]}>
         {children}
       </View>
-    </TouchableOpacity>
-  );
-};
-
-export const UntouchableButton = ({
-  style,
-  children,
-  title,
-  status = "primary",
-  ...props
-}: ViewProps & {
-  title?: string;
-  status?: ButtonStatus;
-}) => {
-  const colors = palette[status];
-
-  return (
-    <View
-      style={[styles.container, { backgroundColor: colors.base }, style]}
-      {...props}
-    >
-      <View
-        style={[styles.highlight, { backgroundColor: colors.highlight }]}
-      ></View>
-      <View style={[styles.shadow, { backgroundColor: colors.shadow }]}></View>
-      <View style={[styles.body, { backgroundColor: colors.base }]}>
-        {children ? children : null}
-        {title ? <Text>{title}</Text> : null}
-      </View>
-    </View>
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, Text, StyleSheet, TextInput } from "react-native";
 import { Screen } from "../../components/Screen";
-import { Button, UntouchableButton } from "../../components/Button";
+import { Button, DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 function EditProfileScreen({ navigation }) {
@@ -10,9 +10,9 @@ function EditProfileScreen({ navigation }) {
       <View style={styles.container}>
         <View style={styles.segment}>
           <View style={styles.segmentLeft}>
-            <UntouchableButton style={styles.iconContainer}>
+            <DisplayButton style={styles.iconContainer}>
               <FontAwesome size={28} name={"user"} color={"#fff"} />
-            </UntouchableButton>
+            </DisplayButton>
           </View>
           <View style={styles.segmentRight}>
             <Text style={styles.label}>Name</Text>
@@ -27,9 +27,9 @@ function EditProfileScreen({ navigation }) {
 
         <View style={styles.segment}>
           <View style={styles.segmentLeft}>
-            <UntouchableButton style={styles.iconContainer}>
+            <DisplayButton style={styles.iconContainer}>
               <FontAwesome size={28} name={"user"} color={"#fff"} />
-            </UntouchableButton>
+            </DisplayButton>
           </View>
           <View style={styles.segmentRight}>
             <Text style={styles.label}>Name</Text>
@@ -44,9 +44,9 @@ function EditProfileScreen({ navigation }) {
 
         <View style={styles.segment}>
           <View style={styles.segmentLeft}>
-            <UntouchableButton style={styles.iconContainer}>
+            <DisplayButton style={styles.iconContainer}>
               <FontAwesome size={28} name={"user"} color={"#fff"} />
-            </UntouchableButton>
+            </DisplayButton>
           </View>
           <View style={styles.segmentRight}>
             <Text style={styles.label}>Name</Text>
@@ -61,9 +61,9 @@ function EditProfileScreen({ navigation }) {
 
         <View style={styles.segment}>
           <View style={styles.segmentLeft}>
-            <UntouchableButton style={styles.iconContainer}>
+            <DisplayButton style={styles.iconContainer}>
               <FontAwesome size={28} name={"user"} color={"#fff"} />
-            </UntouchableButton>
+            </DisplayButton>
           </View>
           <View style={styles.segmentRight}>
             <Text style={styles.label}>Name</Text>
@@ -78,9 +78,9 @@ function EditProfileScreen({ navigation }) {
 
         <View style={styles.segment}>
           <View style={styles.segmentLeft}>
-            <UntouchableButton style={styles.iconContainer}>
+            <DisplayButton style={styles.iconContainer}>
               <FontAwesome size={28} name={"user"} color={"#fff"} />
-            </UntouchableButton>
+            </DisplayButton>
           </View>
           <View style={styles.segmentRight}>
             <Text style={styles.label}>Name</Text>

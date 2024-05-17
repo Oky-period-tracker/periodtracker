@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import { UntouchableButton } from "../../components/Button";
+import { DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
@@ -21,9 +21,9 @@ function ProfileScreen({ navigation }) {
             onPress={() => navigation.navigate("EditProfileScreen")}
           >
             <View style={styles.column}>
-              <UntouchableButton style={styles.icon}>
+              <DisplayButton style={styles.icon}>
                 <FontAwesome size={28} name={"user"} color={"#fff"} />
-              </UntouchableButton>
+              </DisplayButton>
             </View>
             <View style={styles.column}>
               <View>
@@ -47,9 +47,9 @@ function ProfileScreen({ navigation }) {
 
           <View style={styles.row}>
             <View style={styles.column}>
-              <UntouchableButton style={styles.icon} status={"secondary"}>
+              <DisplayButton style={styles.icon} status={"secondary"}>
                 <Text>29 days</Text>
-              </UntouchableButton>
+              </DisplayButton>
             </View>
             <View style={styles.column}>
               <View>
@@ -72,15 +72,15 @@ function ProfileScreen({ navigation }) {
             onPress={() => navigation.navigate("AvatarAndThemeScreen")}
           >
             <View style={styles.column}>
-              <UntouchableButton style={styles.icon}>
+              <DisplayButton style={styles.icon}>
                 <FontAwesome size={28} name={"user"} color={"#fff"} />
-              </UntouchableButton>
+              </DisplayButton>
             </View>
             <View style={styles.column}>
               <View>
-                <UntouchableButton style={styles.icon} status="basic">
+                <DisplayButton style={styles.icon} status="basic">
                   <FontAwesome size={28} name={"user"} color={"#fff"} />
-                </UntouchableButton>
+                </DisplayButton>
               </View>
             </View>
             <View style={styles.column}>
@@ -105,31 +105,27 @@ function ProfileScreen({ navigation }) {
             </View>
             <View style={styles.cycleCardBodyRight}>
               <View>
-                <UntouchableButton
-                  style={styles.emojiCircle}
-                  status={"basic"}
-                ></UntouchableButton>
+                <DisplayButton style={styles.emojiCircle} status={"basic"}>
+                  😊
+                </DisplayButton>
                 <Text style={styles.emojiText}>Mood</Text>
               </View>
               <View>
-                <UntouchableButton
-                  style={styles.emojiCircle}
-                  status={"basic"}
-                ></UntouchableButton>
+                <DisplayButton style={styles.emojiCircle} status={"basic"}>
+                  😊
+                </DisplayButton>
                 <Text style={styles.emojiText}>Mood</Text>
               </View>
               <View>
-                <UntouchableButton
-                  style={styles.emojiCircle}
-                  status={"basic"}
-                ></UntouchableButton>
+                <DisplayButton style={styles.emojiCircle} status={"basic"}>
+                  😊
+                </DisplayButton>
                 <Text style={styles.emojiText}>Mood</Text>
               </View>
               <View>
-                <UntouchableButton
-                  style={styles.emojiCircle}
-                  status={"basic"}
-                ></UntouchableButton>
+                <DisplayButton style={styles.emojiCircle} status={"basic"}>
+                  😊
+                </DisplayButton>
                 <Text style={styles.emojiText}>Mood</Text>
               </View>
             </View>

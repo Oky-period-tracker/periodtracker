@@ -7,16 +7,16 @@ import TutorialFirstScreen from "../../screens/TutorialFirstScreen";
 import TutorialSecondScreen from "../../screens/TutorialSecondScreen";
 
 const config: StackConfig = {
-  initialRouteName: "MainScreen",
+  initialRouteName: "Home",
   screens: [
     {
       title: "Home",
-      name: "MainScreen",
+      name: "Home",
       Component: MainScreen,
     },
     {
       title: "Day",
-      name: "DayScreen",
+      name: "Day",
       Component: DayScreen,
     },
     {
@@ -26,11 +26,11 @@ const config: StackConfig = {
     },
     {
       title: "Tutorial",
-      name: "TutorialFirstScreen",
+      name: "TutorialOne",
       Component: TutorialFirstScreen,
     },
     {
-      title: "Tutorial",
+      title: "TutorialTwo",
       name: "TutorialSecondScreen",
       Component: TutorialSecondScreen,
     },

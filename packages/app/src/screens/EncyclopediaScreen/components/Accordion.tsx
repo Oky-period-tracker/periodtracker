@@ -45,7 +45,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
             <TouchableOpacity
               style={styles.subcategory}
               onPress={() =>
-                navigation.navigate("ArticlesScreen", {
+                navigation.navigate("Articles", {
                   title: subcategory.name,
                   subcategoryId: subcategory.id,
                 })

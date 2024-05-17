@@ -18,7 +18,7 @@ function ProfileScreen({ navigation }) {
         <View style={styles.container}>
           <TouchableOpacity
             style={styles.row}
-            onPress={() => navigation.navigate("EditProfileScreen")}
+            onPress={() => navigation.navigate("EditProfile")}
           >
             <View style={styles.column}>
               <DisplayButton style={styles.icon}>
@@ -69,7 +69,7 @@ function ProfileScreen({ navigation }) {
 
           <TouchableOpacity
             style={styles.row}
-            onPress={() => navigation.navigate("AvatarAndThemeScreen")}
+            onPress={() => navigation.navigate("AvatarAndTheme")}
           >
             <View style={styles.column}>
               <DisplayButton style={styles.icon}>

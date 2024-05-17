@@ -6,26 +6,26 @@ import VideoScreen from "../../screens/VideoScreen";
 import NavigationStack, { StackConfig } from "../NavigationStack";
 
 const config: StackConfig = {
-  initialRouteName: "EncyclopediaScreen",
+  initialRouteName: "Encyclopedia",
   screens: [
     {
       title: "Encyclopedia",
-      name: "EncyclopediaScreen",
+      name: "Encyclopedia",
       Component: EncyclopediaScreen,
     },
     {
       title: "Articles",
-      name: "ArticlesScreen",
+      name: "Articles",
       Component: ArticlesScreen,
     },
     {
       title: "Find Help",
-      name: "FindHelpScreen",
+      name: "Help",
       Component: FindHelpScreen,
     },
     {
       title: "Video",
-      name: "VideoScreen",
+      name: "Video",
       Component: VideoScreen,
     },
   ],

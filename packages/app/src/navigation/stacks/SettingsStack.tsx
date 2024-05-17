@@ -8,36 +8,36 @@ import PrivacyScreen from "../../screens/PrivacyScreen";
 import ContactUsScreen from "../../screens/ContactUsScreen";
 
 const config: StackConfig = {
-  initialRouteName: "SettingsScreen",
+  initialRouteName: "Settings",
   screens: [
     {
       title: "Settings",
-      name: "SettingsScreen",
+      name: "Settings",
       Component: SettingsScreen,
     },
     {
       title: "Access",
-      name: "AccessScreen",
+      name: "Access",
       Component: AccessScreen,
     },
     {
       title: "Terms & Conditions",
-      name: "TermsScreen",
+      name: "Terms",
       Component: TermsScreen,
     },
     {
       title: "About",
-      name: "AboutScreen",
+      name: "About",
       Component: AboutScreen,
     },
     {
       title: "Privacy",
-      name: "PrivacyScreen",
+      name: "Privacy",
       Component: PrivacyScreen,
     },
     {
       title: "Contact Us",
-      name: "ContactUsScreen",
+      name: "Contact",
       Component: ContactUsScreen,
     },
   ],

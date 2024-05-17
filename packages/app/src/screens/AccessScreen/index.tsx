@@ -9,7 +9,7 @@ function AccessScreen({ navigation }) {
       <View style={styles.container}>
         <TouchableOpacity
           style={styles.segment}
-          onPress={() => navigation.navigate("AboutScreen")}
+          onPress={() => navigation.navigate("About")}
         >
           <View style={styles.segmentLeft}>
             <Text style={styles.title}>Language</Text>
@@ -22,7 +22,7 @@ function AccessScreen({ navigation }) {
 
         <TouchableOpacity
           style={styles.segment}
-          onPress={() => navigation.navigate("TermsScreen")}
+          onPress={() => navigation.navigate("Terms")}
         >
           <View style={styles.segmentLeft}>
             <Text style={styles.title}>Tutorial</Text>
@@ -36,7 +36,7 @@ function AccessScreen({ navigation }) {
 
         <TouchableOpacity
           style={styles.segment}
-          onPress={() => navigation.navigate("PrivacyScreen")}
+          onPress={() => navigation.navigate("Privacy")}
         >
           <View style={styles.segmentLeft}>
             <Text style={styles.title}>Share</Text>

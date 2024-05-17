@@ -5,21 +5,21 @@ import ProfileScreen from "../../screens/ProfileScreen";
 import AvatarAndThemeScreen from "../../screens/AvatarAndThemeScreen";
 
 const config: StackConfig = {
-  initialRouteName: "ProfileScreen",
+  initialRouteName: "Profile",
   screens: [
     {
       title: "Profile",
-      name: "ProfileScreen",
+      name: "Profile",
       Component: ProfileScreen,
     },
     {
       title: "Edit Profile",
-      name: "EditProfileScreen",
+      name: "EditProfile",
       Component: EditProfileScreen,
     },
     {
       title: "Avatars & Themes",
-      name: "AvatarAndThemeScreen",
+      name: "AvatarAndTheme",
       Component: AvatarAndThemeScreen,
     },
   ],

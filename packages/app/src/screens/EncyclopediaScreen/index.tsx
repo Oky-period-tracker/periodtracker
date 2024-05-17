@@ -6,7 +6,7 @@ import { Screen } from "../../components/Screen";
 import { HelpCard } from "./components/HelpCard";
 
 function EncyclopediaScreen({ navigation }) {
-  const goToHelpScreen = () => navigation.navigate("FindHelpScreen");
+  const goToHelpScreen = () => navigation.navigate("Help");
 
   return (
     <Screen>

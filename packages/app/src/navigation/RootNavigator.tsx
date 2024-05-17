@@ -28,15 +28,59 @@ const options = {
   },
 };
 
+const linking = {
+  enabled: true,
+  prefixes: [],
+  config: {
+    screens: {
+      profile: {
+        path: "profile",
+        screens: {
+          Profile: "",
+          EditProfile: "edit",
+          AvatarAndTheme: "avatar-and-theme",
+        },
+      },
+      home: {
+        path: "home",
+        screens: {
+          Home: "",
+          Calendar: "calendar",
+          TutorialOne: "tutorial-1",
+          TutorialTwo: "tutorial-2",
+          Day: "day",
+        },
+      },
+      encyclopedia: {
+        path: "encyclopedia",
+        screens: {
+          Encyclopedia: "",
+          Articles: "articles",
+          Help: "help",
+          Video: "video",
+        },
+      },
+      settings: {
+        path: "settings",
+        screens: {
+          Settings: "",
+          Access: "access",
+          Terms: "terms-and-conditions",
+          About: "about",
+          Privacy: "privacy",
+          Contact: "contact",
+        },
+      },
+    },
+  },
+};
+
 function RootNavigator() {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName={"HomeStack"}
-        screenOptions={screenOptions}
-      >
+    <NavigationContainer linking={linking}>
+      <Tab.Navigator initialRouteName={"home"} screenOptions={screenOptions}>
         <Tab.Screen
-          name={"ProfileStack"}
+          name={"profile"}
           component={ProfileStack}
           options={{
             ...options,
@@ -48,7 +92,7 @@ function RootNavigator() {
           }}
         />
         <Tab.Screen
-          name={"HomeStack"}
+          name={"home"}
           component={HomeStack}
           options={{
             ...options,
@@ -60,7 +104,7 @@ function RootNavigator() {
           }}
         />
         <Tab.Screen
-          name={"EncyclopediaStack"}
+          name={"encyclopedia"}
           component={EncyclopediaStack}
           options={{
             ...options,
@@ -72,7 +116,7 @@ function RootNavigator() {
           }}
         />
         <Tab.Screen
-          name={"SettingsStack"}
+          name={"settings"}
           component={SettingsStack}
           options={{
             ...options,

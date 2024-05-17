@@ -10,7 +10,8 @@ import { recordToArray } from "../services/utils";
 type ParamListBase = Record<string, undefined>;
 
 export type CustomStackNavigationOptions = NativeStackNavigationOptions & {
-  showBackButton?: boolean;
+  name?: string;
+  initialRouteName?: string;
 };
 
 export type StackConfig<T extends ParamListBase> = {
@@ -26,9 +27,11 @@ export type StackConfig<T extends ParamListBase> = {
 const Stack = createNativeStackNavigator();
 
 function NavigationStack({ config }: { config: StackConfig<ParamListBase> }) {
+  const { initialRouteName } = config;
+
   return (
     <Stack.Navigator
-      initialRouteName={config.initialRouteName}
+      initialRouteName={initialRouteName}
       screenOptions={{
         header: (props) => <Header {...props} />,
       }}
@@ -36,9 +39,11 @@ function NavigationStack({ config }: { config: StackConfig<ParamListBase> }) {
       {recordToArray<StackConfig<ParamListBase>["screens"]>(config.screens).map(
         ([name, { title, component }]) => {
           const options: CustomStackNavigationOptions = {
-            showBackButton: name !== config.initialRouteName,
+            name,
             title,
+            initialRouteName,
           };
+
           return (
             <Stack.Screen
               key={name}

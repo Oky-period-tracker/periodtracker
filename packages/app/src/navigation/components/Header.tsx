@@ -12,12 +12,17 @@ type HeaderProps = NativeStackHeaderProps & {
 export const Header = ({ navigation, route, options }: HeaderProps) => {
   // @ts-ignore @TODO: fixme
   const title = route.params?.title ?? options.title;
+  const showBackButton = options.name !== options.initialRouteName;
+
+  const onBackPress = () => {
+    navigation.navigate(options.initialRouteName);
+  };
 
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        {options.showBackButton ? (
-          <Button onPress={navigation.goBack} style={styles.button}>
+        {showBackButton ? (
+          <Button onPress={onBackPress} style={styles.button}>
             <FontAwesome size={12} name={"arrow-left"} color={"#fff"} />
           </Button>
         ) : null}

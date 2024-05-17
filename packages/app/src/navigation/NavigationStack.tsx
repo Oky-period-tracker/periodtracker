@@ -1,14 +1,17 @@
 import * as React from "react";
 import {
   createNativeStackNavigator,
+  NativeStackNavigationOptions,
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import { Header } from "./components/Header";
 import { recordToArray } from "../services/utils";
 
-const Stack = createNativeStackNavigator();
-
 type ParamListBase = Record<string, undefined>;
+
+export type CustomStackNavigationOptions = NativeStackNavigationOptions & {
+  showBackButton?: boolean;
+};
 
 export type StackConfig<T extends ParamListBase> = {
   initialRouteName: string;
@@ -20,6 +23,8 @@ export type StackConfig<T extends ParamListBase> = {
   };
 };
 
+const Stack = createNativeStackNavigator();
+
 function NavigationStack({ config }: { config: StackConfig<ParamListBase> }) {
   return (
     <Stack.Navigator
@@ -29,16 +34,20 @@ function NavigationStack({ config }: { config: StackConfig<ParamListBase> }) {
       }}
     >
       {recordToArray<StackConfig<ParamListBase>["screens"]>(config.screens).map(
-        ([name, { title, component }]) => (
-          <Stack.Screen
-            key={name}
-            name={name}
-            component={component}
-            options={{
-              title,
-            }}
-          />
-        )
+        ([name, { title, component }]) => {
+          const options: CustomStackNavigationOptions = {
+            showBackButton: name !== config.initialRouteName,
+            title,
+          };
+          return (
+            <Stack.Screen
+              key={name}
+              name={name}
+              component={component}
+              options={options}
+            />
+          );
+        }
       )}
     </Stack.Navigator>
   );

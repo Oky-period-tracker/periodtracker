@@ -3,22 +3,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { CustomStackNavigationOptions } from "../NavigationStack";
 
-export const Header = ({
-  navigation,
-  route,
-  options,
-}: NativeStackHeaderProps) => {
-  const currentRoutes = navigation.getState().routes;
-  const showBackButton = currentRoutes.length > 1;
+type HeaderProps = NativeStackHeaderProps & {
+  options: CustomStackNavigationOptions;
+};
 
+export const Header = ({ navigation, route, options }: HeaderProps) => {
   // @ts-ignore @TODO: fixme
   const title = route.params?.title ?? options.title;
 
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        {showBackButton ? (
+        {options.showBackButton ? (
           <Button onPress={navigation.goBack} style={styles.button}>
             <FontAwesome size={12} name={"arrow-left"} color={"#fff"} />
           </Button>

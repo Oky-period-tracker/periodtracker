@@ -54,7 +54,7 @@ function RootNavigator() {
             ...options,
             tabBarIcon: ({ focused, size }) => (
               <TabIcon focused={focused}>
-                <FontAwesome size={size} name={"home"} color={"#fff"} />
+                <FontAwesome size={size} name={"calendar"} color={"#fff"} />
               </TabIcon>
             ),
           }}

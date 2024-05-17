@@ -7,40 +7,43 @@ import AboutScreen from "../../screens/AboutScreen";
 import PrivacyScreen from "../../screens/PrivacyScreen";
 import ContactUsScreen from "../../screens/ContactUsScreen";
 
-const config: StackConfig = {
+export type SettingsStackParamList = {
+  Settings: undefined;
+  Access: undefined;
+  Terms: undefined;
+  About: undefined;
+  Privacy: undefined;
+  Contact: undefined;
+};
+
+const config: StackConfig<SettingsStackParamList> = {
   initialRouteName: "Settings",
-  screens: [
-    {
+  screens: {
+    Settings: {
       title: "Settings",
-      name: "Settings",
-      Component: SettingsScreen,
+      component: SettingsScreen,
     },
-    {
+    Access: {
       title: "Access",
-      name: "Access",
-      Component: AccessScreen,
+      component: AccessScreen,
     },
-    {
+    Terms: {
       title: "Terms & Conditions",
-      name: "Terms",
-      Component: TermsScreen,
+      component: TermsScreen,
     },
-    {
+    About: {
       title: "About",
-      name: "About",
-      Component: AboutScreen,
+      component: AboutScreen,
     },
-    {
+    Privacy: {
       title: "Privacy",
-      name: "Privacy",
-      Component: PrivacyScreen,
+      component: PrivacyScreen,
     },
-    {
+    Contact: {
       title: "Contact Us",
-      name: "Contact",
-      Component: ContactUsScreen,
+      component: ContactUsScreen,
     },
-  ],
+  },
 };
 
 const SettingsStack = () => <NavigationStack config={config} />;

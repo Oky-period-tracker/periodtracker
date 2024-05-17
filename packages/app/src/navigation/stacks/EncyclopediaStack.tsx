@@ -5,30 +5,33 @@ import FindHelpScreen from "../../screens/FindHelpScreen";
 import VideoScreen from "../../screens/VideoScreen";
 import NavigationStack, { StackConfig } from "../NavigationStack";
 
-const config: StackConfig = {
+export type EncyclopediaStackParamList = {
+  Encyclopedia: undefined;
+  Articles: undefined;
+  Help: undefined;
+  Video: undefined;
+};
+
+const config: StackConfig<EncyclopediaStackParamList> = {
   initialRouteName: "Encyclopedia",
-  screens: [
-    {
+  screens: {
+    Encyclopedia: {
       title: "Encyclopedia",
-      name: "Encyclopedia",
-      Component: EncyclopediaScreen,
+      component: EncyclopediaScreen,
     },
-    {
+    Articles: {
       title: "Articles",
-      name: "Articles",
-      Component: ArticlesScreen,
+      component: ArticlesScreen,
     },
-    {
+    Help: {
       title: "Find Help",
-      name: "Help",
-      Component: FindHelpScreen,
+      component: FindHelpScreen,
     },
-    {
+    Video: {
       title: "Video",
-      name: "Video",
-      Component: VideoScreen,
+      component: VideoScreen,
     },
-  ],
+  },
 };
 
 const EncyclopediaStack = () => <NavigationStack config={config} />;

@@ -6,35 +6,38 @@ import CalendarScreen from "../../screens/CalendarScreen";
 import TutorialFirstScreen from "../../screens/TutorialFirstScreen";
 import TutorialSecondScreen from "../../screens/TutorialSecondScreen";
 
-const config: StackConfig = {
+export type HomeStackParamList = {
+  Home: undefined;
+  Calendar: undefined;
+  TutorialOne: undefined;
+  TutorialTwo: undefined;
+  Day: undefined;
+};
+
+const config: StackConfig<HomeStackParamList> = {
   initialRouteName: "Home",
-  screens: [
-    {
+  screens: {
+    Home: {
       title: "Home",
-      name: "Home",
-      Component: MainScreen,
+      component: MainScreen,
     },
-    {
+    Day: {
       title: "Day",
-      name: "Day",
-      Component: DayScreen,
+      component: DayScreen,
     },
-    {
+    Calendar: {
       title: "Calendar",
-      name: "Calendar",
-      Component: CalendarScreen,
+      component: CalendarScreen,
     },
-    {
+    TutorialOne: {
       title: "Tutorial",
-      name: "TutorialOne",
-      Component: TutorialFirstScreen,
+      component: TutorialFirstScreen,
     },
-    {
+    TutorialTwo: {
       title: "TutorialTwo",
-      name: "TutorialSecondScreen",
-      Component: TutorialSecondScreen,
+      component: TutorialSecondScreen,
     },
-  ],
+  },
 };
 
 const HomeStack = () => <NavigationStack config={config} />;

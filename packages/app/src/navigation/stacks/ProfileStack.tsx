@@ -4,25 +4,28 @@ import EditProfileScreen from "../../screens/EditProfileScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
 import AvatarAndThemeScreen from "../../screens/AvatarAndThemeScreen";
 
-const config: StackConfig = {
+export type ProfileStackParamList = {
+  Profile: undefined;
+  EditProfile: undefined;
+  AvatarAndTheme: undefined;
+};
+
+const config: StackConfig<ProfileStackParamList> = {
   initialRouteName: "Profile",
-  screens: [
-    {
+  screens: {
+    Profile: {
       title: "Profile",
-      name: "Profile",
-      Component: ProfileScreen,
+      component: ProfileScreen,
     },
-    {
+    EditProfile: {
       title: "Edit Profile",
-      name: "EditProfile",
-      Component: EditProfileScreen,
+      component: EditProfileScreen,
     },
-    {
+    AvatarAndTheme: {
       title: "Avatars & Themes",
-      name: "AvatarAndTheme",
-      Component: AvatarAndThemeScreen,
+      component: AvatarAndThemeScreen,
     },
-  ],
+  },
 };
 
 const ProfileStack = () => <NavigationStack config={config} />;

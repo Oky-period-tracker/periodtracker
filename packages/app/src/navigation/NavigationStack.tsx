@@ -4,19 +4,23 @@ import {
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import { Header } from "./components/Header";
+import { recordToArray } from "../services/utils";
 
 const Stack = createNativeStackNavigator();
 
-export type StackConfig = {
+type ParamListBase = Record<string, undefined>;
+
+export type StackConfig<T extends ParamListBase> = {
   initialRouteName: string;
   screens: {
-    title: string;
-    name: string;
-    Component: (NativeStackScreenProps) => React.ReactElement;
-  }[];
+    [K in keyof T]: {
+      title: string;
+      component: (NativeStackScreenProps) => React.ReactElement;
+    };
+  };
 };
 
-function NavigationStack({ config }) {
+function NavigationStack({ config }: { config: StackConfig<ParamListBase> }) {
   return (
     <Stack.Navigator
       initialRouteName={config.initialRouteName}
@@ -24,16 +28,18 @@ function NavigationStack({ config }) {
         header: (props) => <Header {...props} />,
       }}
     >
-      {config.screens.map(({ title, name, Component }) => (
-        <Stack.Screen
-          key={name}
-          name={name}
-          component={Component}
-          options={{
-            title,
-          }}
-        />
-      ))}
+      {recordToArray<StackConfig<ParamListBase>["screens"]>(config.screens).map(
+        ([name, { title, component }]) => (
+          <Stack.Screen
+            key={name}
+            name={name}
+            component={component}
+            options={{
+              title,
+            }}
+          />
+        )
+      )}
     </Stack.Navigator>
   );
 }

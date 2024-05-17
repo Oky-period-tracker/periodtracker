@@ -1,38 +1,36 @@
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  LinkingOptions,
+  NavigationContainer,
+  NavigatorScreenParams,
+} from "@react-navigation/native";
+import {
+  BottomTabNavigationOptions,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-import ProfileStack from "./stacks/ProfileStack";
-import HomeStack from "./stacks/HomeStack";
-import EncyclopediaStack from "./stacks/EncyclopediaStack";
-import SettingsStack from "./stacks/SettingsStack";
+import ProfileStack, { ProfileStackParamList } from "./stacks/ProfileStack";
+import HomeStack, { HomeStackParamList } from "./stacks/HomeStack";
+import EncyclopediaStack, {
+  EncyclopediaStackParamList,
+} from "./stacks/EncyclopediaStack";
+import SettingsStack, { SettingsStackParamList } from "./stacks/SettingsStack";
 import { TabIcon } from "./components/TabIcon";
 
-const Tab = createBottomTabNavigator();
-
-const screenOptions = {
-  tabBarStyle: {
-    height: 60,
-  },
+export type ParamList = {
+  profile: NavigatorScreenParams<ProfileStackParamList>;
+  home: NavigatorScreenParams<HomeStackParamList>;
+  encyclopedia: NavigatorScreenParams<EncyclopediaStackParamList>;
+  settings: NavigatorScreenParams<SettingsStackParamList>;
 };
 
-const options = {
-  tabBarShowLabel: false,
-  headerShown: false,
-  tabBarItemStyle: {
-    backgroundColor: "#F1F1F1",
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-    borderColor: "#F5F5F5",
-  },
-};
-
-const linking = {
+const linking: LinkingOptions<ParamList> = {
   enabled: true,
   prefixes: [],
   config: {
     screens: {
+      // ===== Profile ===== //
       profile: {
         path: "profile",
         screens: {
@@ -41,6 +39,7 @@ const linking = {
           AvatarAndTheme: "avatar-and-theme",
         },
       },
+      // ===== Home ===== //
       home: {
         path: "home",
         screens: {
@@ -51,6 +50,7 @@ const linking = {
           Day: "day",
         },
       },
+      // ===== Encyclopedia ===== //
       encyclopedia: {
         path: "encyclopedia",
         screens: {
@@ -60,6 +60,7 @@ const linking = {
           Video: "video",
         },
       },
+      // ===== Settings ===== //
       settings: {
         path: "settings",
         screens: {
@@ -74,6 +75,25 @@ const linking = {
     },
   },
 };
+
+const screenOptions: BottomTabNavigationOptions = {
+  tabBarStyle: {
+    height: 60,
+  },
+};
+
+const options: BottomTabNavigationOptions = {
+  tabBarShowLabel: false,
+  headerShown: false,
+  tabBarItemStyle: {
+    backgroundColor: "#F1F1F1",
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    borderColor: "#F5F5F5",
+  },
+};
+
+const Tab = createBottomTabNavigator();
 
 function RootNavigator() {
   return (

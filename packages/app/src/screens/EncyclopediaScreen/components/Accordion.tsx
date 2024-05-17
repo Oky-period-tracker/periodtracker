@@ -46,7 +46,6 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
               style={styles.subcategory}
               onPress={() =>
                 navigation.navigate("Articles", {
-                  title: subcategory.name,
                   subcategoryId: subcategory.id,
                 })
               }

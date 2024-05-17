@@ -55,7 +55,7 @@ const linking: LinkingOptions<ParamList> = {
         path: "encyclopedia",
         screens: {
           Encyclopedia: "",
-          Articles: "articles",
+          Articles: "articles/:subcategoryId",
           Help: "help",
           Video: "video",
         },

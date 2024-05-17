@@ -10,6 +10,12 @@ function ArticlesScreen({ navigation, route }) {
     (articleId) => data.articles.byId[articleId]
   );
 
+  React.useLayoutEffect(() => {
+    if (subcategory) {
+      navigation.setOptions({ title: subcategory.name });
+    }
+  }, [navigation, subcategory]);
+
   return (
     <Screen>
       <ScrollView style={styles.scrollView}>

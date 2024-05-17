@@ -448,6 +448,22 @@ export interface AppTranslations {
   videos: string
   internet_required_title: string
   internet_required_text: string
+  // HelpCenter
+  find_help_center: string
+  saved_help_center: string
+  filter_to_search: string
+  filter_to_search2: string
+  loading: string
+  empty_saved: string
+  empty_hc: string
+  empty_hc_2: string
+  you_are_not_alone: string
+  cm_wait: string
+  cm_wait_message1: string
+  cm_wait_message2: string
+  cm_button_cancel: string
+  cm_button_proceed: string
+  cm_wait_message1_2: string
   // ===== OPTIONAL ===== //
   // articles
   disclaimer?: string

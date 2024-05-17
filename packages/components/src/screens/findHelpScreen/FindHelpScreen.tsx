@@ -1,9 +1,9 @@
 import React from 'react'
-import { FindHelpLayout } from './findHelpScreen/FindHelpLayout'
-import { SearchBar } from './findHelpScreen/SearchBar'
-import { HelpCenterContainer } from './findHelpScreen/HelpCenterContainer'
-import { useFilters } from './findHelpScreen/hooks/useFilters'
-import { Header } from '../components/common/Header'
+import { FindHelpLayout } from './FindHelpLayout'
+import { Header } from '../../components/common/Header'
+import { SearchBar } from './SearchBar'
+import { HelpCenterContainer } from './HelpCenterContainer'
+import { useFilters } from './hooks/useFilters'
 
 export function FindHelpScreen({ navigation }) {
   const {

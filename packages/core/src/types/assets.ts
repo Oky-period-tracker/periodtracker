@@ -27,6 +27,7 @@ export interface AppAssets {
     spin_load_face: ImageSourcePropType
     spin_load_circle: ImageSourcePropType
     icons: {
+      filter: ImageSourcePropType
       play: ImageSourcePropType
       settingsIcon: ImageSourcePropType
       cloudsIcn: ImageSourcePropType
@@ -129,6 +130,8 @@ export interface AppAssets {
   general: {
     aboutBanner: Record<Locale, ImageSourcePropType>
     calendarStatic: Record<Locale, ImageSourcePropType>
+    encylopediaAvatars: ImageSourcePropType
+    tripleClouds: ImageSourcePropType
   }
   lottie: {
     avatars: Record<AvatarName, AnimatedLottieViewProps['source']>

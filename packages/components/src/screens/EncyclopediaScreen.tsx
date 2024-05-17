@@ -18,8 +18,8 @@ import { useDispatch } from 'react-redux'
 import { logCategoryView, logSubCategoryView } from '../redux/actions'
 import analytics from '@react-native-firebase/analytics'
 import { VideoData } from '../types'
-import { CustomHelpCenter } from '../optional/CustomComponents'
 import { filterContent } from '../services/restriction'
+import { NeedHelpCard } from './findHelpScreen/NeedHelpCard'
 
 export function EncyclopediaScreen({ navigation }) {
   const categories = useSelector(selectors.allCategoriesSelector)
@@ -72,8 +72,6 @@ export function EncyclopediaScreen({ navigation }) {
     setTextArray(categoryNames)
   }, [activeCategories])
 
-  const HelpCenterCard = CustomHelpCenter.Card ?? HelpCard
-
   const isSubCategorySelected = (item) => {
     if (filteredSubCategories) {
       const isSelected = filteredSubCategories.find((subCat) => subCat.id === item)
@@ -110,7 +108,7 @@ export function EncyclopediaScreen({ navigation }) {
             }}
           />
 
-          <HelpCenterCard isVisible={!searching} position={position} />
+          <NeedHelpCard isVisible={!searching} />
 
           {!_.isEmpty(videos) && (
             <Accordion
@@ -193,25 +191,6 @@ export function EncyclopediaScreen({ navigation }) {
         </ScrollView>
       </PageContainer>
     </BackgroundTheme>
-  )
-}
-
-const HelpCard = ({ isVisible, position }: { isVisible: boolean; position: Animated.Value }) => {
-  if (!isVisible) {
-    return null
-  }
-
-  return (
-    <AnimatedContainer style={{ transform: [{ translateY: position }], zIndex: 9999999 }}>
-      <FloatingContainer onPress={() => navigate('FindHelp', null)}>
-        <Avatar
-          stationary={true}
-          disable={true}
-          textShown={'find help'}
-          isProgressVisible={false}
-        />
-      </FloatingContainer>
-    </AnimatedContainer>
   )
 }
 

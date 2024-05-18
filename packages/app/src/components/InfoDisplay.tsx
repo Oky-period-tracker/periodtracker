@@ -10,8 +10,11 @@ export const InfoDisplay = ({
 }) => {
   return (
     <View style={styles.container}>
-      {content.map((item) => (
-        <Text style={[styles.text, item.type === "HEADING" && styles.heading]}>
+      {content.map((item, i) => (
+        <Text
+          key={`info-${i}`}
+          style={[styles.text, item.type === "HEADING" && styles.heading]}
+        >
           {item.content}
         </Text>
       ))}

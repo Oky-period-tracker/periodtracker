@@ -3,6 +3,8 @@ import {
   LinkingOptions,
   NavigationContainer,
   NavigatorScreenParams,
+  DefaultTheme,
+  Theme,
 } from "@react-navigation/native";
 import {
   BottomTabNavigationOptions,
@@ -93,11 +95,19 @@ const options: BottomTabNavigationOptions = {
   },
 };
 
+const theme: Theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "transparent",
+  },
+};
+
 const Tab = createBottomTabNavigator();
 
 function RootNavigator() {
   return (
-    <NavigationContainer linking={linking}>
+    <NavigationContainer linking={linking} theme={theme}>
       <Tab.Navigator initialRouteName={"home"} screenOptions={screenOptions}>
         <Tab.Screen
           name={"profile"}

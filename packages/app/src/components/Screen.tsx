@@ -12,6 +12,6 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     alignItems: "center",
-    padding: 12,
+    paddingHorizontal: 12,
   },
 });

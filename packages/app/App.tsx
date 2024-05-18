@@ -7,6 +7,7 @@ import {
   unlockAsync,
 } from "expo-screen-orientation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Background } from "./src/components/Background";
 
 function App() {
   React.useEffect(() => {
@@ -23,7 +24,9 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <RootNavigator />
+      <Background>
+        <RootNavigator />
+      </Background>
     </SafeAreaProvider>
   );
 }

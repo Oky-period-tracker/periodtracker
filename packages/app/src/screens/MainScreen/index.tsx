@@ -1,15 +1,16 @@
 import * as React from "react";
-import { View, Text, StyleSheet, Platform, StatusBar } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Carousel from "../../components/Carousel";
-// import { Button } from "../../components/Button";
+import { Screen } from "../../components/Screen";
 
 const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
 function MainScreen({ navigation }) {
   return (
-    <View style={styles.carouselContainer}>
-      <Text style={styles.text}>Image Carousel Square</Text>
-      <Carousel data={data} pagination={true} />
+    <View style={styles.screen}>
+      <View style={styles.carouselContainer}>
+        <Carousel data={data} />
+      </View>
     </View>
   );
 }
@@ -17,13 +18,10 @@ function MainScreen({ navigation }) {
 export default MainScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    backgroundColor: "white",
   },
-  text: { textAlign: "center", color: "black", marginBottom: 10 },
   carouselContainer: {
-    marginBottom: 20,
+    marginTop: "auto",
   },
 });

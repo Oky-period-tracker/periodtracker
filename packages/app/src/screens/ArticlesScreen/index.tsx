@@ -21,7 +21,7 @@ function ArticlesScreen({ navigation, route }) {
       <ScrollView style={styles.scrollView}>
         {articles.map((article) => {
           return (
-            <View style={styles.card}>
+            <View style={styles.card} key={article.id}>
               <Text style={styles.title}>{article.title}</Text>
               <Text style={styles.subCategory}>{article.subCategory}</Text>
               <Text>{article.content}</Text>

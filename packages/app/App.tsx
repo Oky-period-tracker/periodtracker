@@ -1,6 +1,6 @@
 import * as React from "react";
 import RootNavigator from "./src/navigation/RootNavigator";
-import { IS_TABLET } from "./src/services/tablet";
+import { IS_TABLET, IS_WEB } from "./src/services/device";
 import {
   OrientationLock,
   lockAsync,
@@ -11,7 +11,7 @@ import { Background } from "./src/components/Background";
 
 function App() {
   React.useEffect(() => {
-    if (IS_TABLET) {
+    if (IS_TABLET || IS_WEB) {
       return;
     }
 

@@ -1,45 +1,68 @@
 import * as React from "react";
-import { Svg, Circle } from "react-native-svg";
+import { Svg, Ellipse } from "react-native-svg";
 
-export const CircleSvg = (props) => (
+export const Circle = (props) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width="200mm"
-    height="200mm"
+    xmlSpace="preserve"
+    width="100%"
+    height="100%"
     viewBox="0 0 200 200"
     {...props}
   >
-    <Circle
-      cx={95}
-      cy={105}
-      r={90}
+    <Ellipse
+      cx={102.5}
+      cy={100}
+      rx={97.5}
+      ry={97.5}
+      fill={"#000"}
+      fillOpacity={0.1}
+      strokeWidth={0.259686}
+    />
+    <Ellipse
+      cx={95.136}
+      cy={104.433}
+      rx={90.136}
+      ry={90.567}
       fill={"#53b8c8"}
       fillOpacity={1}
-      strokeWidth={0.23971}
+      strokeWidth={0.240646}
     />
-    <Circle
-      cx={105}
-      cy={95}
-      r={90}
+    <Ellipse
+      cx={103.864}
+      cy={95.567}
+      rx={90.136}
+      ry={90.567}
       fill={"#fff"}
       fillOpacity={1}
-      strokeWidth={0.23971}
+      strokeWidth={0.240646}
     />
-    <Circle
-      cx={99}
-      cy={104}
-      r={90}
-      fill={"#2f9cb1"}
-      fillOpacity={1}
-      strokeWidth={0.23971}
-    />
-    <Circle
-      cx={100}
-      cy={100}
-      r={90}
+    <Ellipse
+      cx={104.864}
+      cy={102.56}
+      rx={90.136}
+      ry={90.567}
       fill={"#91d9e2"}
       fillOpacity={1}
-      strokeWidth={0.23971}
+      strokeWidth={0.240646}
+    />
+    <Ellipse
+      cx={101.473}
+      cy={106.946}
+      rx={86.059}
+      ry={86.47}
+      fill={"#2f9cb1"}
+      fillOpacity={1}
+      strokeWidth={0.22976}
+    />
+    <Ellipse
+      cx={104.944}
+      cy={99.591}
+      rx={86.059}
+      ry={86.47}
+      fill={"#91d9e2"}
+      fillOpacity={1}
+      strokeWidth={0.22976}
     />
   </Svg>
 );

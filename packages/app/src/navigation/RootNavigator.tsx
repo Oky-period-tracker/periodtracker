@@ -19,6 +19,8 @@ import EncyclopediaStack, {
 } from "./stacks/EncyclopediaStack";
 import SettingsStack, { SettingsStackParamList } from "./stacks/SettingsStack";
 import { TabIcon } from "./components/TabIcon";
+import { View } from "react-native";
+import { User } from "../components/User";
 
 export type ParamList = {
   profile: NavigatorScreenParams<ProfileStackParamList>;
@@ -116,7 +118,9 @@ function RootNavigator() {
             ...options,
             tabBarIcon: ({ focused, size }) => (
               <TabIcon focused={focused}>
-                <FontAwesome size={size} name={"user"} color={"#fff"} />
+                <View style={{ width: size, height: size, padding: 0 }}>
+                  <User />
+                </View>
               </TabIcon>
             ),
           }}

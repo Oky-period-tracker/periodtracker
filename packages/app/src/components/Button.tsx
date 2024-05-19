@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#8ba13d",
   },
   body: {
-    paddingRight: 2,
     margin: "auto",
     width: "100%",
     height: "100%",
@@ -136,6 +135,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#bada55",
     justifyContent: "center",
     alignItems: "center",
+    padding: 2,
+    paddingRight: 4, // +2 to Compensate for offset elements
   },
   text: {
     textAlign: "center",

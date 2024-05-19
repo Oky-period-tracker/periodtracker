@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Text } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
@@ -10,9 +10,8 @@ type HeaderProps = NativeStackHeaderProps & {
   options: CustomStackNavigationOptions;
 };
 
-export const Header = ({ navigation, route, options }: HeaderProps) => {
-  // @ts-ignore @TODO: fixme
-  const title = route.params?.title ?? options.title;
+export const Header = ({ navigation, options }: HeaderProps) => {
+  const title = options.title;
   const showBackButton = options.name !== options.initialRouteName;
 
   const onBackPress = () => {

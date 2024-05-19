@@ -12,6 +12,7 @@ const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   );
 
   React.useLayoutEffect(() => {
+    // Set Screen title
     if (subcategory) {
       navigation.setOptions({ title: subcategory.name });
     }

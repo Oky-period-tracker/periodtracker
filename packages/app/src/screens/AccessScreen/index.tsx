@@ -2,6 +2,7 @@ import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
+import { Hr } from "../../components/Hr";
 
 function AccessScreen({ navigation }) {
   return (
@@ -20,6 +21,8 @@ function AccessScreen({ navigation }) {
           </View>
         </TouchableOpacity>
 
+        <Hr />
+
         <TouchableOpacity
           style={styles.segment}
           onPress={() => navigation.navigate("Terms")}
@@ -33,6 +36,8 @@ function AccessScreen({ navigation }) {
             <Button>Launch</Button>
           </View>
         </TouchableOpacity>
+
+        <Hr />
 
         <TouchableOpacity
           style={styles.segment}
@@ -57,14 +62,12 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     borderRadius: 20,
-    borderWidth: 1,
     width: "100%",
     overflow: "hidden",
   },
   segment: {
     height: 100,
     width: "100%",
-    borderBottomWidth: 1,
     flexDirection: "row",
     padding: 24,
   },

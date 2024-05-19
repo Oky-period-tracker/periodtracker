@@ -2,6 +2,7 @@ import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
+import { Hr } from "../../components/Hr";
 
 function SettingsScreen({ navigation }) {
   return (
@@ -19,6 +20,8 @@ function SettingsScreen({ navigation }) {
           </View>
         </TouchableOpacity>
 
+        <Hr />
+
         <TouchableOpacity
           style={styles.segment}
           onPress={() => navigation.navigate("Terms")}
@@ -30,6 +33,8 @@ function SettingsScreen({ navigation }) {
             <Text>What you agree by using Oky</Text>
           </View>
         </TouchableOpacity>
+
+        <Hr />
 
         <TouchableOpacity
           style={styles.segment}
@@ -45,6 +50,8 @@ function SettingsScreen({ navigation }) {
           </View>
         </TouchableOpacity>
 
+        <Hr />
+
         <TouchableOpacity
           style={styles.segment}
           onPress={() => navigation.navigate("Access")}
@@ -59,6 +66,8 @@ function SettingsScreen({ navigation }) {
           </View>
         </TouchableOpacity>
 
+        <Hr />
+
         <TouchableOpacity style={styles.segment}>
           <View style={styles.segmentLeft}>
             <Text style={styles.title}>Future prediction</Text>
@@ -71,12 +80,15 @@ function SettingsScreen({ navigation }) {
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button status={"secondary"}>Log out</Button>
-        <Button status={"basic"} style={styles.deleteButton}>
+        <Button status={"secondary"} style={styles.button}>
+          Log out
+        </Button>
+        <Button status={"basic"} style={[styles.button, styles.deleteButton]}>
           Delete Account
         </Button>
         <Button
           status={"primary"}
+          style={styles.button}
           onPress={() => navigation.navigate("Contact")}
         >
           Contact Us
@@ -92,17 +104,16 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     borderRadius: 20,
-    borderWidth: 1,
     width: "100%",
     overflow: "hidden",
   },
   segment: {
     height: 100,
     width: "100%",
-    borderBottomWidth: 1,
     flexDirection: "row",
   },
   segmentLeft: {
+    padding: 8,
     alignItems: "center",
     justifyContent: "center",
     flexBasis: "30%",
@@ -116,6 +127,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexBasis: "30%",
+    padding: 8,
   },
   title: {
     fontSize: 16,
@@ -131,6 +143,7 @@ const styles = StyleSheet.create({
     maxWidth: 600,
     marginTop: 12,
   },
+  button: {},
   deleteButton: {
     marginHorizontal: 8,
   },

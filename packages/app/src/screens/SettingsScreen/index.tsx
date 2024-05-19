@@ -1,11 +1,12 @@
 import * as React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
+import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
 
 function SettingsScreen({ navigation }) {
-  const settingsOptions: SettingsSegmentProps[] = [
+  const rows: TouchableRowProps[] = [
     {
       title: "About",
       description: "Find out more about Oky",
@@ -38,12 +39,15 @@ function SettingsScreen({ navigation }) {
   return (
     <Screen>
       <View style={styles.container}>
-        {settingsOptions.map((props, i) => (
-          <>
-            <SettingsSegment key={`settings-${i}`} {...props} />
-            {i !== settingsOptions.length - 1 ? <Hr /> : null}
-          </>
-        ))}
+        {rows.map((props, i) => {
+          const isLast = i !== rows.length - 1;
+          return (
+            <>
+              <TouchableRow key={`settings-${i}`} {...props} />
+              {isLast ? <Hr /> : null}
+            </>
+          );
+        })}
       </View>
 
       <View style={styles.buttonContainer}>
@@ -67,65 +71,12 @@ function SettingsScreen({ navigation }) {
 
 export default SettingsScreen;
 
-type SettingsSegmentProps = {
-  title: string;
-  description: string;
-  onPress?: () => void;
-  component?: React.ReactNode;
-};
-
-const SettingsSegment = ({
-  title,
-  description,
-  onPress,
-  component = null,
-}: SettingsSegmentProps) => {
-  return (
-    <TouchableOpacity style={styles.segment} onPress={onPress}>
-      <View style={styles.segmentLeft}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
-      <View style={styles.segmentCenter}>
-        <Text>{description}</Text>
-      </View>
-      {component && <View style={styles.segmentRight}>{component}</View>}
-    </TouchableOpacity>
-  );
-};
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     borderRadius: 20,
     width: "100%",
     overflow: "hidden",
-  },
-  segment: {
-    height: 100,
-    width: "100%",
-    flexDirection: "row",
-  },
-  segmentLeft: {
-    padding: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    flexBasis: "30%",
-  },
-  segmentCenter: {
-    justifyContent: "center",
-    flex: 1,
-    padding: 8,
-  },
-  segmentRight: {
-    alignItems: "center",
-    justifyContent: "center",
-    flexBasis: "30%",
-    padding: 8,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center",
   },
   buttonContainer: {
     flexDirection: "row",

@@ -5,78 +5,45 @@ import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
 
 function SettingsScreen({ navigation }) {
+  const settingsOptions: SettingsSegmentProps[] = [
+    {
+      title: "About",
+      description: "Find out more about Oky",
+      onPress: () => navigation.navigate("About"),
+    },
+    {
+      title: "Terms & Conditions",
+      description: "What you agree by using Oky",
+      onPress: () => navigation.navigate("Terms"),
+    },
+    {
+      title: "Privacy Policy",
+      description:
+        "How Oky stores, shares and protects the information you give",
+      onPress: () => navigation.navigate("Privacy"),
+    },
+    {
+      title: "Access Settings",
+      description:
+        "Choose language, access a tutorial, or share Oky with a friend",
+      onPress: () => navigation.navigate("Access"),
+    },
+    {
+      title: "Future prediction",
+      description: "Show future period days",
+      component: null, // TODO:
+    },
+  ];
+
   return (
     <Screen>
       <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.segment}
-          onPress={() => navigation.navigate("About")}
-        >
-          <View style={styles.segmentLeft}>
-            <Text style={styles.title}>About</Text>
-          </View>
-          <View style={styles.segmentCenter}>
-            <Text>Find out more about Oky</Text>
-          </View>
-        </TouchableOpacity>
-
-        <Hr />
-
-        <TouchableOpacity
-          style={styles.segment}
-          onPress={() => navigation.navigate("Terms")}
-        >
-          <View style={styles.segmentLeft}>
-            <Text style={styles.title}>Terms & Conditions</Text>
-          </View>
-          <View style={styles.segmentCenter}>
-            <Text>What you agree by using Oky</Text>
-          </View>
-        </TouchableOpacity>
-
-        <Hr />
-
-        <TouchableOpacity
-          style={styles.segment}
-          onPress={() => navigation.navigate("Privacy")}
-        >
-          <View style={styles.segmentLeft}>
-            <Text style={styles.title}>Privacy Policy</Text>
-          </View>
-          <View style={styles.segmentCenter}>
-            <Text>
-              How Oky store, shares and protects the information you give
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <Hr />
-
-        <TouchableOpacity
-          style={styles.segment}
-          onPress={() => navigation.navigate("Access")}
-        >
-          <View style={styles.segmentLeft}>
-            <Text style={styles.title}>Access Settings </Text>
-          </View>
-          <View style={styles.segmentCenter}>
-            <Text>
-              Choose language, access a tutorial, or share Oky with a friend
-            </Text>
-          </View>
-        </TouchableOpacity>
-
-        <Hr />
-
-        <TouchableOpacity style={styles.segment}>
-          <View style={styles.segmentLeft}>
-            <Text style={styles.title}>Future prediction</Text>
-          </View>
-          <View style={styles.segmentCenter}>
-            <Text>Show future period days</Text>
-          </View>
-          <View style={styles.segmentRight}></View>
-        </TouchableOpacity>
+        {settingsOptions.map((props, i) => (
+          <>
+            <SettingsSegment key={`settings-${i}`} {...props} />
+            {i !== settingsOptions.length - 1 ? <Hr /> : null}
+          </>
+        ))}
       </View>
 
       <View style={styles.buttonContainer}>
@@ -99,6 +66,32 @@ function SettingsScreen({ navigation }) {
 }
 
 export default SettingsScreen;
+
+type SettingsSegmentProps = {
+  title: string;
+  description: string;
+  onPress?: () => void;
+  component?: React.ReactNode;
+};
+
+const SettingsSegment = ({
+  title,
+  description,
+  onPress,
+  component = null,
+}: SettingsSegmentProps) => {
+  return (
+    <TouchableOpacity style={styles.segment} onPress={onPress}>
+      <View style={styles.segmentLeft}>
+        <Text style={styles.title}>{title}</Text>
+      </View>
+      <View style={styles.segmentCenter}>
+        <Text>{description}</Text>
+      </View>
+      {component && <View style={styles.segmentRight}>{component}</View>}
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

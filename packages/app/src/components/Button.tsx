@@ -7,7 +7,7 @@ import {
   ViewProps,
 } from "react-native";
 
-type ButtonStatus = "primary" | "secondary" | "basic";
+type ButtonStatus = "primary" | "secondary" | "basic" | "danger";
 
 export type ButtonProps = ViewProps & {
   onPress?: () => void;
@@ -92,6 +92,11 @@ const palette: Record<
     base: "#D1D0D2",
     highlight: "#fff",
     shadow: "#B7B6B6",
+  },
+  danger: {
+    base: "#E3629B",
+    highlight: "#F9C7C1",
+    shadow: "#971B63",
   },
 };
 

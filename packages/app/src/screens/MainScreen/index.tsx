@@ -1,9 +1,9 @@
 import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import Carousel from "../../components/Carousel";
-import { Circle } from "../../components/Circle";
-import { Cloud } from "../../components/Cloud";
-import { Star } from "../../components/Star";
+import { Circle } from "../../components/icons/Circle";
+import { Cloud } from "../../components/icons/Cloud";
+import { Star } from "../../components/icons/Star";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 
 const data = [{}, {}, {}, {}, {}, {}, {}, {}];

@@ -20,7 +20,7 @@ import EncyclopediaStack, {
 import SettingsStack, { SettingsStackParamList } from "./stacks/SettingsStack";
 import { TabIcon } from "./components/TabIcon";
 import { View } from "react-native";
-import { User } from "../components/User";
+import { User } from "../components/icons/User";
 import { IS_IOS } from "../services/device";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 

@@ -21,6 +21,7 @@ import SettingsStack, { SettingsStackParamList } from "./stacks/SettingsStack";
 import { TabIcon } from "./components/TabIcon";
 import { View } from "react-native";
 import { User } from "../components/User";
+import { IS_IOS } from "../services/device";
 
 export type ParamList = {
   profile: NavigatorScreenParams<ProfileStackParamList>;
@@ -83,7 +84,7 @@ const linking: LinkingOptions<ParamList> = {
 const screenOptions: BottomTabNavigationOptions = {
   tabBarStyle: {
     minHeight: 60,
-    padding: 8,
+    padding: IS_IOS ? 8 : 0,
     backgroundColor: "#F1F1F1",
   },
 };

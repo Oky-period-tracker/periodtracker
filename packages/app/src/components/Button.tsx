@@ -55,7 +55,7 @@ const ButtonInner = ({ status, ...props }: ButtonProps) => {
 
   const children = props.children ? (
     typeof props.children === "string" ? (
-      <Text>{props.children}</Text>
+      <Text style={styles.text}>{props.children}</Text>
     ) : (
       props.children
     )
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: 40,
-    width: 120,
+    width: 100,
     borderRadius: 500,
     margin: 2,
   },
@@ -131,5 +131,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#bada55",
     justifyContent: "center",
     alignItems: "center",
+  },
+  text: {
+    textAlign: "center",
   },
 });

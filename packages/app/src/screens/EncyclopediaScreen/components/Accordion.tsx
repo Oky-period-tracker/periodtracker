@@ -1,10 +1,4 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useToggle } from "../../../hooks/useToggle";
 import { data } from "../data";
 import { DisplayButton } from "../../../components/Button";

@@ -3,13 +3,13 @@ import { View, StyleSheet } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
-import { SettingsRowProps } from "./components/SettingsRow";
 import { ScreenComponent } from "../../navigation/RootNavigator";
-import { TouchableRow } from "../../components/TouchableRow";
+import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Switch } from "../../components/Switch";
 
 const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
-  const rows: SettingsRowProps[] = [
+  const rows: TouchableRowProps[] = [
     {
       title: "About",
       description: "Find out more about Oky",
@@ -39,7 +39,8 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
     {
       title: "Future prediction",
       description: "Show future period days",
-      component: null, // TODO:
+      component: <PredictionControls />,
+      disabled: true,
     },
   ];
 
@@ -81,6 +82,10 @@ export default SettingsScreen;
 const ArrowRight = () => (
   <FontAwesome size={12} name={"arrow-right"} color={"#D1D0D2"} />
 );
+
+const PredictionControls = () => {
+  return <Switch />;
+};
 
 const styles = StyleSheet.create({
   container: {

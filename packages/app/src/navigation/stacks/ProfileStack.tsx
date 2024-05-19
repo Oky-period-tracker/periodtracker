@@ -10,7 +10,7 @@ export type ProfileStackParamList = {
   AvatarAndTheme: undefined;
 };
 
-const config: StackConfig<ProfileStackParamList> = {
+const config: StackConfig<keyof ProfileStackParamList> = {
   initialRouteName: "Profile",
   screens: {
     Profile: {

@@ -10,8 +10,9 @@ import { DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function ProfileScreen({ navigation }) {
+const ProfileScreen: ScreenComponent<"Profile"> = ({ navigation }) => {
   return (
     <Screen>
       <ScrollView style={styles.scrollView}>
@@ -146,7 +147,7 @@ function ProfileScreen({ navigation }) {
       </ScrollView>
     </Screen>
   );
-}
+};
 
 export default ProfileScreen;
 

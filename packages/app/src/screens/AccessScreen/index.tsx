@@ -3,8 +3,9 @@ import { View, StyleSheet } from "react-native";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
 import { AccessRow, AccessRowProps } from "./components/AccessRow";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function AccessScreen({ navigation }) {
+const AccessScreen: ScreenComponent<"Access"> = () => {
   const rows: AccessRowProps[] = [
     {
       title: "Language",
@@ -38,7 +39,7 @@ function AccessScreen({ navigation }) {
       </View>
     </Screen>
   );
-}
+};
 
 export default AccessScreen;
 

@@ -2,8 +2,9 @@ import * as React from "react";
 import { TextInput, StyleSheet, View } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function ContactUsScreen() {
+const ContactUsScreen: ScreenComponent<"Contact"> = () => {
   const [reason, setReason] = React.useState("");
   const [message, setMessage] = React.useState("");
 
@@ -28,7 +29,7 @@ function ContactUsScreen() {
       </View>
     </Screen>
   );
-}
+};
 
 export default ContactUsScreen;
 

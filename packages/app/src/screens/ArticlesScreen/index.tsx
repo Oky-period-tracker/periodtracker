@@ -1,9 +1,10 @@
 import * as React from "react";
-import { View, Text, Button, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { data } from "../EncyclopediaScreen/data";
 import { Screen } from "../../components/Screen";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function ArticlesScreen({ navigation, route }) {
+const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   const subcategoryId = route.params.subcategoryId;
   const subcategory = data.subCategories.byId[subcategoryId];
   const articles = subcategory.articles.map(
@@ -31,7 +32,7 @@ function ArticlesScreen({ navigation, route }) {
       </ScrollView>
     </Screen>
   );
-}
+};
 
 export default ArticlesScreen;
 

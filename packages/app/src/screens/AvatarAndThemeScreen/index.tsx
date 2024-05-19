@@ -3,8 +3,9 @@ import { StyleSheet, View } from "react-native";
 import { Screen } from "../../components/Screen";
 import { DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function AvatarAndThemeScreen({ navigation }) {
+const AvatarAndThemeScreen: ScreenComponent<"AvatarAndTheme"> = () => {
   return (
     <Screen style={styles.screen}>
       <View style={styles.avatars}>
@@ -29,7 +30,7 @@ function AvatarAndThemeScreen({ navigation }) {
       </View>
     </Screen>
   );
-}
+};
 
 export default AvatarAndThemeScreen;
 

@@ -14,7 +14,7 @@ export type HomeStackParamList = {
   Day: undefined;
 };
 
-const config: StackConfig<HomeStackParamList> = {
+const config: StackConfig<keyof HomeStackParamList> = {
   initialRouteName: "Home",
   screens: {
     Home: {

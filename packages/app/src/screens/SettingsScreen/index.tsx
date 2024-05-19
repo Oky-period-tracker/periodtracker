@@ -4,8 +4,9 @@ import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
 import { SettingsRow, SettingsRowProps } from "./components/SettingsRow";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function SettingsScreen({ navigation }) {
+const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
   const rows: SettingsRowProps[] = [
     {
       title: "About",
@@ -67,7 +68,7 @@ function SettingsScreen({ navigation }) {
       </View>
     </Screen>
   );
-}
+};
 
 export default SettingsScreen;
 

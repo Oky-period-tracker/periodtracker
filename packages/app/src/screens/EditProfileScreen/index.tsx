@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, TextInput } from "react-native";
 import { Screen } from "../../components/Screen";
 import { Button, DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function EditProfileScreen({ navigation }) {
+const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
   return (
     <Screen>
       <View style={styles.container}>
@@ -97,7 +98,7 @@ function EditProfileScreen({ navigation }) {
       <Button>Confirm</Button>
     </Screen>
   );
-}
+};
 
 export default EditProfileScreen;
 

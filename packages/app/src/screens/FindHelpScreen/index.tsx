@@ -3,8 +3,9 @@ import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { Screen } from "../../components/Screen";
 import { data } from "../EncyclopediaScreen/data";
 import { A } from "../../components/A";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function FindHelpScreen({ navigation }) {
+const FindHelpScreen: ScreenComponent<"Help"> = () => {
   const helpCenters = data.helpCenters;
 
   return (
@@ -27,7 +28,7 @@ function FindHelpScreen({ navigation }) {
       </ScrollView>
     </Screen>
   );
-}
+};
 
 export default FindHelpScreen;
 

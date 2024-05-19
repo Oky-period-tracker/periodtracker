@@ -3,8 +3,9 @@ import { Calendar, CalendarProps } from "react-native-calendars";
 import { StyleSheet, View } from "react-native";
 import { DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function CalendarScreen({ navigation }) {
+const CalendarScreen: ScreenComponent<"Calendar"> = () => {
   const [selected, setSelected] = useState("");
 
   return (
@@ -32,7 +33,7 @@ function CalendarScreen({ navigation }) {
       </View>
     </View>
   );
-}
+};
 
 export default CalendarScreen;
 

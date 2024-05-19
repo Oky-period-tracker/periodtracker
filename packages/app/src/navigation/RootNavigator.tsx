@@ -22,15 +22,29 @@ import { TabIcon } from "./components/TabIcon";
 import { View } from "react-native";
 import { User } from "../components/User";
 import { IS_IOS } from "../services/device";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export type ParamList = {
+export type RootStackParamList = {
   profile: NavigatorScreenParams<ProfileStackParamList>;
   home: NavigatorScreenParams<HomeStackParamList>;
   encyclopedia: NavigatorScreenParams<EncyclopediaStackParamList>;
   settings: NavigatorScreenParams<SettingsStackParamList>;
 };
 
-const linking: LinkingOptions<ParamList> = {
+export type GlobalParamList = RootStackParamList &
+  ProfileStackParamList &
+  HomeStackParamList &
+  EncyclopediaStackParamList &
+  SettingsStackParamList;
+
+export type ScreenProps<T extends keyof GlobalParamList> =
+  NativeStackScreenProps<GlobalParamList, T>;
+
+export type ScreenComponent<T extends keyof GlobalParamList> = React.FC<
+  ScreenProps<T>
+>;
+
+const linking: LinkingOptions<RootStackParamList> = {
   enabled: true,
   prefixes: [],
   config: {

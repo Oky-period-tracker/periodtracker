@@ -2,25 +2,23 @@ import * as React from "react";
 import {
   createNativeStackNavigator,
   NativeStackNavigationOptions,
-  NativeStackScreenProps,
 } from "@react-navigation/native-stack";
 import { Header } from "./components/Header";
 import { recordToArray } from "../services/utils";
 import { Platform } from "react-native";
-
-type ParamListBase = Record<string, undefined>;
+import { GlobalParamList, ScreenComponent } from "./RootNavigator";
 
 export type CustomStackNavigationOptions = NativeStackNavigationOptions & {
   name?: string;
   initialRouteName?: string;
 };
 
-export type StackConfig<T extends ParamListBase> = {
-  initialRouteName: string;
+export type StackConfig<T extends keyof GlobalParamList> = {
+  initialRouteName: T;
   screens: {
-    [K in keyof T]: {
+    [K in T]: {
       title: string;
-      component: (NativeStackScreenProps) => React.ReactElement;
+      component: ScreenComponent<K>;
     };
   };
 };
@@ -29,7 +27,11 @@ const animation = Platform.OS === "ios" ? "none" : "default";
 
 const Stack = createNativeStackNavigator();
 
-function NavigationStack({ config }: { config: StackConfig<ParamListBase> }) {
+function NavigationStack<T extends keyof GlobalParamList>({
+  config,
+}: {
+  config: StackConfig<T>;
+}) {
   const { initialRouteName } = config;
 
   return (
@@ -40,7 +42,7 @@ function NavigationStack({ config }: { config: StackConfig<ParamListBase> }) {
         animation,
       }}
     >
-      {recordToArray<StackConfig<ParamListBase>["screens"]>(config.screens).map(
+      {recordToArray<StackConfig<T>["screens"]>(config.screens).map(
         ([name, { title, component }]) => {
           const options: CustomStackNavigationOptions = {
             name,

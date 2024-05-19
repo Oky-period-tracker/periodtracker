@@ -4,10 +4,11 @@ import Carousel from "../../components/Carousel";
 import { Circle } from "../../components/Circle";
 import { Cloud } from "../../components/Cloud";
 import { Star } from "../../components/Star";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
 const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
-function MainScreen({ navigation }) {
+const MainScreen: ScreenComponent<"Home"> = () => {
   return (
     <View style={styles.screen}>
       <View style={{ height: 100, width: 100 }}>
@@ -24,7 +25,7 @@ function MainScreen({ navigation }) {
       </View>
     </View>
   );
-}
+};
 
 export default MainScreen;
 

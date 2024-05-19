@@ -1,10 +1,11 @@
 import * as React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { data } from "../EncyclopediaScreen/data";
 import { InfoDisplay } from "../../components/InfoDisplay";
 import { Screen } from "../../components/Screen";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-function AboutScreen({ navigation }) {
+const AboutScreen: ScreenComponent<"About"> = () => {
   const content = data.about;
 
   return (
@@ -14,7 +15,7 @@ function AboutScreen({ navigation }) {
       </ScrollView>
     </Screen>
   );
-}
+};
 
 export default AboutScreen;
 

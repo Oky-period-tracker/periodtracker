@@ -7,12 +7,14 @@ import NavigationStack, { StackConfig } from "../NavigationStack";
 
 export type EncyclopediaStackParamList = {
   Encyclopedia: undefined;
-  Articles: undefined;
+  Articles: {
+    subcategoryId: string;
+  };
   Help: undefined;
   Video: undefined;
 };
 
-const config: StackConfig<EncyclopediaStackParamList> = {
+const config: StackConfig<keyof EncyclopediaStackParamList> = {
   initialRouteName: "Encyclopedia",
   screens: {
     Encyclopedia: {

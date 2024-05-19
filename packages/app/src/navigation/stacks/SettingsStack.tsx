@@ -16,7 +16,7 @@ export type SettingsStackParamList = {
   Contact: undefined;
 };
 
-const config: StackConfig<SettingsStackParamList> = {
+const config: StackConfig<keyof SettingsStackParamList> = {
   initialRouteName: "Settings",
   screens: {
     Settings: {

@@ -104,7 +104,7 @@ export default EditProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     width: "100%",
     borderRadius: 20,
     overflow: "hidden",
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: "#fff",
   },
   iconContainer: {
     width: 60,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   input: {
     borderColor: "#f0f0f0",
     borderBottomWidth: 1,
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     padding: 8,
     width: "100%",
     borderRadius: 8,

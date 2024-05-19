@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   avatar: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     width: 100,
     height: 100,
     borderRadius: 20,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   theme: {
-    backgroundColor: "white",
+    backgroundColor: "#fff",
     minWidth: 100,
     height: 100,
     borderRadius: 20,

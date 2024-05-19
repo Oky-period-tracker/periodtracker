@@ -12,11 +12,11 @@ import { useNavigation } from "@react-navigation/native";
 
 function Accordion() {
   return (
-    <ScrollView style={styles.accordionContainer}>
+    <>
       {data.categories.allIds.map((categoryId) => (
         <AccordionItem key={categoryId} categoryId={categoryId} />
       ))}
-    </ScrollView>
+    </>
   );
 }
 

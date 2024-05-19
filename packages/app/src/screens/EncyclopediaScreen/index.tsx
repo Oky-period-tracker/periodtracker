@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 
 import Accordion from "./components/Accordion";
 import { Screen } from "../../components/Screen";
@@ -13,10 +13,25 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
 
   return (
     <Screen>
-      <HelpCard onPress={goToHelpScreen} />
-      <Accordion />
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.container}
+      >
+        <HelpCard onPress={goToHelpScreen} />
+        <Accordion />
+      </ScrollView>
     </Screen>
   );
 };
 
 export default EncyclopediaScreen;
+
+const styles = StyleSheet.create({
+  scrollView: {
+    width: "100%",
+    height: "100%",
+  },
+  container: {
+    alignItems: "center",
+  },
+});

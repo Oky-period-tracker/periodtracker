@@ -19,15 +19,13 @@ export const Header = ({ navigation, route, options }: HeaderProps) => {
   };
 
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        {showBackButton ? (
-          <Button onPress={onBackPress} style={styles.button}>
-            <FontAwesome size={12} name={"arrow-left"} color={"#fff"} />
-          </Button>
-        ) : null}
-        <Text style={styles.title}>{title}</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      {showBackButton ? (
+        <Button onPress={onBackPress} style={styles.button}>
+          <FontAwesome size={12} name={"arrow-left"} color={"#fff"} />
+        </Button>
+      ) : null}
+      <Text style={styles.title}>{title}</Text>
     </SafeAreaView>
   );
 };
@@ -35,11 +33,10 @@ export const Header = ({ navigation, route, options }: HeaderProps) => {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 80,
+    minHeight: 80,
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 24,
-    backgroundColor: "transparent",
   },
   button: {
     width: 24,

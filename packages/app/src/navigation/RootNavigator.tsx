@@ -82,7 +82,9 @@ const linking: LinkingOptions<ParamList> = {
 
 const screenOptions: BottomTabNavigationOptions = {
   tabBarStyle: {
-    height: 60,
+    minHeight: 60,
+    padding: 8,
+    backgroundColor: "#F1F1F1",
   },
 };
 

@@ -2,25 +2,26 @@ import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
-import { AccessRow, AccessRowProps } from "./components/AccessRow";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
+import { Button } from "../../components/Button";
 
 const AccessScreen: ScreenComponent<"Access"> = () => {
-  const rows: AccessRowProps[] = [
+  const rows: TouchableRowProps[] = [
     {
       title: "Language",
       description: "Change the language Oky uses",
-      buttonText: "English",
+      component: <LanguageButton />,
     },
     {
       title: "Tutorial",
       description: "Get instructions on how to use Oky",
-      buttonText: "Launch",
+      component: <LaunchButton />,
     },
     {
       title: "Share",
       description: "Share Oky with your friends",
-      buttonText: "Share",
+      component: <ShareButton />,
     },
   ];
 
@@ -31,7 +32,7 @@ const AccessScreen: ScreenComponent<"Access"> = () => {
           const isLast = i !== rows.length - 1;
           return (
             <React.Fragment key={`access-${i}`}>
-              <AccessRow {...props} />
+              <TouchableRow {...props} />
               {isLast ? <Hr /> : null}
             </React.Fragment>
           );
@@ -39,6 +40,18 @@ const AccessScreen: ScreenComponent<"Access"> = () => {
       </View>
     </Screen>
   );
+};
+
+const LanguageButton = () => {
+  return <Button>English</Button>;
+};
+
+const LaunchButton = () => {
+  return <Button>Launch</Button>;
+};
+
+const ShareButton = () => {
+  return <Button>Share</Button>;
 };
 
 export default AccessScreen;

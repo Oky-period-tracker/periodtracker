@@ -3,8 +3,10 @@ import { View, StyleSheet } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
-import { SettingsRow, SettingsRowProps } from "./components/SettingsRow";
+import { SettingsRowProps } from "./components/SettingsRow";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { TouchableRow } from "../../components/TouchableRow";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
   const rows: SettingsRowProps[] = [
@@ -12,23 +14,27 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
       title: "About",
       description: "Find out more about Oky",
       onPress: () => navigation.navigate("About"),
+      component: <ArrowRight />,
     },
     {
       title: "Terms & Conditions",
       description: "What you agree by using Oky",
       onPress: () => navigation.navigate("Terms"),
+      component: <ArrowRight />,
     },
     {
       title: "Privacy Policy",
       description:
         "How Oky stores, shares and protects the information you give",
       onPress: () => navigation.navigate("Privacy"),
+      component: <ArrowRight />,
     },
     {
       title: "Access Settings",
       description:
         "Choose language, access a tutorial, or share Oky with a friend",
       onPress: () => navigation.navigate("Access"),
+      component: <ArrowRight />,
     },
     {
       title: "Future prediction",
@@ -44,7 +50,7 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
           const isLast = i !== rows.length - 1;
           return (
             <React.Fragment key={`settings-${i}`}>
-              <SettingsRow {...props} />
+              <TouchableRow {...props} />
               {isLast ? <Hr /> : null}
             </React.Fragment>
           );
@@ -71,6 +77,10 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
 };
 
 export default SettingsScreen;
+
+const ArrowRight = () => (
+  <FontAwesome size={12} name={"arrow-right"} color={"#D1D0D2"} />
+);
 
 const styles = StyleSheet.create({
   container: {

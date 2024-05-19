@@ -30,10 +30,10 @@ const AccessScreen: ScreenComponent<"Access"> = () => {
         {rows.map((props, i) => {
           const isLast = i !== rows.length - 1;
           return (
-            <>
-              <AccessRow key={`access-${i}`} {...props} />
+            <React.Fragment key={`access-${i}`}>
+              <AccessRow {...props} />
               {isLast ? <Hr /> : null}
-            </>
+            </React.Fragment>
           );
         })}
       </View>

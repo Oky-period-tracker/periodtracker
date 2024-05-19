@@ -43,10 +43,10 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
         {rows.map((props, i) => {
           const isLast = i !== rows.length - 1;
           return (
-            <>
-              <SettingsRow key={`settings-${i}`} {...props} />
+            <React.Fragment key={`settings-${i}`}>
+              <SettingsRow {...props} />
               {isLast ? <Hr /> : null}
-            </>
+            </React.Fragment>
           );
         })}
       </View>

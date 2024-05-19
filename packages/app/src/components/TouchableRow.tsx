@@ -6,6 +6,7 @@ export type TouchableRowProps = {
   description: string;
   onPress?: () => void;
   component?: React.ReactNode;
+  disabled?: boolean;
 };
 
 export const TouchableRow = ({
@@ -13,9 +14,10 @@ export const TouchableRow = ({
   description,
   onPress,
   component,
+  disabled,
 }: TouchableRowProps) => {
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress}>
+    <TouchableOpacity style={styles.row} onPress={onPress} disabled={disabled}>
       <View style={styles.rowLeft}>
         <Text style={styles.title}>{title}</Text>
         <Text>{description}</Text>

@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { CustomStackNavigationOptions } from "../NavigationStack";
+import { IS_ANDROID } from "../../services/device";
 
 type HeaderProps = NativeStackHeaderProps & {
   options: CustomStackNavigationOptions;
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 24,
+    paddingBottom: IS_ANDROID ? 20 : 0,
   },
   button: {
     width: 24,

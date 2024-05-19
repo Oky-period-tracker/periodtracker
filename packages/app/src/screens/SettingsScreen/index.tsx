@@ -3,10 +3,10 @@ import { View, StyleSheet } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
-import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
+import { SettingsRow, SettingsRowProps } from "./components/SettingsRow";
 
 function SettingsScreen({ navigation }) {
-  const rows: TouchableRowProps[] = [
+  const rows: SettingsRowProps[] = [
     {
       title: "About",
       description: "Find out more about Oky",
@@ -43,7 +43,7 @@ function SettingsScreen({ navigation }) {
           const isLast = i !== rows.length - 1;
           return (
             <>
-              <TouchableRow key={`settings-${i}`} {...props} />
+              <SettingsRow key={`settings-${i}`} {...props} />
               {isLast ? <Hr /> : null}
             </>
           );

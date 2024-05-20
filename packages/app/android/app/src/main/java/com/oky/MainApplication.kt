@@ -1,4 +1,4 @@
-package com.alex
+package com.oky
 
 import android.app.Application
 import android.content.res.Configuration

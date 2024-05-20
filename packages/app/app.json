@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "app",
-    "slug": "app",
-    "version": "1.0.0",
+    "name": "Oky",
+    "slug": "oky",
+    "version": "8.0.0",
+    "versionCode": 80,
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,10 +19,17 @@
     },
     "android": {
       "package": "com.oky",
-      "versionCode": 1,
+      "versionCode": 80,
+      "versionName": "8.0.0",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
+      },
+      "keystore": {
+        "keystorePath": "/Users/dev/keys/oky.keystore",
+        "keystorePassword": "tbox123",
+        "keyAlias": "oky",
+        "keyPassword": "tbox123"
       }
     },
     "web": {

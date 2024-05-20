@@ -1,4 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+def nodePath = project.hasProperty('org.gradle.node.path') ? project.property('org.gradle.node.path') : 'node'
+project.ext.react = [
+    nodeExecutable: nodePath
+]
 
 buildscript {
     ext {

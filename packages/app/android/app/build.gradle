@@ -1,3 +1,8 @@
+def nodePath = "/Users/dev/.nvm/versions/node/v20.12.2/bin/node"
+project.ext.react = [
+    nodeExecutable: nodePath
+]
+
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
@@ -83,13 +88,13 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.alex'
+    namespace 'com.oky'
     defaultConfig {
-        applicationId 'com.alex'
+        applicationId 'com.oky'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 80
+        versionName "8.0.0"
     }
     signingConfigs {
         debug {

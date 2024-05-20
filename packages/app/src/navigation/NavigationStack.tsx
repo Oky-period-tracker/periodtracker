@@ -5,7 +5,6 @@ import {
 } from "@react-navigation/native-stack";
 import { Header } from "./components/Header";
 import { recordToArray } from "../services/utils";
-import { Platform } from "react-native";
 import { GlobalParamList, ScreenComponent } from "./RootNavigator";
 
 export type CustomStackNavigationOptions = NativeStackNavigationOptions & {
@@ -23,8 +22,6 @@ export type StackConfig<T extends keyof GlobalParamList> = {
   };
 };
 
-const animation = Platform.OS === "ios" ? "none" : "default";
-
 const Stack = createNativeStackNavigator();
 
 function NavigationStack<T extends keyof GlobalParamList>({
@@ -39,7 +36,7 @@ function NavigationStack<T extends keyof GlobalParamList>({
       initialRouteName={initialRouteName}
       screenOptions={{
         header: (props) => <Header {...props} />,
-        animation,
+        animation: "none",
       }}
     >
       {recordToArray<StackConfig<T>["screens"]>(config.screens).map(

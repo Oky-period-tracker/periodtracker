@@ -5,12 +5,20 @@ import { Circle } from "../../components/icons/Circle";
 import { Cloud } from "../../components/icons/Cloud";
 import { Star } from "../../components/icons/Star";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { Button } from "../../components/Button";
 
 const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
-const MainScreen: ScreenComponent<"Home"> = () => {
+const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
+  const goToCalendar = () => navigation.navigate("Calendar");
+
   return (
     <View style={styles.screen}>
+      <Button
+        status={"secondary"}
+        style={styles.button}
+        onPress={goToCalendar}
+      ></Button>
       <View style={{ height: 100, width: 100 }}>
         <Cloud />
       </View>
@@ -35,5 +43,10 @@ const styles = StyleSheet.create({
   },
   carouselContainer: {
     marginTop: "auto",
+  },
+  button: {
+    width: 80,
+    height: 80,
+    marginLeft: 40,
   },
 });

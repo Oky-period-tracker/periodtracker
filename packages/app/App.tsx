@@ -9,7 +9,8 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Background } from "./src/components/Background";
 import { Provider } from "react-redux";
-import store from "./src/redux/store";
+import { store, persistor } from "./src/redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 function App() {
   React.useEffect(() => {
@@ -27,9 +28,11 @@ function App() {
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <Background>
-          <RootNavigator />
-        </Background>
+        <PersistGate loading={null} persistor={persistor}>
+          <Background>
+            <RootNavigator />
+          </Background>
+        </PersistGate>
       </Provider>
     </SafeAreaProvider>
   );

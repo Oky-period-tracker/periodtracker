@@ -4,8 +4,23 @@ import { Screen } from "../../components/Screen";
 import { Button, DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { useSelector, useDispatch } from "react-redux";
+import { setName } from "../../redux/reducers/appReducer";
 
 const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
+  // @ts-ignore
+  const name = useSelector((state) => state.app?.name);
+  const dispatch = useDispatch();
+
+  const onChangeText = (value) => {
+    dispatch(setName(value));
+  };
+
+  const [tempName, setTempName] = React.useState("bum");
+  const onChangeLocalState = (v) => {
+    setTempName(v);
+  };
+
   return (
     <Screen>
       <View style={styles.container}>
@@ -16,12 +31,12 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
             </DisplayButton>
           </View>
           <View style={styles.segmentRight}>
-            <Text style={styles.label}>Name</Text>
+            <Text style={styles.label}>Name !</Text>
             <TextInput
               placeholder=""
               style={styles.input}
-              onChangeText={() => null}
-              value={""}
+              onChangeText={onChangeText}
+              value={name}
             />
           </View>
         </View>
@@ -33,12 +48,12 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
             </DisplayButton>
           </View>
           <View style={styles.segmentRight}>
-            <Text style={styles.label}>Name</Text>
+            <Text style={styles.label}>Name local</Text>
             <TextInput
               placeholder=""
               style={styles.input}
-              onChangeText={() => null}
-              value={""}
+              onChangeText={onChangeLocalState}
+              value={tempName}
             />
           </View>
         </View>

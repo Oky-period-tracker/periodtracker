@@ -1,5 +1,6 @@
 const initialState = {
   data: false,
+  name: "bob",
 };
 
 export const setData = (data) => {
@@ -9,8 +10,20 @@ export const setData = (data) => {
   };
 };
 
+export const setName = (data) => {
+  return {
+    type: "SET_NAME",
+    payload: data,
+  };
+};
+
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "SET_NAME":
+      return {
+        ...state,
+        name: action.payload,
+      };
     case "SET_DATA":
       return {
         ...state,

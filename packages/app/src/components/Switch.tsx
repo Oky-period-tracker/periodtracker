@@ -2,12 +2,21 @@ import { StyleSheet, View } from "react-native";
 import { Button } from "./Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setData } from "../redux/reducers/appReducer";
 
 export const Switch = () => {
-  const [isSwitchedOn, setIsSwitchedOn] = React.useState(true);
-  const onYesPress = () => setIsSwitchedOn(true);
-  const onNoPress = () => setIsSwitchedOn(false);
-  // TODO: update redux
+  // @ts-ignore TODO: Move redux outside the switch(?)
+  const isSwitchedOn = useSelector((state) => state.app.data);
+  const dispatch = useDispatch();
+
+  const onYesPress = () => {
+    dispatch(setData(true));
+  };
+
+  const onNoPress = () => {
+    dispatch(setData(false));
+  };
 
   return (
     <View style={styles.container}>

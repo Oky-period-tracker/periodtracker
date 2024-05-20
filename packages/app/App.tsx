@@ -8,6 +8,8 @@ import {
 } from "expo-screen-orientation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Background } from "./src/components/Background";
+import { Provider } from "react-redux";
+import store from "./src/redux/store";
 
 function App() {
   React.useEffect(() => {
@@ -24,9 +26,11 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <Background>
-        <RootNavigator />
-      </Background>
+      <Provider store={store}>
+        <Background>
+          <RootNavigator />
+        </Background>
+      </Provider>
     </SafeAreaProvider>
   );
 }

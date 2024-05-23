@@ -21,4 +21,4 @@ export const SHOW_ENCYCLOPEDIA_LOGGED_OUT =
     : true
 
 // Development purposes only
-export const FAST_SIGN_UP = true
+export const FAST_SIGN_UP = false

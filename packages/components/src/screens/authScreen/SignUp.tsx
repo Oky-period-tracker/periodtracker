@@ -38,11 +38,7 @@ const fastSignUpInitialState: SignUpState = {
   province: '0',
   dateOfBirth: '2015-12-31T17:00:00.000Z',
   metadata: {
-    genderIdentity: null,
-    accommodationRequirement: null,
-    religion: 'undisclosed_religion',
-    contentSelection: 0,
-    city: '',
+    isProfileUpdateSkipped: true, // Default true for new users
   },
 }
 
@@ -58,11 +54,7 @@ const defaultState: SignUpState = {
   province: null,
   dateOfBirth: '',
   metadata: {
-    genderIdentity: null,
-    accommodationRequirement: null,
-    religion: 'undisclosed_religion',
-    contentSelection: 0,
-    city: '',
+    isProfileUpdateSkipped: true, // Default true for new users
   },
 }
 

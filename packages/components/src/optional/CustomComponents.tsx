@@ -16,22 +16,6 @@ try {
   //
 }
 
-let CustomHelpCenter = {
-  Screen: undefined,
-  Card: undefined,
-  reducer: (state = null) => state,
-}
-try {
-  CustomHelpCenter = {
-    Screen: require('./CustomComponents/components/CustomHelpCenter').FindHelpScreen,
-    Card: require('./CustomComponents/components/CustomHelpCenter/NeedHelpCard').NeedHelpCard,
-    reducer: require('./CustomComponents/components/CustomHelpCenter/redux/helpCenterReducer')
-      .helpCenterReducer,
-  }
-} catch (e) {
-  //
-}
-
 let CustomProfileScreenWidget = () => null
 try {
   CustomProfileScreenWidget = require('./CustomComponents/components/CustomProfileScreenWidget')
@@ -40,4 +24,4 @@ try {
   //
 }
 
-export { customComponentsTranslations, CustomSignUp, CustomHelpCenter, CustomProfileScreenWidget }
+export { customComponentsTranslations, CustomSignUp, CustomProfileScreenWidget }

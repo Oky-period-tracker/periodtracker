@@ -144,11 +144,7 @@ export class AccountController {
     @Body() request: EditInfoRequest,
   ) {
     const { name, gender, dateOfBirth, secretQuestion, location, metadata } = request
-    // TODO:PH
-    // let isProfileUpdateSkipped = false
-    // if (!city) {
-    //   isProfileUpdateSkipped = true
-    // }
+
     await this.okyUserApplicationService.editInfo({
       userId,
       name,

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components/native'
-import { FlatList } from 'react-native'
+import { FlatList, Image, View } from 'react-native'
 import { PageContainer } from '../components/layout/PageContainer'
 import { BackgroundTheme } from '../components/layout/BackgroundTheme'
 import { useSelector } from '../hooks/useSelector'
@@ -12,8 +12,56 @@ import { IconButton } from '../components/common/buttons/IconButton'
 import { useSound } from '../components/context/SoundContext'
 import { STORAGE_BASE_URL } from '../config'
 import { canAccessContent } from '../services/restriction'
-import HTML from 'react-native-render-html'
-import { cleanHTML } from '../services/html'
+import { A } from '../components/common/A'
+
+const ArticleContent = ({ articleId, text }: { articleId: string; text: string }) => {
+  const linkRegex = /<a\s+href="[^"]+"\s*\/?>/g
+  const imgRegex = /<img\s+src="[^"]+"\s*\/?>/g
+
+  const parts = text.split(new RegExp(`(${linkRegex.source}|${imgRegex.source})`, 'g'))
+
+  return (
+    <>
+      {parts.map((part, index) => {
+        const key = `${articleId}-${index}`
+
+        const isLink = linkRegex.test(part)
+        if (isLink) {
+          const href = part.split('"')[1]
+          return (
+            <A key={key} href={href}>
+              {href}
+            </A>
+          )
+        }
+
+        const isImage = imgRegex.test(part)
+        if (isImage) {
+          const src = part.split('"')[1] ?? ''
+          return (
+            <View
+              style={{
+                overflow: 'hidden',
+                maxHeight: 200,
+              }}
+            >
+              <Image
+                key={key}
+                source={{ uri: src }}
+                style={{
+                  height: '100%',
+                  resizeMode: 'contain',
+                }}
+              />
+            </View>
+          )
+        }
+
+        return <TextWithoutTranslation key={key}>{part}</TextWithoutTranslation>
+      })}
+    </>
+  )
+}
 
 const ArticleItem = ({ article, index, articles }) => {
   const currentUser = useSelector(selectors.currentUserSelector)
@@ -44,7 +92,7 @@ const ArticleItem = ({ article, index, articles }) => {
       <Row style={{ alignItems: 'center' }}>
         <ArticleTitle style={{ fontSize: 14 }}>{articleObject.title}</ArticleTitle>
       </Row>
-      <HTML source={{ html: cleanHTML(articleObject.content) }} />
+      <ArticleContent articleId={articleObject.id} text={articleObject.content} />
       {articleObject.content.indexOf('*') !== -1 && (
         <Disclaimer style={{ fontSize: 10, marginTop: 20 }}>disclaimer</Disclaimer>
       )}

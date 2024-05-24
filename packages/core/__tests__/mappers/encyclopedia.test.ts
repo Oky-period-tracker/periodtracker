@@ -107,7 +107,6 @@ describe('fromEncyclopedia', () => {
         youtubeId: 'quantum123',
         assetName: 'quantum_video',
         live: false,
-        parent_category: '1',
       },
     ]
 

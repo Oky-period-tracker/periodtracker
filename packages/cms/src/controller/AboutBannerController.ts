@@ -30,7 +30,8 @@ export class AboutBannerController {
       }
     }
 
-    const query = parseInt(request?.query?.timestamp.toString(), 10)
+    const timestamp = request?.query?.timestamp || '0'
+    const query = parseInt(timestamp.toString(), 10)
     const timeLastFetched = isNaN(query) ? 0 : query
     const aboutImageTimestamp = new Date(aboutImage.timestamp).getTime()
 

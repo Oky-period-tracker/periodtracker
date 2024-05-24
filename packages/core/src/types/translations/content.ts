@@ -200,5 +200,6 @@ export interface StaticContent {
   termsAndConditions: TermsAndConditions
   about: About
   aboutBanner: string
+  aboutBannerTimestamp?: number
   videos?: Videos
 }

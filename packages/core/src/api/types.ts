@@ -1,3 +1,5 @@
+import { StaticContent } from '../types'
+
 export interface UserMetadata {
   genderIdentity?: string
   accommodationRequirement?: string
@@ -30,7 +32,6 @@ export interface VideosResponseItem {
   title: string
   youtubeId: string | null
   assetName: string | null
-  parent_category: string
   live: boolean
 }
 
@@ -165,3 +166,5 @@ export type AboutBannerConditionalResponse =
   | {
       shouldUpdate: false
     }
+
+export type ContentResponse = StaticContent

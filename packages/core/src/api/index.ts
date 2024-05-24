@@ -94,11 +94,6 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
       )
       return response.data
     },
-    fetchProvinces: async () => {
-      const response: AxiosResponse<any> = await axios.get(`${cmsEndpoint}/provinces`)
-
-      return response.data
-    },
     editUserInfo: async ({
       appToken,
       name,
@@ -139,85 +134,9 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
 
       return response.data
     },
-    fetchAvatarMessages: async ({ locale }) => {
-      const response: AxiosResponse<types.AvatarMessagesResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/avatar-messages/${locale}`,
-      )
-      return response.data
-    },
-    fetchHelpCenterAttribute: async () => {
-      const response: AxiosResponse<any> = await axios.get(`${cmsEndpoint}/help-center-attributes`)
-      return response.data
-    },
-    fetchEncyclopedia: async ({ locale }) => {
-      const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/articles/${locale}`,
-      )
-      return response.data
-    },
-    fetchVideos: async ({ locale }) => {
-      const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/videos/${locale}`,
-      )
-      return response.data
-    },
     fetchSurveys: async ({ locale, userID }: any) => {
       const response: AxiosResponse<types.SurveysResponse> = await axios.get(
         `${cmsEndpoint}/mobile/new-surveys/${locale}?user_id=${userID.id}`,
-      )
-      return response.data
-    },
-    fetchPrivacyPolicy: async ({ locale }: any) => {
-      const response: AxiosResponse<types.PrivacyResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/privacy-policy/${locale}`,
-      )
-
-      return response.data
-    },
-    fetchTermsAndConditions: async ({ locale }: any) => {
-      const response: AxiosResponse<types.TermsAndConditionsResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/terms-and-conditions/${locale}`,
-      )
-
-      return response.data
-    },
-    fetchAbout: async ({ locale }: any) => {
-      const response: AxiosResponse<types.AboutResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/about/${locale}`,
-      )
-
-      return response.data
-    },
-    fetchAboutBanner: async ({ locale }: any) => {
-      // @deprecated
-      const response: AxiosResponse<types.AboutBannerResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/about-banner/${locale}`,
-      )
-
-      return response.data
-    },
-    fetchAboutBannerConditional: async ({ locale, timestamp = 0 }: any) => {
-      const response: AxiosResponse<types.AboutBannerConditionalResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/about-banner-conditional/${locale}?timestamp=${timestamp}`,
-      )
-
-      return response.data
-    },
-    fetchQuizzes: async ({ locale }: any) => {
-      const response: AxiosResponse<types.QuizzesResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/quizzes/${locale}`,
-      )
-      return response.data
-    },
-    fetchDidYouKnows: async ({ locale }: any) => {
-      const response: AxiosResponse<types.DidYouKnowsResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/didyouknows/${locale}`,
-      )
-      return response.data
-    },
-    fetchHelpCenters: async ({ locale }: any) => {
-      const response: AxiosResponse<types.HelpCenterResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/help-center/${locale}`,
       )
       return response.data
     },
@@ -256,6 +175,12 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
             'content-type': 'application/json',
           },
         },
+      )
+      return response.data
+    },
+    fetchContent: async ({ locale, timestamp = 0 }) => {
+      const response: AxiosResponse<types.ContentResponse> = await axios.get(
+        `${cmsEndpoint}/content/${locale}?timestamp=${timestamp}`,
       )
       return response.data
     },

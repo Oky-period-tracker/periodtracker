@@ -1,15 +1,7 @@
 import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import { RehydrateAction, REHYDRATE } from 'redux-persist'
 import { ExtractActionFromActionType } from '../types'
-import {
-  fromEncyclopedia,
-  fromQuizzes,
-  fromDidYouKnows,
-  fromSurveys,
-  fromHelpCenters,
-  fromAvatarMessages,
-  liveContent as staleContent,
-} from '@oky/core'
+import { liveContent as staleContent } from '@oky/core'
 import { httpClient } from '../../services/HttpClient'
 import * as selectors from '../selectors'
 import * as actions from '../actions'
@@ -74,105 +66,21 @@ function* onFetchSurveyContent(
 function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTENT_REQUEST'>) {
   const { locale } = action.payload
 
-  function* fetchEncyclopedia() {
-    const encyclopediaResponse = yield httpClient.fetchEncyclopedia({ locale })
-    const videosResponse = yield httpClient.fetchVideos({ locale })
-    return fromEncyclopedia({ encyclopediaResponse, videosResponse })
-  }
-
-  function* fetchPrivacyPolicy() {
-    const privacyPolicy = yield httpClient.fetchPrivacyPolicy({
+  function* fetchContent() {
+    const content = yield httpClient.fetchContent({
       locale,
     })
-    return privacyPolicy
-  }
 
-  function* fetchTermsAndConditions() {
-    const termsAndConditions = yield httpClient.fetchTermsAndConditions({
-      locale,
-    })
-    return termsAndConditions
-  }
-
-  function* fetchAbout() {
-    const about = yield httpClient.fetchAbout({
-      locale,
-    })
-    return about
-  }
-
-  function* fetchAboutBannerConditional() {
-    const timestamp = yield select((s) => s.content.aboutBannerTimestamp)
-    const aboutBanner = yield httpClient.fetchAboutBannerConditional({
-      locale,
-      timestamp,
-    })
-    return aboutBanner
-  }
-
-  function* fetchHelpCenters() {
-    const helpCenterResponse = yield httpClient.fetchHelpCenters({
-      locale,
-    })
-    return fromHelpCenters(helpCenterResponse)
-  }
-
-  function* fetchQuizzes() {
-    const quizzesResponse = yield httpClient.fetchQuizzes({
-      locale,
-    })
-    return fromQuizzes(quizzesResponse)
-  }
-
-  function* fetchDidYouKnows() {
-    const didYouKnows = yield httpClient.fetchDidYouKnows({
-      locale,
-    })
-    return fromDidYouKnows(didYouKnows)
-  }
-
-  function* fetchAvatarMessages() {
-    const avatarMessages = yield httpClient.fetchAvatarMessages({
-      locale,
-    })
-    return fromAvatarMessages(avatarMessages)
+    return content
   }
 
   try {
-    const { articles, categories, subCategories, videos } = yield fetchEncyclopedia()
-    const { quizzes } = yield fetchQuizzes()
-    const { didYouKnows } = yield fetchDidYouKnows()
-    const { helpCenters } = yield fetchHelpCenters()
-    const { avatarMessages } = yield fetchAvatarMessages()
-    const privacyPolicy = yield fetchPrivacyPolicy()
-    const termsAndConditions = yield fetchTermsAndConditions()
-    const about = yield fetchAbout()
-    const aboutBannerData = yield fetchAboutBannerConditional()
+    const content = yield fetchContent()
 
     yield put(
       actions.fetchContentSuccess({
         timeFetched: new Date().getTime(),
-        articles: _.isEmpty(articles.allIds) ? staleContent[locale].articles : articles,
-        videos: _.isEmpty(videos.allIds) ? staleContent[locale].videos : videos,
-        categories: _.isEmpty(categories.allIds) ? staleContent[locale].categories : categories,
-        subCategories: _.isEmpty(subCategories.allIds)
-          ? staleContent[locale].subCategories
-          : subCategories,
-        quizzes: _.isEmpty(quizzes.allIds) ? staleContent[locale].quizzes : quizzes,
-        didYouKnows: _.isEmpty(didYouKnows.allIds) ? staleContent[locale].didYouKnows : didYouKnows,
-        helpCenters: _.isEmpty(helpCenters) ? staleContent[locale].helpCenters : helpCenters,
-        avatarMessages: _.isEmpty(avatarMessages)
-          ? staleContent[locale].avatarMessages
-          : avatarMessages,
-        privacyPolicy: _.isEmpty(privacyPolicy)
-          ? staleContent[locale].privacyPolicy
-          : privacyPolicy,
-        termsAndConditions: _.isEmpty(termsAndConditions)
-          ? staleContent[locale].termsAndConditions
-          : termsAndConditions,
-        about: _.isEmpty(about) ? staleContent[locale].about : about,
-        aboutBanner: aboutBannerData?.aboutBanner,
-        aboutBannerTimestamp: aboutBannerData?.aboutBannerTimestamp,
+        ...content,
       }),
     )
   } catch (error) {

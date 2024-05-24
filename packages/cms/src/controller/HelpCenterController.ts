@@ -20,7 +20,7 @@ export class HelpCenterController {
     })
   }
 
-  async mobileHelpCenterByLanguage(request: Request) {
+  async mobileHelpCenterByLanguage(request: Request, response: Response, next: NextFunction) {
     const helpCenters: HelpCenter[] | any = await this.helpCenterRepository.find({
       where: {
         lang: request.params.lang,

@@ -21,6 +21,7 @@ import { VideoController } from './controller/VideoController'
 import { ArticleVoiceOverController } from './controller/ArticleVoiceOverController'
 import { AgeRestrictionController } from './controller/AgeRestrictionController'
 import { ContentFilterController } from './controller/ContentFilterController'
+import { ContentController } from './controller/ContentController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -666,6 +667,13 @@ export const Routes = [
     action: 'remove',
   },
   // ------------ exposed Api ----------------
+  {
+    method: 'get',
+    route: '/mobile/content/:lang',
+    controller: ContentController,
+    action: 'fetchAllContent',
+    isPublic: true,
+  },
   {
     method: 'get',
     route: '/mobile/articles/:lang',

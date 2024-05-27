@@ -6,16 +6,20 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
   Linking,
+  TextProps,
 } from 'react-native'
 
 export const A = ({
   href,
   style,
+  textStyle,
+  onPress,
   ...props
 }: TouchableOpacityProps & {
-  href: string
+  href?: string
+  textStyle?: TextProps['style']
 }) => {
-  const onPressLink = () => openURL(href)
+  const onPressLink = onPress ?? (() => openURL(href))
 
   const children = props.children ? (
     typeof props.children === 'string' ? (
@@ -49,5 +53,6 @@ const openURL = (href, target = '_blank') => {
 const styles = StyleSheet.create({
   text: {
     color: '#0000EE',
+    textDecorationLine: 'underline',
   },
 })

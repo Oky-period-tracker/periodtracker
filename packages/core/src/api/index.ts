@@ -180,7 +180,7 @@ export function createHttpClient(endpoint: string, cmsEndpoint: string, { predic
     },
     fetchContent: async ({ locale, timestamp = 0 }) => {
       const response: AxiosResponse<types.ContentResponse> = await axios.get(
-        `${cmsEndpoint}/content/${locale}?timestamp=${timestamp}`,
+        `${cmsEndpoint}/mobile/content/${locale}?timestamp=${timestamp}`,
       )
       return response.data
     },

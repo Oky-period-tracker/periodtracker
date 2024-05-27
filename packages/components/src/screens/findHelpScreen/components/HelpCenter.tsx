@@ -1,27 +1,24 @@
 import React, { FunctionComponent } from 'react'
-import styled from 'styled-components/native'
-import { TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useHelpCenter } from '../hooks/useHelpCenter'
 import { ModalAlert } from './ModalAlert'
-import Icon from 'react-native-vector-icons/Feather'
-import { Text, TextWithoutTranslation } from '../../../components/common/Text'
-import { EmojiText } from '../../../components/common/EmojiText'
+import { Text, TextWithoutTranslation as TextWT } from '../../../components/common/Text'
 import { HelpCenterUI } from '../../../types'
 import { HelpCenters } from '@oky/core'
 import { useHapticAndSound } from '../../../hooks/useHapticAndSound'
+import { PrimaryButton } from '../../../components/common/buttons/PrimaryButton'
+import Icon from 'react-native-vector-icons/Feather'
 
 interface IHelpCenter {
   helpCenters?: HelpCenters
   type: string
-  activeTab: number
 }
 
-export const HelpCenter: FunctionComponent<IHelpCenter> = ({ helpCenters, type, activeTab }) => {
+export const HelpCenterSection: FunctionComponent<IHelpCenter> = ({ helpCenters, type }) => {
+  const hapticAndSoundFeedback = useHapticAndSound()
+
   const {
-    expandedHelpCenters,
-    modifyActiveHelpCenters,
-    removeEmojis,
     isConfirmationOpen,
     setConfirmationOpen,
     onPressLink,
@@ -31,139 +28,55 @@ export const HelpCenter: FunctionComponent<IHelpCenter> = ({ helpCenters, type, 
     savedHelpCenters,
     handleOpenLink,
     triggerer,
-  } = useHelpCenter(activeTab)
-
-  const hapticAndSoundFeedback = useHapticAndSound()
+  } = useHelpCenter()
 
   const data = type === HelpCenterUI.HC ? helpCenters : savedHelpCenters
 
   if (!data?.length) {
     if (type === HelpCenterUI.HC) {
       return (
-        <EmptyCard>
+        <View style={styles.card}>
           <Text>empty_hc</Text>
           <Text>empty_hc_2</Text>
-        </EmptyCard>
+        </View>
       )
     }
     return (
-      <EmptyCard>
+      <View style={styles.card}>
         <Text>empty_saved</Text>
-      </EmptyCard>
+      </View>
     )
   }
 
   return (
     <>
-      <ScrollView style={{ marginTop: 10 }}>
+      <ScrollView>
         {data?.map((helpCenter, i) => {
-          const isExpanded = expandedHelpCenters.includes(i)
           const isSaved = savedHelpCenters.find((item) => item.id === helpCenter.id)
-          const locationString = [
-            helpCenter.address ?? '',
-            helpCenter.place ?? '',
-            helpCenter?.location ?? '',
-          ]
-            .filter((item) => item.length)
-            .join(', ')
+          const onButtonPress = () => {
+            hapticAndSoundFeedback('general')
+            if (HelpCenterUI.HC === type && !isSaved) {
+              onSaveHelpCenter(helpCenter)
+              return
+            }
+
+            if (HelpCenterUI.SAVED_HC === type) {
+              onUnsaveHelpCenter(helpCenter)
+            }
+          }
+
+          const buttonText =
+            HelpCenterUI.HC === type && isSaved ? 'saved' : isSaved ? 'unsave' : 'save'
 
           return (
-            <CardRow
-              key={helpCenter.title}
-              onPress={() => {
-                hapticAndSoundFeedback('general')
-                modifyActiveHelpCenters(i)
-              }}
-              isExpanded={isExpanded}
-            >
-              <View
-                style={{
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingRight: 20,
-                }}
-              >
-                <EmojiText content={helpCenter.attributeName} />
-              </View>
-              <View
-                style={{
-                  flex: 5,
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  paddingVertical: isExpanded ? 10 : 15,
-                }}
-              >
-                <InfoItemTitle>{helpCenter.title}</InfoItemTitle>
-                {isExpanded && (
-                  <AttributeName>{removeEmojis(helpCenter.attributeName)}</AttributeName>
-                )}
-
-                {locationString ? (
-                  <InfoItemDescription color="#DB307A">{locationString}</InfoItemDescription>
-                ) : null}
-
-                {isExpanded && (
-                  <InfoItemDescription style={{ textAlign: 'justify' }}>
-                    {helpCenter.caption}
-                  </InfoItemDescription>
-                )}
-
-                {isExpanded && (
-                  <TouchableOpacity
-                    onPress={() =>
-                      onPressLink(`${helpCenter.contactOne},${helpCenter.contactTwo}`, 'phone')
-                    }
-                  >
-                    <ClickableTextLink>
-                      <Icon name="phone" size={15} /> {helpCenter.contactOne}{' '}
-                      {helpCenter.contactTwo}
-                    </ClickableTextLink>
-                  </TouchableOpacity>
-                )}
-
-                {isExpanded && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      onPressLink(helpCenter.website, 'web')
-                    }}
-                  >
-                    <ClickableTextLink>
-                      <Icon name="link-2" size={15} /> {helpCenter.website}
-                    </ClickableTextLink>
-                  </TouchableOpacity>
-                )}
-
-                <View style={{ flexDirection: 'row' }}>
-                  {isExpanded && (
-                    <Button
-                      disabled={HelpCenterUI.HC === type && isSaved}
-                      saved={HelpCenterUI.HC === type && isSaved}
-                      type={type}
-                      onPress={() => {
-                        hapticAndSoundFeedback('general')
-                        if (HelpCenterUI.HC === type) {
-                          onSaveHelpCenter(helpCenter)
-                        }
-
-                        if (HelpCenterUI.SAVED_HC === type) {
-                          onUnsaveHelpCenter(helpCenter)
-                        }
-                      }}
-                    >
-                      <ButtonLabel>
-                        <Icon name="save" size={14} />{' '}
-                        {HelpCenterUI.HC === type && isSaved
-                          ? 'Saved'
-                          : isSaved
-                          ? 'Unsave'
-                          : 'Save'}
-                      </ButtonLabel>
-                    </Button>
-                  )}
-                </View>
-              </View>
-            </CardRow>
+            <HelpCenterItemCard
+              key={`help-center-${helpCenter.id}`}
+              helpCenter={helpCenter}
+              isSaved={isSaved}
+              onButtonPress={onButtonPress}
+              buttonText={buttonText}
+              onPressLink={onPressLink}
+            />
           )
         })}
       </ScrollView>
@@ -184,65 +97,125 @@ export const HelpCenter: FunctionComponent<IHelpCenter> = ({ helpCenters, type, 
   )
 }
 
-const Button = styled.TouchableOpacity<{ type: string; saved: boolean }>`
-  border-radius: 5px;
-  background-color: ${(prop) => (prop.saved ? '#ed85b2' : '#db307a')};
-  margin-bottom: 10;
-`
+const HelpCenterItemCard = ({ helpCenter, isSaved, onButtonPress, buttonText, onPressLink }) => {
+  const [isExpanded, setIsExpanded] = React.useState(false)
+  const toggleExpanded = () => setIsExpanded((current) => !current)
+  const hapticAndSoundFeedback = useHapticAndSound()
 
-const ButtonLabel = styled(TextWithoutTranslation)`
-  color: #fff;
-  font-family: Roboto-Black;
-  font-size: 14;
-  padding-horizontal: 5;
-  padding-vertical: 5;
-  margin-horizontal: 5;
-`
+  const buttonStyle = isSaved ? styles.unSaveButton : styles.saveButton
 
-const InfoItemTitle = styled(TextWithoutTranslation)`
-  font-size: 16;
-  margin-bottom: 2px;
-  color: #ff9e00;
-`
+  const locationString = [
+    helpCenter.address ?? '',
+    helpCenter.place ?? '',
+    helpCenter?.location ?? '',
+  ]
+    .filter((item) => item.length)
+    .join(', ')
 
-const ClickableTextLink = styled(TextWithoutTranslation)`
-  color: #333481;
-  textdecorationline: underline;
-  margin-bottom: 10px;
-`
+  return (
+    <TouchableOpacity
+      key={`hc-${helpCenter.id}`}
+      style={styles.card}
+      onPress={() => {
+        hapticAndSoundFeedback('general')
+        toggleExpanded()
+      }}
+    >
+      <View style={styles.cardLeft}>
+        <TextWT style={styles.emoji}>{helpCenter.emoji}</TextWT>
+      </View>
+      <View style={styles.cardRight}>
+        <TextWT style={styles.title}>{helpCenter.title}</TextWT>
+        {isExpanded && <TextWT>{helpCenter.attributeName}</TextWT>}
 
-const InfoItemDescription = styled(TextWithoutTranslation)<{ color: string }>`
-  font-size: 14;
-  width: 100%;
-  color: ${(prop) => (prop.color ? prop.color : '#000')};
-  align-self: flex-start;
-  flex-wrap: wrap;
-  font-family: Roboto-Regular;
-  margin-bottom: 10;
-`
+        {locationString ? <TextWT style={styles.location}>{locationString}</TextWT> : null}
+        {isExpanded ? (
+          <>
+            <TextWT>{helpCenter.caption}</TextWT>
 
-const AttributeName = styled(TextWithoutTranslation)`
-  color: #333481;
-  font-size: 14;
-  margin-bottom: 10;
-`
+            <TouchableOpacity
+              style={styles.link}
+              onPress={() =>
+                onPressLink(`${helpCenter.contactOne},${helpCenter.contactTwo}`, 'phone')
+              }
+            >
+              <TextWT style={styles.linkText}>
+                <Icon name="phone" size={15} />
+                {` ${helpCenter.contactOne} ${helpCenter.contactTwo}`}
+              </TextWT>
+            </TouchableOpacity>
 
-const CardRow = styled.TouchableOpacity<{ isExpanded: boolean }>`
-  flex-direction: row;
-  width: 95%;
-  margin-bottom: 10px;
-  overflow-hidden;
-  background: #fff;
-  borderRadius: 10;
-  padding-horizontal: 20px;
-`
+            <TouchableOpacity
+              style={styles.link}
+              onPress={() => onPressLink(helpCenter.website, 'web')}
+            >
+              <TextWT style={styles.linkText}>
+                <Icon name="link-2" size={15} />
+                {` ${helpCenter.website}`}
+              </TextWT>
+            </TouchableOpacity>
 
-const EmptyCard = styled.View`
-  width: 95%;
-  margin-bottom: 10px;
-  overflow-hidden;
-  background: #fff;
-  borderRadius: 10;
-  padding-horizontal: 5px;
-  height: 100px;
-`
+            <PrimaryButton
+              style={[styles.button, buttonStyle]}
+              textStyle={buttonStyle}
+              onPress={onButtonPress}
+            >
+              {buttonText}
+            </PrimaryButton>
+          </>
+        ) : null}
+      </View>
+    </TouchableOpacity>
+  )
+}
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: '#fff',
+    width: '100%',
+    marginVertical: 4,
+    borderRadius: 10,
+    padding: 16,
+    flexDirection: 'row',
+  },
+  cardLeft: {
+    minWidth: 32,
+    marginRight: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cardRight: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 16,
+    marginBottom: 2,
+    color: '#ff9e00',
+  },
+  location: {
+    color: '#db307a',
+  },
+  link: {
+    marginBottom: 8,
+  },
+  linkText: {
+    color: '#0000EE',
+    textDecorationLine: 'underline',
+  },
+  button: {
+    width: 80,
+    height: 32,
+  },
+  saveButton: {
+    backgroundColor: '#db307a',
+    color: '#fff',
+  },
+  unSaveButton: {
+    backgroundColor: '#ed85b2',
+    color: '#fff',
+  },
+  emoji: {
+    fontSize: 25,
+  },
+})

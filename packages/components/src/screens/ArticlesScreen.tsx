@@ -14,39 +14,34 @@ import { STORAGE_BASE_URL } from '../config'
 import { canAccessContent } from '../services/restriction'
 import { A } from '../components/common/A'
 
-const ArticleContent = ({ articleId, text }: { articleId: string; text: string }) => {
-  const linkRegex = /<a\s+href="[^"]+"\s*\/?>/g
-  const imgRegex = /<img\s+src="[^"]+"\s*\/?>/g
-
-  const parts = text.split(new RegExp(`(${linkRegex.source}|${imgRegex.source})`, 'g'))
+const ArticleContent = ({ articleId, text }) => {
+  const parts = text.split(/(link::[^\s]+|image::[^\s]+)/).filter(Boolean)
 
   return (
     <>
       {parts.map((part, index) => {
         const key = `${articleId}-${index}`
 
-        const isLink = linkRegex.test(part)
-        if (isLink) {
-          const href = part.split('"')[1]
+        if (part.startsWith('link::')) {
+          const url = part.slice(6) // length of prefix
           return (
-            <A key={key} href={href}>
-              {href}
+            <A key={key} href={url}>
+              {url}
             </A>
           )
         }
 
-        const isImage = imgRegex.test(part)
-        if (isImage) {
-          const src = part.split('"')[1] ?? ''
+        if (part.startsWith('image::')) {
+          const src = part.slice(7) // length of prefix
           return (
             <View
+              key={key}
               style={{
                 overflow: 'hidden',
                 maxHeight: 200,
               }}
             >
               <Image
-                key={key}
                 source={{ uri: src }}
                 style={{
                   height: '100%',

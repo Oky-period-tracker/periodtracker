@@ -52,7 +52,7 @@ export const FindHelpFilter: FunctionComponent<IFindHelpFilter> = ({
     helpCenterAttributes.forEach((attrib) => {
       selected.forEach((select) => {
         if (select === attrib.id) {
-          toRender += `${attrib.emoji} ${attrib.attributeName}`
+          toRender += attrib.attributeName
         }
       })
     })
@@ -121,7 +121,7 @@ export const FindHelpFilter: FunctionComponent<IFindHelpFilter> = ({
           selectedItemTextColor="#CCC"
           selectedItemIconColor="#CCC"
           itemTextColor="#000"
-          displayKey="fullName"
+          displayKey="attributeName"
           styleItemsContainer={{ marginLeft: 10 }}
           styleMainWrapper={{ borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}
           styleDropdownMenuSubsection={{ borderRadius: 16 }}

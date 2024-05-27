@@ -772,7 +772,13 @@ export const Routes = [
     action: 'mobileAboutBannerByLanguageConditional',
     isPublic: true,
   },
-
+  // Deprecated
+  {
+    method: 'get',
+    route: '/help-center-attributes',
+    controller: HelpCenterController,
+    action: 'helpCenterAttributes',
+  },
   // ------- suggestion Api -------
   {
     method: 'get',

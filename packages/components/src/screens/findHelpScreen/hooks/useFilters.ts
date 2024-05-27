@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import * as selectors from '../../../redux/selectors'
 import { HelpCenters } from '../../../types'
-import { helpCenterAttributes as helpCenterAttributeData, helpCenterLocations } from '@oky/core'
+import { helpCenterAttributes, helpCenterLocations } from '@oky/core'
 import { useHapticAndSound } from '../../../hooks/useHapticAndSound'
 
 export const useFilters = () => {
@@ -12,12 +12,6 @@ export const useFilters = () => {
   const [locations, setLocations] = useState([])
   const [filteredHelpCenters, setFilteredHelpCenters] = useState<HelpCenters>()
   const [isDualFiltered, setDualFiltered] = useState<boolean>(false)
-  const [helpCenterAttributes] = useState(
-    helpCenterAttributeData.map((item) => ({
-      ...item,
-      fullName: `${item.emoji} ${item.attributeName}`,
-    })),
-  )
 
   useEffect(() => {
     setFilteredHelpCenters(helpCenters)

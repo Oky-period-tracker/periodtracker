@@ -8,6 +8,7 @@ import {
   Linking,
   TextProps,
 } from 'react-native'
+import { TextWithoutTranslation } from './Text'
 
 export const A = ({
   href,
@@ -23,7 +24,7 @@ export const A = ({
 
   const children = props.children ? (
     typeof props.children === 'string' ? (
-      <Text style={styles.text}>{props.children}</Text>
+      <TextWithoutTranslation style={styles.text}>{props.children}</TextWithoutTranslation>
     ) : (
       props.children
     )

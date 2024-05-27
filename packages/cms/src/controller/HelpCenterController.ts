@@ -7,6 +7,7 @@ import ExcelJS from 'exceljs'
 import fs from 'fs'
 import path from 'path'
 import { helpCenterData } from '../optional'
+import { helpCenterAttributes } from '@oky/core'
 
 export class HelpCenterController {
   private helpCenterRepository = getRepository(HelpCenter)
@@ -41,6 +42,7 @@ export class HelpCenterController {
       helpCenterData.attributes.forEach((attrib) => {
         if (attrib.id === helpCenter.primaryAttributeId) {
           helpCenters[hIndex].attributeName = attrib.attributeName
+          helpCenters[hIndex].emoji = attrib.name
           helpCenters[hIndex].emoji = attrib.emoji
         }
       })
@@ -277,5 +279,9 @@ export class HelpCenterController {
     fs.unlinkSync(tempFilePath)
 
     return { inserted: returnInserted, updated: returnUpdated }
+  }
+
+  async helpCenterAttributes(request: Request, response: Response, next: NextFunction) {
+    return helpCenterAttributes
   }
 }

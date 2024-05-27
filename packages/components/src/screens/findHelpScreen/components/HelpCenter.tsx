@@ -8,7 +8,7 @@ import { HelpCenterUI } from '../../../types'
 import { HelpCenters } from '@oky/core'
 import { useHapticAndSound } from '../../../hooks/useHapticAndSound'
 import { PrimaryButton } from '../../../components/common/buttons/PrimaryButton'
-import { A } from '../../../components/common/A'
+import Icon from 'react-native-vector-icons/Feather'
 
 interface IHelpCenter {
   helpCenters?: HelpCenters
@@ -134,17 +134,29 @@ const HelpCenterItemCard = ({ helpCenter, isSaved, onButtonPress, buttonText, on
         {isExpanded ? (
           <>
             <TextWithoutTranslation>{helpCenter.caption}</TextWithoutTranslation>
-            <A
-              style={styles.marginBottom}
+
+            <TouchableOpacity
+              style={styles.link}
               onPress={() =>
                 onPressLink(`${helpCenter.contactOne},${helpCenter.contactTwo}`, 'phone')
               }
             >
-              {`${helpCenter.contactOne} ${helpCenter.contactTwo}`}
-            </A>
-            <A style={styles.marginBottom} onPress={() => onPressLink(helpCenter.website, 'web')}>
-              {helpCenter.website}
-            </A>
+              <Icon name="phone" size={15} />
+              <TextWithoutTranslation
+                style={styles.linkText}
+              >{`${helpCenter.contactOne} ${helpCenter.contactTwo}`}</TextWithoutTranslation>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.link}
+              onPress={() => onPressLink(helpCenter.website, 'web')}
+            >
+              <Icon name="link-2" size={15} />
+              <TextWithoutTranslation style={styles.linkText}>
+                {helpCenter.website}
+              </TextWithoutTranslation>
+            </TouchableOpacity>
+
             <PrimaryButton
               style={[styles.button, buttonStyle]}
               textStyle={buttonStyle}
@@ -186,8 +198,12 @@ const styles = StyleSheet.create({
   location: {
     color: '#db307a',
   },
-  marginBottom: {
+  link: {
     marginBottom: 8,
+  },
+  linkText: {
+    color: '#0000EE',
+    textDecorationLine: 'underline',
   },
   button: {
     width: 80,

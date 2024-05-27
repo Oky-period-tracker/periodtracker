@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useHelpCenter } from '../hooks/useHelpCenter'
 import { ModalAlert } from './ModalAlert'
-import { Text, TextWithoutTranslation } from '../../../components/common/Text'
+import { Text, TextWithoutTranslation as TextWT } from '../../../components/common/Text'
 import { HelpCenterUI } from '../../../types'
 import { HelpCenters } from '@oky/core'
 import { useHapticAndSound } from '../../../hooks/useHapticAndSound'
@@ -122,18 +122,16 @@ const HelpCenterItemCard = ({ helpCenter, isSaved, onButtonPress, buttonText, on
       }}
     >
       <View style={styles.cardLeft}>
-        <TextWithoutTranslation style={styles.emoji}>{helpCenter.emoji}</TextWithoutTranslation>
+        <TextWT style={styles.emoji}>{helpCenter.emoji}</TextWT>
       </View>
       <View style={styles.cardRight}>
-        <TextWithoutTranslation style={styles.title}>{helpCenter.title}</TextWithoutTranslation>
-        {isExpanded && <TextWithoutTranslation>{helpCenter.attributeName}</TextWithoutTranslation>}
+        <TextWT style={styles.title}>{helpCenter.title}</TextWT>
+        {isExpanded && <TextWT>{helpCenter.attributeName}</TextWT>}
 
-        {locationString ? (
-          <TextWithoutTranslation style={styles.location}>{locationString}</TextWithoutTranslation>
-        ) : null}
+        {locationString ? <TextWT style={styles.location}>{locationString}</TextWT> : null}
         {isExpanded ? (
           <>
-            <TextWithoutTranslation>{helpCenter.caption}</TextWithoutTranslation>
+            <TextWT>{helpCenter.caption}</TextWT>
 
             <TouchableOpacity
               style={styles.link}
@@ -142,9 +140,9 @@ const HelpCenterItemCard = ({ helpCenter, isSaved, onButtonPress, buttonText, on
               }
             >
               <Icon name="phone" size={15} />
-              <TextWithoutTranslation
+              <TextWT
                 style={styles.linkText}
-              >{`${helpCenter.contactOne} ${helpCenter.contactTwo}`}</TextWithoutTranslation>
+              >{`${helpCenter.contactOne} ${helpCenter.contactTwo}`}</TextWT>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -152,9 +150,7 @@ const HelpCenterItemCard = ({ helpCenter, isSaved, onButtonPress, buttonText, on
               onPress={() => onPressLink(helpCenter.website, 'web')}
             >
               <Icon name="link-2" size={15} />
-              <TextWithoutTranslation style={styles.linkText}>
-                {helpCenter.website}
-              </TextWithoutTranslation>
+              <TextWT style={styles.linkText}>{helpCenter.website}</TextWT>
             </TouchableOpacity>
 
             <PrimaryButton

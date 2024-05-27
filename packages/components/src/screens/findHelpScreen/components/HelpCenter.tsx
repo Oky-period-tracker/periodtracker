@@ -135,13 +135,16 @@ const HelpCenterItemCard = ({ helpCenter, isSaved, onButtonPress, buttonText, on
           <>
             <TextWithoutTranslation>{helpCenter.caption}</TextWithoutTranslation>
             <A
+              style={styles.marginBottom}
               onPress={() =>
                 onPressLink(`${helpCenter.contactOne},${helpCenter.contactTwo}`, 'phone')
               }
             >
               {`${helpCenter.contactOne} ${helpCenter.contactTwo}`}
             </A>
-            <A onPress={() => onPressLink(helpCenter.website, 'web')}>{helpCenter.website}</A>
+            <A style={styles.marginBottom} onPress={() => onPressLink(helpCenter.website, 'web')}>
+              {helpCenter.website}
+            </A>
             <PrimaryButton
               style={[styles.button, buttonStyle]}
               textStyle={buttonStyle}
@@ -182,6 +185,9 @@ const styles = StyleSheet.create({
   },
   location: {
     color: '#db307a',
+  },
+  marginBottom: {
+    marginBottom: 8,
   },
   button: {
     width: 80,

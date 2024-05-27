@@ -7,6 +7,7 @@ import ExcelJS from 'exceljs'
 import fs from 'fs'
 import path from 'path'
 import { helpCenterData } from '../optional'
+import { helpCenterAttributes } from '@oky/core'
 
 export class HelpCenterController {
   private helpCenterRepository = getRepository(HelpCenter)
@@ -277,5 +278,9 @@ export class HelpCenterController {
     fs.unlinkSync(tempFilePath)
 
     return { inserted: returnInserted, updated: returnUpdated }
+  }
+
+  async helpCenterAttributes(request: Request, response: Response, next: NextFunction) {
+    return helpCenterAttributes
   }
 }

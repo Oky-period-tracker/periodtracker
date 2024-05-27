@@ -42,6 +42,7 @@ export class HelpCenterController {
       helpCenterData.attributes.forEach((attrib) => {
         if (attrib.id === helpCenter.primaryAttributeId) {
           helpCenters[hIndex].attributeName = attrib.attributeName
+          helpCenters[hIndex].emoji = attrib.name
           helpCenters[hIndex].emoji = attrib.emoji
         }
       })

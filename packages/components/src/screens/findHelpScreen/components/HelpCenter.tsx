@@ -126,7 +126,7 @@ const HelpCenterItemCard = ({ helpCenter, isSaved, onButtonPress, buttonText, on
       </View>
       <View style={styles.cardRight}>
         <TextWT style={styles.title}>{helpCenter.title}</TextWT>
-        {isExpanded && <TextWT>{helpCenter.attributeName}</TextWT>}
+        {isExpanded && <TextWT>{helpCenter.name}</TextWT>}
 
         {locationString ? <TextWT style={styles.location}>{locationString}</TextWT> : null}
         {isExpanded ? (

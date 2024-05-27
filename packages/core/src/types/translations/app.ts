@@ -17,6 +17,8 @@ export interface AppTranslations {
   favourite_teacher: string
   childhood_hero: string
   save: string
+  unsave: string
+  saved: string
   title: string
   notes: string
   daily_note_description: string

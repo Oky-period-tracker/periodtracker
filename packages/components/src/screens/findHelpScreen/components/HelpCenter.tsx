@@ -139,18 +139,20 @@ const HelpCenterItemCard = ({ helpCenter, isSaved, onButtonPress, buttonText, on
                 onPressLink(`${helpCenter.contactOne},${helpCenter.contactTwo}`, 'phone')
               }
             >
-              <Icon name="phone" size={15} />
-              <TextWT
-                style={styles.linkText}
-              >{`${helpCenter.contactOne} ${helpCenter.contactTwo}`}</TextWT>
+              <TextWT style={styles.linkText}>
+                <Icon name="phone" size={15} />
+                {` ${helpCenter.contactOne} ${helpCenter.contactTwo}`}
+              </TextWT>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.link}
               onPress={() => onPressLink(helpCenter.website, 'web')}
             >
-              <Icon name="link-2" size={15} />
-              <TextWT style={styles.linkText}>{helpCenter.website}</TextWT>
+              <TextWT style={styles.linkText}>
+                <Icon name="link-2" size={15} />
+                {` ${helpCenter.website}`}
+              </TextWT>
             </TouchableOpacity>
 
             <PrimaryButton

@@ -12,6 +12,7 @@
     "provinces": "ts-node --transpile-only merge-provinces.ts",
     "countries": "ts-node --transpile-only merge-countries.ts",
     "fetch-content": "ts-node --transpile-only fetch-content.ts",
+    "replace-content-ids": "ts-node --transpile-only replace-content-ids.ts",
     "copy-assets": "ts-node copyAssets.ts",
     "database-sync:enable": "ts-node setDatabaseSync.ts --enable",
     "database-sync:disable": "ts-node setDatabaseSync.ts --disable",

@@ -102,6 +102,16 @@ For instructions on updating content after this initial set up, [go here](./upda
 
 Remember to commit, and push your changes to the `/translations` submodule.
 
+### Replace Ids
+
+You may need to generate new Ids for all of the content for a particular language, for example if all the Ids are identical to the ids for another language, resulting in database conflicts.
+
+To replace all Ids with new ones for a particular locale, edit the `replace-content-ids.ts` file with your desired locale to edit, then run this command
+
+```bash
+yarn replace-content-ids
+```
+
 ## Other translations
 
 You will need to add translations for other things such as country names, provinces, calendar names, themes, and avatars. There are also some changes required within the /assets submodules.

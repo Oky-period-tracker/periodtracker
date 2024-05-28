@@ -1,9 +1,8 @@
 import fs from 'fs'
 import { content } from '@oky/core'
 import { v4 as uuid } from 'uuid'
-import { logger } from './logger'
 
-const localeToUpdate = ''
+const localeToUpdate = 'en'
 
 const outputFilepath = `./packages/core/src/modules/translations/content/${localeToUpdate}.ts`
 
@@ -29,7 +28,4 @@ const replaceContentIds = () => {
   fs.writeFileSync(outputFilepath, outputString)
 }
 
-// ========================= Execute ========================= //
-// replaceContentIds()
-
-logger('===== EDIT THIS FILE BEFORE EXECUTING IT =====')
+replaceContentIds()

@@ -12,7 +12,7 @@ import axios from 'axios'
   This is for fetching data from an old CMS and generating a .ts file from that.
 */
 
-const cmsUrl = 'cms.example.com'
+const cmsUrl = 'https://cms.en.oky.greychaindesign.com'
 const locale = 'en'
 
 const endpoints = [
@@ -76,7 +76,7 @@ const fetchData = async () => {
   }
   `
 
-  const fileName = `${locale}.ts`
+  const fileName = `packages/core/src/modules/translations/content/${locale}.ts`
 
   fs.writeFileSync(fileName, fileContent)
 }

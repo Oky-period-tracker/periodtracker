@@ -6,69 +6,79 @@ import {
   fromHelpCenters,
   fromQuizzes,
 } from '@oky/core'
+import axios from 'axios'
 
 /* 
   This is for fetching data from an old CMS and generating a .ts file from that.
-  I ran the requests manually in the browser, this script could be improved by programaticaly sending all the requests 
 */
 
-// const cmsUrl = ''
-const locale = ''
+const cmsUrl = 'cms.example.com'
+const locale = 'en'
 
-// /mobile/articles/${locale}
-const encyclopediaResponse = []
+const endpoints = [
+  `/mobile/articles/${locale}`,
+  `/mobile/privacy-policy/${locale}`,
+  `/mobile/terms-and-conditions/${locale}`,
+  `/mobile/about/${locale}`,
+  `/mobile/help-center/${locale}`,
+  `/mobile/quizzes/${locale}`,
+  `/mobile/didyouknows/${locale}`,
+  `/mobile/avatar-messages/${locale}`,
+]
 
-// /mobile/privacy-policy/${locale}
-const privacyPolicy = []
+const fetchData = async () => {
+  const promises = endpoints.map(async (endpoint) => {
+    const response = await axios.get(`${cmsUrl}${endpoint}`)
+    return response.data
+  })
 
-// /mobile/terms-and-conditions/${locale}
-const termsAndConditions = []
+  const responses = await Promise.all(promises)
 
-// /mobile/about/${locale}
-const about = []
+  const [
+    encyclopediaResponse,
+    privacyPolicy,
+    termsAndConditions,
+    about,
+    helpCenterResponse,
+    quizzesResponse,
+    didYouKnowsResponse,
+    avatarMessagesResponse,
+  ] = responses
 
-// /mobile/help-center/${locale}
-const helpCenterResponse = []
+  const { articles, categories, subCategories, videos } = fromEncyclopedia({
+    encyclopediaResponse,
+    videosResponse: [],
+  })
 
-// /mobile/quizzes/${locale}
-const quizzesResponse = []
+  const { helpCenters } = fromHelpCenters(helpCenterResponse)
+  const { quizzes } = fromQuizzes(quizzesResponse)
+  const { didYouKnows } = fromDidYouKnows(didYouKnowsResponse)
+  const { avatarMessages } = fromAvatarMessages(avatarMessagesResponse)
 
-// /mobile/didyouknows/${locale}
-const didYouKnowsResponse = []
+  const fileContent = `
+  // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
+  import { StaticContent } from '../../../types'
 
-// /mobile/avatar-messages/${locale}
-const avatarMessagesResponse = []
+  export const ${locale}: StaticContent = {
+    locale: '${locale}',
+    categories: ${JSON.stringify(categories)},
+    subCategories: ${JSON.stringify(subCategories)},
+    articles: ${JSON.stringify(articles)},
+    videos: ${JSON.stringify(videos)},
+    quizzes: ${JSON.stringify(quizzes)},
+    didYouKnows: ${JSON.stringify(didYouKnows)},
+    helpCenters: ${JSON.stringify(helpCenters)},
+    avatarMessages: ${JSON.stringify(avatarMessages)},
+    privacyPolicy: ${JSON.stringify(privacyPolicy)},
+    termsAndConditions: ${JSON.stringify(termsAndConditions)},
+    about: ${JSON.stringify(about)},
+    aboutBanner: '',
+  }
+  `
 
-const { articles, categories, subCategories, videos } = fromEncyclopedia({
-  // @ts-ignore
-  encyclopediaResponse,
-  videosResponse: [],
-})
-const { helpCenters } = fromHelpCenters(helpCenterResponse)
-const { quizzes } = fromQuizzes(quizzesResponse)
-const { didYouKnows } = fromDidYouKnows(didYouKnowsResponse)
-const { avatarMessages } = fromAvatarMessages(avatarMessagesResponse)
+  const fileName = `${locale}.ts`
 
-const fileContent = `
-// THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
-import { StaticContent } from '../../../types'
-
-export const ${locale}: StaticContent = {
-  locale: '${locale}',
-  categories: ${JSON.stringify(categories)},
-  subCategories: ${JSON.stringify(subCategories)},
-  articles: ${JSON.stringify(articles)},
-  quizzes: ${JSON.stringify(quizzes)},
-  didYouKnows: ${JSON.stringify(didYouKnows)},
-  helpCenters: ${JSON.stringify(helpCenters)},
-  avatarMessages: ${JSON.stringify(avatarMessages)},
-  privacyPolicy: ${privacyPolicy},
-  termsAndConditions: ${termsAndConditions},
-  about: ${about},
-  aboutBanner: '',
+  fs.writeFileSync(fileName, fileContent)
 }
-`
 
-const fileName = `${locale}.ts`
-
-fs.writeFileSync(fileName, fileContent)
+fetchData()

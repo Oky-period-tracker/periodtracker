@@ -102,6 +102,16 @@ For instructions on updating content after this initial set up, [go here](./upda
 
 Remember to commit, and push your changes to the `/translations` submodule.
 
+### Moving content from old CMS into the new
+
+In the root of the project, find this file `fetch-content.ts`. Edit this file with the `cmsUrl` for you old CMS, and the locale that you want to fetch from that CMS. Then run this command
+
+```bash
+yarn fetch-content
+```
+
+This will create/update the .ts file in your translations submodule
+
 ### Replace Ids
 
 You may need to generate new Ids for all of the content for a particular language, for example if all the Ids are identical to the ids for another language, resulting in database conflicts.

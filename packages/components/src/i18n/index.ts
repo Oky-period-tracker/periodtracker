@@ -15,6 +15,8 @@ import { customComponentsTranslations } from '../optional/CustomComponents'
 
 type TranslationObject = Record<Locale, Record<string, string>>
 
+const availableLocales = Object.keys(appTranslations)
+
 const combineTranslations = (translations: TranslationObject[]) => {
   return translations.reduce((acc, translation) => {
     if (translation) {
@@ -51,7 +53,11 @@ export const capitalizeFLetter = (inputString): string => {
 }
 
 export function currentLocale() {
-  return i18n.locale
+  const deviceLocale = i18n.locale
+  if (availableLocales.includes(deviceLocale)) {
+    return deviceLocale
+  }
+  return defaultLocale
 }
 
 export function configureI18n(locale?: string, rtl = false) {

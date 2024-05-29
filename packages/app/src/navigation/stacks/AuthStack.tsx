@@ -9,12 +9,17 @@ import EncyclopediaScreen from "../../screens/EncyclopediaScreen";
 import ArticlesScreen from "../../screens/ArticlesScreen";
 import FindHelpScreen from "../../screens/FindHelpScreen";
 import VideoScreen from "../../screens/VideoScreen";
+import TermsScreen from "../../screens/TermsScreen";
+import AboutScreen from "../../screens/AboutScreen";
+import PrivacyScreen from "../../screens/PrivacyScreen";
 
 export type AuthStackParamList = {
   Welcome: undefined;
   Auth: undefined;
   Info: undefined;
-  // Encyclopedia
+  Terms: undefined;
+  About: undefined;
+  Privacy: undefined;
   Encyclopedia: undefined;
   Articles: {
     subcategoryId: string;
@@ -38,9 +43,25 @@ const config: StackConfig<keyof AuthStackParamList> = {
       title: "Info",
       component: InfoScreen,
     },
+    Terms: {
+      title: "Terms & Conditions",
+      component: TermsScreen,
+      backRoute: "Info",
+    },
+    About: {
+      title: "About",
+      component: AboutScreen,
+      backRoute: "Info",
+    },
+    Privacy: {
+      title: "Privacy",
+      component: PrivacyScreen,
+      backRoute: "Info",
+    },
     Encyclopedia: {
       title: "Encyclopedia",
       component: EncyclopediaScreen,
+      backRoute: "Info",
     },
     Articles: {
       title: "Articles",

@@ -13,7 +13,7 @@ import { SettingsStackParamList } from "./stacks/SettingsStack";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import MainNavigator, { MainStackParamList } from "./MainNavigator";
-import AuthNavigator, { AuthStackParamList } from "./AuthNavigator";
+import AuthStack, { AuthStackParamList } from "./stacks/AuthStack";
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList;
 
@@ -31,15 +31,30 @@ export type ScreenComponent<T extends keyof GlobalParamList> = React.FC<
   ScreenProps<T>
 >;
 
-const linking: LinkingOptions<RootStackParamList> = {
+const baseLinking = {
   enabled: true,
   prefixes: [],
+};
+
+const loggedOutLinking: LinkingOptions<RootStackParamList> = {
+  ...baseLinking,
   config: {
     screens: {
-      // ===== Unauthenticated ===== //
       Welcome: "welcome",
-      Auth: "auth",
+      Auth: "",
       Info: "info",
+      Encyclopedia: "encyclopedia",
+      Articles: "articles/:subcategoryId",
+      Help: "help",
+      Video: "video",
+    },
+  },
+};
+
+const loggedInLinking: LinkingOptions<RootStackParamList> = {
+  ...baseLinking,
+  config: {
+    screens: {
       // ===== Profile ===== //
       profile: {
         path: "profile",
@@ -97,9 +112,11 @@ const theme: Theme = {
 function RootNavigator() {
   const isLoggedIn = false; // TODO:
 
+  const linking = isLoggedIn ? loggedInLinking : loggedOutLinking;
+
   return (
     <NavigationContainer linking={linking} theme={theme}>
-      {isLoggedIn ? <MainNavigator /> : <AuthNavigator />}
+      {isLoggedIn ? <MainNavigator /> : <AuthStack />}
     </NavigationContainer>
   );
 }

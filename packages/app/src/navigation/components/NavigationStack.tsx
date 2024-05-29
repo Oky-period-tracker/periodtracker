@@ -10,6 +10,7 @@ import { GlobalParamList, ScreenComponent } from "../RootNavigator";
 export type CustomStackNavigationOptions = NativeStackNavigationOptions & {
   name?: string;
   initialRouteName?: string;
+  backRoute?: string;
 };
 
 export type StackConfig<T extends keyof GlobalParamList> = {
@@ -18,6 +19,7 @@ export type StackConfig<T extends keyof GlobalParamList> = {
     [K in T]: {
       title: string;
       component: ScreenComponent<K>;
+      backRoute?: T;
     };
   };
 };
@@ -40,11 +42,11 @@ function NavigationStack<T extends keyof GlobalParamList>({
       }}
     >
       {recordToArray<StackConfig<T>["screens"]>(config.screens).map(
-        ([name, { title, component }]) => {
+        ([name, { title, component, backRoute }]) => {
           const options: CustomStackNavigationOptions = {
             name,
             title,
-            initialRouteName,
+            backRoute: backRoute ? backRoute : initialRouteName,
           };
 
           return (

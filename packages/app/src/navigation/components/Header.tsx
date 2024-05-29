@@ -12,10 +12,10 @@ type HeaderProps = NativeStackHeaderProps & {
 
 export const Header = ({ navigation, options }: HeaderProps) => {
   const title = options.title;
-  const showBackButton = options.name !== options.initialRouteName;
+  const showBackButton = options.name !== options.backRoute;
 
   const onBackPress = () => {
-    navigation.navigate(options.initialRouteName);
+    navigation.navigate(options.backRoute);
   };
 
   return (

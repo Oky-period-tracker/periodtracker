@@ -1,7 +1,7 @@
-def nodePath = "/Users/dev/.nvm/versions/node/v20.12.2/bin/node"
-project.ext.react = [
-    nodeExecutable: nodePath
-]
+// def nodePath = "/Users/dev/.nvm/versions/node/v20.12.2/bin/node"
+// react {
+//     nodeExecutable = file(nodePath)
+// }
 
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"

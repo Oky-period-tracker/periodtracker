@@ -1,5 +1,5 @@
 import * as React from "react";
-import NavigationStack, { StackConfig } from "../NavigationStack";
+import NavigationStack, { StackConfig } from "../components/NavigationStack";
 import MainScreen from "../../screens/MainScreen";
 import DayScreen from "../../screens/DayScreen";
 import CalendarScreen from "../../screens/CalendarScreen";

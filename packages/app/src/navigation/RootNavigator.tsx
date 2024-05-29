@@ -2,36 +2,23 @@ import * as React from "react";
 import {
   LinkingOptions,
   NavigationContainer,
-  NavigatorScreenParams,
   DefaultTheme,
   Theme,
 } from "@react-navigation/native";
-import {
-  BottomTabNavigationOptions,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 
-import ProfileStack, { ProfileStackParamList } from "./stacks/ProfileStack";
-import HomeStack, { HomeStackParamList } from "./stacks/HomeStack";
-import EncyclopediaStack, {
-  EncyclopediaStackParamList,
-} from "./stacks/EncyclopediaStack";
-import SettingsStack, { SettingsStackParamList } from "./stacks/SettingsStack";
-import { TabIcon } from "./components/TabIcon";
-import { View } from "react-native";
-import { User } from "../components/icons/User";
-import { IS_IOS } from "../services/device";
+import { ProfileStackParamList } from "./stacks/ProfileStack";
+import { HomeStackParamList } from "./stacks/HomeStack";
+import { EncyclopediaStackParamList } from "./stacks/EncyclopediaStack";
+import { SettingsStackParamList } from "./stacks/SettingsStack";
+
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import MainNavigator, { MainStackParamList } from "./MainNavigator";
+import AuthNavigator, { AuthStackParamList } from "./AuthNavigator";
 
-export type RootStackParamList = {
-  profile: NavigatorScreenParams<ProfileStackParamList>;
-  home: NavigatorScreenParams<HomeStackParamList>;
-  encyclopedia: NavigatorScreenParams<EncyclopediaStackParamList>;
-  settings: NavigatorScreenParams<SettingsStackParamList>;
-};
+export type RootStackParamList = MainStackParamList & AuthStackParamList;
 
-export type GlobalParamList = RootStackParamList &
+export type GlobalParamList = MainStackParamList &
+  AuthStackParamList &
   ProfileStackParamList &
   HomeStackParamList &
   EncyclopediaStackParamList &
@@ -49,6 +36,10 @@ const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [],
   config: {
     screens: {
+      // ===== Unauthenticated ===== //
+      Welcome: "welcome",
+      Auth: "auth",
+      Info: "info",
       // ===== Profile ===== //
       profile: {
         path: "profile",
@@ -95,25 +86,6 @@ const linking: LinkingOptions<RootStackParamList> = {
   },
 };
 
-const screenOptions: BottomTabNavigationOptions = {
-  tabBarStyle: {
-    minHeight: 60,
-    padding: IS_IOS ? 8 : 0,
-    backgroundColor: "#F1F1F1",
-  },
-};
-
-const options: BottomTabNavigationOptions = {
-  tabBarShowLabel: false,
-  headerShown: false,
-  tabBarItemStyle: {
-    backgroundColor: "#F1F1F1",
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-    borderColor: "#F5F5F5",
-  },
-};
-
 const theme: Theme = {
   ...DefaultTheme,
   colors: {
@@ -122,63 +94,12 @@ const theme: Theme = {
   },
 };
 
-const Tab = createBottomTabNavigator();
-
 function RootNavigator() {
+  const isLoggedIn = false; // TODO:
+
   return (
     <NavigationContainer linking={linking} theme={theme}>
-      <Tab.Navigator initialRouteName={"home"} screenOptions={screenOptions}>
-        <Tab.Screen
-          name={"profile"}
-          component={ProfileStack}
-          options={{
-            ...options,
-            tabBarIcon: ({ focused, size }) => (
-              <TabIcon focused={focused}>
-                <View style={{ width: size, height: size, padding: 0 }}>
-                  <User />
-                </View>
-              </TabIcon>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={"home"}
-          component={HomeStack}
-          options={{
-            ...options,
-            tabBarIcon: ({ focused, size }) => (
-              <TabIcon focused={focused}>
-                <FontAwesome size={size} name={"calendar"} color={"#fff"} />
-              </TabIcon>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={"encyclopedia"}
-          component={EncyclopediaStack}
-          options={{
-            ...options,
-            tabBarIcon: ({ focused, size }) => (
-              <TabIcon focused={focused}>
-                <FontAwesome size={size} name={"book"} color={"#fff"} />
-              </TabIcon>
-            ),
-          }}
-        />
-        <Tab.Screen
-          name={"settings"}
-          component={SettingsStack}
-          options={{
-            ...options,
-            tabBarIcon: ({ focused, size }) => (
-              <TabIcon focused={focused}>
-                <FontAwesome size={size} name={"gear"} color={"#fff"} />
-              </TabIcon>
-            ),
-          }}
-        />
-      </Tab.Navigator>
+      {isLoggedIn ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

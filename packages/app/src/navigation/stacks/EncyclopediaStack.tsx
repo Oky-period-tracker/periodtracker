@@ -3,7 +3,7 @@ import EncyclopediaScreen from "../../screens/EncyclopediaScreen";
 import ArticlesScreen from "../../screens/ArticlesScreen";
 import FindHelpScreen from "../../screens/FindHelpScreen";
 import VideoScreen from "../../screens/VideoScreen";
-import NavigationStack, { StackConfig } from "../NavigationStack";
+import NavigationStack, { StackConfig } from "../components/NavigationStack";
 
 export type EncyclopediaStackParamList = {
   Encyclopedia: undefined;

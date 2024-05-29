@@ -1,5 +1,5 @@
 import * as React from "react";
-import NavigationStack, { StackConfig } from "../NavigationStack";
+import NavigationStack, { StackConfig } from "../components/NavigationStack";
 import EditProfileScreen from "../../screens/EditProfileScreen";
 import ProfileScreen from "../../screens/ProfileScreen";
 import AvatarAndThemeScreen from "../../screens/AvatarAndThemeScreen";

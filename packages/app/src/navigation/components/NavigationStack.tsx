@@ -3,9 +3,9 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationOptions,
 } from "@react-navigation/native-stack";
-import { Header } from "./components/Header";
-import { recordToArray } from "../services/utils";
-import { GlobalParamList, ScreenComponent } from "./RootNavigator";
+import { Header } from "./Header";
+import { recordToArray } from "../../services/utils";
+import { GlobalParamList, ScreenComponent } from "../RootNavigator";
 
 export type CustomStackNavigationOptions = NativeStackNavigationOptions & {
   name?: string;

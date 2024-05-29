@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { CustomStackNavigationOptions } from "../NavigationStack";
+import { CustomStackNavigationOptions } from "./NavigationStack";
 import { IS_ANDROID } from "../../services/device";
 
 type HeaderProps = NativeStackHeaderProps & {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import NavigationStack, { StackConfig } from "../NavigationStack";
+import NavigationStack, { StackConfig } from "../components/NavigationStack";
 import SettingsScreen from "../../screens/SettingsScreen";
 import AccessScreen from "../../screens/AccessScreen";
 import TermsScreen from "../../screens/TermsScreen";

@@ -1,8 +1,7 @@
 import _ from 'lodash'
 import { Actions } from '../types'
-import { currentLocale } from '../../i18n'
 import DeviceInfo from 'react-native-device-info'
-import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from '@oky/core'
+import { AvatarName, ThemeName, defaultAvatar, defaultLocale, defaultTheme } from '@oky/core'
 import { v4 as uuidv4 } from 'uuid'
 import { RehydrateAction, REHYDRATE } from 'redux-persist'
 
@@ -34,9 +33,9 @@ const initialState: AppState = {
   appVersionName: DeviceInfo.getVersion(),
   appVersionCode: DeviceInfo.getBuildNumber(),
   firebaseToken: null,
-  appLocale: currentLocale(),
-  locale: currentLocale(),
-  chosenRegion: 'en', // @TODO: PENAL CODE change to currentLocale() if no penal code   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
+  appLocale: defaultLocale,
+  locale: defaultLocale,
+  chosenRegion: defaultLocale, // @TODO: PENAL CODE change to currentLocale() if no penal code   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
   hasOpened: false,
   isTutorialOneActive: true,
   isTutorialTwoActive: true,

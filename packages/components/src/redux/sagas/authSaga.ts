@@ -66,7 +66,6 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         ...store.appState,
         app: {
           ...store.appState.app,
-          appLocale: localeapp,
           locale: localeapp,
         },
       }

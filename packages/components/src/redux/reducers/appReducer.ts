@@ -6,9 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { RehydrateAction, REHYDRATE } from 'redux-persist'
 
 export interface AppState {
-  appLocale: string
   locale: string
-  chosenRegion: string
   appVersionName: string
   appVersionCode: string
   firebaseToken: string
@@ -33,9 +31,7 @@ const initialState: AppState = {
   appVersionName: DeviceInfo.getVersion(),
   appVersionCode: DeviceInfo.getBuildNumber(),
   firebaseToken: null,
-  appLocale: defaultLocale,
   locale: defaultLocale,
-  chosenRegion: defaultLocale, // @TODO: PENAL CODE change to currentLocale() if no penal code   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
   hasOpened: false,
   isTutorialOneActive: true,
   isTutorialTwoActive: true,
@@ -95,11 +91,6 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
       return {
         ...state,
         locale: action.payload.locale,
-      }
-    case 'SET_CHOSEN_REGION':
-      return {
-        ...state,
-        chosenRegion: action.payload.region,
       }
     case 'SET_HAS_OPENED':
       return {

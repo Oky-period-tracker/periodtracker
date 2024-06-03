@@ -63,12 +63,10 @@ export function configureI18n(locale?: string, rtl = false) {
       }
     }
 
-    return (
-      RNLocalize.findBestAvailableLanguage(Object.keys(allTranslations)) || {
-        languageTag: defaultLocale,
-        isRTL: false,
-      }
-    )
+    return {
+      languageTag: defaultLocale,
+      isRTL: false,
+    }
   }
 
   const { languageTag, isRTL } = findBestLanguage()

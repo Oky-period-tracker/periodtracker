@@ -27,6 +27,13 @@ target 'oky' do
   pod 'FirebaseCoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
   $RNFirebaseAsStaticFramework = true
+
+  pod 'FirebaseSessions', :modular_headers => true
+  pod 'FirebaseCoreExtension', :modular_headers => true
+  pod 'FirebaseInstallations', :modular_headers => true
+  pod 'GoogleDataTransport', :modular_headers => true
+  pod 'nanopb', :modular_headers => true
+
   pod 'react-native-splash-screen', :path => '../../../node_modules/react-native-splash-screen'
   pod 'ReactNativeART', :path => '../../../node_modules/@react-native-community/art'
   

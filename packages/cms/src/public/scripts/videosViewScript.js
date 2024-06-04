@@ -125,7 +125,7 @@ $(document).on('click', '.liveCheckbox', () => {
 })
 
 // ==================== Deletion =============================
-function deleteArticle(id) {
+function deleteVideo(id) {
   var result = confirm('Are you sure? This will permanently delete the item')
   if (result) {
     $.ajax({

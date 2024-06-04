@@ -37,9 +37,10 @@
       </button>
     </div>
     <div class="homeTableContainer">
-      <table class="table table-striped table-borderless tableFixHead table-responsive">
+      <table id="videoTable" class="table table-striped table-borderless tableFixHead table-responsive">
         <thead>
           <tr>
+            <th style="width: 2.5%" id="order"><%= __('Order')%></th>
             <th style="width: 15%"><%= __('Title') %></th>
             <th style="width: 15%"><%= __('Youtube Id') %></th>
             <th style="width: 15%"><%= __('Asset name') %></th>
@@ -48,46 +49,6 @@
             <th style="width: 2.5%"><%= __('Live') %></th>
           </tr>
         </thead>
-        <tbody style="overflow-y: scroll" id="videos">
-          <% videos.forEach((video) =>{ %>
-          <tr>
-            <td><%= video.title %></td>
-            <% if(!!video.youtubeId){ %>
-              <td><a href="https://www.youtube.com/watch?v=<%= (video.youtubeId) %>" target="_blank" style="color:#007bff;"><%= (video.youtubeId) %></a></td>
-            <% } else{ %>
-              <td>-</td>
-            <% } %>
-            <td><%= (video.assetName ? video.assetName : '-') %></td>
-            <td>
-              <button
-                type="button"
-                class="btn"
-                data-toggle="modal"
-                data-target="#videoModal"
-                data-value="<%= video.id %>"
-              >
-              <i class="fas fa-edit" aria-hidden="true"></i>
-              </button>
-            </td>
-            <td>
-              <button type="button" class="btn deleteVideo" data-value="<%= video.id %>">
-                <i class="fas fa-trash" aria-hidden="true"></i>
-              </button>
-            </td>
-            <td>
-              <label class="switch">
-                <input data-value="<%= video.id %>" class='liveCheckbox' type="checkbox" 
-                <%if(video.live) {%>
-                  checked
-                <% }%>
-                />
-                <span class="slider round"></span>
-              </label>
-            </td>
-            <td hidden><%= video.date_created %></td>
-          </tr>
-          <% }) %>
-        </tbody>
       </table>
     </div>
   </div>

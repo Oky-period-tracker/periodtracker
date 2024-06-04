@@ -577,6 +577,7 @@ export class RenderController {
   async renderVideoManagement(request: Request, response: Response, next: NextFunction) {
     const videos = await this.videoRepository.find({
       where: { lang: request.user.lang },
+      order: { sortingKey: 'ASC' },
     })
 
     this.render(response, 'Videos', { videos })

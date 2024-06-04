@@ -275,6 +275,12 @@ export const Routes = [
     controller: VideoController,
     action: 'remove',
   },
+  {
+    method: 'put',
+    route: '/videos',
+    controller: VideoController,
+    action: 'reorderRows',
+  },
   // ------------ Categories Api ----------------
   {
     method: 'get',

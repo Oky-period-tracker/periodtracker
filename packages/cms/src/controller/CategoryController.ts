@@ -5,6 +5,7 @@ import { Subcategory } from '../entity/Subcategory'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
+import { bulkUpdateRowReorder } from '../helpers/common'
 
 export class CategoryController {
   private categoryRepository = getRepository(Category)
@@ -68,5 +69,20 @@ export class CategoryController {
     await this.subcategoryRepository.remove(subcategoriesToRemove)
     await this.articleRepository.remove(articlesToRemove)
     return categoryToRemove
+  }
+
+  async reorderRows(request: Request, response: Response, next: NextFunction) {
+    if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
+      return await bulkUpdateRowReorder(this.categoryRepository, request.body.rowReorderResult)
+    }
+
+    return await this.categoryRepository.find({
+      where: {
+        lang: request.params.lang,
+      },
+      order: {
+        sortingKey: 'ASC',
+      },
+    })
   }
 }

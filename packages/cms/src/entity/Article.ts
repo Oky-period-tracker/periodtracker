@@ -25,4 +25,7 @@ export class Article {
 
   @Column()
   lang: string
+
+  @Column({ generated: 'increment' })
+  sortingKey: number
 }

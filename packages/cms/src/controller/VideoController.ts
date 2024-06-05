@@ -2,6 +2,7 @@ import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { v4 as uuid } from 'uuid'
 import { Video } from '../entity/Video'
+import { bulkUpdateRowReorder } from '../helpers/common'
 
 export class VideoController {
   private videoRepository = getRepository(Video)
@@ -10,7 +11,10 @@ export class VideoController {
     return this.videoRepository.find({ where: { lang: request.user.lang } })
   }
   async allLive(request: Request, response: Response, next: NextFunction) {
-    return this.videoRepository.find({ where: { lang: request.params.lang, live: true } })
+    return this.videoRepository.find({
+      where: { lang: request.params.lang, live: true },
+      order: { sortingKey: 'ASC' },
+    })
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
@@ -55,5 +59,20 @@ export class VideoController {
     const itemToRemove = await this.videoRepository.findOne(request.params.id)
     await this.videoRepository.remove(itemToRemove)
     return itemToRemove
+  }
+
+  async reorderRows(request: Request, response: Response, next: NextFunction) {
+    if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
+      return await bulkUpdateRowReorder(this.videoRepository, request.body.rowReorderResult)
+    }
+
+    return await this.videoRepository.find({
+      where: {
+        lang: request.params.lang,
+      },
+      order: {
+        sortingKey: 'ASC',
+      },
+    })
   }
 }

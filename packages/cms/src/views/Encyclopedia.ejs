@@ -34,7 +34,7 @@
       <button
         type="button"
         class="btn btn-primary"
-        onclick="location.href='/catsubcat-management';"
+        onclick="location.href='/categories-management';"
       >
       <%= __('Category Management') %>
       </button>
@@ -73,8 +73,8 @@
         <tbody style="overflow-y: scroll" id="articles">
           <% articles.forEach((article) =>{ %>
           <tr>
-            <td><%= article.category_title %></td>
-            <td><%= article.subcategory_title %></td>
+            <td><a href="/categories-management/<%= article.category_id %>"><%= article.category_title %></a></td>
+            <td><a href="/subcategories-management/<%= article.subcategory_id %>"><%= article.subcategory_title %></a></td>
             <td><%= article.article_heading %></td>
             <td><%= article.article_text %></td>
             <td>

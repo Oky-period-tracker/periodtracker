@@ -1,0 +1,112 @@
+#helpCenterTable_wrapper,
+#articleTable_wrapper,
+#categoryTable_wrapper,
+#subcategoryTable_wrapper {
+  text-align: initial;
+}
+
+.filters th {
+  background: white;
+}
+
+.filters th input {
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+}
+
+#result {
+  border: 1px solid #888;
+  background: #f7f7f7;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+.order input {
+  display: none;
+}
+
+.even td {
+  background: #f2f2f2;
+}
+
+#helpCenterTable td,
+#articleTable td {
+  font-size: 12px;
+}
+
+#helpCenterTable th,
+#articleTable th {
+  text-align: center;
+  font-size: 14px;
+}
+
+.dtfh-floatingparenthead {
+  font-size: 14px;
+}
+
+.dtfh-floatingparenthead table thead tr th {
+  text-align: center;
+}
+
+.dataTables_filter input {
+  border-radius: 8px;
+}
+
+.dataTables_filter label,
+.dataTables_length label,
+.dataTables_info {
+  color: #3579f6;
+  font-size: 14px;
+}
+
+.previous a,
+.next a,
+.page-item a {
+  border: none;
+  font-size: 14px;
+}
+
+.page-item.active .page-link {
+  border-radius: 8px;
+  background: #3579f6;
+}
+
+.page-link:hover {
+  border-radius: 8px;
+}
+
+.page-item.active .page-link {
+  border-radius: 8px;
+  background: #3579f6;
+}
+
+/* TODO - do this to all data tables since all tables are overriden initially */
+#helpCenterTable,
+#articleTable {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  overflow-y: unset !important;
+}
+
+.helpCenterContainer,
+.articleContainer {
+  padding: 15px;
+}
+
+#helpCenterModal .modal-content {
+  padding: 30px;
+}
+
+#helpCenterModal form {
+  text-align: initial;
+}
+
+#order::before,
+#order::after {
+  display: none;
+}
+
+.select-filter {
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+}

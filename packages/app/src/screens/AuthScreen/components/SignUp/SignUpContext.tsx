@@ -20,6 +20,7 @@ export type SignUpState = Omit<User, "id" | "dateSignedUp" | "isGuest"> & {
   stepIndex: number;
   agree: boolean;
   passwordConfirm: string;
+  errorsVisible: boolean;
 };
 
 export type Action<T extends keyof SignUpState = keyof SignUpState> =
@@ -28,15 +29,13 @@ export type Action<T extends keyof SignUpState = keyof SignUpState> =
       value: SignUpState[T];
     }
   | {
-      type: "increment_step";
-    }
-  | {
-      type: "reset";
+      type: "continue";
     };
 
 const defaultState: SignUpState = {
   stepIndex: 0,
   agree: false,
+  errorsVisible: false,
   name: "",
   password: "",
   passwordConfirm: "",
@@ -54,17 +53,21 @@ const defaultState: SignUpState = {
 
 function reducer(state: SignUpState, action: Action): SignUpState {
   switch (action.type) {
-    case "increment_step": {
-      return {
-        ...state,
-        stepIndex: state.stepIndex + 1,
-      };
-    }
+    case "continue": {
+      const step = steps[state.stepIndex];
+      const { isValid } = validateStep(state, step);
 
-    case "reset": {
+      if (!isValid) {
+        return {
+          ...state,
+          errorsVisible: true,
+        };
+      }
+
       return {
         ...state,
         stepIndex: state.stepIndex + 1,
+        errorsVisible: false,
       };
     }
 
@@ -76,21 +79,48 @@ function reducer(state: SignUpState, action: Action): SignUpState {
   }
 }
 
-const canContinueReducer = (state: SignUpState, step: SignUpStep) => {
-  switch (step) {
-    case "confirmation":
-      return state.agree;
+const validateStep = (
+  state: SignUpState,
+  step: SignUpStep
+): { isValid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  let isValid = true;
 
-    default:
-      return true;
+  // ========== confirmation ========== //
+  if (step === "confirmation") {
+    if (!state.agree) {
+      isValid = false;
+      errors.push("You must agree to the terms and conditions.");
+    }
   }
+
+  // ========== information ========== //
+  if (step === "information") {
+    if (state.name.length < 3) {
+      isValid = false;
+      errors.push("name_too_short");
+    }
+
+    if (state.password.length < 3) {
+      isValid = false;
+      errors.push("password_too_short");
+    }
+
+    if (state.password !== state.passwordConfirm) {
+      isValid = false;
+      errors.push("passwords_dont_match");
+    }
+  }
+
+  return { isValid, errors };
 };
 
 export type SignUpContext = {
   state: SignUpState;
   dispatch: React.Dispatch<Action>;
   step: SignUpStep;
-  canContinue: boolean;
+  isValid: boolean;
+  errors: string[]; // TODO:
 };
 
 const defaultValue: SignUpContext = {
@@ -99,7 +129,8 @@ const defaultValue: SignUpContext = {
     //
   },
   step: "confirmation",
-  canContinue: false,
+  isValid: false,
+  errors: [],
 };
 
 const SignUpContext = React.createContext<SignUpContext>(defaultValue);
@@ -108,7 +139,7 @@ export const SignUpProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, defaultState);
 
   const step = steps[state.stepIndex];
-  const canContinue = canContinueReducer(state, step);
+  const { isValid, errors } = validateStep(state, step);
 
   return (
     <SignUpContext.Provider
@@ -116,7 +147,8 @@ export const SignUpProvider = ({ children }) => {
         state,
         dispatch,
         step,
-        canContinue,
+        isValid,
+        errors,
       }}
     >
       {children}

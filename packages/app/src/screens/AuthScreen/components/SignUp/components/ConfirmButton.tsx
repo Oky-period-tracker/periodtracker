@@ -2,16 +2,12 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useSignUp } from "../SignUpContext";
 
 export const ConfirmButton = () => {
-  const { dispatch, canContinue } = useSignUp();
+  const { dispatch } = useSignUp();
 
-  const onPress = () => dispatch({ type: "increment_step" });
+  const onPress = () => dispatch({ type: "continue" });
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={!canContinue}
-      style={styles.confirm}
-    >
+    <TouchableOpacity onPress={onPress} style={styles.confirm}>
       <Text style={styles.confirmText}>Confirm</Text>
     </TouchableOpacity>
   );

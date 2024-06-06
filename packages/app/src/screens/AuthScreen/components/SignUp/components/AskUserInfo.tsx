@@ -49,10 +49,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
-  input: {
-    margin: 8,
-    borderRadius: 20,
-    backgroundColor: "#f1f1f1",
-    padding: 12,
-  },
 });

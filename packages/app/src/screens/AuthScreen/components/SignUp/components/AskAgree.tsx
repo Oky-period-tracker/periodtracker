@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../../../components/Button";
 import { useSignUp } from "../SignUpContext";
 
-export const AskUserConfirmation = () => {
+export const AskAgree = () => {
   const { state, dispatch } = useSignUp();
   const toggleAgree = () => dispatch({ type: "agree", value: !state.agree });
 

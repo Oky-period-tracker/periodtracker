@@ -4,14 +4,14 @@ import { User } from "../../../../types";
 type SignUpStep =
   | "confirmation"
   | "information"
-  | "password"
+  | "secret"
   | "age"
   | "location";
 
 const steps: SignUpStep[] = [
   "confirmation",
   "information",
-  "password",
+  "secret",
   "age",
   "location",
 ];
@@ -82,7 +82,7 @@ const canContinueReducer = (state: SignUpState, step: SignUpStep) => {
       return state.agree;
 
     default:
-      return false;
+      return true;
   }
 };
 

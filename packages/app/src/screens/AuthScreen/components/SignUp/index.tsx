@@ -16,7 +16,7 @@ export const SignUp = () => {
   );
 };
 
-export const SignUpInner = () => {
+const SignUpInner = () => {
   const { step } = useSignUp();
 
   return (

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Button } from "../../../../components/Button";
-import { useAuthMode } from "../../AuthModeContext";
+import { Button } from "../../../../../components/Button";
+import { useAuthMode } from "../../../AuthModeContext";
 
 export const SignUpHeader = () => {
   const { setAuthMode } = useAuthMode();

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "../../../../components/Button";
-import { useSignUp } from "./SignUpContext";
+import { Button } from "../../../../../components/Button";
+import { useSignUp } from "../SignUpContext";
 
 export const AskUserConfirmation = () => {
   const { state, dispatch } = useSignUp();

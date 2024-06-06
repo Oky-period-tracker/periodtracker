@@ -18,7 +18,6 @@ export const SignUp = () => {
 
 export const SignUpInner = () => {
   const { step } = useSignUp();
-  console.log("*** ", { step });
 
   return (
     <>

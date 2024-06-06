@@ -1,6 +1,5 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
-import { ErrorText } from "../../../../../components/ErrorText";
 import { Input } from "../../../../../components/Input";
 
 export const AskUserInfo = () => {

@@ -82,6 +82,8 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     textAlign: "center",
+    // @ts-ignore
+    outlineStyle: "none", // Web
   },
   sideComponent: {
     width: 20,

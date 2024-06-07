@@ -90,13 +90,13 @@ const validateStep = (
   if (step === "confirmation") {
     if (!state.agree) {
       isValid = false;
-      errors.push("You must agree to the terms and conditions.");
     }
   }
 
   // ========== information ========== //
   if (step === "information") {
     if (state.name.length < 3) {
+      // TODO: check availability
       isValid = false;
       errors.push("name_too_short");
     }
@@ -109,6 +109,19 @@ const validateStep = (
     if (state.password !== state.passwordConfirm) {
       isValid = false;
       errors.push("passwords_dont_match");
+    }
+  }
+
+  // ========== secret ========== //
+  if (step === "secret") {
+    if (!state.secretQuestion) {
+      isValid = false;
+      errors.push("no_secret_question");
+    }
+
+    if (state.secretAnswer.length < 1) {
+      isValid = false;
+      errors.push("secret_too_short");
     }
   }
 

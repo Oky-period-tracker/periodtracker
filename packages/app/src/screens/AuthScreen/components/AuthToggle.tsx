@@ -10,13 +10,13 @@ export const AuthToggle = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={onLogInPress}>
-        <Text>Log In</Text>
+        <Text style={styles.text}>Log In</Text>
       </TouchableOpacity>
 
       <Hr />
 
       <TouchableOpacity style={styles.button} onPress={onSignUpPress}>
-        <Text>Sign Up</Text>
+        <Text style={styles.text}>Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
@@ -35,5 +35,6 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
+    fontWeight: "bold",
   },
 });

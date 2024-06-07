@@ -1,5 +1,6 @@
 import React, { useReducer } from "react";
 import { User } from "../../../../types";
+import { FAST_SIGN_UP } from "../../../../config/env";
 
 type SignUpStep =
   | "confirmation"
@@ -50,6 +51,27 @@ const defaultState: SignUpState = {
     isProfileUpdateSkipped: true, // Default true for new users
   },
 };
+
+const prefilledState: SignUpState = {
+  stepIndex: 0,
+  agree: true,
+  errorsVisible: false,
+  name: "aaa",
+  password: "aaa",
+  passwordConfirm: "aaa",
+  secretQuestion: "favourite_actor",
+  secretAnswer: "a",
+  gender: "Female",
+  location: "Urban",
+  country: "AF",
+  province: "0",
+  dateOfBirth: "2015-12-31T17:00:00.000Z",
+  metadata: {
+    isProfileUpdateSkipped: true, // Default true for new users
+  },
+};
+
+const initialState = FAST_SIGN_UP ? prefilledState : defaultState;
 
 function reducer(state: SignUpState, action: Action): SignUpState {
   switch (action.type) {
@@ -149,7 +171,7 @@ const defaultValue: SignUpContext = {
 const SignUpContext = React.createContext<SignUpContext>(defaultValue);
 
 export const SignUpProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, defaultState);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const step = steps[state.stepIndex];
   const { isValid, errors } = validateStep(state, step);

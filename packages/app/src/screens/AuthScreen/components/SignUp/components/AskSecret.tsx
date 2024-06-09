@@ -16,6 +16,7 @@ export const AskSecret = () => {
 
   const onChangeAnswer = (value: string) =>
     dispatch({ type: "secretAnswer", value });
+
   const onChangeQuestion = (value: string) =>
     dispatch({ type: "secretQuestion", value });
 

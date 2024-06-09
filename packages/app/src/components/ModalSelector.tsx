@@ -14,7 +14,7 @@ export const ModalSelector = ({
   options: string[];
   onSelect: (value: string) => void;
 }) => {
-  const initialIndex = options.indexOf(value);
+  const initialIndex = Math.max(options.indexOf(value), 0);
   const [selectedIndex, setSelectedIndex] = React.useState(initialIndex);
   const selectedOption = options[selectedIndex];
 

@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useScreenDimensions } from "../hooks/useScreenDimensions";
@@ -12,10 +13,12 @@ export const Modal = ({
   visible,
   toggleVisible,
   children,
+  style,
 }: {
   visible: boolean;
   toggleVisible: () => void;
   children: React.ReactNode;
+  style: ViewStyle;
 }) => {
   const { width, height } = useScreenDimensions();
   const maxWidth = Math.min(width, 800);
@@ -31,7 +34,7 @@ export const Modal = ({
     >
       <View style={styles.container}>
         <TouchableOpacity style={styles.backDrop} onPress={toggleVisible} />
-        <SafeAreaView style={[styles.children, { maxWidth, maxHeight }]}>
+        <SafeAreaView style={[styles.children, { maxWidth, maxHeight }, style]}>
           {children}
         </SafeAreaView>
       </View>

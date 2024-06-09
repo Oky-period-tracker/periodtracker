@@ -1,15 +1,12 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Input, InputProps } from "./Input";
-import { useToggle } from "../hooks/useToggle";
 import { Modal } from "./Modal";
+import React from "react";
+import { WheelPicker } from "./WheelPicker";
+import { Hr } from "./Hr";
 
 export const ModalSelector = ({
+  value,
   options,
   onSelect,
   ...props
@@ -17,65 +14,77 @@ export const ModalSelector = ({
   options: string[];
   onSelect: (value: string) => void;
 }) => {
-  const [visible, toggleVisible] = useToggle();
+  const initialIndex = options.indexOf(value);
+  const [selectedIndex, setSelectedIndex] = React.useState(initialIndex);
+  const selectedOption = options[selectedIndex];
+
+  const [visible, setIsVisible] = React.useState(false);
+  const toggleVisible = () => {
+    setIsVisible((current) => !current);
+    setSelectedIndex(initialIndex);
+  };
+
+  const onConfirm = () => {
+    onSelect(selectedOption);
+    toggleVisible();
+  };
 
   return (
     <>
       <TouchableOpacity onPress={toggleVisible}>
         <Input
           {...props}
+          value={value}
           editable={false}
           selectTextOnFocus={false}
           displayOnly={true}
         />
       </TouchableOpacity>
 
-      <Modal visible={visible} toggleVisible={toggleVisible}>
+      <Modal
+        visible={visible}
+        toggleVisible={toggleVisible}
+        style={styles.modal}
+      >
         <View style={styles.modalBody}>
           <Text style={styles.title}>{props.placeholder}</Text>
-          <ScrollView>
-            {options.map((option, i) => {
-              const onPress = () => {
-                onSelect(option);
-                toggleVisible();
-              };
-
-              return (
-                <TouchableOpacity
-                  key={`${option}-${i}`}
-                  onPress={onPress}
-                  style={styles.option}
-                >
-                  <Text style={styles.optionText}>{option}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
+          <WheelPicker
+            selectedIndex={selectedIndex}
+            options={options}
+            onChange={setSelectedIndex}
+            resetDeps={[visible]}
+          />
         </View>
+
+        <Hr />
+        <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
+          <Text style={styles.confirmText}>Confirm</Text>
+        </TouchableOpacity>
       </Modal>
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  modalBody: {
+  modal: {
     backgroundColor: "#fff",
     borderRadius: 20,
-    padding: 24,
+  },
+  modalBody: {
+    paddingVertical: 24,
+    paddingHorizontal: 48,
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 12,
   },
-  option: {
-    borderRadius: 20,
-    backgroundColor: "#f1f1f1",
-    margin: 8,
-    padding: 8,
+  confirm: {
+    padding: 24,
   },
-  optionText: {
+  confirmText: {
     textAlign: "center",
+    fontWeight: "bold",
   },
 });

@@ -21,6 +21,8 @@ export type SignUpState = Omit<User, "id" | "dateSignedUp" | "isGuest"> & {
   stepIndex: number;
   agree: boolean;
   passwordConfirm: string;
+  month?: number;
+  year?: number;
   errorsVisible: boolean;
 };
 
@@ -47,6 +49,8 @@ const defaultState: SignUpState = {
   country: null,
   province: null,
   dateOfBirth: "",
+  month: null,
+  year: null,
   metadata: {
     isProfileUpdateSkipped: true, // Default true for new users
   },
@@ -65,6 +69,8 @@ const prefilledState: SignUpState = {
   location: "Urban",
   country: "AF",
   province: "0",
+  month: 1,
+  year: 2016,
   dateOfBirth: "2015-12-31T17:00:00.000Z",
   metadata: {
     isProfileUpdateSkipped: true, // Default true for new users
@@ -93,6 +99,41 @@ function reducer(state: SignUpState, action: Action): SignUpState {
       };
     }
 
+    case "month": {
+      const month = action.value as number;
+      if (!state.year) {
+        return {
+          ...state,
+          month,
+        };
+      }
+
+      const dateOfBirth = getDateOfBirth(state.year, month);
+
+      return {
+        ...state,
+        month,
+        dateOfBirth,
+      };
+    }
+
+    case "year": {
+      const year = action.value as number;
+      if (isNaN(state.month)) {
+        return {
+          ...state,
+          year,
+        };
+      }
+
+      const dateOfBirth = getDateOfBirth(year, state.month);
+      return {
+        ...state,
+        year,
+        dateOfBirth,
+      };
+    }
+
     default:
       return {
         ...state,
@@ -100,6 +141,11 @@ function reducer(state: SignUpState, action: Action): SignUpState {
       };
   }
 }
+
+const getDateOfBirth = (year: number, month: number) => {
+  const day = 2; // Prevents it defaulting to 31st of previous month
+  return new Date(year, month, day).toISOString();
+};
 
 const validateStep = (
   state: SignUpState,
@@ -144,6 +190,23 @@ const validateStep = (
     if (state.secretAnswer.length < 1) {
       isValid = false;
       errors.push("secret_too_short");
+    }
+  }
+
+  // ========== age ========== //
+  if (step === "age") {
+    if (!state.year) {
+      isValid = false;
+      errors.push("no_year");
+    }
+
+    if (isNaN(state.month)) {
+      isValid = false;
+      errors.push("no_month");
+    }
+
+    if (!state.dateOfBirth) {
+      isValid = false;
     }
   }
 

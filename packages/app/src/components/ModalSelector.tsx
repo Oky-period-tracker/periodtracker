@@ -58,7 +58,6 @@ export const ModalSelector = ({
         style={styles.modal}
       >
         <View style={styles.modalBody}>
-          <Text style={styles.title}>{props.placeholder}</Text>
           {searchEnabled && (
             <Input
               value={query}

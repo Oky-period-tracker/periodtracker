@@ -134,6 +134,13 @@ function reducer(state: SignUpState, action: Action): SignUpState {
       };
     }
 
+    case "country":
+      return {
+        ...state,
+        country: action.value as string,
+        province: null,
+      };
+
     default:
       return {
         ...state,
@@ -207,6 +214,19 @@ const validateStep = (
 
     if (!state.dateOfBirth) {
       isValid = false;
+    }
+  }
+
+  // ========== location ========== //
+  if (step === "location") {
+    if (!state.country) {
+      isValid = false;
+      errors.push("no_country");
+    }
+
+    if (!state.province) {
+      isValid = false;
+      errors.push("no_province");
     }
   }
 

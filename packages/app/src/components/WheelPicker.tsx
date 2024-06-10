@@ -2,7 +2,7 @@ import React from "react";
 import {
   View,
   Text,
-  ScrollView,
+  FlatList,
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent,
@@ -31,67 +31,97 @@ export const WheelPicker = ({
   onChange,
   resetDeps,
 }: WheelPickerProps) => {
-  const scrollViewRef = React.useRef(null);
+  const flatListRef = React.useRef<FlatList<WheelPickerOption>>(null);
+  const scrollEnabled = React.useRef<boolean>(true); // Prevents useEffect scrolling bug
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (!scrollEnabled.current) {
+      return;
+    }
+
     const yOffset = event.nativeEvent.contentOffset.y;
     const index = Math.round(yOffset / ITEM_HEIGHT);
     onChange(index);
   };
 
   const scrollToIndex = (index: number) => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({
-        y: index * ITEM_HEIGHT,
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({
+        index,
         animated: false,
+        viewPosition: 0,
       });
     }
   };
 
+  // Scroll to preselect item on render
   React.useEffect(() => {
+    let resetTimeout = null;
+
     const timeout = setTimeout(() => {
+      scrollEnabled.current = false;
       scrollToIndex(selectedIndex);
+
+      resetTimeout = setTimeout(() => {
+        scrollEnabled.current = true;
+      }, 32);
     }, 32);
 
     return () => {
       clearTimeout(timeout);
+      clearTimeout(resetTimeout);
     };
   }, resetDeps);
 
+  const renderItem = React.useCallback(
+    ({ item, index }: { item: WheelPickerOption; index: number }) => {
+      const isSelected = index === selectedIndex;
+      const onPress = () => scrollToIndex(index);
+
+      return (
+        <TouchableOpacity
+          key={`wheel-option-${index}`}
+          onPress={onPress}
+          style={[styles.item, isSelected && styles.selectedItem]}
+        >
+          <Text style={isSelected ? styles.selectedItemText : undefined}>
+            {item.label}
+          </Text>
+        </TouchableOpacity>
+      );
+    },
+    [selectedIndex]
+  );
+
   return (
     <View style={styles.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        onScroll={handleScroll}
-        style={styles.scrollView}
+      <FlatList
+        ref={flatListRef}
+        data={options}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
-        scrollToOverflowEnabled={false}
         snapToInterval={ITEM_HEIGHT}
-        decelerationRate={"fast"}
-        scrollEventThrottle={16}
-        bounces={false}
-      >
-        {options.map((item, index) => {
-          const isSelected = index === selectedIndex;
-          const onPress = () => scrollToIndex(index);
-
-          return (
-            <TouchableOpacity
-              key={`wheel-option-${index}`}
-              onPress={onPress}
-              style={[styles.item, isSelected && styles.selectedItem]}
-            >
-              <Text style={isSelected && styles.selectedItemText}>
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-        <View style={styles.bottomSpace} />
-      </ScrollView>
+        decelerationRate="fast"
+        onScroll={handleScroll}
+        getItemLayout={getItemLayout}
+        initialNumToRender={VISIBLE_ITEMS}
+        maxToRenderPerBatch={VISIBLE_ITEMS * 2}
+        windowSize={VISIBLE_ITEMS * 3}
+        style={styles.list}
+        contentContainerStyle={styles.listContent}
+      />
     </View>
   );
 };
+
+const keyExtractor = (item: WheelPickerOption) => `wheel-option-${item.value}`;
+
+const getItemLayout = (_, index: number) => ({
+  length: ITEM_HEIGHT,
+  offset: ITEM_HEIGHT * index,
+  index,
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -99,10 +129,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-  scrollView: {
+  list: {
     height,
-    paddingTop: ITEM_HEIGHT,
     width: "100%",
+  },
+  listContent: {
+    paddingTop: ITEM_HEIGHT,
+    paddingBottom: ITEM_HEIGHT,
   },
   item: {
     height: ITEM_HEIGHT,

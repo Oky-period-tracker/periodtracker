@@ -7,7 +7,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 const AnimatedContainer = ({ style, children }: ViewProps) => {
-  const height = useSharedValue(0);
+  const height = useSharedValue(200);
 
   const onContentLayout = (event) => {
     const newHeight = event.nativeEvent.layout.height;

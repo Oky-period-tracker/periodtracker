@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     width: "100%",
     overflow: "hidden",
-    height: 200,
     zIndex: 999,
   },
   footer: {

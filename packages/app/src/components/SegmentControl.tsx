@@ -39,7 +39,7 @@ export const SegmentControl = ({
         const onPress = () => onSelect(option.value);
 
         return (
-          <View style={styles.option}>
+          <View key={`segment-${option.value}`} style={styles.option}>
             <Button
               status={isSelected ? "primary" : "basic"}
               style={styles.iconContainer}

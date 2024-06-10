@@ -45,6 +45,10 @@ export const WheelPicker = ({
   };
 
   const scrollToIndex = (index: number) => {
+    if (index >= options.length) {
+      return;
+    }
+
     if (flatListRef.current) {
       flatListRef.current.scrollToIndex({
         index,

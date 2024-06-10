@@ -65,6 +65,7 @@ export const AskLocation = () => {
         errors={errors}
         errorKey={"no_country"}
         errorsVisible={state.errorsVisible}
+        searchEnabled
       />
       <ModalSelector
         displayValue={provinceDisplay}
@@ -74,6 +75,7 @@ export const AskLocation = () => {
         errors={errors}
         errorKey={"no_province"}
         errorsVisible={state.errorsVisible}
+        searchEnabled
       />
       <SegmentControl
         options={locations}

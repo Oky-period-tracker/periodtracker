@@ -4,30 +4,39 @@ import { Modal } from "./Modal";
 import React from "react";
 import { WheelPicker, WheelPickerOption } from "./WheelPicker";
 import { Hr } from "./Hr";
+import { useSearch } from "../hooks/useSearch";
 
 export const ModalSelector = ({
   displayValue,
   options,
   onSelect,
+  searchEnabled,
   ...props
 }: InputProps & {
   displayValue: string;
   options: WheelPickerOption[];
   onSelect: (value: string) => void;
+  searchEnabled?: boolean;
 }) => {
   const currentIndex = options.findIndex((item) => item.label === displayValue);
   const initialIndex = Math.max(currentIndex, 0);
   const [selectedIndex, setSelectedIndex] = React.useState(initialIndex);
-  const selectedOption = options[selectedIndex];
+
+  const { query, setQuery, results } = useSearch<WheelPickerOption>({
+    options,
+    key: "label",
+    enabled: searchEnabled,
+  });
 
   const [visible, setIsVisible] = React.useState(false);
   const toggleVisible = () => {
     setIsVisible((current) => !current);
     setSelectedIndex(initialIndex);
+    setQuery("");
   };
 
   const onConfirm = () => {
-    onSelect(selectedOption.value);
+    onSelect(results[selectedIndex].value);
     toggleVisible();
   };
 
@@ -50,9 +59,17 @@ export const ModalSelector = ({
       >
         <View style={styles.modalBody}>
           <Text style={styles.title}>{props.placeholder}</Text>
+          {searchEnabled && (
+            <Input
+              value={query}
+              onChangeText={setQuery}
+              placeholder={"search"}
+            />
+          )}
+
           <WheelPicker
             selectedIndex={selectedIndex}
-            options={options}
+            options={results}
             onChange={setSelectedIndex}
             resetDeps={[visible]}
           />

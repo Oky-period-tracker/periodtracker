@@ -176,6 +176,11 @@ const validateStep = (
       errors.push("name_too_short");
     }
 
+    if (!state.gender) {
+      isValid = false;
+      errors.push("no_gender");
+    }
+
     if (state.password.length < 3) {
       isValid = false;
       errors.push("password_too_short");

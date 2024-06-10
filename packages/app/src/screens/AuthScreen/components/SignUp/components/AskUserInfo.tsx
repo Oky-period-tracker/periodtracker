@@ -1,15 +1,32 @@
 import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { Input } from "../../../../../components/Input";
+import { SegmentControl } from "../../../../../components/SegmentControl";
+
+const genders = [
+  { value: "Female", label: "Female", iconName: "female" },
+  { value: "Male", label: "Male", iconName: "male" },
+  { value: "Other", label: "Other", iconName: "genderless" },
+];
 
 export const AskUserInfo = () => {
   const { state, dispatch, errors } = useSignUp();
 
-  const onChangeName = (value: string) => dispatch({ type: "name", value });
-  const onChangePassword = (value: string) =>
+  const onChangeName = (value: string) => {
+    dispatch({ type: "name", value });
+  };
+
+  const onChangeGender = (value: string) => {
+    dispatch({ type: "gender", value });
+  };
+
+  const onChangePassword = (value: string) => {
     dispatch({ type: "password", value });
-  const onChangeConfirmPassword = (value: string) =>
+  };
+
+  const onChangeConfirmPassword = (value: string) => {
     dispatch({ type: "passwordConfirm", value });
+  };
 
   return (
     <View style={styles.container}>
@@ -19,6 +36,14 @@ export const AskUserInfo = () => {
         placeholder="Name"
         errors={errors}
         errorKey={"name_too_short"}
+        errorsVisible={state.errorsVisible}
+      />
+      <SegmentControl
+        options={genders}
+        selected={state.gender}
+        onSelect={onChangeGender}
+        errors={errors}
+        errorKey={"no_gender"}
         errorsVisible={state.errorsVisible}
       />
       <Input

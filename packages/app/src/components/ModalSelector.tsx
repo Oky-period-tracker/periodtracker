@@ -2,19 +2,21 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Input, InputProps } from "./Input";
 import { Modal } from "./Modal";
 import React from "react";
-import { WheelPicker } from "./WheelPicker";
+import { WheelPicker, WheelPickerOption } from "./WheelPicker";
 import { Hr } from "./Hr";
 
 export const ModalSelector = ({
-  value,
+  displayValue,
   options,
   onSelect,
   ...props
 }: InputProps & {
-  options: string[];
+  displayValue: string;
+  options: WheelPickerOption[];
   onSelect: (value: string) => void;
 }) => {
-  const initialIndex = Math.max(options.indexOf(value), 0);
+  const currentIndex = options.findIndex((item) => item.label === displayValue);
+  const initialIndex = Math.max(currentIndex, 0);
   const [selectedIndex, setSelectedIndex] = React.useState(initialIndex);
   const selectedOption = options[selectedIndex];
 
@@ -25,7 +27,7 @@ export const ModalSelector = ({
   };
 
   const onConfirm = () => {
-    onSelect(selectedOption);
+    onSelect(selectedOption.value);
     toggleVisible();
   };
 
@@ -34,7 +36,7 @@ export const ModalSelector = ({
       <TouchableOpacity onPress={toggleVisible}>
         <Input
           {...props}
-          value={value}
+          value={displayValue}
           editable={false}
           selectTextOnFocus={false}
           displayOnly={true}

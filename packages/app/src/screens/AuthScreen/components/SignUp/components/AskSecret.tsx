@@ -11,6 +11,11 @@ const secretQuestions = [
   `childhood_hero`,
 ];
 
+const questionOptions = secretQuestions.map((item) => ({
+  label: item,
+  value: item,
+}));
+
 export const AskSecret = () => {
   const { state, dispatch, errors } = useSignUp();
 
@@ -23,8 +28,8 @@ export const AskSecret = () => {
   return (
     <View style={styles.container}>
       <ModalSelector
-        value={state.secretQuestion}
-        options={secretQuestions}
+        displayValue={state.secretQuestion}
+        options={questionOptions}
         onSelect={onChangeQuestion}
         placeholder={"Secret Question"}
         errors={errors}

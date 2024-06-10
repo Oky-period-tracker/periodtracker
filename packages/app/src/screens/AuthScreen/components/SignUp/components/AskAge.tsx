@@ -20,11 +20,15 @@ const months = [
   "December",
 ];
 
+const monthOptions = months.map((item) => ({ label: item, value: item }));
+
 const now = new Date();
 const currentYear = now.getFullYear();
 const years = generateRange(currentYear - 7, currentYear - 100).map((item) =>
   item.toString()
 );
+
+const yearOptions = years.map((item) => ({ label: item, value: item }));
 
 export const AskAge = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -45,8 +49,8 @@ export const AskAge = () => {
   return (
     <View style={styles.container}>
       <ModalSelector
-        value={month}
-        options={months}
+        displayValue={month}
+        options={monthOptions}
         onSelect={onChangeMonth}
         placeholder={"what month were you born"}
         errors={errors}
@@ -54,8 +58,8 @@ export const AskAge = () => {
         errorsVisible={state.errorsVisible}
       />
       <ModalSelector
-        value={year}
-        options={years}
+        displayValue={year}
+        options={yearOptions}
         onSelect={onChangeYear}
         placeholder={"what year were you born"}
         errors={errors}

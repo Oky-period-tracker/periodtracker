@@ -13,9 +13,14 @@ const ITEM_HEIGHT = 40;
 const VISIBLE_ITEMS = 3;
 const height = ITEM_HEIGHT * VISIBLE_ITEMS;
 
+export type WheelPickerOption = {
+  label: string;
+  value: string;
+};
+
 export type WheelPickerProps = {
   selectedIndex: number;
-  options: string[];
+  options: WheelPickerOption[];
   onChange: (i: number) => void;
   resetDeps: unknown[];
 };
@@ -76,7 +81,9 @@ export const WheelPicker = ({
               onPress={onPress}
               style={[styles.item, isSelected && styles.selectedItem]}
             >
-              <Text style={isSelected && styles.selectedItemText}>{item}</Text>
+              <Text style={isSelected && styles.selectedItemText}>
+                {item.label}
+              </Text>
             </TouchableOpacity>
           );
         })}

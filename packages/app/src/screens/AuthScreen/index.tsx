@@ -32,8 +32,9 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
       <AnimatedContainer style={styles.container}>
         {authMode === "start" && <AuthToggle />}
         {authMode === "sign_up" && <SignUp />}
-        {authMode === "onboard_journey" && <OnboardJourney />}
       </AnimatedContainer>
+
+      {authMode === "onboard_journey" && <OnboardJourney />}
 
       {authMode === "start" && (
         <View style={styles.footer}>

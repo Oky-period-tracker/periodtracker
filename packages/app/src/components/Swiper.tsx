@@ -16,9 +16,10 @@ import { Button } from "./Button";
 
 type SwiperProps = {
   pages: React.ReactElement[];
+  renderActionRight?: (currentPage: number, total: number) => React.ReactNode;
 };
 
-export const Swiper = ({ pages }: SwiperProps) => {
+export const Swiper = ({ pages, renderActionRight }: SwiperProps) => {
   const translateX = useSharedValue(0);
   const [currentIndex, setCurrentIndex] = React.useState(0);
 
@@ -85,6 +86,7 @@ export const Swiper = ({ pages }: SwiperProps) => {
         </Animated.View>
 
         <View style={styles.footer}>
+          <View style={styles.footerAction} />
           {pages.map((_, index) => {
             const isSelected = currentIndex === index;
             const onPress = () => handleIndicatorPress(index);
@@ -98,6 +100,9 @@ export const Swiper = ({ pages }: SwiperProps) => {
               />
             );
           })}
+          <View style={styles.footerAction}>
+            {renderActionRight(currentIndex, pages.length)}
+          </View>
         </View>
       </View>
     </PanGestureHandler>
@@ -129,7 +134,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    padding: 24,
+    paddingVertical: 24,
+  },
+  footerAction: {
+    flex: 1,
+    height: "100%",
   },
   indicator: {
     width: 16,

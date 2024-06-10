@@ -1,6 +1,7 @@
 import React from "react";
 
 export type AuthMode =
+  | "welcome"
   | "start"
   | "sign_up"
   | "avatar_and_theme"
@@ -24,7 +25,8 @@ const defaultValue: AuthModeContext = {
 const AuthContext = React.createContext<AuthModeContext>(defaultValue);
 
 export const AuthModeProvider = ({ children }) => {
-  const [authMode, setAuthMode] = React.useState<AuthMode>("start");
+  const initialState = "welcome"; // TODO: based on redux state
+  const [authMode, setAuthMode] = React.useState<AuthMode>(initialState);
 
   return (
     <AuthContext.Provider value={{ authMode, setAuthMode }}>

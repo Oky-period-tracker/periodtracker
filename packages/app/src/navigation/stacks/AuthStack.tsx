@@ -4,7 +4,6 @@ import AuthScreen from "../../screens/AuthScreen";
 
 import InfoScreen from "../../screens/InfoScreen";
 import NavigationStack, { StackConfig } from "../components/NavigationStack";
-import WelcomeScreen from "../../screens/Welcome";
 import EncyclopediaScreen from "../../screens/EncyclopediaScreen";
 import ArticlesScreen from "../../screens/ArticlesScreen";
 import FindHelpScreen from "../../screens/FindHelpScreen";
@@ -14,7 +13,6 @@ import AboutScreen from "../../screens/AboutScreen";
 import PrivacyScreen from "../../screens/PrivacyScreen";
 
 export type AuthStackParamList = {
-  Welcome: undefined;
   Auth: undefined;
   Info: undefined;
   Terms: undefined;
@@ -31,10 +29,6 @@ export type AuthStackParamList = {
 const config: StackConfig<keyof AuthStackParamList> = {
   initialRouteName: "Auth",
   screens: {
-    Welcome: {
-      title: "Welcome",
-      component: WelcomeScreen,
-    },
     Auth: {
       title: "",
       component: AuthScreen,

@@ -8,6 +8,7 @@ import { AuthToggle } from "./components/AuthToggle";
 import { AuthModeProvider, useAuthMode } from "./AuthModeContext";
 import { OnboardJourney } from "./components/OnboardJourney";
 import { ScreenProps } from "../../navigation/RootNavigator";
+import AvatarAndThemeScreen from "../AvatarAndThemeScreen";
 
 const AuthScreen = (props: ScreenProps<"Auth">) => {
   return (
@@ -29,12 +30,14 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
         {authMode === "onboard_journey" && <OnboardJourney />}
       </AnimatedContainer>
 
-      <View style={styles.footer}>
-        <Button status={"basic"} onPress={goToInfo}>
-          Info
-        </Button>
-        <Button status={"basic"}>English</Button>
-      </View>
+      {authMode === "start" && (
+        <View style={styles.footer}>
+          <Button status={"basic"} onPress={goToInfo}>
+            Info
+          </Button>
+          <Button status={"basic"}>English</Button>
+        </View>
+      )}
     </Screen>
   );
 };

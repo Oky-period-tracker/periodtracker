@@ -6,6 +6,7 @@ import AnimatedContainer from "../../components/AnimatedContainer";
 import { SignUp } from "./components/SignUp";
 import { AuthToggle } from "./components/AuthToggle";
 import { AuthModeProvider, useAuthMode } from "./AuthModeContext";
+import { OnboardJourney } from "./components/OnboardJourney";
 
 const AuthScreen = (props) => {
   return (
@@ -24,6 +25,7 @@ const AuthScreenInner = ({ navigation }) => {
       <AnimatedContainer style={styles.container}>
         {authMode === "start" && <AuthToggle />}
         {authMode === "sign_up" && <SignUp />}
+        {authMode === "onboard_journey" && <OnboardJourney />}
       </AnimatedContainer>
 
       <View style={styles.footer}>

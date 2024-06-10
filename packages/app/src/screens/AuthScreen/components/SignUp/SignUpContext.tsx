@@ -1,6 +1,7 @@
 import React, { useReducer } from "react";
 import { User } from "../../../../types";
 import { FAST_SIGN_UP } from "../../../../config/env";
+import { useAuthMode } from "../../AuthModeContext";
 
 type SignUpStep =
   | "confirmation"
@@ -268,6 +269,15 @@ export const SignUpProvider = ({ children }) => {
 
   const step = steps[state.stepIndex];
   const { isValid, errors } = validateStep(state, step);
+
+  const { setAuthMode } = useAuthMode();
+
+  // Finish
+  React.useEffect(() => {
+    if (!step) {
+      setAuthMode("onboard_journey");
+    }
+  }, [step]);
 
   return (
     <SignUpContext.Provider

@@ -7,8 +7,9 @@ import { SignUp } from "./components/SignUp";
 import { AuthToggle } from "./components/AuthToggle";
 import { AuthModeProvider, useAuthMode } from "./AuthModeContext";
 import { OnboardJourney } from "./components/OnboardJourney";
+import { ScreenProps } from "../../navigation/RootNavigator";
 
-const AuthScreen = (props) => {
+const AuthScreen = (props: ScreenProps<"Auth">) => {
   return (
     <AuthModeProvider>
       <AuthScreenInner {...props} />
@@ -16,7 +17,7 @@ const AuthScreen = (props) => {
   );
 };
 
-const AuthScreenInner = ({ navigation }) => {
+const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
   const { authMode } = useAuthMode();
   const goToInfo = () => navigation.navigate("Info");
 

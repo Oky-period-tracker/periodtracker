@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import { User } from "../../../../types";
 import { FAST_SIGN_UP } from "../../../../config/env";
 import { useAuthMode } from "../../AuthModeContext";
@@ -264,8 +264,8 @@ const defaultValue: SignUpContext = {
 
 const SignUpContext = React.createContext<SignUpContext>(defaultValue);
 
-export const SignUpProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   const step = steps[state.stepIndex];
   const { isValid, errors } = validateStep(state, step);

@@ -3,11 +3,11 @@ import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { ModalSelector } from "../../../../../components/ModalSelector";
 import { countries, provinces } from "../../../../EncyclopediaScreen/data";
-import { Switch } from "../../../../../components/Switch";
+import { SegmentControl } from "../../../../../components/SegmentControl";
 
-const locations /* TODO: : Array<keyof AppAssets['static']['icons']> */ = [
-  "Urban",
-  "Rural",
+const locations = [
+  { value: "Urban", label: "Urban", iconName: "building" },
+  { value: "Rural", label: "Rural", iconName: "leaf" },
 ];
 
 // TODO: redux state
@@ -22,6 +22,10 @@ export const AskLocation = () => {
 
   const onChangeProvince = (value: string) => {
     dispatch({ type: "province", value });
+  };
+
+  const onChangeLocation = (value: string) => {
+    dispatch({ type: "location", value });
   };
 
   const countryOptions = React.useMemo(() => {
@@ -69,6 +73,14 @@ export const AskLocation = () => {
         placeholder={"province"}
         errors={errors}
         errorKey={"no_province"}
+        errorsVisible={state.errorsVisible}
+      />
+      <SegmentControl
+        options={locations}
+        selected={state.location}
+        onSelect={onChangeLocation}
+        errors={errors}
+        errorKey={"no_location"}
         errorsVisible={state.errorsVisible}
       />
     </View>

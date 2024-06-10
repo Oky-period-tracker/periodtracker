@@ -228,6 +228,11 @@ const validateStep = (
       isValid = false;
       errors.push("no_province");
     }
+
+    if (!state.location) {
+      isValid = false;
+      errors.push("no_location");
+    }
   }
 
   return { isValid, errors };

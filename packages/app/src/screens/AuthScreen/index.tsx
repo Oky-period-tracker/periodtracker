@@ -19,8 +19,13 @@ const AuthScreen = (props: ScreenProps<"Auth">) => {
 };
 
 const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
-  const { authMode } = useAuthMode();
+  const { authMode, setAuthMode } = useAuthMode();
   const goToInfo = () => navigation.navigate("Info");
+
+  if (authMode === "avatar_and_theme") {
+    const onConfirm = () => setAuthMode("onboard_journey");
+    return <AvatarAndThemeScreen onConfirm={onConfirm} />;
+  }
 
   return (
     <Screen>

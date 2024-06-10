@@ -3,6 +3,7 @@ import React from "react";
 export type AuthMode =
   | "start"
   | "sign_up"
+  | "avatar_and_theme"
   | "onboard_journey"
   | "log_in"
   | "forgot_password"

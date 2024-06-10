@@ -275,7 +275,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
   // Finish
   React.useEffect(() => {
     if (!step) {
-      setAuthMode("onboard_journey");
+      setAuthMode("avatar_and_theme");
     }
   }, [step]);
 

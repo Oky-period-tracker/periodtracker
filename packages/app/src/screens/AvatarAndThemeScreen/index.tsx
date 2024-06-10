@@ -1,11 +1,14 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
 import { Screen } from "../../components/Screen";
-import { DisplayButton } from "../../components/Button";
+import { Button, DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { ScreenComponent } from "../../navigation/RootNavigator";
 
-const AvatarAndThemeScreen: ScreenComponent<"AvatarAndTheme"> = () => {
+type AvatarAndThemeScreenProps = {
+  onConfirm: () => void;
+};
+
+const AvatarAndThemeScreen = ({ onConfirm }: AvatarAndThemeScreenProps) => {
   return (
     <Screen style={styles.screen}>
       <View style={styles.avatars}>
@@ -28,6 +31,10 @@ const AvatarAndThemeScreen: ScreenComponent<"AvatarAndTheme"> = () => {
         <View style={styles.theme}></View>
         <View style={styles.theme}></View>
       </View>
+
+      <Button onPress={onConfirm} status={"primary"}>
+        Confirm
+      </Button>
     </Screen>
   );
 };

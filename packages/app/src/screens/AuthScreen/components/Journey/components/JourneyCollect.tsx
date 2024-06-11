@@ -26,8 +26,6 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
     dispatch({ type: "cycleLength", value });
   };
 
-  console.log("*** ", dayOptions);
-
   return (
     <>
       {/* // TODO: Calendar */}

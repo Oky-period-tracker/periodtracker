@@ -7,6 +7,14 @@ export type JourneyStep =
   | "number_weeks_between"
   | "review";
 
+const steps: JourneyStep[] = [
+  "first_period",
+  "when_last_period",
+  "number_days",
+  "number_weeks_between",
+  "review",
+];
+
 type JourneyState = {
   stepIndex: number;
 };
@@ -18,6 +26,9 @@ type Action<T extends keyof JourneyState = keyof JourneyState> =
     }
   | {
       type: "continue";
+    }
+  | {
+      type: "skip";
     };
 
 const initialState: JourneyState = {
@@ -30,6 +41,12 @@ function reducer(state: JourneyState, action: Action): JourneyState {
       return {
         ...state,
         stepIndex: state.stepIndex + 1,
+      };
+
+    case "skip":
+      return {
+        ...state,
+        stepIndex: steps.length - 1,
       };
 
     default:

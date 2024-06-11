@@ -1,5 +1,5 @@
 import { Swiper } from "../../../../components/Swiper";
-import { JourneyProvider, JourneyStep } from "./JourneyContext";
+import { JourneyProvider, JourneyStep, useJourney } from "./JourneyContext";
 import { AskFirst } from "./components/AskFirst";
 import { AskLast } from "./components/AskLast";
 import { AskDays } from "./components/AskDays";
@@ -15,11 +15,14 @@ export const Journey = () => {
 };
 
 const JourneyInner = () => {
+  const { state, dispatch } = useJourney();
+  const setIndex = (value: number) => dispatch({ type: "stepIndex", value });
+
   const pages = Object.values(stepComponents).map((StepComponent) => (
     <StepComponent />
   ));
 
-  return <Swiper pages={pages} />;
+  return <Swiper index={state.stepIndex} setIndex={setIndex} pages={pages} />;
 };
 
 const stepComponents: Record<JourneyStep, React.FC> = {

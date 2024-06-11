@@ -15,13 +15,19 @@ import {
 import { Button } from "./Button";
 
 type SwiperProps = {
+  index: number;
+  setIndex: (i: number) => void;
   pages: React.ReactNode[];
   renderActionRight?: (currentPage: number, total: number) => React.ReactNode;
 };
 
-export const Swiper = ({ pages, renderActionRight }: SwiperProps) => {
+export const Swiper = ({
+  index,
+  setIndex,
+  pages,
+  renderActionRight,
+}: SwiperProps) => {
   const translateX = useSharedValue(0);
-  const [currentIndex, setCurrentIndex] = React.useState(0);
 
   const [containerWidth, setContainerWidth] = React.useState(0);
 
@@ -33,11 +39,15 @@ export const Swiper = ({ pages, renderActionRight }: SwiperProps) => {
     };
   });
 
+  const slideToPosition = (i: number) => {
+    translateX.value = withTiming(-i * fullWidth);
+  };
+
   const onGestureEvent = (
     event: GestureEvent<PanGestureHandlerEventPayload>
   ) => {
     const { translationX } = event.nativeEvent;
-    translateX.value = translationX - currentIndex * fullWidth;
+    translateX.value = translationX - index * fullWidth;
   };
 
   const onHandlerStateChange = (
@@ -48,28 +58,29 @@ export const Swiper = ({ pages, renderActionRight }: SwiperProps) => {
     }
 
     const { translationX } = event.nativeEvent;
-    const newIndex = currentIndex - Math.sign(translationX);
+    const newIndex = index - Math.sign(translationX);
     const isValid = newIndex >= 0 && newIndex < pages.length;
 
     if (isValid) {
-      setCurrentIndex(newIndex);
-      translateX.value = withTiming(-newIndex * fullWidth);
+      setIndex(newIndex);
       return;
     }
 
-    translateX.value = withTiming(-currentIndex * fullWidth);
+    slideToPosition(index);
   };
 
-  const handleIndicatorPress = (index: number) => {
-    setCurrentIndex(index);
-    translateX.value = withTiming(-index * fullWidth);
+  const handleIndicatorPress = (i: number) => {
+    setIndex(i);
   };
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;
     setContainerWidth(width);
-    translateX.value = withTiming(-currentIndex * fullWidth);
   };
+
+  React.useEffect(() => {
+    slideToPosition(index);
+  }, [index]);
 
   return (
     <PanGestureHandler
@@ -78,8 +89,8 @@ export const Swiper = ({ pages, renderActionRight }: SwiperProps) => {
     >
       <View style={styles.container} onLayout={onLayout}>
         <Animated.View style={[styles.pagesContainer, animatedStyle]}>
-          {pages.map((page, index) => (
-            <View key={index} style={styles.page}>
+          {pages.map((page, i) => (
+            <View key={i} style={styles.page}>
               {page}
             </View>
           ))}
@@ -87,13 +98,13 @@ export const Swiper = ({ pages, renderActionRight }: SwiperProps) => {
 
         <View style={styles.footer}>
           <View style={styles.footerAction} />
-          {pages.map((_, index) => {
-            const isSelected = currentIndex === index;
-            const onPress = () => handleIndicatorPress(index);
+          {pages.map((_, i) => {
+            const isSelected = i === index;
+            const onPress = () => handleIndicatorPress(i);
 
             return (
               <Button
-                key={`indicator-${index}`}
+                key={`indicator-${i}`}
                 onPress={onPress}
                 style={styles.indicator}
                 status={isSelected ? "danger" : "basic"}
@@ -101,7 +112,7 @@ export const Swiper = ({ pages, renderActionRight }: SwiperProps) => {
             );
           })}
           <View style={styles.footerAction}>
-            {renderActionRight?.(currentIndex, pages.length)}
+            {renderActionRight?.(index, pages.length)}
           </View>
         </View>
       </View>

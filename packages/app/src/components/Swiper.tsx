@@ -15,7 +15,7 @@ import {
 import { Button } from "./Button";
 
 type SwiperProps = {
-  pages: React.ReactElement[];
+  pages: React.ReactNode[];
   renderActionRight?: (currentPage: number, total: number) => React.ReactNode;
 };
 

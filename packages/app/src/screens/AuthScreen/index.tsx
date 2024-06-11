@@ -6,10 +6,10 @@ import AnimatedContainer from "../../components/AnimatedContainer";
 import { SignUp } from "./components/SignUp";
 import { AuthToggle } from "./components/AuthToggle";
 import { AuthMode, AuthModeProvider, useAuthMode } from "./AuthModeContext";
-import { OnboardJourney } from "./components/OnboardJourney";
 import { ScreenProps } from "../../navigation/RootNavigator";
 import AvatarAndThemeScreen from "../AvatarAndThemeScreen";
 import { Welcome } from "./components/Welcome";
+import { Journey } from "./components/Journey";
 
 const AuthScreen = (props: ScreenProps<"Auth">) => {
   return (
@@ -36,7 +36,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
       </AnimatedContainer>
 
       {authMode === "welcome" && <Welcome />}
-      {authMode === "onboard_journey" && <OnboardJourney />}
+      {authMode === "onboard_journey" && <Journey />}
 
       {authMode === "start" && (
         <View style={styles.footer}>

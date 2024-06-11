@@ -18,7 +18,7 @@ const steps: SignUpStep[] = [
   "location",
 ];
 
-export type SignUpState = Omit<User, "id" | "dateSignedUp" | "isGuest"> & {
+type SignUpState = Omit<User, "id" | "dateSignedUp" | "isGuest"> & {
   stepIndex: number;
   agree: boolean;
   passwordConfirm: string;
@@ -27,7 +27,7 @@ export type SignUpState = Omit<User, "id" | "dateSignedUp" | "isGuest"> & {
   errorsVisible: boolean;
 };
 
-export type Action<T extends keyof SignUpState = keyof SignUpState> =
+type Action<T extends keyof SignUpState = keyof SignUpState> =
   | {
       type: T;
       value: SignUpState[T];
@@ -244,7 +244,7 @@ const validateStep = (
   return { isValid, errors };
 };
 
-export type SignUpContext = {
+type SignUpContext = {
   state: SignUpState;
   dispatch: React.Dispatch<Action>;
   step: SignUpStep;
@@ -257,7 +257,7 @@ const defaultValue: SignUpContext = {
   dispatch: () => {
     //
   },
-  step: "confirmation",
+  step: steps[0],
   isValid: false,
   errors: [],
 };

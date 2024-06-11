@@ -101,7 +101,7 @@ export const Swiper = ({ pages, renderActionRight }: SwiperProps) => {
             );
           })}
           <View style={styles.footerAction}>
-            {renderActionRight(currentIndex, pages.length)}
+            {renderActionRight?.(currentIndex, pages.length)}
           </View>
         </View>
       </View>

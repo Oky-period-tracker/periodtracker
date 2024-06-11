@@ -15,7 +15,7 @@ const height = ITEM_HEIGHT * VISIBLE_ITEMS;
 
 export type WheelPickerOption = {
   label: string;
-  value: string;
+  value: unknown;
 };
 
 export type WheelPickerProps = {
@@ -31,6 +31,9 @@ export const WheelPicker = ({
   onChange,
   resetDeps,
 }: WheelPickerProps) => {
+  const max = options.length;
+  const safeIndex = Math.min(Math.max(selectedIndex, 0), max);
+
   const flatListRef = React.useRef<FlatList<WheelPickerOption>>(null);
   const scrollEnabled = React.useRef<boolean>(true); // Prevents useEffect scrolling bug
 
@@ -64,7 +67,7 @@ export const WheelPicker = ({
 
     const timeout = setTimeout(() => {
       scrollEnabled.current = false;
-      scrollToIndex(selectedIndex);
+      scrollToIndex(safeIndex);
 
       resetTimeout = setTimeout(() => {
         scrollEnabled.current = true;
@@ -79,7 +82,7 @@ export const WheelPicker = ({
 
   const renderItem = React.useCallback(
     ({ item, index }: { item: WheelPickerOption; index: number }) => {
-      const isSelected = index === selectedIndex;
+      const isSelected = index === safeIndex;
       const onPress = () => scrollToIndex(index);
 
       return (
@@ -94,7 +97,7 @@ export const WheelPicker = ({
         </TouchableOpacity>
       );
     },
-    [selectedIndex]
+    [safeIndex]
   );
 
   return (
@@ -119,7 +122,7 @@ export const WheelPicker = ({
   );
 };
 
-const keyExtractor = (item: WheelPickerOption) => `wheel-option-${item.value}`;
+const keyExtractor = (item: WheelPickerOption) => `wheel-option-${item.label}`;
 
 const getItemLayout = (_, index: number) => ({
   length: ITEM_HEIGHT,

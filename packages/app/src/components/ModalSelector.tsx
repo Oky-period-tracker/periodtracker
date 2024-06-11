@@ -15,7 +15,7 @@ export const ModalSelector = ({
 }: InputProps & {
   displayValue: string;
   options: WheelPickerOption[];
-  onSelect: (value: string) => void;
+  onSelect: (value: unknown) => void;
   searchEnabled?: boolean;
 }) => {
   const currentIndex = options.findIndex((item) => item.label === displayValue);

@@ -7,14 +7,6 @@ export type JourneyStep =
   | "number_weeks_between"
   | "review";
 
-const steps: JourneyStep[] = [
-  "first_period",
-  "when_last_period",
-  "number_days",
-  "number_weeks_between",
-  "review",
-];
-
 type JourneyState = {
   stepIndex: number;
 };
@@ -51,7 +43,6 @@ function reducer(state: JourneyState, action: Action): JourneyState {
 export type JourneyContext = {
   state: JourneyState;
   dispatch: React.Dispatch<Action>;
-  step: JourneyStep;
 };
 
 const defaultValue: JourneyContext = {
@@ -59,7 +50,6 @@ const defaultValue: JourneyContext = {
   dispatch: () => {
     //
   },
-  step: steps[0],
 };
 
 const JourneyContext = React.createContext<JourneyContext>(defaultValue);
@@ -67,14 +57,11 @@ const JourneyContext = React.createContext<JourneyContext>(defaultValue);
 export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
-  const step = steps[state.stepIndex];
-
   return (
     <JourneyContext.Provider
       value={{
         state,
         dispatch,
-        step,
       }}
     >
       {children}

@@ -4,13 +4,15 @@ export type JourneyStep =
   | "first_period"
   | "when_last_period"
   | "number_days"
-  | "number_weeks_between";
+  | "number_weeks_between"
+  | "review";
 
 const steps: JourneyStep[] = [
   "first_period",
   "when_last_period",
   "number_days",
   "number_weeks_between",
+  "review",
 ];
 
 type JourneyState = {

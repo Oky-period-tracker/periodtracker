@@ -3,7 +3,7 @@ import { User } from "../../../../types";
 import { FAST_SIGN_UP } from "../../../../config/env";
 import { useAuthMode } from "../../AuthModeContext";
 
-type SignUpStep =
+export type SignUpStep =
   | "confirmation"
   | "information"
   | "secret"

@@ -22,3 +22,11 @@ export const generateRange = (start: number, end: number) => {
 
   return arr;
 };
+
+export const reactNodeExists = (node: React.ReactNode): boolean => {
+  if (Array.isArray(node)) {
+    return node.filter((item) => !!item).length > 0;
+  }
+
+  return !!node;
+};

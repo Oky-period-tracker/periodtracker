@@ -1,18 +1,33 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { View, ViewProps } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+import { reactNodeExists } from "../services/utils";
 
 const AnimatedContainer = ({ style, children }: ViewProps) => {
-  const height = useSharedValue(200);
+  // Conditional render required to prevent bug
+  if (!reactNodeExists(children)) {
+    return null;
+  }
 
-  const onContentLayout = (event) => {
-    const newHeight = event.nativeEvent.layout.height;
-    height.value = withTiming(newHeight, { duration: 350 });
-  };
+  return (
+    <AnimatedContainerBase style={style}>{children}</AnimatedContainerBase>
+  );
+};
+
+const AnimatedContainerBase = ({ style, children }: ViewProps) => {
+  const height = useSharedValue(1);
+
+  const onContentLayout = useCallback(
+    (event) => {
+      const newHeight = event.nativeEvent.layout.height;
+      height.value = withTiming(newHeight, { duration: 350 });
+    },
+    [children]
+  );
 
   const animatedStyle = useAnimatedStyle(() => {
     return {

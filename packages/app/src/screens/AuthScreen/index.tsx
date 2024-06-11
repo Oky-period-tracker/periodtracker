@@ -5,7 +5,7 @@ import { Button } from "../../components/Button";
 import AnimatedContainer from "../../components/AnimatedContainer";
 import { SignUp } from "./components/SignUp";
 import { AuthToggle } from "./components/AuthToggle";
-import { AuthModeProvider, useAuthMode } from "./AuthModeContext";
+import { AuthMode, AuthModeProvider, useAuthMode } from "./AuthModeContext";
 import { OnboardJourney } from "./components/OnboardJourney";
 import { ScreenProps } from "../../navigation/RootNavigator";
 import AvatarAndThemeScreen from "../AvatarAndThemeScreen";

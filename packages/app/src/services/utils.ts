@@ -30,3 +30,8 @@ export const reactNodeExists = (node: React.ReactNode): boolean => {
 
   return !!node;
 };
+
+export const formatDate = (date: Date) => {
+  // 'YYYY-MM-DD'
+  return date.toISOString().split("T")[0];
+};

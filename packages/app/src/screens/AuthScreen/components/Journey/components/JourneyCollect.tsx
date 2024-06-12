@@ -2,6 +2,8 @@ import React from "react";
 import { JourneyStep, useJourney } from "../JourneyContext";
 import { WheelPicker } from "../../../../../components/WheelPicker";
 import { dayOptions, weekOptions } from "../journeyConfig";
+import { DateData } from "react-native-calendars";
+import { DatePicker } from "../../../../../components/DatePicker";
 
 export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const { state, dispatch } = useJourney();
@@ -14,7 +16,8 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
     (item) => item.value === state.cycleLength
   );
 
-  const setDate = (value: Date) => {
+  const setDate = (day: DateData) => {
+    const value = new Date(day.timestamp);
     dispatch({ type: "startDate", value });
   };
 
@@ -30,8 +33,9 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
 
   return (
     <>
-      {/* // TODO: Calendar */}
-      {step === "when_last_period" && null}
+      {step === "when_last_period" && (
+        <DatePicker selectedDate={state.startDate} onDayPress={setDate} />
+      )}
       {step === "number_days" && (
         <WheelPicker
           selectedIndex={dayIndex}

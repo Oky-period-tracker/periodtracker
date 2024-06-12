@@ -10,6 +10,7 @@ import {
 type ButtonStatus =
   | "primary"
   | "secondary"
+  | "neutral"
   | "basic"
   | "danger"
   | "danger_light";
@@ -68,10 +69,8 @@ const ButtonInner = ({ status, ...props }: ButtonProps) => {
 
   return (
     <>
-      <View
-        style={[styles.highlight, { backgroundColor: colors.highlight }]}
-      ></View>
-      <View style={[styles.shadow, { backgroundColor: colors.shadow }]}></View>
+      <View style={[styles.shadow, { backgroundColor: colors.shadow }]} />
+      <View style={[styles.highlight, { backgroundColor: colors.highlight }]} />
       <View style={[styles.body, { backgroundColor: colors.base }]}>
         {children}
       </View>
@@ -93,6 +92,11 @@ const palette: Record<
     highlight: "#FFC26A",
     shadow: "#BD6600",
   },
+  neutral: {
+    base: "#91d9e2",
+    highlight: "#fff",
+    shadow: "#53b8c8",
+  },
   basic: {
     base: "#D1D0D2",
     highlight: "#fff",
@@ -110,6 +114,8 @@ const palette: Record<
   },
 };
 
+const offset = 2;
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
@@ -117,12 +123,13 @@ const styles = StyleSheet.create({
     height: 40,
     width: 100,
     borderRadius: 500,
-    margin: 2,
+    marginVertical: offset,
+    marginHorizontal: offset,
   },
   highlight: {
     position: "absolute",
-    top: -2,
-    left: -2,
+    top: -offset,
+    left: -offset,
     width: "100%",
     height: "100%",
     borderRadius: 500,
@@ -130,8 +137,8 @@ const styles = StyleSheet.create({
   },
   shadow: {
     position: "absolute",
-    bottom: -2,
-    left: -2,
+    bottom: -offset,
+    left: -offset,
     width: "100%",
     height: "100%",
     borderRadius: 500,
@@ -145,8 +152,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#bada55",
     justifyContent: "center",
     alignItems: "center",
-    padding: 2,
-    paddingRight: 4, // +2 to Compensate for offset elements
+    padding: offset,
+    paddingRight: offset * 2,
   },
   text: {
     textAlign: "center",

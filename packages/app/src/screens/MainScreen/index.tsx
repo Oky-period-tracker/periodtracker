@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, StyleSheet } from "react-native";
-import Carousel from "../../components/Carousel";
+import { Carousel } from "../../components/Carousel";
 import { Circle } from "../../components/icons/Circle";
 import { Cloud } from "../../components/icons/Cloud";
 import { Star } from "../../components/icons/Star";

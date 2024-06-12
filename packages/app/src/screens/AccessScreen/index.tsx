@@ -5,13 +5,14 @@ import { Hr } from "../../components/Hr";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
 import { Button } from "../../components/Button";
+import { LanguageSelector } from "../../components/LanguageSelector";
 
 const AccessScreen: ScreenComponent<"Access"> = () => {
   const rows: TouchableRowProps[] = [
     {
       title: "Language",
       description: "Change the language Oky uses",
-      component: <LanguageButton />,
+      component: <LanguageSelector />,
     },
     {
       title: "Tutorial",
@@ -40,10 +41,6 @@ const AccessScreen: ScreenComponent<"Access"> = () => {
       </View>
     </Screen>
   );
-};
-
-const LanguageButton = () => {
-  return <Button>English</Button>;
 };
 
 const LaunchButton = () => {

@@ -30,7 +30,7 @@ export const JourneyReview = () => {
           };
 
           return (
-            <>
+            <React.Fragment key={`journey-review-${step}`}>
               <TouchableOpacity onPress={onPress} style={styles.row}>
                 <DisplayButton style={styles.iconLeft}>
                   {/* @ts-ignore TODO: */}
@@ -49,7 +49,7 @@ export const JourneyReview = () => {
                 </DisplayButton>
               </TouchableOpacity>
               {isLast ? <Hr /> : null}
-            </>
+            </React.Fragment>
           );
         })}
       </View>

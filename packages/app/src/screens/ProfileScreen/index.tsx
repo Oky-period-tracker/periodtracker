@@ -11,7 +11,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
 import { ScreenComponent } from "../../navigation/RootNavigator";
-import { EmojiBadge } from "../../components/EmojiBadge";
+import { CycleCard } from "./components/CycleCard";
 
 const ProfileScreen: ScreenComponent<"Profile"> = ({ navigation }) => {
   return (
@@ -94,57 +94,9 @@ const ProfileScreen: ScreenComponent<"Profile"> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.cycleCard}>
-          <View style={styles.cycleCardHeader}>
-            <Text>Cycle 1</Text>
-            <Text>29 day cycle</Text>
-            <Text>13 Mar - 10 Apr</Text>
-          </View>
-          <View style={styles.cycleCardBody}>
-            <View style={styles.cycleCardBodyLeft}>
-              <Text>4 day period</Text>
-              <Text>13 mar - 17 mar</Text>
-            </View>
-            <View style={styles.cycleCardBodyRight}>
-              <EmojiBadge
-                emoji={"😊"}
-                text={"Mood"}
-                status={"basic"}
-                size={"small"}
-              />
-              <EmojiBadge
-                emoji={"😊"}
-                text={"Mood"}
-                status={"basic"}
-                size={"small"}
-              />
-              <EmojiBadge
-                emoji={"😊"}
-                text={"Mood"}
-                status={"basic"}
-                size={"small"}
-              />
-              <EmojiBadge
-                emoji={"😊"}
-                text={"Mood"}
-                status={"basic"}
-                size={"small"}
-              />
-            </View>
-          </View>
-        </View>
-        <View style={styles.cycleCard}>
-          <View style={styles.cycleCardHeader}></View>
-          <View style={styles.cycleCardBody}></View>
-        </View>
-        <View style={styles.cycleCard}>
-          <View style={styles.cycleCardHeader}></View>
-          <View style={styles.cycleCardBody}></View>
-        </View>
-        <View style={styles.cycleCard}>
-          <View style={styles.cycleCardHeader}></View>
-          <View style={styles.cycleCardBody}></View>
-        </View>
+        <CycleCard />
+        <CycleCard />
+        <CycleCard />
       </ScrollView>
     </Screen>
   );
@@ -182,50 +134,5 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: "bold",
-  },
-  cycleCard: {
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    width: "100%",
-    height: 140,
-    marginVertical: 4,
-    flexDirection: "column",
-    overflow: "hidden",
-  },
-  cycleCardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#e3629b",
-    width: "100%",
-    height: " 33%",
-    paddingHorizontal: 16,
-  },
-  cycleCardBody: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flex: 1,
-  },
-  cycleCardBodyLeft: {
-    width: "50%",
-    height: "100%",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: 16,
-  },
-  cycleCardBodyRight: {
-    width: "50%",
-    height: "100%",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  emojiContainer: {},
-  emojiCircle: {
-    width: 28,
-    height: 28,
-  },
-  emojiText: {
-    fontSize: 10,
   },
 });

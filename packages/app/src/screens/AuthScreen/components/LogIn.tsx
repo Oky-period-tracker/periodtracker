@@ -8,6 +8,7 @@ import { ErrorText } from "../../../components/ErrorText";
 type RequestStatus = "unknown" | "success" | "fail";
 
 export const LogIn = () => {
+  // TODO: if already logged in, use redux state for initial name state (and disable name input?), and don't send HTTP request
   const [name, setName] = React.useState("");
   const [password, setPassword] = React.useState("");
 

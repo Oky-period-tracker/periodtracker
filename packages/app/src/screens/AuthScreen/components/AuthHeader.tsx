@@ -4,6 +4,7 @@ import { Button } from "../../../components/Button";
 import { useAuthMode } from "../AuthModeContext";
 
 export const AuthHeader = ({ title }: { title: string }) => {
+  // TODO: If already logged in, clear redux user state on X press
   const { setAuthMode } = useAuthMode();
   const onClose = () => setAuthMode("start");
 

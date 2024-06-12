@@ -3,7 +3,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useAuthMode } from "../AuthModeContext";
 
 export const AuthLinks = () => {
-  const { authMode, setAuthMode } = useAuthMode();
+  const { setAuthMode } = useAuthMode();
 
   const goToForgot = () => {
     setAuthMode("forgot_password");
@@ -14,21 +14,15 @@ export const AuthLinks = () => {
   };
 
   return (
-    <>
-      {(authMode === "start" || authMode === "re_log_in") && (
-        <View style={styles.container}>
-          <TouchableOpacity onPress={goToForgot} style={styles.link}>
-            <Text style={styles.text}>forgot password</Text>
-          </TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={goToForgot} style={styles.link}>
+        <Text style={styles.text}>forgot password</Text>
+      </TouchableOpacity>
 
-          {authMode === "start" && (
-            <TouchableOpacity onPress={goToDelete} style={styles.link}>
-              <Text style={styles.text}>delete account</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </>
+      <TouchableOpacity onPress={goToDelete} style={styles.link}>
+        <Text style={styles.text}>delete account</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 

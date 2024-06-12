@@ -7,7 +7,6 @@ export type AuthMode =
   | "avatar_and_theme"
   | "onboard_journey"
   | "log_in"
-  | "re_log_in"
   | "forgot_password"
   | "delete_account";
 

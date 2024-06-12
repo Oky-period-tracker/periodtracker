@@ -6,6 +6,7 @@ import { Cloud } from "../../components/icons/Cloud";
 import { Star } from "../../components/icons/Star";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Button } from "../../components/Button";
+import { DailyCard } from "../../components/DailyCard";
 
 const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
@@ -29,7 +30,7 @@ const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
         <Star />
       </View>
       <View style={styles.carouselContainer}>
-        <Carousel data={data} />
+        <Carousel CardComponent={DailyCard} data={data} />
       </View>
     </View>
   );

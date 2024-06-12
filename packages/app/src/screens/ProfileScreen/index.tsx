@@ -11,6 +11,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { EmojiBadge } from "../../components/EmojiBadge";
 
 const ProfileScreen: ScreenComponent<"Profile"> = ({ navigation }) => {
   return (
@@ -105,30 +106,30 @@ const ProfileScreen: ScreenComponent<"Profile"> = ({ navigation }) => {
               <Text>13 mar - 17 mar</Text>
             </View>
             <View style={styles.cycleCardBodyRight}>
-              <View>
-                <DisplayButton style={styles.emojiCircle} status={"basic"}>
-                  😊
-                </DisplayButton>
-                <Text style={styles.emojiText}>Mood</Text>
-              </View>
-              <View>
-                <DisplayButton style={styles.emojiCircle} status={"basic"}>
-                  😊
-                </DisplayButton>
-                <Text style={styles.emojiText}>Mood</Text>
-              </View>
-              <View>
-                <DisplayButton style={styles.emojiCircle} status={"basic"}>
-                  😊
-                </DisplayButton>
-                <Text style={styles.emojiText}>Mood</Text>
-              </View>
-              <View>
-                <DisplayButton style={styles.emojiCircle} status={"basic"}>
-                  😊
-                </DisplayButton>
-                <Text style={styles.emojiText}>Mood</Text>
-              </View>
+              <EmojiBadge
+                emoji={"😊"}
+                text={"Mood"}
+                status={"basic"}
+                size={"small"}
+              />
+              <EmojiBadge
+                emoji={"😊"}
+                text={"Mood"}
+                status={"basic"}
+                size={"small"}
+              />
+              <EmojiBadge
+                emoji={"😊"}
+                text={"Mood"}
+                status={"basic"}
+                size={"small"}
+              />
+              <EmojiBadge
+                emoji={"😊"}
+                text={"Mood"}
+                status={"basic"}
+                size={"small"}
+              />
             </View>
           </View>
         </View>

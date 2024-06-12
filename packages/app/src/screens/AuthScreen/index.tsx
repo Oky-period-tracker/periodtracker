@@ -12,6 +12,8 @@ import { Welcome } from "./components/Welcome";
 import { Journey } from "./components/Journey";
 import { AuthLinks } from "./components/AuthLinks";
 import { LogIn } from "./components/LogIn";
+import { DeleteAccount } from "./components/DeleteAccount";
+import { ForgotPassword } from "./components/ForgotPassword";
 
 const AuthScreen = (props: ScreenProps<"Auth">) => {
   return (
@@ -36,6 +38,8 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
         {authMode === "start" && <AuthToggle />}
         {authMode === "log_in" && <LogIn />}
         {authMode === "sign_up" && <SignUp />}
+        {authMode === "forgot_password" && <ForgotPassword />}
+        {authMode === "delete_account" && <DeleteAccount />}
       </AnimatedContainer>
 
       {authMode === "welcome" && <Welcome />}

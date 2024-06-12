@@ -7,13 +7,12 @@ import { ErrorText } from "../../../components/ErrorText";
 
 type RequestStatus = "unknown" | "success" | "fail";
 
-export const LogIn = () => {
-  // TODO: if already logged in, use redux state for initial name state (and disable name input?), and don't send HTTP request
+export const ForgotPassword = () => {
   const [name, setName] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [answer, setAnswer] = React.useState("");
 
   const [errorsVisible, setErrorsVisible] = React.useState(false);
-  const { errors } = validateCredentials(name, password);
+  const { errors } = validateCredentials(name, answer);
 
   const [requestStatus, setRequestStatus] =
     React.useState<RequestStatus>("unknown");
@@ -30,7 +29,7 @@ export const LogIn = () => {
 
   return (
     <>
-      <AuthHeader title={"Log in"} />
+      <AuthHeader title={"Forgot password"} />
       <View style={styles.container}>
         <Input
           value={name}
@@ -41,16 +40,15 @@ export const LogIn = () => {
           errorsVisible={errorsVisible}
         />
         <Input
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          secureTextEntry={true}
+          value={answer}
+          onChangeText={setAnswer}
+          placeholder="Secret answer"
           errors={errors}
           errorKey={"password_too_short"}
           errorsVisible={errorsVisible}
         />
         {requestStatus === "fail" && (
-          <ErrorText>Incorrect username or password</ErrorText>
+          <ErrorText>Incorrect username or answer</ErrorText>
         )}
       </View>
       <Hr />
@@ -61,7 +59,7 @@ export const LogIn = () => {
   );
 };
 
-const validateCredentials = (name: string, password: string) => {
+const validateCredentials = (name: string, answer: string) => {
   const errors: string[] = [];
   let isValid = true;
 
@@ -70,7 +68,7 @@ const validateCredentials = (name: string, password: string) => {
     errors.push("name_too_short");
   }
 
-  if (password.length < 3) {
+  if (answer.length < 1) {
     isValid = false;
     errors.push("password_too_short");
   }

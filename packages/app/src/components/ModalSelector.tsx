@@ -11,12 +11,14 @@ export const ModalSelector = ({
   options,
   onSelect,
   searchEnabled,
+  ToggleComponent,
   ...props
 }: InputProps & {
-  displayValue: string;
   options: WheelPickerOption[];
   onSelect: (value: unknown) => void;
+  displayValue?: string;
   searchEnabled?: boolean;
+  ToggleComponent?: React.FC<{ onPress: () => void }>;
 }) => {
   const currentIndex = options.findIndex((item) => item.label === displayValue);
   const initialIndex = Math.max(currentIndex, 0);
@@ -42,15 +44,19 @@ export const ModalSelector = ({
 
   return (
     <>
-      <TouchableOpacity onPress={toggleVisible}>
-        <Input
-          {...props}
-          value={displayValue}
-          editable={false}
-          selectTextOnFocus={false}
-          displayOnly={true}
-        />
-      </TouchableOpacity>
+      {ToggleComponent ? (
+        <ToggleComponent onPress={toggleVisible} />
+      ) : (
+        <TouchableOpacity onPress={toggleVisible}>
+          <Input
+            {...props}
+            value={displayValue}
+            editable={false}
+            selectTextOnFocus={false}
+            displayOnly={true}
+          />
+        </TouchableOpacity>
+      )}
 
       <Modal
         visible={visible}

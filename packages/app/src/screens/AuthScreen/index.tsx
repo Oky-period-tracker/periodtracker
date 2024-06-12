@@ -14,6 +14,7 @@ import { AuthLinks } from "./components/AuthLinks";
 import { LogIn } from "./components/LogIn";
 import { DeleteAccount } from "./components/DeleteAccount";
 import { ForgotPassword } from "./components/ForgotPassword";
+import { LanguageSelector } from "../../components/LanguageSelector";
 
 const AuthScreen = (props: ScreenProps<"Auth">) => {
   return (
@@ -52,7 +53,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
             <Button status={"basic"} onPress={goToInfo}>
               Info
             </Button>
-            <Button status={"basic"}>English</Button>
+            <LanguageSelector />
           </View>
         </>
       )}

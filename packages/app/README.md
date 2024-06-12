@@ -14,7 +14,11 @@ Start
 npx expo start
 ```
 
-Read instructions from the terminal, eg `s` to switch to ExpoGo, `i` to start iOS, `a` to start android
+Switch to ExpoGo:
+`s`
+
+Start:
+`i` to start iOS, `a` to start android
 
 Install a new package
 

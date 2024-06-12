@@ -1,9 +1,9 @@
 import React from "react";
 import { AskAgree } from "./components/AskAgree";
-import { SignUpHeader } from "./components/SignUpHeader";
+import { AuthHeader } from "../AuthHeader";
 import { Hr } from "../../../../components/Hr";
 import { SignUpProvider, SignUpStep, useSignUp } from "./SignUpContext";
-import { ConfirmButton } from "./components/ConfirmButton";
+import { SignUpConfirmButton } from "./components/SignUpConfirmButton";
 import { AskAge } from "./components/AskAge";
 import { AskUserInfo } from "./components/AskUserInfo";
 import { AskSecret } from "./components/AskSecret";
@@ -23,10 +23,10 @@ const SignUpInner = () => {
 
   return (
     <>
-      <SignUpHeader />
+      <AuthHeader title={"Sign up"} />
       <StepComponent />
       <Hr />
-      <ConfirmButton />
+      <SignUpConfirmButton />
     </>
   );
 };

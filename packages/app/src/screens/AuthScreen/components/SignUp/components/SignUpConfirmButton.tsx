@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useSignUp } from "../SignUpContext";
 
-export const ConfirmButton = () => {
+export const SignUpConfirmButton = () => {
   const { dispatch } = useSignUp();
 
   const onPress = () => dispatch({ type: "continue" });

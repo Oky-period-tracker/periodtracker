@@ -11,6 +11,7 @@ import AvatarAndThemeScreen from "../AvatarAndThemeScreen";
 import { Welcome } from "./components/Welcome";
 import { Journey } from "./components/Journey";
 import { AuthLinks } from "./components/AuthLinks";
+import { LogIn } from "./components/LogIn";
 
 const AuthScreen = (props: ScreenProps<"Auth">) => {
   return (
@@ -34,6 +35,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
       <AnimatedContainer style={styles.container}>
         {authMode === "start" && <AuthToggle />}
         {authMode === "sign_up" && <SignUp />}
+        {authMode === "log_in" && <LogIn />}
       </AnimatedContainer>
       <AuthLinks />
 

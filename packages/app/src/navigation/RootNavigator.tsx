@@ -40,7 +40,6 @@ const loggedOutLinking: LinkingOptions<RootStackParamList> = {
   ...baseLinking,
   config: {
     screens: {
-      Welcome: "welcome",
       Auth: "",
       Info: "info",
       Encyclopedia: "encyclopedia",

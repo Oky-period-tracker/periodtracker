@@ -18,11 +18,13 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
     dispatch({ type: "startDate", value });
   };
 
-  const setPeriodLength = (value: number) => {
+  const setPeriodLength = (i: number) => {
+    const value = dayOptions[i].value;
     dispatch({ type: "periodLength", value });
   };
 
-  const setCycleLength = (value: number) => {
+  const setCycleLength = (i: number) => {
+    const value = weekOptions[i].value;
     dispatch({ type: "cycleLength", value });
   };
 

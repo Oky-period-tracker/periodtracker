@@ -34,21 +34,23 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
     <Screen>
       <AnimatedContainer style={styles.container}>
         {authMode === "start" && <AuthToggle />}
-        {authMode === "sign_up" && <SignUp />}
         {authMode === "log_in" && <LogIn />}
+        {authMode === "sign_up" && <SignUp />}
       </AnimatedContainer>
 
-      {authMode === "start" && <AuthLinks />}
       {authMode === "welcome" && <Welcome />}
       {authMode === "onboard_journey" && <Journey />}
 
       {authMode === "start" && (
-        <View style={styles.footer}>
-          <Button status={"basic"} onPress={goToInfo}>
-            Info
-          </Button>
-          <Button status={"basic"}>English</Button>
-        </View>
+        <>
+          <AuthLinks />
+          <View style={styles.footer}>
+            <Button status={"basic"} onPress={goToInfo}>
+              Info
+            </Button>
+            <Button status={"basic"}>English</Button>
+          </View>
+        </>
       )}
     </Screen>
   );

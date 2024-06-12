@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
-import { Screen } from "../../components/Screen";
+import { SafeScreen } from "../../components/Screen";
 import { Button } from "../../components/Button";
 import AnimatedContainer from "../../components/AnimatedContainer";
 import { SignUp } from "./components/SignUp";
@@ -34,7 +34,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
   }
 
   return (
-    <Screen>
+    <SafeScreen>
       <AnimatedContainer style={styles.container}>
         {authMode === "start" && <AuthToggle />}
         {authMode === "log_in" && <LogIn />}
@@ -57,7 +57,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
           </View>
         </>
       )}
-    </Screen>
+    </SafeScreen>
   );
 };
 

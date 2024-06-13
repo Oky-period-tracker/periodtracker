@@ -4,11 +4,15 @@ import Cloud from "./icons/Cloud";
 import { Star } from "./icons/Star";
 import { EmojiBadge } from "./EmojiBadge";
 
-export const DailyCard = () => {
+type DailyCardProps = {
+  onPress: () => void;
+};
+
+export const DailyCard = ({ onPress }: DailyCardProps) => {
   const status = "neutral";
 
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity onPress={onPress} style={styles.card}>
       <View style={styles.top}>
         <DisplayButton status={status}>Day 12</DisplayButton>
 
@@ -16,7 +20,6 @@ export const DailyCard = () => {
           <View style={styles.dateIcon}>
             <Cloud />
           </View>
-
           <Text style={styles.dateText}>12 June</Text>
         </View>
 

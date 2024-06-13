@@ -30,7 +30,13 @@ const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
         <Star />
       </View>
       <View style={styles.carouselContainer}>
-        <Carousel CardComponent={DailyCard} data={data} />
+        <Carousel
+          data={data}
+          CardComponent={DailyCard}
+          onCardPress={() => {
+            //
+          }}
+        />
       </View>
     </View>
   );

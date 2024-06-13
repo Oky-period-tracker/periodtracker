@@ -9,17 +9,19 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useScreenDimensions } from "../hooks/useScreenDimensions";
 import { IS_WEB } from "../services/device";
 
+export type ModalProps = {
+  visible: boolean;
+  toggleVisible: () => void;
+  children?: React.ReactNode;
+  style?: ViewStyle;
+};
+
 export const Modal = ({
   visible,
   toggleVisible,
   children,
   style,
-}: {
-  visible: boolean;
-  toggleVisible: () => void;
-  children: React.ReactNode;
-  style: ViewStyle;
-}) => {
+}: ModalProps) => {
   const { width, height } = useScreenDimensions();
   const maxWidth = Math.min(width, 800);
   const maxHeight = height * 0.6;
@@ -45,7 +47,7 @@ export const Modal = ({
 const styles = StyleSheet.create({
   backDrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.75)",
   },
   container: {
     flex: 1,

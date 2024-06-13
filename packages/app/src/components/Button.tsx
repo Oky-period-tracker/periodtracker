@@ -81,8 +81,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 100,
     borderRadius: 500,
-    marginVertical: offset,
-    marginHorizontal: offset,
+    margin: offset,
   },
   highlight: {
     position: "absolute",

@@ -1,12 +1,13 @@
 import * as React from "react";
-import { View, Text } from "react-native";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { Quiz } from "./component/Quiz";
+import { Screen } from "../../components/Screen";
 
 const DayScreen: ScreenComponent<"Day"> = () => {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>DayScreen</Text>
-    </View>
+    <Screen>
+      <Quiz />
+    </Screen>
   );
 };
 

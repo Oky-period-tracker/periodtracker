@@ -14,6 +14,7 @@ const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
 const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
   const goToCalendar = () => navigation.navigate("Calendar");
+  const goToDay = () => navigation.navigate("Day");
 
   const [visible, toggleVisible] = useToggle();
 
@@ -30,11 +31,7 @@ const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
       <Star size={100} />
 
       <View style={styles.carouselContainer}>
-        <Carousel
-          data={data}
-          CardComponent={DailyCard}
-          onCardPress={toggleVisible}
-        />
+        <Carousel data={data} CardComponent={DailyCard} onCardPress={goToDay} />
         <DayModal {...{ visible, toggleVisible }} />
       </View>
     </View>

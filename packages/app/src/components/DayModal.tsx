@@ -12,17 +12,15 @@ export const DayModal = ({ visible, toggleVisible }: ModalProps) => {
         period today?
       </Text>
 
-      <View style={styles.dateIcon}>
-        <Cloud />
-      </View>
+      <Cloud size={160} status={"secondary"} />
 
       <View style={styles.buttons} pointerEvents="box-none">
-        <TouchableOpacity style={styles.button}>
-          <Cloud />
+        <TouchableOpacity>
+          <Cloud size={100} status={"danger"} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
-          <Cloud />
+        <TouchableOpacity>
+          <Cloud size={100} status={"neutral"} />
         </TouchableOpacity>
       </View>
     </Modal>
@@ -56,9 +54,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-around",
-  },
-  button: {
-    width: 100,
-    height: 100,
   },
 });

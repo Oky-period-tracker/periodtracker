@@ -6,18 +6,11 @@ import {
   View,
   ViewProps,
 } from "react-native";
-
-type ButtonStatus =
-  | "primary"
-  | "secondary"
-  | "neutral"
-  | "basic"
-  | "danger"
-  | "danger_light";
+import { PaletteStatus, palette } from "../config/theme";
 
 export type ButtonProps = ViewProps & {
   onPress?: () => void;
-  status?: ButtonStatus;
+  status?: PaletteStatus;
 };
 
 export const Button = ({
@@ -76,42 +69,6 @@ const ButtonInner = ({ status, ...props }: ButtonProps) => {
       </View>
     </>
   );
-};
-
-const palette: Record<
-  ButtonStatus,
-  { base: string; highlight: string; shadow: string }
-> = {
-  primary: {
-    base: "#97C800",
-    highlight: "#fff",
-    shadow: "#00A65A",
-  },
-  secondary: {
-    base: "#FF8C00",
-    highlight: "#FFC26A",
-    shadow: "#BD6600",
-  },
-  neutral: {
-    base: "#91d9e2",
-    highlight: "#fff",
-    shadow: "#53b8c8",
-  },
-  basic: {
-    base: "#D1D0D2",
-    highlight: "#fff",
-    shadow: "#B7B6B6",
-  },
-  danger: {
-    base: "#E3629B",
-    highlight: "#F9C7C1",
-    shadow: "#971B63",
-  },
-  danger_light: {
-    base: "#F9C7C1",
-    highlight: "#FFF",
-    shadow: "#971B63",
-  },
 };
 
 const offset = 2;

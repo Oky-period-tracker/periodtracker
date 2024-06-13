@@ -17,15 +17,11 @@ export const DailyCard = ({ onPress }: DailyCardProps) => {
         <DisplayButton status={status}>Day 12</DisplayButton>
 
         <View style={styles.date}>
-          <View style={styles.dateIcon}>
-            <Cloud />
-          </View>
+          <Cloud status={status} style={styles.dateIcon} />
           <Text style={styles.dateText}>12 June</Text>
         </View>
 
-        <View style={styles.iconRight}>
-          <Star />
-        </View>
+        <Star size={24} />
       </View>
 
       <View style={styles.bottom}>

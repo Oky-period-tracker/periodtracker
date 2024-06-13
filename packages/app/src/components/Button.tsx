@@ -1,8 +1,8 @@
 import {
   StyleSheet,
   Text,
+  TextStyle,
   TouchableOpacity,
-  TouchableOpacityProps,
   View,
   ViewProps,
 } from "react-native";
@@ -11,6 +11,7 @@ import { PaletteStatus, palette } from "../config/theme";
 export type ButtonProps = ViewProps & {
   onPress?: () => void;
   status?: PaletteStatus;
+  textStyle?: TextStyle;
 };
 
 export const Button = ({
@@ -49,12 +50,12 @@ export const DisplayButton = ({
   );
 };
 
-const ButtonInner = ({ status, ...props }: ButtonProps) => {
+const ButtonInner = ({ status, textStyle, ...props }: ButtonProps) => {
   const colors = palette[status];
 
   const children = props.children ? (
     typeof props.children === "string" ? (
-      <Text style={styles.text}>{props.children}</Text>
+      <Text style={[styles.text, textStyle]}>{props.children}</Text>
     ) : (
       props.children
     )

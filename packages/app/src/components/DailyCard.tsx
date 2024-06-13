@@ -15,7 +15,9 @@ export const DailyCard = ({ onPress }: DailyCardProps) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.card}>
       <View style={styles.top}>
-        <DisplayButton status={status}>Day 12</DisplayButton>
+        <DisplayButton status={status} textStyle={styles.dayText}>
+          Day 12
+        </DisplayButton>
         <IconButton Icon={Cloud} text={"12 June"} />
         <Star size={24} />
       </View>
@@ -46,21 +48,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
   },
-  date: {
-    height: 80,
-    width: 80,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  dateIcon: {
-    height: "100%",
-    width: "100%",
-    position: "absolute",
-  },
-  dateText: {
-    width: "60%",
-    textAlign: "center",
-    marginRight: 8,
+  dayText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
   iconRight: {
     height: 24,

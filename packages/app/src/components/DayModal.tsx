@@ -1,9 +1,17 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Modal, ModalProps } from "./Modal";
 import Cloud from "./icons/Cloud";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { IconButton } from "./IconButton";
 
 export const DayModal = ({ visible, toggleVisible }: ModalProps) => {
+  const onYesPress = () => {
+    // TODO:
+  };
+
+  const onNoPress = () => {
+    // TODO:
+  };
+
   return (
     <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
       <Text style={styles.title}>Did you have your period today?</Text>
@@ -12,16 +20,17 @@ export const DayModal = ({ visible, toggleVisible }: ModalProps) => {
         period today?
       </Text>
 
-      <Cloud size={160} status={"secondary"} />
+      <IconButton Icon={Cloud} size={160} text={"12 June"} status={"basic"} />
 
       <View style={styles.buttons} pointerEvents="box-none">
-        <TouchableOpacity>
-          <Cloud size={100} status={"danger"} />
-        </TouchableOpacity>
-
-        <TouchableOpacity>
-          <Cloud size={100} status={"neutral"} />
-        </TouchableOpacity>
+        <IconButton
+          Icon={Cloud}
+          onPress={onYesPress}
+          size={100}
+          text={"Yes"}
+          status={"danger"}
+        />
+        <IconButton Icon={Cloud} onPress={onNoPress} size={100} text={"No"} />
       </View>
     </Modal>
   );

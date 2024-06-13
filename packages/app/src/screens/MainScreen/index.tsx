@@ -7,11 +7,15 @@ import { Star } from "../../components/icons/Star";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Button } from "../../components/Button";
 import { DailyCard } from "../../components/DailyCard";
+import { DayModal } from "../../components/DayModal";
+import { useToggle } from "../../hooks/useToggle";
 
 const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
 const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
   const goToCalendar = () => navigation.navigate("Calendar");
+
+  const [visible, toggleVisible] = useToggle();
 
   return (
     <View style={styles.screen}>
@@ -20,23 +24,18 @@ const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
         style={styles.button}
         onPress={goToCalendar}
       ></Button>
-      <View style={{ height: 100, width: 100 }}>
-        <Cloud />
-      </View>
-      <View style={{ height: 100, width: 100 }}>
-        <Circle />
-      </View>
-      <View style={{ height: 100, width: 100 }}>
-        <Star />
-      </View>
+
+      <Cloud size={100} />
+      <Circle size={100} />
+      <Star size={100} />
+
       <View style={styles.carouselContainer}>
         <Carousel
           data={data}
           CardComponent={DailyCard}
-          onCardPress={() => {
-            //
-          }}
+          onCardPress={toggleVisible}
         />
+        <DayModal {...{ visible, toggleVisible }} />
       </View>
     </View>
   );

@@ -1,8 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { DisplayButton } from "./Button";
 import Cloud from "./icons/Cloud";
 import { Star } from "./icons/Star";
 import { EmojiBadge } from "./EmojiBadge";
+import { IconButton } from "./IconButton";
 
 type DailyCardProps = {
   onPress: () => void;
@@ -15,12 +16,7 @@ export const DailyCard = ({ onPress }: DailyCardProps) => {
     <TouchableOpacity onPress={onPress} style={styles.card}>
       <View style={styles.top}>
         <DisplayButton status={status}>Day 12</DisplayButton>
-
-        <View style={styles.date}>
-          <Cloud status={status} style={styles.dateIcon} />
-          <Text style={styles.dateText}>12 June</Text>
-        </View>
-
+        <IconButton Icon={Cloud} text={"12 June"} />
         <Star size={24} />
       </View>
 

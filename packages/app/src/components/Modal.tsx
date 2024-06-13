@@ -36,7 +36,10 @@ export const Modal = ({
     >
       <View style={styles.container}>
         <TouchableOpacity style={styles.backDrop} onPress={toggleVisible} />
-        <SafeAreaView style={[styles.children, { maxWidth, maxHeight }, style]}>
+        <SafeAreaView
+          style={[styles.children, { maxWidth, maxHeight }, style]}
+          pointerEvents="box-none"
+        >
           {children}
         </SafeAreaView>
       </View>

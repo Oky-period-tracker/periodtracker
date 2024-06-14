@@ -38,7 +38,9 @@ export const Input = ({
   return (
     <>
       {hasError && <ErrorText>{errorKey}</ErrorText>}
-      <View style={[styles.container, props.multiline && styles.multiline]}>
+      <View
+        style={[styles.container, props.multiline && styles.multiline, style]}
+      >
         <View style={[styles.wrapper]}>
           {info ? (
             <Button
@@ -82,8 +84,8 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#f1f1f1",
     borderRadius: 20,
-    margin: 8,
     padding: 12,
+    marginBottom: 12,
   },
   wrapper: {
     flexDirection: "row",

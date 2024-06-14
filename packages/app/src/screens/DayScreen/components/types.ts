@@ -1,4 +1,5 @@
 export type QuizStep =
+  | string
   | "question "
   | "mood"
   | "body"
@@ -6,44 +7,18 @@ export type QuizStep =
   | "flow"
   | "notes";
 
-type MoodOptions =
-  | "happy"
-  | "blah"
-  | "sad"
-  | "stressed"
-  | "worried"
-  | "fabulous";
-
-type BodyOptions =
-  | "tired"
-  | "cramps"
-  | "bloating"
-  | "spots"
-  | "headache"
-  | "sore_breasts";
-
-type ActivityOptions =
-  | "exercise"
-  | "healthy food"
-  | "good sleep"
-  | "socialising"
-  | "couldn't sleep"
-  | "unhealthy food";
-
-type FlowOptions = "none" | "spotting" | "light" | "medium" | "heavy";
-
 export type EmojiQuestionOptions = {
-  mood: Record<MoodOptions, string>;
-  body: Record<BodyOptions, string>;
-  activity: Record<ActivityOptions, string>;
-  flow: Record<FlowOptions, string>;
+  mood: Record<string, string>;
+  body: Record<string, string>;
+  activity: Record<string, string>;
+  flow: Record<string, string>;
 };
 
 export type EmojiQuestionsState = {
-  mood?: MoodOptions[];
-  body?: BodyOptions[];
-  activity?: ActivityOptions[];
-  flow?: FlowOptions[];
+  mood?: string[];
+  body?: string[];
+  activity?: string[];
+  flow?: string[];
 };
 
 export type EmojiTopicTextOptions = {

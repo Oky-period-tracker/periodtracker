@@ -15,6 +15,36 @@ export const EmojiQuestionCard = ({
   const [selectedEmojis, setSelectedEmojis] =
     React.useState<EmojiQuestionsState>({});
 
+  const mutuallyExclusive = topic === "flow";
+
+  const onEmojiPress = (key: string) => {
+    setSelectedEmojis((current) => {
+      const currentTopic = current[topic] ?? [];
+      const isSelected = currentTopic.includes?.(key);
+
+      if (mutuallyExclusive) {
+        return {
+          ...current,
+          [topic]: [key],
+        };
+      }
+
+      // Deselect
+      if (isSelected) {
+        return {
+          ...current,
+          [topic]: [...currentTopic.filter((item) => item !== key)],
+        };
+      }
+
+      // Select
+      return {
+        ...current,
+        [topic]: [...currentTopic, key],
+      };
+    });
+  };
+
   return (
     <View style={[styles.page]}>
       <Text style={styles.title}>{title}</Text>
@@ -23,17 +53,10 @@ export const EmojiQuestionCard = ({
       <View style={styles.body}>
         <View style={styles.emojiContainer}>
           {options.map(([key, emoji]) => {
-            // @ts-ignore
             const isSelected = selectedEmojis[topic]?.includes?.(key);
-            const status = isSelected ? "primary" : "basic";
+            const status = isSelected ? "neutral" : "basic";
             const onPress = () => {
-              setSelectedEmojis((current) => ({
-                ...current,
-                [topic]: {
-                  ...current[topic],
-                  key,
-                },
-              }));
+              onEmojiPress(key);
             };
 
             return (

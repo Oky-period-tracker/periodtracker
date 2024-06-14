@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { DisplayButton } from "../../../components/Button";
-import { Text } from "../../../components/Text";
+import { DisplayButton } from "../../../../components/Button";
+import { Text } from "../../../../components/Text";
 
 export const QuizCard = () => {
   // TODO: Get random Quiz entry from redux

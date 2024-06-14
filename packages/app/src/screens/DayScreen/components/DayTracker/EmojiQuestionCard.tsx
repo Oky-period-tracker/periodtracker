@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { EmojiBadge } from "../../../components/EmojiBadge";
+import { EmojiBadge } from "../../../../components/EmojiBadge";
 import { EmojiCardText, emojiOptions } from "./config";
 import { EmojiQuestionOptions, EmojiQuestionsState } from "./types";
 

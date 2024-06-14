@@ -61,6 +61,7 @@ export const EmojiQuestionCard = ({
 
             return (
               <EmojiBadge
+                key={key}
                 onPress={onPress}
                 emoji={emoji}
                 text={key}

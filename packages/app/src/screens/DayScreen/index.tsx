@@ -25,7 +25,7 @@ const DayScreen: ScreenComponent<"Day"> = () => {
 
   // Insert Quiz | DidYouKnow at Start or End
   const contentIndex = isOnPeriod ? components.length - 1 : 0;
-  components.splice(contentIndex, 0, <ContentCard key={"content"} />);
+  components.splice(contentIndex, 0, <ContentCard />);
 
   // Add key prop
   const pages = components.map((page, i) =>

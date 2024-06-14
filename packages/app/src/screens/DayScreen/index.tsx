@@ -15,7 +15,7 @@ const DayScreen: ScreenComponent<"Day"> = () => {
   // const dateIsEven = Date.getDay() % 2 === 0 // TODO:
   const ContentCard = dateIsEven ? QuizCard : DidYouKnowCard;
 
-  const pages = [
+  const components = [
     <EmojiQuestionCard topic={"mood"} />,
     <EmojiQuestionCard topic={"body"} />,
     <EmojiQuestionCard topic={"activity"} />,
@@ -23,9 +23,14 @@ const DayScreen: ScreenComponent<"Day"> = () => {
     <NotesCard />,
   ];
 
-  // Insert ContentCard at Start or End
-  const contentIndex = isOnPeriod ? pages.length - 1 : 0;
-  pages.splice(contentIndex, 0, <ContentCard />);
+  // Insert Quiz | DidYouKnow at Start or End
+  const contentIndex = isOnPeriod ? components.length - 1 : 0;
+  components.splice(contentIndex, 0, <ContentCard key={"content"} />);
+
+  // Add key prop
+  const pages = components.map((page, i) =>
+    React.cloneElement(page, { key: `day-card-${i}` })
+  );
 
   return (
     <Screen>

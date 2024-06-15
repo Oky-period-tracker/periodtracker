@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "../../../../../components/Button";
 import { useSignUp } from "../SignUpContext";
+import { Checkbox } from "../../../../../components/Checkbox";
 
 export const AskAgree = () => {
   const { state, dispatch } = useSignUp();
@@ -14,14 +15,7 @@ export const AskAgree = () => {
         before you continue
       </Text>
 
-      <View style={styles.checkWrapper}>
-        <Button
-          onPress={toggleAgree}
-          status={state.agree ? "primary" : "basic"}
-          style={styles.checkBox}
-        ></Button>
-        <Text style={styles.label}>I agree</Text>
-      </View>
+      <Checkbox label={"I agree"} onPress={toggleAgree} checked={state.agree} />
     </View>
   );
 };

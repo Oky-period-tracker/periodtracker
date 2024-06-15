@@ -89,65 +89,66 @@ interface Quizzes {
   allIds: string[];
 }
 
-interface Surveys {
-  date_created: string;
-  id: string;
-  isAgeRestricted: false;
-  is_multiple: true;
-  lang: string;
-  live: true;
-  option1: string;
-  option2: string;
-  option3: string;
-  option4: string;
-  option5: string;
-  question: string;
-  questions: ContentItem[];
-}
+// interface Surveys {
+//   date_created: string;
+//   id: string;
+//   isAgeRestricted: false;
+//   is_multiple: true;
+//   lang: string;
+//   live: true;
+//   option1: string;
+//   option2: string;
+//   option3: string;
+//   option4: string;
+//   option5: string;
+//   question: string;
+//   questions: ContentItem[];
+// }
 
-interface SurveyContentItem {
-  date_created: string;
-  id: string;
-  isAgeRestricted: false;
-  is_multiple: true;
-  lang: string;
-  live: true;
-  option1: string;
-  option2: string;
-  option3: string;
-  option4: string;
-  option5: string;
-  question: string;
-  questions: SurveyQuestionContentItem[];
-  inProgress: boolean;
-  currentQuestionIndex: number;
-  answeredQuestion: AnsweredSurveyQuestionContentItem[];
-}
-interface SurveyQuestionContentItem {
-  id: string;
-  is_multiple: boolean;
-  next_question: ContentItem;
-  options: ContentItem[];
-  question: string;
-  response: string;
-  sort_number: string;
-  surveyId: string;
-  answeredQuestion: AnsweredSurveyQuestionContentItem;
-}
+// interface SurveyContentItem {
+//   date_created: string;
+//   id: string;
+//   isAgeRestricted: false;
+//   is_multiple: true;
+//   lang: string;
+//   live: true;
+//   option1: string;
+//   option2: string;
+//   option3: string;
+//   option4: string;
+//   option5: string;
+//   question: string;
+//   questions: SurveyQuestionContentItem[];
+//   inProgress: boolean;
+//   currentQuestionIndex: number;
+//   answeredQuestion: AnsweredSurveyQuestionContentItem[];
+// }
 
-interface AnsweredSurveyQuestionContentItem {
-  questionId: string;
-  question: string;
-  answerID: string;
-  answer: string;
-  response: string;
-  isMultiple: boolean;
-}
-interface AllSurveys extends Array<SurveyContentItem> {}
-interface CompletedSurveys extends Array<CompletedSurveyItem> {}
-interface CompletedSurveyItem {
-  id: string;
-}
+// interface SurveyQuestionContentItem {
+//   id: string;
+//   is_multiple: boolean;
+//   next_question: ContentItem;
+//   options: ContentItem[];
+//   question: string;
+//   response: string;
+//   sort_number: string;
+//   surveyId: string;
+//   answeredQuestion: AnsweredSurveyQuestionContentItem;
+// }
+
+// interface AnsweredSurveyQuestionContentItem {
+//   questionId: string;
+//   question: string;
+//   answerID: string;
+//   answer: string;
+//   response: string;
+//   isMultiple: boolean;
+// }
+// interface AllSurveys extends Array<SurveyContentItem> {}
+// interface CompletedSurveys extends Array<CompletedSurveyItem> {}
+// interface CompletedSurveyItem {
+//   id: string;
+// }
 
 interface HelpCenterItem {
   id: number;
@@ -50219,7 +50220,53 @@ export const provinces: Province[] = [
   },
 ];
 
-export const surveys = [
+export type Survey = {
+  id: string;
+  questions: SurveyQuestion[];
+  isAgeRestricted: false;
+  date_created: string;
+  lang: string;
+  live: true;
+  //
+  is_multiple: true; // @deprecated
+  option1: string; // @deprecated
+  option2: string; // @deprecated
+  option3: string; // @deprecated
+  option4: string; // @deprecated
+  option5: string; // @deprecated
+  question: string; // @deprecated
+  response: string; // @deprecated
+};
+
+export type SurveyAnswerOption = { [key: string]: string };
+
+export type SurveyOptions = [
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?
+];
+
+export interface SurveyQuestion {
+  id: string;
+  question: string;
+  options: SurveyOptions;
+  next_question: {
+    option1: string;
+    option2: string;
+    option3: string;
+    option4: string;
+    option5: string;
+  };
+  is_multiple: boolean;
+  //
+  sort_number: string;
+  surveyId: string;
+  response: string;
+}
+
+export const surveys: Survey[] = [
   {
     id: "fe8f8ff5-3b87-47f2-ac0e-15da205fc774",
     question: "",

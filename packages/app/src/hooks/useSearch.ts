@@ -3,39 +3,54 @@ import { useDebounceFunction } from "./useDebounceFunction";
 
 interface UseSearchProps<T> {
   options: T[];
-  key: keyof T;
+  keys: (keyof T)[];
+  type?: "includes" | "startsWith";
   enabled?: boolean;
 }
 
 export const useSearch = <T>({
   options,
-  key,
+  keys,
+  type = "includes",
   enabled = true,
 }: UseSearchProps<T>) => {
   const [results, setResults] = React.useState(options);
   const [query, setQuery] = React.useState("");
+
+  const optionsWithCombinedString = React.useMemo(() => {
+    return options.map((item) => ({
+      ...item,
+      __combined: keys
+        .reduce((acc, key) => {
+          const value = item[key];
+          if (typeof value !== "string") {
+            return acc;
+          }
+          return `${acc} ${value}`;
+        }, "")
+        .toLowerCase()
+        .trim(),
+    }));
+  }, [options, keys]);
 
   const search = React.useCallback(() => {
     if (!enabled) {
       return;
     }
 
-    const queryLowCase = query.toLocaleLowerCase();
+    const queryLowCase = query.toLowerCase();
 
-    const filteredOptions = options.filter((item) => {
-      const value = item?.[key];
-
-      if (typeof value === "string") {
-        return value?.toLowerCase().startsWith(queryLowCase);
+    const filteredOptions = optionsWithCombinedString.filter((item) => {
+      if (type === "startsWith") {
+        return item.__combined.startsWith(queryLowCase);
       }
-
-      return false;
+      return item.__combined.includes(queryLowCase);
     });
 
     setResults(filteredOptions);
-  }, [query]);
+  }, [enabled, query, optionsWithCombinedString, type]);
 
-  useDebounceFunction(search, 500, [query]);
+  useDebounceFunction(search, 500);
 
   return {
     query,

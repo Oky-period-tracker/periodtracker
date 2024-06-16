@@ -26,7 +26,8 @@ export const ModalSelector = ({
 
   const { query, setQuery, results } = useSearch<WheelPickerOption>({
     options,
-    key: "label",
+    keys: searchKeys,
+    type: "startsWith",
     enabled: searchEnabled,
   });
 
@@ -88,6 +89,8 @@ export const ModalSelector = ({
     </>
   );
 };
+
+const searchKeys = ["label" as const];
 
 const styles = StyleSheet.create({
   modal: {

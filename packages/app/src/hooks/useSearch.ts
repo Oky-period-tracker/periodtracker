@@ -40,11 +40,14 @@ export const useSearch = <T>({
 
     const queryLowCase = query.toLowerCase();
 
+    const searchTerms = queryLowCase.split(" ");
+
     const filteredOptions = optionsWithCombinedString.filter((item) => {
       if (type === "startsWith") {
         return item.__combined.startsWith(queryLowCase);
       }
-      return item.__combined.includes(queryLowCase);
+
+      return searchTerms.every((term) => item.__combined.includes(term));
     });
 
     setResults(filteredOptions);

@@ -15,8 +15,8 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
 
   return (
     <Screen>
+      <Input value={query} onChangeText={setQuery} placeholder={"search"} />
       <ScrollView style={styles.scrollView}>
-        <Input value={query} onChangeText={setQuery} placeholder={"search"} />
         {results.map((item) => (
           <HelpCenterCard key={`help-center-${item.id}`} helpCenter={item} />
         ))}

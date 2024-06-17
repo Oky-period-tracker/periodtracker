@@ -1,11 +1,17 @@
 import * as React from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, View, TouchableOpacity } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
 import { HelpCenter, data } from "../../data/data";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { HelpCenterCard } from "./components/HelpCenterCard";
 import { Input } from "../../components/Input";
 import { useSearch } from "../../hooks/useSearch";
+import { Button } from "../../components/Button";
+import { useToggle } from "../../hooks/useToggle";
+import { Modal } from "../../components/Modal";
+import { Hr } from "../../components/Hr";
+import { Text } from "../../components/Text";
 
 const FindHelpScreen: ScreenComponent<"Help"> = () => {
   const { query, setQuery, results } = useSearch<HelpCenter>({
@@ -37,9 +43,32 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
     });
   }, [results, savedHelpCenters]);
 
+  const [filterModalVisible, toggleFilterModal] = useToggle();
+
+  const onConfirm = () => {
+    toggleFilterModal();
+    //
+  };
+
   return (
     <Screen>
-      <Input value={query} onChangeText={setQuery} placeholder={"search"} />
+      <View style={styles.searchRow}>
+        <View style={styles.filterButton}>{/* Spacer */}</View>
+        <Input
+          value={query}
+          onChangeText={setQuery}
+          placeholder={"search"}
+          style={styles.search}
+        />
+        <Button
+          style={styles.filterButton}
+          status={"basic"}
+          onPress={toggleFilterModal}
+        >
+          <FontAwesome size={18} name={"filter"} color={"#fff"} />
+        </Button>
+      </View>
+
       <ScrollView style={styles.scrollView}>
         {sortedResults.map((item) => {
           const isSaved = savedHelpCenters.includes(item.id);
@@ -62,6 +91,19 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
           );
         })}
       </ScrollView>
+
+      <Modal
+        visible={filterModalVisible}
+        toggleVisible={toggleFilterModal}
+        style={styles.modal}
+      >
+        <View style={styles.modalBody}>{/* TODO: */}</View>
+
+        <Hr />
+        <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
+          <Text style={styles.confirmText}>Confirm</Text>
+        </TouchableOpacity>
+      </Modal>
     </Screen>
   );
 };
@@ -83,6 +125,17 @@ const styles = StyleSheet.create({
   scrollView: {
     width: "100%",
     height: "100%",
+  },
+  searchRow: {
+    flexDirection: "row",
+  },
+  search: {
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  filterButton: {
+    width: 40,
+    height: 40,
   },
   helpCenterCard: {
     backgroundColor: "#fff",
@@ -108,5 +161,21 @@ const styles = StyleSheet.create({
   },
   website: {
     marginBottom: 8,
+  },
+  //
+  modal: {
+    backgroundColor: "#fff",
+    borderRadius: 20,
+  },
+  modalBody: {
+    paddingVertical: 24,
+    paddingHorizontal: 48,
+  },
+  confirm: {
+    padding: 24,
+  },
+  confirmText: {
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });

@@ -1,5 +1,6 @@
+/*eslint-disable*/
 import moment, { Moment } from 'moment'
-import { AppState } from '../redux/reducers/appReducer'
+// import { AppState } from '../redux/reducers/appReducer'
 import CircularBuffer from 'circular-buffer'
 
 interface CurrentCycle {

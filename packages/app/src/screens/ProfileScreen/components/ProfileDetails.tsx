@@ -10,6 +10,8 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
     navigation.navigate("EditProfile");
   };
 
+  
+
   const goToAvatarAndTheme = () => {
     navigation.navigate("AvatarAndTheme");
   };

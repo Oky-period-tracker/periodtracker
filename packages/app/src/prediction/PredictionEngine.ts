@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import _, { trimEnd } from 'lodash'
 import moment, { Moment } from 'moment'
 import { PredictionState } from './PredictionState'

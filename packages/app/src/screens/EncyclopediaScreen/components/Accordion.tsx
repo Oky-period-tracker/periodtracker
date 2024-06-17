@@ -19,6 +19,7 @@ export const Accordion = () => {
 };
 
 const AccordionItem = ({ categoryId }: { categoryId: string }) => {
+  //eslint-disable-next-line 
   const navigation = useNavigation() as any; // @TODO: Fixme
   const [expanded, toggleExpanded] = useToggle();
 

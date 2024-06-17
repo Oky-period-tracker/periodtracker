@@ -1,3 +1,4 @@
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     textAlign: "center",
-    // @ts-ignore
+    // @ts-expect-error TODO
     outlineStyle: "none", // Web
   },
   sideComponent: {

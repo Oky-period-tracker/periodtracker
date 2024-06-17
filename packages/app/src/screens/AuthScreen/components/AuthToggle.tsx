@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Hr } from "../../../components/Hr";
 import { useAuthMode } from "../AuthModeContext";

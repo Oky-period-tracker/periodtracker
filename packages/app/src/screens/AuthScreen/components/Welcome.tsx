@@ -6,15 +6,14 @@ import { useAuthMode } from "../AuthModeContext";
 
 export const Welcome = () => {
   const [index, setIndex] = React.useState(0);
-
   const pages = [
-    <View style={[styles.page]}>
+    <View key="page1" style={styles.page}>
       <Text>Page 1</Text>
     </View>,
-    <View style={[styles.page]}>
+    <View key="page2" style={styles.page}>
       <Text>Page 2</Text>
     </View>,
-    <View style={[styles.page]}>
+    <View key="page3" style={styles.page}>
       <Text>Page 3</Text>
     </View>,
   ];

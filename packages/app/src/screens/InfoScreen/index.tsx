@@ -5,7 +5,7 @@ import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Hr } from "../../components/Hr";
 
-const InfoScreen = ({ navigation, route }) => {
+const InfoScreen = ({ navigation }) => {
   const rows: TouchableRowProps[] = [
     {
       title: "About",

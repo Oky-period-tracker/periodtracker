@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { DisplayButton } from "./Button";
 import Cloud from "./icons/Cloud";

@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, Text, TextProps } from "react-native";
 
 export const ErrorText = ({ style, children, ...props }: TextProps) => {

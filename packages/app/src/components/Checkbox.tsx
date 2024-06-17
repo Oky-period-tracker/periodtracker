@@ -1,7 +1,9 @@
+import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Button } from "./Button";
 import { Text } from "./Text";
 import { PaletteStatus } from "../config/theme";
+
 
 type CheckboxProps = {
   label: string;

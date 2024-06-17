@@ -33,7 +33,7 @@ export const JourneyReview = () => {
             <React.Fragment key={`journey-review-${step}`}>
               <TouchableOpacity onPress={onPress} style={styles.row}>
                 <DisplayButton style={styles.iconLeft}>
-                  {/* @ts-ignore TODO: */}
+                  {/* @ts-expect-error TODO */}
                   <FontAwesome size={20} name={iconName} color={"#fff"} />
                 </DisplayButton>
 

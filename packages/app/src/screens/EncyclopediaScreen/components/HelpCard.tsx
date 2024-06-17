@@ -1,3 +1,4 @@
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -5,7 +6,7 @@ import {
   TouchableOpacityProps,
 } from "react-native";
 
-export const HelpCard = ({ style, ...props }: TouchableOpacityProps) => {
+export const HelpCard = ({ ...props }: TouchableOpacityProps) => {
   return (
     <TouchableOpacity style={styles.helpCard} {...props}>
       <Text>Find Help</Text>

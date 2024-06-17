@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setName } from "../../redux/reducers/appReducer";
 
 const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
-  // @ts-ignore
+  // @ts-expect-error TODO
   const name = useSelector((state) => state.app?.name);
   const dispatch = useDispatch();
 

@@ -1,8 +1,9 @@
+import React from "react";
 import {
   ImageBackground,
-  ImageBackgroundProps,
+  // ImageBackgroundProps,
   StyleSheet,
-  View,
+  // View,
 } from "react-native";
 import { assets } from "../assets";
 import { PropsWithChildren } from "react";

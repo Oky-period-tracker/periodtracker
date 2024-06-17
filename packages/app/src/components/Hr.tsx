@@ -1,3 +1,4 @@
+import React from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
 
 export const Hr = ({ style, ...props }: ViewProps) => {

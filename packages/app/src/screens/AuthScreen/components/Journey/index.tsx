@@ -1,3 +1,4 @@
+import React from "react";
 import { Swiper } from "../../../../components/Swiper";
 import { JourneyProvider, journeySteps, useJourney } from "./JourneyContext";
 import { JourneyCard } from "./components/JourneyCard";

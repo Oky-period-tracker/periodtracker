@@ -1,0 +1,6 @@
+#!/bin/sh
+. "$(dirname "$0")/husky.sh"
+
+echo "Running pre-commit hook"
+npm run lint
+

@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setData } from "../redux/reducers/appReducer";
 
 export const Switch = () => {
-  // @ts-ignore TODO: Move redux outside the switch(?)
+  // // @ts-expect-error TODO: Move redux outside the switch(?)
   const isSwitchedOn = useSelector((state) => state.app.data);
   const dispatch = useDispatch();
 

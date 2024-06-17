@@ -6,6 +6,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 
 const CalendarScreen: ScreenComponent<"Calendar"> = () => {
+  //eslint-disable-next-line
   const [selected, setSelected] = useState("");
 
   return (

@@ -9,8 +9,9 @@
     "web": "expo start --web",
     "ts:check": "tsc",
     "reinstall": "rm -rf node_modules && yarn",
-    "lint":"eslint .",
-    "postinstall": "husky install"
+    "lint": "eslint .",
+    "postinstall": "husky install",
+    "prepare": "husky"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",

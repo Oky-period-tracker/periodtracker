@@ -6,6 +6,7 @@ import { CycleCard } from "./components/CycleCard";
 import { ProfileDetails } from "./components/ProfileDetails";
 
 const ProfileScreen: ScreenComponent<"Profile"> = (props) => {
+  
   return (
     <Screen>
       {/* TODO: FlatList ? */}

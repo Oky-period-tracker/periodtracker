@@ -1,9 +1,10 @@
 import * as React from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { Screen } from "../../components/Screen";
-import { data } from "../../data/data";
+import { HelpCenter, data } from "../../data/data";
 import { A } from "../../components/A";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { HelpCenterCard } from "./components/HelpCenterCard";
 
 const FindHelpScreen: ScreenComponent<"Help"> = () => {
   const helpCenters = data.helpCenters;
@@ -12,18 +13,7 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
     <Screen>
       <ScrollView style={styles.scrollView}>
         {helpCenters.map((item) => (
-          <View style={styles.helpCenterCard}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.caption}>{item.caption}</Text>
-
-            <Text style={styles.subtitle}>Phone number:</Text>
-            <Text style={styles.text}>{item.contactOne}</Text>
-
-            <Text style={styles.subtitle}>Website:</Text>
-            <A href={item.website} style={styles.website}>
-              {item.website}
-            </A>
-          </View>
+          <HelpCenterCard key={`help-center-${item.id}`} helpCenter={item} />
         ))}
       </ScrollView>
     </Screen>
@@ -50,6 +40,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
@@ -59,6 +50,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   website: {
-    //
+    marginBottom: 8,
   },
 });

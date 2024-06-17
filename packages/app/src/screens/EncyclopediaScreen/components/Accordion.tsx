@@ -40,7 +40,9 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     <>
       <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
         <Text style={styles.categoryName}>{category.name}</Text>
-        <DisplayButton status={"basic"} style={styles.categoryEmoji} />
+        <DisplayButton status={"basic"} style={styles.categoryEmoji} >
+          {category.tags.primary.emoji}
+        </DisplayButton>
       </TouchableOpacity>
       {expanded
         ? subCategories.map((subcategory) => (
@@ -82,8 +84,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   categoryEmoji: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
   },
   subcategory: {
     flexDirection: "row",

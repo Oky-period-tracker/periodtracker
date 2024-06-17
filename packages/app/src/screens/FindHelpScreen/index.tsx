@@ -13,13 +13,54 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
     keys: searchKeys,
   });
 
+  // TODO: use redux state
+  const [savedHelpCenters, setSavedHelpCenters] = React.useState<number[]>([]);
+
+  const sortedResults = React.useMemo(() => {
+    return results.sort((a, b) => {
+      const isASaved = savedHelpCenters.includes(a.id);
+      const isBSaved = savedHelpCenters.includes(b.id);
+
+      // Primary sorting by saved status
+      if (isASaved && !isBSaved) {
+        return -1;
+      }
+      if (!isASaved && isBSaved) {
+        return 1;
+      }
+
+      // Secondary sorting by sortingKey
+      const aSortingKey = a.sortingKey;
+      const bSortingKey = b.sortingKey;
+
+      return aSortingKey - bSortingKey;
+    });
+  }, [results, savedHelpCenters]);
+
   return (
     <Screen>
       <Input value={query} onChangeText={setQuery} placeholder={"search"} />
       <ScrollView style={styles.scrollView}>
-        {results.map((item) => (
-          <HelpCenterCard key={`help-center-${item.id}`} helpCenter={item} />
-        ))}
+        {sortedResults.map((item) => {
+          const isSaved = savedHelpCenters.includes(item.id);
+          const onSavePress = () => {
+            setSavedHelpCenters((current) => {
+              if (current.includes(item.id)) {
+                return current.filter((h) => h !== item.id);
+              }
+              return [...current, item.id];
+            });
+          };
+
+          return (
+            <HelpCenterCard
+              key={`help-center-${item.id}`}
+              helpCenter={item}
+              isSaved={isSaved}
+              onSavePress={onSavePress}
+            />
+          );
+        })}
       </ScrollView>
     </Screen>
   );

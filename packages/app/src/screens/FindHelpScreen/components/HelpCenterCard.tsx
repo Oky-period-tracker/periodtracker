@@ -1,18 +1,44 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Text } from "../../../components/Text";
 import { HelpCenter } from "../../../data/data";
 import { A } from "../../../components/A";
 import { useToggle } from "../../../hooks/useToggle";
+import { Button } from "../../../components/Button";
 
-export const HelpCenterCard = ({ helpCenter }: { helpCenter: HelpCenter }) => {
+export const HelpCenterCard = ({
+  helpCenter,
+  isSaved,
+  onSavePress,
+}: {
+  helpCenter: HelpCenter;
+  isSaved: boolean;
+  onSavePress: () => void;
+}) => {
   const [expanded, toggleExpanded] = useToggle();
   const websites = helpCenter.websites.split(",");
 
   return (
     <TouchableOpacity onPress={toggleExpanded} style={styles.helpCenterCard}>
-      <Text style={styles.title}>{helpCenter.title}</Text>
-      <Text style={styles.caption}>{helpCenter.caption}</Text>
+      <View style={styles.topRow}>
+        <View style={styles.topRowText}>
+          <Text style={styles.title}>{helpCenter.title}</Text>
+          <Text style={styles.caption}>{helpCenter.caption}</Text>
+        </View>
+        <Text style={styles.emoji}>😊</Text>
+        <Button
+          style={styles.saveButton}
+          status={isSaved ? "danger" : "basic"}
+          onPress={onSavePress}
+        >
+          <FontAwesome
+            size={18}
+            name={isSaved ? `heart` : `heart-o`}
+            color={"#fff"}
+          />
+        </Button>
+      </View>
 
       {expanded && (
         <>
@@ -52,6 +78,18 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     padding: 24,
   },
+  saveButton: {
+    width: 40,
+    height: 40,
+  },
+  topRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  topRowText: {
+    flexDirection: "column",
+    flex: 1,
+  },
   text: {
     marginBottom: 8,
   },
@@ -66,6 +104,11 @@ const styles = StyleSheet.create({
   },
   caption: {
     marginBottom: 8,
+  },
+  emoji: {
+    marginHorizontal: 8,
+    width: 24,
+    textAlign: "center",
   },
   website: {
     marginBottom: 8,

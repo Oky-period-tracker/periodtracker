@@ -6,6 +6,7 @@ import { HelpCenter } from "../../../data/data";
 import { A } from "../../../components/A";
 import { useToggle } from "../../../hooks/useToggle";
 import { Button } from "../../../components/Button";
+import { helpCenterAttributes } from "../../../data/helpCenter";
 
 export const HelpCenterCard = ({
   helpCenter,
@@ -19,6 +20,14 @@ export const HelpCenterCard = ({
   const [expanded, toggleExpanded] = useToggle();
   const websites = helpCenter.websites.split(",");
 
+  const emoji = React.useMemo(() => {
+    return (
+      helpCenterAttributes.find(
+        (item) => item.id === helpCenter.primaryAttributeId
+      )?.emoji ?? defaultEmoji
+    );
+  }, [helpCenter]);
+
   return (
     <TouchableOpacity onPress={toggleExpanded} style={styles.helpCenterCard}>
       <View style={styles.topRow}>
@@ -26,7 +35,7 @@ export const HelpCenterCard = ({
           <Text style={styles.title}>{helpCenter.title}</Text>
           <Text style={styles.caption}>{helpCenter.caption}</Text>
         </View>
-        <Text style={styles.emoji}>😊</Text>
+        <Text style={styles.emoji}>{emoji}</Text>
         <Button
           style={styles.saveButton}
           status={isSaved ? "danger" : "basic"}
@@ -65,6 +74,8 @@ export const HelpCenterCard = ({
     </TouchableOpacity>
   );
 };
+
+const defaultEmoji = "😊";
 
 const styles = StyleSheet.create({
   scrollView: {

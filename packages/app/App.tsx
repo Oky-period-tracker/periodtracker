@@ -7,6 +7,7 @@ import { store, persistor } from "./src/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { useOrientationLock } from "./src/hooks/useOrientationLock";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { EncyclopediaProvider } from "./src/screens/EncyclopediaScreen/EncyclopediaContext";
 
 function App() {
   useOrientationLock();
@@ -17,7 +18,9 @@ function App() {
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <Background>
-              <RootNavigator />
+              <EncyclopediaProvider>
+                <RootNavigator />
+              </EncyclopediaProvider>
             </Background>
           </PersistGate>
         </Provider>

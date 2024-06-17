@@ -3,13 +3,23 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { data } from "../EncyclopediaScreen/data";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { Input } from "../../components/Input";
+import { useEncyclopedia } from "../EncyclopediaScreen/EncyclopediaContext";
 
 const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
+  const { query, setQuery, articleIds } = useEncyclopedia();
+
   const subcategoryId = route.params.subcategoryId;
   const subcategory = data.subCategories.byId[subcategoryId];
-  const articles = subcategory.articles.map(
-    (articleId) => data.articles.byId[articleId]
-  );
+
+  const articles = React.useMemo(() => {
+    return subcategory.articles.reduce((acc, articleId) => {
+      if (articleIds.includes(articleId)) {
+        acc.push(data.articles.byId[articleId]);
+      }
+      return acc;
+    }, []);
+  }, [subcategory, articleIds, data.articles]);
 
   React.useLayoutEffect(() => {
     // Set Screen title
@@ -20,12 +30,14 @@ const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
 
   return (
     <Screen>
+      <Input value={query} onChangeText={setQuery} placeholder={"search"} />
+
       <ScrollView style={styles.scrollView}>
         {articles.map((article) => {
           return (
             <View style={styles.card} key={article.id}>
               <Text style={styles.title}>{article.title}</Text>
-              <Text style={styles.subCategory}>{article.subCategory}</Text>
+              <Text style={styles.subCategory}>{subcategory.name}</Text>
               <Text>{article.content}</Text>
             </View>
           );

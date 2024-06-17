@@ -1,41 +1,48 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useToggle } from "../../../hooks/useToggle";
-import { data } from "../data";
 import { DisplayButton } from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
+import { useEncyclopedia } from "../EncyclopediaContext";
+import { data } from "../data";
+import React from "react";
 
-function Accordion() {
+export const Accordion = () => {
+  const { categoryIds } = useEncyclopedia();
+
   return (
     <>
-      {data.categories.allIds.map((categoryId) => (
+      {categoryIds.map((categoryId) => (
         <AccordionItem key={categoryId} categoryId={categoryId} />
       ))}
     </>
   );
-}
-
-export default Accordion;
+};
 
 const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   const navigation = useNavigation() as any; // @TODO: Fixme
   const [expanded, toggleExpanded] = useToggle();
 
+  const { subcategoryIds } = useEncyclopedia();
+
   const category = data.categories.byId[categoryId];
-  const subcategories = category.subCategories.map(
-    (subcategoryId) => data.subCategories.byId[subcategoryId]
-  );
+
+  const subCategories = React.useMemo(() => {
+    return category.subCategories.reduce((acc, subcategoryId) => {
+      if (subcategoryIds.includes(subcategoryId)) {
+        acc.push(data.subCategories.byId[subcategoryId]);
+      }
+      return acc;
+    }, []);
+  }, [category, subcategoryIds, data.subCategories]);
 
   return (
     <>
       <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
         <Text style={styles.categoryName}>{category.name}</Text>
-        <DisplayButton
-          status={"basic"}
-          style={styles.categoryEmoji}
-        ></DisplayButton>
+        <DisplayButton status={"basic"} style={styles.categoryEmoji} />
       </TouchableOpacity>
       {expanded
-        ? subcategories.map((subcategory) => (
+        ? subCategories.map((subcategory) => (
             <TouchableOpacity
               key={subcategory.id}
               style={styles.subcategory}

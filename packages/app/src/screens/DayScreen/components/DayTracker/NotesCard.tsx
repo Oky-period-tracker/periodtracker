@@ -7,7 +7,7 @@ export const NotesCard = () => {
   const [notes, setNotes] = React.useState("");
 
   return (
-    <View style={[styles.page]}>
+    <View style={styles.page}>
       <Input
         value={noteTitle}
         onChangeText={setNoteTitle}

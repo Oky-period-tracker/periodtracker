@@ -13,7 +13,7 @@ export const DidYouKnowCard = () => {
   };
 
   return (
-    <View style={[styles.page]}>
+    <View style={styles.page}>
       <Text style={styles.title}>Did you know?</Text>
       <Text>Learn a new fact about your body every day!</Text>
       <View style={styles.body}>

@@ -46,7 +46,7 @@ export const EmojiQuestionCard = ({
   };
 
   return (
-    <View style={[styles.page]}>
+    <View style={styles.page}>
       <Text style={styles.title}>{title}</Text>
       <Text>{description}</Text>
       <Text style={styles.question}>{question}</Text>

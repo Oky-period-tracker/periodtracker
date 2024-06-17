@@ -27,7 +27,7 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
   const question = state.consented ? currentQuestion.question : consentQuestion;
 
   return (
-    <View style={[styles.page]}>
+    <View style={styles.page}>
       <View style={styles.body}>
         <Text style={styles.title}>Feedback</Text>
         <Text>Tell us about your experience with Oky.</Text>

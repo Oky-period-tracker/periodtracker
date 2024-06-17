@@ -19,7 +19,7 @@ export const QuizCard = () => {
     : "";
 
   return (
-    <View style={[styles.page]}>
+    <View style={styles.page}>
       <Text style={styles.title}>Quiz</Text>
       <Text>Test your knowledge when it comes to periods and body stuff!</Text>
       <View style={styles.body}>

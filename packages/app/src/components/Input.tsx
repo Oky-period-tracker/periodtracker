@@ -42,7 +42,7 @@ export const Input = ({
       <View
         style={[styles.container, props.multiline && styles.multiline, style]}
       >
-        <View style={[styles.wrapper]}>
+        <View style={styles.wrapper}>
           {info ? (
             <Button
               status={"danger_light"}

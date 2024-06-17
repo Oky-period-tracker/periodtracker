@@ -14,10 +14,23 @@ export const useSearch = <T>({
   type = "includes",
   enabled = true,
 }: UseSearchProps<T>) => {
+  if (keys.length === 0) {
+    throw new Error("The 'keys' array should contain at least one key.");
+  }
+
   const [results, setResults] = React.useState(options);
   const [query, setQuery] = React.useState("");
 
   const optionsWithCombinedString = React.useMemo(() => {
+    if (keys.length === 1) {
+      // No need to combine
+      const key = keys[0];
+      return options.map((item) => ({
+        ...item,
+        __combined: `${item[key]}`.toLowerCase(),
+      }));
+    }
+
     return options.map((item) => ({
       ...item,
       __combined: keys
@@ -28,8 +41,7 @@ export const useSearch = <T>({
           }
           return `${acc} ${value}`;
         }, "")
-        .toLowerCase()
-        .trim(),
+        .toLowerCase(),
     }));
   }, [options, keys]);
 

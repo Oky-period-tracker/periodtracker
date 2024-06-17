@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, StyleSheet, Text, ScrollView } from "react-native";
 import { Screen } from "../../components/Screen";
-import { data } from "../EncyclopediaScreen/data";
+import { data } from "../../data/data";
 import { A } from "../../components/A";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 

@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  Survey,
-  SurveyQuestion,
-  surveys,
-} from "../../../EncyclopediaScreen/data";
+import { Survey, SurveyQuestion, surveys } from "../../../../data/data";
 
 type SurveyAnswer = {
   questionId: string;

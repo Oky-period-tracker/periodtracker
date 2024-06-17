@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { ModalSelector } from "../../../../../components/ModalSelector";
-import { countries, provinces } from "../../../../EncyclopediaScreen/data";
+import { countries, provinces } from "../../../../../data/data";
 import { SegmentControl } from "../../../../../components/SegmentControl";
 
 const locations = [

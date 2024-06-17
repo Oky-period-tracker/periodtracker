@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import { data } from "../EncyclopediaScreen/data";
+import { data } from "../../data/data";
 import { InfoDisplay } from "../../components/InfoDisplay";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";

@@ -1,6 +1,6 @@
 import React from "react";
 import { useSearch } from "../../hooks/useSearch";
-import { Article, data } from "./data";
+import { Article, data } from "../../data/data";
 
 export type EncyclopediaContext = {
   query: string;

@@ -3,7 +3,7 @@ import { useToggle } from "../../../hooks/useToggle";
 import { DisplayButton } from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useEncyclopedia } from "../EncyclopediaContext";
-import { data } from "../data";
+import { data } from "../../../data/data";
 import React from "react";
 
 export const Accordion = () => {

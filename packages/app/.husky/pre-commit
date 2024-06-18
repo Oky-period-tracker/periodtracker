@@ -1,1 +1,2 @@
-yarn eslint .
+yarn lint
+yarn ts:check

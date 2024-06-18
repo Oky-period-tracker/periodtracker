@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
-import { ModalSelector } from "../../../../../components/ModalSelector";
+import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { generateRange } from "../../../../../services/utils";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 
@@ -52,7 +52,7 @@ export const AskAge = () => {
 
   return (
     <View style={styles.container}>
-      <ModalSelector
+      <WheelPickerModal
         initialOption={initialMonth}
         options={monthOptions}
         onSelect={onChangeMonth}
@@ -61,7 +61,7 @@ export const AskAge = () => {
         errorKey={"no_month"}
         errorsVisible={state.errorsVisible}
       />
-      <ModalSelector
+      <WheelPickerModal
         initialOption={initialYear}
         options={yearOptions}
         onSelect={onChangeYear}

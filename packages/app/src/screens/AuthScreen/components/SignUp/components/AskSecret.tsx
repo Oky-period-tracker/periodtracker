@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { Input } from "../../../../../components/Input";
-import { ModalSelector } from "../../../../../components/ModalSelector";
+import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 
 // TODO: move somewhere else?
@@ -35,7 +35,7 @@ export const AskSecret = () => {
 
   return (
     <View style={styles.container}>
-      <ModalSelector
+      <WheelPickerModal
         initialOption={initialSecretOption}
         options={questionOptions}
         onSelect={onChangeQuestion}

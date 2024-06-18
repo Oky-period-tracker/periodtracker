@@ -6,7 +6,7 @@ import { WheelPicker, WheelPickerOption } from "./WheelPicker";
 import { Hr } from "./Hr";
 import { useSearch } from "../hooks/useSearch";
 
-export const ModalSelector = ({
+export const WheelPickerModal = ({
   initialOption,
   options,
   onSelect,

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, ButtonProps } from "./Button";
-import { ModalSelector } from "./ModalSelector";
+import { WheelPickerModal } from "./WheelPickerModal";
 
 export const LanguageSelector = (props: ButtonProps) => {
   // TODO: update redux state
@@ -18,7 +18,7 @@ export const LanguageSelector = (props: ButtonProps) => {
   };
 
   return (
-    <ModalSelector
+    <WheelPickerModal
       initialOption={initialOption}
       options={languages}
       onSelect={() => {

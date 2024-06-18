@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
-import { ModalSelector } from "../../../../../components/ModalSelector";
+import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { countries, provinces } from "../../../../../data/data";
 import { SegmentControl } from "../../../../../components/SegmentControl";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
@@ -51,7 +51,7 @@ export const AskLocation = () => {
 
   return (
     <View style={styles.container}>
-      <ModalSelector
+      <WheelPickerModal
         initialOption={initialCountry}
         options={countryOptions}
         onSelect={onChangeCountry}
@@ -61,7 +61,7 @@ export const AskLocation = () => {
         errorsVisible={state.errorsVisible}
         searchEnabled
       />
-      <ModalSelector
+      <WheelPickerModal
         initialOption={initialProvince}
         options={provinceOptions}
         onSelect={onChangeProvince}

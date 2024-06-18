@@ -1,6 +1,16 @@
 # Oky app V2
 
-Switch to latest node version
+Set the latest node version as your default
+
+```bash
+nvm alias default 20.12.2
+```
+
+Allow husky script
+
+```bash
+chmod +x ./.husky/_/pre-commit
+```
 
 Install packages
 

@@ -1,14 +1,16 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Button } from "./Button";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { DisplayButton } from "./Button";
 import { Text } from "./Text";
 import { PaletteStatus } from "../config/theme";
 
+type CheckBoxSize = "small" | "medium";
 
 type CheckboxProps = {
   label: string;
   checked: boolean;
   onPress: () => void;
+  size?: CheckBoxSize;
   checkedStatus?: PaletteStatus;
   checkedTextStatus?: PaletteStatus;
 };
@@ -17,21 +19,46 @@ export const Checkbox = ({
   label,
   checked,
   onPress,
+  size = "medium",
   checkedStatus = "primary",
   checkedTextStatus = "basic",
 }: CheckboxProps) => {
+  const sizes = sizeValues[size];
+
   return (
-    <View style={styles.container}>
-      <Button
-        onPress={onPress}
+    <TouchableOpacity style={styles.container} onPress={onPress}>
+      <DisplayButton
         status={checked ? checkedStatus : "basic"}
-        style={styles.checkBox}
-      ></Button>
-      <Text style={styles.label} status={checked ? checkedTextStatus : "basic"}>
+        style={[
+          styles.checkBox,
+          { width: sizes.checkBox, height: sizes.checkBox },
+        ]}
+      />
+      <Text
+        style={{ fontWeight: sizes.fontWeight }}
+        status={checked ? checkedTextStatus : "basic"}
+      >
         {label}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
+};
+
+const sizeValues: Record<
+  CheckBoxSize,
+  {
+    checkBox: number;
+    fontWeight: "bold" | undefined;
+  }
+> = {
+  small: {
+    checkBox: 24,
+    fontWeight: undefined,
+  },
+  medium: {
+    checkBox: 32,
+    fontWeight: "bold",
+  },
 };
 
 const styles = StyleSheet.create({
@@ -41,11 +68,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   checkBox: {
-    width: 32,
-    height: 32,
     marginRight: 12,
-  },
-  label: {
-    fontWeight: "bold",
   },
 });

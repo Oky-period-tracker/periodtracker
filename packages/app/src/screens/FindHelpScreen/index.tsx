@@ -48,7 +48,8 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
     attributes: [],
   });
 
-  console.log("*** ", filters);
+  const hasFilters =
+    filters.region || filters.subRegion || filters.attributes.length;
 
   return (
     <Screen>
@@ -62,7 +63,7 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
         />
         <Button
           style={styles.filterButton}
-          status={"basic"}
+          status={hasFilters ? "secondary" : "basic"}
           onPress={toggleFilterModal}
         >
           <FontAwesome size={18} name={"filter"} color={"#fff"} />

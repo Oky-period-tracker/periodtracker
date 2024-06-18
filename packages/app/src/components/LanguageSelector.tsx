@@ -5,6 +5,8 @@ import { ModalSelector } from "./ModalSelector";
 export const LanguageSelector = (props: ButtonProps) => {
   // TODO: update redux state
 
+  const initialOption = languages[0];
+
   const LanguageButton = ({ onPress }: ButtonProps) => {
     // TODO: display redux state language name
 
@@ -17,6 +19,7 @@ export const LanguageSelector = (props: ButtonProps) => {
 
   return (
     <ModalSelector
+      initialOption={initialOption}
       options={languages}
       onSelect={() => {
         // TODO:

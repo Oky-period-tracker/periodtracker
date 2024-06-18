@@ -4,23 +4,16 @@ import { useSignUp } from "../SignUpContext";
 import { ModalSelector } from "../../../../../components/ModalSelector";
 import { countries, provinces } from "../../../../../data/data";
 import { SegmentControl } from "../../../../../components/SegmentControl";
-
-const locations = [
-  { value: "Urban", label: "Urban", iconName: "building" },
-  { value: "Rural", label: "Rural", iconName: "leaf" },
-];
-
-// TODO: redux state
-const locale = "en";
+import { WheelPickerOption } from "../../../../../components/WheelPicker";
 
 export const AskLocation = () => {
   const { state, dispatch, errors } = useSignUp();
 
-  const onChangeCountry = (value: string) => {
+  const onChangeCountry = ({ value }: WheelPickerOption) => {
     dispatch({ type: "country", value });
   };
 
-  const onChangeProvince = (value: string) => {
+  const onChangeProvince = ({ value }: WheelPickerOption) => {
     dispatch({ type: "province", value });
   };
 
@@ -48,17 +41,18 @@ export const AskLocation = () => {
     }));
   }, [state.country, provinces, locale]);
 
-  const provinceOption = React.useMemo(() => {
+  const initialProvince = React.useMemo(() => {
     return provinceOptions.find((item) => item.value === state.province);
   }, [provinceOptions, state.province]);
 
-  const countryDisplay = countries?.[state.country]?.[locale] ?? "";
-  const provinceDisplay = provinceOption?.label ?? "";
+  const initialCountry = React.useMemo(() => {
+    return countryOptions.find((item) => item.value === state.country);
+  }, [countryOptions, state.country]);
 
   return (
     <View style={styles.container}>
       <ModalSelector
-        displayValue={countryDisplay}
+        initialOption={initialCountry}
         options={countryOptions}
         onSelect={onChangeCountry}
         placeholder={"country"}
@@ -68,7 +62,7 @@ export const AskLocation = () => {
         searchEnabled
       />
       <ModalSelector
-        displayValue={provinceDisplay}
+        initialOption={initialProvince}
         options={provinceOptions}
         onSelect={onChangeProvince}
         placeholder={"province"}
@@ -88,6 +82,14 @@ export const AskLocation = () => {
     </View>
   );
 };
+
+const locations = [
+  { value: "Urban", label: "Urban", iconName: "building" },
+  { value: "Rural", label: "Rural", iconName: "leaf" },
+];
+
+// TODO: redux state
+const locale = "en";
 
 const styles = StyleSheet.create({
   container: {

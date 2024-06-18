@@ -15,23 +15,28 @@ const height = ITEM_HEIGHT * VISIBLE_ITEMS;
 
 export type WheelPickerOption = {
   label: string;
-  value: unknown;
+  value: string;
 };
 
 export type WheelPickerProps = {
-  selectedIndex: number;
+  initialOption: WheelPickerOption;
   options: WheelPickerOption[];
-  onChange: (i: number) => void;
+  onChange: (value: WheelPickerOption) => void;
   resetDeps: unknown[];
 };
 
 export const WheelPicker = ({
-  selectedIndex,
+  initialOption,
   options,
   onChange,
   resetDeps,
 }: WheelPickerProps) => {
-  const max = options.length;
+  const initialIndex = options.findIndex(
+    (item) => item.value === initialOption.value
+  );
+  const [selectedIndex, setSelectedIndex] = React.useState(initialIndex);
+
+  const max = options.length - 1;
   const safeIndex = Math.min(Math.max(selectedIndex, 0), max);
 
   const flatListRef = React.useRef<FlatList<WheelPickerOption>>(null);
@@ -44,7 +49,7 @@ export const WheelPicker = ({
 
     const yOffset = event.nativeEvent.contentOffset.y;
     const index = Math.round(yOffset / ITEM_HEIGHT);
-    onChange(index);
+    setSelectedIndex(index);
   };
 
   const scrollToIndex = (index: number) => {
@@ -79,6 +84,11 @@ export const WheelPicker = ({
       clearTimeout(resetTimeout);
     };
   }, resetDeps);
+
+  React.useEffect(() => {
+    const value = options[safeIndex];
+    onChange(value);
+  }, [safeIndex]);
 
   const renderItem = React.useCallback(
     ({ item, index }: { item: WheelPickerOption; index: number }) => {

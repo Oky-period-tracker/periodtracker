@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { ModalSelector } from "../../../../../components/ModalSelector";
 import { generateRange } from "../../../../../services/utils";
+import { WheelPickerOption } from "../../../../../components/WheelPicker";
 
 // TODO: Submodule
 const months = [
@@ -36,20 +37,23 @@ export const AskAge = () => {
   const month = months[state.month];
   const year = state.year?.toString();
 
-  const onChangeMonth = (v: string) => {
-    const value = months.indexOf(v);
+  const onChangeMonth = (option: WheelPickerOption) => {
+    const value = monthOptions.findIndex((item) => item.value === option.value);
     dispatch({ type: "month", value });
   };
 
-  const onChangeYear = (v: string) => {
-    const value = parseInt(v);
+  const onChangeYear = (option: WheelPickerOption) => {
+    const value = parseInt(option.value);
     dispatch({ type: "year", value });
   };
+
+  const initialMonth = monthOptions.find((item) => item.value === month);
+  const initialYear = yearOptions.find((item) => item.value === year);
 
   return (
     <View style={styles.container}>
       <ModalSelector
-        displayValue={month}
+        initialOption={initialMonth}
         options={monthOptions}
         onSelect={onChangeMonth}
         placeholder={"what month were you born"}
@@ -58,7 +62,7 @@ export const AskAge = () => {
         errorsVisible={state.errorsVisible}
       />
       <ModalSelector
-        displayValue={year}
+        initialOption={initialYear}
         options={yearOptions}
         onSelect={onChangeYear}
         placeholder={"what year were you born"}

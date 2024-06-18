@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { Input } from "../../../../../components/Input";
 import { ModalSelector } from "../../../../../components/ModalSelector";
+import { WheelPickerOption } from "../../../../../components/WheelPicker";
 
 // TODO: move somewhere else?
 const secretQuestions = [
@@ -20,16 +21,22 @@ const questionOptions = secretQuestions.map((item) => ({
 export const AskSecret = () => {
   const { state, dispatch, errors } = useSignUp();
 
-  const onChangeAnswer = (value: string) =>
+  const onChangeAnswer = (value: string) => {
     dispatch({ type: "secretAnswer", value });
+  };
 
-  const onChangeQuestion = (value: string) =>
+  const onChangeQuestion = ({ value }: WheelPickerOption) => {
     dispatch({ type: "secretQuestion", value });
+  };
+
+  const initialSecretOption = questionOptions.find(
+    (item) => item.value === state.secretQuestion
+  );
 
   return (
     <View style={styles.container}>
       <ModalSelector
-        displayValue={state.secretQuestion}
+        initialOption={initialSecretOption}
         options={questionOptions}
         onSelect={onChangeQuestion}
         placeholder={"Secret Question"}

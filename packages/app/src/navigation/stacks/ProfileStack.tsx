@@ -23,6 +23,7 @@ const config: StackConfig<keyof ProfileStackParamList> = {
     },
     AvatarAndTheme: {
       title: "Avatars & Themes",
+      // @ts-expect-error TODO: Make separate components for logged in Screen vs SignUp
       component: AvatarAndThemeScreen,
     },
   },

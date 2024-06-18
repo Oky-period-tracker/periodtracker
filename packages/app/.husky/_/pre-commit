@@ -1,6 +1,2 @@
-#!/bin/sh
-. "$(dirname "$0")/husky.sh"
-
-echo "Running pre-commit hook"
-yarn lint
-yarn ts:check
+#!/usr/bin/env sh
+. "${0%/*}/h"

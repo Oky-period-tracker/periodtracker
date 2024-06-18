@@ -81,6 +81,11 @@ export const HelpFiltersModal = ({
     toggleVisible();
   };
 
+  React.useEffect(() => {
+    // Reset province when country changes
+    setProvinceWheelOption(undefined);
+  }, [countryWheelOption]);
+
   const title = tabs.find((tab) => tab.section === section)?.title || "";
 
   return (

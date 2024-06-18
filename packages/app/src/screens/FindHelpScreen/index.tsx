@@ -12,8 +12,39 @@ import { useToggle } from "../../hooks/useToggle";
 import { HelpFilters, HelpFiltersModal } from "./components/HelpFiltersModal";
 
 const FindHelpScreen: ScreenComponent<"Help"> = () => {
+  const [filterModalVisible, toggleFilterModal] = useToggle();
+  const [filters, setFilters] = React.useState<HelpFilters>({
+    region: undefined,
+    subRegion: undefined,
+    attributes: [],
+  });
+
+  const filteredResults = React.useMemo(() => {
+    return helpCenters.filter((item) => {
+      // TODO: Make sure this works with real data & can manage via CMS
+      if (filters.region && filters.region !== item.regionId) {
+        return false;
+      }
+
+      if (filters.subRegion && filters.subRegion !== item.subRegionId) {
+        return false;
+      }
+
+      const hasAttributeFilter = filters.attributes.length > 0;
+      const primaryAttributeNotIncluded =
+        item.primaryAttributeId === null ||
+        !filters.attributes.includes(item.primaryAttributeId);
+
+      if (hasAttributeFilter && primaryAttributeNotIncluded) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [helpCenters, filters]);
+
   const { query, setQuery, results } = useSearch<HelpCenter>({
-    options: helpCenters,
+    options: filteredResults,
     keys: searchKeys,
   });
 
@@ -40,13 +71,6 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
       return aSortingKey - bSortingKey;
     });
   }, [results, savedHelpCenters]);
-
-  const [filterModalVisible, toggleFilterModal] = useToggle();
-  const [filters, setFilters] = React.useState<HelpFilters>({
-    region: undefined,
-    subRegion: undefined,
-    attributes: [],
-  });
 
   const hasFilters =
     filters.region || filters.subRegion || filters.attributes.length;

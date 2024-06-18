@@ -16,14 +16,6 @@ type HelpFiltersModalProps = {
   onConfirm: () => void;
 };
 
-type FilterSection = "region" | "subregion" | "attributes";
-
-const tabs: { section: FilterSection; icon: string }[] = [
-  { section: "region", icon: "map" },
-  { section: "subregion", icon: "map-marker" },
-  { section: "attributes", icon: "tags" },
-];
-
 export const HelpFiltersModal = ({
   visible,
   toggleVisible,
@@ -88,9 +80,7 @@ export const HelpFiltersModal = ({
     toggleVisible();
   };
 
-  const hasFiltersApplied = Boolean(
-    country || province || selectedAttributes.length
-  );
+  const title = tabs.find((tab) => tab.section === section).title;
 
   return (
     <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
@@ -101,7 +91,7 @@ export const HelpFiltersModal = ({
           const onPress = () => {
             setSection(tab.section);
           };
-          console.log("*** isLast", i, isLast);
+
           return (
             <React.Fragment key={tab.section}>
               <TouchableOpacity
@@ -121,9 +111,10 @@ export const HelpFiltersModal = ({
         })}
       </View>
 
+      <Text style={styles.title}>{title}</Text>
+
       {section === "region" && (
         <View style={styles.modalBody}>
-          <Text>Country</Text>
           <WheelPicker
             selectedIndex={selectedCountryIndex}
             options={countryOptions}
@@ -135,7 +126,6 @@ export const HelpFiltersModal = ({
 
       {section === "subregion" && (
         <View style={styles.modalBody}>
-          <Text>Province</Text>
           <WheelPicker
             selectedIndex={selectedProvinceIndex}
             options={provinceOptions}
@@ -147,7 +137,6 @@ export const HelpFiltersModal = ({
 
       {section === "attributes" && (
         <ScrollView contentContainerStyle={styles.modalBody}>
-          <Text>Attributes</Text>
           {helpCenterAttributes.map((attribute) => {
             const checked = selectedAttributes.includes(attribute.id);
             const onPress = () => {
@@ -186,6 +175,32 @@ export const HelpFiltersModal = ({
   );
 };
 
+type FilterSection = "region" | "subregion" | "attributes";
+
+type FilterTab = {
+  section: FilterSection;
+  title: string;
+  icon: string;
+};
+
+const tabs: FilterTab[] = [
+  {
+    section: "region",
+    title: "Country",
+    icon: "map",
+  },
+  {
+    section: "subregion",
+    title: "Province",
+    icon: "map-marker",
+  },
+  {
+    section: "attributes",
+    title: "Attributes",
+    icon: "tags",
+  },
+];
+
 const styles = StyleSheet.create({
   modal: {
     backgroundColor: "#fff",
@@ -208,8 +223,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  tabText: {
+  title: {
     textAlign: "center",
+    marginVertical: 18,
+    fontWeight: "bold",
   },
   selectedTab: {
     backgroundColor: "#f0f0f0",

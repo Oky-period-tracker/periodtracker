@@ -1,6 +1,9 @@
 import React from "react";
 import { JourneyStep, useJourney } from "../JourneyContext";
-import { WheelPicker } from "../../../../../components/WheelPicker";
+import {
+  WheelPicker,
+  WheelPickerOption,
+} from "../../../../../components/WheelPicker";
 import { dayOptions, weekOptions } from "../journeyConfig";
 import { DateData } from "react-native-calendars";
 import { DatePicker } from "../../../../../components/DatePicker";
@@ -8,26 +11,22 @@ import { DatePicker } from "../../../../../components/DatePicker";
 export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const { state, dispatch } = useJourney();
 
-  const dayIndex = dayOptions.findIndex(
-    (item) => item.value === state.periodLength
-  );
+  const day = dayOptions.find((item) => item.value === state.periodLength);
 
-  const weekIndex = weekOptions.findIndex(
-    (item) => item.value === state.cycleLength
-  );
+  const week = weekOptions.find((item) => item.value === state.cycleLength);
 
   const setDate = (day: DateData) => {
     const value = new Date(day.timestamp);
     dispatch({ type: "startDate", value });
   };
 
-  const setPeriodLength = (i: number) => {
-    const value = dayOptions[i].value;
+  const setPeriodLength = (option: WheelPickerOption | undefined) => {
+    const value = option?.value;
     dispatch({ type: "periodLength", value });
   };
 
-  const setCycleLength = (i: number) => {
-    const value = weekOptions[i].value;
+  const setCycleLength = (option: WheelPickerOption | undefined) => {
+    const value = option?.value;
     dispatch({ type: "cycleLength", value });
   };
 
@@ -38,20 +37,16 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
       )}
       {step === "number_days" && (
         <WheelPicker
-          selectedIndex={dayIndex}
-          // @ts-ignore TODO: WheelPicker
+          initialOption={day}
           options={dayOptions}
-          // @ts-ignore TODO: WheelPicker
           onChange={setPeriodLength}
           resetDeps={[step]}
         />
       )}
       {step === "number_weeks_between" && (
         <WheelPicker
-          selectedIndex={weekIndex}
-          // @ts-ignore TODO: WheelPicker
+          initialOption={week}
           options={weekOptions}
-          // @ts-ignore TODO: WheelPicker
           onChange={setCycleLength}
           resetDeps={[step]}
         />

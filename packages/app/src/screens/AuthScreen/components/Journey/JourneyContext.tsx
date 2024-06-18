@@ -18,8 +18,8 @@ type JourneyState = {
   // Answers
   isActive: boolean;
   startDate: Date;
-  periodLength: number; // days
-  cycleLength: number; // weeks
+  periodLength: string | undefined; // days
+  cycleLength: string | undefined; // weeks
 };
 
 type Action<T extends keyof JourneyState = keyof JourneyState> =
@@ -42,8 +42,8 @@ const initialState: JourneyState = {
   stepIndex: 0,
   isActive: false,
   startDate: twoWeeksAgo,
-  periodLength: 5,
-  cycleLength: 3,
+  periodLength: "5",
+  cycleLength: "3",
 };
 
 function reducer(state: JourneyState, action: Action): JourneyState {

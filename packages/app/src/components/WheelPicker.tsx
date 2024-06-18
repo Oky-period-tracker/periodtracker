@@ -13,18 +13,17 @@ const ITEM_HEIGHT = 40;
 const VISIBLE_ITEMS = 3;
 const height = ITEM_HEIGHT * VISIBLE_ITEMS;
 
-export type WheelPickerOption =
-  | {
-      label: string;
-      value: string;
-    }
-  | undefined;
+export type WheelPickerOption = {
+  label: string;
+  value: string;
+};
 
 export type WheelPickerProps = {
-  initialOption: WheelPickerOption;
+  initialOption: WheelPickerOption | undefined;
   options: WheelPickerOption[];
-  onChange: (value: WheelPickerOption) => void;
+  onChange: (option: WheelPickerOption | undefined) => void;
   resetDeps: unknown[];
+  allowUndefined?: boolean;
 };
 
 export const WheelPicker = ({
@@ -32,16 +31,26 @@ export const WheelPicker = ({
   options,
   onChange,
   resetDeps,
+  allowUndefined = true,
 }: WheelPickerProps) => {
-  const initialIndex = options.findIndex(
-    (item) => item?.value === initialOption?.value
-  );
+  const allOptions = React.useMemo(() => {
+    if (allowUndefined) {
+      return [undefined, ...options];
+    }
+    return options;
+  }, [options, allowUndefined]);
+
+  const initialIndex = initialOption
+    ? allOptions.findIndex((item) => item?.value === initialOption?.value)
+    : 0;
+
   const [selectedIndex, setSelectedIndex] = React.useState(initialIndex);
 
-  const max = options.length - 1;
+  const max = allOptions.length - 1;
   const safeIndex = Math.min(Math.max(selectedIndex, 0), max);
 
-  const flatListRef = React.useRef<FlatList<WheelPickerOption>>(null);
+  const flatListRef =
+    React.useRef<FlatList<WheelPickerOption | undefined>>(null);
   const scrollEnabled = React.useRef<boolean>(true); // Prevents useEffect scrolling bug
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -55,7 +64,7 @@ export const WheelPicker = ({
   };
 
   const scrollToIndex = (index: number) => {
-    if (index >= options.length) {
+    if (index >= allOptions.length) {
       return;
     }
 
@@ -88,12 +97,18 @@ export const WheelPicker = ({
   }, resetDeps);
 
   React.useEffect(() => {
-    const value = options[safeIndex];
+    const value = allOptions[safeIndex];
     onChange(value);
   }, [safeIndex]);
 
   const renderItem = React.useCallback(
-    ({ item, index }: { item: WheelPickerOption; index: number }) => {
+    ({
+      item,
+      index,
+    }: {
+      item: WheelPickerOption | undefined;
+      index: number;
+    }) => {
       const isSelected = index === safeIndex;
       const onPress = () => scrollToIndex(index);
 
@@ -104,7 +119,7 @@ export const WheelPicker = ({
           style={[styles.item, isSelected && styles.selectedItem]}
         >
           <Text style={isSelected ? styles.selectedItemText : undefined}>
-            {item?.label ?? ""}
+            {item ? item.label : "Select"}
           </Text>
         </TouchableOpacity>
       );
@@ -116,7 +131,7 @@ export const WheelPicker = ({
     <View style={styles.container}>
       <FlatList
         ref={flatListRef}
-        data={options}
+        data={allOptions}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         showsVerticalScrollIndicator={false}
@@ -137,13 +152,14 @@ export const WheelPicker = ({
 export const useInitialWheelOption = (
   value: string | undefined,
   options: WheelPickerOption[]
-): WheelPickerOption => {
+): WheelPickerOption | undefined => {
   return React.useMemo(() => {
     return options.find((item) => item?.value === value);
   }, [options, value]);
 };
 
-const keyExtractor = (item: WheelPickerOption) => `wheel-option-${item?.label}`;
+const keyExtractor = (item: WheelPickerOption | undefined) =>
+  `wheel-option-${item?.label}`;
 
 const getItemLayout = (_: unknown, index: number) => ({
   length: ITEM_HEIGHT,

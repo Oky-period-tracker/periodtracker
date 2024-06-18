@@ -34,18 +34,19 @@ const yearOptions = years.map((item) => ({ label: item, value: item }));
 export const AskAge = () => {
   const { state, dispatch, errors } = useSignUp();
 
-  const month = months[state.month];
+  const month = state.month ? months[state.month] : undefined;
   const year = state.year?.toString();
 
-  const onChangeMonth = (option: WheelPickerOption) => {
-    // @ts-ignore TODO: WheelPicker
-    const value = monthOptions.findIndex((item) => item.value === option.value);
+  const onChangeMonth = (option: WheelPickerOption | undefined) => {
+    const index = monthOptions.findIndex(
+      (item) => item.value === option?.value
+    );
+    const value = index >= 0 ? index : undefined;
     dispatch({ type: "month", value });
   };
 
-  const onChangeYear = (option: WheelPickerOption) => {
-    // @ts-ignore TODO: WheelPicker
-    const value = parseInt(option.value);
+  const onChangeYear = (option: WheelPickerOption | undefined) => {
+    const value = option ? parseInt(option?.value) : undefined;
     dispatch({ type: "year", value });
   };
 

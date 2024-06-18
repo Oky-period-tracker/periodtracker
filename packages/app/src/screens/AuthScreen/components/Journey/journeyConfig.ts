@@ -50,10 +50,10 @@ const weeks = generateRange(WEEKS_MIN, WEEKS_MAX);
 
 export const dayOptions = days.map((item) => ({
   label: `${item} days`,
-  value: item,
+  value: `${item}`,
 }));
 
 export const weekOptions = weeks.map((item) => ({
   label: `${item} weeks`,
-  value: item,
+  value: `${item}`,
 }));

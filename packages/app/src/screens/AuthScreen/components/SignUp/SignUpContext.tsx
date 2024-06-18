@@ -18,13 +18,19 @@ const steps: SignUpStep[] = [
   "location",
 ];
 
-type SignUpState = Omit<User, "id" | "dateSignedUp" | "isGuest"> & {
+type SignUpState = Omit<
+  User,
+  "id" | "dateSignedUp" | "isGuest" | "country" | "province"
+> & {
   stepIndex: number;
   agree: boolean;
   passwordConfirm: string;
-  month: number;
-  year: number;
+  month?: number;
+  year?: number;
   errorsVisible: boolean;
+  // Make required User properties optional for state
+  country?: User["country"];
+  province?: User["province"];
 };
 
 type Action<T extends keyof SignUpState = keyof SignUpState> =
@@ -47,11 +53,11 @@ const defaultState: SignUpState = {
   secretAnswer: "",
   gender: "Female",
   location: "Urban",
-  country: "",
-  province: "",
+  country: undefined,
+  province: undefined,
   dateOfBirth: "",
-  month: 1,
-  year: 2016,
+  month: undefined,
+  year: undefined,
   metadata: {
     isProfileUpdateSkipped: true, // Default true for new users
   },
@@ -120,7 +126,7 @@ function reducer(state: SignUpState, action: Action): SignUpState {
 
     case "year": {
       const year = action.value as number;
-      if (isNaN(state.month)) {
+      if (!state.month || isNaN(state.month)) {
         return {
           ...state,
           year,
@@ -213,7 +219,7 @@ const validateStep = (
       errors.push("no_year");
     }
 
-    if (isNaN(state.month)) {
+    if (!state.month || isNaN(state.month)) {
       isValid = false;
       errors.push("no_month");
     }

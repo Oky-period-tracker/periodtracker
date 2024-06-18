@@ -10,26 +10,28 @@ export const WheelPickerModal = ({
   initialOption,
   options,
   onSelect,
+  allowUndefined = true,
   searchEnabled,
   ToggleComponent,
   ...props
 }: {
-  initialOption: WheelPickerOption;
+  initialOption: WheelPickerOption | undefined;
   options: WheelPickerOption[];
-  onSelect: (value: WheelPickerOption) => void;
+  onSelect: (value: WheelPickerOption | undefined) => void;
+  allowUndefined?: boolean;
   searchEnabled?: boolean;
   ToggleComponent?: React.FC<{ onPress: () => void }>;
 } & InputProps) => {
   const { query, setQuery, results } = useSearch<WheelPickerOption>({
     options,
-    // @ts-ignore TODO: WheelPicker
     keys: searchKeys,
     type: "startsWith",
     enabled: searchEnabled,
   });
 
-  const [wheelOption, setWheelOption] =
-    React.useState<WheelPickerOption>(initialOption);
+  const [wheelOption, setWheelOption] = React.useState<
+    WheelPickerOption | undefined
+  >(initialOption);
 
   const [visible, setIsVisible] = React.useState(false);
   const toggleVisible = () => {
@@ -80,6 +82,7 @@ export const WheelPickerModal = ({
             options={results}
             onChange={setWheelOption}
             resetDeps={[visible]}
+            allowUndefined={allowUndefined}
           />
         </View>
 

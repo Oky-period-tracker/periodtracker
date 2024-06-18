@@ -34,14 +34,15 @@ export const HelpFiltersModal = ({
   onConfirm,
   filters,
 }: HelpFiltersModalProps) => {
-  const [section, setSection] = React.useState<FilterSection>("attributes");
+  const [section, setSection] = React.useState<FilterSection>("region");
 
   const countryOptions = useCountryOptions();
 
   const initialCountry = useInitialWheelOption(filters.region, countryOptions);
 
-  const [countryWheelOption, setCountryWheelOption] =
-    React.useState<WheelPickerOption>(initialCountry);
+  const [countryWheelOption, setCountryWheelOption] = React.useState<
+    WheelPickerOption | undefined
+  >(initialCountry);
 
   const provinceOptions = useProvinceOptions(countryWheelOption?.value);
 
@@ -50,8 +51,9 @@ export const HelpFiltersModal = ({
     provinceOptions
   );
 
-  const [provinceWheelOption, setProvinceWheelOption] =
-    React.useState<WheelPickerOption>(initialProvince);
+  const [provinceWheelOption, setProvinceWheelOption] = React.useState<
+    WheelPickerOption | undefined
+  >(initialProvince);
 
   const [selectedAttributes, setSelectedAttributes] = React.useState<number[]>(
     []

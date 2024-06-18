@@ -25,8 +25,11 @@ export const AskSecret = () => {
     dispatch({ type: "secretAnswer", value });
   };
 
-  // @ts-ignore TODO: WheelPicker
-  const onChangeQuestion = ({ value }: WheelPickerOption) => {
+  const onChangeQuestion = (option: WheelPickerOption | undefined) => {
+    if (!option) {
+      return;
+    }
+    const value = option.value;
     dispatch({ type: "secretQuestion", value });
   };
 
@@ -44,6 +47,7 @@ export const AskSecret = () => {
         errors={errors}
         errorKey={"no_secret_question"}
         errorsVisible={state.errorsVisible}
+        allowUndefined={false}
       />
       <Input
         value={state.secretAnswer}

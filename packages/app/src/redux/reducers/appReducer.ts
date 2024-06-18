@@ -17,7 +17,7 @@ export const setName = (data: string) => {
   };
 };
 
-// @ts-ignore TODO: redux
+// @ts-expect-error TODO: redux
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_NAME":

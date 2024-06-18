@@ -7,7 +7,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { CustomStackNavigationOptions } from "./NavigationStack";
 import { IS_ANDROID } from "../../services/device";
 
-type HeaderProps = NativeStackHeaderProps & {
+export type HeaderProps = NativeStackHeaderProps & {
   options: CustomStackNavigationOptions;
 };
 

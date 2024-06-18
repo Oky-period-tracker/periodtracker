@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
   app: appReducer,
 });
 
-// @ts-ignore TODO: redux
+// @ts-expect-error TODO: redux
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = createStore(persistedReducer);

@@ -3,7 +3,7 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationOptions,
 } from "@react-navigation/native-stack";
-import { Header } from "./Header";
+import { Header, HeaderProps } from "./Header";
 import { recordToArray } from "../../services/utils";
 import { GlobalParamList, ScreenComponent } from "../RootNavigator";
 
@@ -37,7 +37,7 @@ function NavigationStack<T extends keyof GlobalParamList>({
     <Stack.Navigator
       initialRouteName={initialRouteName}
       screenOptions={{
-        header: (props) => <Header {...props} />,
+        header: (props: HeaderProps) => <Header {...props} />,
         animation: "none",
       }}
     >
@@ -53,7 +53,7 @@ function NavigationStack<T extends keyof GlobalParamList>({
             <Stack.Screen
               key={name}
               name={name}
-              component={component as React.FC<{}>}
+              component={component as React.FC<object>}
               options={options}
             />
           );

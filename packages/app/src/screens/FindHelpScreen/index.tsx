@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, ScrollView, View, TouchableOpacity } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
 import { HelpCenter, data } from "../../data/data";
@@ -9,9 +9,7 @@ import { Input } from "../../components/Input";
 import { useSearch } from "../../hooks/useSearch";
 import { Button } from "../../components/Button";
 import { useToggle } from "../../hooks/useToggle";
-import { Modal } from "../../components/Modal";
-import { Hr } from "../../components/Hr";
-import { Text } from "../../components/Text";
+import { HelpFiltersModal } from "./components/HelpFiltersModal";
 
 const FindHelpScreen: ScreenComponent<"Help"> = () => {
   const { query, setQuery, results } = useSearch<HelpCenter>({
@@ -92,18 +90,11 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
         })}
       </ScrollView>
 
-      <Modal
+      <HelpFiltersModal
         visible={filterModalVisible}
         toggleVisible={toggleFilterModal}
-        style={styles.modal}
-      >
-        <View style={styles.modalBody}>{/* TODO: */}</View>
-
-        <Hr />
-        <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
-          <Text style={styles.confirmText}>Confirm</Text>
-        </TouchableOpacity>
-      </Modal>
+        onConfirm={onConfirm}
+      />
     </Screen>
   );
 };
@@ -161,21 +152,5 @@ const styles = StyleSheet.create({
   },
   website: {
     marginBottom: 8,
-  },
-  //
-  modal: {
-    backgroundColor: "#fff",
-    borderRadius: 20,
-  },
-  modalBody: {
-    paddingVertical: 24,
-    paddingHorizontal: 48,
-  },
-  confirm: {
-    padding: 24,
-  },
-  confirmText: {
-    textAlign: "center",
-    fontWeight: "bold",
   },
 });

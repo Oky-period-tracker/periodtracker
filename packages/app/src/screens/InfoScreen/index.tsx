@@ -38,11 +38,11 @@ const InfoScreen = ({ navigation }) => {
     <Screen>
       <View style={styles.container}>
         {rows.map((props, i) => {
-          const isLast = i !== rows.length - 1;
+          const isLast = i === rows.length - 1;
           return (
             <React.Fragment key={`settings-${i}`}>
               <TouchableRow {...props} />
-              {isLast ? <Hr /> : null}
+              {!isLast && <Hr />}
             </React.Fragment>
           );
         })}

@@ -21,7 +21,7 @@ export const JourneyReview = () => {
     <View style={styles.container}>
       <View style={styles.body}>
         {journeySteps.map((step, i) => {
-          const isLast = i !== journeySteps.length - 1;
+          const isLast = i === journeySteps.length - 1;
 
           const { questionText, iconName } = journeyConfig[step];
 
@@ -48,7 +48,7 @@ export const JourneyReview = () => {
                   <FontAwesome size={12} name={"pencil"} color={"#fff"} />
                 </DisplayButton>
               </TouchableOpacity>
-              {isLast ? <Hr /> : null}
+              {!isLast && <Hr />}
             </React.Fragment>
           );
         })}

@@ -63,7 +63,7 @@ export const HelpCenterCard = ({
 
           <Text style={styles.subtitle}>Website:</Text>
           {websites.map((website) => (
-            <A href={website} style={styles.website}>
+            <A key={website} href={website} style={styles.website}>
               {website}
             </A>
           ))}

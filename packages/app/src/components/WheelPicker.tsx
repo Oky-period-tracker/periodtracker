@@ -32,7 +32,7 @@ export const WheelPicker = ({
   resetDeps,
 }: WheelPickerProps) => {
   const initialIndex = options.findIndex(
-    (item) => item.value === initialOption.value
+    (item) => item?.value === initialOption?.value
   );
   const [selectedIndex, setSelectedIndex] = React.useState(initialIndex);
 
@@ -132,9 +132,18 @@ export const WheelPicker = ({
   );
 };
 
-const keyExtractor = (item: WheelPickerOption) => `wheel-option-${item.label}`;
+export const useInitialWheelOption = (
+  value: string,
+  options: WheelPickerOption[]
+): WheelPickerOption => {
+  return React.useMemo(() => {
+    return options.find((item) => item?.value === value);
+  }, [options, value]);
+};
 
-const getItemLayout = (_, index: number) => ({
+const keyExtractor = (item: WheelPickerOption) => `wheel-option-${item?.label}`;
+
+const getItemLayout = (_: unknown, index: number) => ({
   length: ITEM_HEIGHT,
   offset: ITEM_HEIGHT * index,
   index,

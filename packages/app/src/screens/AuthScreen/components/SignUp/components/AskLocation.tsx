@@ -2,9 +2,13 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
-import { countries, provinces } from "../../../../../data/data";
 import { SegmentControl } from "../../../../../components/SegmentControl";
-import { WheelPickerOption } from "../../../../../components/WheelPicker";
+import {
+  WheelPickerOption,
+  useInitialWheelOption,
+} from "../../../../../components/WheelPicker";
+import { useProvinceOptions } from "../../../../../hooks/useProvinceOptions";
+import { useCountryOptions } from "../../../../../hooks/useCountryOptions";
 
 export const AskLocation = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -21,33 +25,14 @@ export const AskLocation = () => {
     dispatch({ type: "location", value });
   };
 
-  const countryOptions = React.useMemo(() => {
-    return Object.entries(countries).map(([key, item]) => ({
-      label: item[locale],
-      value: key,
-    }));
-  }, [countries, locale]);
+  const countryOptions = useCountryOptions();
+  const provinceOptions = useProvinceOptions(state.country);
 
-  const provinceOptions = React.useMemo(() => {
-    const countryCode = state.country ? state.country : null;
-
-    const filteredProvinces = provinces.filter(
-      ({ code, uid }) => code === countryCode || uid === 0
-    );
-
-    return filteredProvinces.map((item) => ({
-      label: item[locale],
-      value: item.uid.toString(),
-    }));
-  }, [state.country, provinces, locale]);
-
-  const initialProvince = React.useMemo(() => {
-    return provinceOptions.find((item) => item.value === state.province);
-  }, [provinceOptions, state.province]);
-
-  const initialCountry = React.useMemo(() => {
-    return countryOptions.find((item) => item.value === state.country);
-  }, [countryOptions, state.country]);
+  const initialCountry = useInitialWheelOption(state.country, countryOptions);
+  const initialProvince = useInitialWheelOption(
+    state.province,
+    provinceOptions
+  );
 
   return (
     <View style={styles.container}>
@@ -87,9 +72,6 @@ const locations = [
   { value: "Urban", label: "Urban", iconName: "building" },
   { value: "Rural", label: "Rural", iconName: "leaf" },
 ];
-
-// TODO: redux state
-const locale = "en";
 
 const styles = StyleSheet.create({
   container: {

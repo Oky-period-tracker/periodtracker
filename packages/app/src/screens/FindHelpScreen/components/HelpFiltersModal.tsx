@@ -4,79 +4,78 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Modal } from "../../../components/Modal";
 import { Hr } from "../../../components/Hr";
 import { Text } from "../../../components/Text";
-import { WheelPicker } from "../../../components/WheelPicker";
+import {
+  WheelPicker,
+  WheelPickerOption,
+  useInitialWheelOption,
+} from "../../../components/WheelPicker";
 import { helpCenterAttributes } from "../../../data/helpCenter";
 import { Checkbox } from "../../../components/Checkbox";
-import { countries, provinces } from "../../../data/data";
 import { Vr } from "../../../components/Vr";
+import { useProvinceOptions } from "../../../hooks/useProvinceOptions";
+import { useCountryOptions } from "../../../hooks/useCountryOptions";
 
 type HelpFiltersModalProps = {
   visible: boolean;
   toggleVisible: () => void;
-  onConfirm: () => void;
+  onConfirm: (value: HelpFilters) => void;
+  filters: HelpFilters;
+};
+
+export type HelpFilters = {
+  region: string;
+  subRegion: string;
+  attributes: number[];
 };
 
 export const HelpFiltersModal = ({
   visible,
   toggleVisible,
   onConfirm,
+  filters,
 }: HelpFiltersModalProps) => {
   const [section, setSection] = React.useState<FilterSection>("attributes");
 
-  // TODO: redux state
-  const locale = "en";
+  const countryOptions = useCountryOptions();
 
-  const [country, setCountry] = React.useState("");
-  const [province, setProvince] = React.useState("");
+  const initialCountry = useInitialWheelOption(filters.region, countryOptions);
 
-  const countryOptions = React.useMemo(() => {
-    return Object.entries(countries).map(([key, item]) => ({
-      label: item[locale],
-      value: key,
-    }));
-  }, [countries, locale]);
+  const [countryWheelOption, setCountryWheelOption] =
+    React.useState<WheelPickerOption>(initialCountry);
 
-  const provinceOptions = React.useMemo(() => {
-    const countryCode = country ? country : null;
+  const provinceOptions = useProvinceOptions(countryWheelOption?.value);
 
-    const filteredProvinces = provinces.filter(
-      ({ code, uid }) => code === countryCode || uid === 0
-    );
-
-    return filteredProvinces.map((item) => ({
-      label: item[locale],
-      value: item.uid.toString(),
-    }));
-  }, [country, provinces, locale]);
-
-  const provinceOption = React.useMemo(() => {
-    return provinceOptions.find((item) => item.value === province);
-  }, [provinceOptions, province]);
-
-  const countryDisplay = countries?.[country]?.[locale] ?? "";
-  const provinceDisplay = provinceOption?.label ?? "";
-
-  const countryIndex = countryOptions.findIndex(
-    (item) => item.label === countryDisplay
+  const initialProvince = useInitialWheelOption(
+    filters.subRegion,
+    provinceOptions
   );
-  const provinceIndex = provinceOptions.findIndex(
-    (item) => item.label === provinceDisplay
-  );
-  const [selectedCountryIndex, setSelectedCountryIndex] = React.useState(
-    Math.max(countryIndex, 0)
-  );
-  const [selectedProvinceIndex, setSelectedProvinceIndex] = React.useState(
-    Math.max(provinceIndex, 0)
-  );
+
+  const [provinceWheelOption, setProvinceWheelOption] =
+    React.useState<WheelPickerOption>(initialProvince);
 
   const [selectedAttributes, setSelectedAttributes] = React.useState<number[]>(
     []
   );
 
   const clearFilters = () => {
-    setCountry("");
-    setProvince("");
+    onConfirm({
+      region: undefined,
+      subRegion: undefined,
+      attributes: [],
+    });
+
+    setCountryWheelOption(countryOptions[0]);
+    setProvinceWheelOption(provinceOptions[0]);
     setSelectedAttributes([]);
+    toggleVisible();
+  };
+
+  const confirm = () => {
+    onConfirm({
+      region: countryWheelOption.value,
+      subRegion: provinceWheelOption.value,
+      attributes: selectedAttributes,
+    });
     toggleVisible();
   };
 
@@ -116,9 +115,9 @@ export const HelpFiltersModal = ({
       {section === "region" && (
         <View style={styles.modalBody}>
           <WheelPicker
-            selectedIndex={selectedCountryIndex}
+            initialOption={countryWheelOption}
             options={countryOptions}
-            onChange={setSelectedCountryIndex}
+            onChange={setCountryWheelOption}
             resetDeps={[visible]}
           />
         </View>
@@ -127,9 +126,9 @@ export const HelpFiltersModal = ({
       {section === "subregion" && (
         <View style={styles.modalBody}>
           <WheelPicker
-            selectedIndex={selectedProvinceIndex}
+            initialOption={provinceWheelOption}
             options={provinceOptions}
-            onChange={setSelectedProvinceIndex}
+            onChange={setProvinceWheelOption}
             resetDeps={[visible]}
           />
         </View>
@@ -167,7 +166,7 @@ export const HelpFiltersModal = ({
           <Text style={styles.confirmText}>Clear all</Text>
         </TouchableOpacity>
         <Vr />
-        <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
+        <TouchableOpacity onPress={confirm} style={styles.confirm}>
           <Text style={styles.confirmText}>Confirm</Text>
         </TouchableOpacity>
       </View>

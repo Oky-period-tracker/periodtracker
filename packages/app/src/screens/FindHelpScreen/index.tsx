@@ -9,7 +9,7 @@ import { Input } from "../../components/Input";
 import { useSearch } from "../../hooks/useSearch";
 import { Button } from "../../components/Button";
 import { useToggle } from "../../hooks/useToggle";
-import { HelpFiltersModal } from "./components/HelpFiltersModal";
+import { HelpFilters, HelpFiltersModal } from "./components/HelpFiltersModal";
 
 const FindHelpScreen: ScreenComponent<"Help"> = () => {
   const { query, setQuery, results } = useSearch<HelpCenter>({
@@ -42,11 +42,13 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
   }, [results, savedHelpCenters]);
 
   const [filterModalVisible, toggleFilterModal] = useToggle();
+  const [filters, setFilters] = React.useState<HelpFilters>({
+    region: undefined,
+    subRegion: undefined,
+    attributes: [],
+  });
 
-  const onConfirm = () => {
-    toggleFilterModal();
-    //
-  };
+  console.log("*** ", filters);
 
   return (
     <Screen>
@@ -93,7 +95,8 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
       <HelpFiltersModal
         visible={filterModalVisible}
         toggleVisible={toggleFilterModal}
-        onConfirm={onConfirm}
+        onConfirm={setFilters}
+        filters={filters}
       />
     </Screen>
   );

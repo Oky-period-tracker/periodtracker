@@ -12,12 +12,12 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
   const name = useSelector((state) => state.app?.name);
   const dispatch = useDispatch();
 
-  const onChangeText = (value) => {
+  const onChangeText = (value: string) => {
     dispatch(setName(value));
   };
 
   const [tempName, setTempName] = React.useState("bum");
-  const onChangeLocalState = (v) => {
+  const onChangeLocalState = (v: string) => {
     setTempName(v);
   };
 

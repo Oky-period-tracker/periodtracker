@@ -45,6 +45,10 @@ const initialState: SurveyState = {
 function reducer(state: SurveyState, action: Action): SurveyState {
   switch (action.type) {
     case "continue": {
+      if (!state.survey) {
+        return state;
+      }
+
       if (!state.consented && state.agree !== null) {
         return {
           ...state,
@@ -120,10 +124,16 @@ export const useSurvey = () => {
 
 export const getSurveyQuestionOptions = (question: SurveyQuestion) => {
   // Convert [{ option1: string }, { option2:string }] to string[]
-  return question.options.map((option) => Object.values(option)[0]);
+  return question.options.map((option) =>
+    option ? Object.values(option)[0] : ""
+  );
 };
 
 const getNextSurveyQuestionIndex = (state: SurveyState) => {
+  if (!state.survey || state.answerIndex == null) {
+    return 0;
+  }
+
   const currentQuestion = state.survey.questions[state.questionIndex];
 
   // Convert { option1: string, option2:string } to string[]

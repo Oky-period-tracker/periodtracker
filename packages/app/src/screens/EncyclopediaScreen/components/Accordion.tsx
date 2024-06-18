@@ -3,7 +3,7 @@ import { useToggle } from "../../../hooks/useToggle";
 import { DisplayButton } from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useEncyclopedia } from "../EncyclopediaContext";
-import { data } from "../../../data/data";
+import { SubCategory, data } from "../../../data/data";
 import React from "react";
 
 export const Accordion = () => {
@@ -28,12 +28,15 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   const category = data.categories.byId[categoryId];
 
   const subCategories = React.useMemo(() => {
-    return category.subCategories.reduce((acc, subcategoryId) => {
-      if (subcategoryIds.includes(subcategoryId)) {
-        acc.push(data.subCategories.byId[subcategoryId]);
-      }
-      return acc;
-    }, []);
+    return category.subCategories.reduce<SubCategory[]>(
+      (acc, subcategoryId) => {
+        if (subcategoryIds.includes(subcategoryId)) {
+          acc.push(data.subCategories.byId[subcategoryId]);
+        }
+        return acc;
+      },
+      []
+    );
   }, [category, subcategoryIds, data.subCategories]);
 
   return (

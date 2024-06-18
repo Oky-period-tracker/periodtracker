@@ -22,8 +22,8 @@ type SignUpState = Omit<User, "id" | "dateSignedUp" | "isGuest"> & {
   stepIndex: number;
   agree: boolean;
   passwordConfirm: string;
-  month?: number;
-  year?: number;
+  month: number;
+  year: number;
   errorsVisible: boolean;
 };
 
@@ -47,11 +47,11 @@ const defaultState: SignUpState = {
   secretAnswer: "",
   gender: "Female",
   location: "Urban",
-  country: null,
-  province: null,
+  country: "",
+  province: "",
   dateOfBirth: "",
-  month: null,
-  year: null,
+  month: 1,
+  year: 2016,
   metadata: {
     isProfileUpdateSkipped: true, // Default true for new users
   },
@@ -139,7 +139,7 @@ function reducer(state: SignUpState, action: Action): SignUpState {
       return {
         ...state,
         country: action.value as string,
-        province: null,
+        province: "",
       };
 
     default:

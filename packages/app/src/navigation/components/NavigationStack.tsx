@@ -53,7 +53,7 @@ function NavigationStack<T extends keyof GlobalParamList>({
             <Stack.Screen
               key={name}
               name={name}
-              component={component}
+              component={component as React.FC<{}>}
               options={options}
             />
           );

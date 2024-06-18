@@ -51,7 +51,11 @@ export const DisplayButton = ({
   );
 };
 
-const ButtonInner = ({ status, textStyle, ...props }: ButtonProps) => {
+const ButtonInner = ({
+  status = "primary",
+  textStyle,
+  ...props
+}: ButtonProps) => {
   const colors = palette[status];
 
   const children = props.children ? (

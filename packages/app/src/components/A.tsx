@@ -32,7 +32,7 @@ export const A = ({
   );
 };
 
-const openURL = (href, target = "_blank") => {
+const openURL = (href: string, target = "_blank") => {
   let url = href;
   if (!url.includes("https://")) {
     url = `https://${url}`;

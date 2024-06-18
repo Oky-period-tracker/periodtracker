@@ -24,7 +24,7 @@ const defaultValue: AuthModeContext = {
 
 const AuthContext = React.createContext<AuthModeContext>(defaultValue);
 
-export const AuthModeProvider = ({ children }) => {
+export const AuthModeProvider = ({ children }: React.PropsWithChildren) => {
   const initialState = "welcome"; // TODO: based on redux state
   const [authMode, setAuthMode] = React.useState<AuthMode>(initialState);
 

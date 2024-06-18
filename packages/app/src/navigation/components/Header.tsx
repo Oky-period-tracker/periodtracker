@@ -16,7 +16,11 @@ export const Header = ({ navigation, options }: HeaderProps) => {
   const showBackButton = options.name !== options.backRoute;
 
   const onBackPress = () => {
-    navigation.navigate(options.backRoute);
+    if (options.backRoute) {
+      navigation.navigate(options.backRoute);
+      return;
+    }
+    navigation.goBack();
   };
 
   return (

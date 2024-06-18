@@ -38,11 +38,13 @@ export const AskAge = () => {
   const year = state.year?.toString();
 
   const onChangeMonth = (option: WheelPickerOption) => {
+    // @ts-ignore TODO: WheelPicker
     const value = monthOptions.findIndex((item) => item.value === option.value);
     dispatch({ type: "month", value });
   };
 
   const onChangeYear = (option: WheelPickerOption) => {
+    // @ts-ignore TODO: WheelPicker
     const value = parseInt(option.value);
     dispatch({ type: "year", value });
   };

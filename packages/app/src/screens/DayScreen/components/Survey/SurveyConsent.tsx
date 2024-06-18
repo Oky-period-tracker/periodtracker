@@ -19,7 +19,7 @@ export const SurveyConsent = () => {
       <Checkbox
         label={"Yes"}
         onPress={onYesPress}
-        checked={agree}
+        checked={!!agree}
         checkedStatus={"danger"}
         checkedTextStatus={"danger"}
       />

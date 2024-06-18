@@ -34,7 +34,8 @@ export const Input = ({
   displayOnly = false,
   ...props
 }: InputProps) => {
-  const hasError = errorsVisible && errorKey && errors.includes(errorKey);
+  const hasError =
+    errorsVisible && errorKey && errors && errors.includes(errorKey);
 
   return (
     <>

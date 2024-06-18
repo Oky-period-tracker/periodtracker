@@ -23,8 +23,8 @@ type HelpFiltersModalProps = {
 };
 
 export type HelpFilters = {
-  region: string;
-  subRegion: string;
+  region: string | undefined;
+  subRegion: string | undefined;
   attributes: number[];
 };
 
@@ -72,14 +72,14 @@ export const HelpFiltersModal = ({
 
   const confirm = () => {
     onConfirm({
-      region: countryWheelOption.value,
-      subRegion: provinceWheelOption.value,
+      region: countryWheelOption?.value,
+      subRegion: provinceWheelOption?.value,
       attributes: selectedAttributes,
     });
     toggleVisible();
   };
 
-  const title = tabs.find((tab) => tab.section === section).title;
+  const title = tabs.find((tab) => tab.section === section)?.title || "";
 
   return (
     <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>

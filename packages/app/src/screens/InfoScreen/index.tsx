@@ -4,8 +4,9 @@ import { Screen } from "../../components/Screen";
 import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Hr } from "../../components/Hr";
+import { ScreenComponent } from "../../navigation/RootNavigator";
 
-const InfoScreen = ({ navigation }) => {
+const InfoScreen: ScreenComponent<"Info"> = ({ navigation }) => {
   const rows: TouchableRowProps[] = [
     {
       title: "About",

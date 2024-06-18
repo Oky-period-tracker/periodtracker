@@ -22,6 +22,10 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
   const consentQuestion =
     "Will you answer a few questions? It will take 2 to 3 minutes";
 
+  if (!state.survey) {
+    return null;
+  }
+
   const currentQuestion = state.survey.questions[state.questionIndex];
 
   const question = state.consented ? currentQuestion.question : consentQuestion;

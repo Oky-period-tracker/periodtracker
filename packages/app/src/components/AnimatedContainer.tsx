@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { View, ViewProps } from "react-native";
+import { LayoutChangeEvent, View, ViewProps } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -22,7 +22,7 @@ const AnimatedContainerBase = ({ style, children }: ViewProps) => {
   const height = useSharedValue(1);
 
   const onContentLayout = useCallback(
-    (event) => {
+    (event: LayoutChangeEvent) => {
       const newHeight = event.nativeEvent.layout.height;
       height.value = withTiming(newHeight, { duration: 350 });
     },

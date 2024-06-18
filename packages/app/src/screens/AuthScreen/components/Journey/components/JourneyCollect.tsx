@@ -39,7 +39,9 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
       {step === "number_days" && (
         <WheelPicker
           selectedIndex={dayIndex}
+          // @ts-ignore TODO: WheelPicker
           options={dayOptions}
+          // @ts-ignore TODO: WheelPicker
           onChange={setPeriodLength}
           resetDeps={[step]}
         />
@@ -47,7 +49,9 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
       {step === "number_weeks_between" && (
         <WheelPicker
           selectedIndex={weekIndex}
+          // @ts-ignore TODO: WheelPicker
           options={weekOptions}
+          // @ts-ignore TODO: WheelPicker
           onChange={setCycleLength}
           resetDeps={[step]}
         />

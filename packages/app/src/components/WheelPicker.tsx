@@ -13,10 +13,12 @@ const ITEM_HEIGHT = 40;
 const VISIBLE_ITEMS = 3;
 const height = ITEM_HEIGHT * VISIBLE_ITEMS;
 
-export type WheelPickerOption = {
-  label: string;
-  value: string;
-};
+export type WheelPickerOption =
+  | {
+      label: string;
+      value: string;
+    }
+  | undefined;
 
 export type WheelPickerProps = {
   initialOption: WheelPickerOption;
@@ -68,7 +70,7 @@ export const WheelPicker = ({
 
   // Scroll to preselect item on render
   React.useEffect(() => {
-    let resetTimeout = null;
+    let resetTimeout: NodeJS.Timeout;
 
     const timeout = setTimeout(() => {
       scrollEnabled.current = false;
@@ -102,7 +104,7 @@ export const WheelPicker = ({
           style={[styles.item, isSelected && styles.selectedItem]}
         >
           <Text style={isSelected ? styles.selectedItemText : undefined}>
-            {item.label}
+            {item?.label ?? ""}
           </Text>
         </TouchableOpacity>
       );
@@ -133,7 +135,7 @@ export const WheelPicker = ({
 };
 
 export const useInitialWheelOption = (
-  value: string,
+  value: string | undefined,
   options: WheelPickerOption[]
 ): WheelPickerOption => {
   return React.useMemo(() => {

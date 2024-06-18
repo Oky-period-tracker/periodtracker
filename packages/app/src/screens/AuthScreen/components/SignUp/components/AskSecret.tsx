@@ -25,6 +25,7 @@ export const AskSecret = () => {
     dispatch({ type: "secretAnswer", value });
   };
 
+  // @ts-ignore TODO: WheelPicker
   const onChangeQuestion = ({ value }: WheelPickerOption) => {
     dispatch({ type: "secretQuestion", value });
   };

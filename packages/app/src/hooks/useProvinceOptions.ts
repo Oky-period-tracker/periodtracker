@@ -2,7 +2,9 @@ import React from "react";
 import { provinces } from "../data/data";
 import { WheelPickerOption } from "../components/WheelPicker";
 
-export const useProvinceOptions = (country: string): WheelPickerOption[] => {
+export const useProvinceOptions = (
+  country: string | undefined
+): WheelPickerOption[] => {
   // TODO: redux state
   const locale = "en";
 

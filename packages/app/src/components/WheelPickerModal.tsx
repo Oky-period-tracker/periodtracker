@@ -22,6 +22,7 @@ export const WheelPickerModal = ({
 } & InputProps) => {
   const { query, setQuery, results } = useSearch<WheelPickerOption>({
     options,
+    // @ts-ignore TODO: WheelPicker
     keys: searchKeys,
     type: "startsWith",
     enabled: searchEnabled,
@@ -42,7 +43,7 @@ export const WheelPickerModal = ({
     toggleVisible();
   };
 
-  const displayValue = initialOption.label;
+  const displayValue = initialOption?.label || props.placeholder || "";
 
   return (
     <>

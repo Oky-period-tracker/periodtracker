@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { data } from "../../data/data";
+import { Article, data } from "../../data/data";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Input } from "../../components/Input";
@@ -13,7 +13,7 @@ const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   const subcategory = data.subCategories.byId[subcategoryId];
 
   const articles = React.useMemo(() => {
-    return subcategory.articles.reduce((acc, articleId) => {
+    return subcategory.articles.reduce<Article[]>((acc, articleId) => {
       if (articleIds.includes(articleId)) {
         acc.push(data.articles.byId[articleId]);
       }

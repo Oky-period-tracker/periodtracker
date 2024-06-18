@@ -13,10 +13,12 @@ import { useCountryOptions } from "../../../../../hooks/useCountryOptions";
 export const AskLocation = () => {
   const { state, dispatch, errors } = useSignUp();
 
+  // @ts-ignore TODO: WheelPicker
   const onChangeCountry = ({ value }: WheelPickerOption) => {
     dispatch({ type: "country", value });
   };
 
+  // @ts-ignore TODO: WheelPicker
   const onChangeProvince = ({ value }: WheelPickerOption) => {
     dispatch({ type: "province", value });
   };

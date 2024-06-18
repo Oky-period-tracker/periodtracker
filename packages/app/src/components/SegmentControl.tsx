@@ -4,18 +4,16 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Button } from "./Button";
 import { ErrorText } from "./ErrorText";
 
-type SegmentValue = string | number | boolean;
-
 type SegmentControlOption = {
-  value: SegmentValue;
+  value: string;
   label: string;
   iconName: string;
 };
 
 type SegmentControlProps = {
-  selected: SegmentValue;
+  selected: string;
   options: SegmentControlOption[];
-  onSelect: (value: SegmentValue) => void;
+  onSelect: (value: string) => void;
   errors?: string[]; // TODO:
   errorKey?: string; // TODO:
   errorsVisible?: boolean;
@@ -29,7 +27,8 @@ export const SegmentControl = ({
   errorKey,
   errorsVisible,
 }: SegmentControlProps) => {
-  const hasError = errorsVisible && errorKey && errors.includes(errorKey);
+  const hasError =
+    errorsVisible && errorKey && errors && errors.includes(errorKey);
 
   return (
     <View style={styles.container}>

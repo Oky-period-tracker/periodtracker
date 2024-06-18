@@ -14,6 +14,10 @@ export const SurveyCollect = () => {
     dispatch({ type: "notes", value });
   };
 
+  if (!state.survey) {
+    return null;
+  }
+
   const currentQuestion = state.survey.questions[state.questionIndex];
 
   const options = getSurveyQuestionOptions(currentQuestion);

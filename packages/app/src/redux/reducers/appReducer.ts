@@ -3,20 +3,21 @@ const initialState = {
   name: "bob",
 };
 
-export const setData = (data) => {
+export const setData = (data: boolean) => {
   return {
     type: "SET_DATA",
     payload: data,
   };
 };
 
-export const setName = (data) => {
+export const setName = (data: string) => {
   return {
     type: "SET_NAME",
     payload: data,
   };
 };
 
+// @ts-ignore TODO: redux
 const appReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_NAME":

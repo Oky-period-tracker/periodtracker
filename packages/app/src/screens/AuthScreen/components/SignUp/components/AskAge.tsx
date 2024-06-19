@@ -5,32 +5,6 @@ import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { generateRange } from "../../../../../services/utils";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 
-// TODO: Submodule
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const monthOptions = months.map((item) => ({ label: item, value: item }));
-
-const now = new Date();
-const currentYear = now.getFullYear();
-const years = generateRange(currentYear - 7, currentYear - 100).map((item) =>
-  item.toString()
-);
-
-const yearOptions = years.map((item) => ({ label: item, value: item }));
-
 export const AskAge = () => {
   const { state, dispatch, errors } = useSignUp();
 
@@ -76,6 +50,32 @@ export const AskAge = () => {
     </View>
   );
 };
+
+// TODO: Submodule
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const monthOptions = months.map((item) => ({ label: item, value: item }));
+
+const now = new Date();
+const currentYear = now.getFullYear();
+const years = generateRange(currentYear - 7, currentYear - 100).map((item) =>
+  item.toString()
+);
+
+const yearOptions = years.map((item) => ({ label: item, value: item }));
 
 const styles = StyleSheet.create({
   container: {

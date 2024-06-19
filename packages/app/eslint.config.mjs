@@ -20,6 +20,17 @@ export default [
       "react/prop-types": "off",
       "react/jsx-key": "off",
       "react/no-unescaped-entities": "off",
+      /* 
+        TODO: 
+        no semi colons
+        no export default
+        no unused styles
+        functions must have { }, no single line funcs without brackets
+        no inline functions as props eg prop={() => func()} must be prop={func}
+        useEffect etc deps must be complete
+        imports must be sorted in correct order
+        no excessive white space (set prettier rules or something?)
+      */
     },
   },
   { ignores: [".expo"] },

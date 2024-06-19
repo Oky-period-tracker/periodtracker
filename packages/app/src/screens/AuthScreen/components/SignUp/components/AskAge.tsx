@@ -4,6 +4,7 @@ import { useSignUp } from "../SignUpContext";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { generateRange } from "../../../../../services/utils";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
+import { months } from "../../../../../data/data";
 
 export const AskAge = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -50,22 +51,6 @@ export const AskAge = () => {
     </View>
   );
 };
-
-// TODO: Submodule
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
 
 const monthOptions = months.map((item) => ({ label: item, value: item }));
 

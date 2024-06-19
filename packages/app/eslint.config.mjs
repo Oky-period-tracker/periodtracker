@@ -23,6 +23,7 @@ export default [
       /* 
         TODO: 
         no semi colons
+        no console log
         no export default
         no unused styles
         functions must have { }, no single line funcs without brackets

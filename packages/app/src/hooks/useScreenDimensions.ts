@@ -11,7 +11,7 @@ export const useScreenDimensions = () => {
   React.useEffect(() => {
     const subscription = Dimensions.addEventListener(
       "change",
-      handleDimensionsChange
+      handleDimensionsChange  
     );
 
     return () => {

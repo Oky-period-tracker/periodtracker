@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import { Swiper } from "../../../components/Swiper";
-import { Button } from "../../../components/Button";
+import { Button  } from "../../../components/Button";
 import { useAuthMode } from "../AuthModeContext";
 import { User } from "../../../components/icons/User";
 import WelcomeCard from "./WelcomeCard";
@@ -69,4 +69,42 @@ const styles = StyleSheet.create({
   button: {
     marginLeft: "auto",
   },
+  displayImage:{
+    width: 80,
+    height: 80,
+  },
+  logo: {
+    width: 150,
+    height: 150,
+  },
+  welcomeContainer:{
+    width:"100%",
+    flexDirection:"row",
+    justifyContent:"center",
+    alignItems:"center",
+    marginTop:"2%",
+    marginLeft:"13%"
+  },
+  headText:{
+   fontSize:28,
+   marginLeft:"-4%",
+   textAlign:"left",
+   width:"80%",
+   fontWeight:"bold",
+   fontFamily:"Roboto",
+   color:"#e3629b"
+  },
+  iconHead:{
+    fontSize:20,
+    fontWeight:"bold",
+    marginTop:"5%"
+  },
+  belowText:{
+    fontSize:15,
+    fontWeight:"600",
+    marginTop:"5%",
+    paddingHorizontal:"8%",
+    alignItems:"center",
+    textAlign:"center"
+  }
 });

@@ -10,6 +10,7 @@ import { ScreenComponent } from "../../navigation/RootNavigator";
 // import { DayModal } from "../../components/DayModal";
 // import { useToggle } from "../../hooks/useToggle";
 import { Wheel } from "./components/Wheel";
+import { useScreenDimensions } from "../../hooks/useScreenDimensions";
 
 // const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
@@ -19,9 +20,13 @@ const MainScreen: ScreenComponent<"Home"> = (/* { navigation } */) => {
 
   // const [visible, toggleVisible] = useToggle();
 
+  const { width } = useScreenDimensions();
+
   return (
     <View style={styles.screen}>
-      <Wheel />
+      <View style={[styles.wheelContainer, { right: -width / 2 }]}>
+        <Wheel />
+      </View>
     </View>
   );
 
@@ -50,6 +55,14 @@ export default MainScreen;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  wheelContainer: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },

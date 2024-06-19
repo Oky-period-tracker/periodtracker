@@ -1,11 +1,13 @@
 import * as React from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { View,StyleSheet, ScrollView } from "react-native";
 import { Accordion } from "./components/Accordion";
 import { Screen } from "../../components/Screen";
 import { HelpCard } from "./components/HelpCard";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Input } from "../../components/Input";
 import { useEncyclopedia } from "./EncyclopediaContext";
+import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
   navigation,
@@ -16,16 +18,21 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
 
   return (
     <Screen>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.container}
-      >
-        <HelpCard onPress={goToHelpScreen} />
-        {/* TODO: add X button to clear query state */}
-        <Input value={query} onChangeText={setQuery} placeholder={"search"} />
-        <Accordion />
-      </ScrollView>
-    </Screen>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.container}>
+      <HelpCard onPress={goToHelpScreen} />
+      <View style={styles.searchContainer}>
+        <Input value={query} onChangeText={setQuery} style={styles.input} placeholder={"Search"} />
+        {query.length > 0 && ( // Render X button only when there's text in the input
+          <TouchableOpacity onPress={() => setQuery('')}>
+            <Ionicons name="close-circle" size={24} color="grey" />
+          </TouchableOpacity>
+        )}
+      </View>
+      <Accordion />
+    </ScrollView>
+  </Screen>
   );
 };
 
@@ -38,5 +45,30 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: "center",
+  },
+  screen: {
+    flex: 1,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 8,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 30,
+    backgroundColor: '#fff',
+  },
+  input: {
+    flex: 1,
+    paddingTop: 8,
+    paddingVertical: 8,
+    backgroundColor: '#fff',
+    color: 'black',
+  },
+  closeButton: {
+    padding: 10,
+    marginRight: 5,
   },
 });

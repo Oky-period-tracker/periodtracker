@@ -109,13 +109,13 @@ const theme: Theme = {
 };
 
 function RootNavigator() {
-  const isLoggedIn = false; // TODO:
+  const isLoggedIn = true; // TODO:
 
   const linking = isLoggedIn ? loggedInLinking : loggedOutLinking;
 
   return (
     <NavigationContainer linking={linking} theme={theme}>
-      {isLoggedIn ? <MainNavigator /> : <AuthStack />}
+      {isLoggedIn ? <MainNavigator /> : <AuthStack />}  
     </NavigationContainer>
   );
 }

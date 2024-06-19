@@ -13,7 +13,6 @@ import EncyclopediaStack, {
 } from "./stacks/EncyclopediaStack";
 import SettingsStack, { SettingsStackParamList } from "./stacks/SettingsStack";
 import { TabIcon } from "./components/TabIcon";
-import { View } from "react-native";
 import { User } from "../components/icons/User";
 import { IS_IOS } from "../services/device";
 
@@ -55,9 +54,7 @@ function MainNavigator() {
           ...options,
           tabBarIcon: ({ focused, size }) => (
             <TabIcon focused={focused}>
-              <View style={{ width: size, height: size, padding: 0 }}>
-                <User />
-              </View>
+              <User size={size} />
             </TabIcon>
           ),
         }}

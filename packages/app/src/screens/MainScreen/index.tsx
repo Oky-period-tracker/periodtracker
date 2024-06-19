@@ -11,6 +11,7 @@ import { ScreenComponent } from "../../navigation/RootNavigator";
 // import { useToggle } from "../../hooks/useToggle";
 import { Wheel } from "./components/Wheel";
 import { useScreenDimensions } from "../../hooks/useScreenDimensions";
+import { CenterCard } from "./components/CenterCard";
 
 // const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
@@ -25,6 +26,7 @@ const MainScreen: ScreenComponent<"Home"> = (/* { navigation } */) => {
   return (
     <View style={styles.screen}>
       <View style={[styles.wheelContainer, { right: -width / 2 }]}>
+        <CenterCard />
         <Wheel />
       </View>
     </View>

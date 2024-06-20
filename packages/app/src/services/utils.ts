@@ -1,3 +1,5 @@
+import { months } from "../data/data";
+
 export type ValueOf<T> = T[keyof T];
 
 export function recordToArray<T extends object>(obj?: T) {
@@ -34,4 +36,12 @@ export const reactNodeExists = (node: React.ReactNode): boolean => {
 export const formatDate = (date: Date) => {
   // 'YYYY-MM-DD'
   return date.toISOString().split("T")[0];
+};
+
+export const formatDayMonth = (date: Date) => {
+  // `DD Month`
+  const day = date.getDate();
+  const monthIndex = date.getMonth();
+  const month = months[monthIndex];
+  return `${day}\n${month}`;
 };

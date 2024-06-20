@@ -1,46 +1,47 @@
 import * as React from "react";
-import { View, StyleSheet, LayoutChangeEvent } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Carousel } from "../../components/Carousel";
 import { CenterCard } from "./components/CenterCard";
 import { Wheel } from "./components/Wheel";
 import { useScreenDimensions } from "../../hooks/useScreenDimensions";
 import { Button } from "../../components/Button";
-import { DayScrollProvider } from "./DayScrollContext";
+import { DayScrollProvider, useDayScroll } from "./DayScrollContext";
 
-const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
+const MainScreen: ScreenComponent<"Home"> = (props) => {
+  return (
+    <DayScrollProvider>
+      <MainScreenInner {...props} />
+    </DayScrollProvider>
+  );
+};
+
+const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
   const goToCalendar = () => navigation.navigate("Calendar");
 
   const { width } = useScreenDimensions();
 
-  const [wheelHeight, setWheelHeight] = React.useState(0);
-
-  const onLayout = (event: LayoutChangeEvent) => {
-    const { height } = event.nativeEvent.layout;
-    setWheelHeight(height);
-  };
+  const { onBodyLayout } = useDayScroll();
 
   return (
-    <DayScrollProvider>
-      <View style={styles.screen}>
-        <View style={styles.body} onLayout={onLayout}>
-          <Button
-            status={"secondary"}
-            style={styles.button}
-            onPress={goToCalendar}
-          />
+    <View style={styles.screen}>
+      <View style={styles.body} onLayout={onBodyLayout}>
+        <Button
+          status={"secondary"}
+          style={styles.button}
+          onPress={goToCalendar}
+        />
 
-          <View style={[styles.wheelContainer, { right: -width / 2 }]}>
-            <CenterCard />
-            <Wheel height={wheelHeight} />
-          </View>
-        </View>
-
-        <View style={styles.carouselContainer}>
-          <Carousel />
+        <View style={[styles.wheelContainer, { right: -width / 2 }]}>
+          <CenterCard />
+          <Wheel />
         </View>
       </View>
-    </DayScrollProvider>
+
+      <View style={styles.carouselContainer}>
+        <Carousel />
+      </View>
+    </View>
   );
 };
 

@@ -36,7 +36,7 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
               status="basic"
               onPress={() => setQuery("")}
             >
-              <FontAwesome name="close" size={20} color="grey" />
+              <FontAwesome name="close" size={20} color="white" />
             </Button>
           )}
         </View>
@@ -62,22 +62,23 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
+
     justifyContent: "space-between",
-    paddingHorizontal: 8,
+    paddingTop: 8,
     marginBottom: 8,
     borderWidth: 1,
+    height: 50,
     borderColor: "#ccc",
     borderRadius: 30,
     backgroundColor: "#fff",
   },
   input: {
     flex: 1,
-    paddingTop: 8,
-    paddingVertical: 8,
     backgroundColor: "#fff",
     color: "black",
   },
   closeButton: {
+    marginBottom: 12,
     width: 30,
     height: 30,
   },

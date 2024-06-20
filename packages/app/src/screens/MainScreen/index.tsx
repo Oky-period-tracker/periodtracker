@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { ScreenComponent } from "../../navigation/RootNavigator";
-import { Carousel } from "../../components/Carousel";
+import { Carousel } from "./components/Carousel";
 import { CenterCard } from "./components/CenterCard";
 import { Wheel } from "./components/Wheel";
 import { useScreenDimensions } from "../../hooks/useScreenDimensions";

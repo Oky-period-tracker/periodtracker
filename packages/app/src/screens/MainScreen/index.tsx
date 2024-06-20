@@ -1,17 +1,9 @@
 import * as React from "react";
 import { View, StyleSheet } from "react-native";
-// import { Carousel } from "../../components/Carousel";
-// import { Circle } from "../../components/icons/Circle";
-// import { Cloud } from "../../components/icons/Cloud";
-// import { Star } from "../../components/icons/Star";
+
 import { ScreenComponent } from "../../navigation/RootNavigator";
-// import { Button } from "../../components/Button";
-// import { DailyCard } from "../../components/DailyCard";
-// import { DayModal } from "../../components/DayModal";
-// import { useToggle } from "../../hooks/useToggle";
-import { Wheel } from "./components/Wheel";
-import { useScreenDimensions } from "../../hooks/useScreenDimensions";
-import { CenterCard } from "./components/CenterCard";
+
+import { Carousel } from "../../components/Carousel";
 
 // const data = [{}, {}, {}, {}, {}, {}, {}, {}];
 
@@ -21,16 +13,20 @@ const MainScreen: ScreenComponent<"Home"> = (/* { navigation } */) => {
 
   // const [visible, toggleVisible] = useToggle();
 
-  const { width } = useScreenDimensions();
+  // const { width } = useScreenDimensions();
 
-  return (
-    <View style={styles.screen}>
-      <View style={[styles.wheelContainer, { right: -width / 2 }]}>
-        <CenterCard />
-        <Wheel />
-      </View>
-    </View>
-  );
+  // return (
+  //   <View style={styles.screen}>
+  //     <View style={[styles.wheelContainer, { right: -width / 2 }]}>
+  //       <CenterCard />
+  //       <Wheel />
+  //     </View>
+  //   </View>
+  // );
+
+  // ==================
+
+  // const goToCalendar = () => navigation.navigate("Calendar");
 
   // return (
   //   <View style={styles.screen}>
@@ -38,18 +34,19 @@ const MainScreen: ScreenComponent<"Home"> = (/* { navigation } */) => {
   //       status={"secondary"}
   //       style={styles.button}
   //       onPress={goToCalendar}
-  //     ></Button>
-
-  //     <Cloud size={100} />
-  //     <Circle size={100} />
-  //     <Star size={100} />
-
-  //     <View style={styles.carouselContainer}>
-  //       <Carousel data={data} CardComponent={DailyCard} onCardPress={goToDay} />
-  //       <DayModal {...{ visible, toggleVisible }} />
-  //     </View>
+  //     />
   //   </View>
   // );
+
+  // ==================
+
+  return (
+    <View style={styles.screen}>
+      <View style={styles.carouselContainer}>
+        <Carousel />
+      </View>
+    </View>
+  );
 };
 
 export default MainScreen;

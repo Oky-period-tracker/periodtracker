@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { DisplayButton } from "./Button";
 import Cloud from "./icons/Cloud";
 import { Star } from "./icons/Star";
@@ -8,13 +8,14 @@ import { IconButton } from "./IconButton";
 
 type DailyCardProps = {
   onPress: () => void;
+  style: ViewStyle;
 };
 
-export const DailyCard = ({ onPress }: DailyCardProps) => {
+export const DailyCard = ({ onPress, style }: DailyCardProps) => {
   const status = "neutral";
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.card}>
+    <TouchableOpacity onPress={onPress} style={[styles.card, style]}>
       <View style={styles.top}>
         <DisplayButton status={status} textStyle={styles.dayText}>
           Day 12
@@ -36,7 +37,6 @@ export const DailyCard = ({ onPress }: DailyCardProps) => {
 const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
-    width: "100%",
     backgroundColor: "#fff",
     overflow: "hidden",
     aspectRatio: 1.5,

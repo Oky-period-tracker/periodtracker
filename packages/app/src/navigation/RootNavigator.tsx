@@ -109,7 +109,7 @@ const theme: Theme = {
 };
 
 function RootNavigator() {
-  const isLoggedIn = true; // TODO:
+  const isLoggedIn = false; // TODO:
 
   const linking = isLoggedIn ? loggedInLinking : loggedOutLinking;
 

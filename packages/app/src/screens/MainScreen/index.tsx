@@ -6,6 +6,7 @@ import { CenterCard } from "./components/CenterCard";
 import { Wheel } from "./components/Wheel";
 import { useScreenDimensions } from "../../hooks/useScreenDimensions";
 import { Button } from "../../components/Button";
+import { DayScrollProvider } from "./DayScrollContext";
 
 const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
   const goToCalendar = () => navigation.navigate("Calendar");
@@ -20,24 +21,26 @@ const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.body} onLayout={onLayout}>
-        <Button
-          status={"secondary"}
-          style={styles.button}
-          onPress={goToCalendar}
-        />
+    <DayScrollProvider>
+      <View style={styles.screen}>
+        <View style={styles.body} onLayout={onLayout}>
+          <Button
+            status={"secondary"}
+            style={styles.button}
+            onPress={goToCalendar}
+          />
 
-        <View style={[styles.wheelContainer, { right: -width / 2 }]}>
-          <CenterCard />
-          <Wheel height={wheelHeight} />
+          <View style={[styles.wheelContainer, { right: -width / 2 }]}>
+            <CenterCard />
+            <Wheel height={wheelHeight} />
+          </View>
+        </View>
+
+        <View style={styles.carouselContainer}>
+          <Carousel />
         </View>
       </View>
-
-      <View style={styles.carouselContainer}>
-        <Carousel />
-      </View>
-    </View>
+    </DayScrollProvider>
   );
 };
 

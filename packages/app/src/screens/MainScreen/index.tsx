@@ -1,47 +1,39 @@
 import * as React from "react";
-import { View, StyleSheet } from "react-native";
-
+import { View, StyleSheet, LayoutChangeEvent } from "react-native";
 import { ScreenComponent } from "../../navigation/RootNavigator";
-
 import { Carousel } from "../../components/Carousel";
+import { CenterCard } from "./components/CenterCard";
+import { Wheel } from "./components/Wheel";
+import { useScreenDimensions } from "../../hooks/useScreenDimensions";
+import { Button } from "../../components/Button";
 
-// const data = [{}, {}, {}, {}, {}, {}, {}, {}];
+const MainScreen: ScreenComponent<"Home"> = ({ navigation }) => {
+  const goToCalendar = () => navigation.navigate("Calendar");
 
-const MainScreen: ScreenComponent<"Home"> = (/* { navigation } */) => {
-  // const goToCalendar = () => navigation.navigate("Calendar");
-  // const goToDay = () => navigation.navigate("Day");
+  const { width } = useScreenDimensions();
 
-  // const [visible, toggleVisible] = useToggle();
+  const [wheelHeight, setWheelHeight] = React.useState(0);
 
-  // const { width } = useScreenDimensions();
-
-  // return (
-  //   <View style={styles.screen}>
-  //     <View style={[styles.wheelContainer, { right: -width / 2 }]}>
-  //       <CenterCard />
-  //       <Wheel />
-  //     </View>
-  //   </View>
-  // );
-
-  // ==================
-
-  // const goToCalendar = () => navigation.navigate("Calendar");
-
-  // return (
-  //   <View style={styles.screen}>
-  //     <Button
-  //       status={"secondary"}
-  //       style={styles.button}
-  //       onPress={goToCalendar}
-  //     />
-  //   </View>
-  // );
-
-  // ==================
+  const onLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout;
+    setWheelHeight(height);
+  };
 
   return (
     <View style={styles.screen}>
+      <View style={styles.body} onLayout={onLayout}>
+        <Button
+          status={"secondary"}
+          style={styles.button}
+          onPress={goToCalendar}
+        />
+
+        <View style={[styles.wheelContainer, { right: -width / 2 }]}>
+          <CenterCard />
+          <Wheel height={wheelHeight} />
+        </View>
+      </View>
+
       <View style={styles.carouselContainer}>
         <Carousel />
       </View>
@@ -57,6 +49,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  body: {
+    width: "100%",
+    flex: 1,
+  },
   wheelContainer: {
     position: "absolute",
     top: 0,
@@ -68,6 +64,7 @@ const styles = StyleSheet.create({
   carouselContainer: {
     marginTop: "auto",
     width: "100%",
+    height: 200,
   },
   button: {
     width: 80,

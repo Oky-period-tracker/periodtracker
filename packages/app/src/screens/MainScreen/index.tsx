@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   },
   carouselContainer: {
     marginTop: "auto",
+    width: "100%",
   },
   button: {
     width: 80,

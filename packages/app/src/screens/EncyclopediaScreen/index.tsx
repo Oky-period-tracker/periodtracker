@@ -1,13 +1,13 @@
 import * as React from "react";
-import { View,StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { Accordion } from "./components/Accordion";
 import { Screen } from "../../components/Screen";
 import { HelpCard } from "./components/HelpCard";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Input } from "../../components/Input";
 import { useEncyclopedia } from "./EncyclopediaContext";
-import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FontAwesome } from "@expo/vector-icons";
+import { Button } from "../../components/Button";
 
 const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
   navigation,
@@ -18,21 +18,31 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
 
   return (
     <Screen>
-    <ScrollView
-      style={styles.scrollView}
-      contentContainerStyle={styles.container}>
-      <HelpCard onPress={goToHelpScreen} />
-      <View style={styles.searchContainer}>
-        <Input value={query} onChangeText={setQuery} style={styles.input} placeholder={"Search"} />
-        {query.length > 0 && ( // Render X button only when there's text in the input
-          <TouchableOpacity onPress={() => setQuery('')}>
-            <Ionicons name="close-circle" size={24} color="grey" />
-          </TouchableOpacity>
-        )}
-      </View>
-      <Accordion />
-    </ScrollView>
-  </Screen>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.container}
+      >
+        <HelpCard onPress={goToHelpScreen} />
+        <View style={styles.searchContainer}>
+          <Input
+            value={query}
+            onChangeText={setQuery}
+            style={styles.input}
+            placeholder={"Search"}
+          />
+          {query.length > 0 && (
+            <Button
+              style={styles.closeButton}
+              status="basic"
+              onPress={() => setQuery("")}
+            >
+              <FontAwesome name="close" size={20} color="grey" />
+            </Button>
+          )}
+        </View>
+        <Accordion />
+      </ScrollView>
+    </Screen>
   );
 };
 
@@ -50,25 +60,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 8,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 30,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   input: {
     flex: 1,
     paddingTop: 8,
     paddingVertical: 8,
-    backgroundColor: '#fff',
-    color: 'black',
+    backgroundColor: "#fff",
+    color: "black",
   },
   closeButton: {
-    padding: 10,
-    marginRight: 5,
+    width: 30,
+    height: 30,
   },
 });

@@ -74,12 +74,12 @@ const defaultValue: DayScrollContext = {
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue);
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
-  const [wheelHeight, setWheelHeight] = React.useState(0);
-  const RADIUS = wheelHeight / 2;
+  const [diameter, setDiameter] = React.useState(0);
+  const radius = diameter / 2;
 
   const onBodyLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
-    setWheelHeight(height);
+    setDiameter(height);
   };
 
   // Carousel
@@ -99,7 +99,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   // ================ Wheel Worklets ================ //
   const calculateButtonPosition = (index: number) => {
-    const distanceFromCenter = RADIUS - BUTTON_SIZE / 2;
+    const distanceFromCenter = radius - BUTTON_SIZE / 2;
     const x = distanceFromCenter * Math.cos(index * ANGLE_BETWEEN_BUTTONS);
     const y = distanceFromCenter * Math.sin(index * ANGLE_BETWEEN_BUTTONS);
     const top = y + distanceFromCenter;
@@ -167,8 +167,8 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const wheelAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotate: `${rotationAngle.value}rad` }],
-      width: RADIUS * 2,
-      height: RADIUS * 2,
+      width: diameter,
+      height: diameter,
     };
   });
 

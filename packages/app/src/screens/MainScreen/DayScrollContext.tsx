@@ -42,6 +42,7 @@ const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS;
 const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH;
 
 const DRAG_SPEED_MULTIPLIER = 2;
+const SETTLE_DURATION = 500;
 
 const constants = {
   BUTTON_SIZE,
@@ -135,7 +136,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     // Carousel
     const endX = cumulativeTranslationX.value + displacement;
     const endPosition = calculateClosestCardPosition(endX);
-    translationX.value = withTiming(endPosition, { duration: 500 });
+    translationX.value = withTiming(endPosition, { duration: SETTLE_DURATION });
     cumulativeTranslationX.value = endPosition;
 
     // Wheel
@@ -144,7 +145,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       cumulativeRotation.value + angle
     );
     cumulativeRotation.value = endAngle;
-    rotationAngle.value = withTiming(endAngle, { duration: 500 });
+    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION });
   };
 
   const carouselPanGesture = Gesture.Pan()

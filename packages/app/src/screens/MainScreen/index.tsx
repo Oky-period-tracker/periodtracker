@@ -32,9 +32,9 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
           onPress={goToCalendar}
         />
 
-        <View style={[styles.wheelContainer, { right: -width / 2 }]}>
-          <CenterCard />
+        <View style={[styles.wheelContainer, { width, right: -width / 2 }]}>
           <Wheel />
+          <CenterCard />
         </View>
       </View>
 
@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   carouselContainer: {
     marginTop: "auto",
     width: "100%",
-    height: 200,
   },
   button: {
     width: 80,

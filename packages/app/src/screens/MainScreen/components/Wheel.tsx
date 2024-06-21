@@ -10,27 +10,16 @@ import { formatDayMonth } from "../../../services/utils";
 export const Wheel = () => {
   const {
     data,
-    //
-    animatedWheelStyle,
-    animatedButtonStyle,
-    panWheelGesture,
+    constants,
     calculateButtonPosition,
-    RADIUS,
-    BUTTON_SIZE,
+    wheelPanGesture,
+    wheelAnimatedStyle,
+    wheelButtonAnimatedStyle,
   } = useDayScroll();
 
   return (
-    <GestureDetector gesture={panWheelGesture}>
-      <Animated.View
-        style={[
-          styles.container,
-          {
-            width: RADIUS * 2,
-            height: RADIUS * 2,
-          },
-          animatedWheelStyle,
-        ]}
-      >
+    <GestureDetector gesture={wheelPanGesture}>
+      <Animated.View style={[styles.container, wheelAnimatedStyle]}>
         {data.map((item, i) => {
           const position = calculateButtonPosition(i);
           const text = formatDayMonth(item.date);
@@ -38,17 +27,13 @@ export const Wheel = () => {
           return (
             <Animated.View
               key={`wheel-button-${i}`}
-              style={[
-                styles.button,
-                {
-                  width: BUTTON_SIZE,
-                  height: BUTTON_SIZE,
-                },
-                position,
-                animatedButtonStyle,
-              ]}
+              style={[styles.button, position, wheelButtonAnimatedStyle]}
             >
-              <IconButton Icon={Cloud} size={BUTTON_SIZE} text={text} />
+              <IconButton
+                size={constants.BUTTON_SIZE}
+                Icon={Cloud}
+                text={text}
+              />
             </Animated.View>
           );
         })}

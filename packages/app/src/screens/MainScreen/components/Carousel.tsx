@@ -6,17 +6,15 @@ import { DailyCard } from "../../../components/DailyCard";
 import { useDayScroll } from "../DayScrollContext";
 
 export const Carousel = () => {
-  const { data, panCarouselGesture, animatedCarouselStyle, cardStyle } =
-    useDayScroll();
+  const { data, carouselPanGesture, carouselAnimatedStyle } = useDayScroll();
 
   return (
-    <GestureDetector gesture={panCarouselGesture}>
-      <Animated.View style={[styles.container, animatedCarouselStyle]}>
+    <GestureDetector gesture={carouselPanGesture}>
+      <Animated.View style={[styles.container, carouselAnimatedStyle]}>
         {data.map((_, i) => {
           return (
             <DailyCard
               key={`carousel-card-${i}`}
-              style={cardStyle}
               onPress={() => {
                 //
               }}

@@ -1,21 +1,34 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { DisplayButton } from "./Button";
 import Cloud from "./icons/Cloud";
 import { Star } from "./icons/Star";
 import { EmojiBadge } from "./EmojiBadge";
 import { IconButton } from "./IconButton";
+import { useDayScroll } from "../screens/MainScreen/DayScrollContext";
 
 type DailyCardProps = {
   onPress: () => void;
-  style: ViewStyle;
 };
 
-export const DailyCard = ({ onPress, style }: DailyCardProps) => {
+export const DailyCard = ({ onPress }: DailyCardProps) => {
+  const { constants } = useDayScroll();
+  const { CARD_WIDTH, CARD_HEIGHT, CARD_MARGIN } = constants;
   const status = "neutral";
 
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.card, style]}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.card,
+        {
+          width: CARD_WIDTH,
+          height: CARD_HEIGHT,
+          margin: CARD_MARGIN,
+          marginHorizontal: CARD_MARGIN / 2,
+        },
+      ]}
+    >
       <View style={styles.top}>
         <DisplayButton status={status} textStyle={styles.dayText}>
           Day 12

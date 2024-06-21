@@ -9,10 +9,7 @@ export const CenterCard = () => {
 
   return (
     <View
-      style={[
-        styles.container,
-        { left: width / 2 - CARD_WIDTH - MARGIN_RIGHT },
-      ]}
+      style={[styles.container, { left: width / 2 - WIDTH - MARGIN_RIGHT }]}
     >
       <Text style={styles.number} status={"neutral"}>
         19
@@ -24,12 +21,12 @@ export const CenterCard = () => {
   );
 };
 
-const CARD_WIDTH = 120;
+const WIDTH = 120;
 const MARGIN_RIGHT = 8;
 
 const styles = StyleSheet.create({
   container: {
-    width: CARD_WIDTH,
+    width: WIDTH,
     height: 80,
     backgroundColor: "#FFF",
     position: "absolute",

@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutChangeEvent, StyleSheet, ViewStyle } from "react-native";
+import { LayoutChangeEvent } from "react-native";
 import { Gesture, PanGesture } from "react-native-gesture-handler";
 import {
   useAnimatedStyle,
@@ -10,70 +10,98 @@ import {
 
 export type DayScrollContext = {
   data: { date: Date }[];
+  constants: {
+    BUTTON_SIZE: number;
+    CARD_WIDTH: number;
+    CARD_HEIGHT: number;
+    CARD_MARGIN: number;
+  };
   onBodyLayout: (event: LayoutChangeEvent) => void;
-  // Wheel
-  panWheelGesture: PanGesture;
-  animatedWheelStyle: AnimatedStyle;
-  animatedButtonStyle: AnimatedStyle;
-  calculateButtonPosition: (index: number) => { top: number; left: number };
-  RADIUS: number;
-  BUTTON_SIZE: number;
   // Carousel
-  panCarouselGesture: PanGesture;
-  animatedCarouselStyle: AnimatedStyle;
-  cardStyle: ViewStyle;
+  carouselPanGesture: PanGesture;
+  carouselAnimatedStyle: AnimatedStyle;
+  // Wheel
+  calculateButtonPosition: (index: number) => { top: number; left: number };
+  wheelPanGesture: PanGesture;
+  wheelAnimatedStyle: AnimatedStyle;
+  wheelButtonAnimatedStyle: AnimatedStyle;
+};
+
+// Carousel
+const CARD_WIDTH = 260;
+const ASPECT_RATIO = 0.7;
+const CARD_HEIGHT = CARD_WIDTH * ASPECT_RATIO;
+const CARD_MARGIN = 12;
+const FULL_CARD_WIDTH = CARD_WIDTH + CARD_MARGIN;
+
+// Wheel
+const BUTTON_SIZE = 80;
+const NUMBER_OF_BUTTONS = 12;
+const ANGLE_FULL_CIRCLE = 2 * Math.PI;
+const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS;
+const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH;
+
+const constants = {
+  BUTTON_SIZE,
+  CARD_WIDTH,
+  CARD_HEIGHT,
+  CARD_MARGIN,
 };
 
 const defaultValue: DayScrollContext = {
   data: [],
+  constants,
   onBodyLayout: () => {
     //
   },
-  panWheelGesture: Gesture.Pan(),
-  animatedWheelStyle: {},
-  animatedButtonStyle: {},
+  // Carousel
+  carouselPanGesture: Gesture.Pan(),
+  carouselAnimatedStyle: {},
+  // Wheel
+  wheelPanGesture: Gesture.Pan(),
+  wheelAnimatedStyle: {},
+  wheelButtonAnimatedStyle: {},
   calculateButtonPosition: () => {
     return {
       top: 0,
       left: 0,
     };
   },
-  RADIUS: 0,
-  BUTTON_SIZE: 0,
-  //
-  panCarouselGesture: Gesture.Pan(),
-  animatedCarouselStyle: {},
-  cardStyle: {},
 };
 
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue);
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const [wheelHeight, setWheelHeight] = React.useState(0);
+  const RADIUS = wheelHeight / 2;
+
   const onBodyLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
     setWheelHeight(height);
   };
 
-  const rotationAngle = useSharedValue(0);
-  const cumulativeRotation = useSharedValue(0);
-
+  // Carousel
   const translationX = useSharedValue(0);
   const cumulativeTranslationX = useSharedValue(0);
 
-  // ==================== WHEEL ==================== //
-  const BUTTON_SIZE = 80;
-  const RADIUS = wheelHeight / 2;
-  const ANGLE_FULL_CIRCLE = 2 * Math.PI;
-  const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS;
-  const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_WIDTH;
+  // Wheel
+  const rotationAngle = useSharedValue(0);
+  const cumulativeRotation = useSharedValue(0);
 
+  // ================ Carousel Worklet ================ //
+  const calculateClosestCardPosition = (position: number) => {
+    "worklet";
+    const closestIndex = Math.round(position / FULL_CARD_WIDTH);
+    return closestIndex * FULL_CARD_WIDTH;
+  };
+
+  // ================ Wheel Worklets ================ //
   const calculateButtonPosition = (index: number) => {
     const distanceFromCenter = RADIUS - BUTTON_SIZE / 2;
     const x = distanceFromCenter * Math.cos(index * ANGLE_BETWEEN_BUTTONS);
     const y = distanceFromCenter * Math.sin(index * ANGLE_BETWEEN_BUTTONS);
-    const top = RADIUS + y - BUTTON_SIZE / 2;
-    const left = RADIUS + x - BUTTON_SIZE / 2;
+    const top = y + distanceFromCenter;
+    const left = x + distanceFromCenter;
     return { top, left };
   };
 
@@ -89,7 +117,8 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     return segmentIndex * ANGLE_BETWEEN_BUTTONS;
   };
 
-  const onUpdate = (displacement: number) => {
+  // ================ Handle Gestures ================ //
+  const handlePanUpdate = (displacement: number) => {
     "worklet";
     // Carousel
     translationX.value = cumulativeTranslationX.value + displacement;
@@ -99,7 +128,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     rotationAngle.value = cumulativeRotation.value + angle;
   };
 
-  const onEnd = (displacement: number) => {
+  const handlePanEnd = (displacement: number) => {
     "worklet";
     // Carousel
     const endX = cumulativeTranslationX.value + displacement;
@@ -116,38 +145,41 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     rotationAngle.value = withTiming(endAngle, { duration: 500 });
   };
 
-  const panWheelGesture = Gesture.Pan()
+  const carouselPanGesture = Gesture.Pan()
     .onUpdate((event) => {
-      onUpdate(event.translationY);
+      handlePanUpdate(event.translationX);
     })
     .onEnd((event) => {
-      onEnd(event.translationY);
+      handlePanEnd(event.translationX);
     });
 
-  const animatedWheelStyle = useAnimatedStyle(() => {
+  const wheelPanGesture = Gesture.Pan()
+    .onUpdate((event) => {
+      handlePanUpdate(event.translationY);
+    })
+    .onEnd((event) => {
+      handlePanEnd(event.translationY);
+    });
+
+  // ================ Animated Styles ================ //
+  const wheelAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotate: `${rotationAngle.value}rad` }],
+      width: RADIUS * 2,
+      height: RADIUS * 2,
     };
   });
 
-  const animatedButtonStyle = useAnimatedStyle(() => {
+  const wheelButtonAnimatedStyle = useAnimatedStyle(() => {
     return {
       // Buttons counter rotate to stay level
       transform: [{ rotate: `${-rotationAngle.value}rad` }],
+      width: BUTTON_SIZE,
+      height: BUTTON_SIZE,
     };
   });
 
-  // ==================== CAROUSEL ==================== //
-
-  const panCarouselGesture = Gesture.Pan()
-    .onUpdate((event) => {
-      onUpdate(event.translationX);
-    })
-    .onEnd((event) => {
-      onEnd(event.translationX);
-    });
-
-  const animatedCarouselStyle = useAnimatedStyle(() => {
+  const carouselAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateX: translationX.value }],
     };
@@ -157,18 +189,16 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     <DayScrollContext.Provider
       value={{
         data,
+        constants,
         onBodyLayout,
-        //
-        animatedWheelStyle,
-        animatedButtonStyle,
-        panWheelGesture,
+        // Carousel
+        carouselPanGesture,
+        carouselAnimatedStyle,
+        // Wheel
         calculateButtonPosition,
-        RADIUS,
-        BUTTON_SIZE,
-        //
-        panCarouselGesture,
-        animatedCarouselStyle,
-        cardStyle: styles.card,
+        wheelPanGesture,
+        wheelAnimatedStyle,
+        wheelButtonAnimatedStyle,
       }}
     >
       {children}
@@ -190,30 +220,4 @@ const generateDateArray = (startDate: Date, length: number) => {
   return dates;
 };
 
-const NUMBER_OF_BUTTONS = 12;
-
 const data = generateDateArray(new Date(), NUMBER_OF_BUTTONS);
-
-//
-
-const CARD_WIDTH = 260;
-const ASPECT_RATIO = 0.7;
-const CARD_HEIGHT = CARD_WIDTH * ASPECT_RATIO;
-const CARD_MARGIN = 12;
-
-const FULL_WIDTH = CARD_WIDTH + CARD_MARGIN;
-
-const calculateClosestCardPosition = (position: number) => {
-  "worklet";
-  const closestIndex = Math.round(position / FULL_WIDTH);
-  return closestIndex * FULL_WIDTH;
-};
-
-const styles = StyleSheet.create({
-  card: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    margin: CARD_MARGIN,
-    marginHorizontal: CARD_MARGIN / 2,
-  },
-});

@@ -107,7 +107,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const calculateRotationAngle = (displacement: number) => {
     "worklet";
-    const angle = -displacement * ROTATION_PER_PIXEL_DRAGGED;
+    const angle = displacement * ROTATION_PER_PIXEL_DRAGGED;
     return Math.min(angle, ANGLE_FULL_CIRCLE);
   };
 
@@ -155,10 +155,10 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const wheelPanGesture = Gesture.Pan()
     .onUpdate((event) => {
-      handlePanUpdate(event.translationY);
+      handlePanUpdate(-event.translationY);
     })
     .onEnd((event) => {
-      handlePanEnd(event.translationY);
+      handlePanEnd(-event.translationY);
     });
 
   // ================ Animated Styles ================ //

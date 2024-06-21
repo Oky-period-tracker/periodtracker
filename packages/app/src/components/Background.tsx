@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  ImageBackground,
-  // ImageBackgroundProps,
-  StyleSheet,
-  // View,
-} from "react-native";
+import { ImageBackground, StyleSheet } from "react-native";
 import { assets } from "../assets";
 import { PropsWithChildren } from "react";
 

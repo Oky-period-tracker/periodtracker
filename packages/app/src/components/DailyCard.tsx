@@ -13,7 +13,7 @@ type DailyCardProps = {
 
 export const DailyCard = ({ onPress }: DailyCardProps) => {
   const { constants } = useDayScroll();
-  const { CARD_WIDTH, CARD_HEIGHT, CARD_MARGIN } = constants;
+  const { CARD_WIDTH, CARD_MARGIN } = constants;
   const status = "neutral";
 
   return (
@@ -23,7 +23,6 @@ export const DailyCard = ({ onPress }: DailyCardProps) => {
         styles.card,
         {
           width: CARD_WIDTH,
-          height: CARD_HEIGHT,
           margin: CARD_MARGIN,
           marginHorizontal: CARD_MARGIN / 2,
         },

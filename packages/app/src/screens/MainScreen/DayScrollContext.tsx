@@ -13,7 +13,6 @@ export type DayScrollContext = {
   constants: {
     BUTTON_SIZE: number;
     CARD_WIDTH: number;
-    CARD_HEIGHT: number;
     CARD_MARGIN: number;
   };
   onBodyLayout: (event: LayoutChangeEvent) => void;
@@ -29,8 +28,6 @@ export type DayScrollContext = {
 
 // Carousel
 const CARD_WIDTH = 260;
-const ASPECT_RATIO = 0.7;
-const CARD_HEIGHT = CARD_WIDTH * ASPECT_RATIO;
 const CARD_MARGIN = 12;
 const FULL_CARD_WIDTH = CARD_WIDTH + CARD_MARGIN;
 
@@ -47,7 +44,6 @@ const SETTLE_DURATION = 500;
 const constants = {
   BUTTON_SIZE,
   CARD_WIDTH,
-  CARD_HEIGHT,
   CARD_MARGIN,
 };
 

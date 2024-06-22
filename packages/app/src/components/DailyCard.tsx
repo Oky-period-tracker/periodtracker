@@ -5,13 +5,15 @@ import Cloud from "./icons/Cloud";
 import { Star } from "./icons/Star";
 import { EmojiBadge } from "./EmojiBadge";
 import { IconButton } from "./IconButton";
-import { useDayScroll } from "../screens/MainScreen/DayScrollContext";
+import { DayData, useDayScroll } from "../screens/MainScreen/DayScrollContext";
+import { formatDayMonth } from "../services/utils";
 
 type DailyCardProps = {
+  item: DayData;
   onPress: () => void;
 };
 
-export const DailyCard = ({ onPress }: DailyCardProps) => {
+export const DailyCard = ({ item, onPress }: DailyCardProps) => {
   const { constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
   const status = "neutral";
@@ -30,9 +32,9 @@ export const DailyCard = ({ onPress }: DailyCardProps) => {
     >
       <View style={styles.top}>
         <DisplayButton status={status} textStyle={styles.dayText}>
-          Day 12
+          {"Day N"}
         </DisplayButton>
-        <IconButton Icon={Cloud} text={"12 June"} />
+        <IconButton Icon={Cloud} text={formatDayMonth(item.date)} />
         <Star size={24} />
       </View>
 

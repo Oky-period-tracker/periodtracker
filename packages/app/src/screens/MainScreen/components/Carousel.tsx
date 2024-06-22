@@ -11,10 +11,11 @@ export const Carousel = () => {
   return (
     <GestureDetector gesture={carouselPanGesture}>
       <Animated.View style={[styles.container, carouselAnimatedStyle]}>
-        {data.map((_, i) => {
+        {data.map((item) => {
           return (
             <DailyCard
-              key={`carousel-card-${i}`}
+              key={`carousel-card-${item.date}`}
+              item={item}
               onPress={() => {
                 //
               }}

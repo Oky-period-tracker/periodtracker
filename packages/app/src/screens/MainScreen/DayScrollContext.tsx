@@ -127,7 +127,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     if (indexChange > 0) {
       setState({
         ...state,
-        offset: (state.offset + indexChange) % 12,
+        offset: (state.offset + indexChange) % NUMBER_OF_BUTTONS,
         startDate: state.startDate.add(indexChange, "days"),
         endDate: state.endDate.add(indexChange, "days"),
       });
@@ -137,7 +137,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     if (indexChange < 0) {
       setState({
         ...state,
-        offset: (state.offset + indexChange) % 12,
+        offset: (state.offset + indexChange) % NUMBER_OF_BUTTONS,
         startDate: state.startDate.add(indexChange, "days"),
         endDate: state.endDate.add(indexChange, "days"),
       });

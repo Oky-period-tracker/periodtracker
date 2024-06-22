@@ -117,11 +117,11 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   // Carousel
   const translationX = useSharedValue(0);
-  const cumulativeTranslationX = useSharedValue(0);
+  const totalTranslationX = useSharedValue(0);
 
   // Wheel
   const rotationAngle = useSharedValue(0);
-  const cumulativeRotation = useSharedValue(0);
+  const totalRotation = useSharedValue(0);
 
   const handleInfiniteData = (indexChange: number) => {
     if (indexChange > 0) {
@@ -178,11 +178,11 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const handlePanUpdate = (displacement: number) => {
     "worklet";
     // Carousel
-    translationX.value = cumulativeTranslationX.value + displacement;
+    translationX.value = totalTranslationX.value + displacement;
 
     // Wheel
     const angle = calculateRotationAngle(displacement);
-    rotationAngle.value = cumulativeRotation.value + angle;
+    rotationAngle.value = totalRotation.value + angle;
   };
 
   const handlePanEnd = (displacement: number) => {
@@ -192,17 +192,15 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     runOnJS(handleInfiniteData)(change);
 
     // Carousel
-    const endX = cumulativeTranslationX.value + displacement;
+    const endX = totalTranslationX.value + displacement;
     const endPosition = calculateClosestCardPosition(endX);
     translationX.value = withTiming(endPosition, { duration: SETTLE_DURATION });
-    cumulativeTranslationX.value = endPosition;
+    totalTranslationX.value = endPosition;
 
     // Wheel
     const angle = calculateRotationAngle(displacement);
-    const endAngle = calculateClosestSegmentAngle(
-      cumulativeRotation.value + angle
-    );
-    cumulativeRotation.value = endAngle;
+    const endAngle = calculateClosestSegmentAngle(totalRotation.value + angle);
+    totalRotation.value = endAngle;
     rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION });
   };
 

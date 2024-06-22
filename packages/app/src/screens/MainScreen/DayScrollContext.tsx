@@ -124,6 +124,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const totalRotation = useSharedValue(0);
 
   const handleInfiniteData = (indexChange: number) => {
+    // Add future dates
     if (indexChange > 0) {
       setState({
         ...state,
@@ -134,6 +135,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       return;
     }
 
+    // Add past dates
     if (indexChange < 0) {
       setState({
         ...state,

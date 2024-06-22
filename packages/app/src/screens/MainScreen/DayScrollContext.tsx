@@ -124,27 +124,16 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const totalRotation = useSharedValue(0);
 
   const handleInfiniteData = (indexChange: number) => {
-    // Add future dates
-    if (indexChange > 0) {
-      setState({
-        ...state,
-        offset: (state.offset + indexChange) % NUMBER_OF_BUTTONS,
-        startDate: state.startDate.add(indexChange, "days"),
-        endDate: state.endDate.add(indexChange, "days"),
-      });
+    if (indexChange === 0) {
       return;
     }
 
-    // Add past dates
-    if (indexChange < 0) {
-      setState({
-        ...state,
-        offset: (state.offset + indexChange) % NUMBER_OF_BUTTONS,
-        startDate: state.startDate.add(indexChange, "days"),
-        endDate: state.endDate.add(indexChange, "days"),
-      });
-      return;
-    }
+    setState({
+      ...state,
+      offset: (state.offset + indexChange) % NUMBER_OF_BUTTONS,
+      startDate: state.startDate.add(indexChange, "days"),
+      endDate: state.endDate.add(indexChange, "days"),
+    });
   };
 
   // ================ Carousel Worklet ================ //

@@ -116,8 +116,9 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   };
 
   // Carousel
-  const translationX = useSharedValue(0);
-  const totalTranslationX = useSharedValue(0);
+  const initialX = -FULL_CARD_WIDTH * (NUMBER_OF_BUTTONS / 2);
+  const translationX = useSharedValue(initialX);
+  const totalTranslationX = useSharedValue(initialX);
 
   // Wheel
   const rotationAngle = useSharedValue(0);

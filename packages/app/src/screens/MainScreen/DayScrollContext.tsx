@@ -53,7 +53,7 @@ const ANGLE_FULL_CIRCLE = 2 * Math.PI;
 const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS;
 const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH;
 
-const DRAG_SPEED_MULTIPLIER = 2;
+const SCROLL_SPEED_MULTIPLIER = 2;
 const SETTLE_DURATION = 500;
 
 const constants = {
@@ -216,10 +216,10 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const wheelPanGesture = Gesture.Pan()
     .onUpdate((event) => {
-      handlePanUpdate(-event.translationY * DRAG_SPEED_MULTIPLIER);
+      handlePanUpdate(-event.translationY * SCROLL_SPEED_MULTIPLIER);
     })
     .onEnd((event) => {
-      handlePanEnd(-event.translationY * DRAG_SPEED_MULTIPLIER);
+      handlePanEnd(-event.translationY * SCROLL_SPEED_MULTIPLIER);
     });
 
   // ================ Animated Styles ================ //

@@ -1,3 +1,4 @@
+import moment, { Moment } from "moment";
 import React from "react";
 import { LayoutChangeEvent } from "react-native";
 import { Gesture, PanGesture } from "react-native-gesture-handler";
@@ -6,10 +7,16 @@ import {
   useSharedValue,
   withTiming,
   AnimatedStyle,
+  runOnJS,
 } from "react-native-reanimated";
+import _ from "lodash";
+
+export type DayData = {
+  date: Moment;
+};
 
 export type DayScrollContext = {
-  data: { date: Date }[];
+  data: DayData[];
   constants: {
     BUTTON_SIZE: number;
     CARD_WIDTH: number;
@@ -24,6 +31,14 @@ export type DayScrollContext = {
   wheelPanGesture: PanGesture;
   wheelAnimatedStyle: AnimatedStyle;
   wheelButtonAnimatedStyle: AnimatedStyle;
+};
+
+type DayScrollState = {
+  startDate: Moment;
+  endDate: Moment;
+  offset: number;
+  currentIndex: number;
+  page: number;
 };
 
 // Carousel
@@ -70,7 +85,28 @@ const defaultValue: DayScrollContext = {
 
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue);
 
+const today = moment().startOf("day");
+const todayMinusSevenDays = moment(today.clone().add(-7, "days"));
+const todaysPlusFourDays = moment(today.clone().add(4, "days"));
+
+const initialState: DayScrollState = {
+  startDate: todayMinusSevenDays,
+  endDate: todaysPlusFourDays,
+  offset: 0,
+  currentIndex: 0,
+  page: 0,
+};
+
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
+  const [state, setState] = React.useState(initialState);
+
+  const { startDate, endDate, offset /* currentIndex, page  */ } = state;
+
+  const fullInfoForDateRange = useCalculateFullInfoForDateRange(
+    startDate,
+    endDate
+  );
+
   const [diameter, setDiameter] = React.useState(0);
   const radius = diameter / 2;
 
@@ -86,6 +122,28 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   // Wheel
   const rotationAngle = useSharedValue(0);
   const cumulativeRotation = useSharedValue(0);
+
+  const handleInfiniteData = (indexChange: number) => {
+    if (indexChange > 0) {
+      setState({
+        ...state,
+        offset: (state.offset + indexChange) % 12,
+        startDate: state.startDate.add(indexChange, "days"),
+        endDate: state.endDate.add(indexChange, "days"),
+      });
+      return;
+    }
+
+    if (indexChange < 0) {
+      setState({
+        ...state,
+        offset: (state.offset + indexChange) % 12,
+        startDate: state.startDate.add(indexChange, "days"),
+        endDate: state.endDate.add(indexChange, "days"),
+      });
+      return;
+    }
+  };
 
   // ================ Carousel Worklet ================ //
   const calculateClosestCardPosition = (position: number) => {
@@ -129,6 +187,10 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const handlePanEnd = (displacement: number) => {
     "worklet";
+
+    const change = Math.round(-displacement / FULL_CARD_WIDTH);
+    runOnJS(handleInfiniteData)(change);
+
     // Carousel
     const endX = cumulativeTranslationX.value + displacement;
     const endPosition = calculateClosestCardPosition(endX);
@@ -187,7 +249,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   return (
     <DayScrollContext.Provider
       value={{
-        data,
+        data: reorderData(fullInfoForDateRange, offset),
         constants,
         onBodyLayout,
         // Carousel
@@ -209,14 +271,38 @@ export const useDayScroll = () => {
   return React.useContext(DayScrollContext);
 };
 
-const generateDateArray = (startDate: Date, length: number) => {
-  const dates = [];
-  for (let i = 0; i < length; i++) {
-    const date = new Date(startDate);
-    date.setDate(date.getDate() + i);
-    dates.push({ date });
+const calculateFullInfoForDateRange = (startDate: Moment, endDate: Moment) => {
+  const loop = moment(startDate).startOf("day");
+  const dateArray = [];
+
+  while (loop <= endDate) {
+    const date = moment(loop.date(loop.date() + 1)).startOf("day");
+    dateArray.push({ date });
   }
-  return dates;
+  return dateArray;
 };
 
-const data = generateDateArray(new Date(), NUMBER_OF_BUTTONS);
+function useCalculateFullInfoForDateRange(startDate: Moment, endDate: Moment) {
+  return calculateFullInfoForDateRange(startDate, endDate);
+  // return React.useMemo(() => {
+  //   return calculateFullInfoForDateRange(startDate, endDate);
+  // }, [startDate, endDate]);
+}
+
+function reorderData(array: DayData[], offset = 0) {
+  const reorder = _.chunk(array, array.length / 2)
+    // .reverse()
+    .flat();
+
+  if (offset < 0) {
+    return [
+      ..._.takeRight(reorder, array.length - Math.abs(offset)),
+      ..._.take(reorder, Math.abs(offset)),
+    ];
+  }
+
+  return [
+    ..._.takeRight(reorder, offset),
+    ..._.take(reorder, array.length - offset),
+  ];
+}

@@ -1,3 +1,4 @@
+import { Moment } from "moment";
 import { months } from "../data/data";
 
 export type ValueOf<T> = T[keyof T];
@@ -44,4 +45,9 @@ export const formatDayMonth = (date: Date) => {
   const monthIndex = date.getMonth();
   const month = months[monthIndex];
   return `${day}\n${month}`;
+};
+
+export const formatMomentDayMonth = (date: Moment) => {
+  // `DD Month`
+  return `${date.format("DD")}\n${months[date.month()]}`;
 };

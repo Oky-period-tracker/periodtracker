@@ -5,7 +5,7 @@ import Animated from "react-native-reanimated";
 import Cloud from "../../../components/icons/Cloud";
 import { IconButton } from "../../../components/IconButton";
 import { useDayScroll } from "../DayScrollContext";
-import { formatDayMonth } from "../../../services/utils";
+import { formatMomentDayMonth } from "../../../services/utils";
 
 export const Wheel = () => {
   const {
@@ -22,7 +22,7 @@ export const Wheel = () => {
       <Animated.View style={[styles.container, wheelAnimatedStyle]}>
         {data.map((item, i) => {
           const position = calculateButtonPosition(i);
-          const text = formatDayMonth(item.date);
+          const text = formatMomentDayMonth(item.date);
 
           return (
             <Animated.View

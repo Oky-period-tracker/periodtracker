@@ -6,7 +6,7 @@ import { Star } from "./icons/Star";
 import { EmojiBadge } from "./EmojiBadge";
 import { IconButton } from "./IconButton";
 import { DayData, useDayScroll } from "../screens/MainScreen/DayScrollContext";
-import { formatDayMonth } from "../services/utils";
+import { formatMomentDayMonth } from "../services/utils";
 
 type DailyCardProps = {
   item: DayData;
@@ -34,7 +34,7 @@ export const DailyCard = ({ item, onPress }: DailyCardProps) => {
         <DisplayButton status={status} textStyle={styles.dayText}>
           {"Day N"}
         </DisplayButton>
-        <IconButton Icon={Cloud} text={formatDayMonth(item.date)} />
+        <IconButton Icon={Cloud} text={formatMomentDayMonth(item.date)} />
         <Star size={24} />
       </View>
 

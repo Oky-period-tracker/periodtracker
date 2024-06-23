@@ -5,17 +5,39 @@ import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
 import { fixupConfigRules } from "@eslint/compat";
 
 export default [
-  { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
-  { languageOptions: { globals: globals.browser } },
+  {
+    files: ["**/*.js"],
+    languageOptions: {
+      sourceType: "commonjs"
+    }
+  },
+  {
+    languageOptions: {
+      globals: globals.browser
+    }
+  },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
     files: ["**/*.jsx"],
-    languageOptions: { parserOptions: { ecmaFeatures: { jsx: true } } },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
+    }
   },
   ...fixupConfigRules(pluginReactConfig),
   {
     files: ["**/*.jsx", "**/*.tsx"],
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
+    },
     rules: {
       "react/prop-types": "off",
       "react/jsx-key": "off",
@@ -32,7 +54,16 @@ export default [
         imports must be sorted in correct order
         no excessive white space (set prettier rules or something?)
       */
-    },
+    }
   },
-  { ignores: [".expo"] },
+  {
+    settings: {
+      react: {
+        version: "detect" // Automatically detect the React version
+      }
+    }
+  },
+  {
+    ignores: [".expo"]
+  }
 ];

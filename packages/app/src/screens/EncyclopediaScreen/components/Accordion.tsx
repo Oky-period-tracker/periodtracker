@@ -19,7 +19,7 @@ export const Accordion = () => {
 };
 
 const AccordionItem = ({ categoryId }: { categoryId: string }) => {
-  //eslint-disable-next-line 
+  //eslint-disable-next-line
   const navigation = useNavigation() as any; // @TODO: Fixme
   const [expanded, toggleExpanded] = useToggle();
 
@@ -43,8 +43,8 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     <>
       <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
         <Text style={styles.categoryName}>{category.name}</Text>
-        <DisplayButton status={"basic"} style={styles.categoryEmoji} >
-          {category.tags.primary.emoji}
+        <DisplayButton status={"basic"} style={styles.categoryEmoji}>
+          <Text style={styles.emojiText}>{category.tags.primary.emoji}</Text>
         </DisplayButton>
       </TouchableOpacity>
       {expanded
@@ -101,5 +101,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 4,
     paddingHorizontal: 24,
+  },
+  emojiText: {
+    fontSize: 24,
   },
 });

@@ -1,17 +1,24 @@
+import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { useToggle } from "../../../hooks/useToggle";
 import { DisplayButton } from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useEncyclopedia } from "../EncyclopediaContext";
 import { SubCategory, data } from "../../../data/data";
-import React from "react";
 
-export const Accordion = () => {
+interface AccordionProps {
+  selectedCategories: string[];
+}
+
+export const Accordion: React.FC<AccordionProps> = ({ selectedCategories }) => {
   const { categoryIds } = useEncyclopedia();
+
+  const filteredCategoryIds =
+    selectedCategories.length > 0 ? selectedCategories : categoryIds;
 
   return (
     <>
-      {categoryIds.map((categoryId) => (
+      {filteredCategoryIds.map((categoryId) => (
         <AccordionItem key={categoryId} categoryId={categoryId} />
       ))}
     </>
@@ -37,7 +44,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
       },
       []
     );
-  }, [category, subcategoryIds, data.subCategories]);
+  }, [category, subcategoryIds]);
 
   return (
     <>
@@ -47,21 +54,20 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
           <Text style={styles.emojiText}>{category.tags.primary.emoji}</Text>
         </DisplayButton>
       </TouchableOpacity>
-      {expanded
-        ? subCategories.map((subcategory) => (
-            <TouchableOpacity
-              key={subcategory.id}
-              style={styles.subcategory}
-              onPress={() =>
-                navigation.navigate("Articles", {
-                  subcategoryId: subcategory.id,
-                })
-              }
-            >
-              <Text>{subcategory.name}</Text>
-            </TouchableOpacity>
-          ))
-        : null}
+      {expanded &&
+        subCategories.map((subcategory) => (
+          <TouchableOpacity
+            key={subcategory.id}
+            style={styles.subcategory}
+            onPress={() =>
+              navigation.navigate("Articles", {
+                subcategoryId: subcategory.id,
+              })
+            }
+          >
+            <Text>{subcategory.name}</Text>
+          </TouchableOpacity>
+        ))}
     </>
   );
 };

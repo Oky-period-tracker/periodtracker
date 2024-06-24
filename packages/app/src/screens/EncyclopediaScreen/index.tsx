@@ -1,8 +1,10 @@
 import * as React from "react";
+import { useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Accordion } from "./components/Accordion";
 import { Screen } from "../../components/Screen";
 import { HelpCard } from "./components/HelpCard";
+import { HorizontalScroll } from "./components/HorizontalScroll";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Input } from "../../components/Input";
 import { useEncyclopedia } from "./EncyclopediaContext";
@@ -14,6 +16,7 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
 }) => {
   const goToHelpScreen = () => navigation.navigate("Help");
 
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { query, setQuery } = useEncyclopedia();
 
   return (
@@ -21,6 +24,7 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
       >
         <HelpCard onPress={goToHelpScreen} />
         <View style={styles.searchContainer}>
@@ -40,7 +44,11 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
             </Button>
           )}
         </View>
-        <Accordion />
+        <HorizontalScroll
+          selectedCategories={selectedCategories}
+          setSelectedCategories={setSelectedCategories}
+        />
+        <Accordion selectedCategories={selectedCategories} />
       </ScrollView>
     </Screen>
   );
@@ -62,14 +70,13 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-
     justifyContent: "space-between",
     paddingTop: 8,
     marginBottom: 8,
     borderWidth: 1,
     height: 50,
     borderColor: "#ccc",
-    borderRadius: 30,
+    borderRadius: 12,
     backgroundColor: "#fff",
   },
   input: {

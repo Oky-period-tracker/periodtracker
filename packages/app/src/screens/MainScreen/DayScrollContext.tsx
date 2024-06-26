@@ -53,10 +53,12 @@ type DayScrollState = {
   startDate: Moment;
   endDate: Moment;
   currentIndex: number;
+  offset: number;
 };
 
+const RESET_DURATION = 8000;
 const SCROLL_SPEED_MULTIPLIER = 2;
-const SETTLE_DURATION = 500;
+const SETTLE_DURATION = 350;
 const SELECTED_SCALE = 1.2;
 const SPRING_CONFIG = {
   damping: 5,
@@ -77,6 +79,9 @@ const NUMBER_OF_BUTTONS = 12;
 const ANGLE_FULL_CIRCLE = 2 * Math.PI;
 const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS;
 const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH;
+
+const INITIAL_INDEX = NUMBER_OF_BUTTONS / 2;
+const INITIAL_X = -FULL_CARD_WIDTH * (NUMBER_OF_BUTTONS / 2);
 
 const constants: DayScrollConstants = {
   CARD_WIDTH,
@@ -116,19 +121,24 @@ const defaultValue: DayScrollContext = {
 
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue);
 
-const today = moment().startOf("day");
-const todayMinusSevenDays = moment(today.clone().add(-7, "days"));
-const todaysPlusFourDays = moment(today.clone().add(4, "days"));
+const getInitialState = () => {
+  const today = moment().startOf("day");
+  const todayMinusSevenDays = moment(today.clone().add(-7, "days"));
+  const todaysPlusFourDays = moment(today.clone().add(4, "days"));
 
-const initialState: DayScrollState = {
-  startDate: todayMinusSevenDays,
-  endDate: todaysPlusFourDays,
-  currentIndex: 0,
+  const initialState: DayScrollState = {
+    startDate: todayMinusSevenDays,
+    endDate: todaysPlusFourDays,
+    currentIndex: INITIAL_INDEX,
+    offset: 0,
+  };
+
+  return initialState;
 };
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   // ================ State ================ //
-  const [state, setState] = React.useState(initialState);
+  const [state, setState] = React.useState(getInitialState());
   const { startDate, endDate } = state;
 
   const handleInfiniteData = (indexChange: number) => {
@@ -136,11 +146,13 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       return;
     }
 
-    setState({
+    setState((current) => ({
       ...state,
-      startDate: state.startDate.add(indexChange, "days"),
-      endDate: state.endDate.add(indexChange, "days"),
-    });
+      startDate: current.startDate.add(indexChange, "days"),
+      endDate: current.endDate.add(indexChange, "days"),
+      currentIndex: current.currentIndex + indexChange,
+      offset: (current.offset + indexChange) % NUMBER_OF_BUTTONS,
+    }));
   };
 
   const fullInfoForDateRange = useCalculateFullInfoForDateRange(
@@ -159,31 +171,55 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const [dayModalVisible, toggleDayModal] = useToggle();
 
   // ================ Shared Values ================ //
-  const initialIndex = NUMBER_OF_BUTTONS / 2;
-  const selectedIndex = useSharedValue(initialIndex);
+  const selectedIndex = useSharedValue(INITIAL_INDEX);
   const selectedScale = useSharedValue(SELECTED_SCALE);
   const offset = useSharedValue(0);
   const totalOffset = useSharedValue(0);
   const disabled = useSharedValue(false);
+  const isActive = useSharedValue(false);
 
   // Carousel
-  const initialX = -FULL_CARD_WIDTH * (NUMBER_OF_BUTTONS / 2);
-  const translationX = useSharedValue(initialX);
-  const totalTranslationX = useSharedValue(initialX);
+  const translationX = useSharedValue(INITIAL_X);
+  const totalTranslationX = useSharedValue(INITIAL_X);
 
   // Wheel
   const rotationAngle = useSharedValue(0);
   const totalRotation = useSharedValue(0);
 
+  // Ensure scrolling doesn't lock
   React.useEffect(() => {
-    // Ensure scrolling doesn't lock
     runOnJS(() => {
       disabled.value = false;
     })();
   }, [state]);
 
-  const data = reorderData(fullInfoForDateRange, offset.value);
-  const selectedItem = data[selectedIndex.value];
+  React.useEffect(() => {
+    if (!isActive.value) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      selectedIndex.value = INITIAL_INDEX;
+      offset.value = 0;
+      totalOffset.value = 0;
+      disabled.value = false;
+      translationX.value = withTiming(INITIAL_X);
+      totalTranslationX.value = withTiming(INITIAL_X);
+      rotationAngle.value = withTiming(0);
+      totalRotation.value = withTiming(0);
+
+      setState(getInitialState());
+      isActive.value = false;
+    }, RESET_DURATION);
+
+    return () => {
+      isActive.value = false;
+      clearTimeout(timeout);
+    };
+  }, [state.currentIndex]);
+
+  const data = reorderData(fullInfoForDateRange, state.offset);
+  const selectedItem = data[state.currentIndex];
 
   // ================ Carousel Worklet ================ //
   const calculateClosestCardPosition = (position: number) => {
@@ -247,11 +283,12 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     }
 
     disabled.value = true;
+    isActive.value = true;
 
     const change = Math.round(-displacement / FULL_CARD_WIDTH);
     offset.value = (offset.value + change) % NUMBER_OF_BUTTONS;
     totalOffset.value = totalOffset.value + change;
-    selectedIndex.value = (initialIndex + offset.value) % NUMBER_OF_BUTTONS;
+    selectedIndex.value = (INITIAL_INDEX + offset.value) % NUMBER_OF_BUTTONS;
 
     // === Settle Carousel === //
     const endX = totalTranslationX.value + displacement;

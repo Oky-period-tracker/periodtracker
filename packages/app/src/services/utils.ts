@@ -48,6 +48,6 @@ export const formatDayMonth = (date: Date) => {
 };
 
 export const formatMomentDayMonth = (date: Moment) => {
-  // `DD Month`
-  return `${date.format("DD")}\n${months[date.month()]}`;
+  // `DD MMM`
+  return `${date.format("DD")}\n${date.format("MMM")}`;
 };

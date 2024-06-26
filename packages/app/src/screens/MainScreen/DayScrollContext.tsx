@@ -41,7 +41,7 @@ export type DayScrollContext = {
   calculateButtonPosition: (index: number) => { top: number; left: number };
   wheelPanGesture: PanGesture;
   wheelAnimatedStyle: AnimatedStyle;
-  wheelButtonAnimatedStyle: AnimatedStyle;
+  rotationAngle: SharedValue<number> | null;
 };
 
 type DayScrollState = {
@@ -98,7 +98,7 @@ const defaultValue: DayScrollContext = {
   // Wheel
   wheelPanGesture: Gesture.Pan(),
   wheelAnimatedStyle: {},
-  wheelButtonAnimatedStyle: {},
+  rotationAngle: null,
   calculateButtonPosition: () => {
     return {
       top: 0,
@@ -291,21 +291,12 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       handlePanEnd(-event.translationY * SCROLL_SPEED_MULTIPLIER);
     });
 
-  // ================ Animated Styles ================ //
+  // ================ Wheel Style ================ //
   const wheelAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ rotate: `${rotationAngle.value}rad` }],
       width: diameter,
       height: diameter,
-    };
-  });
-
-  const wheelButtonAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      // Buttons counter rotate to stay level
-      transform: [{ rotate: `${-rotationAngle.value}rad` }],
-      width: BUTTON_SIZE,
-      height: BUTTON_SIZE,
     };
   });
 
@@ -326,7 +317,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
         calculateButtonPosition,
         wheelPanGesture,
         wheelAnimatedStyle,
-        wheelButtonAnimatedStyle,
+        rotationAngle,
       }}
     >
       {children}

@@ -193,6 +193,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     })();
   }, [state]);
 
+  // Reset
   React.useEffect(() => {
     if (!isActive.value) {
       return;

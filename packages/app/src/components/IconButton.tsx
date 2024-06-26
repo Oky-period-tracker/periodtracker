@@ -7,6 +7,7 @@ type IconButtonProps = SvgIconProps & {
   onPress?: () => void;
   text?: string;
   textStyle?: TextStyle;
+  disabled?: boolean;
 };
 
 export const IconButton = ({
@@ -16,10 +17,14 @@ export const IconButton = ({
   text,
   textStyle,
   size = 80,
+  onPress,
+  disabled,
 }: IconButtonProps) => {
   return (
     <TouchableOpacity
       style={[styles.button, { width: size, height: size }, style]}
+      onPress={onPress}
+      disabled={disabled}
     >
       <Icon status={status} style={styles.icon} />
       <Text style={[styles.text, textStyle]}>{text}</Text>

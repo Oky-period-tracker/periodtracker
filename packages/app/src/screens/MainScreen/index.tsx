@@ -7,6 +7,7 @@ import { Wheel } from "./components/Wheel";
 import { useScreenDimensions } from "../../hooks/useScreenDimensions";
 import { Button } from "../../components/Button";
 import { DayScrollProvider, useDayScroll } from "./DayScrollContext";
+import { DayModal } from "../../components/DayModal";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   return (
@@ -17,11 +18,12 @@ const MainScreen: ScreenComponent<"Home"> = (props) => {
 };
 
 const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
-  const goToCalendar = () => navigation.navigate("Calendar");
+  const { selectedItem, onBodyLayout, dayModalVisible, toggleDayModal } =
+    useDayScroll();
 
   const { width } = useScreenDimensions();
 
-  const { onBodyLayout } = useDayScroll();
+  const goToCalendar = () => navigation.navigate("Calendar");
 
   return (
     <View style={styles.screen}>
@@ -41,6 +43,12 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
       <View style={styles.carouselContainer}>
         <Carousel />
       </View>
+
+      <DayModal
+        visible={dayModalVisible}
+        toggleVisible={toggleDayModal}
+        date={selectedItem?.date}
+      />
     </View>
   );
 };

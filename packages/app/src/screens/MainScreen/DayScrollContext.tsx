@@ -12,6 +12,7 @@ import {
   withSpring,
 } from "react-native-reanimated";
 import _ from "lodash";
+import { useToggle } from "../../hooks/useToggle";
 
 export type DayData = {
   date: Moment;
@@ -28,6 +29,7 @@ type DayScrollConstants = {
 
 export type DayScrollContext = {
   data: DayData[];
+  selectedItem: DayData | null;
   selectedIndex: SharedValue<number> | null;
   constants: DayScrollConstants;
   onBodyLayout: (event: LayoutChangeEvent) => void;
@@ -42,6 +44,9 @@ export type DayScrollContext = {
   wheelPanGesture: PanGesture;
   wheelAnimatedStyle: AnimatedStyle;
   rotationAngle: SharedValue<number> | null;
+  // Modal
+  dayModalVisible: boolean;
+  toggleDayModal: () => void;
 };
 
 type DayScrollState = {
@@ -84,11 +89,10 @@ const constants: DayScrollConstants = {
 
 const defaultValue: DayScrollContext = {
   data: [],
+  selectedItem: null,
   constants,
   selectedIndex: null,
-  onBodyLayout: () => {
-    //
-  },
+  onBodyLayout: () => {},
   // Carousel
   carouselPanGesture: Gesture.Pan(),
   translationX: null,
@@ -105,6 +109,9 @@ const defaultValue: DayScrollContext = {
       left: 0,
     };
   },
+  // Modal
+  dayModalVisible: false,
+  toggleDayModal: () => {},
 };
 
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue);
@@ -149,6 +156,8 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     setDiameter(height);
   };
 
+  const [dayModalVisible, toggleDayModal] = useToggle();
+
   // ================ Shared Values ================ //
   const initialIndex = NUMBER_OF_BUTTONS / 2;
   const selectedIndex = useSharedValue(initialIndex);
@@ -174,6 +183,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   }, [state]);
 
   const data = reorderData(fullInfoForDateRange, offset.value);
+  const selectedItem = data[selectedIndex.value];
 
   // ================ Carousel Worklet ================ //
   const calculateClosestCardPosition = (position: number) => {
@@ -304,6 +314,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     <DayScrollContext.Provider
       value={{
         data,
+        selectedItem,
         constants,
         selectedIndex,
         onBodyLayout,
@@ -318,6 +329,9 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
         wheelPanGesture,
         wheelAnimatedStyle,
         rotationAngle,
+        // Modal
+        dayModalVisible,
+        toggleDayModal,
       }}
     >
       {children}

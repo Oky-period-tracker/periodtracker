@@ -3,8 +3,18 @@ import { StyleSheet, Text, View } from "react-native";
 import { Modal, ModalProps } from "./Modal";
 import Cloud from "./icons/Cloud";
 import { IconButton } from "./IconButton";
+import { Moment } from "moment";
+import { formatMomentDayMonth } from "../services/utils";
 
-export const DayModal = ({ visible, toggleVisible }: ModalProps) => {
+export const DayModal = ({
+  date,
+  visible,
+  toggleVisible,
+}: { date?: Moment } & ModalProps) => {
+  if (!date) {
+    return null;
+  }
+
   const onYesPress = () => {
     // TODO:
   };
@@ -21,7 +31,12 @@ export const DayModal = ({ visible, toggleVisible }: ModalProps) => {
         period today?
       </Text>
 
-      <IconButton Icon={Cloud} size={160} text={"12 June"} status={"basic"} />
+      <IconButton
+        Icon={Cloud}
+        size={160}
+        text={formatMomentDayMonth(date)}
+        status={"basic"}
+      />
 
       <View style={styles.buttons} pointerEvents="box-none">
         <IconButton

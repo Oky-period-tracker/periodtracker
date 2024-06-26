@@ -28,12 +28,14 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
     rotationAngle,
     selectedIndex,
     selectedScale,
+    toggleDayModal,
   } = useDayScroll();
 
   const { BUTTON_SIZE } = constants;
 
   const position = calculateButtonPosition(index);
   const text = formatMomentDayMonth(item.date);
+  const isSelected = index === selectedIndex?.value;
 
   const wheelButtonAnimatedStyle = useAnimatedStyle(() => {
     if (
@@ -44,8 +46,9 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
       return {};
     }
 
-    const isSelected = index === selectedIndex.value;
-    const scale = isSelected ? selectedScale.value : 1;
+    const selected = index === selectedIndex?.value;
+
+    const scale = selected ? selectedScale.value : 1;
 
     return {
       // Buttons counter rotate to stay level
@@ -57,7 +60,13 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
 
   return (
     <Animated.View style={[styles.button, position, wheelButtonAnimatedStyle]}>
-      <IconButton size={BUTTON_SIZE} Icon={Cloud} text={text} />
+      <IconButton
+        size={BUTTON_SIZE}
+        Icon={Cloud}
+        text={text}
+        onPress={toggleDayModal}
+        disabled={!isSelected}
+      />
     </Animated.View>
   );
 };

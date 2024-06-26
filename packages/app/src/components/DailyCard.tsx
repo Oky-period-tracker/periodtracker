@@ -25,7 +25,6 @@ export const DailyCard = ({ item, onPress }: DailyCardProps) => {
         styles.card,
         {
           width: CARD_WIDTH,
-          margin: CARD_MARGIN,
           marginHorizontal: CARD_MARGIN / 2,
         },
       ]}
@@ -56,6 +55,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1.5,
     flexDirection: "column",
     padding: 12,
+    margin: 24,
   },
   top: {
     flex: 1,

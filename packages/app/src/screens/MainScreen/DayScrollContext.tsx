@@ -9,6 +9,7 @@ import {
   AnimatedStyle,
   runOnJS,
   SharedValue,
+  withSpring,
 } from "react-native-reanimated";
 import _ from "lodash";
 
@@ -16,21 +17,26 @@ export type DayData = {
   date: Moment;
 };
 
+type DayScrollConstants = {
+  CARD_WIDTH: number;
+  CARD_MARGIN: number;
+  FULL_CARD_WIDTH: number;
+  CARD_SCALED_DIFFERENCE: number;
+  BUTTON_SIZE: number;
+  NUMBER_OF_BUTTONS: number;
+};
+
 export type DayScrollContext = {
   data: DayData[];
-  constants: {
-    CARD_WIDTH: number;
-    CARD_MARGIN: number;
-    FULL_CARD_WIDTH: number;
-    BUTTON_SIZE: number;
-    NUMBER_OF_BUTTONS: number;
-  };
+  selectedIndex: SharedValue<number> | null;
+  constants: DayScrollConstants;
   onBodyLayout: (event: LayoutChangeEvent) => void;
   // Carousel
   carouselPanGesture: PanGesture;
   translationX: SharedValue<number> | null;
-  totalOffset: SharedValue<number> | null;
   offset: SharedValue<number> | null;
+  totalOffset: SharedValue<number> | null;
+  selectedScale: SharedValue<number> | null;
   // Wheel
   calculateButtonPosition: (index: number) => { top: number; left: number };
   wheelPanGesture: PanGesture;
@@ -44,10 +50,21 @@ type DayScrollState = {
   currentIndex: number;
 };
 
+const SCROLL_SPEED_MULTIPLIER = 2;
+const SETTLE_DURATION = 500;
+const SELECTED_SCALE = 1.2;
+const SPRING_CONFIG = {
+  damping: 5,
+  stiffness: 300,
+};
+
 // Carousel
-const CARD_WIDTH = 260;
-const CARD_MARGIN = 12;
+const CARD_WIDTH = 220;
+const CARD_MARGIN = 32;
 const FULL_CARD_WIDTH = CARD_WIDTH + CARD_MARGIN;
+const SELECTED_WIDTH = CARD_WIDTH * SELECTED_SCALE;
+const FULL_SELECTED_WIDTH = SELECTED_WIDTH + CARD_MARGIN;
+const CARD_SCALED_DIFFERENCE = FULL_SELECTED_WIDTH - FULL_CARD_WIDTH;
 
 // Wheel
 const BUTTON_SIZE = 80;
@@ -56,13 +73,11 @@ const ANGLE_FULL_CIRCLE = 2 * Math.PI;
 const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS;
 const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH;
 
-const SCROLL_SPEED_MULTIPLIER = 2;
-const SETTLE_DURATION = 500;
-
-const constants = {
+const constants: DayScrollConstants = {
   CARD_WIDTH,
   CARD_MARGIN,
   FULL_CARD_WIDTH,
+  CARD_SCALED_DIFFERENCE,
   BUTTON_SIZE,
   NUMBER_OF_BUTTONS,
 };
@@ -70,14 +85,16 @@ const constants = {
 const defaultValue: DayScrollContext = {
   data: [],
   constants,
+  selectedIndex: null,
   onBodyLayout: () => {
     //
   },
   // Carousel
   carouselPanGesture: Gesture.Pan(),
   translationX: null,
-  totalOffset: null,
   offset: null,
+  totalOffset: null,
+  selectedScale: null,
   // Wheel
   wheelPanGesture: Gesture.Pan(),
   wheelAnimatedStyle: {},
@@ -103,9 +120,21 @@ const initialState: DayScrollState = {
 };
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
+  // ================ State ================ //
   const [state, setState] = React.useState(initialState);
-
   const { startDate, endDate } = state;
+
+  const handleInfiniteData = (indexChange: number) => {
+    if (indexChange === 0) {
+      return;
+    }
+
+    setState({
+      ...state,
+      startDate: state.startDate.add(indexChange, "days"),
+      endDate: state.endDate.add(indexChange, "days"),
+    });
+  };
 
   const fullInfoForDateRange = useCalculateFullInfoForDateRange(
     startDate,
@@ -120,10 +149,13 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     setDiameter(height);
   };
 
-  // Shared Values
-  const disabled = useSharedValue(false);
+  // ================ Shared Values ================ //
+  const initialIndex = NUMBER_OF_BUTTONS / 2;
+  const selectedIndex = useSharedValue(initialIndex);
+  const selectedScale = useSharedValue(SELECTED_SCALE);
   const offset = useSharedValue(0);
   const totalOffset = useSharedValue(0);
+  const disabled = useSharedValue(false);
 
   // Carousel
   const initialX = -FULL_CARD_WIDTH * (NUMBER_OF_BUTTONS / 2);
@@ -134,23 +166,21 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const rotationAngle = useSharedValue(0);
   const totalRotation = useSharedValue(0);
 
-  const handleInfiniteData = (indexChange: number) => {
-    if (indexChange === 0) {
-      return;
-    }
+  React.useEffect(() => {
+    // Ensure scrolling doesn't lock
+    runOnJS(() => {
+      disabled.value = false;
+    })();
+  }, [state]);
 
-    setState({
-      ...state,
-      startDate: state.startDate.add(indexChange, "days"),
-      endDate: state.endDate.add(indexChange, "days"),
-    });
-  };
+  const data = reorderData(fullInfoForDateRange, offset.value);
 
   // ================ Carousel Worklet ================ //
   const calculateClosestCardPosition = (position: number) => {
     "worklet";
     const closestIndex = Math.round(position / FULL_CARD_WIDTH);
-    return closestIndex * FULL_CARD_WIDTH;
+    const closestPosition = closestIndex * FULL_CARD_WIDTH;
+    return closestPosition;
   };
 
   // ================ Wheel Worklets ================ //
@@ -176,6 +206,16 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   };
 
   // ================ Handle Gestures ================ //
+  const handlePanStart = () => {
+    "worklet";
+    if (disabled.value) {
+      return;
+    }
+
+    selectedIndex.value = -1;
+    selectedScale.value = 1;
+  };
+
   const handlePanUpdate = (displacement: number) => {
     "worklet";
     if (disabled.value) {
@@ -195,15 +235,21 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     if (disabled.value) {
       return;
     }
+
     disabled.value = true;
 
-    // Carousel
+    const change = Math.round(-displacement / FULL_CARD_WIDTH);
+    offset.value = (offset.value + change) % NUMBER_OF_BUTTONS;
+    totalOffset.value = totalOffset.value + change;
+    selectedIndex.value = (initialIndex + offset.value) % NUMBER_OF_BUTTONS;
+
+    // === Settle Carousel === //
     const endX = totalTranslationX.value + displacement;
     const endPosition = calculateClosestCardPosition(endX);
     translationX.value = withTiming(endPosition, { duration: SETTLE_DURATION });
     totalTranslationX.value = endPosition;
 
-    // Wheel
+    // === Settle Wheel === //
     const angle = calculateRotationAngle(displacement);
     const endAngle = calculateClosestSegmentAngle(totalRotation.value + angle);
     totalRotation.value = endAngle;
@@ -211,17 +257,24 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       endAngle,
       { duration: SETTLE_DURATION },
       () => {
-        const change = Math.round(-displacement / FULL_CARD_WIDTH);
-        totalOffset.value = totalOffset.value + change;
-        offset.value = (offset.value + change) % NUMBER_OF_BUTTONS;
-
-        runOnJS(handleInfiniteData)(change);
-        disabled.value = false;
+        // === Spring Scale === //
+        selectedScale.value = withSpring(
+          SELECTED_SCALE,
+          SPRING_CONFIG,
+          // === Finished - Update state === //
+          (finished) => {
+            if (finished) {
+              disabled.value = false;
+              runOnJS(handleInfiniteData)(change);
+            }
+          }
+        );
       }
     );
   };
 
   const carouselPanGesture = Gesture.Pan()
+    .onStart(handlePanStart)
     .onUpdate((event) => {
       handlePanUpdate(event.translationX);
     })
@@ -230,6 +283,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     });
 
   const wheelPanGesture = Gesture.Pan()
+    .onStart(handlePanStart)
     .onUpdate((event) => {
       handlePanUpdate(-event.translationY * SCROLL_SPEED_MULTIPLIER);
     })
@@ -258,14 +312,16 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   return (
     <DayScrollContext.Provider
       value={{
-        data: reorderData(fullInfoForDateRange, offset.value),
+        data,
         constants,
+        selectedIndex,
         onBodyLayout,
         // Carousel
         carouselPanGesture,
         translationX,
-        totalOffset,
         offset,
+        totalOffset,
+        selectedScale,
         // Wheel
         calculateButtonPosition,
         wheelPanGesture,

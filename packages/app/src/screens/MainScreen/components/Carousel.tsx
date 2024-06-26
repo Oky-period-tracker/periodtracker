@@ -6,11 +6,16 @@ import { DailyCard } from "../../../components/DailyCard";
 import { DayData, useDayScroll } from "../DayScrollContext";
 
 export const Carousel = () => {
-  const { data, carouselPanGesture } = useDayScroll();
+  const { data, carouselPanGesture, constants } = useDayScroll();
 
   return (
     <GestureDetector gesture={carouselPanGesture}>
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          { marginLeft: constants.CARD_SCALED_DIFFERENCE },
+        ]}
+      >
         {data.map((item, i) => {
           return <CarouselCard key={`${item}${i}`} index={i} item={item} />;
         })}
@@ -20,12 +25,25 @@ export const Carousel = () => {
 };
 
 const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
-  const { translationX, constants, totalOffset, offset } = useDayScroll();
+  const {
+    translationX,
+    constants,
+    offset,
+    totalOffset,
+    selectedScale,
+    selectedIndex,
+  } = useDayScroll();
 
   const { FULL_CARD_WIDTH, NUMBER_OF_BUTTONS } = constants;
 
   const carouselAnimatedStyle = useAnimatedStyle(() => {
-    if (offset === null || totalOffset === null || translationX === null) {
+    if (
+      offset === null ||
+      totalOffset === null ||
+      translationX === null ||
+      selectedScale === null ||
+      selectedIndex === null
+    ) {
       return {};
     }
 
@@ -39,8 +57,12 @@ const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
     const translateX =
       translationX.value + FULL_CARD_WIDTH * NUMBER_OF_BUTTONS * multiplier;
 
+    const isSelected = index === selectedIndex.value;
+    const scale = isSelected ? selectedScale.value : 1;
+
     return {
-      transform: [{ translateX }],
+      transform: [{ translateX }, { scale }],
+      zIndex: isSelected ? 2 : 1,
     };
   });
 

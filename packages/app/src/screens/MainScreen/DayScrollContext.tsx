@@ -8,6 +8,7 @@ import {
   withTiming,
   AnimatedStyle,
   runOnJS,
+  SharedValue,
 } from "react-native-reanimated";
 import _ from "lodash";
 
@@ -18,14 +19,18 @@ export type DayData = {
 export type DayScrollContext = {
   data: DayData[];
   constants: {
-    BUTTON_SIZE: number;
     CARD_WIDTH: number;
     CARD_MARGIN: number;
+    FULL_CARD_WIDTH: number;
+    BUTTON_SIZE: number;
+    NUMBER_OF_BUTTONS: number;
   };
   onBodyLayout: (event: LayoutChangeEvent) => void;
   // Carousel
   carouselPanGesture: PanGesture;
-  carouselAnimatedStyle: AnimatedStyle;
+  translationX: SharedValue<number> | null;
+  totalOffset: SharedValue<number> | null;
+  offset: SharedValue<number> | null;
   // Wheel
   calculateButtonPosition: (index: number) => { top: number; left: number };
   wheelPanGesture: PanGesture;
@@ -36,9 +41,7 @@ export type DayScrollContext = {
 type DayScrollState = {
   startDate: Moment;
   endDate: Moment;
-  offset: number;
   currentIndex: number;
-  page: number;
 };
 
 // Carousel
@@ -57,9 +60,11 @@ const SCROLL_SPEED_MULTIPLIER = 2;
 const SETTLE_DURATION = 500;
 
 const constants = {
-  BUTTON_SIZE,
   CARD_WIDTH,
   CARD_MARGIN,
+  FULL_CARD_WIDTH,
+  BUTTON_SIZE,
+  NUMBER_OF_BUTTONS,
 };
 
 const defaultValue: DayScrollContext = {
@@ -70,7 +75,9 @@ const defaultValue: DayScrollContext = {
   },
   // Carousel
   carouselPanGesture: Gesture.Pan(),
-  carouselAnimatedStyle: {},
+  translationX: null,
+  totalOffset: null,
+  offset: null,
   // Wheel
   wheelPanGesture: Gesture.Pan(),
   wheelAnimatedStyle: {},
@@ -92,15 +99,13 @@ const todaysPlusFourDays = moment(today.clone().add(4, "days"));
 const initialState: DayScrollState = {
   startDate: todayMinusSevenDays,
   endDate: todaysPlusFourDays,
-  offset: 0,
   currentIndex: 0,
-  page: 0,
 };
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const [state, setState] = React.useState(initialState);
 
-  const { startDate, endDate, offset /* currentIndex, page  */ } = state;
+  const { startDate, endDate } = state;
 
   const fullInfoForDateRange = useCalculateFullInfoForDateRange(
     startDate,
@@ -114,6 +119,10 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     const { height } = event.nativeEvent.layout;
     setDiameter(height);
   };
+
+  // Shared Values
+  const offset = useSharedValue(0);
+  const totalOffset = useSharedValue(0);
 
   // Carousel
   const initialX = -FULL_CARD_WIDTH * (NUMBER_OF_BUTTONS / 2);
@@ -131,7 +140,6 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
     setState({
       ...state,
-      offset: (state.offset + indexChange) % NUMBER_OF_BUTTONS,
       startDate: state.startDate.add(indexChange, "days"),
       endDate: state.endDate.add(indexChange, "days"),
     });
@@ -179,10 +187,6 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const handlePanEnd = (displacement: number) => {
     "worklet";
-
-    const change = Math.round(-displacement / FULL_CARD_WIDTH);
-    runOnJS(handleInfiniteData)(change);
-
     // Carousel
     const endX = totalTranslationX.value + displacement;
     const endPosition = calculateClosestCardPosition(endX);
@@ -193,7 +197,17 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     const angle = calculateRotationAngle(displacement);
     const endAngle = calculateClosestSegmentAngle(totalRotation.value + angle);
     totalRotation.value = endAngle;
-    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION });
+    rotationAngle.value = withTiming(
+      endAngle,
+      { duration: SETTLE_DURATION },
+      () => {
+        const change = Math.round(-displacement / FULL_CARD_WIDTH);
+        totalOffset.value = totalOffset.value + change;
+        offset.value = (offset.value + change) % NUMBER_OF_BUTTONS;
+
+        runOnJS(handleInfiniteData)(change);
+      }
+    );
   };
 
   const carouselPanGesture = Gesture.Pan()
@@ -230,21 +244,17 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     };
   });
 
-  const carouselAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: translationX.value }],
-    };
-  });
-
   return (
     <DayScrollContext.Provider
       value={{
-        data: reorderData(fullInfoForDateRange, offset),
+        data: reorderData(fullInfoForDateRange, offset.value),
         constants,
         onBodyLayout,
         // Carousel
         carouselPanGesture,
-        carouselAnimatedStyle,
+        translationX,
+        totalOffset,
+        offset,
         // Wheel
         calculateButtonPosition,
         wheelPanGesture,
@@ -280,9 +290,7 @@ function useCalculateFullInfoForDateRange(startDate: Moment, endDate: Moment) {
 }
 
 function reorderData(array: DayData[], offset = 0) {
-  const reorder = _.chunk(array, array.length / 2)
-    // .reverse()
-    .flat();
+  const reorder = _.chunk(array, array.length / 2).flat();
 
   if (offset < 0) {
     return [

@@ -36,6 +36,8 @@ const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
 
   const { FULL_CARD_WIDTH, NUMBER_OF_BUTTONS } = constants;
 
+  const isSelected = index === selectedIndex?.value;
+
   const carouselAnimatedStyle = useAnimatedStyle(() => {
     if (
       offset === null ||
@@ -47,6 +49,8 @@ const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
       return {};
     }
 
+    const selected = index === selectedIndex?.value;
+
     const shouldMove =
       index <
       (offset.value < 0 ? NUMBER_OF_BUTTONS + offset.value : offset.value)
@@ -57,12 +61,11 @@ const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
     const translateX =
       translationX.value + FULL_CARD_WIDTH * NUMBER_OF_BUTTONS * multiplier;
 
-    const isSelected = index === selectedIndex.value;
-    const scale = isSelected ? selectedScale.value : 1;
+    const scale = selected ? selectedScale.value : 1;
 
     return {
       transform: [{ translateX }, { scale }],
-      zIndex: isSelected ? 2 : 1,
+      zIndex: selected ? 2 : 1,
     };
   });
 
@@ -73,6 +76,7 @@ const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
         onPress={() => {
           //
         }}
+        disabled={!isSelected}
       />
     </Animated.View>
   );

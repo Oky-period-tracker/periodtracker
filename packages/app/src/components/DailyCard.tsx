@@ -11,9 +11,10 @@ import { formatMomentDayMonth } from "../services/utils";
 type DailyCardProps = {
   item: DayData;
   onPress: () => void;
+  disabled?: boolean;
 };
 
-export const DailyCard = ({ item, onPress }: DailyCardProps) => {
+export const DailyCard = ({ item, onPress, disabled }: DailyCardProps) => {
   const { constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
   const status = "neutral";
@@ -21,6 +22,7 @@ export const DailyCard = ({ item, onPress }: DailyCardProps) => {
   return (
     <TouchableOpacity
       onPress={onPress}
+      disabled={disabled}
       style={[
         styles.card,
         {

@@ -4,16 +4,27 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import Cloud from "../../../components/icons/Cloud";
 import { IconButton } from "../../../components/IconButton";
-import { useDayScroll } from "../DayScrollContext";
+import { DayData, useDayScroll } from "../DayScrollContext";
 import { formatMomentDayMonth } from "../../../services/utils";
 
 export const Wheel = () => {
+  const { data, wheelPanGesture, wheelAnimatedStyle } = useDayScroll();
+
+  return (
+    <GestureDetector gesture={wheelPanGesture}>
+      <Animated.View style={[styles.container, wheelAnimatedStyle]}>
+        {data.map((item, index) => (
+          <WheelButton key={`wheel-button-${index}`} {...{ item, index }} />
+        ))}
+      </Animated.View>
+    </GestureDetector>
+  );
+};
+
+const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
   const {
-    data,
     constants,
     calculateButtonPosition,
-    wheelPanGesture,
-    wheelAnimatedStyle,
     rotationAngle,
     selectedIndex,
     selectedScale,
@@ -21,44 +32,33 @@ export const Wheel = () => {
 
   const { BUTTON_SIZE } = constants;
 
+  const position = calculateButtonPosition(index);
+  const text = formatMomentDayMonth(item.date);
+
+  const wheelButtonAnimatedStyle = useAnimatedStyle(() => {
+    if (
+      rotationAngle === null ||
+      selectedScale === null ||
+      selectedIndex === null
+    ) {
+      return {};
+    }
+
+    const isSelected = index === selectedIndex.value;
+    const scale = isSelected ? selectedScale.value : 1;
+
+    return {
+      // Buttons counter rotate to stay level
+      transform: [{ rotate: `${-rotationAngle.value}rad` }, { scale }],
+      width: BUTTON_SIZE,
+      height: BUTTON_SIZE,
+    };
+  });
+
   return (
-    <GestureDetector gesture={wheelPanGesture}>
-      <Animated.View style={[styles.container, wheelAnimatedStyle]}>
-        {data.map((item, index) => {
-          const position = calculateButtonPosition(index);
-          const text = formatMomentDayMonth(item.date);
-
-          const wheelButtonAnimatedStyle = useAnimatedStyle(() => {
-            if (
-              rotationAngle === null ||
-              selectedScale === null ||
-              selectedIndex === null
-            ) {
-              return {};
-            }
-
-            const isSelected = index === selectedIndex.value;
-            const scale = isSelected ? selectedScale.value : 1;
-
-            return {
-              // Buttons counter rotate to stay level
-              transform: [{ rotate: `${-rotationAngle.value}rad` }, { scale }],
-              width: BUTTON_SIZE,
-              height: BUTTON_SIZE,
-            };
-          });
-
-          return (
-            <Animated.View
-              key={`wheel-button-${index}`}
-              style={[styles.button, position, wheelButtonAnimatedStyle]}
-            >
-              <IconButton size={BUTTON_SIZE} Icon={Cloud} text={text} />
-            </Animated.View>
-          );
-        })}
-      </Animated.View>
-    </GestureDetector>
+    <Animated.View style={[styles.button, position, wheelButtonAnimatedStyle]}>
+      <IconButton size={BUTTON_SIZE} Icon={Cloud} text={text} />
+    </Animated.View>
   );
 };
 

@@ -121,6 +121,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   };
 
   // Shared Values
+  const disabled = useSharedValue(false);
   const offset = useSharedValue(0);
   const totalOffset = useSharedValue(0);
 
@@ -177,6 +178,10 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   // ================ Handle Gestures ================ //
   const handlePanUpdate = (displacement: number) => {
     "worklet";
+    if (disabled.value) {
+      return;
+    }
+
     // Carousel
     translationX.value = totalTranslationX.value + displacement;
 
@@ -187,6 +192,11 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const handlePanEnd = (displacement: number) => {
     "worklet";
+    if (disabled.value) {
+      return;
+    }
+    disabled.value = true;
+
     // Carousel
     const endX = totalTranslationX.value + displacement;
     const endPosition = calculateClosestCardPosition(endX);
@@ -206,6 +216,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
         offset.value = (offset.value + change) % NUMBER_OF_BUTTONS;
 
         runOnJS(handleInfiniteData)(change);
+        disabled.value = false;
       }
     );
   };

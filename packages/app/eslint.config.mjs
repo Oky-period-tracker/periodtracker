@@ -66,4 +66,5 @@ export default [
   {
     ignores: [".expo"]
   }
+  { ignores: [".expo", "android", "ios"] },
 ];

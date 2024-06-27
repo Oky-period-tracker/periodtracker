@@ -1,9 +1,9 @@
-import { createStore, combineReducers } from "redux";
+import { createStore } from "redux";
 import { persistStore, persistReducer } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import appReducer from "./reducers/appReducer";
 import { encryptTransform } from "redux-persist-transform-encrypt";
 import { config } from "./config";
+import { rootReducer } from "./reducers";
 
 const encryptor = encryptTransform({
   secretKey: config.REDUX_ENCRYPT_KEY,
@@ -12,20 +12,20 @@ const encryptor = encryptTransform({
   },
 });
 
+export const version = -1;
+
 const persistConfig = {
+  version,
   key: "primary",
   storage: AsyncStorage,
   transforms: [encryptor],
 };
 
-const rootReducer = combineReducers({
-  app: appReducer,
-});
-
-// @ts-expect-error TODO: redux
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = createStore(persistedReducer);
 const persistor = persistStore(store);
 
 export { store, persistor };
+
+export type ReduxState = ReturnType<typeof rootReducer>;

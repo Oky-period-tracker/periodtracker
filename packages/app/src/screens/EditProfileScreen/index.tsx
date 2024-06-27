@@ -4,16 +4,15 @@ import { Screen } from "../../components/Screen";
 import { Button, DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ScreenComponent } from "../../navigation/RootNavigator";
-import { useSelector, useDispatch } from "react-redux";
-import { setName } from "../../redux/reducers/appReducer";
+import { useSelector } from "react-redux";
 
 const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
   // @ts-expect-error TODO
   const name = useSelector((state) => state.app?.name);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const onChangeText = (value: string) => {
-    dispatch(setName(value));
+  const onChangeText = (/* value: string */) => {
+    // dispatch(setName(value));
   };
 
   const [tempName, setTempName] = React.useState("bum");

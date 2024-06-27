@@ -8,13 +8,13 @@ export default [
   {
     files: ["**/*.js"],
     languageOptions: {
-      sourceType: "commonjs"
-    }
+      sourceType: "commonjs",
+    },
   },
   {
     languageOptions: {
-      globals: globals.browser
-    }
+      globals: globals.browser,
+    },
   },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
@@ -23,10 +23,10 @@ export default [
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
-          jsx: true
-        }
-      }
-    }
+          jsx: true,
+        },
+      },
+    },
   },
   ...fixupConfigRules(pluginReactConfig),
   {
@@ -34,9 +34,9 @@ export default [
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
-          jsx: true
-        }
-      }
+          jsx: true,
+        },
+      },
     },
     rules: {
       "react/prop-types": "off",
@@ -54,17 +54,22 @@ export default [
         imports must be sorted in correct order
         no excessive white space (set prettier rules or something?)
       */
-    }
+    },
   },
   {
     settings: {
       react: {
-        version: "detect" // Automatically detect the React version
-      }
-    }
+        version: "detect", // Automatically detect the React version
+      },
+    },
   },
   {
-    ignores: [".expo"]
-  }
-  { ignores: [".expo", "android", "ios"] },
+    ignores: [
+      ".expo",
+      "android",
+      "ios",
+      "src/prediction/*", // TODO:
+      "src/core/*", // TODO:
+    ],
+  },
 ];

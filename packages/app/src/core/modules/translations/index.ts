@@ -1,0 +1,13 @@
+export type Locale = 'en' | 'ph'
+export const defaultLocale: Locale = 'en'
+
+export * from './app'
+export * from './calendar'
+export * from './cms'
+export * from './content'
+export * from './contentLive'
+export * from './countries'
+export * from './locales'
+export * from './provinces'
+export * from './themes'
+export * from './helpCenter'

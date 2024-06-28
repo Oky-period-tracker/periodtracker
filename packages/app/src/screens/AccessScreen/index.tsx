@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as Sharing from "expo-sharing";
 import { View, StyleSheet } from "react-native";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
@@ -6,6 +7,9 @@ import { ScreenComponent } from "../../navigation/RootNavigator";
 import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
 import { Button } from "../../components/Button";
 import { LanguageSelector } from "../../components/LanguageSelector";
+import { shareApp } from "../../redux/actions";
+import { useDispatch } from "react-redux";
+import { WEBSITE_URL } from "../../config/env";
 
 const AccessScreen: ScreenComponent<"Access"> = () => {
   const rows: TouchableRowProps[] = [
@@ -48,7 +52,22 @@ const LaunchButton = () => {
 };
 
 const ShareButton = () => {
-  return <Button>Share</Button>;
+  const dispatch = useDispatch();
+
+  const shareLink = () => {
+    if (!Sharing.isAvailableAsync()) {
+      return;
+    }
+
+    dispatch(shareApp());
+
+    Sharing.shareAsync(WEBSITE_URL, {
+      dialogTitle: "join_oky_message",
+      // translate('join_oky_message'), // TODO:
+    });
+  };
+
+  return <Button onPress={shareLink}>Share</Button>;
 };
 
 export default AccessScreen;

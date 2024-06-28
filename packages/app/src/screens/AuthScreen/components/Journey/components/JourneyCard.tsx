@@ -26,6 +26,10 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
   };
 
   const onConfirm = () => {
+    if (step === "first_period" && !state.isActive) {
+      dispatch({ type: "skip" });
+    }
+
     dispatch({ type: "continue" });
   };
 

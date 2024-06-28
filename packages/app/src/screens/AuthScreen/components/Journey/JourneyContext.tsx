@@ -1,8 +1,4 @@
 import React from "react";
-import { journeyCompletion } from "../../../../redux/actions";
-import { useDispatch } from "react-redux";
-import { useAuth } from "../../../../contexts/AuthContext";
-import moment from "moment";
 
 export type JourneyStep =
   | "first_period"
@@ -92,33 +88,6 @@ export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   const step = journeySteps[state.stepIndex];
-
-  const reduxDispatch = useDispatch();
-
-  const { setIsLoggedIn } = useAuth();
-
-  // Finish
-  React.useEffect(() => {
-    if (step || !state.periodLength || !state.cycleLength) {
-      return;
-    }
-
-    const periodLength = parseInt(state.periodLength);
-    const cycleLengthDays = parseInt(state.cycleLength) * 7;
-    const cycleLength = cycleLengthDays + periodLength;
-
-    const answers = {
-      isActive: state.isActive,
-      startDate: moment(state.startDate, "DD-MMM-YYYY"),
-      periodLength,
-      cycleLength,
-    };
-
-    reduxDispatch(journeyCompletion(answers));
-
-    // TODO: wait for success
-    setIsLoggedIn(true);
-  }, [step]);
 
   return (
     <JourneyContext.Provider

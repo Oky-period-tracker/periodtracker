@@ -5,6 +5,10 @@ import { useJourney, journeySteps, getAnswerForStep } from "../JourneyContext";
 import { Hr } from "../../../../../components/Hr";
 import { journeyConfig } from "../journeyConfig";
 import { DisplayButton } from "../../../../../components/Button";
+import { useDispatch } from "react-redux";
+import moment from "moment";
+import { journeyCompletion } from "../../../../../redux/actions";
+import { useAuth } from "../../../../../contexts/AuthContext";
 
 export const JourneyReview = () => {
   const { state, dispatch } = useJourney();
@@ -13,8 +17,29 @@ export const JourneyReview = () => {
     dispatch({ type: "stepIndex", value });
   };
 
+  const reduxDispatch = useDispatch();
+  const { setIsLoggedIn } = useAuth();
+
   const onConfirm = () => {
-    // TODO:
+    if (!state.periodLength || !state.cycleLength) {
+      return;
+    }
+
+    const periodLength = parseInt(state.periodLength);
+    const cycleLengthDays = parseInt(state.cycleLength) * 7;
+    const cycleLength = cycleLengthDays + periodLength;
+
+    const answers = {
+      isActive: state.isActive,
+      startDate: moment(state.startDate, "DD-MMM-YYYY"),
+      periodLength,
+      cycleLength,
+    };
+
+    reduxDispatch(journeyCompletion(answers));
+
+    // TODO: wait for success
+    setIsLoggedIn(true);
   };
 
   return (

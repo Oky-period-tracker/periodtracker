@@ -1,12 +1,13 @@
 import * as React from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import { data } from "../../data/data";
 import { InfoDisplay } from "../../components/InfoDisplay";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { useSelector } from "../../redux/useSelector";
+import { termsAndConditionsContent } from "../../redux/selectors";
 
 const TermsScreen: ScreenComponent<"Terms"> = () => {
-  const content = data.termsAndConditions;
+  const content = useSelector(termsAndConditionsContent);
 
   return (
     <Screen>

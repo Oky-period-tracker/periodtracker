@@ -166,10 +166,10 @@ function* onCreateAccountSuccess(
 function* onDeleteAccountRequest(
   action: ExtractActionFromActionType<"DELETE_ACCOUNT_REQUEST">
 ) {
-  const { setLoading } = action.payload;
+  // const { setLoading } = action.payload;
   const state: ReduxState = yield select();
   const user = selectors.currentUserSelector(state);
-  setLoading(true);
+  // setLoading(true);
   try {
     const { name, password } = action.payload;
     yield httpClient.deleteUserFromPassword({
@@ -192,7 +192,7 @@ function* onDeleteAccountRequest(
       yield put(actions.logout());
     }
   } catch (err) {
-    setLoading(false);
+    // setLoading(false);
     Alert.alert("Error", "Unable to delete the account");
   }
 }

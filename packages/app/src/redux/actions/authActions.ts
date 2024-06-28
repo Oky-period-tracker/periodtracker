@@ -32,11 +32,11 @@ export function createAccountRequest(payload: User) {
 }
 
 // @ts-expect-error TODO:
-export function deleteAccountRequest({ name, password, setLoading }) {
+export function deleteAccountRequest({ name, password /* , setLoading */ }) {
   return createAction("DELETE_ACCOUNT_REQUEST", {
     name,
     password,
-    setLoading,
+    // setLoading,
   });
 }
 

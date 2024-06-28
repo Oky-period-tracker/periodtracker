@@ -3,11 +3,23 @@ import { StyleSheet, Text, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Button } from "../../../components/Button";
 import { useAuthMode } from "../AuthModeContext";
+import { useDispatch } from "react-redux";
+import { useSelector } from "../../../redux/useSelector";
+import { currentUserSelector } from "../../../redux/selectors";
+import { logoutRequest } from "../../../redux/actions";
 
 export const AuthHeader = ({ title }: { title: string }) => {
-  // TODO: If already logged in, clear redux user state on X press
+  const user = useSelector(currentUserSelector);
+  const dispatch = useDispatch();
   const { setAuthMode } = useAuthMode();
-  const onClose = () => setAuthMode("start");
+
+  const onClose = () => {
+    if (user) {
+      dispatch(logoutRequest());
+    }
+
+    setAuthMode("start");
+  };
 
   return (
     <View style={styles.header}>

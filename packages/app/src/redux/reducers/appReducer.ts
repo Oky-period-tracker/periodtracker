@@ -24,7 +24,7 @@ export interface AppState {
   hasOpened: boolean;
   isTutorialOneActive: boolean;
   isTutorialTwoActive: boolean;
-  isLoginPasswordActive: boolean;
+  isLoginPasswordActive: boolean; // @deprecated
   isTtsActive: boolean;
   isFuturePredictionActive: boolean;
   theme: ThemeName;

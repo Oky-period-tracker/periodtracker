@@ -4,19 +4,26 @@ import { AuthHeader } from "./AuthHeader";
 import { Hr } from "../../../components/Hr";
 import { Input } from "../../../components/Input";
 import { ErrorText } from "../../../components/ErrorText";
-
-type RequestStatus = "unknown" | "success" | "fail";
+import { useSelector } from "../../../redux/useSelector";
+import { authError, currentUserSelector } from "../../../redux/selectors";
+import { useAuth } from "../../../contexts/AuthContext";
+import { formatPassword } from "../../../services/auth";
+import { useDispatch } from "react-redux";
+import { loginRequest } from "../../../redux/actions";
 
 export const LogIn = () => {
-  // TODO: if already logged in, use redux state for initial name state (and disable name input?), and don't send HTTP request
-  const [name, setName] = React.useState("");
+  const user = useSelector(currentUserSelector);
+  const dispatch = useDispatch();
+  const { setIsLoggedIn } = useAuth();
+
+  const [name, setName] = React.useState(user ? user.name : "");
   const [password, setPassword] = React.useState("");
 
+  const reduxAuthError = useSelector(authError);
   const [errorsVisible, setErrorsVisible] = React.useState(false);
   const { errors } = validateCredentials(name, password);
 
-  const [requestStatus, setRequestStatus] =
-    React.useState<RequestStatus>("unknown");
+  const [success, setSuccess] = React.useState<boolean | null>(null);
 
   const onConfirm = () => {
     if (errors.length) {
@@ -24,9 +31,24 @@ export const LogIn = () => {
       return;
     }
 
-    // TODO:
-    setRequestStatus("fail");
+    if (user) {
+      const formattedPassword = formatPassword(password);
+      const success = user.password === formattedPassword;
+      if (success) {
+        setIsLoggedIn(true);
+        return;
+      }
+
+      // TODO: Set redux state instead of local state ? Or make ErrorProvider
+      // dispatch(setAuthError({ error: errorStatusCode }))
+      setSuccess(false);
+      return;
+    }
+
+    dispatch(loginRequest({ name, password: formatPassword(password) }));
   };
+
+  React.useEffect(() => {}, []);
 
   return (
     <>
@@ -39,6 +61,7 @@ export const LogIn = () => {
           errors={errors}
           errorKey={"name_too_short"}
           errorsVisible={errorsVisible}
+          editable={!user}
         />
         <Input
           value={password}
@@ -49,9 +72,10 @@ export const LogIn = () => {
           errorKey={"password_too_short"}
           errorsVisible={errorsVisible}
         />
-        {requestStatus === "fail" && (
+        {success === false && (
           <ErrorText>Incorrect username or password</ErrorText>
         )}
+        {reduxAuthError && <ErrorText>{reduxAuthError}</ErrorText>}
       </View>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>

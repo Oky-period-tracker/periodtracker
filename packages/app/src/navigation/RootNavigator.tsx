@@ -14,6 +14,9 @@ import { SettingsStackParamList } from "./stacks/SettingsStack";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import MainNavigator, { MainStackParamList } from "./MainNavigator";
 import AuthStack, { AuthStackParamList } from "./stacks/AuthStack";
+import { useSelector } from "../redux/useSelector";
+import { currentUserSelector } from "../redux/selectors";
+import { useAuth } from "../contexts/AuthContext";
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList;
 
@@ -109,13 +112,16 @@ const theme: Theme = {
 };
 
 function RootNavigator() {
-  const isLoggedIn = true; // TODO:
+  const user = useSelector(currentUserSelector);
+  const { isLoggedIn } = useAuth();
 
-  const linking = isLoggedIn ? loggedInLinking : loggedOutLinking;
+  const hasAccess = user && isLoggedIn;
+
+  const linking = hasAccess ? loggedInLinking : loggedOutLinking;
 
   return (
     <NavigationContainer linking={linking} theme={theme}>
-      {isLoggedIn ? <MainNavigator /> : <AuthStack />}  
+      {hasAccess ? <MainNavigator /> : <AuthStack />}
     </NavigationContainer>
   );
 }

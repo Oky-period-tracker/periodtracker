@@ -1,4 +1,6 @@
 import React from "react";
+import { useSelector } from "../../redux/useSelector";
+import { currentUserSelector, hasOpenedSelector } from "../../redux/selectors";
 
 export type AuthMode =
   | "welcome"
@@ -25,7 +27,10 @@ const defaultValue: AuthModeContext = {
 const AuthContext = React.createContext<AuthModeContext>(defaultValue);
 
 export const AuthModeProvider = ({ children }: React.PropsWithChildren) => {
-  const initialState = "welcome"; // TODO: based on redux state
+  const user = useSelector(currentUserSelector);
+  const hasOpened = useSelector(hasOpenedSelector);
+
+  const initialState = !hasOpened ? "welcome" : user ? "log_in" : "start";
   const [authMode, setAuthMode] = React.useState<AuthMode>(initialState);
 
   return (

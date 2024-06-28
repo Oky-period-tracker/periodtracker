@@ -7,8 +7,35 @@ import { ScreenComponent } from "../../navigation/RootNavigator";
 import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Switch } from "../../components/Switch";
+import { useDispatch } from "react-redux";
+import { deleteAccountRequest, logoutRequest } from "../../redux/actions";
+import { useAuth } from "../../contexts/AuthContext";
+import { useSelector } from "../../redux/useSelector";
+import { currentUserSelector } from "../../redux/selectors";
 
 const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
+  const currentUser = useSelector(currentUserSelector);
+  const dispatch = useDispatch();
+  const { setIsLoggedIn } = useAuth();
+
+  const logOut = () => {
+    dispatch(logoutRequest());
+    setIsLoggedIn(false);
+  };
+
+  const deleteAccount = () => {
+    if (!currentUser) {
+      return;
+    }
+    dispatch(
+      deleteAccountRequest({
+        name: currentUser.name,
+        password: currentUser.password,
+        // setLoading,
+      })
+    );
+  };
+
   const rows: TouchableRowProps[] = [
     {
       title: "About",
@@ -59,10 +86,14 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button status={"secondary"} style={styles.button}>
+        <Button onPress={logOut} status={"secondary"} style={styles.button}>
           Log out
         </Button>
-        <Button status={"basic"} style={[styles.button, styles.deleteButton]}>
+        <Button
+          onPress={deleteAccount}
+          status={"basic"}
+          style={[styles.button, styles.deleteButton]}
+        >
           Delete Account
         </Button>
         <Button

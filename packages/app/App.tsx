@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { EncyclopediaProvider } from "./src/screens/EncyclopediaScreen/EncyclopediaContext";
 import { ResponsiveProvider } from "./src/contexts/ResponsiveContext";
 import { PredictionProvider } from "./src/contexts/PredictionProvider";
+import { AuthProvider } from "./src/contexts/AuthContext";
 
 function App() {
   useOrientationLock();
@@ -20,15 +21,17 @@ function App() {
       <GestureHandlerRootView>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <PredictionProvider>
-              <Background>
-                <ResponsiveProvider>
-                  <EncyclopediaProvider>
-                    <RootNavigator />
-                  </EncyclopediaProvider>
-                </ResponsiveProvider>
-              </Background>
-            </PredictionProvider>
+            <AuthProvider>
+              <PredictionProvider>
+                <Background>
+                  <ResponsiveProvider>
+                    <EncyclopediaProvider>
+                      <RootNavigator />
+                    </EncyclopediaProvider>
+                  </ResponsiveProvider>
+                </Background>
+              </PredictionProvider>
+            </AuthProvider>
           </PersistGate>
         </Provider>
       </GestureHandlerRootView>

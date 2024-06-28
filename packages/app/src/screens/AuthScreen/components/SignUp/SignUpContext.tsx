@@ -2,6 +2,11 @@ import React from "react";
 import { User } from "../../../../types";
 import { FAST_SIGN_UP } from "../../../../config/env";
 import { useAuthMode } from "../../AuthModeContext";
+import { useDispatch } from "react-redux";
+import { createAccountRequest } from "../../../../redux/actions";
+import { formatPassword } from "../../../../services/auth";
+import { uuidv4 } from "../../../../services/uuid";
+import moment from "moment";
 
 export type SignUpStep =
   | "confirmation"
@@ -278,11 +283,38 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
 
   const { setAuthMode } = useAuthMode();
 
+  const reduxDispatch = useDispatch();
+
   // Finish
   React.useEffect(() => {
-    if (!step) {
-      setAuthMode("avatar_and_theme");
+    if (step) {
+      return;
     }
+
+    if (!state.country || !state.province) {
+      // TODO: ERROR
+      return;
+    }
+
+    const user = {
+      id: uuidv4(),
+      name: state.name,
+      password: formatPassword(state.password),
+      secretQuestion: state.secretQuestion,
+      secretAnswer: formatPassword(state.secretAnswer),
+      gender: state.gender,
+      location: state.location,
+      country: state.country,
+      province: state.province,
+      dateOfBirth: state.dateOfBirth,
+      metadata: state.metadata,
+      dateSignedUp: moment.utc().toISOString(),
+      isGuest: false,
+    };
+
+    reduxDispatch(createAccountRequest(user));
+    // TODO: wait for success
+    setAuthMode("avatar_and_theme");
   }, [step]);
 
   return (

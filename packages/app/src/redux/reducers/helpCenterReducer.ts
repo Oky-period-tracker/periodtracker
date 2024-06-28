@@ -1,14 +1,14 @@
 // import { HelpCenters } from "@oky/core";
 import { Actions } from "../types";
 import { HelpCenterActions } from "../actions";
-import { HelpCenters } from "../../types";
+// import { HelpCenters } from "../../types";
 
 interface IHelpCenter {
-  savedHelpCenters: HelpCenters;
+  savedHelpCenterIds: number[];
 }
 
 const initialState = {
-  savedHelpCenters: [],
+  savedHelpCenterIds: [],
 };
 
 export function helpCenterReducer(
@@ -18,24 +18,23 @@ export function helpCenterReducer(
   switch (action.type) {
     case "REFRESH_STORE": {
       if (!action?.payload?.helpCenters) {
-        return state;
+        return {
+          ...initialState,
+          ...state,
+        };
       }
       return {
+        ...initialState,
         ...state,
         ...action.payload.helpCenters,
       };
     }
-    case "SAVE_HELP_CENTER":
+
+    case "SET_SAVED_HELP_CENTERS":
       return {
-        savedHelpCenters: [...state.savedHelpCenters, action.payload],
+        savedHelpCenterIds: [...action.payload],
       };
-    case "UNSAVE_HELP_CENTER":
-      return {
-        savedHelpCenters: [...action.payload],
-      };
-    case "SAVE_HELP_CENTER_OK":
-    case "SAVE_HELP_CENTER_ERROR":
-      return state;
+
     default:
       return state;
   }

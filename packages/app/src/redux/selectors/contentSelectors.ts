@@ -23,8 +23,8 @@ export const articlesObjectByIDSelector = (state: ReduxState) =>
   s(state).articles.byId;
 
 // TODO:
-// eslint-disable-next-line
-export const allHelpCentersForCurrentLocale: any = (state: ReduxState) =>
+
+export const allHelpCentersForCurrentLocale = (state: ReduxState) =>
   s(state).helpCenters.filter((item) => item.lang === state.app.locale);
 
 export const allCategoriesSelector = (state: ReduxState) =>

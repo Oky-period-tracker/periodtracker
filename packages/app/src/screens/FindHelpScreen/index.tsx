@@ -2,7 +2,6 @@ import * as React from "react";
 import { StyleSheet, ScrollView, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
-import { HelpCenter, data } from "../../data/data";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { HelpCenterCard } from "./components/HelpCenterCard";
 import { Input } from "../../components/Input";
@@ -10,8 +9,20 @@ import { useSearch } from "../../hooks/useSearch";
 import { Button } from "../../components/Button";
 import { useToggle } from "../../hooks/useToggle";
 import { HelpFilters, HelpFiltersModal } from "./components/HelpFiltersModal";
+import { HelpCenter } from "../../core/types";
+import { useSelector } from "../../redux/useSelector";
+import {
+  allHelpCentersForCurrentLocale,
+  savedHelpCenterIdsSelector,
+} from "../../redux/selectors";
+import { useDispatch } from "react-redux";
+import { setSavedHelpCenters } from "../../redux/actions";
 
 const FindHelpScreen: ScreenComponent<"Help"> = () => {
+  const helpCenters = useSelector(allHelpCentersForCurrentLocale);
+  const savedHelpCenters = useSelector(savedHelpCenterIdsSelector);
+  const dispatch = useDispatch();
+
   const [filterModalVisible, toggleFilterModal] = useToggle();
   const [filters, setFilters] = React.useState<HelpFilters>({
     region: undefined,
@@ -47,9 +58,6 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
     options: filteredResults,
     keys: searchKeys,
   });
-
-  // TODO: use redux state
-  const [savedHelpCenters, setSavedHelpCenters] = React.useState<number[]>([]);
 
   const sortedResults = React.useMemo(() => {
     return results.sort((a, b) => {
@@ -98,12 +106,16 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
         {sortedResults.map((item) => {
           const isSaved = savedHelpCenters.includes(item.id);
           const onSavePress = () => {
-            setSavedHelpCenters((current) => {
-              if (current.includes(item.id)) {
-                return current.filter((h) => h !== item.id);
-              }
-              return [...current, item.id];
-            });
+            if (savedHelpCenters.includes(item.id)) {
+              // Unsave
+              const result = savedHelpCenters.filter((h) => h !== item.id);
+              dispatch(setSavedHelpCenters(result));
+              return;
+            }
+
+            // Save
+            const result = [...savedHelpCenters, item.id];
+            dispatch(setSavedHelpCenters(result));
           };
 
           return (
@@ -126,9 +138,6 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
     </Screen>
   );
 };
-
-// TODO: get help centers from redux
-const helpCenters = data.helpCenters;
 
 const searchKeys = [
   "title" as const,

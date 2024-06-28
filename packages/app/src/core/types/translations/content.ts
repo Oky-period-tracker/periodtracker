@@ -173,7 +173,7 @@ export interface HelpCenter {
   isActive: boolean;
   sortingKey: number;
 }
-interface HelpCenters extends Array<HelpCenter> {}
+export interface HelpCenters extends Array<HelpCenter> {}
 
 interface ContentItem {
   type: "HEADING" | "CONTENT";

@@ -168,28 +168,28 @@ interface CompletedSurveyItem {
   id: string;
 }
 
-export interface HelpCenterItem {
+export interface HelpCenter {
   id: number;
   title: string;
   caption: string;
   contactOne: string;
   contactTwo?: string;
   address: string;
-  website: string;
+  websites: string; // comma separated strings
   lang: string;
-  isAvailableNationwide?: boolean;
-  primaryAttributeId?: string | number;
-  otherAttributes?: string;
-  isActive?: boolean;
-  city?: string;
-  province?: {
-    name: string;
-    code: string;
-  };
-  sotringKey?: number;
-  attributeName?: string;
+  //
+  primaryAttributeId: number | null;
+  otherAttributes: string | null; // comma separated ids
+  //
+  regionId: string;
+  subRegionId: string;
+  isAvailableEverywhere: boolean;
+  //
+  isActive: boolean;
+  sortingKey: number;
 }
-export interface HelpCenters extends Array<HelpCenterItem> {}
+
+export interface HelpCenters extends Array<HelpCenter> {}
 
 interface ContentItem {
   type: "HEADING" | "CONTENT";

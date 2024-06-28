@@ -2,23 +2,26 @@ import { StyleSheet, View } from "react-native";
 import { Button } from "./Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
-// import { setData } from "../redux/reducers/appReducer";
+import { useSelector } from "../redux/useSelector";
+import { useDispatch } from "react-redux";
+import { isFuturePredictionSelector } from "../redux/selectors";
+import { userUpdateFuturePrediction } from "../redux/actions";
+import { useTodayPrediction } from "../contexts/PredictionProvider";
 
 export const Switch = () => {
-  // TODO: Move redux outside the switch(?)
-  // const state = useSelector((state) => state);
-  // console.log("*** state", state?.app?.data);
-  // const dispatch = useDispatch();
+  const isSwitchedOn = useSelector(isFuturePredictionSelector);
+  const dispatch = useDispatch();
+
+  const currentCycleInfo = useTodayPrediction();
+  const currentStartDate = currentCycleInfo;
 
   const onYesPress = () => {
-    // dispatch(setData(true));
+    dispatch(userUpdateFuturePrediction(true, currentStartDate));
   };
 
   const onNoPress = () => {
-    // dispatch(setData(false));
+    dispatch(userUpdateFuturePrediction(false, currentStartDate));
   };
-
-  const isSwitchedOn = true;
 
   return (
     <View style={styles.container}>

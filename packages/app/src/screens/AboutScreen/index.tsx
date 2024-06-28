@@ -1,12 +1,14 @@
 import * as React from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import { data } from "../../data/data";
 import { InfoDisplay } from "../../components/InfoDisplay";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { useSelector } from "../../redux/useSelector";
+import { aboutContent } from "../../redux/selectors";
 
 const AboutScreen: ScreenComponent<"About"> = () => {
-  const content = data.about;
+  const content = useSelector(aboutContent);
+  // const aboutBanner = useSelector(selectors.aboutBanner) // TODO:
 
   return (
     <Screen>

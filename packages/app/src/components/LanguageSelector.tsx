@@ -1,18 +1,43 @@
 import React from "react";
 import { Button, ButtonProps } from "./Button";
 import { WheelPickerModal } from "./WheelPickerModal";
+import { useSelector } from "../redux/useSelector";
+import { currentLocaleSelector } from "../redux/selectors";
+import { availableAppLocales } from "../core/modules";
+import { useDispatch } from "react-redux";
+import { setLocale } from "../redux/actions";
+import { WheelPickerOption } from "./WheelPicker";
 
 export const LanguageSelector = (props: ButtonProps) => {
-  // TODO: update redux state
+  const locale = useSelector(currentLocaleSelector);
+  const dispatch = useDispatch();
 
-  const initialOption = languages[0];
+  const onSelect = (option?: WheelPickerOption) => {
+    if (!option) {
+      return;
+    }
+
+    dispatch(setLocale(option.value));
+  };
+
+  const initialIndex =
+    availableAppLocales.findIndex((item) => item === locale) ?? 0;
+
+  const options = React.useMemo(
+    () =>
+      availableAppLocales.map((item) => ({
+        label: item,
+        value: item,
+      })),
+    [availableAppLocales]
+  );
+
+  const initialOption = options[initialIndex];
 
   const LanguageButton = ({ onPress }: ButtonProps) => {
-    // TODO: display redux state language name
-
     return (
       <Button {...props} onPress={onPress}>
-        English
+        {locale}
       </Button>
     );
   };
@@ -20,22 +45,9 @@ export const LanguageSelector = (props: ButtonProps) => {
   return (
     <WheelPickerModal
       initialOption={initialOption}
-      options={languages}
-      onSelect={() => {
-        // TODO:
-      }}
+      options={options}
+      onSelect={onSelect}
       ToggleComponent={LanguageButton}
     />
   );
 };
-
-const languages = [
-  {
-    label: "English",
-    value: "en",
-  },
-  {
-    label: "Spanish",
-    value: "es",
-  },
-];

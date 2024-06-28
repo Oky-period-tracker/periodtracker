@@ -222,31 +222,18 @@ function* onLogoutRequest() {
 function* onJourneyCompletion(
   action: ExtractActionFromActionType<"JOURNEY_COMPLETION">
 ) {
-  const { data } = action.payload;
+  const { isActive, startDate, periodLength, cycleLength } = action.payload;
   // @ts-expect-error TODO:
   const currentUser = yield select(selectors.currentUserSelector);
-  let periodResult = null;
+  const periodResult = null;
   // @ts-expect-error TODO:
   if (yield fetchNetworkConnectionStatus()) {
     try {
       // @ts-expect-error TODO:
       periodResult = yield httpClient.getPeriodCycles({
         age: moment().diff(moment(currentUser.dateOfBirth), "years"),
-        // @ts-expect-error TODO:
-        period_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, data[2].answer + 1],
-        cycle_lengths: [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          // @ts-expect-error TODO:
-          (data[3].answer + 1) * 7 + data[2].answer + 1,
-        ],
+        period_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, periodLength],
+        cycle_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, cycleLength],
       });
     } catch (error) {
       // console.log( error);
@@ -254,22 +241,18 @@ function* onJourneyCompletion(
   }
 
   const stateToSet = PredictionState.fromData({
-    // @ts-expect-error TODO:
-    isActive: data[0].answer === "Yes" ? true : false,
-    // @ts-expect-error TODO:
-    startDate: moment(data[1].answer, "DD-MMM-YYYY"),
-    // @ts-expect-error TODO:
-    periodLength: data[2].answer + 1,
-    // @ts-expect-error TODO:
-    cycleLength: (data[3].answer + 1) * 7 + data[2].answer + 1,
+    isActive,
+    startDate,
+    periodLength,
+    cycleLength,
     smaCycleLength: periodResult
-      ? periodResult.predicted_cycles[0]
-      : // @ts-expect-error TODO:
-        (data[3].answer + 1) * 7 + data[2].answer + 1,
+      ? // @ts-expect-error TODO:
+        periodResult.predicted_cycles[0]
+      : cycleLength,
     smaPeriodLength: periodResult
-      ? periodResult.predicted_periods[0]
-      : // @ts-expect-error TODO:
-        data[2].answer + 1,
+      ? // @ts-expect-error TODO:
+        periodResult.predicted_periods[0]
+      : periodLength,
     history: [],
   });
 
@@ -277,9 +260,8 @@ function* onJourneyCompletion(
   yield put(actions.updateFuturePrediction(true, null));
   yield put(actions.setTutorialOneActive(true));
   yield put(actions.setTutorialTwoActive(true));
-  yield delay(5000); // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-  //  ===================== TODO: NAVIGATION ===================== //
 
+  // yield delay(5000); // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
   // yield call(navigateAndReset, "MainStack", null);
 }
 

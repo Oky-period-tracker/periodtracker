@@ -59,8 +59,13 @@ export function editUser(payload: Partial<User>) {
   return createAction("EDIT_USER", payload);
 }
 
-export function journeyCompletion({ data = null }) {
-  return createAction("JOURNEY_COMPLETION", { data });
+export function journeyCompletion(payload: {
+  isActive: boolean;
+  startDate: moment.Moment;
+  periodLength: number;
+  cycleLength: number;
+}) {
+  return createAction("JOURNEY_COMPLETION", payload);
 }
 
 // @ts-expect-error TODO:

@@ -4,12 +4,12 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
 import { useSelector } from "../redux/useSelector";
 import { useDispatch } from "react-redux";
-import { isFuturePredictionSelector } from "../redux/selectors";
+import { isFuturePredictionActiveSelector } from "../redux/selectors";
 import { userUpdateFuturePrediction } from "../redux/actions";
 import { useTodayPrediction } from "../contexts/PredictionProvider";
 
 export const Switch = () => {
-  const isSwitchedOn = useSelector(isFuturePredictionSelector);
+  const isSwitchedOn = useSelector(isFuturePredictionActiveSelector);
   const dispatch = useDispatch();
 
   const currentCycleInfo = useTodayPrediction();

@@ -38,11 +38,9 @@ export function PredictionProvider({ children }) {
   const [predictionSnapshots, setPredictionSnapshots] = React.useState([]);
 
   const predictionEngine = React.useMemo(() => {
-    console.log("*** predictionState", predictionState);
     const state = predictionState
       ? PredictionState.fromJSON(predictionState)
       : defaultState;
-    // const state = defaultState;
 
     return PredictionEngine.fromState(state);
   }, [predictionState]);

@@ -1,5 +1,5 @@
-import { VerifiedDates } from '../reducers/answerReducer'
-import { ReduxState } from '../store'
+import { ReduxState } from "../reducers";
+import { VerifiedDates } from "../reducers/answerReducer";
 
 /*  
     Please note: 
@@ -7,9 +7,9 @@ import { ReduxState } from '../store'
 */
 
 export interface PartialStateSnapshot {
-  app?: ReduxState['app']
-  prediction?: ReduxState['prediction']
-  verifiedDates?: VerifiedDates // Not stored top level in redux
+  app?: ReduxState["app"];
+  prediction?: ReduxState["prediction"];
+  verifiedDates?: VerifiedDates; // Not stored top level in redux
   // Optional
-  helpCenters?: ReduxState['helpCenters']
+  helpCenters?: ReduxState["helpCenters"];
 }

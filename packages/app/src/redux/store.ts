@@ -6,6 +6,7 @@ import createSagaMiddleware from "redux-saga";
 import { rootReducer } from "./reducers";
 import { rootSaga } from "./sagas";
 import { config } from "./config";
+import { version } from "./version";
 
 const encryptor = encryptTransform({
   secretKey: config.REDUX_ENCRYPT_KEY,
@@ -13,8 +14,6 @@ const encryptor = encryptTransform({
     // @TODO: Handle the error.
   },
 });
-
-export const version = -1;
 
 const persistConfig = {
   version,
@@ -34,5 +33,3 @@ const persistor = persistStore(store);
 sagaMiddleware.run(rootSaga);
 
 export { store, persistor };
-
-export type ReduxState = ReturnType<typeof rootReducer>;

@@ -1,10 +1,10 @@
-import { ReduxState } from "../store";
 // import { allSurveysSelectors, allQuizzesSelectors } from './contentSelectors'
 import { allQuizzesSelectors } from "./contentSelectors";
 
 import { Moment } from "moment";
 import { toShortISO } from "../../services/dateUtils";
 import _ from "lodash";
+import { ReduxState } from "../reducers";
 
 const s = (state: ReduxState) => state.answer;
 

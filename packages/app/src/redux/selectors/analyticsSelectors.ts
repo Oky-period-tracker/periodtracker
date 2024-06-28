@@ -1,5 +1,5 @@
-import { ReduxState } from '../store'
+import { ReduxState } from "../reducers";
 
-const s = (state: ReduxState) => state.analytics
+const s = (state: ReduxState) => state.analytics;
 
-export const allAnalyticsEventsSelector = (state: ReduxState) => s(state)
+export const allAnalyticsEventsSelector = (state: ReduxState) => s(state);

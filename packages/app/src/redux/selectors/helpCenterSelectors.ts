@@ -1,5 +1,6 @@
-import { ReduxState } from '../store'
+import { ReduxState } from "../reducers";
 
-const s = (state: ReduxState) => state.helpCenters
+const s = (state: ReduxState) => state.helpCenters;
 
-export const savedHelpCentersSelector = (state: ReduxState) => s(state).savedHelpCenters
+export const savedHelpCentersSelector = (state: ReduxState) =>
+  s(state).savedHelpCenters;

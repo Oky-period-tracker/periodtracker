@@ -4,7 +4,6 @@ import { Alert } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 import { ExtractActionFromActionType } from "../types";
 import { httpClient } from "../../services/HttpClient";
-import { ReduxState } from "../store";
 import * as actions from "../actions";
 import * as selectors from "../selectors";
 // import { navigateAndReset } from "../../services/navigationService";
@@ -13,6 +12,7 @@ import moment from "moment";
 // import { closeOutTTs } from "../../services/textToSpeech";
 import { fetchNetworkConnectionStatus } from "../../services/network";
 import { PartialStateSnapshot } from "../types/partialStore";
+import { ReduxState } from "../reducers";
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T;

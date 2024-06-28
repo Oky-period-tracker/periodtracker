@@ -1,5 +1,5 @@
-import { ReduxState } from "../store";
 import _ from "lodash";
+import { ReduxState } from "../reducers";
 
 const s = (state: ReduxState) => state.content;
 

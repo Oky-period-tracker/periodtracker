@@ -1,6 +1,8 @@
 import React from "react";
 import { useSearch } from "../../hooks/useSearch";
-import { Article, data } from "../../data/data";
+import { useSelector } from "../../redux/useSelector";
+import { allArticlesSelector } from "../../redux/selectors";
+import { Article } from "../../core/types";
 
 export type EncyclopediaContext = {
   query: string;
@@ -24,8 +26,10 @@ const EncyclopediaContext =
   React.createContext<EncyclopediaContext>(defaultValue);
 
 export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
+  const articles = useSelector(allArticlesSelector);
+
   const { query, setQuery, results } = useSearch<Article>({
-    options,
+    options: articles,
     keys: searchKeys,
   });
 
@@ -54,9 +58,6 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
 export const useEncyclopedia = () => {
   return React.useContext(EncyclopediaContext);
 };
-
-// TODO: use redux state
-const options = Object.values(data.articles.byId);
 
 const searchKeys = [
   "title" as const,

@@ -1,13 +1,17 @@
+export interface Article {
+  id: string;
+  title: string;
+  content: string;
+  category: string;
+  subCategory: string;
+  categoryId: string;
+  subCategoryId: string;
+  live?: boolean;
+}
+
 interface Articles {
   byId: {
-    [id: string]: {
-      id: string;
-      title: string;
-      content: string;
-      category: string;
-      subCategory: string;
-      live?: boolean;
-    };
+    [id: string]: Article;
   };
   allIds: string[];
 }
@@ -149,17 +153,27 @@ interface Quizzes {
 //   id: string;
 // }
 
-interface HelpCenterItem {
+export interface HelpCenter {
   id: number;
   title: string;
   caption: string;
   contactOne: string;
   contactTwo?: string;
   address: string;
-  website: string;
+  websites: string; // comma separated strings
   lang: string;
+  //
+  primaryAttributeId: number | null;
+  otherAttributes: string | null; // comma separated ids
+  //
+  regionId: string;
+  subRegionId: string;
+  isAvailableEverywhere: boolean;
+  //
+  isActive: boolean;
+  sortingKey: number;
 }
-interface HelpCenters extends Array<HelpCenterItem> {}
+interface HelpCenters extends Array<HelpCenter> {}
 
 interface ContentItem {
   type: "HEADING" | "CONTENT";

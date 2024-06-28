@@ -26,6 +26,7 @@
     "@types/react": "~18.2.79",
     "@types/uuid": "^10.0.0",
     "axios": "^1.7.2",
+    "circular-buffer": "^1.0.2",
     "expo": "^51.0.0",
     "expo-constants": "~16.0.1",
     "expo-dev-client": "~4.0.14",

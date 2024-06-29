@@ -61,6 +61,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
           Icon={Cloud}
           text={formatMomentDayMonth(dataEntry.date)}
           status={status}
+          disabled
         />
         <Star size={24} status={status} />
       </View>
@@ -107,6 +108,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
               emoji={emoji}
               text={key} // TODO: translate
               status={isEmojiActive ? status : "basic"}
+              disabled
             />
           );
         })}

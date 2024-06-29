@@ -13,6 +13,7 @@ export type ButtonProps = ViewProps & {
   onPress?: () => void;
   status?: PaletteStatus;
   textStyle?: TextStyle;
+  disabled?: boolean;
 };
 
 export const Button = ({

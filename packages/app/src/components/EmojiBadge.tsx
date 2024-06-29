@@ -11,6 +11,7 @@ type EmojiBadgeProps = {
   style?: ViewStyle;
   status?: ButtonProps["status"];
   size?: BadgeSize;
+  disabled?: boolean;
 };
 
 export const EmojiBadge = ({
@@ -20,6 +21,7 @@ export const EmojiBadge = ({
   style,
   status,
   size = "medium",
+  disabled,
 }: EmojiBadgeProps) => {
   const dimensions = sizes[size];
 
@@ -33,6 +35,7 @@ export const EmojiBadge = ({
         }}
         status={status}
         onPress={onPress}
+        disabled={disabled}
       >
         <Text style={{ fontSize: dimensions.emoji }}>{emoji}</Text>
       </Button>

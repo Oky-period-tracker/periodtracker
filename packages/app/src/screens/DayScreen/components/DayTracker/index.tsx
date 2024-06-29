@@ -5,20 +5,27 @@ import { QuizCard } from "./QuizCard";
 import { DidYouKnowCard } from "./DidYouKnowCard";
 import { NotesCard } from "./NotesCard";
 import { Swiper } from "../../../../components/Swiper";
+import { usePredictDay } from "../../../../contexts/PredictionProvider";
+import { ScreenProps } from "../../../../navigation/RootNavigator";
+import { DayModal } from "../../../../components/DayModal";
+import { useToggle } from "../../../../hooks/useToggle";
 
-export const DayTracker = () => {
+export const DayTracker = ({ route }: ScreenProps<"Day">) => {
+  const dataEntry = usePredictDay(route.params.date);
+
+  const [visible, toggleVisible] = useToggle();
+
   const [index, setIndex] = React.useState(0);
 
-  const isOnPeriod = false;
-  const dateIsEven = true;
-  // const dateIsEven = Date.getDay() % 2 === 0 // TODO:
+  const isOnPeriod = dataEntry.onPeriod;
+  const dateIsEven = route.params.date.day() % 2 === 0;
   const ContentCard = dateIsEven ? QuizCard : DidYouKnowCard;
 
   const components = [
-    <EmojiQuestionCard topic={"mood"} />,
-    <EmojiQuestionCard topic={"body"} />,
-    <EmojiQuestionCard topic={"activity"} />,
-    <EmojiQuestionCard topic={"flow"} />,
+    <EmojiQuestionCard topic={"mood"} dataEntry={dataEntry} />,
+    <EmojiQuestionCard topic={"body"} dataEntry={dataEntry} />,
+    <EmojiQuestionCard topic={"activity"} dataEntry={dataEntry} />,
+    <EmojiQuestionCard topic={"flow"} dataEntry={dataEntry} />,
     <NotesCard />,
   ];
 
@@ -31,5 +38,14 @@ export const DayTracker = () => {
     React.cloneElement(page, { key: `day-card-${i}` })
   );
 
-  return <Swiper index={index} setIndex={setIndex} pages={pages} />;
+  return (
+    <>
+      <Swiper index={index} setIndex={setIndex} pages={pages} />
+      <DayModal
+        visible={visible}
+        toggleVisible={toggleVisible}
+        date={route.params.date}
+      />
+    </>
+  );
 };

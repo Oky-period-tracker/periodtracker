@@ -5,13 +5,16 @@ import DayScreen from "../../screens/DayScreen";
 import CalendarScreen from "../../screens/CalendarScreen";
 import TutorialFirstScreen from "../../screens/TutorialFirstScreen";
 import TutorialSecondScreen from "../../screens/TutorialSecondScreen";
+import moment from "moment";
 
 export type HomeStackParamList = {
   Home: undefined;
   Calendar: undefined;
   TutorialOne: undefined;
   TutorialTwo: undefined;
-  Day: undefined;
+  Day: {
+    date: moment.Moment;
+  };
 };
 
 const config: StackConfig<keyof HomeStackParamList> = {

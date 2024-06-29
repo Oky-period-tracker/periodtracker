@@ -1,6 +1,7 @@
 export type PaletteStatus =
   | "primary"
   | "secondary"
+  | "tertiary"
   | "neutral"
   | "basic"
   | "danger"
@@ -29,6 +30,13 @@ export const palette: Record<
     shadow: "#BD6600",
     dark: "#944f00",
     text: "#944f00",
+  },
+  tertiary: {
+    base: "#3DA4DD",
+    highlight: "#fff",
+    shadow: "#1169BF",
+    dark: "#0344A5",
+    text: "#0344A5",
   },
   neutral: {
     base: "#91d9e2",

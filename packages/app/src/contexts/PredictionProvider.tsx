@@ -118,9 +118,10 @@ export function useCalculateFullInfoForDateRange(
   const predictionEngine = usePredictionEngine();
   // console.log('calculate full info for date range ----------- ',predictionEngine);
 
-  return React.useMemo(() => {
-    return predictionEngine.calculateFullInfoForDateRange(startDate, endDate);
-  }, [predictionEngine, startDate, endDate]);
+  // TODO: should memoise?
+  // return React.useMemo(() => {
+  return predictionEngine.calculateFullInfoForDateRange(startDate, endDate);
+  // }, [predictionEngine, startDate, endDate]);
 }
 
 export function useCalculateStatusForDateRange(

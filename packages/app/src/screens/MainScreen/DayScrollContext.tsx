@@ -13,10 +13,10 @@ import {
 } from "react-native-reanimated";
 import _ from "lodash";
 import { useToggle } from "../../hooks/useToggle";
+import { useCalculateFullInfoForDateRange } from "../../contexts/PredictionProvider";
+import { PredictionDayInfo } from "../../prediction";
 
-export type DayData = {
-  date: Moment;
-};
+export type DayData = PredictionDayInfo;
 
 type DayScrollConstants = {
   CARD_WIDTH: number;
@@ -380,24 +380,6 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 export const useDayScroll = () => {
   return React.useContext(DayScrollContext);
 };
-
-const calculateFullInfoForDateRange = (startDate: Moment, endDate: Moment) => {
-  const loop = moment(startDate).startOf("day");
-  const dateArray = [];
-
-  while (loop <= endDate) {
-    const date = moment(loop.date(loop.date() + 1)).startOf("day");
-    dateArray.push({ date });
-  }
-  return dateArray;
-};
-
-function useCalculateFullInfoForDateRange(startDate: Moment, endDate: Moment) {
-  return calculateFullInfoForDateRange(startDate, endDate);
-  // return React.useMemo(() => {
-  //   return calculateFullInfoForDateRange(startDate, endDate);
-  // }, [startDate, endDate]);
-}
 
 function reorderData(array: DayData[], offset = 0) {
   const reorder = _.chunk(array, array.length / 2).flat();

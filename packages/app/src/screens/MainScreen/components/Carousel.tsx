@@ -71,13 +71,7 @@ const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
 
   return (
     <Animated.View style={[carouselAnimatedStyle]}>
-      <DailyCard
-        item={item}
-        onPress={() => {
-          //
-        }}
-        disabled={!isSelected}
-      />
+      <DailyCard dataEntry={item} disabled={!isSelected} />
     </Animated.View>
   );
 };

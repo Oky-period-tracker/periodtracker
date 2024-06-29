@@ -141,6 +141,11 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const [state, setState] = React.useState(getInitialState());
   const { startDate, endDate } = state;
 
+  const getAdjustedIndex = (index: number) => {
+    "worklet";
+    return index >= 0 ? index : index + NUMBER_OF_BUTTONS;
+  };
+
   const handleInfiniteData = (indexChange: number) => {
     if (indexChange === 0) {
       return;
@@ -150,7 +155,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       ...state,
       startDate: current.startDate.add(indexChange, "days"),
       endDate: current.endDate.add(indexChange, "days"),
-      currentIndex: current.currentIndex + indexChange,
+      currentIndex: getAdjustedIndex(current.currentIndex + indexChange),
       offset: (current.offset + indexChange) % NUMBER_OF_BUTTONS,
     }));
   };
@@ -222,6 +227,13 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const data = reorderData(fullInfoForDateRange, state.offset);
   const selectedItem = data[state.currentIndex];
 
+  console.log(
+    "*** ",
+    state.currentIndex,
+    selectedIndex.value,
+    selectedItem.date.date()
+  );
+
   // ================ Carousel Worklet ================ //
   const calculateClosestCardPosition = (position: number) => {
     "worklet";
@@ -289,7 +301,10 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     const change = Math.round(-displacement / FULL_CARD_WIDTH);
     offset.value = (offset.value + change) % NUMBER_OF_BUTTONS;
     totalOffset.value = totalOffset.value + change;
-    selectedIndex.value = (INITIAL_INDEX + offset.value) % NUMBER_OF_BUTTONS;
+
+    selectedIndex.value = getAdjustedIndex(
+      (INITIAL_INDEX + offset.value) % NUMBER_OF_BUTTONS
+    );
 
     // === Settle Carousel === //
     const endX = totalTranslationX.value + displacement;

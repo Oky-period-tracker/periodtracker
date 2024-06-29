@@ -33,6 +33,7 @@ export type DayScrollContext = {
   selectedIndex: SharedValue<number> | null;
   constants: DayScrollConstants;
   onBodyLayout: (event: LayoutChangeEvent) => void;
+  isDragging: React.MutableRefObject<boolean> | null;
   // Carousel
   carouselPanGesture: PanGesture;
   translationX: SharedValue<number> | null;
@@ -98,6 +99,7 @@ const defaultValue: DayScrollContext = {
   constants,
   selectedIndex: null,
   onBodyLayout: () => {},
+  isDragging: null,
   // Carousel
   carouselPanGesture: Gesture.Pan(),
   translationX: null,
@@ -140,6 +142,11 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   // ================ State ================ //
   const [state, setState] = React.useState(getInitialState());
   const { startDate, endDate } = state;
+
+  const isDragging = React.useRef(false);
+  const setIsDragging = (value: boolean) => {
+    isDragging.current = value;
+  };
 
   const getAdjustedIndex = (index: number) => {
     "worklet";
@@ -227,13 +234,6 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const data = reorderData(fullInfoForDateRange, state.offset);
   const selectedItem = data[state.currentIndex];
 
-  console.log(
-    "*** ",
-    state.currentIndex,
-    selectedIndex.value,
-    selectedItem.date.date()
-  );
-
   // ================ Carousel Worklet ================ //
   const calculateClosestCardPosition = (position: number) => {
     "worklet";
@@ -270,6 +270,8 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     if (disabled.value) {
       return;
     }
+
+    runOnJS(setIsDragging)(true);
 
     selectedIndex.value = -1;
     selectedScale.value = 1;
@@ -329,6 +331,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
             if (finished) {
               disabled.value = false;
               runOnJS(handleInfiniteData)(change);
+              runOnJS(setIsDragging)(false);
             }
           }
         );
@@ -371,6 +374,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
         constants,
         selectedIndex,
         onBodyLayout,
+        isDragging,
         // Carousel
         carouselPanGesture,
         translationX,

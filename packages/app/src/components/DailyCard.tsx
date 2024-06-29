@@ -19,7 +19,7 @@ type DailyCardProps = {
 };
 
 export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
-  const { constants } = useDayScroll();
+  const { isDragging, constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
 
   const cardAnswersValues = useSelector((state) =>
@@ -36,6 +36,9 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const navigation = useNavigation() as any; // @TODO: Fixme
 
   const onPress = () => {
+    if (isDragging?.current) {
+      return;
+    }
     navigation.navigate("Day", { date: dataEntry.date });
   };
 

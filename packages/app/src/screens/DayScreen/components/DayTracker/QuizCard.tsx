@@ -2,72 +2,122 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { DisplayButton } from "../../../../components/Button";
 import { Text } from "../../../../components/Text";
+import { useDispatch } from "react-redux";
+import {
+  allQuizzesSelectors,
+  currentUserSelector,
+  quizAnswerByDate,
+  quizzesWithoutAnswersSelector,
+} from "../../../../redux/selectors";
+import _ from "lodash";
+import { DayData } from "../../../MainScreen/DayScrollContext";
+import { answerQuiz } from "../../../../redux/actions";
+import { useSelector } from "../../../../redux/useSelector";
 
-export const QuizCard = () => {
-  // TODO: Get random Quiz entry from redux
+export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
+  const userID = useSelector(currentUserSelector)?.id;
 
-  const [selectedAnswer, setSelectedAnswer] = React.useState<{
-    text: string;
+  const selectedQuestion = useQuiz();
+  const answeredQuestion = useSelector((state) =>
+    quizAnswerByDate(state, dataEntry.date)
+  ) as {
+    id: string;
+    question: string;
     emoji: string;
+    answer: string;
     isCorrect: boolean;
-  }>();
+    response: string;
+    utcDateTime: string;
+  }; // TODO:
 
-  const response = selectedAnswer
-    ? selectedAnswer?.isCorrect
-      ? item.response.correct
-      : item.response.in_correct
-    : "";
+  const dispatch = useDispatch();
+
+  const question = answeredQuestion
+    ? answeredQuestion.question
+    : selectedQuestion?.question;
+
+  if (!selectedQuestion || !userID) {
+    return null; // TODO: ?
+  }
 
   return (
     <View style={styles.page}>
       <Text style={styles.title}>Quiz</Text>
       <Text>Test your knowledge when it comes to periods and body stuff!</Text>
       <View style={styles.body}>
-        <Text style={styles.question}>{item.question}</Text>
-        {item.answers.map((answer) => {
-          const isSelected = answer.text === selectedAnswer?.text;
-          const status = isSelected ? "danger" : "basic";
-          const onPress = () => {
-            setSelectedAnswer(answer);
-          };
-
-          return (
-            <TouchableOpacity
-              key={answer.text}
-              onPress={onPress}
-              style={styles.checkboxContainer}
-              disabled={!!selectedAnswer}
-            >
-              <DisplayButton style={styles.checkbox} status={status} />
-              <Text status={status} style={styles.label}>
-                {answer.text}
+        <Text style={styles.question}>{question}</Text>
+        {answeredQuestion && (
+          <>
+            <View style={styles.checkboxContainer}>
+              <DisplayButton
+                style={styles.checkbox}
+                status={answeredQuestion.isCorrect ? "primary" : "secondary"}
+              />
+              <Text
+                status={answeredQuestion.isCorrect ? "primary" : "secondary"}
+                style={styles.label}
+              >
+                {answeredQuestion.answer}
               </Text>
-            </TouchableOpacity>
-          );
-        })}
-        <Text style={styles.response}>{response}</Text>
+            </View>
+            <Text
+              style={styles.response}
+              status={answeredQuestion.isCorrect ? "primary" : "secondary"}
+            >
+              {answeredQuestion.response}
+            </Text>
+          </>
+        )}
+        {!answeredQuestion &&
+          selectedQuestion.answers.map((answer, index) => {
+            const onPress = () => {
+              dispatch(
+                answerQuiz({
+                  id: selectedQuestion.id,
+                  answerID: index + 1,
+                  question: selectedQuestion.question,
+                  emoji: answer.emoji,
+                  answer: answer.text,
+                  isCorrect: answer.isCorrect,
+                  response:
+                    selectedQuestion.response[
+                      answer.isCorrect ? "correct" : "in_correct"
+                    ],
+                  userID,
+                  utcDateTime: dataEntry.date,
+                })
+              );
+            };
+
+            return (
+              <TouchableOpacity
+                key={answer.text}
+                onPress={onPress}
+                style={styles.checkboxContainer}
+              >
+                <DisplayButton style={styles.checkbox} status={"basic"} />
+                <Text status={"basic"} style={styles.label}>
+                  {answer.text}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
       </View>
     </View>
   );
 };
 
-const item = {
-  id: "b3e12603-b0ad-4b1d-9c8f-a52ce6ef0ac0",
-  isAgeRestricted: false,
-  topic: "Menstruation and menstrual cycle",
-  question: "How many parts does the menstrual cycle have? 🕓",
-  answers: [
-    { text: "2", emoji: "", isCorrect: true },
-    { text: "3", emoji: "", isCorrect: false },
-    { text: "5", emoji: "", isCorrect: false },
-  ],
-  response: {
-    correct:
-      "Correct! 👍 Your cycle has 2 parts: before ovulation and after ovulation.",
-    in_correct:
-      "Wrong answer — your cycle has 2 parts: before ovulation, and after ovulation. 😯",
-  },
-  live: true,
+const useQuiz = () => {
+  const unansweredQuizzes = useSelector(quizzesWithoutAnswersSelector);
+
+  const allQuizzes = useSelector(allQuizzesSelectors);
+  const randomQuiz = React.useMemo(() => {
+    if (_.isEmpty(unansweredQuizzes)) {
+      return _.sample(allQuizzes);
+    }
+    return _.sample(unansweredQuizzes);
+  }, []);
+  return randomQuiz;
 };
 
 const styles = StyleSheet.create({
@@ -113,7 +163,6 @@ const styles = StyleSheet.create({
   response: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#E3629B",
     marginVertical: "auto",
     textAlign: "center",
   },

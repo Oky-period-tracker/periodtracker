@@ -19,7 +19,11 @@ export const DayTracker = ({ route }: ScreenProps<"Day">) => {
 
   const isOnPeriod = dataEntry.onPeriod;
   const dateIsEven = route.params.date.day() % 2 === 0;
-  const ContentCard = dateIsEven ? QuizCard : DidYouKnowCard;
+  const ContentCard = dateIsEven ? (
+    <QuizCard dataEntry={dataEntry} />
+  ) : (
+    <DidYouKnowCard />
+  );
 
   const components = [
     <EmojiQuestionCard topic={"mood"} dataEntry={dataEntry} />,
@@ -31,7 +35,7 @@ export const DayTracker = ({ route }: ScreenProps<"Day">) => {
 
   // Insert Quiz | DidYouKnow at Start or End
   const contentIndex = isOnPeriod ? components.length - 1 : 0;
-  components.splice(contentIndex, 0, <ContentCard />);
+  components.splice(contentIndex, 0, ContentCard);
 
   // Add key prop
   const pages = components.map((page, i) =>

@@ -39,6 +39,8 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     navigation.navigate("Day", { date: dataEntry.date });
   };
 
+  const day = dataEntry.cycleDay === 0 ? "-" : dataEntry.cycleDay;
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -53,7 +55,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     >
       <View style={styles.top}>
         <DisplayButton status={status} textStyle={styles.dayText}>
-          {"Day N"}
+          {`Day ${day}`}
         </DisplayButton>
         <IconButton
           Icon={Cloud}

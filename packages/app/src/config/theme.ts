@@ -43,7 +43,7 @@ export const palette: Record<
     highlight: "#fff",
     shadow: "#53b8c8",
     dark: "#2f9cb1",
-    text: "#2f9cb1",
+    text: "#91d9e2",
   },
   basic: {
     base: "#D1D0D2",

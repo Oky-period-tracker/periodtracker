@@ -2,20 +2,25 @@ import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { Text } from "../../../components/Text";
 import { useScreenDimensions } from "../../../hooks/useScreenDimensions";
-import { palette } from "../../../config/theme";
+import { useTodayPrediction } from "../../../contexts/PredictionProvider";
+import { useDayStatus } from "../../../hooks/useDayStatus";
 
 export const CenterCard = () => {
   const { width } = useScreenDimensions();
+  const todaysInfo = useTodayPrediction();
+  const status = useDayStatus(todaysInfo);
 
   return (
     <View
       style={[styles.container, { left: width / 2 - WIDTH - MARGIN_RIGHT }]}
     >
-      <Text style={styles.number} status={"neutral"}>
-        19
+      <Text style={styles.number} status={status}>
+        {todaysInfo.onPeriod
+          ? todaysInfo.daysLeftOnPeriod
+          : todaysInfo.daysUntilNextPeriod}
       </Text>
-      <Text style={styles.text} status={"neutral"}>
-        {`days to next period`}
+      <Text style={styles.text} status={status}>
+        {todaysInfo.onPeriod ? "days left" : "days to go"}
       </Text>
     </View>
   );
@@ -40,14 +45,12 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: "bold",
     textAlign: "center",
-    color: palette["neutral"].base,
     flex: 1,
   },
   text: {
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
-    color: palette["neutral"].base,
     flex: 1,
   },
 });

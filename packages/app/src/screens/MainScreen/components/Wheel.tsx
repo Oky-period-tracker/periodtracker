@@ -7,6 +7,8 @@ import { IconButton } from "../../../components/IconButton";
 import { DayData, useDayScroll } from "../DayScrollContext";
 import { formatMomentDayMonth } from "../../../services/utils";
 
+import { useDayStatus } from "../../../hooks/useDayStatus";
+
 export const Wheel = () => {
   const { data, wheelPanGesture, wheelAnimatedStyle } = useDayScroll();
 
@@ -22,6 +24,8 @@ export const Wheel = () => {
 };
 
 const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
+  const status = useDayStatus(item);
+
   const {
     constants,
     calculateButtonPosition,
@@ -66,6 +70,7 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
         text={text}
         onPress={toggleDayModal}
         disabled={!isSelected}
+        status={status}
       />
     </Animated.View>
   );

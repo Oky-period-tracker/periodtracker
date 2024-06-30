@@ -7,7 +7,7 @@ import { SurveyProvider } from "./components/Survey/SurveyContext";
 
 const DayScreen: ScreenComponent<"Day"> = (props) => {
   // TODO: get survey from redux
-  const hasSurvey = true;
+  const hasSurvey = false;
 
   return (
     <Screen>
@@ -16,7 +16,7 @@ const DayScreen: ScreenComponent<"Day"> = (props) => {
           <Survey {...props} />
         </SurveyProvider>
       ) : (
-        <DayTracker />
+        <DayTracker {...props} />
       )}
     </Screen>
   );

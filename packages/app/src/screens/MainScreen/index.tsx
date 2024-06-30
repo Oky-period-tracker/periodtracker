@@ -1,13 +1,14 @@
 import * as React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Carousel } from "./components/Carousel";
 import { CenterCard } from "./components/CenterCard";
 import { Wheel } from "./components/Wheel";
 import { useScreenDimensions } from "../../hooks/useScreenDimensions";
-import { Button } from "../../components/Button";
 import { DayScrollProvider, useDayScroll } from "./DayScrollContext";
 import { DayModal } from "../../components/DayModal";
+import { CircleProgress } from "./components/CircleProgress";
+import { Text } from "../../components/Text";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   return (
@@ -28,11 +29,12 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
   return (
     <View style={styles.screen}>
       <View style={styles.body} onLayout={onBodyLayout}>
-        <Button
-          status={"secondary"}
-          style={styles.button}
-          onPress={goToCalendar}
-        />
+        <View style={styles.topLeft}>
+          <CircleProgress onPress={goToCalendar} />
+          <TouchableOpacity onPress={goToCalendar}>
+            <Text>Calendar</Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={[styles.wheelContainer, { width, right: -width / 2 }]}>
           <Wheel />
@@ -64,6 +66,13 @@ const styles = StyleSheet.create({
   body: {
     width: "100%",
     flex: 1,
+  },
+  topLeft: {
+    flex: 1,
+    width: "33%",
+    height: "100%",
+    flexDirection: "column",
+    alignItems: "center",
   },
   wheelContainer: {
     position: "absolute",

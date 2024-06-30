@@ -9,6 +9,7 @@ import { DayScrollProvider, useDayScroll } from "./DayScrollContext";
 import { DayModal } from "../../components/DayModal";
 import { CircleProgress } from "./components/CircleProgress";
 import { Text } from "../../components/Text";
+import { Avatar } from "../../components/Avatar";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   return (
@@ -34,6 +35,7 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
           <TouchableOpacity onPress={goToCalendar}>
             <Text>Calendar</Text>
           </TouchableOpacity>
+          <Avatar />
         </View>
 
         <View style={[styles.wheelContainer, { width, right: -width / 2 }]}>

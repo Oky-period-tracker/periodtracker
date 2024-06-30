@@ -1,5 +1,5 @@
 import { ImageSourcePropType } from "react-native";
-import { AnimatedLottieViewProps } from "lottie-react-native";
+import { LottieViewProps } from "lottie-react-native";
 import { AvatarName, Locale, ThemeName } from "../modules";
 
 export interface AppAssets {
@@ -134,7 +134,7 @@ export interface AppAssets {
     tripleClouds: ImageSourcePropType;
   };
   lottie: {
-    avatars: Record<AvatarName, AnimatedLottieViewProps["source"]>;
+    avatars: Record<AvatarName, LottieViewProps["source"]>;
   };
   // TODO:
   // eslint-disable-next-line

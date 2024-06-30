@@ -4,10 +4,8 @@
 import React from "react";
 import moment, { Moment } from "moment";
 import _ from "lodash";
-// import { PredictionEngine, PredictionState } from '@oky/core'
 import { PredictionState, PredictionEngine } from "../prediction";
 
-// import { useSelector } from '../../hooks/useSelector'
 import { useDispatch } from "react-redux";
 import * as actions from "../redux/actions";
 import { useSelector } from "../redux/useSelector";
@@ -20,17 +18,18 @@ const PredictionEngineContext = React.createContext<
 const PredictionDispatchContext = React.createContext<
   PredictionDispatch | undefined
 >(undefined);
+// @ts-expect-error TODO:
 const UndoPredictionStateContext = React.createContext<() => void>(undefined);
 
 const defaultState = PredictionState.fromData({
   isActive: true,
-  // isVerify: false,
   startDate: moment().startOf("day"),
   periodLength: 5,
   cycleLength: 30,
   history: [],
 });
 
+// @ts-expect-error TODO:
 export function PredictionProvider({ children }) {
   const reduxDispatch = useDispatch();
   const predictionState = useSelector((state) => state.prediction);
@@ -38,7 +37,7 @@ export function PredictionProvider({ children }) {
   const [predictionSnapshots, setPredictionSnapshots] = React.useState([]);
 
   const predictionEngine = React.useMemo(() => {
-    const state = predictionState
+    const state = predictionState?.currentCycle
       ? PredictionState.fromJSON(predictionState)
       : defaultState;
 
@@ -47,6 +46,7 @@ export function PredictionProvider({ children }) {
 
   const predictionDispatch: PredictionDispatch = React.useCallback(
     (action) => {
+      // @ts-expect-error TODO:
       setPredictionSnapshots((snapshots) => snapshots.concat(predictionState));
       predictionEngine.userInputDispatch(action);
       reduxDispatch(actions.adjustPrediction(action));
@@ -64,6 +64,7 @@ export function PredictionProvider({ children }) {
     if (predictionSnapshots.length > 0) {
       const lastSnapshot = _.last(predictionSnapshots);
       reduxDispatch(
+        // @ts-expect-error TODO:
         actions.setPredictionEngineState(PredictionState.fromJSON(lastSnapshot))
       );
       setPredictionSnapshots((snapshots) => snapshots.slice(0, -1));
@@ -167,7 +168,7 @@ export function usePredictDay(inputDay: Moment) {
   }, [predictionEngine, inputDay]);
 }
 
-export function useFullState() {
+export function usePredictionEngineState() {
   const predictionEngine = usePredictionEngine();
 
   return React.useMemo(() => {
@@ -204,7 +205,5 @@ export function useIsVerifySelector() {
 
   return React.useMemo(() => {
     return predictionEngine.getPredictorState();
-
-    // return predictionEngine.getPredictorState().isVerify
   }, [predictionEngine]);
 }

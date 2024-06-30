@@ -48,11 +48,13 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
         <Carousel />
       </View>
 
-      <DayModal
-        visible={dayModalVisible}
-        toggleVisible={toggleDayModal}
-        date={selectedItem?.date}
-      />
+      {selectedItem && (
+        <DayModal
+          visible={dayModalVisible}
+          toggleVisible={toggleDayModal}
+          data={selectedItem}
+        />
+      )}
     </View>
   );
 };

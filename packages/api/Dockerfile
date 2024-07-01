@@ -8,8 +8,8 @@ WORKDIR /usr/src/app/packages/api
 CMD [ "yarn", "run", "watch" ]
 
 # Production stage
-# FROM --platform=linux/amd64 node:16.13.1 as production
-FROM node:16.13.1 as production
+# FROM --platform=linux/amd64 node:22.3.0 as production
+FROM node:22.3.0 as production
 
 ENV NODE_ENV=production
 WORKDIR /usr/src/app

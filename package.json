@@ -36,9 +36,9 @@
     "deploy:android": "yarn workspace @oky/mobile run deploy:android",
     "run:android": "yarn clean:mobile && yarn workspace @oky/mobile run android && yarn reverse:all-ports",
     "clean:mobile": "yarn workspace @oky/mobile run clean:android",
-    "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets",
+    "modules": "bash ./bin/modules/remove.sh && bash ./bin/modules/pull.sh && yarn copy-assets",
     "modules:checkout": "./bin/modules/checkout.sh",
-    "copy-config": "./bin/setup/config.sh",
+    "copy-config": "bash ./bin/setup/config.sh",
     "update-android-app-id": "ts-node update-android-app-id.ts"
   },
   "workspaces": {
@@ -48,8 +48,10 @@
     "nohoist": []
   },
   "devDependencies": {
+    "fs-extra": "^11.1.1",
     "husky": "^2.3.0",
     "lint-staged": "^8.1.7",
+    "lottie-parser": "^0.1.0",
     "patch-package": "^6.1.4",
     "postinstall-postinstall": "^2.0.0",
     "prettier": "2.0.5",
@@ -58,8 +60,7 @@
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.0.0",
-    "fs-extra": "^11.1.1",
-    "lottie-parser": "^0.1.0"
+    "typescript": "^5.5.2"
   },
   "husky": {
     "hooks": {
@@ -72,5 +73,8 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "dependencies": {
+    "connect-flash": "^0.1.1"
   }
 }

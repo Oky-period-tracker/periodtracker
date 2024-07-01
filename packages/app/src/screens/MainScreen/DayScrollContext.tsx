@@ -179,7 +179,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const onBodyLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout;
-    setDiameter(height);
+    setDiameter(height - 48); // TODO: 48 adjusting for android
   };
 
   const [dayModalVisible, toggleDayModal] = useToggle();

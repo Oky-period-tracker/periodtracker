@@ -4,17 +4,15 @@ import { useToggle } from "../../../hooks/useToggle";
 import { DisplayButton } from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useEncyclopedia } from "../EncyclopediaContext";
-import { SubCategory, data } from "../../../data/data";
+import { SubCategory } from "../../../data/data";
+import { useSelector } from "../../../redux/useSelector";
+import {
+  allSubCategoriesByIdSelector,
+  categoryByIDSelector,
+} from "../../../redux/selectors";
 
-interface AccordionProps {
-  selectedCategories: string[];
-}
-
-export const Accordion: React.FC<AccordionProps> = ({ selectedCategories }) => {
-  const { categoryIds } = useEncyclopedia();
-
-  const filteredCategoryIds =
-    selectedCategories.length > 0 ? selectedCategories : categoryIds;
+export const Accordion = () => {
+  const { filteredCategoryIds } = useEncyclopedia();
 
   return (
     <>
@@ -32,13 +30,14 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
   const { subcategoryIds } = useEncyclopedia();
 
-  const category = data.categories.byId[categoryId];
+  const category = useSelector((s) => categoryByIDSelector(s, categoryId));
+  const subCategoriesById = useSelector(allSubCategoriesByIdSelector);
 
   const subCategories = React.useMemo(() => {
     return category.subCategories.reduce<SubCategory[]>(
       (acc, subcategoryId) => {
         if (subcategoryIds.includes(subcategoryId)) {
-          acc.push(data.subCategories.byId[subcategoryId]);
+          acc.push(subCategoriesById[subcategoryId]);
         }
         return acc;
       },

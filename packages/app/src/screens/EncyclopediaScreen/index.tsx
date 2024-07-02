@@ -1,10 +1,9 @@
-import * as React from "react";
-import { useState } from "react";
+import React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
 import { Accordion } from "./components/Accordion";
 import { Screen } from "../../components/Screen";
 import { HelpCard } from "./components/HelpCard";
-import { HorizontalScroll } from "./components/HorizontalScroll";
+import { CategoryPicker } from "./components/CategoryPicker";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Input } from "../../components/Input";
 import { useEncyclopedia } from "./EncyclopediaContext";
@@ -14,10 +13,8 @@ import { Button } from "../../components/Button";
 const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
   navigation,
 }) => {
-  const goToHelpScreen = () => navigation.navigate("Help");
-
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { query, setQuery } = useEncyclopedia();
+  const goToHelpScreen = () => navigation.navigate("Help");
 
   return (
     <Screen>
@@ -44,11 +41,8 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
             </Button>
           )}
         </View>
-        <HorizontalScroll
-          selectedCategories={selectedCategories}
-          setSelectedCategories={setSelectedCategories}
-        />
-        <Accordion selectedCategories={selectedCategories} />
+        <CategoryPicker />
+        <Accordion />
       </ScrollView>
     </Screen>
   );

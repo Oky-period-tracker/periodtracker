@@ -10,16 +10,20 @@ export type EncyclopediaContext = {
   categoryIds: string[];
   subcategoryIds: string[];
   articleIds: string[];
+  selectedCategoryIds: string[];
+  setSelectedCategoryIds: React.Dispatch<React.SetStateAction<string[]>>;
+  filteredCategoryIds: string[];
 };
 
 const defaultValue: EncyclopediaContext = {
   query: "",
-  setQuery: () => {
-    //
-  },
+  setQuery: () => {},
   categoryIds: [],
   subcategoryIds: [],
   articleIds: [],
+  selectedCategoryIds: [],
+  setSelectedCategoryIds: () => {},
+  filteredCategoryIds: [],
 };
 
 const EncyclopediaContext =
@@ -27,6 +31,10 @@ const EncyclopediaContext =
 
 export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
   const articles = useSelector(allArticlesSelector);
+
+  const [selectedCategoryIds, setSelectedCategoryIds] = React.useState<
+    string[]
+  >([]);
 
   const { query, setQuery, results } = useSearch<Article>({
     options: articles,
@@ -37,14 +45,19 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
     return getFilteredIds(results);
   }, [results]);
 
-  // TODO: Clear query state when navigate out of Encyclopedia stack
-  // TODO: Search through videos too, add search terms /keywords to video meta data
+  const filteredCategoryIds =
+    selectedCategoryIds.length === 0
+      ? categoryIds
+      : categoryIds.filter((item) => selectedCategoryIds.includes(item));
 
   return (
     <EncyclopediaContext.Provider
       value={{
         query,
         setQuery,
+        selectedCategoryIds,
+        setSelectedCategoryIds,
+        filteredCategoryIds,
         categoryIds,
         subcategoryIds,
         articleIds,

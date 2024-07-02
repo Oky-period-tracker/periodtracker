@@ -41,7 +41,7 @@ export const allCategoryEmojis = (state: ReduxState) => {
 export const allSubCategoriesSelector = (state: ReduxState) =>
   s(state).subCategories.allIds.map((id) => s(state).subCategories.byId[id]);
 
-export const allSubCategoriesObjectSelector = (state: ReduxState) =>
+export const allSubCategoriesByIdSelector = (state: ReduxState) =>
   s(state).subCategories.byId;
 
 // @ts-expect-error TODO:

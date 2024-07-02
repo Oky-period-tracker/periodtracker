@@ -4,14 +4,9 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
+  runOnJS,
 } from "react-native-reanimated";
-import {
-  GestureEvent,
-  HandlerStateChangeEvent,
-  PanGestureHandler,
-  PanGestureHandlerEventPayload,
-  State,
-} from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Button } from "./Button";
 
 type SwiperProps = {
@@ -27,67 +22,63 @@ export const Swiper = ({
   pages,
   renderActionRight,
 }: SwiperProps) => {
-  const translateX = useSharedValue(0);
-
   const [containerWidth, setContainerWidth] = React.useState(0);
-
-  const fullWidth = containerWidth + marginRight;
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: translateX.value }],
-    };
-  });
-
-  const slideToPosition = (i: number) => {
-    translateX.value = withTiming(-i * fullWidth);
-  };
-
-  const onGestureEvent = (
-    event: GestureEvent<PanGestureHandlerEventPayload>
-  ) => {
-    const { translationX } = event.nativeEvent;
-    translateX.value = translationX - index * fullWidth;
-  };
-
-  const onHandlerStateChange = (
-    event: HandlerStateChangeEvent<PanGestureHandlerEventPayload>
-  ) => {
-    if (event.nativeEvent.oldState !== State.ACTIVE) {
-      return;
-    }
-
-    const { translationX } = event.nativeEvent;
-    const newIndex = index - Math.sign(translationX);
-    const isValid = newIndex >= 0 && newIndex < pages.length;
-
-    if (isValid) {
-      setIndex(newIndex);
-      return;
-    }
-
-    slideToPosition(index);
-  };
-
-  const handleIndicatorPress = (i: number) => {
-    setIndex(i);
-  };
 
   const onLayout = (event: LayoutChangeEvent) => {
     const { width } = event.nativeEvent.layout;
     setContainerWidth(width);
   };
 
+  const fullWidth = containerWidth + marginRight;
+
+  const translationX = useSharedValue(0);
+  const totalTranslationX = useSharedValue(0);
+
+  const maxIndex = pages.length - 1;
+
+  const getSafeIndex = (i: number) => {
+    "worklet";
+    return Math.min(Math.max(i, 0), maxIndex);
+  };
+
+  const slideToPosition = (i: number) => {
+    "worklet";
+    const endX = -i * fullWidth;
+    totalTranslationX.value = endX;
+    translationX.value = withTiming(endX, {
+      duration: SETTLE_DURATION,
+    });
+  };
+
+  const panGesture = Gesture.Pan()
+    .onUpdate((event) => {
+      translationX.value = totalTranslationX.value + event.translationX;
+    })
+    .onEnd(() => {
+      const nearestPage = -translationX.value / fullWidth;
+      const nearestIndex = Math.round(nearestPage);
+      const safeIndex = getSafeIndex(nearestIndex);
+      slideToPosition(safeIndex);
+      runOnJS(setIndex)(safeIndex);
+    });
+
+  const handleIndicatorPress = (i: number) => {
+    setIndex(i);
+  };
+
   React.useEffect(() => {
     slideToPosition(index);
   }, [index]);
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translationX.value }],
+    };
+  });
+
   return (
-    <PanGestureHandler
-      onGestureEvent={onGestureEvent}
-      onHandlerStateChange={onHandlerStateChange}
-    >
-      <View style={styles.container} onLayout={onLayout}>
+    <View style={styles.container} onLayout={onLayout}>
+      <GestureDetector gesture={panGesture}>
         <Animated.View style={[styles.pagesContainer, animatedStyle]}>
           {pages.map((page, i) => (
             <View key={i} style={styles.page}>
@@ -95,30 +86,32 @@ export const Swiper = ({
             </View>
           ))}
         </Animated.View>
+      </GestureDetector>
 
-        <View style={styles.footer}>
-          <View style={styles.footerAction} />
-          {pages.map((_, i) => {
-            const isSelected = i === index;
-            const onPress = () => handleIndicatorPress(i);
+      <View style={styles.footer}>
+        <View style={styles.footerAction} />
+        {pages.map((_, i) => {
+          const isSelected = i === index;
+          const onPress = () => handleIndicatorPress(i);
 
-            return (
-              <Button
-                key={`indicator-${i}`}
-                onPress={onPress}
-                style={styles.indicator}
-                status={isSelected ? "danger" : "basic"}
-              />
-            );
-          })}
-          <View style={styles.footerAction}>
-            {renderActionRight?.(index, pages.length)}
-          </View>
+          return (
+            <Button
+              key={`indicator-${i}`}
+              onPress={onPress}
+              style={styles.indicator}
+              status={isSelected ? "danger" : "basic"}
+            />
+          );
+        })}
+        <View style={styles.footerAction}>
+          {renderActionRight?.(index, pages.length)}
         </View>
       </View>
-    </PanGestureHandler>
+    </View>
   );
 };
+
+const SETTLE_DURATION = 350;
 
 const marginRight = 12; // Same as <Screen> padding
 

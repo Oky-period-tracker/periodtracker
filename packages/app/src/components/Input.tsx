@@ -19,6 +19,7 @@ export type InputProps = TextInputProps & {
   errorKey?: string; // TODO:
   errorsVisible?: boolean;
   displayOnly?: boolean;
+  actionRight?: React.ReactNode;
 };
 
 export const Input = ({
@@ -32,6 +33,7 @@ export const Input = ({
   errorsVisible,
   placeholderTextColor = "#28b9cb",
   displayOnly = false,
+  actionRight,
   ...props
 }: InputProps) => {
   const hasError =
@@ -71,6 +73,7 @@ export const Input = ({
             />
           )}
           <View style={styles.sideComponent}>
+            {actionRight}
             {hasError && (
               <FontAwesome size={16} name={"close"} color={"#E3629B"} />
             )}
@@ -103,6 +106,8 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     marginHorizontal: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
   multiline: {
     flex: 1,

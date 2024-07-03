@@ -1,14 +1,12 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import { Accordion } from "./components/Accordion";
 import { Screen } from "../../components/Screen";
 import { HelpCard } from "./components/HelpCard";
 import { CategoryPicker } from "./components/CategoryPicker";
 import { ScreenComponent } from "../../navigation/RootNavigator";
-import { Input } from "../../components/Input";
 import { useEncyclopedia } from "./EncyclopediaContext";
-import { FontAwesome } from "@expo/vector-icons";
-import { Button } from "../../components/Button";
+import { SearchBar } from "../../components/SearchBar";
 
 const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
   navigation,
@@ -24,23 +22,7 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
         showsVerticalScrollIndicator={false}
       >
         <HelpCard onPress={goToHelpScreen} />
-        <View style={styles.searchContainer}>
-          <Input
-            value={query}
-            onChangeText={setQuery}
-            style={styles.input}
-            placeholder={"Search"}
-          />
-          {query.length > 0 && (
-            <Button
-              style={styles.closeButton}
-              status="basic"
-              onPress={() => setQuery("")}
-            >
-              <FontAwesome name="close" size={20} color="white" />
-            </Button>
-          )}
-        </View>
+        <SearchBar query={query} setQuery={setQuery} />
         <CategoryPicker />
         <Accordion />
       </ScrollView>
@@ -77,10 +59,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     color: "black",
-  },
-  closeButton: {
-    marginBottom: 12,
-    width: 30,
-    height: 30,
   },
 });

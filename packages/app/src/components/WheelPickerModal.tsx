@@ -5,6 +5,7 @@ import React from "react";
 import { WheelPicker, WheelPickerOption } from "./WheelPicker";
 import { Hr } from "./Hr";
 import { useSearch } from "../hooks/useSearch";
+import { SearchBar } from "./SearchBar";
 
 export const WheelPickerModal = ({
   initialOption,
@@ -69,13 +70,7 @@ export const WheelPickerModal = ({
         style={styles.modal}
       >
         <View style={styles.modalBody}>
-          {searchEnabled && (
-            <Input
-              value={query}
-              onChangeText={setQuery}
-              placeholder={"search"}
-            />
-          )}
+          {searchEnabled && <SearchBar query={query} setQuery={setQuery} />}
 
           <WheelPicker
             initialOption={initialOption}

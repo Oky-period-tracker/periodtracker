@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Article, data } from "../../data/data";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
-import { Input } from "../../components/Input";
 import { useEncyclopedia } from "../EncyclopediaScreen/EncyclopediaContext";
+import { SearchBar } from "../../components/SearchBar";
 
 const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   const { query, setQuery, articleIds } = useEncyclopedia();
@@ -30,7 +30,7 @@ const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
 
   return (
     <Screen>
-      <Input value={query} onChangeText={setQuery} placeholder={"search"} />
+      <SearchBar query={query} setQuery={setQuery} />
 
       <ScrollView style={styles.scrollView}>
         {articles.map((article) => {

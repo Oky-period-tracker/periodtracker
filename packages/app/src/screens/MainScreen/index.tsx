@@ -10,12 +10,18 @@ import { DayModal } from "../../components/DayModal";
 import { CircleProgress } from "./components/CircleProgress";
 import { Text } from "../../components/Text";
 import { Avatar } from "../../components/Avatar";
+import { TutorialContainer } from "../../components/TutorialContainer";
+import { TutorialProvider } from "./TutorialContext";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   return (
-    <DayScrollProvider>
-      <MainScreenInner {...props} />
-    </DayScrollProvider>
+    <TutorialProvider>
+      <TutorialContainer>
+        <DayScrollProvider>
+          <MainScreenInner {...props} />
+        </DayScrollProvider>
+      </TutorialContainer>
+    </TutorialProvider>
   );
 };
 

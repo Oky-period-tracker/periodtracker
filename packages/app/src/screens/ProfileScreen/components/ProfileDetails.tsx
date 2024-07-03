@@ -4,8 +4,17 @@ import { DisplayButton } from "../../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Hr } from "../../../components/Hr";
 import { ScreenProps } from "../../../navigation/RootNavigator";
+import { CircleProgress } from "../../MainScreen/components/CircleProgress";
+import { User } from "../../../components/icons/User";
+import { useSelector } from "../../../redux/useSelector";
+import { currentUserSelector } from "../../../redux/selectors";
+import { useTodayPrediction } from "../../../contexts/PredictionProvider";
+import { formatMonthYear } from "../../../services/dateUtils";
 
 export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
+  const currentUser = useSelector(currentUserSelector);
+  const todayInfo = useTodayPrediction();
+
   const goToEdit = () => {
     navigation.navigate("EditProfile");
   };
@@ -14,13 +23,18 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
     navigation.navigate("AvatarAndTheme");
   };
 
+  const cycleLength =
+    todayInfo.cycleLength === 100 ? "-" : `${todayInfo.cycleLength} days`;
+  const periodLength =
+    todayInfo.periodLength === 0 ? "-" : `${todayInfo.periodLength} days`;
+
   return (
     <View style={styles.container}>
       {/* ===== Top Section ===== */}
       <TouchableOpacity style={styles.row} onPress={goToEdit}>
         <View style={styles.column}>
           <DisplayButton style={styles.icon}>
-            <FontAwesome size={28} name={"user"} color={"#fff"} />
+            <User size={28} />
           </DisplayButton>
         </View>
         <View style={styles.column}>
@@ -33,10 +47,16 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={[styles.text, styles.bold]}>Alex</Text>
-            <Text style={[styles.text, styles.bold]}>Male</Text>
-            <Text style={[styles.text, styles.bold]}>Bali</Text>
-            <Text style={[styles.text, styles.bold]}>Urban</Text>
+            <Text style={[styles.text, styles.bold]}>{currentUser?.name}</Text>
+            <Text style={[styles.text, styles.bold]}>
+              {currentUser?.gender}
+            </Text>
+            <Text style={[styles.text, styles.bold]}>
+              {formatMonthYear(currentUser?.dateOfBirth)}
+            </Text>
+            <Text style={[styles.text, styles.bold]}>
+              {currentUser?.location}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -45,9 +65,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
       {/* ===== Middle Section ===== */}
       <View style={styles.row}>
         <View style={styles.column}>
-          <DisplayButton style={styles.icon} status={"secondary"}>
-            <Text>29 days</Text>
-          </DisplayButton>
+          <CircleProgress />
         </View>
         <View style={styles.column}>
           <View>
@@ -57,8 +75,8 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={[styles.text, styles.bold]}>29 days</Text>
-            <Text style={[styles.text, styles.bold]}>4 days</Text>
+            <Text style={[styles.text, styles.bold]}>{cycleLength}</Text>
+            <Text style={[styles.text, styles.bold]}>{periodLength}</Text>
           </View>
         </View>
       </View>
@@ -98,7 +116,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    height: 120,
+    height: 112,
+    padding: 8,
   },
   column: {
     flexBasis: "33%",
@@ -107,8 +126,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   icon: {
-    width: 60,
-    height: 60,
+    width: 52,
+    height: 52,
   },
   text: {
     marginBottom: 4,

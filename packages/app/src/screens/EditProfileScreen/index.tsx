@@ -15,11 +15,6 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
     // dispatch(setName(value));
   };
 
-  const [tempName, setTempName] = React.useState("bum");
-  const onChangeLocalState = (v: string) => {
-    setTempName(v);
-  };
-
   return (
     <Screen>
       <View style={styles.container}>
@@ -51,8 +46,10 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
             <TextInput
               placeholder=""
               style={styles.input}
-              onChangeText={onChangeLocalState}
-              value={tempName}
+              onChangeText={() => {
+                //
+              }}
+              value={""}
             />
           </View>
         </View>

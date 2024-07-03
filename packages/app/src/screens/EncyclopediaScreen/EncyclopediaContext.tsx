@@ -32,10 +32,6 @@ const EncyclopediaContext =
 export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
   const articles = useSelector(allArticlesSelector);
 
-  const [selectedCategoryIds, setSelectedCategoryIds] = React.useState<
-    string[]
-  >([]);
-
   const { query, setQuery, results } = useSearch<Article>({
     options: articles,
     keys: searchKeys,
@@ -44,6 +40,10 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
   const { categoryIds, subcategoryIds, articleIds } = React.useMemo(() => {
     return getFilteredIds(results);
   }, [results]);
+
+  const [selectedCategoryIds, setSelectedCategoryIds] = React.useState<
+    string[]
+  >([]);
 
   const filteredCategoryIds =
     selectedCategoryIds.length === 0

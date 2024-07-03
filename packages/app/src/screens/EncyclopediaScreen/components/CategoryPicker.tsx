@@ -35,7 +35,6 @@ export const CategoryPicker = () => {
             emoji={category.tags.primary.emoji}
             text={category.tags.primary.name}
             onPress={onPress}
-            size={"large"}
             status={status}
           />
         );

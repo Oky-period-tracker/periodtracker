@@ -69,8 +69,8 @@ const sizes: Record<
     margin: 2,
   },
   medium: {
-    container: 60,
-    circle: 32,
+    container: 52,
+    circle: 36,
     emoji: 16,
     text: 12,
     margin: 4,

@@ -23,7 +23,6 @@ const config: StackConfig<keyof ProfileStackParamList> = {
     },
     AvatarAndTheme: {
       title: "Avatars & Themes",
-      // @ts-expect-error TODO:
       component: AvatarAndThemeScreen,
     },
   },

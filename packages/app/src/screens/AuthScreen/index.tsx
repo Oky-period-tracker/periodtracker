@@ -7,7 +7,7 @@ import { SignUp } from "./components/SignUp";
 import { AuthToggle } from "./components/AuthToggle";
 import { AuthModeProvider, useAuthMode } from "./AuthModeContext";
 import { ScreenProps } from "../../navigation/RootNavigator";
-import AvatarAndThemeScreen from "../AvatarAndThemeScreen";
+import { AvatarAndThemeSelect } from "../AvatarAndThemeScreen";
 import { Welcome } from "./components/Welcome";
 import { Journey } from "./components/Journey";
 import { AuthLinks } from "./components/AuthLinks";
@@ -30,7 +30,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
 
   if (authMode === "avatar_and_theme") {
     const onConfirm = () => setAuthMode("onboard_journey");
-    return <AvatarAndThemeScreen onConfirm={onConfirm} />;
+    return <AvatarAndThemeSelect onConfirm={onConfirm} />;
   }
 
   return (

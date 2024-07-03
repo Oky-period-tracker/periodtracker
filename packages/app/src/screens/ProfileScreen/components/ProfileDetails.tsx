@@ -1,18 +1,24 @@
 import * as React from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
 import { DisplayButton } from "../../../components/Button";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Hr } from "../../../components/Hr";
 import { ScreenProps } from "../../../navigation/RootNavigator";
 import { CircleProgress } from "../../MainScreen/components/CircleProgress";
 import { User } from "../../../components/icons/User";
 import { useSelector } from "../../../redux/useSelector";
-import { currentUserSelector } from "../../../redux/selectors";
+import {
+  currentAvatarSelector,
+  currentThemeSelector,
+  currentUserSelector,
+} from "../../../redux/selectors";
 import { useTodayPrediction } from "../../../contexts/PredictionProvider";
 import { formatMonthYear } from "../../../services/dateUtils";
+import { getAsset } from "../../../services/asset";
 
 export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
   const currentUser = useSelector(currentUserSelector);
+  const avatar = useSelector(currentAvatarSelector);
+  const theme = useSelector(currentThemeSelector);
   const todayInfo = useTodayPrediction();
 
   const goToEdit = () => {
@@ -85,15 +91,17 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
       {/* ===== Bottom Section ===== */}
       <TouchableOpacity style={styles.row} onPress={goToAvatarAndTheme}>
         <View style={styles.column}>
-          <DisplayButton style={styles.icon}>
-            <FontAwesome size={28} name={"user"} color={"#fff"} />
-          </DisplayButton>
+          <Image
+            source={getAsset(`avatars.${avatar}.theme`)}
+            style={styles.avatarImage}
+          />
         </View>
         <View style={styles.column}>
-          <View>
-            <DisplayButton style={styles.icon} status="basic">
-              <FontAwesome size={28} name={"user"} color={"#fff"} />
-            </DisplayButton>
+          <View style={styles.themeWrapper}>
+            <Image
+              source={getAsset(`backgrounds.${theme}.default`)}
+              style={styles.themeImage}
+            />
           </View>
         </View>
         <View style={styles.column}>
@@ -116,8 +124,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    height: 112,
-    padding: 8,
+    height: 100,
+    padding: 12,
   },
   column: {
     flexBasis: "33%",
@@ -134,5 +142,24 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: "bold",
+  },
+  avatarImage: {
+    width: "100%",
+    height: "100%",
+    alignSelf: "center",
+    aspectRatio: 1,
+    resizeMode: "contain",
+  },
+  themeWrapper: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  themeImage: {
+    width: "100%",
+    height: "100%",
+    alignSelf: "center",
+    resizeMode: "cover",
   },
 });

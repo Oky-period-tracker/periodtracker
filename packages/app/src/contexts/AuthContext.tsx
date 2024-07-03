@@ -1,4 +1,5 @@
 import React from "react";
+import { FAST_SIGN_UP } from "../config/env";
 
 export type AuthContext = {
   isLoggedIn: boolean;
@@ -13,7 +14,7 @@ const defaultValue: AuthContext = {
 const AuthContext = React.createContext<AuthContext>(defaultValue);
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(FAST_SIGN_UP);
 
   return (
     <AuthContext.Provider

@@ -3,9 +3,9 @@ import { View, StyleSheet } from "react-native";
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
 import { ScreenComponent } from "../../navigation/RootNavigator";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Input } from "../../components/Input";
-import { currentUserSelector } from "../../redux/selectors";
+import { appTokenSelector, currentUserSelector } from "../../redux/selectors";
 import { SegmentControl } from "../../components/SegmentControl";
 import {
   genders,
@@ -18,6 +18,8 @@ import { WheelPickerOption } from "../../components/WheelPicker";
 import { months } from "../../data/data";
 import { WheelPickerModal } from "../../components/WheelPickerModal";
 import _ from "lodash";
+import { editUser } from "../../redux/actions";
+import { httpClient } from "../../services/HttpClient";
 
 type EditProfileState = {
   name: User["name"];
@@ -96,14 +98,16 @@ const getDateOfBirth = (year: number, month: number) => {
   return new Date(year, month, day).toISOString();
 };
 
-const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
+const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector) as User;
+  const appToken = useSelector(appTokenSelector);
 
   const initialState = React.useMemo(() => {
     return getInitialState(currentUser);
   }, [currentUser]);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
+  const reduxDispatch = useDispatch();
 
   const onChangeName = (value: string) => {
     dispatch({ type: "name", value });
@@ -135,6 +139,48 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
     }
     dispatch({ type: "year", value });
   };
+
+  // =====================================
+
+  const sendEditUserRequest = async (changes: Partial<User>) => {
+    await httpClient.editUserInfo({
+      appToken,
+      ...changes,
+    });
+  };
+
+  const editUserReduxState = (changes: Partial<User>) => {
+    reduxDispatch(editUser(changes));
+  };
+
+  const goToProfile = () => {
+    navigation.goBack();
+  };
+
+  const onConfirm = async () => {
+    const changes = {
+      name: state.name,
+      dateOfBirth: state.dateOfBirth,
+      gender: state.gender,
+      location: state.location,
+    };
+
+    if (!appToken) {
+      editUserReduxState(changes);
+      goToProfile();
+      return;
+    }
+
+    try {
+      await sendEditUserRequest(changes);
+      editUserReduxState(changes);
+      goToProfile();
+    } catch (error) {
+      // TODO: show alert
+    }
+  };
+
+  // =====================================
 
   const month = months[state.month];
   const year = state.year?.toString();
@@ -205,6 +251,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
         </View>
 
         <Button
+          onPress={onConfirm}
           status={hasChanged ? "primary" : "basic"}
           style={styles.confirm}
         >
@@ -229,22 +276,6 @@ const styles = StyleSheet.create({
   segment: {
     width: "100%",
     flexDirection: "row",
-  },
-  segmentLeft: {
-    width: 80,
-    height: 80,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-  },
-  segmentRight: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    alignContent: "center",
   },
   confirm: {
     marginTop: 12,

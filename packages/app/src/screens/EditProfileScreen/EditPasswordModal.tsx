@@ -71,6 +71,13 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
     }
   };
 
+  React.useEffect(() => {
+    // Reset
+    setSecret("");
+    setNewPassword("");
+    setErrorsVisible(false);
+  }, [currentUser]);
+
   return (
     <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
       <View style={styles.modalBody}>

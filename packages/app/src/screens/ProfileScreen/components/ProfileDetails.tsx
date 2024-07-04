@@ -14,6 +14,7 @@ import {
 import { useTodayPrediction } from "../../../contexts/PredictionProvider";
 import { formatMonthYear } from "../../../services/dateUtils";
 import { getAsset } from "../../../services/asset";
+import { SaveAccountButton } from "./SaveAccountButton";
 
 export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
   const currentUser = useSelector(currentUserSelector);
@@ -36,6 +37,15 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
 
   return (
     <View style={styles.container}>
+      {currentUser?.isGuest && (
+        <>
+          <View style={styles.row}>
+            <SaveAccountButton />
+          </View>
+          <Hr />
+        </>
+      )}
+
       {/* ===== Top Section ===== */}
       <TouchableOpacity style={styles.row} onPress={goToEdit}>
         <View style={styles.column}>
@@ -126,6 +136,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 100,
     padding: 12,
+    alignItems: "center",
+    justifyContent: "center",
   },
   column: {
     flexBasis: "33%",

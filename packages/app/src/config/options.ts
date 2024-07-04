@@ -24,3 +24,15 @@ const years = generateRange(currentYear - 7, currentYear - 100).map((item) =>
 );
 
 export const yearOptions = years.map((item) => ({ label: item, value: item }));
+
+export const secretQuestions = [
+  // "secret_question",
+  `favourite_actor`,
+  `favourite_teacher`,
+  `childhood_hero`,
+];
+
+export const questionOptions = secretQuestions.map((item) => ({
+  label: item,
+  value: item,
+}));

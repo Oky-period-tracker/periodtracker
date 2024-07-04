@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { Screen } from "../../components/Screen";
 import { Button } from "../../components/Button";
 import { ScreenComponent } from "../../navigation/RootNavigator";
@@ -20,6 +20,11 @@ import { WheelPickerModal } from "../../components/WheelPickerModal";
 import _ from "lodash";
 import { editUser } from "../../redux/actions";
 import { httpClient } from "../../services/HttpClient";
+import { Text } from "../../components/Text";
+import { Hr } from "../../components/Hr";
+import { useToggle } from "../../hooks/useToggle";
+import { EditPasswordModal } from "./EditPasswordModal";
+import { EditSecretModal } from "./EditSecretModal";
 
 type EditProfileState = {
   name: User["name"];
@@ -140,13 +145,16 @@ const validateState = (
 const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector) as User;
   const appToken = useSelector(appTokenSelector);
+  const reduxDispatch = useDispatch();
+
+  const [passwordModalVisible, togglePasswordModal] = useToggle();
+  const [secretModalVisible, toggleSecretModal] = useToggle();
 
   const initialState = React.useMemo(() => {
     return getInitialState(currentUser);
   }, [currentUser]);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const reduxDispatch = useDispatch();
 
   const onChangeName = (value: string) => {
     dispatch({ type: "name", value });
@@ -304,6 +312,37 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
           Confirm
         </Button>
       </View>
+
+      {/* =============== Security =============== */}
+      <View style={styles.securityContainer}>
+        <View style={styles.segment}>
+          <TouchableOpacity
+            onPress={togglePasswordModal}
+            style={styles.securityButton}
+          >
+            <Text style={styles.securityButtonText}>Change password</Text>
+          </TouchableOpacity>
+        </View>
+        <Hr />
+        <View style={styles.segment}>
+          <TouchableOpacity
+            onPress={toggleSecretModal}
+            style={styles.securityButton}
+          >
+            <Text style={styles.securityButtonText}>Change Secret</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* ===== Modals ===== */}
+      <EditPasswordModal
+        visible={passwordModalVisible}
+        toggleVisible={togglePasswordModal}
+      />
+      <EditSecretModal
+        visible={secretModalVisible}
+        toggleVisible={toggleSecretModal}
+      />
     </Screen>
   );
 };
@@ -331,5 +370,19 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignContent: "center",
+  },
+  securityContainer: {
+    backgroundColor: "#fff",
+    width: "100%",
+    borderRadius: 20,
+    overflow: "hidden",
+  },
+  securityButton: {
+    padding: 24,
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  securityButtonText: {
+    textAlign: "center",
   },
 });

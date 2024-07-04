@@ -4,6 +4,7 @@ import { useSignUp } from "../SignUpContext";
 import { Input } from "../../../../../components/Input";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
+import { questionOptions } from "../../../../../config/options";
 
 export const AskSecret = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -47,19 +48,6 @@ export const AskSecret = () => {
     </View>
   );
 };
-
-// TODO: move somewhere else?
-const secretQuestions = [
-  // "secret_question",
-  `favourite_actor`,
-  `favourite_teacher`,
-  `childhood_hero`,
-];
-
-const questionOptions = secretQuestions.map((item) => ({
-  label: item,
-  value: item,
-}));
 
 const styles = StyleSheet.create({
   container: {

@@ -12,6 +12,7 @@ import { useSelector } from "../redux/useSelector";
 import moment from "moment";
 import { cardAnswerSelector } from "../redux/selectors";
 import { useNavigation } from "@react-navigation/native";
+import { defaultEmoji } from "../config/options";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -71,18 +72,6 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
 
       <View style={styles.bottom}>
         {Object.entries(emojiOptions).map(([key]) => {
-          // key
-          // mood
-
-          // item
-          //  {"happy": "😊",
-
-          // cardAnswersValues
-          // {"mood": ["happy"], || { "mood": "happy"
-
-          // emojiOptions
-          //   mood: { happy: "😊",
-
           // @ts-expect-error TODO:
           const isArray = Array.isArray(cardAnswersValues[key]);
 
@@ -90,10 +79,10 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
             ? // @ts-expect-error TODO:
               cardAnswersValues[key]?.length > 0
             : // @ts-expect-error TODO:
-              !!emojiOptions[cardAnswersValues[key]];
+              !!cardAnswersValues[key];
 
-          const answer = isArray
-            ? isEmojiActive
+          const answer = isEmojiActive
+            ? isArray
               ? // @ts-expect-error TODO:
                 cardAnswersValues[key][0]
               : // @ts-expect-error TODO:
@@ -119,8 +108,6 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     </TouchableOpacity>
   );
 };
-
-const defaultEmoji = "💁‍♀️";
 
 const styles = StyleSheet.create({
   card: {

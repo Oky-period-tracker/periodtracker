@@ -224,6 +224,7 @@ const validateStep = (
       errors.push("no_year");
     }
 
+    // if (state.month === undefined || isNaN(state.month)) { // TODO: check january passes check
     if (!state.month || isNaN(state.month)) {
       isValid = false;
       errors.push("no_month");

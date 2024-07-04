@@ -63,7 +63,11 @@ export const AvatarAndThemeSelect = ({
           };
 
           return (
-            <TouchableOpacity onPress={onPress} style={styles.avatar}>
+            <TouchableOpacity
+              key={avatar}
+              onPress={onPress}
+              style={styles.avatar}
+            >
               <Image
                 source={getAsset(`avatars.${avatar}.theme`)}
                 style={styles.avatarImage}
@@ -90,7 +94,11 @@ export const AvatarAndThemeSelect = ({
           };
 
           return (
-            <TouchableOpacity onPress={onPress} style={styles.theme}>
+            <TouchableOpacity
+              key={theme}
+              onPress={onPress}
+              style={styles.theme}
+            >
               <Image
                 source={getAsset(`backgrounds.${theme}.default`)}
                 style={styles.themeImage}

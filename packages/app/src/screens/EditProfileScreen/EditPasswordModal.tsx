@@ -20,6 +20,12 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
 
   const [secret, setSecret] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
+  const [errorsVisible, setErrorsVisible] = React.useState(false);
+
+  const formattedPassword = formatPassword(newPassword);
+  const formattedSecret = formatPassword(secret);
+
+  const { isValid, errors } = validate(formattedPassword);
 
   const sendRequest = async (password: string, secretAnswer: string) => {
     await httpClient.resetPassword({
@@ -30,18 +36,25 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   };
 
   const updateReduxState = (password: string) => {
-    reduxDispatch(
-      editUser({
-        password,
-      })
-    );
+    reduxDispatch(editUser({ password }));
   };
 
   const onConfirm = async () => {
-    const formattedPassword = formatPassword(newPassword);
-    const formattedSecret = formatPassword(secret);
+    setErrorsVisible(true);
 
-    // TODO: validate
+    if (!isValid) {
+      return;
+    }
+
+    const hasPasswordChanged = currentUser.password !== formattedPassword;
+    if (!hasPasswordChanged) {
+      return;
+    }
+
+    if (formattedSecret !== currentUser.secretAnswer) {
+      // TODO: show error
+      return;
+    }
 
     if (!appToken) {
       updateReduxState(formattedPassword);
@@ -66,19 +79,18 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
           onChangeText={setSecret}
           placeholder="Secret answer"
           secureTextEntry={true}
-          // errors={errors}
-          // errorKey={"password_too_short"}
-          // errorsVisible={state.errorsVisible}
+          //   errors={errors}
+          //   errorKey={"password_too_short"}
+          //   errorsVisible={errorsVisible}
         />
-
         <Input
           value={newPassword}
           onChangeText={setNewPassword}
           placeholder="New password"
           secureTextEntry={true}
-          // errors={errors}
-          // errorKey={"password_too_short"}
-          // errorsVisible={state.errorsVisible}
+          errors={errors}
+          errorKey={"password_too_short"}
+          errorsVisible={errorsVisible}
         />
       </View>
 
@@ -88,6 +100,18 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
       </TouchableOpacity>
     </Modal>
   );
+};
+
+const validate = (password: string) => {
+  const errors: string[] = [];
+  let isValid = true;
+
+  if (password.length < 3) {
+    isValid = false;
+    errors.push("password_too_short");
+  }
+
+  return { isValid, errors };
 };
 
 const styles = StyleSheet.create({

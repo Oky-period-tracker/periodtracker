@@ -98,6 +98,45 @@ const getDateOfBirth = (year: number, month: number) => {
   return new Date(year, month, day).toISOString();
 };
 
+const validateState = (
+  state: EditProfileState
+): { isValid: boolean; errors: string[] } => {
+  const errors: string[] = [];
+  let isValid = true;
+
+  if (state.name.length < 3) {
+    // TODO: check availability
+    isValid = false;
+    errors.push("name_too_short");
+  }
+
+  if (!state.gender) {
+    isValid = false;
+    errors.push("no_gender");
+  }
+
+  if (!state.year) {
+    isValid = false;
+    errors.push("no_year");
+  }
+
+  if (isNaN(state.month)) {
+    isValid = false;
+    errors.push("no_month");
+  }
+
+  if (!state.dateOfBirth) {
+    isValid = false;
+  }
+
+  if (!state.location) {
+    isValid = false;
+    errors.push("no_location");
+  }
+
+  return { isValid, errors };
+};
+
 const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector) as User;
   const appToken = useSelector(appTokenSelector);
@@ -126,7 +165,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
       (item) => item.value === option?.value
     );
     const value = index >= 0 ? index : undefined;
-    if (!value) {
+    if (value == undefined) {
       return;
     }
     dispatch({ type: "month", value });
@@ -139,8 +178,6 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
     }
     dispatch({ type: "year", value });
   };
-
-  // =====================================
 
   const sendEditUserRequest = async (changes: Partial<User>) => {
     await httpClient.editUserInfo({
@@ -180,14 +217,16 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
     }
   };
 
-  // =====================================
-
   const month = months[state.month];
   const year = state.year?.toString();
   const initialMonth = monthOptions.find((item) => item.value === month);
   const initialYear = yearOptions.find((item) => item.value === year);
 
+  const { isValid, errors } = validateState(state);
   const hasChanged = !_.isEqual(state, initialState);
+
+  const canConfirm = hasChanged && isValid;
+  const confirmStatus = canConfirm ? "primary" : "basic";
 
   return (
     <Screen>
@@ -195,7 +234,14 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
       <View style={styles.container}>
         {/* ===== Name ===== */}
         <View style={styles.segment}>
-          <Input value={state.name} onChangeText={onChangeName} />
+          <Input
+            value={state.name}
+            onChangeText={onChangeName}
+            placeholder="Name"
+            errors={errors}
+            errorKey={"name_too_short"}
+            errorsVisible={true}
+          />
         </View>
 
         {/* ===== Gender ===== */}
@@ -204,9 +250,9 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             options={genders}
             selected={state.gender}
             onSelect={onChangeGender}
-            // errors={errors}
-            // errorKey={"no_gender"}
-            // errorsVisible={state.errorsVisible}
+            errors={errors}
+            errorKey={"no_gender"}
+            errorsVisible={true}
           />
         </View>
 
@@ -218,9 +264,9 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             options={monthOptions}
             onSelect={onChangeMonth}
             placeholder={"what month were you born"}
-            // errors={errors}
-            // errorKey={"no_month"}
-            // errorsVisible={state.errorsVisible}
+            errors={errors}
+            errorKey={"no_month"}
+            errorsVisible={true}
           />
         </View>
 
@@ -232,9 +278,9 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             options={yearOptions}
             onSelect={onChangeYear}
             placeholder={"what year were you born"}
-            // errors={errors}
-            // errorKey={"no_year"}
-            // errorsVisible={state.errorsVisible}
+            errors={errors}
+            errorKey={"no_year"}
+            errorsVisible={true}
           />
         </View>
 
@@ -244,15 +290,15 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             options={locations}
             selected={state.location}
             onSelect={onChangeLocation}
-            // errors={errors}
-            // errorKey={"no_location"}
-            // errorsVisible={state.errorsVisible}
+            errors={errors}
+            errorKey={"no_location"}
+            errorsVisible={true}
           />
         </View>
 
         <Button
           onPress={onConfirm}
-          status={hasChanged ? "primary" : "basic"}
+          status={confirmStatus}
           style={styles.confirm}
         >
           Confirm
@@ -275,7 +321,7 @@ const styles = StyleSheet.create({
   },
   segment: {
     width: "100%",
-    flexDirection: "row",
+    flexDirection: "column",
   },
   confirm: {
     marginTop: 12,

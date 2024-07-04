@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     padding: 24,
-    marginBottom: 24,
+    marginBottom: 12,
   },
   segment: {
     width: "100%",

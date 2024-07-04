@@ -1,8 +1,7 @@
 import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { Screen } from "../../components/Screen";
-import { Button, DisplayButton } from "../../components/Button";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Button } from "../../components/Button";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { useSelector } from "react-redux";
 import { Input } from "../../components/Input";
@@ -18,8 +17,7 @@ import { User } from "../../types";
 import { WheelPickerOption } from "../../components/WheelPicker";
 import { months } from "../../data/data";
 import { WheelPickerModal } from "../../components/WheelPickerModal";
-import { UserIcon } from "../../components/icons/UserIcon";
-import { Hr } from "../../components/Hr";
+import _ from "lodash";
 
 type EditProfileState = {
   name: User["name"];
@@ -143,11 +141,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
   const initialMonth = monthOptions.find((item) => item.value === month);
   const initialYear = yearOptions.find((item) => item.value === year);
 
-  const changedName = state.name !== currentUser.name;
-  const changedGender = state.gender !== currentUser.gender;
-  const changedLocation = state.location !== currentUser.location;
-  const changedMonth = state.month !== initialState.month;
-  const changedYear = state.year !== initialState.year;
+  const hasChanged = !_.isEqual(state, initialState);
 
   return (
     <Screen>
@@ -155,128 +149,67 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
       <View style={styles.container}>
         {/* ===== Name ===== */}
         <View style={styles.segment}>
-          <View style={styles.segmentLeft}>
-            <DisplayButton
-              style={styles.iconContainer}
-              status={changedName ? "secondary" : "basic"}
-            >
-              <UserIcon size={24} />
-            </DisplayButton>
-          </View>
-
-          <View style={styles.segmentRight}>
-            <Input
-              value={state.name}
-              onChangeText={onChangeName}
-              style={styles.input}
-            />
-          </View>
+          <Input value={state.name} onChangeText={onChangeName} />
         </View>
-        <Hr />
 
         {/* ===== Gender ===== */}
         <View style={styles.segment}>
-          <View style={styles.segmentLeft}>
-            <DisplayButton
-              style={styles.iconContainer}
-              status={changedGender ? "secondary" : "basic"}
-            >
-              <FontAwesome size={24} name={"transgender"} color={"#fff"} />
-            </DisplayButton>
-          </View>
-
-          <View style={styles.segmentRight}>
-            <SegmentControl
-              options={genders}
-              selected={state.gender}
-              onSelect={onChangeGender}
-              // errors={errors}
-              // errorKey={"no_gender"}
-              // errorsVisible={state.errorsVisible}
-            />
-          </View>
+          <SegmentControl
+            options={genders}
+            selected={state.gender}
+            onSelect={onChangeGender}
+            // errors={errors}
+            // errorKey={"no_gender"}
+            // errorsVisible={state.errorsVisible}
+          />
         </View>
-        <Hr />
 
         {/* ===== Month ===== */}
         <View style={styles.segment}>
-          <View style={styles.segmentLeft}>
-            <DisplayButton
-              style={styles.iconContainer}
-              status={changedMonth ? "secondary" : "basic"}
-            >
-              <FontAwesome size={24} name={"calendar"} color={"#fff"} />
-            </DisplayButton>
-          </View>
-
-          <View style={styles.segmentRight}>
-            <WheelPickerModal
-              inputStyle={styles.input}
-              inputWrapperStyle={styles.wheelPickerModal}
-              initialOption={initialMonth}
-              options={monthOptions}
-              onSelect={onChangeMonth}
-              placeholder={"what month were you born"}
-              // errors={errors}
-              // errorKey={"no_month"}
-              // errorsVisible={state.errorsVisible}
-            />
-          </View>
+          <WheelPickerModal
+            inputWrapperStyle={styles.wheelPickerModal}
+            initialOption={initialMonth}
+            options={monthOptions}
+            onSelect={onChangeMonth}
+            placeholder={"what month were you born"}
+            // errors={errors}
+            // errorKey={"no_month"}
+            // errorsVisible={state.errorsVisible}
+          />
         </View>
-        <Hr />
 
         {/* ===== Year ===== */}
         <View style={styles.segment}>
-          <View style={styles.segmentLeft}>
-            <DisplayButton
-              style={styles.iconContainer}
-              status={changedYear ? "secondary" : "basic"}
-            >
-              <FontAwesome size={24} name={"calendar-o"} color={"#fff"} />
-            </DisplayButton>
-          </View>
-
-          <View style={styles.segmentRight}>
-            <WheelPickerModal
-              inputStyle={styles.input}
-              inputWrapperStyle={styles.wheelPickerModal}
-              initialOption={initialYear}
-              options={yearOptions}
-              onSelect={onChangeYear}
-              placeholder={"what year were you born"}
-              // errors={errors}
-              // errorKey={"no_year"}
-              // errorsVisible={state.errorsVisible}
-            />
-          </View>
+          <WheelPickerModal
+            inputWrapperStyle={styles.wheelPickerModal}
+            initialOption={initialYear}
+            options={yearOptions}
+            onSelect={onChangeYear}
+            placeholder={"what year were you born"}
+            // errors={errors}
+            // errorKey={"no_year"}
+            // errorsVisible={state.errorsVisible}
+          />
         </View>
-        <Hr />
 
         {/* ===== Location ===== */}
         <View style={styles.segment}>
-          <View style={styles.segmentLeft}>
-            <DisplayButton
-              style={styles.iconContainer}
-              status={changedLocation ? "secondary" : "basic"}
-            >
-              <FontAwesome size={24} name={"map-marker"} color={"#fff"} />
-            </DisplayButton>
-          </View>
-
-          <View style={styles.segmentRight}>
-            <SegmentControl
-              options={locations}
-              selected={state.location}
-              onSelect={onChangeLocation}
-              // errors={errors}
-              // errorKey={"no_location"}
-              // errorsVisible={state.errorsVisible}
-            />
-          </View>
+          <SegmentControl
+            options={locations}
+            selected={state.location}
+            onSelect={onChangeLocation}
+            // errors={errors}
+            // errorKey={"no_location"}
+            // errorsVisible={state.errorsVisible}
+          />
         </View>
-        <Hr />
 
-        <Button style={styles.confirm}>Confirm</Button>
+        <Button
+          status={hasChanged ? "primary" : "basic"}
+          style={styles.confirm}
+        >
+          Confirm
+        </Button>
       </View>
     </Screen>
   );
@@ -292,9 +225,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     padding: 24,
     marginBottom: 24,
-  },
-  input: {
-    marginBottom: 0,
   },
   segment: {
     width: "100%",
@@ -317,7 +247,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
   },
   confirm: {
-    marginTop: 24,
+    marginTop: 12,
     alignSelf: "center",
   },
   wheelPickerModal: {

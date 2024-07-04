@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { Swiper } from "../../../components/Swiper";
 import { Button } from "../../../components/Button";
 import { useAuthMode } from "../AuthModeContext";
-import { User } from "../../../components/icons/User";
+import { UserIcon } from "../../../components/icons/UserIcon";
 import WelcomeCard from "./WelcomeCard";
 import { useDispatch } from "react-redux";
 import { setHasOpened } from "../../../redux/actions";
@@ -31,7 +31,7 @@ export const Welcome = () => {
     {
       title: "Welcome to Oky!",
       iconType: "custom",
-      iconComponent: <User size={50} />,
+      iconComponent: <UserIcon size={50} />,
       iconHeading: "Your Oky buddy",
       description: "Friendly characters guide you through the app !",
     },

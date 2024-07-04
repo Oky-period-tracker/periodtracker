@@ -4,7 +4,7 @@ import { DisplayButton } from "../../../components/Button";
 import { Hr } from "../../../components/Hr";
 import { ScreenProps } from "../../../navigation/RootNavigator";
 import { CircleProgress } from "../../MainScreen/components/CircleProgress";
-import { User } from "../../../components/icons/User";
+import { UserIcon } from "../../../components/icons/UserIcon";
 import { useSelector } from "../../../redux/useSelector";
 import {
   currentAvatarSelector,
@@ -40,7 +40,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
       <TouchableOpacity style={styles.row} onPress={goToEdit}>
         <View style={styles.column}>
           <DisplayButton style={styles.icon}>
-            <User size={28} />
+            <UserIcon size={28} />
           </DisplayButton>
         </View>
         <View style={styles.column}>

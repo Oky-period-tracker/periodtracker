@@ -4,7 +4,7 @@ import { SvgIconProps } from "./types";
 import { palette } from "../../config/theme";
 import { View } from "react-native";
 
-export const User = ({
+export const UserIcon = ({
   style,
   size = 80,
   status = "neutral",

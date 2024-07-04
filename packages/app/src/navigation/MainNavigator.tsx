@@ -13,7 +13,7 @@ import EncyclopediaStack, {
 } from "./stacks/EncyclopediaStack";
 import SettingsStack, { SettingsStackParamList } from "./stacks/SettingsStack";
 import { TabIcon } from "./components/TabIcon";
-import { User } from "../components/icons/User";
+import { UserIcon } from "../components/icons/UserIcon";
 import { IS_IOS } from "../services/device";
 
 export type MainStackParamList = {
@@ -54,7 +54,7 @@ function MainNavigator() {
           ...options,
           tabBarIcon: ({ focused, size }) => (
             <TabIcon focused={focused}>
-              <User size={size} />
+              <UserIcon size={size} />
             </TabIcon>
           ),
         }}

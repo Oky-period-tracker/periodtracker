@@ -2,9 +2,9 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
-import { generateRange } from "../../../../../services/utils";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 import { months } from "../../../../../data/data";
+import { monthOptions, yearOptions } from "../../../../../config/options";
 
 export const AskAge = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -51,16 +51,6 @@ export const AskAge = () => {
     </View>
   );
 };
-
-const monthOptions = months.map((item) => ({ label: item, value: item }));
-
-const now = new Date();
-const currentYear = now.getFullYear();
-const years = generateRange(currentYear - 7, currentYear - 100).map((item) =>
-  item.toString()
-);
-
-const yearOptions = years.map((item) => ({ label: item, value: item }));
 
 const styles = StyleSheet.create({
   container: {

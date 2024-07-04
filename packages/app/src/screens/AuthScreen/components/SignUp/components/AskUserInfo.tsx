@@ -3,12 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { Input } from "../../../../../components/Input";
 import { SegmentControl } from "../../../../../components/SegmentControl";
-
-const genders = [
-  { value: "Female", label: "Female", iconName: "female" },
-  { value: "Male", label: "Male", iconName: "male" },
-  { value: "Other", label: "Other", iconName: "genderless" },
-];
+import { genders } from "../../../../../config/options";
 
 export const AskUserInfo = () => {
   const { state, dispatch, errors } = useSignUp();

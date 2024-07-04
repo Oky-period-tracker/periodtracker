@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { Input, InputProps } from "./Input";
 import { Modal } from "./Modal";
 import React from "react";
@@ -14,6 +20,7 @@ export const WheelPickerModal = ({
   allowUndefined = true,
   searchEnabled,
   ToggleComponent,
+  inputWrapperStyle,
   ...props
 }: {
   initialOption: WheelPickerOption | undefined;
@@ -22,6 +29,7 @@ export const WheelPickerModal = ({
   allowUndefined?: boolean;
   searchEnabled?: boolean;
   ToggleComponent?: React.FC<{ onPress: () => void }>;
+  inputWrapperStyle?: ViewStyle;
 } & InputProps) => {
   const { query, setQuery, results } = useSearch<WheelPickerOption>({
     options,
@@ -53,7 +61,7 @@ export const WheelPickerModal = ({
       {ToggleComponent ? (
         <ToggleComponent onPress={toggleVisible} />
       ) : (
-        <TouchableOpacity onPress={toggleVisible}>
+        <TouchableOpacity onPress={toggleVisible} style={inputWrapperStyle}>
           <Input
             {...props}
             value={displayValue}

@@ -1,112 +1,283 @@
 import * as React from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Screen } from "../../components/Screen";
 import { Button, DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { useSelector } from "react-redux";
+import { Input } from "../../components/Input";
+import { currentUserSelector } from "../../redux/selectors";
+import { SegmentControl } from "../../components/SegmentControl";
+import {
+  genders,
+  locations,
+  monthOptions,
+  yearOptions,
+} from "../../config/options";
+import { User } from "../../types";
+import { WheelPickerOption } from "../../components/WheelPicker";
+import { months } from "../../data/data";
+import { WheelPickerModal } from "../../components/WheelPickerModal";
+import { UserIcon } from "../../components/icons/UserIcon";
+import { Hr } from "../../components/Hr";
+
+type EditProfileState = {
+  name: User["name"];
+  gender: User["gender"];
+  month: number;
+  year: number;
+  dateOfBirth: string;
+  location: User["location"];
+};
+
+type Action<T extends keyof EditProfileState = keyof EditProfileState> = {
+  type: T;
+  value: EditProfileState[T];
+};
+
+const getInitialState = (user: User): EditProfileState => {
+  const date = new Date(user.dateOfBirth);
+
+  return {
+    name: user.name,
+    gender: user.gender,
+    month: date.getMonth(),
+    year: date.getFullYear(),
+    dateOfBirth: user.dateOfBirth,
+    location: user.location,
+  };
+};
+
+function reducer(state: EditProfileState, action: Action): EditProfileState {
+  switch (action.type) {
+    case "month": {
+      const month = action.value as number;
+      if (!state.year) {
+        return {
+          ...state,
+          month,
+        };
+      }
+
+      const dateOfBirth = getDateOfBirth(state.year, month);
+
+      return {
+        ...state,
+        month,
+        dateOfBirth,
+      };
+    }
+
+    case "year": {
+      const year = action.value as number;
+      if (!state.month || isNaN(state.month)) {
+        return {
+          ...state,
+          year,
+        };
+      }
+
+      const dateOfBirth = getDateOfBirth(year, state.month);
+      return {
+        ...state,
+        year,
+        dateOfBirth,
+      };
+    }
+
+    default:
+      return {
+        ...state,
+        [action.type]: action.value,
+      };
+  }
+}
+
+const getDateOfBirth = (year: number, month: number) => {
+  const day = 2; // Prevents it defaulting to 31st of previous month
+  return new Date(year, month, day).toISOString();
+};
 
 const EditProfileScreen: ScreenComponent<"EditProfile"> = () => {
-  // @ts-expect-error TODO
-  const name = useSelector((state) => state.app?.name);
-  // const dispatch = useDispatch();
+  const currentUser = useSelector(currentUserSelector) as User;
 
-  const onChangeText = (/* value: string */) => {
-    // dispatch(setName(value));
+  const initialState = React.useMemo(() => {
+    return getInitialState(currentUser);
+  }, [currentUser]);
+
+  const [state, dispatch] = React.useReducer(reducer, initialState);
+
+  const onChangeName = (value: string) => {
+    dispatch({ type: "name", value });
   };
+
+  const onChangeGender = (value: string) => {
+    dispatch({ type: "gender", value });
+  };
+
+  const onChangeLocation = (value: string) => {
+    dispatch({ type: "location", value });
+  };
+
+  const onChangeMonth = (option: WheelPickerOption | undefined) => {
+    const index = monthOptions.findIndex(
+      (item) => item.value === option?.value
+    );
+    const value = index >= 0 ? index : undefined;
+    if (!value) {
+      return;
+    }
+    dispatch({ type: "month", value });
+  };
+
+  const onChangeYear = (option: WheelPickerOption | undefined) => {
+    const value = option ? parseInt(option?.value) : undefined;
+    if (!value) {
+      return;
+    }
+    dispatch({ type: "year", value });
+  };
+
+  const month = months[state.month];
+  const year = state.year?.toString();
+  const initialMonth = monthOptions.find((item) => item.value === month);
+  const initialYear = yearOptions.find((item) => item.value === year);
+
+  const changedName = state.name !== currentUser.name;
+  const changedGender = state.gender !== currentUser.gender;
+  const changedLocation = state.location !== currentUser.location;
+  const changedMonth = state.month !== initialState.month;
+  const changedYear = state.year !== initialState.year;
 
   return (
     <Screen>
+      {/* =============== Profile =============== */}
       <View style={styles.container}>
+        {/* ===== Name ===== */}
         <View style={styles.segment}>
           <View style={styles.segmentLeft}>
-            <DisplayButton style={styles.iconContainer}>
-              <FontAwesome size={28} name={"user"} color={"#fff"} />
+            <DisplayButton
+              style={styles.iconContainer}
+              status={changedName ? "secondary" : "basic"}
+            >
+              <UserIcon size={24} />
             </DisplayButton>
           </View>
-          <View style={styles.segmentRight}>
-            <Text style={styles.label}>Name !</Text>
-            <TextInput
-              placeholder=""
-              style={styles.input}
-              onChangeText={onChangeText}
-              value={name}
-            />
-          </View>
-        </View>
 
-        <View style={styles.segment}>
-          <View style={styles.segmentLeft}>
-            <DisplayButton style={styles.iconContainer}>
-              <FontAwesome size={28} name={"user"} color={"#fff"} />
-            </DisplayButton>
-          </View>
           <View style={styles.segmentRight}>
-            <Text style={styles.label}>Name local</Text>
-            <TextInput
-              placeholder=""
+            <Input
+              value={state.name}
+              onChangeText={onChangeName}
               style={styles.input}
-              onChangeText={() => {
-                //
-              }}
-              value={""}
             />
           </View>
         </View>
+        <Hr />
 
+        {/* ===== Gender ===== */}
         <View style={styles.segment}>
           <View style={styles.segmentLeft}>
-            <DisplayButton style={styles.iconContainer}>
-              <FontAwesome size={28} name={"user"} color={"#fff"} />
+            <DisplayButton
+              style={styles.iconContainer}
+              status={changedGender ? "secondary" : "basic"}
+            >
+              <FontAwesome size={24} name={"transgender"} color={"#fff"} />
             </DisplayButton>
           </View>
-          <View style={styles.segmentRight}>
-            <Text style={styles.label}>Name</Text>
-            <TextInput
-              placeholder=""
-              style={styles.input}
-              onChangeText={() => null}
-              value={""}
-            />
-          </View>
-        </View>
 
-        <View style={styles.segment}>
-          <View style={styles.segmentLeft}>
-            <DisplayButton style={styles.iconContainer}>
-              <FontAwesome size={28} name={"user"} color={"#fff"} />
-            </DisplayButton>
-          </View>
           <View style={styles.segmentRight}>
-            <Text style={styles.label}>Name</Text>
-            <TextInput
-              placeholder=""
-              style={styles.input}
-              onChangeText={() => null}
-              value={""}
+            <SegmentControl
+              options={genders}
+              selected={state.gender}
+              onSelect={onChangeGender}
+              // errors={errors}
+              // errorKey={"no_gender"}
+              // errorsVisible={state.errorsVisible}
             />
           </View>
         </View>
+        <Hr />
 
+        {/* ===== Month ===== */}
         <View style={styles.segment}>
           <View style={styles.segmentLeft}>
-            <DisplayButton style={styles.iconContainer}>
-              <FontAwesome size={28} name={"user"} color={"#fff"} />
+            <DisplayButton
+              style={styles.iconContainer}
+              status={changedMonth ? "secondary" : "basic"}
+            >
+              <FontAwesome size={24} name={"calendar"} color={"#fff"} />
             </DisplayButton>
           </View>
+
           <View style={styles.segmentRight}>
-            <Text style={styles.label}>Name</Text>
-            <TextInput
-              placeholder=""
-              style={styles.input}
-              onChangeText={() => null}
-              value={""}
+            <WheelPickerModal
+              inputStyle={styles.input}
+              inputWrapperStyle={styles.wheelPickerModal}
+              initialOption={initialMonth}
+              options={monthOptions}
+              onSelect={onChangeMonth}
+              placeholder={"what month were you born"}
+              // errors={errors}
+              // errorKey={"no_month"}
+              // errorsVisible={state.errorsVisible}
             />
           </View>
         </View>
+        <Hr />
+
+        {/* ===== Year ===== */}
+        <View style={styles.segment}>
+          <View style={styles.segmentLeft}>
+            <DisplayButton
+              style={styles.iconContainer}
+              status={changedYear ? "secondary" : "basic"}
+            >
+              <FontAwesome size={24} name={"calendar-o"} color={"#fff"} />
+            </DisplayButton>
+          </View>
+
+          <View style={styles.segmentRight}>
+            <WheelPickerModal
+              inputStyle={styles.input}
+              inputWrapperStyle={styles.wheelPickerModal}
+              initialOption={initialYear}
+              options={yearOptions}
+              onSelect={onChangeYear}
+              placeholder={"what year were you born"}
+              // errors={errors}
+              // errorKey={"no_year"}
+              // errorsVisible={state.errorsVisible}
+            />
+          </View>
+        </View>
+        <Hr />
+
+        {/* ===== Location ===== */}
+        <View style={styles.segment}>
+          <View style={styles.segmentLeft}>
+            <DisplayButton
+              style={styles.iconContainer}
+              status={changedLocation ? "secondary" : "basic"}
+            >
+              <FontAwesome size={24} name={"map-marker"} color={"#fff"} />
+            </DisplayButton>
+          </View>
+
+          <View style={styles.segmentRight}>
+            <SegmentControl
+              options={locations}
+              selected={state.location}
+              onSelect={onChangeLocation}
+              // errors={errors}
+              // errorKey={"no_location"}
+              // errorsVisible={state.errorsVisible}
+            />
+          </View>
+        </View>
+        <Hr />
+
+        <Button style={styles.confirm}>Confirm</Button>
       </View>
-
-      <Button>Confirm</Button>
     </Screen>
   );
 };
@@ -122,6 +293,9 @@ const styles = StyleSheet.create({
     padding: 24,
     marginBottom: 24,
   },
+  input: {
+    marginBottom: 0,
+  },
   segment: {
     width: "100%",
     flexDirection: "row",
@@ -131,26 +305,24 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
   },
   iconContainer: {
-    width: 60,
-    height: 60,
+    width: 40,
+    height: 40,
   },
   segmentRight: {
     flex: 1,
     justifyContent: "center",
-    padding: 8,
+    alignItems: "center",
+    alignContent: "center",
   },
-  input: {
-    borderColor: "#f0f0f0",
-    borderBottomWidth: 1,
-    backgroundColor: "#fff",
-    padding: 8,
+  confirm: {
+    marginTop: 24,
+    alignSelf: "center",
+  },
+  wheelPickerModal: {
     width: "100%",
-    borderRadius: 8,
-  },
-  label: {
-    marginBottom: 4,
+    justifyContent: "center",
+    alignContent: "center",
   },
 });

@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useThrottledFunction } from "../hooks/useThrottledFunction";
+import { TutorialSkip } from "../screens/MainScreen/components/TutorialSkip";
 
 export type TutorialContainerProps = {
   children?: React.ReactNode;
@@ -25,6 +26,7 @@ export const TutorialContainer = ({ children }: TutorialContainerProps) => {
   return (
     <RNModal visible={true} transparent={true} statusBarTranslucent={true}>
       <View style={styles.container}>
+        <TutorialSkip />
         <View style={styles.backDrop} />
         <TouchableOpacity
           style={styles.touchableOverlay}

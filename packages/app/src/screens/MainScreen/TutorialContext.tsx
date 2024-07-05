@@ -144,13 +144,13 @@ function reducer(state: TutorialState, action: Action): TutorialState {
     case "skip":
       return {
         ...state,
-        stepIndex: tutorialSteps.length - 1,
+        stepIndex: tutorialSteps.length,
       };
 
     case "reset":
       return {
         ...state,
-        // isActive: false,
+        isActive: false,
         stepIndex: 0,
       };
 

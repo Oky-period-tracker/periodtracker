@@ -6,6 +6,7 @@ import {
   View,
 } from "react-native";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
+import { useThrottledFunction } from "../hooks/useThrottledFunction";
 
 export type TutorialContainerProps = {
   children?: React.ReactNode;
@@ -18,13 +19,16 @@ export const TutorialContainer = ({ children }: TutorialContainerProps) => {
     dispatch({ type: "continue" });
   };
 
+  // Prevent double clicking
+  const continueThrottled = useThrottledFunction(onContinue, 350);
+
   return (
     <RNModal visible={true} transparent={true} statusBarTranslucent={true}>
       <View style={styles.container}>
         <View style={styles.backDrop} />
         <TouchableOpacity
           style={styles.touchableOverlay}
-          onPress={onContinue}
+          onPress={continueThrottled}
         />
         {children}
       </View>

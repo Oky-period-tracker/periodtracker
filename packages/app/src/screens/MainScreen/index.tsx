@@ -13,6 +13,7 @@ import { Avatar } from "../../components/Avatar";
 import { TutorialProvider, useTutorial } from "./TutorialContext";
 import { TutorialTextbox } from "./components/TutorialTextbox";
 import { TutorialArrow } from "./components/TutorialArrow";
+import { TutorialFeature } from "./components/TutorialFeature";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   return (
@@ -74,6 +75,7 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
 
       <TutorialArrow />
       <TutorialTextbox />
+      <TutorialFeature />
 
       {selectedItem && (
         <DayModal
@@ -125,14 +127,5 @@ const styles = StyleSheet.create({
   // Tutorial
   hidden: {
     opacity: 0.1,
-  },
-  arrowButtonContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-  },
-  arrowButton: {
-    width: 60,
-    height: 60,
   },
 });

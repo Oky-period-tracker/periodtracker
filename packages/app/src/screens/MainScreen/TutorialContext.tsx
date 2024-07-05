@@ -185,14 +185,15 @@ const defaultValue: TutorialContext = {
 
 const TutorialContext = React.createContext<TutorialContext>(defaultValue);
 
-const CloudSize = 52;
+const WheelButtonSize = 52;
+const CloudSize = 80 + 16;
 
 export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
   const step = tutorialSteps[state.stepIndex];
 
-  const { width: screenWidth, height: screenHeight } = useScreenDimensions();
+  const { width: screenWidth } = useScreenDimensions();
   const [topLeftLayout, onTopLeftLayout] = useLayout();
   const [wheelLayout, onWheelLayout] = useLayout();
 
@@ -222,7 +223,7 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
     },
     center_card: {
       rotationAngle: 180,
-      translationX: (topLeftLayout?.width ?? 0) + CloudSize,
+      translationX: (topLeftLayout?.width ?? 0) + WheelButtonSize,
       translationY: (wheelLayout?.height ?? 0) / 2 - 30, // arrow height
       title: "tutorial_2_content",
       text: "tutorial_2",
@@ -237,35 +238,35 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
     colors: {
       rotationAngle: 90,
       translationX: screenWidth / 2 - 30,
-      translationY: screenHeight / 2 + 30,
+      translationY: CloudSize * 2,
       title: "tutorial_4_content",
       text: "tutorial_4",
     },
     verify: {
       rotationAngle: 90,
       translationX: screenWidth / 2 - 30,
-      translationY: screenHeight / 2 + 30,
+      translationY: CloudSize * 2,
       title: "tutorial_5_content",
       text: "tutorial_5",
     },
     predicted: {
       rotationAngle: 90,
       translationX: screenWidth / 2 - 30 - CloudSize,
-      translationY: screenHeight / 2 + 30,
+      translationY: CloudSize * 2,
       title: "tutorial_6_content",
       text: "tutorial_6",
     },
     period: {
       rotationAngle: 90,
       translationX: screenWidth / 2 - 30,
-      translationY: screenHeight / 2 + 30,
+      translationY: CloudSize * 2,
       title: "tutorial_7_content",
       text: "tutorial_7",
     },
     no_period: {
       rotationAngle: 90,
       translationX: screenWidth / 2 - 30 + CloudSize,
-      translationY: screenHeight / 2 + 30,
+      translationY: CloudSize * 2,
       title: "tutorial_8_content",
       text: "tutorial_8",
     },

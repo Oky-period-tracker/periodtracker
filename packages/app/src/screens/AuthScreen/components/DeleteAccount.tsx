@@ -1,9 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { AuthHeader } from "./AuthHeader";
 import { Hr } from "../../../components/Hr";
 import { Input } from "../../../components/Input";
 import { ErrorText } from "../../../components/ErrorText";
+import { Text } from "../../../components/Text";
 
 type RequestStatus = "unknown" | "success" | "fail";
 

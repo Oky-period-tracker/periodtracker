@@ -1,8 +1,9 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { useSelector } from "../../../../redux/useSelector";
 import { allDidYouKnowsSelectors } from "../../../../redux/selectors";
 import _ from "lodash";
+import { StyleSheet, View } from "react-native";
+import { Text } from "../../../../components/Text";
 
 export const DidYouKnowCard = () => {
   const allDidYouKnows = useSelector(allDidYouKnowsSelectors);

@@ -1,9 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { JourneyStep, useJourney } from "../JourneyContext";
 import { JourneyCollect } from "./JourneyCollect";
 import { journeyConfig } from "../journeyConfig";
 import { Vr } from "../../../../../components/Vr";
+import { Text } from "../../../../../components/Text";
 
 type Status = "unknown" | "no" | "yes";
 

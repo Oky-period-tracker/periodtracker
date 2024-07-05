@@ -1,11 +1,12 @@
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../../components/Button";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { CustomStackNavigationOptions } from "./NavigationStack";
 import { IS_ANDROID } from "../../services/device";
+import { Text } from "../../components/Text";
 
 export type HeaderProps = NativeStackHeaderProps & {
   options: CustomStackNavigationOptions;

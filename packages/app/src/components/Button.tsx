@@ -2,7 +2,7 @@ import React from "react";
 import {
   StyleProp,
   StyleSheet,
-  Text,
+  // Text,
   TextStyle,
   TouchableOpacity,
   View,
@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { PaletteStatus, palette } from "../config/theme";
 import { Appearance } from "./IconButton";
+import { Text } from "./Text";
 
 export type ButtonProps = ViewProps & {
   onPress?: () => void;

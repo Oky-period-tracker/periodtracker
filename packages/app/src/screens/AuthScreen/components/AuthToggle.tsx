@@ -1,7 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Hr } from "../../../components/Hr";
 import { useAuthMode } from "../AuthModeContext";
+import { Text } from "../../../components/Text";
 
 export const AuthToggle = () => {
   const { setAuthMode } = useAuthMode();

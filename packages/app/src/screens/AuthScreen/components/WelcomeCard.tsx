@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { DisplayButton } from '../../../components/Button';
+import { Text } from '../../../components/Text';
 
 
 interface CardProps {

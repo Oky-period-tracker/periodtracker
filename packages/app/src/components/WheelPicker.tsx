@@ -1,13 +1,13 @@
 import React from "react";
 import {
   View,
-  Text,
   FlatList,
   StyleSheet,
   NativeSyntheticEvent,
   NativeScrollEvent,
   TouchableOpacity,
 } from "react-native";
+import { Text } from "./Text";
 
 const ITEM_HEIGHT = 40;
 const VISIBLE_ITEMS = 3;

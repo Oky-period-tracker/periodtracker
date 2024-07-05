@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Button } from "../../../components/Button";
 import { useAuthMode } from "../AuthModeContext";
@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "../../../redux/useSelector";
 import { currentUserSelector } from "../../../redux/selectors";
 import { logoutRequest } from "../../../redux/actions";
+import { Text } from "../../../components/Text";
 
 export const AuthHeader = ({ title }: { title: string }) => {
   const user = useSelector(currentUserSelector);

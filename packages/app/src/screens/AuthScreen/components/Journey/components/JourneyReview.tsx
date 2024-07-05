@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useJourney, journeySteps, getAnswerForStep } from "../JourneyContext";
 import { Hr } from "../../../../../components/Hr";
@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import { journeyCompletion } from "../../../../../redux/actions";
 import { useAuth } from "../../../../../contexts/AuthContext";
+import { Text } from "../../../../../components/Text";
 
 export const JourneyReview = () => {
   const { state, dispatch } = useJourney();

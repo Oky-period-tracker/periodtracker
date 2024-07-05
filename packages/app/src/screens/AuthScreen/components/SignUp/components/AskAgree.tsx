@@ -3,8 +3,8 @@ import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { Checkbox } from "../../../../../components/Checkbox";
 import { A } from "../../../../../components/A";
-import { Text } from "../../../../../components/Text";
 import { useNavigation } from "@react-navigation/native";
+import { Text } from "../../../../../components/Text";
 
 export const AskAgree = () => {
   const { state, dispatch } = useSignUp();

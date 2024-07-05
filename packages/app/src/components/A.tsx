@@ -3,11 +3,11 @@ import {
   Platform,
   StyleProp,
   StyleSheet,
-  Text,
   TextProps,
   TextStyle,
 } from "react-native";
 import * as Linking from "expo-linking";
+import { Text } from "./Text";
 
 export const A = ({
   href,

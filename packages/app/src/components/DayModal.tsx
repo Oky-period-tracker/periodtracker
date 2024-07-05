@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { Text } from "./Text";
 import { Modal, ModalProps } from "./Modal";
 import { IconButton } from "./IconButton";
 import moment from "moment";

@@ -1,5 +1,6 @@
 import * as React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { Text } from "./Text";
 
 export type TouchableRowProps = {
   title: string;

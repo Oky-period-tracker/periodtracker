@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  Appearance,
-  StyleSheet,
-  Text,
-  TextStyle,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, TextStyle, TouchableOpacity } from "react-native";
+import { Text } from "./Text";
 import { SvgIconProps } from "./icons/types";
 import { ThemeName } from "../core/modules";
 import Cloud from "./icons/Cloud";

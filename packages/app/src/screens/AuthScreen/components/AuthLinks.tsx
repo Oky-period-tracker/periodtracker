@@ -1,7 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useAuthMode } from "../AuthModeContext";
+import { Text } from "../../../components/Text";
 
 export const AuthLinks = () => {
   const { setAuthMode } = useAuthMode();

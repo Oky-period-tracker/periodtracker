@@ -1,11 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { useToggle } from "../../../hooks/useToggle";
 import { DisplayButton } from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useEncyclopedia } from "../EncyclopediaContext";
 import { SubCategory } from "../../../data/data";
 import { useSelector } from "../../../redux/useSelector";
+import { Text } from "../../../components/Text";
 import {
   allSubCategoriesByIdSelector,
   categoryByIDSelector,

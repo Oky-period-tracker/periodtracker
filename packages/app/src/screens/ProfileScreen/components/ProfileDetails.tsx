@@ -1,10 +1,11 @@
 import * as React from "react";
-import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { DisplayButton } from "../../../components/Button";
 import { Hr } from "../../../components/Hr";
 import { ScreenProps } from "../../../navigation/RootNavigator";
 import { CircleProgress } from "../../MainScreen/components/CircleProgress";
 import { UserIcon } from "../../../components/icons/UserIcon";
+import { Text } from "../../../components/Text";
 import { useSelector } from "../../../redux/useSelector";
 import {
   currentAvatarSelector,

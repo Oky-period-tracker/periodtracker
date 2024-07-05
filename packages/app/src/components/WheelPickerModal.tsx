@@ -1,6 +1,6 @@
 import {
   StyleSheet,
-  Text,
+  // Text,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -12,6 +12,7 @@ import { WheelPicker, WheelPickerOption } from "./WheelPicker";
 import { Hr } from "./Hr";
 import { useSearch } from "../hooks/useSearch";
 import { SearchBar } from "./SearchBar";
+import { Text } from "./Text";
 
 export const WheelPickerModal = ({
   initialOption,

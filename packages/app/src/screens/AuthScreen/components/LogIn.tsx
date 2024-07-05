@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { AuthHeader } from "./AuthHeader";
 import { Hr } from "../../../components/Hr";
 import { Input } from "../../../components/Input";
@@ -10,6 +10,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { formatPassword } from "../../../services/auth";
 import { useDispatch } from "react-redux";
 import { loginRequest } from "../../../redux/actions";
+import { Text } from "../../../components/Text";
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector);

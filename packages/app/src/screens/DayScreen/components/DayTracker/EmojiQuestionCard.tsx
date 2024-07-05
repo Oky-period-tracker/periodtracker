@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { BadgeSize, EmojiBadge } from "../../../../components/EmojiBadge";
 import {
   EmojiCardText,
@@ -9,6 +9,7 @@ import {
 } from "./config";
 import { EmojiQuestionOptions } from "./types";
 import { useSelector } from "../../../../redux/useSelector";
+import { Text } from "../../../../components/Text";
 import {
   cardAnswerSelector,
   currentUserSelector,

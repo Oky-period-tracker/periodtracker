@@ -1,11 +1,12 @@
 import * as React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { Article, data } from "../../data/data";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { useEncyclopedia } from "../EncyclopediaScreen/EncyclopediaContext";
 import { SearchBar } from "../../components/SearchBar";
 import { ArticleContent } from "./ArticleContent";
+import { Text } from "../../components/Text";
 
 const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   const { query, setQuery, articleIds } = useEncyclopedia();

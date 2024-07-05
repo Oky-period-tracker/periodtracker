@@ -1,13 +1,13 @@
 import React from "react";
 import {
   StyleSheet,
-  Text,
   TextInput,
   TextInputProps,
   TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
+import { Text } from "./Text";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ErrorText } from "./ErrorText";
 

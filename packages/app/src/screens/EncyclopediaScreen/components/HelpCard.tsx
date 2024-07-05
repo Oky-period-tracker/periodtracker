@@ -1,10 +1,11 @@
 import React from "react";
 import {
   StyleSheet,
-  Text,
+  // Text,
   TouchableOpacity,
   TouchableOpacityProps,
 } from "react-native";
+import { Text } from "../../../components/Text";
 
 export const HelpCard = ({ ...props }: TouchableOpacityProps) => {
   return (

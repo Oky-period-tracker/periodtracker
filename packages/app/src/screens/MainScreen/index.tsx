@@ -10,17 +10,16 @@ import { DayModal } from "../../components/DayModal";
 import { CircleProgress } from "./components/CircleProgress";
 import { Text } from "../../components/Text";
 import { Avatar } from "../../components/Avatar";
-import { TutorialContainer } from "../../components/TutorialContainer";
-import { TutorialProvider } from "./TutorialContext";
+import { TutorialProvider, useTutorial } from "./TutorialContext";
+import { TutorialTextbox } from "./components/TutorialTextbox";
+import { TutorialArrow } from "./components/TutorialArrow";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   return (
     <TutorialProvider>
-      <TutorialContainer>
-        <DayScrollProvider>
-          <MainScreenInner {...props} />
-        </DayScrollProvider>
-      </TutorialContainer>
+      <DayScrollProvider>
+        <MainScreenInner {...props} />
+      </DayScrollProvider>
     </TutorialProvider>
   );
 };
@@ -31,28 +30,50 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
 
   const { width } = useScreenDimensions();
 
+  const { state, step, onTopLeftLayout, onWheelLayout } = useTutorial();
+
+  const avatarHidden = state.isActive && step !== "avatar";
+  const circleProgressHidden = state.isActive;
+  const wheelHidden =
+    state.isActive && step !== "wheel" && step !== "wheel_button";
+  const centerCardHidden =
+    state.isActive && step !== "wheel" && step !== "center_card";
+  const carouselHidden = state.isActive;
+
   const goToCalendar = () => navigation.navigate("Calendar");
 
   return (
     <View style={styles.screen}>
       <View style={styles.body} onLayout={onBodyLayout}>
-        <View style={styles.topLeft}>
-          <CircleProgress onPress={goToCalendar} />
-          <TouchableOpacity onPress={goToCalendar}>
+        <View style={styles.topLeft} onLayout={onTopLeftLayout}>
+          <CircleProgress
+            onPress={goToCalendar}
+            style={circleProgressHidden && styles.hidden}
+          />
+          <TouchableOpacity
+            onPress={goToCalendar}
+            style={circleProgressHidden && styles.hidden}
+          >
             <Text>Calendar</Text>
           </TouchableOpacity>
-          <Avatar />
+          <Avatar style={avatarHidden && styles.hidden} />
         </View>
 
-        <View style={[styles.wheelContainer, { width, right: -width / 2 }]}>
-          <Wheel />
-          <CenterCard />
+        <View
+          style={[styles.wheelContainer, { width, right: -width / 2 }]}
+          onLayout={onWheelLayout}
+        >
+          <Wheel style={wheelHidden && styles.hidden} />
+          <CenterCard style={centerCardHidden && styles.hidden} />
         </View>
       </View>
 
-      <View style={styles.carouselContainer}>
+      <View style={[styles.carouselContainer, carouselHidden && styles.hidden]}>
         <Carousel />
       </View>
+
+      <TutorialArrow />
+      <TutorialTextbox />
 
       {selectedItem && (
         <DayModal
@@ -100,5 +121,18 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginLeft: 40,
+  },
+  // Tutorial
+  hidden: {
+    opacity: 0.1,
+  },
+  arrowButtonContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+  },
+  arrowButton: {
+    width: 60,
+    height: 60,
   },
 });

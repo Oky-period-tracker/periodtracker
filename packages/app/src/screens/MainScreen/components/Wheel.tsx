@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import Cloud from "../../../components/icons/Cloud";
@@ -9,12 +9,12 @@ import { formatMomentDayMonth } from "../../../services/utils";
 
 import { useDayStatus } from "../../../hooks/useDayStatus";
 
-export const Wheel = () => {
+export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { data, wheelPanGesture, wheelAnimatedStyle } = useDayScroll();
 
   return (
     <GestureDetector gesture={wheelPanGesture}>
-      <Animated.View style={[styles.container, wheelAnimatedStyle]}>
+      <Animated.View style={[styles.container, wheelAnimatedStyle, style]}>
         {data.map((item, index) => (
           <WheelButton key={`wheel-button-${index}`} {...{ item, index }} />
         ))}

@@ -7,6 +7,7 @@ import PieChart from "react-native-pie-chart";
 
 export const CircleProgress = ({
   size = 52,
+  style,
   onPress,
 }: ButtonProps & { size?: number }) => {
   const { cycleDay, cycleLength } = useTodayPrediction();
@@ -16,10 +17,13 @@ export const CircleProgress = ({
     <Button
       onPress={onPress}
       status={"secondary"}
-      style={{
-        width: size,
-        height: size,
-      }}
+      style={[
+        {
+          width: size,
+          height: size,
+        },
+        style,
+      ]}
     >
       <PieChart
         widthAndHeight={size}

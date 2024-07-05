@@ -5,21 +5,26 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useTutorial } from "../screens/MainScreen/TutorialContext";
 
 export type TutorialContainerProps = {
   children?: React.ReactNode;
 };
 
 export const TutorialContainer = ({ children }: TutorialContainerProps) => {
+  const { dispatch } = useTutorial();
+
+  const onContinue = () => {
+    dispatch({ type: "continue" });
+  };
+
   return (
     <RNModal visible={true} transparent={true} statusBarTranslucent={true}>
       <View style={styles.container}>
         <View style={styles.backDrop} />
         <TouchableOpacity
           style={styles.touchableOverlay}
-          onPress={() => {
-            //
-          }}
+          onPress={onContinue}
         />
         {children}
       </View>

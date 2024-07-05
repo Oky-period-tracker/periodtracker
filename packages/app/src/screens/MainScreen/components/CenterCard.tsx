@@ -1,18 +1,22 @@
 import * as React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ViewStyle, StyleProp } from "react-native";
 import { Text } from "../../../components/Text";
 import { useScreenDimensions } from "../../../hooks/useScreenDimensions";
 import { useTodayPrediction } from "../../../contexts/PredictionProvider";
 import { useDayStatus } from "../../../hooks/useDayStatus";
 
-export const CenterCard = () => {
+export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { width } = useScreenDimensions();
   const todaysInfo = useTodayPrediction();
   const status = useDayStatus(todaysInfo);
 
   return (
     <View
-      style={[styles.container, { left: width / 2 - WIDTH - MARGIN_RIGHT }]}
+      style={[
+        styles.container,
+        { left: width / 2 - WIDTH - MARGIN_RIGHT },
+        style,
+      ]}
     >
       <Text style={styles.number} status={status}>
         {todaysInfo.onPeriod

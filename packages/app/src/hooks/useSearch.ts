@@ -1,5 +1,5 @@
 import React from "react";
-import { useDebounceFunction } from "./useDebounceFunction";
+import { useDebounceEffect } from "./useDebounceEffect";
 
 interface UseSearchProps<T> {
   options: T[];
@@ -65,7 +65,7 @@ export const useSearch = <T>({
     setResults(filteredOptions);
   }, [enabled, query, optionsWithCombinedString, type]);
 
-  useDebounceFunction(search, 500);
+  useDebounceEffect(search, 500);
 
   return {
     query,

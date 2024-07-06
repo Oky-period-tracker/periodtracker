@@ -67,3 +67,5 @@ export const palette: Record<
     text: "#F9C7C1",
   },
 };
+
+export const starColor = "#F6AC3F";

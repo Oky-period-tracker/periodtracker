@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { EmojiBadge } from "../../../../components/EmojiBadge";
+import { BadgeSize, EmojiBadge } from "../../../../components/EmojiBadge";
 import { EmojiCardText, emojiOptions } from "./config";
 import { EmojiQuestionOptions } from "./types";
 import { useSelector } from "../../../../redux/useSelector";
@@ -15,21 +15,23 @@ import { answerDailyCard } from "../../../../redux/actions";
 export const EmojiQuestionCard = ({
   topic,
   dataEntry,
+  size = "large",
 }: {
   topic: keyof EmojiQuestionOptions;
-  dataEntry: DayData;
+  dataEntry?: DayData;
+  size?: BadgeSize;
 }) => {
   const mutuallyExclusive = topic === "flow";
   const userID = useSelector(currentUserSelector)?.id;
 
-  const selectedEmojis = useSelector((state) =>
-    cardAnswerSelector(state, dataEntry.date)
-  );
+  const selectedEmojis = dataEntry
+    ? useSelector((state) => cardAnswerSelector(state, dataEntry?.date))
+    : {};
 
   const dispatch = useDispatch();
 
   const onEmojiPress = (answer: string) => {
-    if (!userID) {
+    if (!userID || !dataEntry) {
       return;
     }
 
@@ -71,7 +73,7 @@ export const EmojiQuestionCard = ({
                 emoji={emoji}
                 text={key}
                 status={status}
-                size={"large"}
+                size={size}
                 style={styles.emojiBadge}
               />
             );
@@ -110,13 +112,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   emojiContainer: {
-    minHeight: 200,
+    flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-around",
+    alignItems: "center",
+    alignContent: "center",
   },
   emojiBadge: {
     flexBasis: "30%",
-    marginVertical: 24,
+    marginVertical: 12,
   },
 });

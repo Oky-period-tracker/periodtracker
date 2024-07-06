@@ -17,11 +17,11 @@ import { TutorialFeature } from "./components/TutorialFeature";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   return (
-    <TutorialProvider>
-      <DayScrollProvider>
+    <DayScrollProvider>
+      <TutorialProvider>
         <MainScreenInner {...props} />
-      </DayScrollProvider>
-    </TutorialProvider>
+      </TutorialProvider>
+    </DayScrollProvider>
   );
 };
 
@@ -34,12 +34,13 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
   const { state, step, onTopLeftLayout, onWheelLayout } = useTutorial();
 
   const avatarHidden = state.isActive && step !== "avatar";
-  const circleProgressHidden = state.isActive;
+  const circleProgressHidden = state.isActive && step !== "calendar";
   const wheelHidden =
     state.isActive && step !== "wheel" && step !== "wheel_button";
   const centerCardHidden =
     state.isActive && step !== "wheel" && step !== "center_card";
-  const carouselHidden = state.isActive;
+  const carouselHidden =
+    state.isActive && !["track", "summary", "stars"].includes(step ?? "");
 
   const goToCalendar = () => navigation.navigate("Calendar");
 

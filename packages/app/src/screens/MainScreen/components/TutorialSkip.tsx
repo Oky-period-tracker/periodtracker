@@ -9,7 +9,7 @@ export const TutorialSkip = () => {
   const { dispatch } = useTutorial();
 
   const onSkip = () => {
-    dispatch({ type: "skip" });
+    dispatch({ type: "reset" });
   };
 
   return (

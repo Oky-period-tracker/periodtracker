@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  StyleProp,
   StyleSheet,
   Text,
   TextStyle,
@@ -12,7 +13,7 @@ import { PaletteStatus, palette } from "../config/theme";
 export type ButtonProps = ViewProps & {
   onPress?: () => void;
   status?: PaletteStatus;
-  textStyle?: TextStyle;
+  textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
 };
 

@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, ViewStyle } from "react-native";
 import { Button, ButtonProps } from "./Button";
 
-type BadgeSize = "tiny" | "small" | "medium" | "large";
+export type BadgeSize = "tiny" | "small" | "medium" | "large";
 
 type EmojiBadgeProps = {
   emoji: string;

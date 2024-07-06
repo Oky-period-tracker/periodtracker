@@ -1,21 +1,21 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "../../../components/Text";
-import { configForStep, useTutorial } from "../TutorialContext";
+import { useTutorial } from "../TutorialContext";
 import { useScreenDimensions } from "../../../hooks/useScreenDimensions";
 
 export const TutorialTextbox = () => {
-  const { state, step } = useTutorial();
+  const { state, stepConfig } = useTutorial();
   const { width } = useScreenDimensions();
 
-  if (!step || !state.isActive) {
+  if (!stepConfig || !state.isActive) {
     return null;
   }
 
-  const { title, text } = configForStep[step];
+  const { title, text, textBoxTop } = stepConfig;
 
   return (
-    <View style={[styles.box, { width: width - 48 }]}>
+    <View style={[styles.box, { width: width - 48 }, textBoxTop && styles.top]}>
       <Text style={styles.title} status={"primary"}>
         {title}
       </Text>
@@ -32,6 +32,10 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: "#fff",
     justifyContent: "center",
+  },
+  top: {
+    bottom: undefined,
+    top: 12,
   },
   title: {
     fontSize: 20,

@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DisplayButton } from "./Button";
 import Cloud from "./icons/Cloud";
-import { Star } from "./icons/Star";
 import { EmojiBadge } from "./EmojiBadge";
 import { IconButton } from "./IconButton";
 import { DayData, useDayScroll } from "../screens/MainScreen/DayScrollContext";
@@ -13,6 +13,7 @@ import moment from "moment";
 import { cardAnswerSelector } from "../redux/selectors";
 import { useNavigation } from "@react-navigation/native";
 import { defaultEmoji } from "../config/options";
+import { starColor } from "../config/theme";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -58,16 +59,25 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
       ]}
     >
       <View style={styles.top}>
-        <DisplayButton status={status} textStyle={styles.dayText}>
+        <DisplayButton
+          status={status}
+          textStyle={[styles.dayText]}
+          style={{ width: CARD_WIDTH / 3 }}
+        >
           {`Day ${day}`}
         </DisplayButton>
         <IconButton
           Icon={Cloud}
           text={formatMomentDayMonth(dataEntry.date)}
           status={status}
+          size={80}
           disabled
         />
-        <Star size={24} status={status} />
+        <FontAwesome
+          name={getStar(Object.keys(cardAnswersValues).length)}
+          color={starColor}
+          size={28}
+        />
       </View>
 
       <View style={styles.bottom}>
@@ -140,3 +150,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+const getStar = (numberOfElements: number) => {
+  if (numberOfElements === null) return "star-o";
+  if (numberOfElements < 2) return "star-o";
+  if (numberOfElements >= 2 && numberOfElements < 4) return "star-half-full";
+  if (numberOfElements >= 4) return "star";
+};

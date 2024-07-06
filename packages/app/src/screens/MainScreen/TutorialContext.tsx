@@ -9,109 +9,38 @@ import {
 import { useLayout } from "../../hooks/useLayout";
 import { useScreenDimensions } from "../../hooks/useScreenDimensions";
 import { LayoutChangeEvent } from "react-native";
+import {
+  TutorialOneStep,
+  getTutorialOneConfig,
+  tutorialOneSteps,
+} from "./tutorialOne";
+import {
+  TutorialTwoStep,
+  getTutorialTwoConfig,
+  tutorialTwoSteps,
+} from "./tutorialTwo";
 
-export type TutorialStep =
-  | "avatar"
-  | "wheel"
-  | "center_card"
-  | "wheel_button"
-  | "colors"
-  | "verify"
-  | "predicted"
-  | "period"
-  | "no_period";
-
-export const tutorialSteps: TutorialStep[] = [
-  "avatar",
-  "wheel",
-  "center_card",
-  "wheel_button",
-  "colors",
-  "verify",
-  "predicted",
-  "period",
-  "no_period",
-];
-
-export const configForStep: Record<
-  TutorialStep,
-  {
-    rotationAngle: number;
-    translationX: number;
-    translationY: number;
-    title: string;
-    text: string;
-  }
-> = {
-  avatar: {
-    rotationAngle: 0,
-    translationX: 0,
-    translationY: 0,
-    title: "tutorial_0_content",
-    text: "tutorial_0",
-  },
-  wheel: {
-    rotationAngle: 90,
-    translationX: 1,
-    translationY: 5,
-    title: "tutorial_1_content",
-    text: "tutorial_1",
-  },
-  center_card: {
-    rotationAngle: 180,
-    translationX: 10,
-    translationY: 50,
-    title: "tutorial_2_content",
-    text: "tutorial_2",
-  },
-  wheel_button: {
-    rotationAngle: 270,
-    translationX: 20,
-    translationY: 100,
-    title: "tutorial_3_content",
-    text: "tutorial_3",
-  },
-  colors: {
-    rotationAngle: 0,
-    translationX: 5,
-    translationY: 500,
-    title: "tutorial_4_content",
-    text: "tutorial_4",
-  },
-  verify: {
-    rotationAngle: 180,
-    translationX: 15,
-    translationY: 30,
-    title: "tutorial_5_content",
-    text: "tutorial_5",
-  },
-  predicted: {
-    rotationAngle: 90,
-    translationX: 30,
-    translationY: 60,
-    title: "tutorial_6_content",
-    text: "tutorial_6",
-  },
-  period: {
-    rotationAngle: 270,
-    translationX: 50,
-    translationY: 200,
-    title: "tutorial_7_content",
-    text: "tutorial_7",
-  },
-  no_period: {
-    rotationAngle: 0,
-    translationX: 20,
-    translationY: 400,
-    title: "tutorial_8_content",
-    text: "tutorial_8",
-  },
-};
+type Tutorial = "tutorial_one" | "tutorial_two";
 
 type TutorialState = {
+  tutorial: Tutorial;
   isActive: boolean;
   stepIndex: number;
 };
+
+type TutorialStep = TutorialOneStep | TutorialTwoStep;
+
+export type TutorialStepConfig = {
+  rotationAngle: number;
+  translationX: number;
+  translationY: number;
+  title: string;
+  text: string;
+  textBoxTop?: boolean;
+  feature?: React.FC;
+};
+
+export type TutorialConfig = Record<TutorialStep, TutorialStepConfig>;
 
 type Action<T extends keyof TutorialState = keyof TutorialState> =
   | {
@@ -122,29 +51,28 @@ type Action<T extends keyof TutorialState = keyof TutorialState> =
       type: "continue";
     }
   | {
-      type: "skip";
-    }
-  | {
       type: "reset";
     };
 
 const initialState: TutorialState = {
+  tutorial: "tutorial_two",
   isActive: true,
   stepIndex: 0,
 };
 
 function reducer(state: TutorialState, action: Action): TutorialState {
   switch (action.type) {
+    case "tutorial":
+      return {
+        ...state,
+        tutorial: action.value as Tutorial,
+        stepIndex: 0,
+      };
+
     case "continue":
       return {
         ...state,
         stepIndex: state.stepIndex + 1,
-      };
-
-    case "skip":
-      return {
-        ...state,
-        stepIndex: tutorialSteps.length,
       };
 
     case "reset":
@@ -165,7 +93,8 @@ function reducer(state: TutorialState, action: Action): TutorialState {
 export type TutorialContext = {
   state: TutorialState;
   dispatch: React.Dispatch<Action>;
-  step: TutorialStep;
+  step: TutorialStep | undefined;
+  stepConfig: TutorialStepConfig | undefined;
   translateArrowStyle: AnimatedStyle | undefined;
   rotateArrowStyle: AnimatedStyle | undefined;
   //
@@ -176,7 +105,8 @@ export type TutorialContext = {
 const defaultValue: TutorialContext = {
   state: initialState,
   dispatch: () => {},
-  step: tutorialSteps[0],
+  step: undefined,
+  stepConfig: undefined,
   translateArrowStyle: undefined,
   rotateArrowStyle: undefined,
   onTopLeftLayout: () => {},
@@ -185,107 +115,47 @@ const defaultValue: TutorialContext = {
 
 const TutorialContext = React.createContext<TutorialContext>(defaultValue);
 
-const WheelButtonSize = 52;
-const CloudSize = 80 + 16;
-
 export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
-  const step = tutorialSteps[state.stepIndex];
-
-  const { width: screenWidth } = useScreenDimensions();
+  const { width: screenWidth, height: screenHeight } = useScreenDimensions();
   const [topLeftLayout, onTopLeftLayout] = useLayout();
   const [wheelLayout, onWheelLayout] = useLayout();
 
-  const configForStep: Record<
-    TutorialStep,
-    {
-      rotationAngle: number;
-      translationX: number;
-      translationY: number;
-      title: string;
-      text: string;
-    }
-  > = {
-    avatar: {
-      rotationAngle: 0,
-      translationX: (topLeftLayout?.width ?? 0) + 12,
-      translationY: (topLeftLayout?.height ?? 0) / 4,
-      title: "tutorial_0_content",
-      text: "tutorial_0",
-    },
-    wheel: {
-      rotationAngle: 180,
-      translationX: (topLeftLayout?.width ?? 0) - 60,
-      translationY: (wheelLayout?.height ?? 0) / 2 - 30, // arrow height
-      title: "tutorial_1_content",
-      text: "tutorial_1",
-    },
-    center_card: {
-      rotationAngle: 180,
-      translationX: (topLeftLayout?.width ?? 0) + WheelButtonSize,
-      translationY: (wheelLayout?.height ?? 0) / 2 - 30, // arrow height
-      title: "tutorial_2_content",
-      text: "tutorial_2",
-    },
-    wheel_button: {
-      rotationAngle: 180,
-      translationX: (topLeftLayout?.width ?? 0) - 60,
-      translationY: (wheelLayout?.height ?? 0) / 2 - 30, // arrow height
-      title: "tutorial_3_content",
-      text: "tutorial_3",
-    },
-    colors: {
-      rotationAngle: 90,
-      translationX: screenWidth / 2 - 30,
-      translationY: CloudSize * 2,
-      title: "tutorial_4_content",
-      text: "tutorial_4",
-    },
-    verify: {
-      rotationAngle: 90,
-      translationX: screenWidth / 2 - 30,
-      translationY: CloudSize * 2,
-      title: "tutorial_5_content",
-      text: "tutorial_5",
-    },
-    predicted: {
-      rotationAngle: 90,
-      translationX: screenWidth / 2 - 30 - CloudSize,
-      translationY: CloudSize * 2,
-      title: "tutorial_6_content",
-      text: "tutorial_6",
-    },
-    period: {
-      rotationAngle: 90,
-      translationX: screenWidth / 2 - 30,
-      translationY: CloudSize * 2,
-      title: "tutorial_7_content",
-      text: "tutorial_7",
-    },
-    no_period: {
-      rotationAngle: 90,
-      translationX: screenWidth / 2 - 30 + CloudSize,
-      translationY: CloudSize * 2,
-      title: "tutorial_8_content",
-      text: "tutorial_8",
-    },
-  };
+  const steps =
+    state.tutorial === "tutorial_one" ? tutorialOneSteps : tutorialTwoSteps;
+  const step = steps[state.stepIndex];
+
+  const tutorialConfig =
+    state.tutorial === "tutorial_one"
+      ? getTutorialOneConfig({
+          topLeftLayout,
+          wheelLayout,
+          screenWidth,
+        })
+      : getTutorialTwoConfig({
+          topLeftLayout,
+          wheelLayout,
+          screenWidth,
+          screenHeight,
+        });
 
   const rotationAngle = useSharedValue(0);
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
 
+  // @ts-expect-error TODO:
+  const stepConfig = tutorialConfig?.[step];
+
   React.useEffect(() => {
-    if (step) {
-      const config = configForStep[step];
-      rotationAngle.value = withTiming(config.rotationAngle);
-      translateX.value = withTiming(config.translationX);
-      translateY.value = withTiming(config.translationY);
+    if (stepConfig) {
+      rotationAngle.value = withTiming(stepConfig.rotationAngle);
+      translateX.value = withTiming(stepConfig.translationX);
+      translateY.value = withTiming(stepConfig.translationY);
       return;
     }
 
-    if (!state.isActive) {
+    if (!state.isActive || step) {
       return;
     }
 
@@ -315,6 +185,7 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
         state,
         dispatch,
         step,
+        stepConfig,
         translateArrowStyle,
         rotateArrowStyle,
         onTopLeftLayout,

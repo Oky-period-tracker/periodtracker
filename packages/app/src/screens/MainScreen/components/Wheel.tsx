@@ -8,6 +8,9 @@ import { DayData, useDayScroll } from "../DayScrollContext";
 import { formatMomentDayMonth } from "../../../services/utils";
 
 import { useDayStatus } from "../../../hooks/useDayStatus";
+import { useTutorial } from "../TutorialContext";
+import { useSelector } from "react-redux";
+import { isTutorialOneActiveSelector } from "../../../redux/selectors";
 
 export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { data, wheelPanGesture, wheelAnimatedStyle } = useDayScroll();
@@ -25,6 +28,9 @@ export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 
 const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
   const status = useDayStatus(item);
+  const { dispatch: tutorialDispatch } = useTutorial();
+
+  const isTutorialOneActive = useSelector(isTutorialOneActiveSelector);
 
   const {
     constants,
@@ -34,6 +40,15 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
     selectedScale,
     toggleDayModal,
   } = useDayScroll();
+
+  const onPress = () => {
+    if (isTutorialOneActive) {
+      tutorialDispatch({ type: "start", value: "tutorial_one" });
+      return;
+    }
+
+    toggleDayModal();
+  };
 
   const { BUTTON_SIZE } = constants;
 
@@ -68,7 +83,7 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
         size={BUTTON_SIZE}
         Icon={Cloud}
         text={text}
-        onPress={toggleDayModal}
+        onPress={onPress}
         disabled={!isSelected}
         status={status}
       />

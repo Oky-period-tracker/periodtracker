@@ -19,12 +19,17 @@ import {
   getTutorialTwoConfig,
   tutorialTwoSteps,
 } from "./tutorialTwo";
+import { useDispatch } from "react-redux";
+import {
+  setTutorialOneActive,
+  setTutorialTwoActive,
+} from "../../redux/actions";
 
 type Tutorial = "tutorial_one" | "tutorial_two";
 
 type TutorialState = {
   tutorial: Tutorial;
-  isActive: boolean;
+  isPlaying: boolean;
   stepIndex: number;
 };
 
@@ -48,6 +53,10 @@ type Action<T extends keyof TutorialState = keyof TutorialState> =
       value: TutorialState[T];
     }
   | {
+      type: "start";
+      value: Tutorial;
+    }
+  | {
       type: "continue";
     }
   | {
@@ -56,16 +65,17 @@ type Action<T extends keyof TutorialState = keyof TutorialState> =
 
 const initialState: TutorialState = {
   tutorial: "tutorial_two",
-  isActive: true,
+  isPlaying: true,
   stepIndex: 0,
 };
 
 function reducer(state: TutorialState, action: Action): TutorialState {
   switch (action.type) {
-    case "tutorial":
+    case "start":
       return {
         ...state,
-        tutorial: action.value as Tutorial,
+        tutorial: action.value,
+        isPlaying: true,
         stepIndex: 0,
       };
 
@@ -78,7 +88,7 @@ function reducer(state: TutorialState, action: Action): TutorialState {
     case "reset":
       return {
         ...state,
-        isActive: false,
+        isPlaying: false,
         stepIndex: 0,
       };
 
@@ -122,6 +132,8 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
   const [topLeftLayout, onTopLeftLayout] = useLayout();
   const [wheelLayout, onWheelLayout] = useLayout();
 
+  const reduxDispatch = useDispatch();
+
   const steps =
     state.tutorial === "tutorial_one" ? tutorialOneSteps : tutorialTwoSteps;
   const step = steps[state.stepIndex];
@@ -155,11 +167,17 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
       return;
     }
 
-    if (!state.isActive || step) {
+    if (!state.isPlaying || step) {
       return;
     }
 
-    // TODO: update redux state
+    if (state.tutorial === "tutorial_one") {
+      reduxDispatch(setTutorialOneActive(false));
+    }
+
+    if (state.tutorial === "tutorial_two") {
+      reduxDispatch(setTutorialTwoActive(false));
+    }
 
     dispatch({ type: "reset" });
   });
@@ -192,7 +210,7 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
         onWheelLayout,
       }}
     >
-      {state.isActive ? (
+      {state.isPlaying ? (
         <TutorialContainer>{children}</TutorialContainer>
       ) : (
         children

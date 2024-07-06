@@ -33,14 +33,14 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
 
   const { state, step, onTopLeftLayout, onWheelLayout } = useTutorial();
 
-  const avatarHidden = state.isActive && step !== "avatar";
-  const circleProgressHidden = state.isActive && step !== "calendar";
+  const avatarHidden = state.isPlaying && step !== "avatar";
+  const circleProgressHidden = state.isPlaying && step !== "calendar";
   const wheelHidden =
-    state.isActive && step !== "wheel" && step !== "wheel_button";
+    state.isPlaying && step !== "wheel" && step !== "wheel_button";
   const centerCardHidden =
-    state.isActive && step !== "wheel" && step !== "center_card";
+    state.isPlaying && step !== "wheel" && step !== "center_card";
   const carouselHidden =
-    state.isActive && !["track", "summary", "stars"].includes(step ?? "");
+    state.isPlaying && !["track", "summary", "stars"].includes(step ?? "");
 
   const goToCalendar = () => navigation.navigate("Calendar");
 

@@ -10,10 +10,14 @@ import { formatMomentDayMonth } from "../services/utils";
 import { emojiOptions } from "../screens/DayScreen/components/DayTracker/config";
 import { useSelector } from "../redux/useSelector";
 import moment from "moment";
-import { cardAnswerSelector } from "../redux/selectors";
+import {
+  cardAnswerSelector,
+  isTutorialTwoActiveSelector,
+} from "../redux/selectors";
 import { useNavigation } from "@react-navigation/native";
 import { defaultEmoji } from "../config/options";
 import { starColor } from "../config/theme";
+import { useTutorial } from "../screens/MainScreen/TutorialContext";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -21,8 +25,11 @@ type DailyCardProps = {
 };
 
 export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
+  const { dispatch: tutorialDispatch } = useTutorial();
   const { isDragging, constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
+
+  const isTutorialTwoActive = useSelector(isTutorialTwoActiveSelector);
 
   const cardAnswersValues = useSelector((state) =>
     cardAnswerSelector(state, moment(dataEntry.date))
@@ -41,6 +48,12 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     if (isDragging?.current) {
       return;
     }
+
+    if (isTutorialTwoActive) {
+      tutorialDispatch({ type: "start", value: "tutorial_two" });
+      return;
+    }
+
     navigation.navigate("Day", { date: dataEntry.date });
   };
 

@@ -12,7 +12,7 @@ import { EmojiQuestionCard } from "../../DayScreen/components/DayTracker/EmojiQu
 export const TutorialFeature = () => {
   const { state, stepConfig } = useTutorial();
 
-  if (!state.isActive || !stepConfig || !stepConfig.feature) {
+  if (!state.isPlaying || !stepConfig || !stepConfig.feature) {
     return null;
   }
 

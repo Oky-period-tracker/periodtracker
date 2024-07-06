@@ -8,7 +8,7 @@ export const TutorialTextbox = () => {
   const { state, stepConfig } = useTutorial();
   const { width } = useScreenDimensions();
 
-  if (!stepConfig || !state.isActive) {
+  if (!stepConfig || !state.isPlaying) {
     return null;
   }
 

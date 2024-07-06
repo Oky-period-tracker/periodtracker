@@ -8,7 +8,7 @@ import { useTutorial } from "../TutorialContext";
 export const TutorialArrow = () => {
   const { state, step, translateArrowStyle, rotateArrowStyle } = useTutorial();
 
-  if (!step || !state.isActive) {
+  if (!step || !state.isPlaying) {
     return null;
   }
 

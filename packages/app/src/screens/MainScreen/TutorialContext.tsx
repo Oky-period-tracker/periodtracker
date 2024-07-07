@@ -65,7 +65,7 @@ type Action<T extends keyof TutorialState = keyof TutorialState> =
 
 const initialState: TutorialState = {
   tutorial: undefined,
-  isPlaying: true,
+  isPlaying: false,
   stepIndex: 0,
 };
 

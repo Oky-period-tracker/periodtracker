@@ -6,9 +6,12 @@ import CalendarScreen from "../../screens/CalendarScreen";
 import TutorialFirstScreen from "../../screens/TutorialFirstScreen";
 import TutorialSecondScreen from "../../screens/TutorialSecondScreen";
 import moment from "moment";
+import { Tutorial } from "../../screens/MainScreen/TutorialContext";
 
 export type HomeStackParamList = {
-  Home: undefined;
+  Home: {
+    tutorial: Tutorial;
+  };
   Calendar: undefined;
   TutorialOne: undefined;
   TutorialTwo: undefined;

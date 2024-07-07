@@ -14,6 +14,7 @@ import { TutorialProvider, useTutorial } from "./TutorialContext";
 import { TutorialTextbox } from "./components/TutorialTextbox";
 import { TutorialArrow } from "./components/TutorialArrow";
 import { TutorialFeature } from "./components/TutorialFeature";
+import { useFocusEffect } from "@react-navigation/native";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   return (
@@ -25,13 +26,30 @@ const MainScreen: ScreenComponent<"Home"> = (props) => {
   );
 };
 
-const MainScreenInner: ScreenComponent<"Home"> = ({ navigation }) => {
+const MainScreenInner: ScreenComponent<"Home"> = ({ navigation, route }) => {
   const { selectedItem, onBodyLayout, dayModalVisible, toggleDayModal } =
     useDayScroll();
 
   const { width } = useScreenDimensions();
 
-  const { state, step, onTopLeftLayout, onWheelLayout } = useTutorial();
+  const {
+    state,
+    step,
+    onTopLeftLayout,
+    onWheelLayout,
+    dispatch: tutorialDispatch,
+  } = useTutorial();
+
+  // Auto start tutorial due to route params
+  useFocusEffect(
+    React.useCallback(() => {
+      if (route.params?.tutorial) {
+        tutorialDispatch({ type: "start", value: route.params?.tutorial });
+        // Reset to prevent re-triggering
+        navigation.setParams({ tutorial: undefined });
+      }
+    }, [route.params?.tutorial])
+  );
 
   const avatarHidden = state.isPlaying && step !== "avatar";
   const circleProgressHidden = state.isPlaying && step !== "calendar";

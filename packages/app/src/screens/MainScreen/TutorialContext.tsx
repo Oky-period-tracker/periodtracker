@@ -25,10 +25,10 @@ import {
   setTutorialTwoActive,
 } from "../../redux/actions";
 
-type Tutorial = "tutorial_one" | "tutorial_two";
+export type Tutorial = "tutorial_one" | "tutorial_two";
 
 type TutorialState = {
-  tutorial: Tutorial;
+  tutorial: Tutorial | undefined;
   isPlaying: boolean;
   stepIndex: number;
 };
@@ -64,7 +64,7 @@ type Action<T extends keyof TutorialState = keyof TutorialState> =
     };
 
 const initialState: TutorialState = {
-  tutorial: "tutorial_two",
+  tutorial: undefined,
   isPlaying: true,
   stepIndex: 0,
 };
@@ -88,6 +88,7 @@ function reducer(state: TutorialState, action: Action): TutorialState {
     case "reset":
       return {
         ...state,
+        tutorial: undefined,
         isPlaying: false,
         stepIndex: 0,
       };

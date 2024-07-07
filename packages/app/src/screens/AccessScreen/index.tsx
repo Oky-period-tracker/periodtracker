@@ -5,13 +5,17 @@ import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
-import { Button } from "../../components/Button";
+import { Button, ButtonProps } from "../../components/Button";
 import { LanguageSelector } from "../../components/LanguageSelector";
 import { shareApp } from "../../redux/actions";
 import { useDispatch } from "react-redux";
 import { WEBSITE_URL } from "../../config/env";
 
-const AccessScreen: ScreenComponent<"Access"> = () => {
+const AccessScreen: ScreenComponent<"Access"> = ({ navigation }) => {
+  const launchTutorial = () => {
+    navigation.navigate("Home", { tutorial: "tutorial_two" });
+  };
+
   const rows: TouchableRowProps[] = [
     {
       title: "Language",
@@ -21,7 +25,7 @@ const AccessScreen: ScreenComponent<"Access"> = () => {
     {
       title: "Tutorial",
       description: "Get instructions on how to use Oky",
-      component: <LaunchButton />,
+      component: <LaunchButton onPress={launchTutorial} />,
     },
     {
       title: "Share",
@@ -47,8 +51,8 @@ const AccessScreen: ScreenComponent<"Access"> = () => {
   );
 };
 
-const LaunchButton = () => {
-  return <Button>Launch</Button>;
+const LaunchButton = (props: ButtonProps) => {
+  return <Button {...props}>Launch</Button>;
 };
 
 const ShareButton = () => {

@@ -3787,6 +3787,13 @@ expo-linking@~6.3.1:
     expo-constants "~16.0.0"
     invariant "^2.2.4"
 
+expo-localization@~15.0.3:
+  version "15.0.3"
+  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-15.0.3.tgz#772c89b3ab9c925b7eca6911a11ca33980c2b674"
+  integrity sha512-IfcmlKuKRlowR9qIzL0e+nGHBeNoF7l2GQaOJstc7HZiPjNJ4J1R4D53ZNf483dt7JSkTRJBihdTadOtOEjRdg==
+  dependencies:
+    rtl-detect "^1.0.2"
+
 expo-manifests@~0.14.0:
   version "0.14.3"
   resolved "https://registry.yarnpkg.com/expo-manifests/-/expo-manifests-0.14.3.tgz#17854c45c8c9ced4a07031ae0838c38ac3115fbc"
@@ -6858,6 +6865,11 @@ rimraf@~2.6.2:
   integrity sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==
   dependencies:
     glob "^7.1.3"
+
+rtl-detect@^1.0.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/rtl-detect/-/rtl-detect-1.1.2.tgz#ca7f0330af5c6bb626c15675c642ba85ad6273c6"
+  integrity sha512-PGMBq03+TTG/p/cRB7HCLKJ1MgDIi07+QU1faSjiYRfmY5UsAttV9Hs08jDAHVwcOwmVLcSJkpwyfXszVjWfIQ==
 
 run-parallel@^1.1.9:
   version "1.2.0"

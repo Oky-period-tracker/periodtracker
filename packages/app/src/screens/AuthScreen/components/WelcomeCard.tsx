@@ -16,7 +16,7 @@ interface CardProps {
 
 
 
-const Card: React.FC<CardProps> = ({ title, iconType, fontAwesomeName, iconComponent, iconHeading, description }) => {
+const Card: React.FC<CardProps> = ({iconType, fontAwesomeName, iconComponent, iconHeading, description }) => {
   const renderIcon = () => {
     switch (iconType) {
       case 'fontawesome':
@@ -32,7 +32,7 @@ const Card: React.FC<CardProps> = ({ title, iconType, fontAwesomeName, iconCompo
     <View style={styles.page}>
     <View style={styles.welcomeContainer}>
       <Image source={require('../../../assets/images/slider/logo.png')} style={styles.logo} />
-      <Text style={styles.headText}>{title}</Text>
+      <Text style={styles.headText}>auth_welcome</Text>
     </View>
     <DisplayButton status={"primary"} style={styles.displayImage}>
         {renderIcon()}

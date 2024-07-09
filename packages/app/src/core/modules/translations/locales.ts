@@ -3,10 +3,10 @@ import { Locale } from '.'
 export const localeTranslations: Record<Locale, Record<Locale, string>> = {
   en: {
     en: 'English (global)',
-    ph: 'Filipino',
+    fil: 'Filipino',
   },
-  ph: {
+  fil: {
     en: 'Ingles',
-    ph: 'Pilipino',
+    fil: 'Pilipino',
   },
 }

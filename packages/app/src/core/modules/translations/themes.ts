@@ -122,7 +122,7 @@ export const themeTranslations: Record<
     luneta: "luneta",
     mosque: "mosque",
   },
-  ph: {
+  fil: {
     oky: " Oky",
     ari: "ari",
     nur: "nur",

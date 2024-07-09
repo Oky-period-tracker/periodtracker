@@ -1,6 +1,6 @@
 import { AppTranslations } from '../../../types'
 
-export const ph: AppTranslations = {
+export const fil: AppTranslations = {
   empty: '',
   info: 'karagdagang impormasyon',
   Day: 'Day',

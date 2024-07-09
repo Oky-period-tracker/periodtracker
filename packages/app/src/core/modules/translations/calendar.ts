@@ -34,7 +34,7 @@ export const calendarTranslations: Record<Locale, CalendarTranslations> = {
     dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
   },
-  ph: {
+  fil: {
     monthNames: [
       'January',
       'February',

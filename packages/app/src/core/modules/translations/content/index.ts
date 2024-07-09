@@ -1,11 +1,11 @@
 import { StaticContent } from '../../../types'
 import { Locale } from '../'
 import { en } from './en'
-import { ph } from './ph'
+import { fil } from './fil'
 
 export const content: Record<Locale, StaticContent> = {
   en,
-  ph,
+  fil,
 }
 
 export const availableContentLocales = Object.keys(content)

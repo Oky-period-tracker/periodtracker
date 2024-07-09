@@ -2,8 +2,8 @@
 
 import { StaticContent } from "../../../types";
 
-export const ph: StaticContent = {
-  locale: "ph",
+export const fil: StaticContent = {
+  locale: "fil",
   categories: {
     byId: {
       "700e0378-2c0a-47bb-815b-757bec70d463": {
@@ -2315,7 +2315,7 @@ export const ph: StaticContent = {
         id: "bf742873-1e30-4149-9b6d-17bf3797a88d",
         title: "Paano ako magiging healthy?",
         content:
-          "- Puwede mag-exercise kahit 30 minutes hanggang 1 oras sa isang araw.\n\n- Kumain ng prutas at gulay, at pagkaing mayaman sa protein tulad ng itlog, karne, at isda. Uminom ng at least 8 glasses ng tubig araw-araw.\n\n-  Maligo araw-araw, magsipilyo, iwasang magbabad sa init ng araw, at mag-sunscreen (kung mayroon).\n\n- Matulog ng at least 8 hours at iwasang mag-phone bago matulog.\n\n- I-manage ang stress. Mag-meditate, makinig sa music, o maglakad. \n\n- I-share ang feelings sa friends at family\n\n- Mag-paint, magsulat, magluto, magbasa, o matuto ng bagong skills – kahit anong exciting para sa'yo! Pansinin ang moods at feelings mo. \n\nKung worried ka, lumapit at mag tanong sa health professional sa inyong lugar.\n\n*Kung gusto mo mas malaman ang 7 Healthy Habits ng Department of Health, bisitahin ang healthypilipinas.ph (https://www.healthypilipinas.ph).",
+          "- Puwede mag-exercise kahit 30 minutes hanggang 1 oras sa isang araw.\n\n- Kumain ng prutas at gulay, at pagkaing mayaman sa protein tulad ng itlog, karne, at isda. Uminom ng at least 8 glasses ng tubig araw-araw.\n\n-  Maligo araw-araw, magsipilyo, iwasang magbabad sa init ng araw, at mag-sunscreen (kung mayroon).\n\n- Matulog ng at least 8 hours at iwasang mag-phone bago matulog.\n\n- I-manage ang stress. Mag-meditate, makinig sa music, o maglakad. \n\n- I-share ang feelings sa friends at family\n\n- Mag-paint, magsulat, magluto, magbasa, o matuto ng bagong skills – kahit anong exciting para sa'yo! Pansinin ang moods at feelings mo. \n\nKung worried ka, lumapit at mag tanong sa health professional sa inyong lugar.\n\n*Kung gusto mo mas malaman ang 7 Healthy Habits ng Department of Health, bisitahin ang healthypilipinas.fil (https://www.healthypilipinas.fil).",
         category: "Kalusugan, Nutrisyon, at Exercise",
         subCategory: "Exercise",
         // isAgeRestricted: false,
@@ -8015,7 +8015,7 @@ export const ph: StaticContent = {
     {
       type: "CONTENT",
       content:
-        'Oky was developed and is owned by UNICEF. In the Philippines, Plan International has been granted a franchise license agreement to develop and deploy the app as Oky Philippines. Please do not hesitate to contact us if you have any questions about the use of your data in Oky Philippines. To contact us please email oky.ph@plan-international.org.\n\nFor the purpose of this Privacy Policy, "personal data" means any information that enables us to identify an individual, directly or indirectly, by reference to an identifier such as name, identification number, location data, online identifier or one or more factors specific to the individual.',
+        'Oky was developed and is owned by UNICEF. In the Philippines, Plan International has been granted a franchise license agreement to develop and deploy the app as Oky Philippines. Please do not hesitate to contact us if you have any questions about the use of your data in Oky Philippines. To contact us please email oky.fil@plan-international.org.\n\nFor the purpose of this Privacy Policy, "personal data" means any information that enables us to identify an individual, directly or indirectly, by reference to an identifier such as name, identification number, location data, online identifier or one or more factors specific to the individual.',
     },
     {
       type: "CONTENT",
@@ -8116,7 +8116,7 @@ export const ph: StaticContent = {
     {
       type: "CONTENT",
       content:
-        "The following data is stored on our servers: your username, month and year of birth, gender, location (country and province), your period related data, the menstrual cycle start and end date, and the theme, language and avatar you selected on the Oky app. However, we have put in place a system so that no-one can identify any one user from this stored data. We store this data on our server so that you can access this data when you log into your account from different devices. \n\nYou can contact us with any questions you may have about data security via email: oky.ph@plan-international.org.",
+        "The following data is stored on our servers: your username, month and year of birth, gender, location (country and province), your period related data, the menstrual cycle start and end date, and the theme, language and avatar you selected on the Oky app. However, we have put in place a system so that no-one can identify any one user from this stored data. We store this data on our server so that you can access this data when you log into your account from different devices. \n\nYou can contact us with any questions you may have about data security via email: oky.fil@plan-international.org.",
     },
     {
       type: "HEADING",
@@ -8180,7 +8180,7 @@ export const ph: StaticContent = {
     {
       type: "CONTENT",
       content:
-        "Feel free to contact us or our Data Protection Officer if you require further information about this Privacy Policy. To contact us, please email oky.ph@plan-international.org.\n\nLast updated 21st February 2023.\n",
+        "Feel free to contact us or our Data Protection Officer if you require further information about this Privacy Policy. To contact us, please email oky.fil@plan-international.org.\n\nLast updated 21st February 2023.\n",
     },
   ],
   termsAndConditions: [
@@ -8256,7 +8256,7 @@ export const ph: StaticContent = {
     {
       type: "CONTENT",
       content:
-        "Please note that the Oky app and the Oky support materials may contain images, sounds and videos that are trademarked by third parties. Nothing in these Terms of Use or the Creative Commons license limits or reduces a third party’s intellectual property rights. You may not use these materials to label, promote, or endorse any product or service. You are solely responsible for any violation of a third party’s intellectual property rights caused by your misuse of these materials.\n\nOky, the Oky app and UNICEF names and emblems/logos are the exclusive property of UNICEF. They are protected under international and national laws. Unauthorized use is prohibited. They may not be copied or reproduced in any way without the prior written permission of UNICEF. Requests for permission should be sent to us at oky.ph@plan-international.org.\n",
+        "Please note that the Oky app and the Oky support materials may contain images, sounds and videos that are trademarked by third parties. Nothing in these Terms of Use or the Creative Commons license limits or reduces a third party’s intellectual property rights. You may not use these materials to label, promote, or endorse any product or service. You are solely responsible for any violation of a third party’s intellectual property rights caused by your misuse of these materials.\n\nOky, the Oky app and UNICEF names and emblems/logos are the exclusive property of UNICEF. They are protected under international and national laws. Unauthorized use is prohibited. They may not be copied or reproduced in any way without the prior written permission of UNICEF. Requests for permission should be sent to us at oky.fil@plan-international.org.\n",
     },
     {
       type: "HEADING",
@@ -8302,7 +8302,7 @@ export const ph: StaticContent = {
     {
       type: "CONTENT",
       content:
-        "If you have any questions about Oky, please contact us at oky.ph@plan-international.org.\n\nLast updated 21st February 2023",
+        "If you have any questions about Oky, please contact us at oky.fil@plan-international.org.\n\nLast updated 21st February 2023",
     },
   ],
   about: [

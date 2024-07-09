@@ -1,4 +1,4 @@
-export const cmsLocales: string[] | undefined = ['en', 'ph']
+export const cmsLocales: string[] | undefined = ['en', 'fil']
 
 export const contentFilterOptions = [
   { value: 0, description: 'All' },

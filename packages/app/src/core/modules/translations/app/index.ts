@@ -2,11 +2,11 @@ import { AppTranslations } from '../../../types'
 import { Locale } from '../'
 
 import { en } from './en'
-import { ph } from './ph'
+import { fil } from './fil'
 
 export const appTranslations: Record<Locale, AppTranslations> = {
   en,
-  ph,
+  fil,
 }
 
 export const availableAppLocales = Object.keys(appTranslations) as Locale[]

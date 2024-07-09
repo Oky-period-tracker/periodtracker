@@ -3,9 +3,9 @@ import { Locale } from "../";
 import { StaticContent } from "../../../types";
 
 import { en } from "./en";
-import { ph } from "./ph";
+import { fil } from "./fil";
 
 export const liveContent: Record<Locale, StaticContent> = {
   en,
-  ph,
+  fil,
 };

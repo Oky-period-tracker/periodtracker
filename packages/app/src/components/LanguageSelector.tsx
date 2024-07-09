@@ -7,6 +7,7 @@ import { availableAppLocales } from "../core/modules";
 import { useDispatch } from "react-redux";
 import { setLocale } from "../redux/actions";
 import { WheelPickerOption } from "./WheelPicker";
+import { setLanguage } from "../translation-i18n";
 
 export const LanguageSelector = (props: ButtonProps) => {
   const locale = useSelector(currentLocaleSelector);
@@ -16,6 +17,9 @@ export const LanguageSelector = (props: ButtonProps) => {
     if (!option) {
       return;
     }
+    //setLanguage to a defined language
+    //Todo: Implement setLanguage functionality using redux actions 
+    setLanguage(option.value as 'en' | 'fil');
 
     dispatch(setLocale(option.value));
   };

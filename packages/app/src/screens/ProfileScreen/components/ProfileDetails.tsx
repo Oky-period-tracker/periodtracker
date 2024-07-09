@@ -56,10 +56,10 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={styles.text}>Name</Text>
-            <Text style={styles.text}>Date of birth</Text>
-            <Text style={styles.text}>Gender</Text>
-            <Text style={styles.text}>Location</Text>
+            <Text style={styles.text}>name</Text>
+            <Text style={styles.text}>age</Text>
+            <Text style={styles.text}>gender</Text>
+            <Text style={styles.text}>location</Text>
           </View>
         </View>
         <View style={styles.column}>
@@ -86,8 +86,8 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={styles.text}>Cycle length</Text>
-            <Text style={styles.text}>period length</Text>
+            <Text style={styles.text}>cycle_length</Text>
+            <Text style={styles.text}>period_length</Text>
           </View>
         </View>
         <View style={styles.column}>
@@ -117,8 +117,8 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={[styles.text, styles.bold]}>Ari</Text>
-            <Text style={[styles.text, styles.bold]}>Hills</Text>
+            <Text style={[styles.text, styles.bold]} enableTranslate={false}>Ari</Text>
+            <Text style={[styles.text, styles.bold]} enableTranslate={false}>Hills</Text>
           </View>
         </View>
       </TouchableOpacity>

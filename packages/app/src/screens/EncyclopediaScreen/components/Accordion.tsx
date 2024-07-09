@@ -36,11 +36,21 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   const category = useSelector((s) => categoryByIDSelector(s, categoryId));
   const subCategoriesById = useSelector(allSubCategoriesByIdSelector);
 
+
+  // Add safety checks for category and subCategoriesById
+  if (!category) {
+    console.error(`Category not found for id: ${categoryId}`);
+    return null;
+  }
+
   const subCategories = React.useMemo(() => {
-    return category.subCategories.reduce<SubCategory[]>(
+    return category.subCategories?.reduce<SubCategory[]>(
       (acc, subcategoryId) => {
         if (subcategoryIds.includes(subcategoryId)) {
-          acc.push(subCategoriesById[subcategoryId]);
+          const subCategory = subCategoriesById[subcategoryId];
+          if (subCategory) {
+            acc.push(subCategory);
+          }
         }
         return acc;
       },
@@ -53,7 +63,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
       <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
         <Text style={styles.categoryName}>{category.name}</Text>
         <DisplayButton status={"basic"} style={styles.categoryEmoji}>
-          <Text>{category.tags.primary.emoji}</Text>
+          <Text>{category.tags?.primary?.emoji}</Text>
         </DisplayButton>
       </TouchableOpacity>
       {expanded &&

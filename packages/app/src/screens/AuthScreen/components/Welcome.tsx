@@ -16,24 +16,24 @@ export const Welcome = () => {
       title: "Welcome to Oky!",
       iconType: "fontawesome",
       fontAwesomeName: "calendar-check-o",
-      iconHeading: "Calender",
+      iconHeading: "calender",
       description:
-        "Get to know YOU by tracking what's going on with your body and mood every month",
+        "calendar_onboard",
     },
     {
       title: "Welcome to Oky!",
       iconType: "fontawesome",
       fontAwesomeName: "file-text",
-      iconHeading: "Files",
+      iconHeading: "Facts",
       description:
-        "Be informed about periods and learn new things about your body and your health",
+        "the_facts_onboard",
     },
     {
       title: "Welcome to Oky!",
       iconType: "custom",
       iconComponent: <UserIcon size={50} />,
-      iconHeading: "Your Oky buddy",
-      description: "Friendly characters guide you through the app !",
+      iconHeading: "friend",
+      description: "friends_onboard",
     },
   ];
   return (

@@ -10,12 +10,14 @@ import {
   allSubCategoriesByIdSelector,
   categoryByIDSelector,
 } from "../../../redux/selectors";
+import { VideoPlayerModal } from "./VideoPlayer";
 
 export const Accordion = () => {
   const { filteredCategoryIds } = useEncyclopedia();
 
   return (
     <>
+      <AccordionVideosItem />
       {filteredCategoryIds.map((categoryId) => (
         <AccordionItem key={categoryId} categoryId={categoryId} />
       ))}
@@ -71,6 +73,46 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   );
 };
 
+const AccordionVideosItem = () => {
+  const { videos, selectedCategoryIds, setSelectedVideoId } = useEncyclopedia();
+
+  const [expanded, toggleExpanded] = useToggle();
+
+  const videosCategoryNotSelected =
+    selectedCategoryIds.length > 0 && !selectedCategoryIds.includes("videos");
+
+  if (videosCategoryNotSelected) {
+    return null;
+  }
+
+  return (
+    <>
+      <TouchableOpacity
+        style={[styles.category, styles.videos]}
+        onPress={toggleExpanded}
+      >
+        <Text style={styles.videosTitle}>{"videos"}</Text>
+        <DisplayButton status={"basic"} style={styles.categoryEmoji}>
+          <Text>{"🎥"}</Text>
+        </DisplayButton>
+      </TouchableOpacity>
+      {expanded &&
+        videos.map((video) => (
+          <TouchableOpacity
+            key={video.id}
+            style={styles.subcategory}
+            onPress={() => {
+              setSelectedVideoId(video.id);
+            }}
+          >
+            <Text>{video.title}</Text>
+          </TouchableOpacity>
+        ))}
+      <VideoPlayerModal />
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
   accordionContainer: {
     width: "100%",
@@ -86,6 +128,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 4,
     paddingHorizontal: 24,
+  },
+  videos: {
+    height: 120,
+    backgroundColor: "#ffe6e3",
+  },
+  videosTitle: {
+    fontSize: 22,
+    fontWeight: "bold",
   },
   categoryName: {
     fontSize: 16,

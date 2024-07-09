@@ -48,7 +48,6 @@ const loggedOutLinking: LinkingOptions<RootStackParamList> = {
       Encyclopedia: "encyclopedia",
       Articles: "articles/:subcategoryId",
       Help: "help",
-      Video: "video",
     },
   },
 };
@@ -84,7 +83,6 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
           Encyclopedia: "",
           Articles: "articles/:subcategoryId",
           Help: "help",
-          Video: "video",
         },
       },
       // ===== Settings ===== //

@@ -6,6 +6,7 @@ interface UseSearchProps<T> {
   keys: (keyof T)[];
   type?: "includes" | "startsWith";
   enabled?: boolean;
+  externalQuery?: string;
 }
 
 export const useSearch = <T>({
@@ -13,13 +14,19 @@ export const useSearch = <T>({
   keys,
   type = "includes",
   enabled = true,
+  externalQuery,
 }: UseSearchProps<T>) => {
   if (keys.length === 0) {
     throw new Error("The 'keys' array should contain at least one key.");
   }
 
   const [results, setResults] = React.useState(options);
-  const [query, setQuery] = React.useState("");
+  const [query, setQuery] = React.useState(externalQuery || "");
+
+  // Allows multiple useSearch hooks to share the same query
+  React.useEffect(() => {
+    setQuery(externalQuery || "");
+  }, [externalQuery]);
 
   const optionsWithCombinedString = React.useMemo(() => {
     if (keys.length === 1) {

@@ -2,6 +2,134 @@
 import { StaticContent } from "../../../types";
 
 export const en: StaticContent = {
+  videos: {
+    byId: {
+      "b45d93d2-088c-4ab7-b34e-9e16761d8d5b": {
+        id: "b45d93d2-088c-4ab7-b34e-9e16761d8d5b",
+        title: "Feeling Depressed Happy and Other Emotions",
+        assetName: "feelingDepressedHappyAndOtherEmotions",
+        youtubeId: "mAPLTaRM48Y",
+        live: true,
+      },
+      "718b6c00-ce4a-46e5-8591-905dc6307745": {
+        id: "718b6c00-ce4a-46e5-8591-905dc6307745",
+        title: "Gender Roles and Stereotypes",
+        assetName: "genderRolesAndStereotypes",
+        youtubeId: "Ulh0DnFUGsk",
+        live: true,
+      },
+      "7db420a6-4a1a-4a5e-9245-998ccc8ef83d": {
+        id: "7db420a6-4a1a-4a5e-9245-998ccc8ef83d",
+        title: "Period Symptoms and Self Care",
+        youtubeId: "q-6MgBDqK9E",
+        live: true,
+      },
+      "8394eeb5-0665-4c6c-9f53-2894880cde5a": {
+        id: "8394eeb5-0665-4c6c-9f53-2894880cde5a",
+        title: "Period Hygiene: Tampons, Pads and Menstrual Cups",
+        youtubeId: "kmWbOC8Fbb0",
+        live: true,
+      },
+      "02e8f662-042b-4421-83f4-171a6982a123": {
+        id: "02e8f662-042b-4421-83f4-171a6982a123",
+        title: "Puberty in Girls: Boobs and More",
+        youtubeId: "umpBnIxOqy8",
+        live: true,
+      },
+      "785afe86-edc8-4a71-b7cc-51488052cd02": {
+        id: "785afe86-edc8-4a71-b7cc-51488052cd02",
+        title: "Anatomy: Assigned Sex At Birth (Male)",
+        youtubeId: "G2ciOhidKpg",
+        live: true,
+      },
+      "c0fe6104-5374-493c-822e-68470ee36c8c": {
+        id: "c0fe6104-5374-493c-822e-68470ee36c8c",
+        title: "Consent Explained: What Is It?",
+        youtubeId: "5vmsfhw-czA",
+        live: true,
+      },
+      "fa956d31-ca60-4ae3-8cdb-6b74c49c8936": {
+        id: "fa956d31-ca60-4ae3-8cdb-6b74c49c8936",
+        title: "Where Do Babies Come From?",
+        youtubeId: "vudZePDq8Bw",
+        live: true,
+      },
+      "e05d7925-1e3c-4201-a7cb-0c95a6d5e267": {
+        id: "e05d7925-1e3c-4201-a7cb-0c95a6d5e267",
+        title: "Bodies: Different Shapes and Sizes. All Beautiful!",
+        youtubeId: "Fcy_VQZG5Dg",
+        live: true,
+      },
+      "f61add59-6167-4493-8d96-259ecd1a7e66": {
+        id: "f61add59-6167-4493-8d96-259ecd1a7e66",
+        title: "Healthy vs Unhealthy Relationships",
+        youtubeId: "Gn7ZQ2x0cOE",
+        live: true,
+      },
+      "9617954d-7135-44b1-9dd9-85b78629f4b6": {
+        id: "9617954d-7135-44b1-9dd9-85b78629f4b6",
+        title:
+          "Gender Identity: Being Female, Male, Transgender or Genderfluid",
+        youtubeId: "W9YwOE8ndnc",
+        live: true,
+      },
+      "db943664-9026-4b58-b072-a63c1305b4d5": {
+        id: "db943664-9026-4b58-b072-a63c1305b4d5",
+        title: "What is Sexual Orientation? LGBTQ+",
+        youtubeId: "wrUYs2FnrgA",
+        live: true,
+      },
+      "615abc01-b168-4343-b80b-9a4f865b41e5": {
+        id: "615abc01-b168-4343-b80b-9a4f865b41e5",
+        title: "What Are Pronouns?",
+        youtubeId: "MeOGFQ0e4_0",
+        live: true,
+      },
+      "6c5b3ce4-7bc7-4dd8-b3b7-e63e78ca1005": {
+        id: "6c5b3ce4-7bc7-4dd8-b3b7-e63e78ca1005",
+        title: "Being Safe on the Internet",
+        youtubeId: "HxySrSbSY7o",
+        live: true,
+      },
+      "0be5efd1-fb62-4544-9f9a-4c4471324ab8": {
+        id: "0be5efd1-fb62-4544-9f9a-4c4471324ab8",
+        title: "What Is Sexual Harassment?",
+        youtubeId: "HKk-pbeW3ic",
+        live: true,
+      },
+      "2c4cdfc0-b7d3-4e22-9dc6-29e119d44216": {
+        id: "2c4cdfc0-b7d3-4e22-9dc6-29e119d44216",
+        title: "Depression and Anxiety",
+        youtubeId: "wl9U8cDqv9c",
+        live: true,
+      },
+      "1abbd5f4-b4bf-4859-81e4-6d6f258c8368": {
+        id: "1abbd5f4-b4bf-4859-81e4-6d6f258c8368",
+        title: "Puberty: Feeling Depressed, Happy and Other Emotions",
+        youtubeId: "mAPLTaRM48Y",
+        live: true,
+      },
+    },
+    allIds: [
+      "b45d93d2-088c-4ab7-b34e-9e16761d8d5b",
+      "718b6c00-ce4a-46e5-8591-905dc6307745",
+      "7db420a6-4a1a-4a5e-9245-998ccc8ef83d",
+      "8394eeb5-0665-4c6c-9f53-2894880cde5a",
+      "02e8f662-042b-4421-83f4-171a6982a123",
+      "785afe86-edc8-4a71-b7cc-51488052cd02",
+      "c0fe6104-5374-493c-822e-68470ee36c8c",
+      "fa956d31-ca60-4ae3-8cdb-6b74c49c8936",
+      "e05d7925-1e3c-4201-a7cb-0c95a6d5e267",
+      "f61add59-6167-4493-8d96-259ecd1a7e66",
+      "9617954d-7135-44b1-9dd9-85b78629f4b6",
+      "db943664-9026-4b58-b072-a63c1305b4d5",
+      "615abc01-b168-4343-b80b-9a4f865b41e5",
+      "6c5b3ce4-7bc7-4dd8-b3b7-e63e78ca1005",
+      "0be5efd1-fb62-4544-9f9a-4c4471324ab8",
+      "2c4cdfc0-b7d3-4e22-9dc6-29e119d44216",
+      "1abbd5f4-b4bf-4859-81e4-6d6f258c8368",
+    ],
+  },
   articles: {
     byId: {
       "ca7e3ce1-6e04-4bc1-b986-63b9eb6bf08f": {

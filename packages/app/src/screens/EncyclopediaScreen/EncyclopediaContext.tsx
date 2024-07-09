@@ -1,8 +1,9 @@
 import React from "react";
 import { useSearch } from "../../hooks/useSearch";
 import { useSelector } from "../../redux/useSelector";
-import { allArticlesSelector } from "../../redux/selectors";
+import { allArticlesSelector, allVideosSelector } from "../../redux/selectors";
 import { Article } from "../../core/types";
+import { VideoData } from "../../types";
 
 export type EncyclopediaContext = {
   query: string;
@@ -13,6 +14,9 @@ export type EncyclopediaContext = {
   selectedCategoryIds: string[];
   setSelectedCategoryIds: React.Dispatch<React.SetStateAction<string[]>>;
   filteredCategoryIds: string[];
+  videos: VideoData[];
+  selectedVideoId: string | undefined;
+  setSelectedVideoId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 const defaultValue: EncyclopediaContext = {
@@ -24,6 +28,9 @@ const defaultValue: EncyclopediaContext = {
   selectedCategoryIds: [],
   setSelectedCategoryIds: () => {},
   filteredCategoryIds: [],
+  videos: [],
+  selectedVideoId: undefined,
+  setSelectedVideoId: () => {},
 };
 
 const EncyclopediaContext =
@@ -31,10 +38,17 @@ const EncyclopediaContext =
 
 export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
   const articles = useSelector(allArticlesSelector);
+  const allVideos = useSelector(allVideosSelector);
 
   const { query, setQuery, results } = useSearch<Article>({
     options: articles,
     keys: searchKeys,
+  });
+
+  const { results: videos } = useSearch<VideoData>({
+    externalQuery: query,
+    options: allVideos,
+    keys: videoSearchKeys,
   });
 
   const { categoryIds, subcategoryIds, articleIds } = React.useMemo(() => {
@@ -44,6 +58,8 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
   const [selectedCategoryIds, setSelectedCategoryIds] = React.useState<
     string[]
   >([]);
+
+  const [selectedVideoId, setSelectedVideoId] = React.useState<string>();
 
   const filteredCategoryIds =
     selectedCategoryIds.length === 0
@@ -61,6 +77,9 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
         categoryIds,
         subcategoryIds,
         articleIds,
+        videos,
+        selectedVideoId,
+        setSelectedVideoId,
       }}
     >
       {children}
@@ -77,6 +96,11 @@ const searchKeys = [
   "content" as const,
   "category" as const,
   "subCategory" as const,
+];
+
+const videoSearchKeys = [
+  "title" as const, //
+  "assetName" as const,
 ];
 
 const getFilteredIds = (filteredArticles: Article[]) => {

@@ -7,7 +7,6 @@ import NavigationStack, { StackConfig } from "../components/NavigationStack";
 import EncyclopediaScreen from "../../screens/EncyclopediaScreen";
 import ArticlesScreen from "../../screens/ArticlesScreen";
 import FindHelpScreen from "../../screens/FindHelpScreen";
-import VideoScreen from "../../screens/VideoScreen";
 import TermsScreen from "../../screens/TermsScreen";
 import AboutScreen from "../../screens/AboutScreen";
 import PrivacyScreen from "../../screens/PrivacyScreen";
@@ -23,7 +22,6 @@ export type AuthStackParamList = {
     subcategoryId: string;
   };
   Help: undefined;
-  Video: undefined;
 };
 
 const config: StackConfig<keyof AuthStackParamList> = {
@@ -65,11 +63,6 @@ const config: StackConfig<keyof AuthStackParamList> = {
     Help: {
       title: "Find Help",
       component: FindHelpScreen,
-      backRoute: "Encyclopedia",
-    },
-    Video: {
-      title: "Video",
-      component: VideoScreen,
       backRoute: "Encyclopedia",
     },
   },

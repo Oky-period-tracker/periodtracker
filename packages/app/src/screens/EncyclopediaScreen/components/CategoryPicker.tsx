@@ -17,12 +17,26 @@ export const CategoryPicker = () => {
     );
   };
 
+  const onVideosPress = () => {
+    handlePress("videos");
+  };
+  const videosStatus = selectedCategoryIds.includes("videos")
+    ? "danger"
+    : "basic";
+
   return (
     <ScrollView
       horizontal
       style={styles.contentContainer}
       showsHorizontalScrollIndicator={false}
     >
+      <EmojiBadge
+        emoji={"🎥"}
+        text={"videos"}
+        onPress={onVideosPress}
+        status={videosStatus}
+      />
+
       {allCategories.map((category) => {
         const onPress = () => handlePress(category.id);
         const status = selectedCategoryIds.includes(category.id)

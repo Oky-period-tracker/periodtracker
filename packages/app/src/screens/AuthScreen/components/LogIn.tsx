@@ -56,7 +56,7 @@ export const LogIn = () => {
         <Input
           value={name}
           onChangeText={setName}
-          placeholder="Name"
+          placeholder="enter_name"
           errors={errors}
           errorKey={"name_too_short"}
           errorsVisible={errorsVisible}
@@ -65,7 +65,7 @@ export const LogIn = () => {
         <Input
           value={password}
           onChangeText={setPassword}
-          placeholder="Password"
+          placeholder="password"
           secureTextEntry={true}
           errors={errors}
           errorKey={"password_too_short"}

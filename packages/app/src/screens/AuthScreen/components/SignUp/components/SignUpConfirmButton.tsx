@@ -10,7 +10,7 @@ export const SignUpConfirmButton = () => {
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.confirm}>
-      <Text style={styles.confirmText}>Confirm</Text>
+      <Text style={styles.confirmText}>confirm</Text>
     </TouchableOpacity>
   );
 };

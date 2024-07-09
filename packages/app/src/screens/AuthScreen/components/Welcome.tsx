@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
   },
   headText: {
     fontSize: 28,
-    marginLeft: "-4%",
     textAlign: "left",
     width: "80%",
     fontWeight: "bold",

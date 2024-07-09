@@ -54,7 +54,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
           <AuthLinks />
           <View style={styles.footer}>
             <Button status={"basic"} onPress={goToInfo}>
-              Info
+              info
             </Button>
             <LanguageSelector status={"basic"} />
           </View>

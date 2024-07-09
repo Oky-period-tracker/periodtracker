@@ -19,13 +19,13 @@ export const AskAgree = () => {
   return (
     <View style={styles.container}>
       <Text>
-        <Text>{`Please read and agree to the `}</Text>
-        <A onPress={goToPrivacy}>{`Privacy Policy`}</A>
-        <Text>{` and `}</Text>
-        <A onPress={goToTerms}>{`Terms and Conditions`}</A>
-        <Text>{` before you continue`}</Text>
+        <Text>accept_conditions_1</Text>
+        <A onPress={goToPrivacy}>accept_conditions_2</A>
+        <Text>accept_conditions_3</Text>
+        <A onPress={goToTerms}>accept_conditions_4</A>
+        <Text>accept_conditions_5</Text>
       </Text>
-      <Checkbox label={"I agree"} onPress={toggleAgree} checked={state.agree} />
+      <Checkbox label={"i_agree"} onPress={toggleAgree} checked={state.agree} />
     </View>
   );
 };

@@ -23,7 +23,7 @@ const SignUpInner = () => {
 
   return (
     <>
-      <AuthHeader title={"Sign up"} />
+      <AuthHeader title={"sign_up"} />
       <StepComponent />
       <Hr />
       <SignUpConfirmButton />

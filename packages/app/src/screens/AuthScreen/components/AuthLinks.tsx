@@ -18,11 +18,11 @@ export const AuthLinks = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={goToForgot} style={styles.link}>
-        <Text style={styles.text}>forgot password</Text>
+        <Text style={styles.text}>forgot_password</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={goToDelete} style={styles.link}>
-        <Text style={styles.text}>delete account</Text>
+        <Text style={styles.text}>delete_account</Text>
       </TouchableOpacity>
     </View>
   );

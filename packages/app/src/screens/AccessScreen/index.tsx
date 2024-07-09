@@ -22,18 +22,18 @@ const AccessScreen: ScreenComponent<"Access"> = ({ navigation }) => {
 
   const rows: TouchableRowProps[] = [
     {
-      title: "Language",
-      description: "Change the language Oky uses",
+      title: "language",
+      description: "language_subtitle",
       component: <LanguageSelector />,
     },
     {
-      title: "Tutorial",
-      description: "Get instructions on how to use Oky",
+      title: "tutorial",
+      description: "tutorial_subtitle",
       component: <LaunchButton onPress={launchTutorial} />,
     },
     {
-      title: "Share",
-      description: "Share Oky with your friends",
+      title: "share_setting",
+      description: "share_qr_description",
       component: <ShareButton />,
     },
   ];

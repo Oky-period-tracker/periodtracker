@@ -112,7 +112,7 @@ export const AvatarAndThemeSelect = ({
       </View>
 
       <Button onPress={confirm} status={confirmStatus}>
-        Confirm
+        confirm
       </Button>
     </Screen>
   );

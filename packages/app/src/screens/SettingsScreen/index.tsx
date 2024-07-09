@@ -38,34 +38,34 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
 
   const rows: TouchableRowProps[] = [
     {
-      title: "About",
-      description: "Find out more about Oky",
+      title: "about",
+      description: "about_info",
       onPress: () => navigation.navigate("About"),
       component: <ArrowRight />,
     },
     {
-      title: "Terms & Conditions",
-      description: "What you agree by using Oky",
+      title: "t_and_c",
+      description: "t_and_c_info",
       onPress: () => navigation.navigate("Terms"),
       component: <ArrowRight />,
     },
     {
-      title: "Privacy Policy",
+      title: "privacy_policy",
       description:
-        "How Oky stores, shares and protects the information you give",
+        "privacy_info",
       onPress: () => navigation.navigate("Privacy"),
       component: <ArrowRight />,
     },
     {
-      title: "Access Settings",
+      title: "access_setting",
       description:
-        "Choose language, access a tutorial, or share Oky with a friend",
+        "settings_info",
       onPress: () => navigation.navigate("Access"),
       component: <ArrowRight />,
     },
     {
-      title: "Future prediction",
-      description: "Show future period days",
+      title: "future_prediciton",
+      description: "future_prediciton_info",
       component: <PredictionControls />,
       disabled: true,
     },
@@ -87,21 +87,21 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
 
       <View style={styles.buttonContainer}>
         <Button onPress={logOut} status={"secondary"} style={styles.button}>
-          Log out
+          log_out
         </Button>
         <Button
           onPress={deleteAccount}
           status={"basic"}
           style={[styles.button, styles.deleteButton]}
         >
-          Delete Account
+          delete_account
         </Button>
         <Button
           status={"primary"}
           style={styles.button}
           onPress={() => navigation.navigate("Contact")}
         >
-          Contact Us
+          contact_us
         </Button>
       </View>
     </Screen>

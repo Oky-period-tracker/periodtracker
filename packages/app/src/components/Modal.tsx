@@ -34,6 +34,7 @@ export const Modal = ({
       animationType={"fade"}
       transparent={true}
       statusBarTranslucent={true}
+      supportedOrientations={["portrait", "landscape"]}
     >
       <View style={styles.container}>
         <TouchableOpacity style={styles.backDrop} onPress={toggleVisible} />

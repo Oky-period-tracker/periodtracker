@@ -88,7 +88,13 @@ export const VideoPlayerModal = () => {
   }
 
   return (
-    <Modal visible={true} supportedOrientations={["portrait", "landscape"]}>
+    <Modal
+      visible={true}
+      animationType={"fade"}
+      transparent={true}
+      statusBarTranslucent={true}
+      supportedOrientations={["portrait", "landscape"]}
+    >
       <View style={styles.container}>
         <View style={styles.body}>
           {bundledSource ? (

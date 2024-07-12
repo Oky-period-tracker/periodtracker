@@ -24,7 +24,13 @@ export const TutorialContainer = ({ children }: TutorialContainerProps) => {
   const continueThrottled = useThrottledFunction(onContinue, 350);
 
   return (
-    <RNModal visible={true} transparent={true} statusBarTranslucent={true}>
+    <RNModal
+      visible={true}
+      animationType={"fade"}
+      transparent={true}
+      statusBarTranslucent={true}
+      supportedOrientations={["portrait", "landscape"]}
+    >
       <View style={styles.container}>
         <TutorialSkip />
         <View style={styles.backDrop} />

@@ -48,8 +48,6 @@ export const LogIn = () => {
     dispatch(loginRequest({ name, password: formatPassword(password) }));
   };
 
-  React.useEffect(() => {}, []);
-
   return (
     <>
       <AuthHeader title={"Log in"} />

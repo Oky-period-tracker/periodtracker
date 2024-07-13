@@ -30,7 +30,7 @@ export const DayTracker = ({ route }: ScreenProps<"Day">) => {
     <EmojiQuestionCard topic={"body"} dataEntry={dataEntry} />,
     <EmojiQuestionCard topic={"activity"} dataEntry={dataEntry} />,
     <EmojiQuestionCard topic={"flow"} dataEntry={dataEntry} />,
-    <NotesCard />,
+    <NotesCard dataEntry={dataEntry} />,
   ];
 
   // Insert Quiz | DidYouKnow at Start or End

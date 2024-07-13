@@ -78,11 +78,18 @@ export const allCardAnswersSelector = (state: ReduxState) => {
   return s(state)[state.auth.user.id]?.verifiedDates || {};
 };
 
-export const notesAnswerSelector = (state: ReduxState, date: Moment) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return {};
-  // @ts-expect-error TODO:
-  return s(state)[state.auth.user.id].notes[toShortISO(date)] || {};
+export const notesAnswerSelector = (
+  state: ReduxState,
+  date?: Moment
+): { title: string; notes: string } => {
+  const emptyNotes = {
+    title: "",
+    notes: "",
+  };
+  if (!date) return emptyNotes;
+  if (!state?.auth?.user?.id) return emptyNotes;
+  if (!s(state)[state.auth.user.id]) return emptyNotes;
+  return s(state)[state.auth.user.id].notes[toShortISO(date)] || emptyNotes;
 };
 
 export const mostAnsweredSelector = (

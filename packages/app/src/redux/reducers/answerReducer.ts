@@ -45,6 +45,7 @@ export interface AnswerForUserState {
   verifiedDates: VerifiedDates;
   notes: {
     [utcShortISO: string]: {
+      title: string;
       notes: string;
       utcDateTime: string;
     };

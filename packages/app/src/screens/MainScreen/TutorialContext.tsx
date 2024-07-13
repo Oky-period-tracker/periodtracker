@@ -57,6 +57,10 @@ type Action<T extends keyof TutorialState = keyof TutorialState> =
       value: Tutorial;
     }
   | {
+      type: "skip";
+      value: number; // step index
+    }
+  | {
       type: "continue";
     }
   | {
@@ -85,6 +89,12 @@ function reducer(state: TutorialState, action: Action): TutorialState {
         stepIndex: state.stepIndex + 1,
       };
 
+    case "skip":
+      return {
+        ...state,
+        stepIndex: action.value,
+      };
+
     case "reset":
       return {
         ...state,
@@ -105,6 +115,7 @@ export type TutorialContext = {
   state: TutorialState;
   dispatch: React.Dispatch<Action>;
   step: TutorialStep | undefined;
+  steps: TutorialStep[];
   stepConfig: TutorialStepConfig | undefined;
   translateArrowStyle: AnimatedStyle | undefined;
   rotateArrowStyle: AnimatedStyle | undefined;
@@ -117,6 +128,7 @@ const defaultValue: TutorialContext = {
   state: initialState,
   dispatch: () => {},
   step: undefined,
+  steps: [],
   stepConfig: undefined,
   translateArrowStyle: undefined,
   rotateArrowStyle: undefined,
@@ -204,6 +216,7 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
         state,
         dispatch,
         step,
+        steps,
         stepConfig,
         translateArrowStyle,
         rotateArrowStyle,

@@ -6,10 +6,10 @@ import { StyleSheet } from "react-native";
 import { useTutorial } from "../TutorialContext";
 
 export const TutorialSkip = () => {
-  const { dispatch } = useTutorial();
+  const { dispatch, steps } = useTutorial();
 
   const onSkip = () => {
-    dispatch({ type: "reset" });
+    dispatch({ type: "skip", value: steps.length });
   };
 
   return (

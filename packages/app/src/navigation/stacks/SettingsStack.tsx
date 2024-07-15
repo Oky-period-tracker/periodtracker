@@ -20,7 +20,7 @@ const config: StackConfig<keyof SettingsStackParamList> = {
   initialRouteName: "Settings",
   screens: {
     Settings: {
-      title: "Settings",
+      title: "settings",
       component: SettingsScreen,
     },
     Access: {
@@ -32,7 +32,7 @@ const config: StackConfig<keyof SettingsStackParamList> = {
       component: TermsScreen,
     },
     About: {
-      title: "About",
+      title: "about",
       component: AboutScreen,
     },
     Privacy: {

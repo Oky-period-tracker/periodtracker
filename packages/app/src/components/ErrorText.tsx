@@ -1,8 +1,8 @@
 import React from "react";
-import { StyleSheet, TextProps } from "react-native";
-import { Text } from "./Text";
+import { StyleSheet } from "react-native";
+import { Text , CustomTextProps } from "./Text";
 
-export const ErrorText = ({ style, children, ...props }: TextProps) => {
+export const ErrorText = ({ style, children, ...props }: CustomTextProps) => {
   return (
     <Text style={[styles.error, style]} {...props}>
       {children}

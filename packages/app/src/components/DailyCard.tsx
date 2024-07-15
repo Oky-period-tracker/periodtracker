@@ -98,6 +98,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
           appearance={appearance}
           textStyle={[styles.dayText]}
           style={{ width: CARD_WIDTH / 3 }}
+          enableTranslate={false}
         >
           {`Day ${day}`}
         </DisplayButton>

@@ -13,23 +13,18 @@ export const Welcome = () => {
 
   const pages = [
     {
-      title: "Welcome to Oky!",
       iconType: "fontawesome",
       fontAwesomeName: "calendar-check-o",
-      iconHeading: "calender",
-      description:
-        "calendar_onboard",
+      iconHeading: "calendar",
+      description: "calendar_onboard",
     },
     {
-      title: "Welcome to Oky!",
       iconType: "fontawesome",
       fontAwesomeName: "file-text",
-      iconHeading: "Facts",
-      description:
-        "the_facts_onboard",
+      iconHeading: "the_facts",
+      description: "the_facts_onboard",
     },
     {
-      title: "Welcome to Oky!",
       iconType: "custom",
       iconComponent: <UserIcon size={50} />,
       iconHeading: "friend",
@@ -67,7 +62,7 @@ const renderActionRight = (currentPage: number, total: number) => {
       style={[styles.button, { opacity }]}
       status={"secondary"}
     >
-      Continue
+      continue
     </Button>
   );
 };

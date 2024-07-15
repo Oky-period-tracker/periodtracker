@@ -64,14 +64,14 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={[styles.text, styles.bold]}>{currentUser?.name}</Text>
-            <Text style={[styles.text, styles.bold]}>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>{currentUser?.name}</Text>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
               {currentUser?.gender}
             </Text>
-            <Text style={[styles.text, styles.bold]}>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
               {formatMonthYear(currentUser?.dateOfBirth)}
             </Text>
-            <Text style={[styles.text, styles.bold]}>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
               {currentUser?.location}
             </Text>
           </View>
@@ -92,8 +92,8 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={[styles.text, styles.bold]}>{cycleLength}</Text>
-            <Text style={[styles.text, styles.bold]}>{periodLength}</Text>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>{cycleLength}</Text>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>{periodLength}</Text>
           </View>
         </View>
       </View>

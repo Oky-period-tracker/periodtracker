@@ -5,6 +5,7 @@ export interface AppTranslations {
   terms: string
   share: string
   skip: string
+  home: string
   auth_welcome: string
   auth_catchphrase: string
   confirm_and_delete: string
@@ -13,6 +14,7 @@ export interface AppTranslations {
   request_fail: string
   sign_up: string
   log_in: string
+  log_out: string
   favourite_actor: string
   favourite_teacher: string
   childhood_hero: string

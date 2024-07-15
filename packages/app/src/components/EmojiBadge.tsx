@@ -38,7 +38,7 @@ export const EmojiBadge = ({
         onPress={onPress}
         disabled={disabled}
       >
-        <Text style={{ fontSize: dimensions.emoji }}>{emoji}</Text>
+        <Text enableTranslate={false} style={{ fontSize: dimensions.emoji }}>{emoji}</Text>
       </Button>
       <Text style={[styles.text, { fontSize: dimensions.text }]}>{text}</Text>
     </View>

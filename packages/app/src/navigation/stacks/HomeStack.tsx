@@ -24,7 +24,7 @@ const config: StackConfig<keyof HomeStackParamList> = {
   initialRouteName: "Home",
   screens: {
     Home: {
-      title: "Home",
+      title: "home",
       component: MainScreen,
     },
     Day: {

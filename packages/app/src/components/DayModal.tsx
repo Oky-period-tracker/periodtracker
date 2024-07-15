@@ -302,11 +302,8 @@ export const DayModal = ({
   return (
     <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
       <LaunchTutorialButton toggleVisible={toggleVisible} />
-      <Text style={styles.title}>Did you have your period today?</Text>
-      <Text style={styles.description}>
-        Tell Oky about your period to get better predictions, did you have your
-        period today?
-      </Text>
+      <Text style={styles.title}>user_input_instructions</Text>
+      <Text style={styles.description}>share_period_details_heading</Text>
 
       <IconButton
         size={160}

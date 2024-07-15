@@ -72,6 +72,7 @@ export const IconButton = ({
           textStyle,
           appearance === "outline" && { color: palette[status].base },
         ]}
+        enableTranslate={false}
       >
         {text}
       </Text>

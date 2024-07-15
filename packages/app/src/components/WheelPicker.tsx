@@ -118,7 +118,7 @@ export const WheelPicker = ({
           onPress={onPress}
           style={[styles.item, isSelected && styles.selectedItem]}
         >
-          <Text style={isSelected ? styles.selectedItemText : undefined}>
+          <Text enableTranslate={false} style={isSelected ? styles.selectedItemText : undefined}>
             {item ? item.label : "Select"}
           </Text>
         </TouchableOpacity>

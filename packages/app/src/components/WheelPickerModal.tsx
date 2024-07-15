@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  // Text,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -92,7 +91,7 @@ export const WheelPickerModal = ({
 
         <Hr />
         <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
-          <Text style={styles.confirmText}>Confirm</Text>
+          <Text style={styles.confirmText}>confirm</Text>
         </TouchableOpacity>
       </Modal>
     </>

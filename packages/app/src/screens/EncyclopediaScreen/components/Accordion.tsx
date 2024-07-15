@@ -36,7 +36,6 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   const category = useSelector((s) => categoryByIDSelector(s, categoryId));
   const subCategoriesById = useSelector(allSubCategoriesByIdSelector);
 
-
   // Add safety checks for category and subCategoriesById
   if (!category) {
     console.error(`Category not found for id: ${categoryId}`);
@@ -63,7 +62,9 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
       <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
         <Text style={styles.categoryName}>{category.name}</Text>
         <DisplayButton status={"basic"} style={styles.categoryEmoji}>
-          <Text>{category.tags?.primary?.emoji}</Text>
+          {!!category.tags?.primary?.emoji && (
+            <Text enableTranslate={false}>{category.tags.primary.emoji}</Text>
+          )}
         </DisplayButton>
       </TouchableOpacity>
       {expanded &&

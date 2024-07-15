@@ -14,7 +14,7 @@ const config: StackConfig<keyof ProfileStackParamList> = {
   initialRouteName: "Profile",
   screens: {
     Profile: {
-      title: "Profile",
+      title: "profile",
       component: ProfileScreen,
     },
     EditProfile: {

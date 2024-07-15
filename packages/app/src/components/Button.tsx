@@ -2,7 +2,6 @@ import React from "react";
 import {
   StyleProp,
   StyleSheet,
-  // Text,
   TextStyle,
   TouchableOpacity,
   View,
@@ -18,6 +17,7 @@ export type ButtonProps = ViewProps & {
   appearance?: Appearance;
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
+  enableTranslate?: boolean;
 };
 
 export const Button = ({
@@ -25,6 +25,7 @@ export const Button = ({
   onPress,
   status = "primary",
   appearance = "fill",
+  enableTranslate = true,
   ...props
 }: ButtonProps) => {
   const colors = palette[status];
@@ -36,6 +37,12 @@ export const Button = ({
       {...props}
     >
       <ButtonInner status={status} appearance={appearance} {...props} />
+      <ButtonInner
+        status={status}
+        appearance={appearance}
+        enableTranslate={enableTranslate}
+        {...props}
+      />
     </TouchableOpacity>
   );
 };
@@ -61,6 +68,7 @@ const ButtonInner = ({
   status = "primary",
   appearance = "fill",
   textStyle,
+  enableTranslate = true,
   ...props
 }: ButtonProps) => {
   const colors = palette[status];
@@ -73,6 +81,7 @@ const ButtonInner = ({
           textStyle,
           appearance === "outline" && { color: colors.base },
         ]}
+        enableTranslate={enableTranslate}
       >
         {props.children}
       </Text>

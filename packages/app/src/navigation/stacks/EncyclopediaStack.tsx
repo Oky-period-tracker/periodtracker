@@ -16,7 +16,7 @@ const config: StackConfig<keyof EncyclopediaStackParamList> = {
   initialRouteName: "Encyclopedia",
   screens: {
     Encyclopedia: {
-      title: "Encyclopedia",
+      title: "encyclopedia",
       component: EncyclopediaScreen,
     },
     Articles: {

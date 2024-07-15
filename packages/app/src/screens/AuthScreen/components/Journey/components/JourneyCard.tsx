@@ -52,8 +52,7 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
           <>
             <Text style={styles.question}>{questionText}</Text>
             <Text style={styles.disclaimer}>
-              Let's get to know you! This info stays between us, but you can
-              swipe left if you don't want to answer
+            survey_description
             </Text>
           </>
         )}

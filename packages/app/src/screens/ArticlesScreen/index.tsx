@@ -5,6 +5,7 @@ import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { useEncyclopedia } from "../EncyclopediaScreen/EncyclopediaContext";
 import { SearchBar } from "../../components/SearchBar";
+import { ArticleContent } from "./ArticleContent";
 
 const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   const { query, setQuery, articleIds } = useEncyclopedia();
@@ -38,7 +39,7 @@ const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
             <View style={styles.card} key={article.id}>
               <Text style={styles.title}>{article.title}</Text>
               <Text style={styles.subCategory}>{subcategory.name}</Text>
-              <Text>{article.content}</Text>
+              <ArticleContent articleId={article.id} text={article.content} />
             </View>
           );
         })}

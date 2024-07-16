@@ -8,6 +8,7 @@ import {
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useThrottledFunction } from "../hooks/useThrottledFunction";
 import { TutorialSkip } from "../screens/MainScreen/components/TutorialSkip";
+import { useLoading } from "../contexts/LoadingProvider";
 
 export type TutorialContainerProps = {
   children?: React.ReactNode;
@@ -15,6 +16,7 @@ export type TutorialContainerProps = {
 
 export const TutorialContainer = ({ children }: TutorialContainerProps) => {
   const { dispatch } = useTutorial();
+  const { loading } = useLoading();
 
   const onContinue = () => {
     dispatch({ type: "continue" });
@@ -25,7 +27,7 @@ export const TutorialContainer = ({ children }: TutorialContainerProps) => {
 
   return (
     <RNModal
-      visible={true}
+      visible={!loading}
       animationType={"fade"}
       transparent={true}
       statusBarTranslucent={true}

@@ -12,6 +12,7 @@ import { EncyclopediaProvider } from "./src/screens/EncyclopediaScreen/Encyclope
 import { ResponsiveProvider } from "./src/contexts/ResponsiveContext";
 import { PredictionProvider } from "./src/contexts/PredictionProvider";
 import { AuthProvider } from "./src/contexts/AuthContext";
+import { LoadingProvider } from "./src/contexts/LoadingProvider";
 
 function App() {
   useOrientationLock();
@@ -21,17 +22,19 @@ function App() {
       <GestureHandlerRootView>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <AuthProvider>
-              <PredictionProvider>
-                <Background>
-                  <ResponsiveProvider>
-                    <EncyclopediaProvider>
-                      <RootNavigator />
-                    </EncyclopediaProvider>
-                  </ResponsiveProvider>
-                </Background>
-              </PredictionProvider>
-            </AuthProvider>
+            <LoadingProvider>
+              <AuthProvider>
+                <PredictionProvider>
+                  <Background>
+                    <ResponsiveProvider>
+                      <EncyclopediaProvider>
+                        <RootNavigator />
+                      </EncyclopediaProvider>
+                    </ResponsiveProvider>
+                  </Background>
+                </PredictionProvider>
+              </AuthProvider>
+            </LoadingProvider>
           </PersistGate>
         </Provider>
       </GestureHandlerRootView>

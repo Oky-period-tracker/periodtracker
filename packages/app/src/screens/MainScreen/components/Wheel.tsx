@@ -11,6 +11,7 @@ import { useDayStatus } from "../../../hooks/useDayStatus";
 import { useTutorial } from "../TutorialContext";
 import { useSelector } from "react-redux";
 import { isTutorialOneActiveSelector } from "../../../redux/selectors";
+import { useLoading } from "../../../contexts/LoadingProvider";
 
 export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { data, wheelPanGesture, wheelAnimatedStyle } = useDayScroll();
@@ -28,6 +29,7 @@ export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 
 const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
   const status = useDayStatus(item);
+  const { setLoading } = useLoading();
   const { dispatch: tutorialDispatch } = useTutorial();
 
   const isTutorialOneActive = useSelector(isTutorialOneActiveSelector);
@@ -43,6 +45,7 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
 
   const onPress = () => {
     if (isTutorialOneActive) {
+      setLoading(true);
       tutorialDispatch({ type: "start", value: "tutorial_one" });
       return;
     }

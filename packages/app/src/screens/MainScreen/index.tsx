@@ -16,9 +16,14 @@ import { TutorialArrow } from "./components/TutorialArrow";
 import { TutorialFeature } from "./components/TutorialFeature";
 import { useFocusEffect } from "@react-navigation/native";
 import { useFetchSurvey } from "../../hooks/useFetchSurvey";
+import {
+  useLoading,
+  useStopLoadingEffect,
+} from "../../contexts/LoadingProvider";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   useFetchSurvey();
+  useStopLoadingEffect();
 
   return (
     <DayScrollProvider>
@@ -33,6 +38,7 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation, route }) => {
   const { selectedItem, onBodyLayout, dayModalVisible, toggleDayModal } =
     useDayScroll();
 
+  const { setLoading } = useLoading();
   const { width } = useScreenDimensions();
 
   const {
@@ -47,6 +53,7 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation, route }) => {
   useFocusEffect(
     React.useCallback(() => {
       if (route.params?.tutorial) {
+        setLoading(true);
         tutorialDispatch({ type: "start", value: route.params?.tutorial });
         // Reset to prevent re-triggering
         navigation.setParams({ tutorial: undefined });
@@ -148,6 +155,6 @@ const styles = StyleSheet.create({
   },
   // Tutorial
   hidden: {
-    opacity: 0.1,
+    opacity: 0.05,
   },
 });

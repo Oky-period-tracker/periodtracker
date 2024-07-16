@@ -10,9 +10,13 @@ import { LanguageSelector } from "../../components/LanguageSelector";
 import { shareApp } from "../../redux/actions";
 import { useDispatch } from "react-redux";
 import { WEBSITE_URL } from "../../config/env";
+import { useLoading } from "../../contexts/LoadingProvider";
 
 const AccessScreen: ScreenComponent<"Access"> = ({ navigation }) => {
+  const { setLoading } = useLoading();
+
   const launchTutorial = () => {
+    setLoading(true);
     navigation.navigate("Home", { tutorial: "tutorial_two" });
   };
 

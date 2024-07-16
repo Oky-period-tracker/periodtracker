@@ -15,8 +15,11 @@ import { LogIn } from "./components/LogIn";
 import { DeleteAccount } from "./components/DeleteAccount";
 import { ForgotPassword } from "./components/ForgotPassword";
 import { LanguageSelector } from "../../components/LanguageSelector";
+import { useStopLoadingEffect } from "../../contexts/LoadingProvider";
 
 const AuthScreen = (props: ScreenProps<"Auth">) => {
+  useStopLoadingEffect();
+
   return (
     <AuthModeProvider>
       <AuthScreenInner {...props} />

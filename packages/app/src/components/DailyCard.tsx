@@ -18,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import { defaultEmoji } from "../config/options";
 import { starColor } from "../config/theme";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
+import { useLoading } from "../contexts/LoadingProvider";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -25,6 +26,7 @@ type DailyCardProps = {
 };
 
 export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
+  const { setLoading } = useLoading();
   const { dispatch: tutorialDispatch } = useTutorial();
   const { isDragging, constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
@@ -50,6 +52,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     }
 
     if (isTutorialTwoActive) {
+      setLoading(true);
       tutorialDispatch({ type: "start", value: "tutorial_two" });
       return;
     }

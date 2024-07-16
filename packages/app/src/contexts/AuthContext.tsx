@@ -1,9 +1,9 @@
 import React from "react";
-import { FAST_SIGN_UP } from "../config/env";
+import { useLoading } from "./LoadingProvider";
 
 export type AuthContext = {
   isLoggedIn: boolean;
-  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoggedIn: (value: boolean) => void;
 };
 
 const defaultValue: AuthContext = {
@@ -14,7 +14,16 @@ const defaultValue: AuthContext = {
 const AuthContext = React.createContext<AuthContext>(defaultValue);
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(FAST_SIGN_UP);
+  const [isLoggedIn, setIsLoggedInState] = React.useState(false);
+
+  const { setLoading } = useLoading();
+
+  const setIsLoggedIn = (value: boolean) => {
+    setLoading(true);
+    setTimeout(() => {
+      setIsLoggedInState(value);
+    }, 300);
+  };
 
   return (
     <AuthContext.Provider

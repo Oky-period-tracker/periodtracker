@@ -24,6 +24,10 @@ import {
   setTutorialOneActive,
   setTutorialTwoActive,
 } from "../../redux/actions";
+import {
+  useLoading,
+  useStopLoadingEffect,
+} from "../../contexts/LoadingProvider";
 
 export type Tutorial = "tutorial_one" | "tutorial_two";
 
@@ -141,6 +145,8 @@ const TutorialContext = React.createContext<TutorialContext>(defaultValue);
 export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
+  const { setLoading } = useLoading();
+
   const { width: screenWidth, height: screenHeight } = useScreenDimensions();
   const [topLeftLayout, onTopLeftLayout] = useLayout();
   const [wheelLayout, onWheelLayout] = useLayout();
@@ -184,6 +190,8 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
       return;
     }
 
+    setLoading(true);
+
     if (state.tutorial === "tutorial_one") {
       reduxDispatch(setTutorialOneActive(false));
     }
@@ -194,6 +202,8 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
 
     dispatch({ type: "reset" });
   });
+
+  useStopLoadingEffect();
 
   const translateArrowStyle = useAnimatedStyle(() => {
     return {

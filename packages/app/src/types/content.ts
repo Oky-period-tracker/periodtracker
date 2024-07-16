@@ -108,61 +108,63 @@ export interface Quizzes {
   allIds: string[];
 }
 
-export interface Surveys {
-  date_created: string;
+export type Survey = {
   id: string;
-  isAgeRestricted: false;
-  is_multiple: true;
+  questions: SurveyQuestion[];
+  isAgeRestricted: boolean;
+  date_created: string;
   lang: string;
   live: true;
-  option1: string;
-  option2: string;
-  option3: string;
-  option4: string;
-  option5: string;
-  question: string;
-  questions: ContentItem[];
-}
+  //
+  is_multiple?: boolean; // @deprecated
+  option1?: string; // @deprecated
+  option2?: string; // @deprecated
+  option3?: string; // @deprecated
+  option4?: string; // @deprecated
+  option5?: string; // @deprecated
+  question?: string; // @deprecated
+  response?: string; // @deprecated
+};
 
-interface SurveyContentItem {
-  date_created: string;
+export type SurveyAnswerOption = { [key: string]: string };
+
+export type SurveyOptions = [
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?
+];
+
+export interface SurveyQuestion {
   id: string;
-  isAgeRestricted: false;
-  is_multiple: true;
-  lang: string;
-  live: true;
-  option1: string;
-  option2: string;
-  option3: string;
-  option4: string;
-  option5: string;
   question: string;
-  questions: SurveyQuestionContentItem[];
-  inProgress: boolean;
-  currentQuestionIndex: number;
-  answeredQuestion: AnsweredSurveyQuestionContentItem[];
-}
-interface SurveyQuestionContentItem {
-  id: string;
+  options: SurveyOptions;
+  next_question: {
+    option1: string;
+    option2: string;
+    option3: string;
+    option4: string;
+    option5: string;
+  };
   is_multiple: boolean;
-  next_question: ContentItem;
-  options: ContentItem[];
-  question: string;
-  response: string;
+  //
   sort_number: string;
   surveyId: string;
-  answeredQuestion: AnsweredSurveyQuestionContentItem;
+  response: string;
 }
 
-interface AnsweredSurveyQuestionContentItem {
+export interface SurveyQuestionAnswer {
   questionId: string;
   question: string;
   answerID: string;
   answer: string;
+  // TODO: Below is redundant?
   response: string;
   isMultiple: boolean;
 }
-export interface AllSurveys extends Array<SurveyContentItem> {}
+
+export interface AllSurveys extends Array<Survey> {}
 export interface CompletedSurveys extends Array<CompletedSurveyItem> {}
 interface CompletedSurveyItem {
   id: string;
@@ -220,7 +222,6 @@ export interface StaticContent {
   articles: Articles;
   categories: Categories;
   subCategories: SubCategories;
-  surveys: Surveys;
   quizzes: Quizzes;
   didYouKnows: DidYouKnows;
   helpCenters: HelpCenters;

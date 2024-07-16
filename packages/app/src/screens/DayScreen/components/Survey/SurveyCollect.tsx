@@ -10,8 +10,8 @@ export const SurveyCollect = () => {
     dispatch({ type: "answerIndex", value });
   };
 
-  const setNotes = (value: string) => {
-    dispatch({ type: "notes", value });
+  const setAnswerDraft = (value: string) => {
+    dispatch({ type: "answerDraft", value });
   };
 
   if (!state.survey) {
@@ -47,7 +47,11 @@ export const SurveyCollect = () => {
           })}
         </>
       ) : (
-        <Input value={state.notes} onChangeText={setNotes} multiline={true} />
+        <Input
+          value={state.answerDraft}
+          onChangeText={setAnswerDraft}
+          multiline={true}
+        />
       )}
     </>
   );

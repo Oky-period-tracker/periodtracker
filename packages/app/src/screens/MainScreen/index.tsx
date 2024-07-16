@@ -15,8 +15,11 @@ import { TutorialTextbox } from "./components/TutorialTextbox";
 import { TutorialArrow } from "./components/TutorialArrow";
 import { TutorialFeature } from "./components/TutorialFeature";
 import { useFocusEffect } from "@react-navigation/native";
+import { useFetchSurvey } from "../../hooks/useFetchSurvey";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
+  useFetchSurvey();
+
   return (
     <DayScrollProvider>
       <TutorialProvider>

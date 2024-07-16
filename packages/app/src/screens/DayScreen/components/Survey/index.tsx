@@ -37,7 +37,7 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
         <Text>Tell us about your experience with Oky.</Text>
         <Text>Choose one option from the list.</Text>
 
-        {state.finished ? (
+        {state.hasAnsweredAll ? (
           <>
             <Text style={styles.thanks} status={"danger"}>
               Thank you! If you want to provide some additional feedback you can

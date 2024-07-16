@@ -1,17 +1,15 @@
 import { createAction } from "../helpers";
 import { Moment } from "moment";
-import { CardName, DailyCard } from "../../types";
+import { CardName, DailyCard, SurveyQuestionAnswer } from "../../types";
 import { AnswerForUserState } from "../reducers/answerReducer";
 import { User } from "../reducers/authReducer";
 
 export function answerSurvey(payload: {
   id: string;
   user_id: string;
-  isCompleted: boolean;
+  isCompleted: boolean; // TODO: redundant?
   isSurveyAnswered: boolean;
-  // TODO:
-  // eslint-disable-next-line
-  questions: any;
+  questions: SurveyQuestionAnswer[];
   utcDateTime: Moment;
 }) {
   return createAction("ANSWER_SURVEY", payload);

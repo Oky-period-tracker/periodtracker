@@ -2,7 +2,6 @@ import {
   Articles,
   Categories,
   SubCategories,
-  Surveys,
   Quizzes,
   DidYouKnows,
   HelpCenters,
@@ -22,7 +21,6 @@ export interface ContentState {
   articles: Articles;
   categories: Categories;
   subCategories: SubCategories;
-  surveys: Surveys;
   quizzes: Quizzes;
   didYouKnows: DidYouKnows;
   helpCenters: HelpCenters;
@@ -34,6 +32,7 @@ export interface ContentState {
   allSurveys: AllSurveys;
   completedSurveys: CompletedSurveys;
   videos?: Videos;
+  surveys?: never; // @deprecated
 }
 
 const initialState: ContentState = {
@@ -50,21 +49,6 @@ const initialState: ContentState = {
   subCategories: {
     byId: {},
     allIds: [],
-  },
-  surveys: {
-    date_created: "",
-    id: "string",
-    isAgeRestricted: false,
-    is_multiple: true,
-    lang: "string",
-    live: true,
-    option1: "string",
-    option2: "string",
-    option3: "string",
-    option4: "string",
-    option5: "string",
-    question: "string",
-    questions: [],
   },
   allSurveys: [],
   completedSurveys: [],
@@ -126,12 +110,6 @@ export function contentReducer(
       };
     }
 
-    case "FETCH_SURVEY_CONTENT_SUCCESS":
-      return {
-        ...state,
-        surveys: action.payload.surveys,
-      };
-
     case "UPDATE_ALL_SURVEYS_CONTENT":
       return {
         ...state,
@@ -143,6 +121,23 @@ export function contentReducer(
         ...state,
         completedSurveys: action.payload.completedSurveys,
       };
+
+    case "ANSWER_SURVEY": {
+      const allSurveys = state.allSurveys.filter(
+        (item) => item.id !== action.payload.id
+      );
+
+      const completedSurveys = [
+        ...state.completedSurveys,
+        { id: action.payload.id },
+      ];
+
+      return {
+        ...state,
+        allSurveys,
+        completedSurveys,
+      };
+    }
 
     default:
       return state;

@@ -14,20 +14,7 @@ export interface VerifiedDates {
 }
 
 export interface AnswerForUserState {
-  surveys: {
-    [id: string]: {
-      id: string;
-      user_id: string;
-      isCompleted: boolean;
-      isSurveyAnswered: boolean;
-
-      // TODO:
-      // eslint-disable-next-line
-      questions: any;
-      utcDateTime: string;
-      inProgress: boolean;
-    };
-  };
+  surveys: never; // @deprecated
   quizzes: {
     [id: string]: {
       id: string;
@@ -54,27 +41,6 @@ export interface AnswerForUserState {
 
 export interface AnswerState {
   [userId: string]: AnswerForUserState;
-}
-
-function surveysReducer(
-  state = {},
-  action: Actions
-): AnswerForUserState["surveys"] {
-  if (action.type === "ANSWER_SURVEY") {
-    return {
-      ...state,
-      [action.payload.id]: {
-        id: action.payload.id,
-        user_id: action.payload.user_id,
-        isCompleted: action.payload.isCompleted,
-        isSurveyAnswered: action.payload.isSurveyAnswered,
-        questions: action.payload.questions,
-        utcDateTime: action.payload.utcDateTime.toISOString(),
-      },
-    };
-  }
-
-  return state;
 }
 
 function quizzesReducer(
@@ -201,7 +167,6 @@ function notesReducer(
 }
 
 const answerForUserReducer = combineReducers<AnswerForUserState, Actions>({
-  surveys: surveysReducer,
   quizzes: quizzesReducer,
   cards: cardsReducer,
   notes: notesReducer,
@@ -212,13 +177,6 @@ export function answerReducer(
   state: AnswerState = {},
   action: Actions
 ): AnswerState {
-  // TODO_ALEX: survey
-  if (action.type === "ANSWER_SURVEY") {
-    return {
-      ...state,
-      // [action.payload.user_id]: answerForUserReducer(state[action.payload.userID], action),
-    };
-  }
   if (action.type === "ANSWER_QUIZ") {
     return {
       ...state,

@@ -12,12 +12,11 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.oky"
+      "bundleIdentifier": "com.oky",
+      "permissions": ["INTERNET"]
     },
     "android": {
       "package": "com.oky",
@@ -27,6 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "permissions": ["INTERNET"],
       "keystore": {
         "keystorePath": "/Users/dev/keys/oky.keystore",
         "keystorePassword": "tbox123",

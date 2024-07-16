@@ -61,9 +61,9 @@ export const termsAndConditionsContent = (state: ReduxState) =>
 
 export const aboutContent = (state: ReduxState) => s(state).about;
 
-export const allSurveys = (state: ReduxState) => s(state).allSurveys;
+export const allSurveysSelector = (state: ReduxState) => s(state).allSurveys;
 
-export const completedSurveys = (state: ReduxState) =>
+export const completedSurveysSelector = (state: ReduxState) =>
   s(state).completedSurveys;
 
 export const aboutBanner = (state: ReduxState) => s(state).aboutBanner;

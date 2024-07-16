@@ -1,20 +1,25 @@
 import React from "react";
-import { Survey, SurveyQuestion, surveys } from "../../../../data/data";
-
-type SurveyAnswer = {
-  questionId: string;
-  answerID: string;
-  answer: string;
-};
+import { useDispatch } from "react-redux";
+import { useSelector } from "../../../../redux/useSelector";
+import { currentUserSelector } from "../../../../redux/selectors";
+import { User } from "../../../../redux/reducers/authReducer";
+import { answerSurvey } from "../../../../redux/actions";
+import moment from "moment";
+import {
+  Survey,
+  SurveyQuestion,
+  SurveyQuestionAnswer,
+} from "../../../../types";
 
 type SurveyState = {
-  survey: Survey | null;
+  survey: Survey | undefined;
   agree: boolean | null;
   consented: boolean | null;
   questionIndex: number;
   answerIndex: number | null;
-  answers: SurveyAnswer[];
-  notes: string;
+  answerDraft: string;
+  answers: SurveyQuestionAnswer[];
+  hasAnsweredAll: boolean;
   finished: boolean;
 };
 
@@ -32,13 +37,14 @@ type Action<T extends keyof SurveyState = keyof SurveyState> =
     };
 
 const initialState: SurveyState = {
-  survey: null,
+  survey: undefined,
   agree: null,
   consented: false,
   questionIndex: 0,
   answerIndex: null,
+  answerDraft: "",
   answers: [],
-  notes: "",
+  hasAnsweredAll: false,
   finished: false,
 };
 
@@ -53,25 +59,53 @@ function reducer(state: SurveyState, action: Action): SurveyState {
         return {
           ...state,
           consented: state.agree,
-          finished: !state.agree,
+          hasAnsweredAll: !state.agree,
         };
       }
 
-      const nextQuestionIndex = getNextSurveyQuestionIndex(state);
-
-      if (nextQuestionIndex >= state.survey.questions.length) {
-        // TODO: Save answers to redux
-        // TODO: Go to DayTracker after continue again after thanks
+      if (state.hasAnsweredAll) {
         return {
           ...state,
           finished: true,
         };
       }
 
+      const currentQuestion = state.survey.questions[state.questionIndex];
+
+      const answerId = state.answerIndex !== null ? state.answerIndex : "";
+
+      const answer: SurveyQuestionAnswer = {
+        questionId: currentQuestion.id,
+        question: currentQuestion.question,
+        answerID: `${answerId}`,
+        answer: state.answerDraft,
+        response: currentQuestion.response,
+        isMultiple: currentQuestion.is_multiple,
+      };
+
+      const answers = [...state.answers, answer];
+
+      const nextQuestionIndex = getNextSurveyQuestionIndex(state);
+
+      const wasLastQuestion =
+        nextQuestionIndex >= state.survey.questions.length;
+
+      if (wasLastQuestion) {
+        return {
+          ...state,
+          answerDraft: "",
+          answerIndex: null,
+          answers,
+          hasAnsweredAll: true,
+        };
+      }
+
       return {
         ...state,
         questionIndex: nextQuestionIndex,
+        answerDraft: "",
         answerIndex: null,
+        answers,
       };
     }
 
@@ -97,14 +131,43 @@ const defaultValue: SurveyContext = {
 
 const SurveyContext = React.createContext<SurveyContext>(defaultValue);
 
-export const SurveyProvider = ({ children }: React.PropsWithChildren) => {
-  // TODO: get survey from redux
-  const survey = surveys[0];
-
+export const SurveyProvider = ({
+  survey,
+  onFinish,
+  children,
+}: { survey?: Survey; onFinish: () => void } & React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, {
     ...initialState,
     survey,
   });
+
+  const currentUser = useSelector(currentUserSelector) as User; // TODO:
+  const reduxDispatch = useDispatch();
+
+  React.useEffect(() => {
+    if (!state.hasAnsweredAll || !state.survey) {
+      return;
+    }
+
+    const result = {
+      id: state.survey.id,
+      user_id: currentUser.id,
+      isCompleted: true,
+      isSurveyAnswered: false,
+      questions: state.answers,
+      utcDateTime: moment(),
+    };
+
+    reduxDispatch(answerSurvey(result));
+  }, [state.hasAnsweredAll]);
+
+  React.useEffect(() => {
+    if (!state.finished) {
+      return;
+    }
+
+    onFinish();
+  }, [state.finished]);
 
   return (
     <SurveyContext.Provider
@@ -130,7 +193,7 @@ export const getSurveyQuestionOptions = (question: SurveyQuestion) => {
 };
 
 const getNextSurveyQuestionIndex = (state: SurveyState) => {
-  if (!state.survey || state.answerIndex == null) {
+  if (!state.survey) {
     return 0;
   }
 
@@ -141,7 +204,8 @@ const getNextSurveyQuestionIndex = (state: SurveyState) => {
     (option) => Object.values(option)[0]
   );
 
-  const nextQuestion = nextQuestions[state.answerIndex];
+  const currentAnswerIndex = state.answerIndex ?? 0;
+  const nextQuestion = nextQuestions[currentAnswerIndex];
 
   const nextQuestionIndex = nextQuestion
     ? parseInt(nextQuestion) - 1 // -1 because next_question numbers start at 1 not 0

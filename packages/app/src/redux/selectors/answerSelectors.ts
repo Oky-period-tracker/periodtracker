@@ -38,18 +38,6 @@ export const quizAnswerByDate: any = (state: ReduxState, date: Moment) => {
   )[0];
 };
 
-// Had a type error here had to add any to avoid
-// TODO:
-// eslint-disable-next-line
-export const surveyAnswerByDate: any = (state: ReduxState, date: Moment) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return null;
-  // @ts-expect-error TODO:
-  return Object.values(s(state)[state.auth.user.id].surveys).filter(
-    ({ utcDateTime }) => utcDateTime === date.toISOString()
-  )[0];
-};
-
 export const quizzesWithoutAnswersSelector = (state: ReduxState) => {
   return allQuizzesSelectors(state).filter(
     ({ id }) => !quizHasAnswerSelector(state, id)

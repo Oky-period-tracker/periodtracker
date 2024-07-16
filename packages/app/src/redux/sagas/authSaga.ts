@@ -178,12 +178,7 @@ function* onDeleteAccountRequest(
     });
     yield put(actions.updateAllSurveyContent([])); // TODO_ALEX
     yield put(actions.updateCompletedSurveys([])); // TODO_ALEX
-    yield put(
-      actions.fetchSurveyContentSuccess({
-        // @ts-expect-error TODO:
-        surveys: null,
-      }) // TODO_ALEX
-    );
+
     //  ===================== TODO: NAVIGATION ===================== //
 
     // yield call(navigateAndReset, "LoginStack", null);
@@ -198,24 +193,8 @@ function* onDeleteAccountRequest(
 }
 
 function* onLogoutRequest() {
-  // @ts-expect-error TODO:
-  const isTtsActive = yield select(selectors.isTtsActiveSelector);
-
-  if (isTtsActive) {
-    // yield call(closeOutTTs);
-    yield put(actions.setTtsActive(false));
-  }
-  yield put(actions.updateAllSurveyContent([])); // TODO_ALEX: survey
-  yield put(
-    actions.fetchSurveyContentSuccess({
-      // @ts-expect-error TODO:
-      surveys: null,
-    })
-  );
-  yield put(actions.updateCompletedSurveys([])); // TODO_ALEX: survey
-  //  ===================== TODO: NAVIGATION ===================== //
-
-  // yield call(navigateAndReset, "LoginStack", null);
+  yield put(actions.updateAllSurveyContent([]));
+  yield put(actions.updateCompletedSurveys([]));
   yield put(actions.logout());
 }
 

@@ -6,6 +6,7 @@ import { httpClient } from "../../services/HttpClient";
 import * as selectors from "../selectors";
 import * as actions from "../actions";
 import { liveContent as staleContent } from "../../core/modules";
+import _ from "lodash";
 // import messaging from '@react-native-firebase/messaging' TODO:
 
 function* onRehydrate(action: RehydrateAction) {
@@ -34,9 +35,7 @@ function* onRehydrate(action: RehydrateAction) {
 }
 
 // TODO_ALEX: survey
-function* onFetchSurveyContent(
-  _: ExtractActionFromActionType<"FETCH_SURVEY_CONTENT_REQUEST">
-) {
+function* onFetchSurveyContent() {
   // @ts-expect-error TODO:
   const locale = yield select(selectors.currentLocaleSelector);
   // @ts-expect-error TODO:
@@ -48,13 +47,12 @@ function* onFetchSurveyContent(
       userID,
     });
     // @ts-expect-error TODO:
-    const previousSurveys = yield select(selectors.allSurveys);
+    const previousSurveys = yield select(selectors.allSurveysSelector);
     // @ts-expect-error TODO:
-    const completedSurveys = yield select(selectors.completedSurveys);
+    const completedSurveys = yield select(selectors.completedSurveysSelector);
     const newSurveyArr = previousSurveys?.length ? previousSurveys : [];
     // @ts-expect-error TODO:
     surveys.forEach((item) => {
-      // @ts-expect-error TODO:
       const itemExits = _.find(previousSurveys, { id: item.id });
       if (!itemExits) {
         newSurveyArr.push(item);
@@ -64,7 +62,6 @@ function* onFetchSurveyContent(
     const finalArr = [];
     // @ts-expect-error TODO:
     newSurveyArr.forEach((item) => {
-      // @ts-expect-error TODO:
       const itemExits = _.find(completedSurveys, { id: item.id });
       if (!itemExits) {
         finalArr.push(item);
@@ -74,7 +71,7 @@ function* onFetchSurveyContent(
     // @ts-expect-error TODO:
     yield put(actions.updateAllSurveyContent(finalArr));
   } catch (error) {
-    //
+    // console.log("*** error", JSON.stringify(error));
   }
 }
 

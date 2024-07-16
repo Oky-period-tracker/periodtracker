@@ -14,9 +14,21 @@ import { PredictionProvider } from "./src/contexts/PredictionProvider";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { LoadingProvider } from "./src/contexts/LoadingProvider";
 import { StatusBar } from "react-native";
+import Constants from "expo-constants";
 
 function App() {
   useOrientationLock();
+
+  React.useEffect(() => {
+    if (Constants.appOwnership === null) {
+      // Only initialize Firebase if not running in Expo Go
+      import('./firebase/firebase').then(() => {
+        console.log('Firebase initialized in development build');
+      }).catch((error) => {
+        console.error('Firebase initialization error:', error);
+      });
+    }
+  }, []);
 
   return (
     <SafeAreaProvider>

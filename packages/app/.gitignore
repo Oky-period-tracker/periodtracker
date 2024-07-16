@@ -3,3 +3,6 @@ node_modules
 .expo
 .env
 src/redux/config.ts
+google-services.json
+GoogleService-Info.plist
+firebase/config.ts

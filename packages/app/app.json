@@ -15,11 +15,13 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.oky",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "com.unicef.oky",
       "permissions": ["INTERNET"]
     },
     "android": {
-      "package": "com.oky",
+      "package": "com.unicef.oky",
+      "googleServicesFile": "./google-services.json",
       "versionCode": 80,
       "versionName": "8.0.0",
       "adaptiveIcon": {
@@ -43,7 +45,17 @@
       }
     },
     "plugins": [
-      "expo-localization"
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
+      "expo-localization",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ]
   }
 }

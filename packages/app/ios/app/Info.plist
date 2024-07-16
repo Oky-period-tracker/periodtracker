@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>com.oky</string>
+          <string>com.unicef.oky</string>
         </array>
       </dict>
       <dict>

@@ -1,4 +1,4 @@
-package com.oky
+package com.unicef.oky
 
 import android.app.Application
 import android.content.res.Configuration

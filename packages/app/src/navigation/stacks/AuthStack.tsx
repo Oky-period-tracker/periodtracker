@@ -38,32 +38,26 @@ const config: StackConfig<keyof AuthStackParamList> = {
     Terms: {
       title: "Terms & Conditions",
       component: TermsScreen,
-      backRoute: "Info",
     },
     About: {
       title: "About",
       component: AboutScreen,
-      backRoute: "Info",
     },
     Privacy: {
       title: "Privacy",
       component: PrivacyScreen,
-      backRoute: "Info",
     },
     Encyclopedia: {
       title: "Encyclopedia",
       component: EncyclopediaScreen,
-      backRoute: "Info",
     },
     Articles: {
       title: "Articles",
       component: ArticlesScreen,
-      backRoute: "Encyclopedia",
     },
     Help: {
       title: "Find Help",
       component: FindHelpScreen,
-      backRoute: "Encyclopedia",
     },
   },
 };

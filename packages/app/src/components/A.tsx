@@ -1,35 +1,37 @@
 import React from "react";
 import {
   Platform,
+  StyleProp,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  TouchableOpacityProps,
+  TextProps,
+  TextStyle,
 } from "react-native";
 import * as Linking from "expo-linking";
 
 export const A = ({
   href,
+  onPress,
   style,
   ...props
-}: TouchableOpacityProps & {
-  href: string;
+}: TextProps & {
+  href?: string;
+  onPress?: () => void;
+  textStyle?: StyleProp<TextStyle>;
 }) => {
-  const onPressLink = () => openURL(href);
+  const onPressLink = () => {
+    if (href) {
+      openURL(href);
+      return;
+    }
 
-  const children = props.children ? (
-    typeof props.children === "string" ? (
-      <Text style={styles.text}>{props.children}</Text>
-    ) : (
-      props.children
-    )
-  ) : null;
+    if (onPress) {
+      onPress();
+      return;
+    }
+  };
 
-  return (
-    <TouchableOpacity style={style} onPress={onPressLink}>
-      {children}
-    </TouchableOpacity>
-  );
+  return <Text onPress={onPressLink} style={[styles.text, style]} {...props} />;
 };
 
 const openURL = (href: string, target = "_blank") => {
@@ -48,6 +50,6 @@ const openURL = (href: string, target = "_blank") => {
 
 const styles = StyleSheet.create({
   text: {
-    color: "#0000EE",
+    color: "#28b9cb",
   },
 });

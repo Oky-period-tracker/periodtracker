@@ -13,13 +13,9 @@ export type HeaderProps = NativeStackHeaderProps & {
 
 export const Header = ({ navigation, options }: HeaderProps) => {
   const title = options.title;
-  const showBackButton = options.name !== options.backRoute;
+  const showBackButton = options.allowGoBack && navigation.canGoBack();
 
   const onBackPress = () => {
-    if (options.backRoute) {
-      navigation.navigate(options.backRoute);
-      return;
-    }
     navigation.goBack();
   };
 

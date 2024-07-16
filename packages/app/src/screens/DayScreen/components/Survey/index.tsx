@@ -7,6 +7,7 @@ import { useSurvey } from "./SurveyContext";
 import { SurveyCollect } from "./SurveyCollect";
 import { Button } from "../../../../components/Button";
 import { ScreenProps } from "../../../../navigation/RootNavigator";
+import { InfoButton } from "../../../../components/InfoButton";
 
 export const Survey = ({ navigation }: ScreenProps<"Day">) => {
   const { state, dispatch } = useSurvey();
@@ -33,7 +34,10 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
   return (
     <View style={styles.page}>
       <View style={styles.body}>
-        <Text style={styles.title}>Feedback</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>Feedback</Text>
+          <InfoButton title={"survey"} content={"info_button_survey"} />
+        </View>
         <Text>Tell us about your experience with Oky.</Text>
         <Text>Choose one option from the list.</Text>
 
@@ -81,11 +85,15 @@ const styles = StyleSheet.create({
     marginBottom: "auto",
     padding: 24,
   },
+  header: {
+    flexDirection: "row",
+    marginBottom: 24,
+  },
   title: {
     fontSize: 22,
     fontWeight: "bold",
     color: "#F49200",
-    marginBottom: 24,
+    marginRight: 12,
   },
   question: {
     fontSize: 16,

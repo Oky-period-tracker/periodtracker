@@ -5,6 +5,7 @@ import { Input } from "../../../../../components/Input";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 import { questionOptions } from "../../../../../config/options";
+import { InfoButton } from "../../../../../components/InfoButton";
 
 export const AskSecret = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -36,6 +37,12 @@ export const AskSecret = () => {
         errorKey={"no_secret_question"}
         errorsVisible={state.errorsVisible}
         allowUndefined={false}
+        actionLeft={
+          <InfoButton
+            title={"secret_q_error_heading"}
+            content={"secret_que_info"}
+          />
+        }
       />
       <Input
         value={state.secretAnswer}
@@ -44,6 +51,12 @@ export const AskSecret = () => {
         errors={errors}
         errorKey={"secret_too_short"}
         errorsVisible={state.errorsVisible}
+        actionLeft={
+          <InfoButton
+            title={"secret_error_heading"}
+            content={"secret_error_content"}
+          />
+        }
       />
     </View>
   );

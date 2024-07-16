@@ -4,6 +4,7 @@ import { useSignUp } from "../SignUpContext";
 import { Input } from "../../../../../components/Input";
 import { SegmentControl } from "../../../../../components/SegmentControl";
 import { genders } from "../../../../../config/options";
+import { InfoButton } from "../../../../../components/InfoButton";
 
 export const AskUserInfo = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -33,6 +34,7 @@ export const AskUserInfo = () => {
         errors={errors}
         errorKey={"name_too_short"}
         errorsVisible={state.errorsVisible}
+        actionLeft={<InfoButton title={"name"} content={"name_info_label"} />}
       />
       <SegmentControl
         options={genders}
@@ -50,6 +52,12 @@ export const AskUserInfo = () => {
         errors={errors}
         errorKey={"password_too_short"}
         errorsVisible={state.errorsVisible}
+        actionLeft={
+          <InfoButton
+            title={"password_error_heading"}
+            content={"password_error_content"}
+          />
+        }
       />
       <Input
         value={state.passwordConfirm}

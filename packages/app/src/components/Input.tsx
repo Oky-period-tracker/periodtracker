@@ -9,16 +9,15 @@ import {
 } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ErrorText } from "./ErrorText";
-import { Button } from "./Button";
 
 export type InputProps = TextInputProps & {
   style?: ViewStyle;
   inputStyle?: TextInputProps["style"];
-  info?: string;
   errors?: string[]; // TODO:
   errorKey?: string; // TODO:
   errorsVisible?: boolean;
   displayOnly?: boolean;
+  actionLeft?: React.ReactNode;
   actionRight?: React.ReactNode;
 };
 
@@ -27,12 +26,12 @@ export const Input = ({
   placeholder,
   style,
   inputStyle,
-  info,
   errors,
   errorKey,
   errorsVisible,
   placeholderTextColor = "#28b9cb",
   displayOnly = false,
+  actionLeft,
   actionRight,
   ...props
 }: InputProps) => {
@@ -46,17 +45,7 @@ export const Input = ({
         style={[styles.container, props.multiline && styles.multiline, style]}
       >
         <View style={styles.wrapper}>
-          {info ? (
-            <Button
-              status={"danger_light"}
-              style={styles.sideComponent}
-              //   onPress={onYesPress} // TODO:
-            >
-              <FontAwesome size={12} name={"info"} color={"#fff"} />
-            </Button>
-          ) : (
-            <View style={styles.sideComponent}>{/* Spacer */}</View>
-          )}
+          <View style={styles.sideComponent}>{actionLeft}</View>
           {displayOnly ? (
             <Text
               style={[styles.input, !value && { color: placeholderTextColor }]}

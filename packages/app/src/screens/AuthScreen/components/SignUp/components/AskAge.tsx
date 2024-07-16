@@ -5,6 +5,7 @@ import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 import { months } from "../../../../../data/data";
 import { monthOptions, yearOptions } from "../../../../../config/options";
+import { InfoButton } from "../../../../../components/InfoButton";
 
 export const AskAge = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -38,6 +39,9 @@ export const AskAge = () => {
         errors={errors}
         errorKey={"no_month"}
         errorsVisible={state.errorsVisible}
+        actionLeft={
+          <InfoButton title={"birth_info_heading"} content={"birth_info"} />
+        }
       />
       <WheelPickerModal
         initialOption={initialYear}

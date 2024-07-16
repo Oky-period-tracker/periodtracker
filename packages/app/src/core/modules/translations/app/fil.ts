@@ -4,6 +4,8 @@ export const fil: AppTranslations = {
   empty: '',
   info: 'karagdagang impormasyon',
   Day: 'Day',
+  en:"english",
+  fil:"filipino",
   terms: 't&c',
   share: 'share',
   skip: 'I-skip',

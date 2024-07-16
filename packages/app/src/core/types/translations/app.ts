@@ -2,6 +2,8 @@ export interface AppTranslations {
   empty: string
   info: string
   Day: string
+  en:string
+  fil:string
   terms: string
   share: string
   skip: string

@@ -1,7 +1,7 @@
 import React from "react";
 import { Text as RNText, TextProps as RNTextProps } from "react-native";
 import { PaletteStatus, palette } from "../config/theme";
-import { translate } from "../translation";
+import { translate } from "../translations";
 
 export type CustomTextProps = RNTextProps & {
   status?: PaletteStatus;

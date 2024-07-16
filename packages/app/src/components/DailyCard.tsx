@@ -23,6 +23,7 @@ import { ThemeName } from "../core/modules";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 import { isFutureDate } from "../services/dateUtils";
 import { useDayStatus } from "../hooks/useDayStatus";
+import { Text } from "./Text";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -96,11 +97,17 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
         <DisplayButton
           status={status}
           appearance={appearance}
-          textStyle={[styles.dayText]}
+          textStyle={styles.dayText}
           style={{ width: CARD_WIDTH / 3 }}
-          enableTranslate={false}
         >
-          {`Day ${day}`}
+          <View style={styles.viewDayText}>
+            <Text enableTranslate={true} style={styles.dayText}>
+              Day
+            </Text>
+            <Text enableTranslate={false} style={styles.dayText}>
+              {` ${day}`}
+            </Text>
+          </View>
         </DisplayButton>
         <IconButton
           status={status}
@@ -174,6 +181,10 @@ const styles = StyleSheet.create({
   dayText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  viewDayText: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   iconRight: {
     height: 24,

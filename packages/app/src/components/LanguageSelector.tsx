@@ -35,7 +35,7 @@ export const LanguageSelector = (props: ButtonProps) => {
 
   const LanguageButton = ({ onPress }: ButtonProps) => {
     return (
-      <Button enableTranslate={false} {...props} onPress={onPress}>
+      <Button {...props} onPress={onPress}>
         {locale}
       </Button>
     );

@@ -1,5 +1,6 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Modal, ModalProps } from "./Modal";
 import Cloud from "./icons/Cloud";
 import { IconButton } from "./IconButton";
@@ -31,6 +32,8 @@ import {
 import { fetchNetworkConnectionStatus } from "../services/network";
 import { User } from "../redux/reducers/authReducer";
 import { DayData } from "../screens/MainScreen/DayScrollContext";
+import { Button } from "./Button";
+import { useTutorial } from "../screens/MainScreen/TutorialContext";
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
 export const DayModal = ({
@@ -295,6 +298,7 @@ export const DayModal = ({
 
   return (
     <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
+      <LaunchTutorialButton toggleVisible={toggleVisible} />
       <Text style={styles.title}>Did you have your period today?</Text>
       <Text style={styles.description}>
         Tell Oky about your period to get better predictions, did you have your
@@ -322,6 +326,35 @@ export const DayModal = ({
   );
 };
 
+const LaunchTutorialButton = ({
+  toggleVisible,
+}: {
+  toggleVisible: () => void;
+}) => {
+  const { dispatch } = useTutorial();
+
+  const onPress = () => {
+    toggleVisible(); // Hide DayModal
+    dispatch({ type: "start", value: "tutorial_one" });
+  };
+
+  return (
+    <View style={styles.infoRow}>
+      <Button
+        onPress={onPress}
+        style={styles.infoButton}
+        status={"danger_light"}
+      >
+        <FontAwesome size={12} name={"info"} color={"#fff"} />
+      </Button>
+
+      <TouchableOpacity onPress={onPress}>
+        <Text style={styles.label}>{"tutorial_launch_label"}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 const minBufferBetweenCycles = 2;
 
 const styles = StyleSheet.create({
@@ -330,9 +363,15 @@ const styles = StyleSheet.create({
     height: "100%",
     alignItems: "center",
   },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 24,
+  },
   title: {
     color: "#fff",
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 24,
@@ -351,5 +390,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-around",
+  },
+  infoButton: {
+    height: 24,
+    width: 24,
+    marginRight: 12,
+  },
+  label: {
+    color: "#fff",
   },
 });

@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   TextInputProps,
+  TouchableOpacity,
   View,
   ViewStyle,
 } from "react-native";
@@ -35,13 +36,23 @@ export const Input = ({
   actionRight,
   ...props
 }: InputProps) => {
+  const ref = React.useRef<TextInput>(null);
+
+  const onPress = () => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  };
+
   const hasError =
     errorsVisible && errorKey && errors && errors.includes(errorKey);
 
   return (
     <>
       {hasError && <ErrorText>{errorKey}</ErrorText>}
-      <View
+      <TouchableOpacity
+        onPress={onPress}
+        activeOpacity={1}
         style={[styles.container, props.multiline && styles.multiline, style]}
       >
         <View style={styles.wrapper}>
@@ -55,6 +66,7 @@ export const Input = ({
           ) : (
             <TextInput
               {...props}
+              ref={ref}
               value={value}
               placeholder={placeholder}
               style={[styles.input, inputStyle]}
@@ -68,7 +80,7 @@ export const Input = ({
             )}
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </>
   );
 };

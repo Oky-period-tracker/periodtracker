@@ -43,6 +43,9 @@ export const emojiOptions: EmojiQuestionOptions = {
   },
 };
 
+export const offPeriodOptions = ["none", "spotting"];
+export const onPeriodOptions = ["light", "medium", "heavy"];
+
 export const EmojiCardText: EmojiTopicTexts = {
   mood: {
     title: "Mood",

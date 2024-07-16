@@ -1,7 +1,12 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { BadgeSize, EmojiBadge } from "../../../../components/EmojiBadge";
-import { EmojiCardText, emojiOptions } from "./config";
+import {
+  EmojiCardText,
+  emojiOptions,
+  offPeriodOptions,
+  onPeriodOptions,
+} from "./config";
 import { EmojiQuestionOptions } from "./types";
 import { useSelector } from "../../../../redux/useSelector";
 import {
@@ -11,6 +16,8 @@ import {
 import { DayData } from "../../../MainScreen/DayScrollContext";
 import { useDispatch } from "react-redux";
 import { answerDailyCard } from "../../../../redux/actions";
+import { DayModal } from "../../../../components/DayModal";
+import { useToggle } from "../../../../hooks/useToggle";
 
 export const EmojiQuestionCard = ({
   topic,
@@ -20,8 +27,13 @@ export const EmojiQuestionCard = ({
   topic: keyof EmojiQuestionOptions;
   dataEntry?: DayData;
   size?: BadgeSize;
+  mutuallyExclusive?: boolean;
+  includeDayModal?: boolean;
 }) => {
   const mutuallyExclusive = topic === "flow";
+  const includeDayModal = topic === "flow";
+  const [dayModalVisible, toggleDayModal] = useToggle();
+
   const userID = useSelector(currentUserSelector)?.id;
 
   const selectedEmojis = dataEntry
@@ -46,6 +58,18 @@ export const EmojiQuestionCard = ({
         periodDay: dataEntry.onPeriod,
       })
     );
+
+    if (!includeDayModal) {
+      return;
+    }
+
+    if (dataEntry?.onPeriod && offPeriodOptions.includes(answer)) {
+      toggleDayModal();
+    }
+
+    if (!dataEntry?.onPeriod && onPeriodOptions.includes(answer)) {
+      toggleDayModal();
+    }
   };
 
   const options = Object.entries(emojiOptions[topic]);
@@ -80,6 +104,13 @@ export const EmojiQuestionCard = ({
           })}
         </View>
       </View>
+      {includeDayModal && dataEntry && (
+        <DayModal
+          visible={dayModalVisible}
+          toggleVisible={toggleDayModal}
+          data={dataEntry}
+        />
+      )}
     </View>
   );
 };

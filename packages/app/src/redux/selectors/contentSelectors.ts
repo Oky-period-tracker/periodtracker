@@ -66,7 +66,7 @@ export const allSurveysSelector = (state: ReduxState) => s(state).allSurveys;
 export const completedSurveysSelector = (state: ReduxState) =>
   s(state).completedSurveys;
 
-export const aboutBanner = (state: ReduxState) => s(state).aboutBanner;
+export const aboutBannerSelector = (state: ReduxState) => s(state).aboutBanner;
 
 export const allQuizzesSelectors = (state: ReduxState) => {
   // TODO: FIXME

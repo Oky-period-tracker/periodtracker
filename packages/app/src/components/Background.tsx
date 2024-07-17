@@ -1,10 +1,13 @@
 import React from "react";
 import { ImageBackground, StyleSheet } from "react-native";
-import { assets } from "../assets";
 import { PropsWithChildren } from "react";
+import { useSelector } from "../redux/useSelector";
+import { currentThemeSelector } from "../redux/selectors";
+import { getAsset } from "../services/asset";
 
 export const Background = ({ children }: PropsWithChildren) => {
-  const image = assets.backgrounds.hills.default;
+  const theme = useSelector(currentThemeSelector);
+  const image = getAsset(`backgrounds.${theme}.default`);
 
   return (
     <ImageBackground source={image} style={styles.default}>

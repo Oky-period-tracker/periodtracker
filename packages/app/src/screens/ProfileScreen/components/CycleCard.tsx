@@ -8,7 +8,6 @@ import { defaultEmoji } from "../../../config/options";
 import { Moment } from "moment";
 import { Text } from "../../../components/Text";
 
-// TODO Make numbers bold, make sure text fits on one line
 export const CycleCard = ({
   item,
   cycleNumber,

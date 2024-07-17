@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal, StyleSheet, View } from "react-native";
 import { Spinner } from "../components/Spinner";
-import { Background } from "../components/Background";
 
 export type LoadingContext = {
   loading: boolean;
@@ -33,10 +32,8 @@ export const LoadingProvider = ({ children }: React.PropsWithChildren) => {
         statusBarTranslucent={true}
         supportedOrientations={["portrait", "landscape"]}
       >
-        <Background>
-          <View style={styles.backDrop} />
-          <Spinner />
-        </Background>
+        <View style={styles.backDrop} />
+        <Spinner />
       </Modal>
     </LoadingContext.Provider>
   );

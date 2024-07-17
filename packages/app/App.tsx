@@ -22,19 +22,19 @@ function App() {
       <GestureHandlerRootView>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <LoadingProvider>
-              <AuthProvider>
-                <PredictionProvider>
-                  <Background>
-                    <ResponsiveProvider>
-                      <EncyclopediaProvider>
+            <AuthProvider>
+              <PredictionProvider>
+                <ResponsiveProvider>
+                  <EncyclopediaProvider>
+                    <Background>
+                      <LoadingProvider>
                         <RootNavigator />
-                      </EncyclopediaProvider>
-                    </ResponsiveProvider>
-                  </Background>
-                </PredictionProvider>
-              </AuthProvider>
-            </LoadingProvider>
+                      </LoadingProvider>
+                    </Background>
+                  </EncyclopediaProvider>
+                </ResponsiveProvider>
+              </PredictionProvider>
+            </AuthProvider>
           </PersistGate>
         </Provider>
       </GestureHandlerRootView>

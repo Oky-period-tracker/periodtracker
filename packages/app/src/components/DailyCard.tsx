@@ -12,6 +12,7 @@ import { useSelector } from "../redux/useSelector";
 import moment from "moment";
 import {
   cardAnswerSelector,
+  currentThemeSelector,
   isTutorialTwoActiveSelector,
 } from "../redux/selectors";
 import { useNavigation } from "@react-navigation/native";
@@ -19,10 +20,28 @@ import { defaultEmoji } from "../config/options";
 import { starColor } from "../config/theme";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useLoading } from "../contexts/LoadingProvider";
+import { Star } from "./icons/Star";
+import { Circle } from "./icons/Circle";
+import { ThemeName } from "../core/modules";
 
 type DailyCardProps = {
   dataEntry: DayData;
   disabled?: boolean;
+};
+
+// @ts-expect-error TODO: Move
+const IconForTheme: Record<ThemeName, React.FC> = {
+  hills: Cloud,
+  mosaic: Star,
+  village: Cloud,
+  desert: Circle,
+};
+// @ts-expect-error TODO: Move
+const IconSizeForTheme: Record<ThemeName, number> = {
+  hills: 80,
+  mosaic: 60,
+  village: 80,
+  desert: 60,
 };
 
 export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
@@ -30,6 +49,10 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const { dispatch: tutorialDispatch } = useTutorial();
   const { isDragging, constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
+
+  const theme = useSelector(currentThemeSelector);
+  const Icon = IconForTheme[theme] ?? Cloud;
+  const IconSize = IconSizeForTheme[theme] ?? 80;
 
   const isTutorialTwoActive = useSelector(isTutorialTwoActiveSelector);
 
@@ -83,10 +106,10 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
           {`Day ${day}`}
         </DisplayButton>
         <IconButton
-          Icon={Cloud}
+          Icon={Icon}
           text={formatMomentDayMonth(dataEntry.date)}
           status={status}
-          size={80}
+          size={IconSize}
           disabled
         />
         <FontAwesome

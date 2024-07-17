@@ -37,8 +37,8 @@ export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 const IconForTheme: Record<ThemeName, React.FC> = {
   hills: Cloud,
   mosaic: Star,
-  village: Circle,
-  desert: Cloud,
+  village: Cloud,
+  desert: Circle,
 };
 
 const WheelButton = ({ index, item }: { index: number; item: DayData }) => {

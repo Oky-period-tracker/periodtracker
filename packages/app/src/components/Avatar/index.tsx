@@ -20,6 +20,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { AvatarMessage } from "./AvatarMessage";
 
 type AnimationConfig = {
   start: number;
@@ -154,14 +155,10 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
       style={[styles.container, style]}
       activeOpacity={1}
     >
+      <AvatarMessage />
       <AnimatedLottieView
         resizeMode="contain"
-        style={[
-          {
-            width: lottieWidth,
-            height: lottieHeight,
-          },
-        ]}
+        style={{ width: lottieWidth, height: lottieHeight }}
         source={source}
         animatedProps={animatedProps}
         autoPlay={false}

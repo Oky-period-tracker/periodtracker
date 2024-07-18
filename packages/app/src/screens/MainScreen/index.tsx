@@ -20,17 +20,20 @@ import {
   useLoading,
   useStopLoadingEffect,
 } from "../../contexts/LoadingProvider";
+import { AvatarMessageProvider } from "../../contexts/AvatarMessageContext";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   useFetchSurvey();
   useStopLoadingEffect();
 
   return (
-    <DayScrollProvider>
-      <TutorialProvider>
-        <MainScreenInner {...props} />
-      </TutorialProvider>
-    </DayScrollProvider>
+    <AvatarMessageProvider>
+      <DayScrollProvider>
+        <TutorialProvider>
+          <MainScreenInner {...props} />
+        </TutorialProvider>
+      </DayScrollProvider>
+    </AvatarMessageProvider>
   );
 };
 
@@ -135,6 +138,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     alignItems: "center",
+    zIndex: 999, // Keep Avatar(Message) above Wheel
   },
   wheelContainer: {
     position: "absolute",

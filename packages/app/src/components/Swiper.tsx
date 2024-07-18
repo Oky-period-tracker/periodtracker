@@ -30,6 +30,7 @@ export const Swiper = ({
   };
 
   const fullWidth = containerWidth + marginRight;
+  const threshold = containerWidth / 3; // Drag 1/3 of card width to swipe
 
   const translationX = useSharedValue(0);
   const totalTranslationX = useSharedValue(0);
@@ -54,10 +55,20 @@ export const Swiper = ({
     .onUpdate((event) => {
       translationX.value = totalTranslationX.value + event.translationX;
     })
-    .onEnd(() => {
-      const nearestPage = -translationX.value / fullWidth;
-      const nearestIndex = Math.round(nearestPage);
-      const safeIndex = getSafeIndex(nearestIndex);
+    .onEnd((event) => {
+      const passesThreshold = Math.abs(event.translationX) > threshold;
+      let indexChange = 0;
+
+      if (passesThreshold && event.translationX < 0) {
+        indexChange = 1;
+      }
+
+      if (passesThreshold && event.translationX > 0) {
+        indexChange = -1;
+      }
+
+      const nextIndex = index + indexChange;
+      const safeIndex = getSafeIndex(nextIndex);
       slideToPosition(safeIndex);
       runOnJS(setIndex)(safeIndex);
     });

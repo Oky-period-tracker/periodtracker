@@ -23,6 +23,7 @@ import { useLoading } from "../contexts/LoadingProvider";
 import { Star } from "./icons/Star";
 import { Circle } from "./icons/Circle";
 import { ThemeName } from "../core/modules";
+import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -46,6 +47,8 @@ const IconSizeForTheme: Record<ThemeName, number> = {
 
 export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const { setLoading } = useLoading();
+  const { setAvatarMessage } = useAvatarMessage();
+
   const { dispatch: tutorialDispatch } = useTutorial();
   const { isDragging, constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
@@ -77,6 +80,12 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     if (isTutorialTwoActive) {
       setLoading(true);
       tutorialDispatch({ type: "start", value: "tutorial_two" });
+      return;
+    }
+
+    const isAfter = moment(dataEntry.date).isAfter(moment());
+    if (isAfter) {
+      setAvatarMessage("carousel_no_access");
       return;
     }
 

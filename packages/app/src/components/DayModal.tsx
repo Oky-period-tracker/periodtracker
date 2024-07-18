@@ -34,6 +34,7 @@ import { User } from "../redux/reducers/authReducer";
 import { DayData } from "../screens/MainScreen/DayScrollContext";
 import { Button } from "./Button";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
+import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
 export const DayModal = ({
@@ -43,6 +44,7 @@ export const DayModal = ({
 }: { data: DayData } & ModalProps) => {
   const selectedDayInfo = data;
   const inputDay = data.date;
+  const { setAvatarMessage } = useAvatarMessage();
   // const dataEntry = usePredictDay(date);
 
   // const { id: themeName } = useTheme();
@@ -96,7 +98,7 @@ export const DayModal = ({
   // eslint-disable-next-line
   const errorCallBack = (err: string) => {
     // if (err) {
-    //   // setDisplayTextStatic(err);
+    //   setAvatarMessage(err);
     // }
     return null;
   };
@@ -218,11 +220,11 @@ export const DayModal = ({
     // if (fetchNetworkConnectionStatus()) {
     //   analytics().logEvent("periodDayCloudTap", { user: currentUser });
     // }
-    // if (moment(inputDay).isAfter(moment())) {
-    //   setDisplayTextStatic("too_far_ahead");
-    //   toggleVisible();
-    //   return;
-    // }
+    if (moment(inputDay).isAfter(moment())) {
+      setAvatarMessage("too_far_ahead");
+      toggleVisible();
+      return;
+    }
     if (addNewCycleHistory) {
       if (selectedDayInfo.onPeriod) {
         reduxDispatch(
@@ -272,7 +274,7 @@ export const DayModal = ({
     //   analytics().logEvent('noPeriodDayCloudTap', { user: currentUser })
     // }
     if (moment(inputDay).isAfter(moment())) {
-      // setDisplayTextStatic("too_far_ahead");
+      setAvatarMessage("too_far_ahead");
       toggleVisible();
       return;
     }

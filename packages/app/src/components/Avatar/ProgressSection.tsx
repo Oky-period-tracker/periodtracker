@@ -11,6 +11,7 @@ import {
   runOnJS,
   useAnimatedReaction,
 } from "react-native-reanimated";
+import { HeartAnimation } from "./HeartAnimation";
 
 export const ProgressSection = ({
   heartProgress,
@@ -36,8 +37,8 @@ export const ProgressSection = ({
   const starPercent = Math.min(Object.keys(cardAnswersToday).length * 25, 100);
 
   return (
-    <View style={[styles.container]}>
-      {/* ===== HEARTS ===== */}
+    <View style={[styles.container]} pointerEvents={"none"}>
+      {/* ===== Hearts ===== */}
       <View style={styles.section}>
         <FontAwesome
           name={getHeart(heartPercent)}
@@ -48,7 +49,7 @@ export const ProgressSection = ({
         <ProgressBar color={palette.danger.base} value={heartPercent} />
       </View>
 
-      {/* ===== STARS ===== */}
+      {/* ===== Stars ===== */}
       <View style={styles.section}>
         <FontAwesome
           name={getStar(Object.keys(cardAnswersToday).length)}
@@ -57,9 +58,10 @@ export const ProgressSection = ({
           style={styles.icon}
         />
         <ProgressBar color={starColor} value={starPercent} />
-
-        {/* <HeartAnimation count={animatedHearts} /> */}
       </View>
+
+      {/* ===== Animated hearts ===== */}
+      <HeartAnimation count={progress} />
     </View>
   );
 };

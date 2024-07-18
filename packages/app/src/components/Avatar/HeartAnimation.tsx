@@ -47,16 +47,16 @@ export function HeartAnimation({ count }: { count: number }) {
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
-      {hearts.map(({ id, left }) => (
-        <AnimatedShape
-          key={id}
-          height={height}
-          style={{ left }}
-          onComplete={() => removeHeart(id)}
-        >
-          <FontAwesome name={"heart"} color={palette.danger.base} size={24} />
-        </AnimatedShape>
-      ))}
+      {hearts.map(({ id, left }) => {
+        return (
+          <AnimatedShape
+            key={id}
+            height={height}
+            style={{ left }}
+            onComplete={() => removeHeart(id)}
+          />
+        );
+      })}
     </View>
   );
 }
@@ -64,14 +64,14 @@ export function HeartAnimation({ count }: { count: number }) {
 function AnimatedShape({
   height,
   onComplete,
-  children,
   style,
 }: {
   height: number;
   onComplete: () => void;
-  children: React.ReactElement;
   style: StyleProp<ViewStyle>;
 }) {
+  const [size] = React.useState(getRandomNumber(12, 40));
+
   const [position] = React.useState(new Animated.Value(0));
   const [animationsReady, setAnimationsReady] = React.useState(false);
 
@@ -156,7 +156,7 @@ function AnimatedShape({
       ]}
       onLayout={handleOnLayout}
     >
-      {children}
+      <FontAwesome name={"heart"} color={palette.danger.base} size={size} />
     </Animated.View>
   );
 }

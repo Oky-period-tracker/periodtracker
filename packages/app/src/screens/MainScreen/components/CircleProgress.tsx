@@ -18,6 +18,7 @@ export const CircleProgress = ({
       onPress={onPress}
       status={"secondary"}
       style={[
+        styles.button,
         {
           width: size,
           height: size,
@@ -42,6 +43,9 @@ export const CircleProgress = ({
 const sliceColor = ["#fff", "transparent"];
 
 const styles = StyleSheet.create({
+  button: {
+    zIndex: 999, // Keep above Avatar
+  },
   numberText: {
     fontSize: 16,
     fontWeight: "bold",

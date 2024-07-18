@@ -6,23 +6,46 @@ import moment from "moment";
 import { useSelector } from "../../redux/useSelector";
 import { ProgressBar } from "./ProgressBar";
 import { palette, starColor } from "../../config/theme";
+import {
+  SharedValue,
+  runOnJS,
+  useAnimatedReaction,
+} from "react-native-reanimated";
 
-export const ProgressSection = () => {
+export const ProgressSection = ({
+  heartProgress,
+}: {
+  heartProgress: SharedValue<number>;
+}) => {
+  const [progress, setProgress] = React.useState(0);
+
+  useAnimatedReaction(
+    () => heartProgress.value,
+    (currentHeartProgress) => {
+      runOnJS(setProgress)(currentHeartProgress);
+    },
+    [heartProgress]
+  );
+
+  const heartPercent = Math.min(progress * 5, 100);
+
   const cardAnswersToday = useSelector((state) =>
     cardAnswerSelector(state, moment.utc())
   );
+
+  const starPercent = Math.min(Object.keys(cardAnswersToday).length * 25, 100);
 
   return (
     <View style={[styles.container]}>
       {/* ===== HEARTS ===== */}
       <View style={styles.section}>
         <FontAwesome
-          name={getHeart(Object.keys(cardAnswersToday).length)}
+          name={getHeart(heartPercent)}
           color={palette.danger.base}
           size={ICON_SIZE}
           style={styles.icon}
         />
-        <ProgressBar color={palette.danger.base} />
+        <ProgressBar color={palette.danger.base} value={heartPercent} />
       </View>
 
       {/* ===== STARS ===== */}
@@ -33,14 +56,7 @@ export const ProgressSection = () => {
           size={ICON_SIZE}
           style={styles.icon}
         />
-        <ProgressBar
-          color={starColor}
-          value={
-            Object.keys(cardAnswersToday).length * 25 >= 100
-              ? 100
-              : Object.keys(cardAnswersToday).length * 25
-          }
-        />
+        <ProgressBar color={starColor} value={starPercent} />
 
         {/* <HeartAnimation count={animatedHearts} /> */}
       </View>
@@ -50,9 +66,10 @@ export const ProgressSection = () => {
 
 const getHeart = (numberOfElements: number) => {
   if (numberOfElements === null) return "heart-o";
-  if (numberOfElements < 2) return "heart-o";
-  if (numberOfElements >= 2 && numberOfElements < 4) return "heart";
-  if (numberOfElements >= 4) return "heart";
+  if (numberOfElements < 50) return "heart-o";
+  if (numberOfElements >= 50) return "heart"; // TODO: half-heart
+  if (numberOfElements >= 100) return "heart";
+  return "heart-o";
 };
 
 const getStar = (numberOfElements: number) => {
@@ -60,6 +77,7 @@ const getStar = (numberOfElements: number) => {
   if (numberOfElements < 2) return "star-o";
   if (numberOfElements >= 2 && numberOfElements < 4) return "star-half-full";
   if (numberOfElements >= 4) return "star";
+  return "star-o";
 };
 
 const ICON_SIZE = 12;

@@ -7,26 +7,24 @@ import _ from "lodash";
 export type AvatarMessageContext = {
   message: null | string;
   setAvatarMessage: (translationKey: string) => void;
-  setRandomAvatarMessage: () => void;
 };
 
 const defaultValue: AvatarMessageContext = {
   message: null,
   setAvatarMessage: () => {},
-  setRandomAvatarMessage: () => {},
 };
 
 const AvatarMessageContext =
   React.createContext<AvatarMessageContext>(defaultValue);
 
-const MESSAGE_DURATION = 3000;
-const RANDOM_MESSAGE_INTERVAL = 20000;
+const MESSAGE_DURATION = 5000;
+const RANDOM_MESSAGE_INTERVAL = 10000;
 
 export const AvatarMessageProvider = ({
   children,
 }: React.PropsWithChildren) => {
   const allMessages = useSelector(allAvatarText);
-
+  const isScreenFocussed = useScreenFocus();
   const [message, setMessage] = React.useState("");
 
   const setAvatarMessage = (translationKey: string) => {
@@ -38,6 +36,20 @@ export const AvatarMessageProvider = ({
     setMessage(_.sample(allMessages)?.content ?? "");
   };
 
+  // ===== Random message ===== //
+  React.useEffect(() => {
+    if (message || !isScreenFocussed) {
+      return;
+    }
+
+    const timeout = setTimeout(setRandomAvatarMessage, RANDOM_MESSAGE_INTERVAL);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [isScreenFocussed, message]);
+
+  // ===== Clear message ===== //
   React.useEffect(() => {
     if (!message) {
       return;
@@ -57,7 +69,6 @@ export const AvatarMessageProvider = ({
       value={{
         message,
         setAvatarMessage,
-        setRandomAvatarMessage,
       }}
     >
       {children}
@@ -68,23 +79,3 @@ export const AvatarMessageProvider = ({
 export const useAvatarMessage = () => {
   return React.useContext(AvatarMessageContext);
 };
-
-export function useRandomAvatarMessageEffect() {
-  const { setRandomAvatarMessage } = useAvatarMessage();
-  const isScreenFocussed = useScreenFocus();
-
-  React.useEffect(() => {
-    if (!isScreenFocussed) {
-      return;
-    }
-
-    const interval = setInterval(
-      setRandomAvatarMessage,
-      RANDOM_MESSAGE_INTERVAL
-    );
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [isScreenFocussed]);
-}

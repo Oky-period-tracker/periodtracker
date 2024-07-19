@@ -1,14 +1,10 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "../Text";
-import {
-  useAvatarMessage,
-  useRandomAvatarMessageEffect,
-} from "../../contexts/AvatarMessageContext";
+import { useAvatarMessage } from "../../contexts/AvatarMessageContext";
 
 export const AvatarMessage = () => {
   const { message } = useAvatarMessage();
-  useRandomAvatarMessageEffect();
 
   if (!message) {
     return null;

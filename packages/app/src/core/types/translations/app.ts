@@ -477,4 +477,5 @@ export interface AppTranslations {
   // New
   password_too_short?: string;
   incorrect?: string;
+  secret_too_short?: string;
 }

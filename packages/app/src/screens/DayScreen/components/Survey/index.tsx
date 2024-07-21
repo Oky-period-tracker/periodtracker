@@ -35,24 +35,23 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
     <View style={styles.page}>
       <View style={styles.body}>
         <View style={styles.header}>
-          <Text style={styles.title}>Feedback</Text>
+          <Text style={styles.title}>survey</Text>
           <InfoButton title={"survey"} content={"info_button_survey"} />
         </View>
-        <Text>Tell us about your experience with Oky.</Text>
-        <Text>Choose one option from the list.</Text>
+        <Text>anonymous_answer</Text>
+        <Text>choose_one</Text>
 
         {state.hasAnsweredAll ? (
           <>
             <Text style={styles.thanks} status={"danger"}>
-              Thank you! If you want to provide some additional feedback you can
-              always do it in the settings menu
+              thank_you_msg
             </Text>
             <Button
               onPress={goToContact}
               style={styles.contact}
               status={"basic"}
             >
-              Contact us
+              contact_us
             </Button>
           </>
         ) : (
@@ -65,7 +64,7 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
 
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
-        <Text style={styles.confirmText}>Confirm</Text>
+        <Text style={styles.confirmText}>confirm</Text>
       </TouchableOpacity>
     </View>
   );

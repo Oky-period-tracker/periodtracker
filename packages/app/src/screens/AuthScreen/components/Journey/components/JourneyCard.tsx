@@ -78,7 +78,7 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
           </>
         ) : (
           <TouchableOpacity onPress={onConfirm} style={styles.button}>
-            <Text style={styles.buttonText}>Confirm</Text>
+            <Text style={styles.buttonText}>confirm</Text>
           </TouchableOpacity>
         )}
       </View>

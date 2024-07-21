@@ -305,7 +305,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
           status={confirmStatus}
           style={styles.confirm}
         >
-          Confirm
+          confirm
         </Button>
       </View>
 

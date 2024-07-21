@@ -12,30 +12,30 @@ export const journeyConfig: Record<JourneyStep, JourneyConfig> = {
   first_period: {
     questionText: "survey_question_1",
     yesText:
-      "Ok! In that case Oky can help you track and predict your periods.",
+      "survey_default_answer_1_1",
     noText:
-      "That's ok! You can still use Oky to learn about periods and feel confident when the time comes.",
+      "survey_default_answer_1",
     iconName: "flag",
   },
   when_last_period: {
     questionText: "survey_question_2",
-    yesText: "What date was it?",
+    yesText: "survey_label_2",
     noText:
-      "No problem! That's why Oky's here to help you keep track! For now, let's say it was about 2 weeks ago. You can change it later if you want to.",
+      "survey_default_answer_2",
     iconName: "calendar",
   },
   number_days: {
     questionText: "survey_question_3",
-    yesText: "Ok, how many days was it?",
+    yesText: "survey_label_3",
     noText:
-      "No problem! We'll track it together for your next period. For now let's say 5 days long. You can change it later if you want to.",
+      "survey_default_answer_3",
     iconName: "clock-o",
   },
   number_weeks_between: {
     questionText: "survey_question_4",
-    yesText: "Select the number of weeks.",
+    yesText: "survey_label_4",
     noText:
-      "No problem! Oky can help you track this. There's usually a 3 week gap between your periods, so let's say this for now. You can make this more accurate once you start tracking!",
+      "survey_default_answer_4",
     iconName: "list-alt",
   },
 };

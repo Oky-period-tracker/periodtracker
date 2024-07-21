@@ -72,7 +72,7 @@ const ContactUsScreen: ScreenComponent<"Contact"> = () => {
           style={styles.button}
           status={invalid ? "basic" : "primary"}
         >
-          Send
+          send
         </Button>
       </View>
 
@@ -81,8 +81,8 @@ const ContactUsScreen: ScreenComponent<"Contact"> = () => {
         visible={visible}
         toggleVisible={toggleVisible}
       >
-        <Text style={styles.modalTitle}>Thank you</Text>
-        <Text>
+        <Text style={styles.modalTitle}>thank_you</Text>
+        <Text enableTranslate={false}>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem
           deleniti enim quo alias. Odit nostrum expedita, ducimus voluptas vero
           totam modi officia reprehenderit.

@@ -89,12 +89,12 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
       settings: {
         path: "settings",
         screens: {
-          Settings: "",
-          Access: "access",
-          Terms: "terms-and-conditions",
+          Settings: "empty",
+          Access: "access_setting",
+          Terms: "t_and_c",
           About: "about",
-          Privacy: "privacy",
-          Contact: "contact",
+          Privacy: "privacy_policy",
+          Contact: "contact_us",
         },
       },
     },

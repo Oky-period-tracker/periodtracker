@@ -13,10 +13,10 @@ export const DidYouKnowCard = () => {
 
   return (
     <View style={styles.page}>
-      <Text style={styles.title}>Did you know?</Text>
-      <Text>{randomDidYouKnow?.title}</Text>
+      <Text style={styles.title}>didYouKnow</Text>
+      <Text enableTranslate={false}>{randomDidYouKnow?.title}</Text>
       <View style={styles.body}>
-        <Text style={styles.content}>{randomDidYouKnow?.content}</Text>
+        <Text enableTranslate={false} style={styles.content}>{randomDidYouKnow?.content}</Text>
       </View>
     </View>
   );

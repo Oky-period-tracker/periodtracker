@@ -25,17 +25,17 @@ export const CloudColors = () => {
   return (
     <View style={styles.clouds}>
       <View style={styles.cloudColumn}>
-        <Text style={styles.cloudText}>Period Day</Text>
+        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
         <Cloud status={"danger"} />
       </View>
 
       <View style={styles.cloudColumn}>
-        <Text style={styles.cloudText}>Period Day</Text>
+        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
         <Cloud status={"tertiary"} />
       </View>
 
       <View style={styles.cloudColumn}>
-        <Text style={styles.cloudText}>Period Day</Text>
+        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
         <Cloud status={"neutral"} />
       </View>
     </View>
@@ -46,17 +46,17 @@ export const CloudPrediction = () => {
   return (
     <View style={styles.clouds}>
       <View style={styles.cloudColumn}>
-        <Text style={styles.cloudText}>Period Day</Text>
+        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
         <Cloud status={"basic"} />
       </View>
 
       <View style={styles.cloudColumn}>
-        <Text style={styles.cloudText}>Period Day</Text>
+        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
         <Cloud status={"danger"} />
       </View>
 
       <View style={styles.cloudColumn}>
-        <Text style={styles.cloudText}>Period Day</Text>
+        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
         <Cloud status={"neutral"} />
       </View>
     </View>

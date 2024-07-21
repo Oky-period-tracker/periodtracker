@@ -82,7 +82,7 @@ export const JourneyReview = () => {
 
       <View style={styles.buttons}>
         <TouchableOpacity onPress={onConfirm} style={styles.button}>
-          <Text style={styles.buttonText}>Confirm</Text>
+          <Text style={styles.buttonText}>confirm</Text>
         </TouchableOpacity>
       </View>
     </View>

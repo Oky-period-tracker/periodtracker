@@ -9,27 +9,27 @@ import { ScreenComponent } from "../../navigation/RootNavigator";
 const InfoScreen: ScreenComponent<"Info"> = ({ navigation }) => {
   const rows: TouchableRowProps[] = [
     {
-      title: "About",
-      description: "Find out more about Oky",
+      title: "about",
+      description: "about_info",
       onPress: () => navigation.navigate("About"),
       component: <ArrowRight />,
     },
     {
-      title: "Terms & Conditions",
-      description: "What you agree by using Oky",
+      title: "t_and_c",
+      description: "t_and_c_info",
       onPress: () => navigation.navigate("Terms"),
       component: <ArrowRight />,
     },
     {
-      title: "Privacy Policy",
+      title: "privacy_policy",
       description:
-        "How Oky stores, shares and protects the information you give",
+        "privacy_info",
       onPress: () => navigation.navigate("Privacy"),
       component: <ArrowRight />,
     },
     {
-      title: "Encyclopedia",
-      description: "",
+      title: "encyclopedia",
+      description: "empty",
       onPress: () => navigation.navigate("Encyclopedia"),
       component: <ArrowRight />,
     },

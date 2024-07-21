@@ -24,11 +24,11 @@ const config: StackConfig<keyof SettingsStackParamList> = {
       component: SettingsScreen,
     },
     Access: {
-      title: "Access",
+      title: "access_setting",
       component: AccessScreen,
     },
     Terms: {
-      title: "Terms & Conditions",
+      title: "t_and_c",
       component: TermsScreen,
     },
     About: {
@@ -36,11 +36,11 @@ const config: StackConfig<keyof SettingsStackParamList> = {
       component: AboutScreen,
     },
     Privacy: {
-      title: "Privacy",
+      title: "privacy_policy",
       component: PrivacyScreen,
     },
     Contact: {
-      title: "Contact Us",
+      title: "contact_us",
       component: ContactUsScreen,
     },
   },

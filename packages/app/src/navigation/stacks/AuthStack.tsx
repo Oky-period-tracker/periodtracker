@@ -28,27 +28,27 @@ const config: StackConfig<keyof AuthStackParamList> = {
   initialRouteName: "Auth",
   screens: {
     Auth: {
-      title: "",
+      title: "empty",
       component: AuthScreen,
     },
     Info: {
-      title: "Info",
+      title: "info",
       component: InfoScreen,
     },
     Terms: {
-      title: "Terms & Conditions",
+      title: "t_and_c",
       component: TermsScreen,
     },
     About: {
-      title: "About",
+      title: "about",
       component: AboutScreen,
     },
     Privacy: {
-      title: "Privacy",
+      title: "privacy_policy",
       component: PrivacyScreen,
     },
     Encyclopedia: {
-      title: "Encyclopedia",
+      title: "encyclopedia",
       component: EncyclopediaScreen,
     },
     Articles: {

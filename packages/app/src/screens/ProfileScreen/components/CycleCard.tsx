@@ -42,22 +42,22 @@ export const CycleCard = ({
       {/* ===== Header ===== */}
       <View style={styles.cycleCardHeader}>
         <View style={styles.row}>
-          <Text style={styles.headerText}>Cycle </Text>
-          <Text style={[styles.headerText, styles.bold]}>{cycleNumber}</Text>
+          <Text style={styles.headerText}>cycle</Text>
+          <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>{cycleNumber}</Text>
         </View>
 
         <View style={styles.row}>
-          <Text style={[styles.headerText, styles.bold]}>
+          <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
             {item.cycleLength}
           </Text>
-          <Text style={styles.headerText}> day cycle</Text>
+          <Text style={styles.headerText}>day_cycle</Text>
         </View>
 
         <View style={styles.row}>
-          <Text style={[styles.headerText, styles.bold]}>{startDay}</Text>
-          <Text style={styles.headerText}>{` ${startMonth} - `}</Text>
-          <Text style={[styles.headerText, styles.bold]}>{endDay}</Text>
-          <Text style={styles.headerText}>{` ${endMonth}`}</Text>
+          <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>{startDay}</Text>
+          <Text enableTranslate={false} style={styles.headerText}>{` ${startMonth} - `}</Text>
+          <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>{endDay}</Text>
+          <Text enableTranslate={false} style={styles.headerText}>{` ${endMonth}`}</Text>
         </View>
       </View>
 
@@ -65,15 +65,15 @@ export const CycleCard = ({
       <View style={styles.cycleCardBody}>
         <View style={styles.cycleCardBodyLeft}>
           <View style={styles.row}>
-            <Text style={styles.bold}>{item.periodLength}</Text>
-            <Text> day period</Text>
+            <Text enableTranslate={false} style={styles.bold}>{item.periodLength}</Text>
+            <Text>day_period</Text>
           </View>
 
           <View style={styles.row}>
-            <Text style={styles.bold}>{startDay}</Text>
-            <Text>{` ${startMonth} - `}</Text>
-            <Text style={styles.bold}>{periodEndDay}</Text>
-            <Text>{` ${periodEndMonth}`}</Text>
+            <Text enableTranslate={false} style={styles.bold}>{startDay}</Text>
+            <Text enableTranslate={false}>{` ${startMonth} - `}</Text>
+            <Text enableTranslate={false} style={styles.bold}>{periodEndDay}</Text>
+            <Text enableTranslate={false}>{` ${periodEndMonth}`}</Text>
           </View>
         </View>
         <View style={styles.cycleCardBodyRight}>

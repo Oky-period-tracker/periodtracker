@@ -170,11 +170,11 @@ export const HelpFiltersModal = ({
       <Hr />
       <View style={styles.buttons}>
         <TouchableOpacity onPress={clearFilters} style={styles.confirm}>
-          <Text style={styles.confirmText}>Clear all</Text>
+          <Text enableTranslate={false} style={styles.confirmText}>Clear all</Text>
         </TouchableOpacity>
         <Vr />
         <TouchableOpacity onPress={confirm} style={styles.confirm}>
-          <Text style={styles.confirmText}>Confirm</Text>
+          <Text style={styles.confirmText}>confirm</Text>
         </TouchableOpacity>
       </View>
     </Modal>

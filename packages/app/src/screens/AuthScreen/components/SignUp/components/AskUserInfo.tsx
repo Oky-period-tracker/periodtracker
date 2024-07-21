@@ -65,7 +65,7 @@ export const AskUserInfo = () => {
         placeholder="Confirm password"
         secureTextEntry={true}
         errors={errors}
-        errorKey={"passwords_dont_match"}
+        errorKey={"passcodes_mismatch"}
         errorsVisible={state.errorsVisible}
       />
     </View>

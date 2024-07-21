@@ -56,7 +56,7 @@ const AccessScreen: ScreenComponent<"Access"> = ({ navigation }) => {
 };
 
 const LaunchButton = (props: ButtonProps) => {
-  return <Button {...props}>Launch</Button>;
+  return <Button {...props}>launch</Button>;
 };
 
 const ShareButton = () => {
@@ -75,7 +75,7 @@ const ShareButton = () => {
     });
   };
 
-  return <Button onPress={shareLink}>Share</Button>;
+  return <Button onPress={shareLink}>share</Button>;
 };
 
 export default AccessScreen;

@@ -48,27 +48,27 @@ export const onPeriodOptions = ["light", "medium", "heavy"];
 
 export const EmojiCardText: EmojiTopicTexts = {
   mood: {
-    title: "Mood",
+    title: "mood",
     description:
-      "Tracking how you feel can help you see how your mood is affected by your monthly cycle",
-    question: "How did you mostly feel today?",
+      "daily_mood_content",
+    question: "daily_mood_heading",
   },
   body: {
-    title: "Body",
+    title: "body",
     description:
-      "Tracking changes in your body (like cramps) can help you see how your cycle affects your body, which means you can plan ahead!",
-    question: "How did your body feel today?",
+      "daily_body_content",
+    question: "daily_body_heading",
   },
   activity: {
-    title: "Activity",
+    title: "activity",
     description:
-      "Tracking what you do every day can help you see what makes you feel good!",
-    question: "What did you do today",
+      "daily_activity_content",
+    question: "daily_activity_heading",
   },
   flow: {
-    title: "Flow",
+    title: "flow",
     description:
-      "When you have your period, track your flow (how much blood there is) to help you notice your body's patterns and spot anything unusual",
-    question: "How was your flow?",
+      "daily_flow_content",
+    question: "daily_flow_heading",
   },
 };

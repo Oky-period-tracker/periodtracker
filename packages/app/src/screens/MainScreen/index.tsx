@@ -87,7 +87,7 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation, route }) => {
             onPress={goToCalendar}
             style={circleProgressHidden && styles.hidden}
           >
-            <Text>Calendar</Text>
+            <Text>calendar</Text>
           </TouchableOpacity>
           <Avatar style={avatarHidden && styles.hidden} />
         </View>

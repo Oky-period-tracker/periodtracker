@@ -200,7 +200,7 @@ const validateStep = (
 
     if (state.password !== state.passwordConfirm) {
       isValid = false;
-      errors.push("passwords_dont_match");
+      errors.push("passcodes_mismatch");
     }
   }
 

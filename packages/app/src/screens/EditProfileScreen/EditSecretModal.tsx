@@ -138,7 +138,7 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
 
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.modalConfirm}>
-        <Text style={styles.modalConfirmText}>Confirm</Text>
+        <Text style={styles.modalConfirmText}>confirm</Text>
       </TouchableOpacity>
     </Modal>
   );

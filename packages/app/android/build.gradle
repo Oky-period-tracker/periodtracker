@@ -1,8 +1,4 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-// def nodePath = "/Users/dev/.nvm/versions/node/v20.12.2/bin/node"
-// react {
-//     nodeExecutable = file(nodePath)
-// }
 
 buildscript {
     ext {

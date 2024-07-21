@@ -4,6 +4,7 @@ import {
   NavigationContainer,
   DefaultTheme,
   Theme,
+  useNavigationContainerRef,
 } from "@react-navigation/native";
 
 import { ProfileStackParamList } from "./stacks/ProfileStack";
@@ -17,6 +18,7 @@ import AuthStack, { AuthStackParamList } from "./stacks/AuthStack";
 import { useSelector } from "../redux/useSelector";
 import { currentUserSelector } from "../redux/selectors";
 import { useAuth } from "../contexts/AuthContext";
+import analytics from "@react-native-firebase/analytics";
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList;
 
@@ -39,7 +41,7 @@ const baseLinking = {
   prefixes: [],
 };
 
-const loggedOutLinking: LinkingOptions<RootStackParamList> = {
+const loggedOutLinking: LinkingOptions<GlobalParamList> = {
   ...baseLinking,
   config: {
     screens: {
@@ -52,7 +54,7 @@ const loggedOutLinking: LinkingOptions<RootStackParamList> = {
   },
 };
 
-const loggedInLinking: LinkingOptions<RootStackParamList> = {
+const loggedInLinking: LinkingOptions<GlobalParamList> = {
   ...baseLinking,
   config: {
     screens: {
@@ -113,10 +115,45 @@ function RootNavigator() {
 
   const hasAccess = user && isLoggedIn;
 
-  const linking = hasAccess ? loggedInLinking : loggedOutLinking;
+  //eslint-disable-next-line 
+  const linking: LinkingOptions<any> = hasAccess
+    ? loggedInLinking
+    : loggedOutLinking;
 
+  const navigationRef = useNavigationContainerRef();
+  const routeNameRef = React.useRef<string | null>(null);
   return (
-    <NavigationContainer linking={linking} theme={theme}>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => {
+        const currentRoute = navigationRef.getCurrentRoute();
+        if (currentRoute) {
+          routeNameRef.current = currentRoute.name;
+        }
+      }}
+      onStateChange={async () => {
+        const previousRouteName = routeNameRef.current;
+        const currentRouteName = navigationRef.getCurrentRoute()?.name || null;
+        const trackScreenView = () => {
+          if (currentRouteName) {
+            analytics().logScreenView({
+              screen_name: currentRouteName,
+              screen_class: currentRouteName,
+            });
+            if (currentRouteName === "Encyclopedia") {
+              analytics().logEvent("users_accessing_encyclopedia");
+            }
+          }
+        };
+
+        if (previousRouteName !== currentRouteName) {
+          routeNameRef.current = currentRouteName;
+          trackScreenView();
+        }
+      }}
+      linking={linking}
+      theme={theme}
+    >
       {hasAccess ? <MainNavigator /> : <AuthStack />}
     </NavigationContainer>
   );

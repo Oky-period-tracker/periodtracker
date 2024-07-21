@@ -107,7 +107,7 @@ const validateState = (
   if (state.name.length < 3) {
     // TODO: check availability
     isValid = false;
-    errors.push("name_too_short");
+    errors.push("username_too_short");
   }
 
   if (!state.gender) {
@@ -243,7 +243,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             onChangeText={onChangeName}
             placeholder="Name"
             errors={errors}
-            errorKey={"name_too_short"}
+            errorKey={"username_too_short"}
             errorsVisible={true}
           />
         </View>

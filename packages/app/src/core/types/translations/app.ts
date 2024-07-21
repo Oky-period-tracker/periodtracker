@@ -474,4 +474,7 @@ export interface AppTranslations {
   sound_request?: string;
   // ASK_CITY
   search_city?: string;
+  // New
+  password_too_short?: string;
+  incorrect?: string;
 }

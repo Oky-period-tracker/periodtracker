@@ -30,14 +30,14 @@ export const ForgotPassword = () => {
 
   return (
     <>
-      <AuthHeader title={"Forgot password"} />
+      <AuthHeader title={"forgot_password"} />
       <View style={styles.container}>
         <Input
           value={name}
           onChangeText={setName}
           placeholder="Name"
           errors={errors}
-          errorKey={"name_too_short"}
+          errorKey={"username_too_short"}
           errorsVisible={errorsVisible}
         />
         <Input
@@ -49,12 +49,12 @@ export const ForgotPassword = () => {
           errorsVisible={errorsVisible}
         />
         {requestStatus === "fail" && (
-          <ErrorText>Incorrect username or answer</ErrorText>
+          <ErrorText>incorrect</ErrorText>
         )}
       </View>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
-        <Text style={styles.confirmText}>Confirm</Text>
+        <Text style={styles.confirmText}>confirm</Text>
       </TouchableOpacity>
     </>
   );
@@ -66,7 +66,7 @@ const validateCredentials = (name: string, answer: string) => {
 
   if (name.length < 3) {
     isValid = false;
-    errors.push("name_too_short");
+    errors.push("username_too_short");
   }
 
   if (answer.length < 1) {

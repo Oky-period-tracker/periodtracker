@@ -185,7 +185,7 @@ const validateStep = (
     if (state.name.length < 3) {
       // TODO: check availability
       isValid = false;
-      errors.push("name_too_short");
+      errors.push("username_too_short");
     }
 
     if (!state.gender) {

@@ -32,7 +32,7 @@ export const AskUserInfo = () => {
         onChangeText={onChangeName}
         placeholder="Name"
         errors={errors}
-        errorKey={"name_too_short"}
+        errorKey={"username_too_short"}
         errorsVisible={state.errorsVisible}
         actionLeft={<InfoButton title={"name"} content={"name_info_label"} />}
       />

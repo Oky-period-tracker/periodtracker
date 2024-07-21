@@ -51,14 +51,14 @@ export const LogIn = () => {
 
   return (
     <>
-      <AuthHeader title={"Log in"} />
+      <AuthHeader title={"log_in"} />
       <View style={styles.container}>
         <Input
           value={name}
           onChangeText={setName}
           placeholder="enter_name"
           errors={errors}
-          errorKey={"name_too_short"}
+          errorKey={"username_too_short"}
           errorsVisible={errorsVisible}
           editable={!user}
         />
@@ -78,7 +78,7 @@ export const LogIn = () => {
       </View>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
-        <Text style={styles.confirmText}>Confirm</Text>
+        <Text style={styles.confirmText}>confirm</Text>
       </TouchableOpacity>
     </>
   );
@@ -90,7 +90,7 @@ const validateCredentials = (name: string, password: string) => {
 
   if (name.length < 3) {
     isValid = false;
-    errors.push("name_too_short");
+    errors.push("username_too_short");
   }
 
   if (password.length < 3) {

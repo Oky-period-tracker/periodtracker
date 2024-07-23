@@ -24,6 +24,7 @@ import { Star } from "./icons/Star";
 import { Circle } from "./icons/Circle";
 import { ThemeName } from "../core/modules";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
+import { isFutureDate } from "../services/dateUtils";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -83,8 +84,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
       return;
     }
 
-    const isAfter = moment(dataEntry.date).isAfter(moment());
-    if (isAfter) {
+    if (isFutureDate(dataEntry.date)) {
       setAvatarMessage("carousel_no_access");
       return;
     }

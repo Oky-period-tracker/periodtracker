@@ -207,23 +207,42 @@ export class PredictionEngine {
         });
 
         // feed back relevant styling information for Calendar shape {'2019-05-12': { styles...}}
-        const newEntry = date.format("YYYY-MM-DD");
+        const newKey = date.format("YYYY-MM-DD");
+        let newValue = {
+          selected: true,
+          selectedColor: "#91d9e2",
+          selectedTextColor: "#fff",
+        };
 
         let isFutureDate = null;
-        let color = "#57BBCA";
-        let borderColor = "#e3629b";
         if (onPeriod && dateExists) {
-          color = "#e3629b";
-          borderColor = "#e3629b";
+          newValue = {
+            selected: true,
+            selectedColor: "#E3629B",
+            selectedTextColor: "#fff",
+          };
         } else if (onPeriod && !dateExists) {
-          color = "white";
-          borderColor = "#e3629b";
+          newValue = {
+            selected: true,
+            marked: true,
+            selectedColor: "#fff",
+            selectedTextColor: "#E3629B",
+            dotColor: "#e3629b",
+          };
         } else if (onFertile) {
-          color = "#3ea4dd";
-          borderColor = "#3ea4dd";
+          newValue = {
+            selected: true,
+            selectedColor: "#3ea4dd",
+            selectedTextColor: "#fff",
+          };
         } else {
-          color = "#CF386D";
-          borderColor = "#E3629B";
+          newValue = {
+            selected: true,
+            marked: true,
+            selectedColor: "#fff",
+            selectedTextColor: "#E3629B",
+            dotColor: "#e3629b",
+          };
         }
 
         if (!hasFuturePredictionActive) {
@@ -240,58 +259,26 @@ export class PredictionEngine {
           }
 
           if (isFutureDate) {
-            color = "#91d9e2";
-            borderColor = "transparent";
+            newValue = {
+              selected: true,
+              selectedColor: "#91d9e2",
+              selectedTextColor: "#fff",
+            };
           }
         }
+
         markedDates = {
           ...markedDates,
-          [newEntry]: {
-            customStyles: {
-              container: {
-                borderColor,
-                borderWidth: 2,
-                backgroundColor: color,
-                justifyContent: "center",
-                alignItems: "center",
-              },
-              text: {
-                color:
-                  !hasFuturePredictionActive && isFutureDate
-                    ? "white"
-                    : onPeriod
-                    ? dateExists
-                      ? "white"
-                      : "#CF386D"
-                    : "white",
-                fontWeight: "600",
-                fontSize: 14,
-              },
-              selected: true,
-              marked: true,
-            },
-          },
+          [newKey]: newValue,
         };
       } else {
         const newEntry = date.format("YYYY-MM-DD");
         markedDates = {
           ...markedDates,
           [newEntry]: {
-            customStyles: {
-              container: {
-                borderColor: "#91d9e2",
-                borderWidth: 2,
-                backgroundColor: "#91d9e2",
-                justifyContent: "center",
-                alignItems: "center",
-              },
-              text: {
-                color: "white",
-                fontWeight: "600",
-              },
-              selected: true,
-              marked: true,
-            },
+            selected: true,
+            selectedColor: "#91d9e2",
+            selectedTextColor: "#fff",
           },
         };
       }

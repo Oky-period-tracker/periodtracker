@@ -35,6 +35,7 @@ import { DayData } from "../screens/MainScreen/DayScrollContext";
 import { Button } from "./Button";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
+import { isFutureDate } from "../services/dateUtils";
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
 export const DayModal = ({
@@ -220,7 +221,7 @@ export const DayModal = ({
     // if (fetchNetworkConnectionStatus()) {
     //   analytics().logEvent("periodDayCloudTap", { user: currentUser });
     // }
-    if (moment(inputDay).isAfter(moment())) {
+    if (isFutureDate(inputDay)) {
       setAvatarMessage("too_far_ahead");
       toggleVisible();
       return;

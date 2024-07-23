@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Calendar, CalendarProps, DateData } from "react-native-calendars";
-import { StyleSheet, View } from "react-native";
-import { Button, DisplayButton } from "../../components/Button";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { Text } from "../../components/Text";
@@ -20,6 +20,7 @@ import {
   allCardAnswersSelector,
   isFuturePredictionSelector,
 } from "../../redux/selectors";
+import { Hr } from "../../components/Hr";
 
 // TODO: dynamic start & end dates?
 const startDate = moment().startOf("day").subtract(24, "months");
@@ -120,10 +121,13 @@ const CalendarScreen: ScreenComponent<"Calendar"> = ({ navigation }) => {
         toggleVisible={toggleChoiceModalVisible}
       >
         <View style={styles.modalBody}>
-          <Button onPress={toDailyCard} style={styles.modalButton}>
-            to_daily_card
-          </Button>
-          <Button onPress={toDayModal}>change_period</Button>
+          <TouchableOpacity onPress={toDailyCard} style={styles.confirm}>
+            <Text style={styles.confirmText}>to_daily_card</Text>
+          </TouchableOpacity>
+          <Hr />
+          <TouchableOpacity onPress={toDayModal} style={styles.confirm}>
+            <Text style={styles.confirmText}>change_period</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
 
@@ -185,10 +189,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
-    padding: 24,
     borderRadius: 20,
   },
   modalButton: {
     marginBottom: 24,
+  },
+  confirm: {
+    padding: 24,
+  },
+  confirmText: {
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });

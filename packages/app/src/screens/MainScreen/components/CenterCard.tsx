@@ -8,7 +8,7 @@ import { useDayStatus } from "../../../hooks/useDayStatus";
 export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { width } = useScreenDimensions();
   const todaysInfo = useTodayPrediction();
-  const status = useDayStatus(todaysInfo);
+  const { status } = useDayStatus(todaysInfo);
 
   return (
     <View

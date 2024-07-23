@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Modal, ModalProps } from "./Modal";
-import Cloud from "./icons/Cloud";
 import { IconButton } from "./IconButton";
 import moment from "moment";
 import { formatMomentDayMonth } from "../services/utils";
@@ -309,7 +308,6 @@ export const DayModal = ({
       </Text>
 
       <IconButton
-        Icon={Cloud}
         size={160}
         text={formatMomentDayMonth(inputDay)}
         status={"basic"}
@@ -317,13 +315,12 @@ export const DayModal = ({
 
       <View style={styles.buttons} pointerEvents="box-none">
         <IconButton
-          Icon={Cloud}
           onPress={onYesPress}
           size={100}
           text={"Yes"}
           status={"danger"}
         />
-        <IconButton Icon={Cloud} onPress={onNoPress} size={100} text={"No"} />
+        <IconButton onPress={onNoPress} size={100} text={"No"} />
       </View>
     </Modal>
   );

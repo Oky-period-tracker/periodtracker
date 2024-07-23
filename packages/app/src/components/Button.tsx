@@ -9,10 +9,12 @@ import {
   ViewProps,
 } from "react-native";
 import { PaletteStatus, palette } from "../config/theme";
+import { Appearance } from "./IconButton";
 
 export type ButtonProps = ViewProps & {
   onPress?: () => void;
   status?: PaletteStatus;
+  appearance?: Appearance;
   textStyle?: StyleProp<TextStyle>;
   disabled?: boolean;
 };
@@ -21,6 +23,7 @@ export const Button = ({
   style,
   onPress,
   status = "primary",
+  appearance = "fill",
   ...props
 }: ButtonProps) => {
   const colors = palette[status];
@@ -31,7 +34,7 @@ export const Button = ({
       onPress={onPress}
       {...props}
     >
-      <ButtonInner status={status} {...props} />
+      <ButtonInner status={status} appearance={appearance} {...props} />
     </TouchableOpacity>
   );
 };
@@ -55,6 +58,7 @@ export const DisplayButton = ({
 
 const ButtonInner = ({
   status = "primary",
+  appearance = "fill",
   textStyle,
   ...props
 }: ButtonProps) => {
@@ -62,11 +66,35 @@ const ButtonInner = ({
 
   const children = props.children ? (
     typeof props.children === "string" ? (
-      <Text style={[styles.text, textStyle]}>{props.children}</Text>
+      <Text
+        style={[
+          styles.text,
+          textStyle,
+          appearance === "outline" && { color: colors.base },
+        ]}
+      >
+        {props.children}
+      </Text>
     ) : (
       props.children
     )
   ) : null;
+
+  if (appearance === "outline") {
+    return (
+      <View
+        style={[
+          styles.outline,
+          {
+            backgroundColor: "#fff",
+            borderColor: colors.base,
+          },
+        ]}
+      >
+        {children}
+      </View>
+    );
+  }
 
   return (
     <>
@@ -106,14 +134,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 500,
-    backgroundColor: "#8ba13d",
   },
   body: {
     margin: "auto",
     width: "100%",
     height: "100%",
     borderRadius: 500,
-    backgroundColor: "#bada55",
     justifyContent: "center",
     alignItems: "center",
     padding: offset,
@@ -121,5 +147,17 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
+  },
+  outline: {
+    margin: "auto",
+    width: "100%",
+    height: "100%",
+    borderRadius: 500,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: offset,
+    paddingRight: offset * 2,
+    borderWidth: 1,
+    borderLeftWidth: 4 + 1,
   },
 });

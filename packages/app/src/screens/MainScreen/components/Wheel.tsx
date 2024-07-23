@@ -2,7 +2,6 @@ import React from "react";
 import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
-import Cloud from "../../../components/icons/Cloud";
 import { IconButton } from "../../../components/IconButton";
 import { DayData, useDayScroll } from "../DayScrollContext";
 import { formatMomentDayMonth } from "../../../services/utils";
@@ -10,14 +9,8 @@ import { formatMomentDayMonth } from "../../../services/utils";
 import { useDayStatus } from "../../../hooks/useDayStatus";
 import { useTutorial } from "../TutorialContext";
 import { useSelector } from "react-redux";
-import {
-  currentThemeSelector,
-  isTutorialOneActiveSelector,
-} from "../../../redux/selectors";
+import { isTutorialOneActiveSelector } from "../../../redux/selectors";
 import { useLoading } from "../../../contexts/LoadingProvider";
-import { ThemeName } from "../../../core/modules";
-import { Star } from "../../../components/icons/Star";
-import { Circle } from "../../../components/icons/Circle";
 
 export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { data, wheelPanGesture, wheelAnimatedStyle } = useDayScroll();
@@ -33,19 +26,8 @@ export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   );
 };
 
-// @ts-expect-error TODO: Move
-const IconForTheme: Record<ThemeName, React.FC> = {
-  hills: Cloud,
-  mosaic: Star,
-  village: Cloud,
-  desert: Circle,
-};
-
 const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
-  const theme = useSelector(currentThemeSelector);
-  const Icon = IconForTheme[theme] ?? Cloud;
-
-  const status = useDayStatus(item);
+  const { status, appearance } = useDayStatus(item);
   const { setLoading } = useLoading();
   const { dispatch: tutorialDispatch } = useTutorial();
 
@@ -101,11 +83,11 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
     <Animated.View style={[styles.button, position, wheelButtonAnimatedStyle]}>
       <IconButton
         size={BUTTON_SIZE}
-        Icon={Icon}
         text={text}
         onPress={onPress}
         disabled={!isSelected}
         status={status}
+        appearance={appearance}
       />
     </Animated.View>
   );

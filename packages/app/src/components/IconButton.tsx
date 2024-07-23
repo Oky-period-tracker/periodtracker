@@ -1,18 +1,59 @@
 import React from "react";
-import { StyleSheet, Text, TextStyle, TouchableOpacity } from "react-native";
+import {
+  Appearance,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+} from "react-native";
 import { SvgIconProps } from "./icons/types";
+import { ThemeName } from "../core/modules";
+import Cloud from "./icons/Cloud";
+import { CloudOutline } from "./icons/CloudOutline";
+import { StarOutline } from "./icons/StarOutline";
+import { CircleOutline } from "./icons/CircleOutline";
+import { Star } from "./icons/Star";
+import { Circle } from "./icons/Circle";
+import { useSelector } from "react-redux";
+import { currentThemeSelector } from "../redux/selectors";
+import { palette } from "../config/theme";
+
+export type Appearance = "fill" | "outline";
 
 type IconButtonProps = SvgIconProps & {
-  Icon: React.FC<SvgIconProps>;
+  appearance?: Appearance;
   onPress?: () => void;
   text?: string;
   textStyle?: TextStyle;
   disabled?: boolean;
 };
 
+// @ts-expect-error TODO:
+const IconForTheme: Record<
+  ThemeName,
+  Record<Appearance, React.FC<SvgIconProps>>
+> = {
+  hills: {
+    fill: Cloud,
+    outline: CloudOutline,
+  },
+  mosaic: {
+    fill: Star,
+    outline: StarOutline,
+  },
+  village: {
+    fill: Cloud,
+    outline: CloudOutline,
+  },
+  desert: {
+    fill: Circle,
+    outline: CircleOutline,
+  },
+};
+
 export const IconButton = ({
-  Icon,
-  status,
+  appearance = "fill",
+  status = "neutral",
   style,
   text,
   textStyle,
@@ -20,6 +61,9 @@ export const IconButton = ({
   onPress,
   disabled,
 }: IconButtonProps) => {
+  const theme = useSelector(currentThemeSelector);
+  const Icon = IconForTheme?.[theme]?.[appearance] ?? Cloud;
+
   return (
     <TouchableOpacity
       style={[styles.button, { width: size, height: size }, style]}
@@ -27,7 +71,15 @@ export const IconButton = ({
       disabled={disabled}
     >
       <Icon status={status} style={styles.icon} />
-      <Text style={[styles.text, textStyle]}>{text}</Text>
+      <Text
+        style={[
+          styles.text,
+          textStyle,
+          appearance === "outline" && { color: palette[status].base },
+        ]}
+      >
+        {text}
+      </Text>
     </TouchableOpacity>
   );
 };

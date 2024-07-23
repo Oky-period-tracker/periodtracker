@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DisplayButton } from "./Button";
-import Cloud from "./icons/Cloud";
 import { EmojiBadge } from "./EmojiBadge";
 import { IconButton } from "./IconButton";
 import { DayData, useDayScroll } from "../screens/MainScreen/DayScrollContext";
@@ -20,24 +19,16 @@ import { defaultEmoji } from "../config/options";
 import { starColor } from "../config/theme";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useLoading } from "../contexts/LoadingProvider";
-import { Star } from "./icons/Star";
-import { Circle } from "./icons/Circle";
 import { ThemeName } from "../core/modules";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 import { isFutureDate } from "../services/dateUtils";
+import { useDayStatus } from "../hooks/useDayStatus";
 
 type DailyCardProps = {
   dataEntry: DayData;
   disabled?: boolean;
 };
 
-// @ts-expect-error TODO: Move
-const IconForTheme: Record<ThemeName, React.FC> = {
-  hills: Cloud,
-  mosaic: Star,
-  village: Cloud,
-  desert: Circle,
-};
 // @ts-expect-error TODO: Move
 const IconSizeForTheme: Record<ThemeName, number> = {
   hills: 80,
@@ -54,8 +45,9 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const { isDragging, constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
 
+  const { status, appearance } = useDayStatus(dataEntry);
+
   const theme = useSelector(currentThemeSelector);
-  const Icon = IconForTheme[theme] ?? Cloud;
   const IconSize = IconSizeForTheme[theme] ?? 80;
 
   const isTutorialTwoActive = useSelector(isTutorialTwoActiveSelector);
@@ -63,12 +55,6 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const cardAnswersValues = useSelector((state) =>
     cardAnswerSelector(state, moment(dataEntry.date))
   );
-
-  const status = dataEntry.onPeriod
-    ? "danger"
-    : dataEntry.onFertile
-    ? "tertiary"
-    : "neutral";
 
   //eslint-disable-next-line
   const navigation = useNavigation() as any; // @TODO: Fixme
@@ -109,15 +95,16 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
       <View style={styles.top}>
         <DisplayButton
           status={status}
+          appearance={appearance}
           textStyle={[styles.dayText]}
           style={{ width: CARD_WIDTH / 3 }}
         >
           {`Day ${day}`}
         </DisplayButton>
         <IconButton
-          Icon={Icon}
-          text={formatMomentDayMonth(dataEntry.date)}
           status={status}
+          appearance={appearance}
+          text={formatMomentDayMonth(dataEntry.date)}
           size={IconSize}
           disabled
         />

@@ -99,9 +99,7 @@ const CalendarScreen: ScreenComponent<"Calendar"> = ({ navigation }) => {
           style={styles.calendar}
           theme={theme}
           enableSwipeMonths
-          onVisibleMonthsChange={() => {
-            //
-          }}
+          hideExtraDays
           renderArrow={(direction) => {
             return (
               <DisplayButton style={styles.arrowButton}>

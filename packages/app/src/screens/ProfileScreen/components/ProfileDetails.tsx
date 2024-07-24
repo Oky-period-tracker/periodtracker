@@ -64,7 +64,9 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>{currentUser?.name}</Text>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+              {currentUser?.name}
+            </Text>
             <Text enableTranslate={false} style={[styles.text, styles.bold]}>
               {currentUser?.gender}
             </Text>
@@ -92,8 +94,12 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>{cycleLength}</Text>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>{periodLength}</Text>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+              {cycleLength}
+            </Text>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+              {periodLength}
+            </Text>
           </View>
         </View>
       </View>
@@ -117,8 +123,12 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={[styles.text, styles.bold]} enableTranslate={false}>Ari</Text>
-            <Text style={[styles.text, styles.bold]} enableTranslate={false}>Hills</Text>
+            <Text style={[styles.text, styles.bold]} enableTranslate={false}>
+              {avatar}
+            </Text>
+            <Text style={[styles.text, styles.bold]} enableTranslate={false}>
+              {theme}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

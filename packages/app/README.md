@@ -1,10 +1,6 @@
 # Oky app V2
 
-Set the latest node version as your default
-
-```bash
-nvm alias default 20.12.2
-```
+Recommended node version: 20.16.0
 
 Allow husky script
 

@@ -7,12 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Input } from "../../components/Input";
 import { appTokenSelector, currentUserSelector } from "../../redux/selectors";
 import { SegmentControl } from "../../components/SegmentControl";
-import {
-  genders,
-  locations,
-  monthOptions,
-  yearOptions,
-} from "../../config/options";
+import { genders, locations, yearOptions } from "../../config/options";
 import { User } from "../../types";
 import { WheelPickerOption } from "../../components/WheelPicker";
 import { WheelPickerModal } from "../../components/WheelPickerModal";
@@ -24,7 +19,7 @@ import { Hr } from "../../components/Hr";
 import { useToggle } from "../../hooks/useToggle";
 import { EditPasswordModal } from "./EditPasswordModal";
 import { EditSecretModal } from "./EditSecretModal";
-import { months } from "../../core/modules/translations";
+import { useMonths } from "../../hooks/useMonths";
 
 type EditProfileState = {
   name: User["name"];
@@ -225,6 +220,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
     }
   };
 
+  const { months, monthOptions } = useMonths();
   const month = months[state.month];
   const year = state.year?.toString();
   const initialMonth = monthOptions.find((item) => item.value === month);

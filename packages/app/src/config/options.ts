@@ -1,4 +1,3 @@
-import { months } from "../core/modules/translations";
 import { generateRange } from "../services/utils";
 
 export const genders = [
@@ -11,11 +10,6 @@ export const locations = [
   { value: "Urban", label: "Urban", iconName: "building" },
   { value: "Rural", label: "Rural", iconName: "leaf" },
 ];
-
-export const monthOptions = months.map((item) => ({
-  label: item,
-  value: item,
-}));
 
 const now = new Date();
 const currentYear = now.getFullYear();

@@ -14,6 +14,7 @@ export type HeaderProps = NativeStackHeaderProps & {
 
 export const Header = ({ navigation, options }: HeaderProps) => {
   const title = options.title;
+  const enableTranslate = !options?.disableTranslate;
   const showBackButton = options.allowGoBack && navigation.canGoBack();
 
   const onBackPress = () => {
@@ -27,7 +28,9 @@ export const Header = ({ navigation, options }: HeaderProps) => {
           <FontAwesome size={12} name={"arrow-left"} color={"#fff"} />
         </Button>
       ) : null}
-      <Text style={styles.title}>{title}</Text>
+      <Text enableTranslate={enableTranslate} style={styles.title}>
+        {title}
+      </Text>
     </SafeAreaView>
   );
 };

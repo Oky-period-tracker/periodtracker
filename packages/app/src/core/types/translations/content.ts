@@ -4,14 +4,27 @@ export interface Article {
   content: string;
   category: string;
   subCategory: string;
-  categoryId: string;
-  subCategoryId: string;
   live?: boolean;
 }
 
-interface Articles {
+export interface Articles {
   byId: {
     [id: string]: Article;
+  };
+  allIds: string[];
+}
+
+export interface VideoData {
+  id: string;
+  title: string;
+  youtubeId?: string; // Part of the youtube url after v=
+  assetName?: string; // Key for video in the assets.ts file
+  live?: boolean;
+}
+
+export interface Videos {
+  byId: {
+    [id: string]: VideoData;
   };
   allIds: string[];
 }
@@ -21,42 +34,46 @@ interface AvatarMessageItem {
   content: string;
   live?: boolean;
 }
-interface AvatarMessages extends Array<AvatarMessageItem> {}
+export interface AvatarMessages extends Array<AvatarMessageItem> {}
 
-interface Categories {
-  byId: {
-    [id: string]: {
-      id: string;
+export interface Category {
+  id: string;
+  name: string;
+  tags: {
+    primary: {
       name: string;
-      tags: {
-        primary: {
-          name: string;
-          emoji: string;
-        };
-        secondary?: {
-          name: string;
-          emoji: string;
-        };
-      };
-      videos?: string[];
-      subCategories: string[];
+      emoji: string;
     };
+    secondary?: {
+      name: string;
+      emoji: string;
+    };
+  };
+  videos?: string[];
+  subCategories: string[];
+}
+
+export interface Categories {
+  byId: {
+    [id: string]: Category;
   };
   allIds: string[];
 }
 
-interface SubCategories {
+export interface SubCategory {
+  id: string;
+  name: string;
+  articles: string[];
+}
+
+export interface SubCategories {
   byId: {
-    [id: string]: {
-      id: string;
-      name: string;
-      articles: string[];
-    };
+    [id: string]: SubCategory;
   };
   allIds: string[];
 }
 
-interface DidYouKnows {
+export interface DidYouKnows {
   byId: {
     [id: string]: {
       id: string;
@@ -69,7 +86,7 @@ interface DidYouKnows {
   allIds: string[];
 }
 
-interface Quiz {
+export interface Quiz {
   id: string;
   isAgeRestricted: boolean;
   topic?: string;
@@ -86,93 +103,98 @@ interface Quiz {
   live?: boolean;
 }
 
-interface Quizzes {
+export interface Quizzes {
   byId: {
     [id: string]: Quiz;
   };
   allIds: string[];
 }
 
-// interface Surveys {
-//   date_created: string;
-//   id: string;
-//   isAgeRestricted: false;
-//   is_multiple: true;
-//   lang: string;
-//   live: true;
-//   option1: string;
-//   option2: string;
-//   option3: string;
-//   option4: string;
-//   option5: string;
-//   question: string;
-//   questions: ContentItem[];
-// }
+export type Survey = {
+  id: string;
+  questions: SurveyQuestion[];
+  isAgeRestricted: boolean;
+  date_created: string;
+  lang: string;
+  live: true;
+  //
+  is_multiple?: boolean; // @deprecated
+  option1?: string; // @deprecated
+  option2?: string; // @deprecated
+  option3?: string; // @deprecated
+  option4?: string; // @deprecated
+  option5?: string; // @deprecated
+  question?: string; // @deprecated
+  response?: string; // @deprecated
+};
 
-// interface SurveyContentItem {
-//   date_created: string;
-//   id: string;
-//   isAgeRestricted: false;
-//   is_multiple: true;
-//   lang: string;
-//   live: true;
-//   option1: string;
-//   option2: string;
-//   option3: string;
-//   option4: string;
-//   option5: string;
-//   question: string;
-//   questions: SurveyQuestionContentItem[];
-//   inProgress: boolean;
-//   currentQuestionIndex: number;
-//   answeredQuestion: AnsweredSurveyQuestionContentItem[];
-// }
-// interface SurveyQuestionContentItem {
-//   id: string;
-//   is_multiple: boolean;
-//   next_question: ContentItem;
-//   options: ContentItem[];
-//   question: string;
-//   response: string;
-//   sort_number: string;
-//   surveyId: string;
-//   answeredQuestion: AnsweredSurveyQuestionContentItem;
-// }
+export type SurveyAnswerOption = { [key: string]: string };
 
-// interface AnsweredSurveyQuestionContentItem {
-//   questionId: string;
-//   question: string;
-//   answerID: string;
-//   answer: string;
-//   response: string;
-//   isMultiple: boolean;
-// }
-// interface AllSurveys extends Array<SurveyContentItem> {}
-// interface CompletedSurveys extends Array<CompletedSurveyItem> {}
-// interface CompletedSurveyItem {
-//   id: string;
-// }
+export type SurveyOptions = [
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?,
+  SurveyAnswerOption?
+];
 
-export interface HelpCenter {
+export interface SurveyQuestion {
+  id: string;
+  question: string;
+  options: SurveyOptions;
+  next_question: {
+    option1: string;
+    option2: string;
+    option3: string;
+    option4: string;
+    option5: string;
+  };
+  is_multiple: boolean;
+  //
+  sort_number: string;
+  surveyId: string;
+  response: string;
+}
+
+export interface SurveyQuestionAnswer {
+  questionId: string;
+  question: string;
+  answerID: string;
+  answer: string;
+  // TODO: Below is redundant?
+  response: string;
+  isMultiple: boolean;
+}
+
+export interface AllSurveys extends Array<Survey> {}
+export interface CompletedSurveys extends Array<CompletedSurveyItem> {}
+interface CompletedSurveyItem {
+  id: string;
+}
+
+export interface LegacyHelpCenter {
   id: number;
   title: string;
   caption: string;
   contactOne: string;
   contactTwo?: string;
   address: string;
-  websites: string; // comma separated strings
+  website: string; // comma separated strings of multiple websites
   lang: string;
-  //
-  primaryAttributeId: number | null;
-  otherAttributes: string | null; // comma separated ids
-  //
-  regionId: string;
-  subRegionId: string;
-  isAvailableEverywhere: boolean;
-  //
-  isActive: boolean;
-  sortingKey: number;
 }
+
+export interface HelpCenter extends LegacyHelpCenter {
+  primaryAttributeId?: number | null;
+  otherAttributes?: string | null; // comma separated ids
+  //
+  regionId?: string;
+  subRegionId?: string;
+  isAvailableEverywhere?: boolean;
+  //
+  isActive?: boolean;
+  sortingKey?: number;
+}
+
 export interface HelpCenters extends Array<HelpCenter> {}
 
 interface ContentItem {
@@ -180,25 +202,23 @@ interface ContentItem {
   content: string;
 }
 
-interface PrivacyPolicy extends Array<ContentItem> {}
-interface TermsAndConditions extends Array<ContentItem> {}
-interface About extends Array<ContentItem> {}
+export interface PrivacyPolicy extends Array<ContentItem> {}
+export interface TermsAndConditions extends Array<ContentItem> {}
+export interface About extends Array<ContentItem> {}
 
-// TODO_ALEX: survey fix type overlap with /components !
-
-interface VideoData {
-  id: string;
-  title: string;
-  youtubeId?: string; // Part of the youtube url after v=
-  assetName?: string; // Key for video in the assets.ts file
-  live?: boolean;
+export enum HelpCenterUI {
+  HC = "help-centers",
+  SAVED_HC = "saved-help-centers",
 }
 
-interface Videos {
-  byId: {
-    [id: string]: VideoData;
-  };
-  allIds: string[];
+export interface Locations {
+  name: string;
+  region: string;
+  places: Places[];
+}
+
+export interface Places {
+  name: string;
 }
 
 export interface StaticContent {
@@ -213,7 +233,8 @@ export interface StaticContent {
   privacyPolicy: PrivacyPolicy;
   termsAndConditions: TermsAndConditions;
   about: About;
-  aboutBanner: string;
-  aboutBannerTimestamp?: number;
+  allSurveys?: AllSurveys;
+  completedSurveys?: CompletedSurveys;
+  aboutBanner?: string;
   videos?: Videos;
 }

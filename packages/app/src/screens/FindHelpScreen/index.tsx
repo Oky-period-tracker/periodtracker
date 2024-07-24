@@ -44,7 +44,7 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
       const hasAttributeFilter = filters.attributes.length > 0;
       const primaryAttributeNotIncluded =
         item.primaryAttributeId === null ||
-        !filters.attributes.includes(item.primaryAttributeId);
+        !filters.attributes.includes(item?.primaryAttributeId ?? -1);
 
       if (hasAttributeFilter && primaryAttributeNotIncluded) {
         return false;
@@ -75,6 +75,10 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
       // Secondary sorting by sortingKey
       const aSortingKey = a.sortingKey;
       const bSortingKey = b.sortingKey;
+
+      if (aSortingKey === undefined || bSortingKey === undefined) {
+        return 0;
+      }
 
       return aSortingKey - bSortingKey;
     });
@@ -143,7 +147,7 @@ const searchKeys = [
   "title" as const,
   "caption" as const,
   "address" as const,
-  "websites" as const,
+  "website" as const,
   // TODO: Add string of combined attribute names to HelpCenter type for use here in search
 ];
 

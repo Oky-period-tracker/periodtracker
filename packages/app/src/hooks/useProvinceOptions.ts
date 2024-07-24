@@ -1,13 +1,14 @@
 import React from "react";
-import { Locale, provinces } from "../data/data";
 import { WheelPickerOption } from "../components/WheelPicker";
 import { useSelector } from "../redux/useSelector";
 import { currentLocaleSelector } from "../redux/selectors";
+import { Locale } from "expo-localization";
+import { provinces } from "../core/modules/translations";
 
 export const useProvinceOptions = (
   country: string | undefined
 ): WheelPickerOption[] => {
-  const locale = useSelector(currentLocaleSelector) as Locale;
+  const locale = useSelector(currentLocaleSelector) as unknown as Locale; // TODO:
 
   const provinceOptions = React.useMemo(() => {
     const countryCode = country ? country : null;
@@ -17,6 +18,7 @@ export const useProvinceOptions = (
     );
 
     return filteredProvinces.map((item) => ({
+      // @ts-expect-error TODO:
       label: item[locale],
       value: item.uid.toString(),
     }));

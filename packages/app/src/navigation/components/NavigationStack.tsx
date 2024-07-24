@@ -11,6 +11,7 @@ export type CustomStackNavigationOptions = NativeStackNavigationOptions & {
   name?: string;
   initialRouteName?: string;
   allowGoBack?: boolean;
+  disableTranslate?: boolean;
 };
 
 export type StackConfig<T extends keyof GlobalParamList> = {

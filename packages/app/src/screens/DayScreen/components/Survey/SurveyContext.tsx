@@ -9,7 +9,7 @@ import {
   Survey,
   SurveyQuestion,
   SurveyQuestionAnswer,
-} from "../../../../types";
+} from "../../../../core/types";
 
 type SurveyState = {
   survey: Survey | undefined;

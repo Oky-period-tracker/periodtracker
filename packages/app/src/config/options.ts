@@ -1,4 +1,4 @@
-import { months } from "../data/data";
+import { months } from "../core/modules/translations";
 import { generateRange } from "../services/utils";
 
 export const genders = [

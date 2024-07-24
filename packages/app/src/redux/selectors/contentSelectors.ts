@@ -3,9 +3,14 @@ import { ReduxState } from "../reducers";
 
 const s = (state: ReduxState) => state.content;
 
+export const articlesSelector = (state: ReduxState) => s(state).articles;
+
 export const allArticlesSelector = (state: ReduxState) =>
   s(state).articles.allIds.map((id) => s(state).articles.byId[id]);
 
+export const allArticlesWithParentIdsSelector = (state: ReduxState) => {
+  return s(state).articles.allIds.map((id) => s(state).articles.byId[id]);
+};
 export const allVideosSelector = (state: ReduxState) => {
   if (!s(state)?.videos?.allIds || !s(state)?.videos?.byId) return [];
   // @ts-expect-error TODO:

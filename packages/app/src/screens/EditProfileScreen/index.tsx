@@ -15,7 +15,6 @@ import {
 } from "../../config/options";
 import { User } from "../../types";
 import { WheelPickerOption } from "../../components/WheelPicker";
-import { months } from "../../data/data";
 import { WheelPickerModal } from "../../components/WheelPickerModal";
 import _ from "lodash";
 import { editUser } from "../../redux/actions";
@@ -25,6 +24,7 @@ import { Hr } from "../../components/Hr";
 import { useToggle } from "../../hooks/useToggle";
 import { EditPasswordModal } from "./EditPasswordModal";
 import { EditSecretModal } from "./EditSecretModal";
+import { months } from "../../core/modules/translations";
 
 type EditProfileState = {
   name: User["name"];

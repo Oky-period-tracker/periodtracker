@@ -143,7 +143,6 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
     progress: progress.value,
   }));
 
-  // @ts-expect-error TODO:
   const source = assets.lottie.avatars[avatar];
   const lottieAspectRatio = source.w / source.h;
   const lottieWidth = diameter * 0.33 - 12;

@@ -12,7 +12,7 @@ import {
   ThemeName,
   defaultAvatar,
   defaultTheme,
-} from "../../core/modules";
+} from "../../core/modules/translations";
 
 export interface AppState {
   appLocale: string;

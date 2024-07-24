@@ -1,32 +1,45 @@
 import * as React from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
-import { Article, data } from "../../data/data";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { useEncyclopedia } from "../EncyclopediaScreen/EncyclopediaContext";
 import { SearchBar } from "../../components/SearchBar";
 import { ArticleContent } from "./ArticleContent";
 import { Text } from "../../components/Text";
+import { Article } from "../../core/types";
+import { useSelector } from "../../redux/useSelector";
+import {
+  articlesSelector,
+  subCategoryByIDSelector,
+} from "../../redux/selectors";
 
 const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   const { query, setQuery, articleIds } = useEncyclopedia();
 
   const subcategoryId = route.params.subcategoryId;
-  const subcategory = data.subCategories.byId[subcategoryId];
+  const subcategory = useSelector((s) =>
+    subCategoryByIDSelector(s, subcategoryId)
+  );
+
+  const allArticles = useSelector(articlesSelector);
 
   const articles = React.useMemo(() => {
     return subcategory.articles.reduce<Article[]>((acc, articleId) => {
       if (articleIds.includes(articleId)) {
-        acc.push(data.articles.byId[articleId]);
+        acc.push(allArticles.byId[articleId]);
       }
       return acc;
     }, []);
-  }, [subcategory, articleIds, data.articles]);
+  }, [subcategory, articleIds, allArticles]);
 
   React.useLayoutEffect(() => {
     // Set Screen title
     if (subcategory) {
-      navigation.setOptions({ title: subcategory.name });
+      navigation.setOptions({
+        title: subcategory.name,
+        // @ts-expect-error // TODO: CustomStackNavigationOptions
+        disableTranslate: true,
+      });
     }
   }, [navigation, subcategory]);
 

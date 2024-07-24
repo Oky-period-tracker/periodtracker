@@ -1,8 +1,9 @@
 import { createAction } from "../helpers";
 import { Moment } from "moment";
-import { CardName, DailyCard, SurveyQuestionAnswer } from "../../types";
+import { CardName, DailyCard } from "../../types";
 import { AnswerForUserState } from "../reducers/answerReducer";
 import { User } from "../reducers/authReducer";
+import { SurveyQuestionAnswer } from "../../core/types";
 
 export function answerSurvey(payload: {
   id: string;

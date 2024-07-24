@@ -3,9 +3,9 @@ import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
-import { months } from "../../../../../data/data";
 import { monthOptions, yearOptions } from "../../../../../config/options";
 import { InfoButton } from "../../../../../components/InfoButton";
+import { months } from "../../../../../core/modules/translations";
 
 export const AskAge = () => {
   const { state, dispatch, errors } = useSignUp();

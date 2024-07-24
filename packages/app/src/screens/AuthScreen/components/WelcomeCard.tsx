@@ -3,6 +3,7 @@ import { View, Image, StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { DisplayButton } from "../../../components/Button";
 import { Text } from "../../../components/Text";
+import { assets } from "../../../assets";
 
 interface CardProps {
   title: string;
@@ -34,10 +35,7 @@ const Card: React.FC<CardProps> = ({
   return (
     <View style={styles.page}>
       <View style={styles.welcomeContainer}>
-        <Image
-          source={require("../../../assets/images/slider/logo.png")}
-          style={styles.logo}
-        />
+        <Image source={assets.static.launch_icon} style={styles.logo} />
         <Text style={styles.headText}>auth_welcome</Text>
       </View>
       <DisplayButton status={"primary"} style={styles.displayImage}>

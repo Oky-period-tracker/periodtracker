@@ -12,7 +12,7 @@ import {
   AllSurveys,
   CompletedSurveys,
   Videos,
-} from "../../types";
+} from "../../core/types";
 import { Actions } from "../types/index";
 
 export interface ContentState {

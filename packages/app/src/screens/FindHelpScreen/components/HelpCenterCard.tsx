@@ -2,11 +2,11 @@ import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Text } from "../../../components/Text";
-import { HelpCenter } from "../../../data/data";
 import { A } from "../../../components/A";
 import { useToggle } from "../../../hooks/useToggle";
 import { Button } from "../../../components/Button";
 import { helpCenterAttributes } from "../../../data/helpCenter";
+import { HelpCenter } from "../../../core/types";
 
 export const HelpCenterCard = ({
   helpCenter,
@@ -18,7 +18,7 @@ export const HelpCenterCard = ({
   onSavePress: () => void;
 }) => {
   const [expanded, toggleExpanded] = useToggle();
-  const websites = helpCenter.websites.split(",");
+  const websites = helpCenter.website.split(",");
 
   const emoji = React.useMemo(() => {
     return (

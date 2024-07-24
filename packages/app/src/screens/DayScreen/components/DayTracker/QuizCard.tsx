@@ -23,7 +23,7 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
   ) as {
     id: string;
     question: string;
-    emoji: string;
+    // emoji: string;
     answer: string;
     isCorrect: boolean;
     response: string;
@@ -76,7 +76,7 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
                   id: selectedQuestion.id,
                   answerID: index + 1,
                   question: selectedQuestion.question,
-                  emoji: answer.emoji,
+                  emoji: "", //TODO: answer.emoji ?
                   answer: answer.text,
                   isCorrect: answer.isCorrect,
                   response:

@@ -1,6 +1,6 @@
 import { ImageSourcePropType } from "react-native";
-import { LottieViewProps } from "lottie-react-native";
-import { AvatarName, Locale, ThemeName } from "../modules";
+import { AnimationObject, LottieViewProps } from "lottie-react-native";
+import { AvatarName, Locale, ThemeName } from "../modules/translations";
 
 export interface AppAssets {
   avatars: Record<
@@ -27,8 +27,6 @@ export interface AppAssets {
     spin_load_face: ImageSourcePropType;
     spin_load_circle: ImageSourcePropType;
     icons: {
-      filter: ImageSourcePropType;
-      play: ImageSourcePropType;
       settingsIcon: ImageSourcePropType;
       cloudsIcn: ImageSourcePropType;
       information: ImageSourcePropType;
@@ -130,11 +128,9 @@ export interface AppAssets {
   general: {
     aboutBanner: Record<Locale, ImageSourcePropType>;
     calendarStatic: Record<Locale, ImageSourcePropType>;
-    encylopediaAvatars: ImageSourcePropType;
-    tripleClouds: ImageSourcePropType;
   };
   lottie: {
-    avatars: Record<AvatarName, LottieViewProps["source"]>;
+    avatars: Record<AvatarName, AnimationObject>;
   };
   // TODO:
   // eslint-disable-next-line

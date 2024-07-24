@@ -13,7 +13,7 @@ import {
   AllSurveys,
   CompletedSurveys,
   Videos,
-} from "../../types";
+} from "../../core/types";
 
 export function initStaleContent(payload: {
   articles: Articles;

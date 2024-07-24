@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, TextStyle, TouchableOpacity } from "react-native";
 import { Text } from "./Text";
 import { SvgIconProps } from "./icons/types";
-import { ThemeName } from "../core/modules";
 import Cloud from "./icons/Cloud";
 import { CloudOutline } from "./icons/CloudOutline";
 import { StarOutline } from "./icons/StarOutline";
@@ -12,6 +11,7 @@ import { Circle } from "./icons/Circle";
 import { useSelector } from "react-redux";
 import { currentThemeSelector } from "../redux/selectors";
 import { palette } from "../config/theme";
+import { ThemeName } from "../core/modules/translations";
 
 export type Appearance = "fill" | "outline";
 
@@ -23,7 +23,6 @@ type IconButtonProps = SvgIconProps & {
   disabled?: boolean;
 };
 
-// @ts-expect-error TODO:
 const IconForTheme: Record<
   ThemeName,
   Record<Appearance, React.FC<SvgIconProps>>

@@ -19,18 +19,18 @@ import { defaultEmoji } from "../config/options";
 import { starColor } from "../config/theme";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useLoading } from "../contexts/LoadingProvider";
-import { ThemeName } from "../core/modules";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 import { isFutureDate } from "../services/dateUtils";
 import { useDayStatus } from "../hooks/useDayStatus";
 import { Text } from "./Text";
+import { ThemeName } from "../core/modules/translations";
 
 type DailyCardProps = {
   dataEntry: DayData;
   disabled?: boolean;
 };
 
-// @ts-expect-error TODO: Move
+// TODO: Move
 const IconSizeForTheme: Record<ThemeName, number> = {
   hills: 80,
   mosaic: 60,

@@ -1,9 +1,13 @@
 import React from "react";
 import { useSearch } from "../../hooks/useSearch";
 import { useSelector } from "../../redux/useSelector";
-import { allArticlesSelector, allVideosSelector } from "../../redux/selectors";
-import { Article } from "../../core/types";
-import { VideoData } from "../../types";
+import {
+  allArticlesSelector,
+  allCategoriesSelector,
+  allSubCategoriesSelector,
+  allVideosSelector,
+} from "../../redux/selectors";
+import { Article, Category, SubCategory, VideoData } from "../../core/types";
 
 export type EncyclopediaContext = {
   query: string;
@@ -18,6 +22,11 @@ export type EncyclopediaContext = {
   selectedVideoId: string | undefined;
   setSelectedVideoId: React.Dispatch<React.SetStateAction<string | undefined>>;
 };
+
+interface ArticleWithParentIds extends Article {
+  categoryId: string;
+  subCategoryId: string;
+}
 
 const defaultValue: EncyclopediaContext = {
   query: "",
@@ -37,11 +46,17 @@ const EncyclopediaContext =
   React.createContext<EncyclopediaContext>(defaultValue);
 
 export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
+  const categories = useSelector(allCategoriesSelector);
+  const subCategories = useSelector(allSubCategoriesSelector);
   const articles = useSelector(allArticlesSelector);
   const allVideos = useSelector(allVideosSelector);
 
-  const { query, setQuery, results } = useSearch<Article>({
-    options: articles,
+  const articlesWithParentIds: ArticleWithParentIds[] = React.useMemo(() => {
+    return getArticlesWithParentIds(articles, categories, subCategories);
+  }, [articles, categories, subCategories]);
+
+  const { query, setQuery, results } = useSearch<ArticleWithParentIds>({
+    options: articlesWithParentIds,
     keys: searchKeys,
   });
 
@@ -103,7 +118,39 @@ const videoSearchKeys = [
   "assetName" as const,
 ];
 
-const getFilteredIds = (filteredArticles: Article[]) => {
+const getArticlesWithParentIds = (
+  articles: Article[],
+  categories: Category[],
+  subCategories: SubCategory[]
+) => {
+  return articles.reduce<ArticleWithParentIds[]>((acc, article) => {
+    const subCategory = subCategories.find((sub) =>
+      sub.articles.includes(article.id)
+    );
+
+    if (!subCategory) {
+      return acc;
+    }
+
+    const category = categories.find((cat) =>
+      cat.subCategories.includes(subCategory.id)
+    );
+
+    if (!category) {
+      return acc;
+    }
+
+    const articleWithParentIds = {
+      ...article,
+      categoryId: category.id,
+      subCategoryId: subCategory.id,
+    };
+
+    return [...acc, articleWithParentIds];
+  }, []);
+};
+
+const getFilteredIds = (filteredArticles: ArticleWithParentIds[]) => {
   const articleIds = filteredArticles.map((article) => article.id);
   const categoryIds = Array.from(
     new Set(filteredArticles.map((article) => article.categoryId))

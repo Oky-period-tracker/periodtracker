@@ -1,5 +1,5 @@
 import { Moment } from "moment";
-import { months } from "../data/data";
+import { months } from "../core/modules/translations";
 
 export type ValueOf<T> = T[keyof T];
 

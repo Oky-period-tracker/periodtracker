@@ -36,7 +36,6 @@ export const Button = ({
       onPress={onPress}
       {...props}
     >
-      <ButtonInner status={status} appearance={appearance} {...props} />
       <ButtonInner
         status={status}
         appearance={appearance}

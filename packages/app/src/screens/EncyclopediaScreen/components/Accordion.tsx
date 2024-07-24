@@ -4,7 +4,6 @@ import { useToggle } from "../../../hooks/useToggle";
 import { DisplayButton } from "../../../components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { useEncyclopedia } from "../EncyclopediaContext";
-import { SubCategory } from "../../../data/data";
 import { useSelector } from "../../../redux/useSelector";
 import { Text } from "../../../components/Text";
 import {
@@ -12,6 +11,7 @@ import {
   categoryByIDSelector,
 } from "../../../redux/selectors";
 import { VideoPlayerModal } from "./VideoPlayer";
+import { SubCategory } from "../../../core/types";
 
 export const Accordion = () => {
   const { filteredCategoryIds } = useEncyclopedia();

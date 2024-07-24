@@ -1,4 +1,3 @@
-export * from "./content";
 export * from "./dailyCards";
 
 export interface User {

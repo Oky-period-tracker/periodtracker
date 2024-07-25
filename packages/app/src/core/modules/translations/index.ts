@@ -1,4 +1,4 @@
-export type Locale = 'en'
+export type Locale = 'en' | 'fr' | 'ru' | 'pt' | 'es'
 export const defaultLocale: Locale = 'en'
 
 export * from './app'

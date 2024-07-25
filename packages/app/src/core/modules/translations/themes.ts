@@ -3,7 +3,7 @@ import { Themes } from '../../types/theme'
 
 export type ThemeName = 'hills' | 'mosaic' | 'village' | 'desert'
 
-export type AvatarName = 'panda' | 'unicorn'
+export type AvatarName = 'oky' | 'julia' | 'nur' | 'ari' | 'pihu' | 'shiko' | 'kuku'
 
 export const baseTheme = {
   periodColor: '#e3629b',
@@ -15,8 +15,8 @@ export const baseTheme = {
   periodNotVerifiedColor: 'cyan',
 }
 
-export const defaultAvatar: AvatarName = 'panda'
-export const avatarNames: AvatarName[] = ['panda', 'unicorn']
+export const defaultAvatar: AvatarName = 'ari'
+export const avatarNames: AvatarName[] = ['ari', 'nur', 'julia', 'oky', 'pihu', 'shiko', 'kuku']
 
 export const defaultTheme: ThemeName = 'hills'
 export const themeNames: ThemeName[] = ['hills', 'village', 'mosaic', 'desert']
@@ -46,11 +46,73 @@ export const themes: Themes = {
 
 export const themeTranslations: Record<Locale, Record<AvatarName | ThemeName, string>> = {
   en: {
-    panda: 'panda',
-    unicorn: 'unicorn',
+    oky: 'oky',
+    ari: 'ari',
+    nur: 'nur',
+    julia: 'anu',
+    pihu: 'pihu',
+    shiko: 'shiko',
+    kuku: 'kuku',
     hills: 'hills',
     mosaic: 'mosaic',
     village: 'village',
     desert: 'desert',
+  },
+  fr: {
+    oky: 'oky',
+    ari: 'ari',
+    nur: 'nur',
+    julia: 'anu',
+    pihu: 'pihu',
+    shiko: 'shiko',
+    kuku: 'kuku',
+    hills: 'Collines',
+    mosaic: 'Mosaïque',
+    village: 'Village',
+    desert: 'Désert',
+  },
+  ru: {
+    oky: 'oky',
+    ari: 'Аяна',
+    nur: 'Экуля',
+    julia: 'Бакуля',
+    // mia: 'Дайяна',
+    pihu: 'pihu',
+    shiko: 'shiko',
+    kuku: 'kuku',
+    hills: 'Холмы',
+    mosaic: 'Мозаика',
+    village: 'Село',
+    desert: 'Город',
+    // city: 'Город',
+    // lake: 'Озеро',
+    // reserve: 'Заповедник',
+  },
+  pt: {
+    oky: 'oky',
+    ari: 'ari',
+    nur: 'nur',
+    julia: 'anu',
+    pihu: 'pihu',
+    shiko: 'shiko',
+    kuku: 'kuku',
+    hills: 'Montanhas',
+    mosaic: 'Mosaico',
+    village: 'Aldeia',
+    desert: 'Deserto',
+  },
+  es: {
+    oky: 'oky',
+    kuku: 'Kuku',
+    //
+    ari: 'ari',
+    nur: 'nur',
+    julia: 'anu',
+    pihu: 'pihu',
+    shiko: 'shiko',
+    hills: 'Montañas',
+    mosaic: 'Mosaico',
+    village: 'Pueblo',
+    desert: 'Desierto',
   },
 }

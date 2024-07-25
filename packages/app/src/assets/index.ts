@@ -4,21 +4,61 @@ import { AppAssets } from "../core/types";
 
 export const assets: AppAssets = {
   avatars: {
-    panda: {
-      default: require("./images/static/panda.png"),
-      small: require("./images/static/panda.png"),
-      stationary: require("./images/static/panda.png"),
-      stationary_colour: require("./images/static/panda.png"),
-      bubbles: require("./images/static/panda.png"),
-      theme: require("./images/static/panda.png"),
+    oky: {
+      default: require("./images/avatars/icn_avatar_4.png"),
+      small: require("./images/avatars/icn_avatar_4_S.png"),
+      stationary: require("./images/avatars/icn_avatar_4_shadow.png"),
+      stationary_colour: require("./images/avatars/icn_avatar_4-colour.png"),
+      bubbles: require("./images/avatars/icn_avatar_4-bubbles.png"),
+      theme: require("./images/avatars/icn_avatar_4_theme.png"),
     },
-    unicorn: {
-      default: require("./images/static/unicorn.png"),
-      small: require("./images/static/unicorn.png"),
-      stationary: require("./images/static/unicorn.png"),
-      stationary_colour: require("./images/static/unicorn.png"),
-      bubbles: require("./images/static/unicorn.png"),
-      theme: require("./images/static/unicorn.png"),
+    julia: {
+      default: require("./images/avatars/icn_avatar_3.png"),
+      small: require("./images/avatars/icn_avatar_3_S.png"),
+      stationary: require("./images/avatars/icn_avatar_3_shadow.png"),
+      stationary_colour: require("./images/avatars/icn_avatar_3-colour.png"),
+      bubbles: require("./images/avatars/icn_avatar_3-bubbles.png"),
+      theme: require("./images/avatars/icn_avatar_3_theme.png"),
+    },
+    nur: {
+      default: require("./images/avatars/icn_avatar_2.png"),
+      small: require("./images/avatars/icn_avatar_2_S.png"),
+      stationary: require("./images/avatars/icn_avatar_2_shadow.png"),
+      stationary_colour: require("./images/avatars/icn_avatar_2-colour.png"),
+      bubbles: require("./images/avatars/icn_avatar_2-bubbles.png"),
+      theme: require("./images/avatars/icn_avatar_2_theme.png"),
+    },
+    ari: {
+      default: require("./images/avatars/icn_avatar_1.png"),
+      small: require("./images/avatars/icn_avatar_1_S.png"),
+      stationary: require("./images/avatars/icn_avatar_1_shadow.png"),
+      stationary_colour: require("./images/avatars/icn_avatar_1-colour.png"),
+      bubbles: require("./images/avatars/icn_avatar_1-bubbles.png"),
+      theme: require("./images/avatars/icn_avatar_1_theme.png"),
+    },
+    pihu: {
+      default: require("./images/avatars/icn_avatar_5.png"),
+      small: require("./images/avatars/icn_avatar_5_S.png"),
+      stationary: require("./images/avatars/icn_avatar_5_shadow.png"),
+      stationary_colour: require("./images/avatars/icn_avatar_5-colour.png"),
+      bubbles: require("./images/avatars/icn_avatar_5-bubbles.png"),
+      theme: require("./images/avatars/icn_avatar_5_theme.png"),
+    },
+    shiko: {
+      default: require("./images/avatars/icn_avatar_6.png"),
+      small: require("./images/avatars/icn_avatar_6_S.png"),
+      stationary: require("./images/avatars/icn_avatar_6_shadow.png"),
+      stationary_colour: require("./images/avatars/icn_avatar_6-colour.png"),
+      bubbles: require("./images/avatars/icn_avatar_6-bubbles.png"),
+      theme: require("./images/avatars/icn_avatar_6_theme.png"),
+    },
+    kuku: {
+      default: require("./images/avatars/icn_avatar_8.png"),
+      small: require("./images/avatars/icn_avatar_8_S.png"),
+      stationary: require("./images/avatars/icn_avatar_8_shadow.png"),
+      stationary_colour: require("./images/avatars/icn_avatar_8-colour.png"),
+      bubbles: require("./images/avatars/icn_avatar_8-bubbles.png"),
+      theme: require("./images/avatars/icn_avatar_8_theme.png"),
     },
   },
   backgrounds: {
@@ -44,8 +84,8 @@ export const assets: AppAssets = {
     },
   },
   static: {
-    launch_icon: require("./images/static/circle.png"),
-    spin_load_face: require("./images/static/circle.png"),
+    launch_icon: require("./images/static/icn_oky.png"),
+    spin_load_face: require("./images/static/icn_oky_spin-1.png"),
     spin_load_circle: require("./images/static/icn_oky_spin-2.png"),
     icons: {
       settingsIcon: require("./images/static/icn_settings.png"),
@@ -90,6 +130,11 @@ export const assets: AppAssets = {
       send: require("./images/static/btn-send.png"),
       circleDefaultL: require("./images/static/icn_circle_default_L.png"),
       periodFuture: require("./images/static/icn-period-future.png"),
+      // starPink: {
+      //   empty: require('./images/static/icn-star-line.png'),
+      //   half: require('./images/static/icn-star-half.png'),
+      //   full: require('./images/static/icn-star-full_L.png'),
+      // },
       starOrange: {
         empty: require("./images/static/icn-star-line-orange.png"),
         half: require("./images/static/icn-star-half-orange.png"),
@@ -127,20 +172,20 @@ export const assets: AppAssets = {
         period: require("./images/static/icn_star_p_f.png"),
       },
       circles: {
-        notVerifiedDay: require("./images/static/icn_circle_selected_nv_L.png"), // change image
+        notVerifiedDay: require("./images/static/icn_circle_selected_nv_L.png"),
         nonPeriod: require("./images/static/icn_circle_selected_np_M.png"),
         fertile: require("./images/static/icn_circle_selected_f_M.png"),
         period: require("./images/static/icn_circle_selected_p_M.png"),
       },
       segment: {
-        notVerifiedDay: require("./images/static/icn_period_unvierified_segment.png"), // change image
+        notVerifiedDay: require("./images/static/icn_period_unvierified_segment.png"),
         nonPeriod: require("./images/static/icn_no_period_segment.png"),
         fertile: require("./images/static/icn_fertile_segment.png"),
         period: require("./images/static/icn_period_segment.png"),
       },
     },
     dayBadge: {
-      notVerifiedDay: require("./images/static/icn_oval_nv_f.png"), // change image
+      notVerifiedDay: require("./images/static/icn_oval_nv_f.png"),
       onPeriod: require("./images/static/icn_oval_p_f.png"),
       onFertile: require("./images/static/icn_oval_f_f.png"),
       default: require("./images/static/icn_oval_np_f.png"),
@@ -149,15 +194,32 @@ export const assets: AppAssets = {
   general: {
     aboutBanner: {
       en: require("./images/general/about-banner.jpg"),
+      es: require("./images/general/about-banner-2.jpg"),
+      ru: require("./images/general/about-banner.jpg"),
+      pt: require("./images/general/about-banner-2.jpg"),
+      fr: require("./images/general/about-banner-2.jpg"),
     },
     calendarStatic: {
       en: require("./images/general/calendar-static.png"),
+      es: require("./images/general/calendar-static.png"),
+      fr: require("./images/general/calendar-static-fr.jpg"),
+      ru: require("./images/general/calendar-static-ru.jpg"),
+      pt: require("./images/general/calendar-static-pt.jpg"),
     },
   },
   lottie: {
     avatars: {
-      panda: require("./lottie/avatar.json"),
-      unicorn: require("./lottie/avatar.json"),
+      ari: require("./lottie/ari_lottie.json"),
+      julia: require("./lottie/julia_lottie.json"),
+      nur: require("./lottie/nur_lottie.json"),
+      oky: require("./lottie/ari_lottie.json"),
+      pihu: require("./lottie/pihu_lottie.json"),
+      shiko: require("./lottie/shiko_lottie.json"),
+      kuku: require("./lottie/kuku_lottie.json"),
     },
+  },
+  videos: {
+    feelingDepressedHappyAndOtherEmotions: require("./videos/FeelingDepressedHappyAndOtherEmotions.mp4"),
+    genderRolesAndStereotypes: require("./videos/GenderRolesAndStereotypes.mp4"),
   },
 };

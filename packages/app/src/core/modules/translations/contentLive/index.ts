@@ -3,7 +3,15 @@ import { Locale } from '../'
 import { StaticContent } from '../../../types'
 
 import { en } from './en'
+import { fr } from './fr'
+import { ru } from './ru'
+import { pt } from './pt'
+import { es } from './es'
 
 export const liveContent: Record<Locale, StaticContent> = {
   en,
+  fr,
+  ru,
+  pt,
+  es,
 }

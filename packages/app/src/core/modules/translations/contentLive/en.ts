@@ -3,6 +3,133 @@ import { StaticContent } from '../../../types'
 
 export const en: StaticContent = {
   locale: 'en',
+  videos: {
+    byId: {
+      'b45d93d2-088c-4ab7-b34e-9e16761d8d5b': {
+        id: 'b45d93d2-088c-4ab7-b34e-9e16761d8d5b',
+        title: 'Feeling Depressed Happy and Other Emotions',
+        assetName: 'feelingDepressedHappyAndOtherEmotions',
+        youtubeId: 'mAPLTaRM48Y',
+        live: true,
+      },
+      '718b6c00-ce4a-46e5-8591-905dc6307745': {
+        id: '718b6c00-ce4a-46e5-8591-905dc6307745',
+        title: 'Gender Roles and Stereotypes',
+        assetName: 'genderRolesAndStereotypes',
+        youtubeId: 'Ulh0DnFUGsk',
+        live: true,
+      },
+      '7db420a6-4a1a-4a5e-9245-998ccc8ef83d': {
+        id: '7db420a6-4a1a-4a5e-9245-998ccc8ef83d',
+        title: 'Period Symptoms and Self Care',
+        youtubeId: 'q-6MgBDqK9E',
+        live: true,
+      },
+      '8394eeb5-0665-4c6c-9f53-2894880cde5a': {
+        id: '8394eeb5-0665-4c6c-9f53-2894880cde5a',
+        title: 'Period Hygiene: Tampons, Pads and Menstrual Cups',
+        youtubeId: 'kmWbOC8Fbb0',
+        live: true,
+      },
+      '02e8f662-042b-4421-83f4-171a6982a123': {
+        id: '02e8f662-042b-4421-83f4-171a6982a123',
+        title: 'Puberty in Girls: Boobs and More',
+        youtubeId: 'umpBnIxOqy8',
+        live: true,
+      },
+      '785afe86-edc8-4a71-b7cc-51488052cd02': {
+        id: '785afe86-edc8-4a71-b7cc-51488052cd02',
+        title: 'Anatomy: Assigned Sex At Birth (Male)',
+        youtubeId: 'G2ciOhidKpg',
+        live: true,
+      },
+      'c0fe6104-5374-493c-822e-68470ee36c8c': {
+        id: 'c0fe6104-5374-493c-822e-68470ee36c8c',
+        title: 'Consent Explained: What Is It?',
+        youtubeId: '5vmsfhw-czA',
+        live: true,
+      },
+      'fa956d31-ca60-4ae3-8cdb-6b74c49c8936': {
+        id: 'fa956d31-ca60-4ae3-8cdb-6b74c49c8936',
+        title: 'Where Do Babies Come From?',
+        youtubeId: 'vudZePDq8Bw',
+        live: true,
+      },
+      'e05d7925-1e3c-4201-a7cb-0c95a6d5e267': {
+        id: 'e05d7925-1e3c-4201-a7cb-0c95a6d5e267',
+        title: 'Bodies: Different Shapes and Sizes. All Beautiful!',
+        youtubeId: 'Fcy_VQZG5Dg',
+        live: true,
+      },
+      'f61add59-6167-4493-8d96-259ecd1a7e66': {
+        id: 'f61add59-6167-4493-8d96-259ecd1a7e66',
+        title: 'Healthy vs Unhealthy Relationships',
+        youtubeId: 'Gn7ZQ2x0cOE',
+        live: true,
+      },
+      '9617954d-7135-44b1-9dd9-85b78629f4b6': {
+        id: '9617954d-7135-44b1-9dd9-85b78629f4b6',
+        title: 'Gender Identity: Being Female, Male, Transgender or Genderfluid',
+        youtubeId: 'W9YwOE8ndnc',
+        live: true,
+      },
+      'db943664-9026-4b58-b072-a63c1305b4d5': {
+        id: 'db943664-9026-4b58-b072-a63c1305b4d5',
+        title: 'What is Sexual Orientation? LGBTQ+',
+        youtubeId: 'wrUYs2FnrgA',
+        live: true,
+      },
+      '615abc01-b168-4343-b80b-9a4f865b41e5': {
+        id: '615abc01-b168-4343-b80b-9a4f865b41e5',
+        title: 'What Are Pronouns?',
+        youtubeId: 'MeOGFQ0e4_0',
+        live: true,
+      },
+      '6c5b3ce4-7bc7-4dd8-b3b7-e63e78ca1005': {
+        id: '6c5b3ce4-7bc7-4dd8-b3b7-e63e78ca1005',
+        title: 'Being Safe on the Internet',
+        youtubeId: 'HxySrSbSY7o',
+        live: true,
+      },
+      '0be5efd1-fb62-4544-9f9a-4c4471324ab8': {
+        id: '0be5efd1-fb62-4544-9f9a-4c4471324ab8',
+        title: 'What Is Sexual Harassment?',
+        youtubeId: 'HKk-pbeW3ic',
+        live: true,
+      },
+      '2c4cdfc0-b7d3-4e22-9dc6-29e119d44216': {
+        id: '2c4cdfc0-b7d3-4e22-9dc6-29e119d44216',
+        title: 'Depression and Anxiety',
+        youtubeId: 'wl9U8cDqv9c',
+        live: true,
+      },
+      '1abbd5f4-b4bf-4859-81e4-6d6f258c8368': {
+        id: '1abbd5f4-b4bf-4859-81e4-6d6f258c8368',
+        title: 'Puberty: Feeling Depressed, Happy and Other Emotions',
+        youtubeId: 'mAPLTaRM48Y',
+        live: true,
+      },
+    },
+    allIds: [
+      'b45d93d2-088c-4ab7-b34e-9e16761d8d5b',
+      '718b6c00-ce4a-46e5-8591-905dc6307745',
+      '7db420a6-4a1a-4a5e-9245-998ccc8ef83d',
+      '8394eeb5-0665-4c6c-9f53-2894880cde5a',
+      '02e8f662-042b-4421-83f4-171a6982a123',
+      '785afe86-edc8-4a71-b7cc-51488052cd02',
+      'c0fe6104-5374-493c-822e-68470ee36c8c',
+      'fa956d31-ca60-4ae3-8cdb-6b74c49c8936',
+      'e05d7925-1e3c-4201-a7cb-0c95a6d5e267',
+      'f61add59-6167-4493-8d96-259ecd1a7e66',
+      '9617954d-7135-44b1-9dd9-85b78629f4b6',
+      'db943664-9026-4b58-b072-a63c1305b4d5',
+      '615abc01-b168-4343-b80b-9a4f865b41e5',
+      '6c5b3ce4-7bc7-4dd8-b3b7-e63e78ca1005',
+      '0be5efd1-fb62-4544-9f9a-4c4471324ab8',
+      '2c4cdfc0-b7d3-4e22-9dc6-29e119d44216',
+      '1abbd5f4-b4bf-4859-81e4-6d6f258c8368',
+    ],
+  },
   categories: {
     byId: {
       '926f2cd1-74a5-4d2a-860c-96c3e9dca8f0': {
@@ -120,7 +247,7 @@ export const en: StaticContent = {
       },
       '1c94b11a-53aa-49b7-8835-26dd780c7eff': {
         id: '1c94b11a-53aa-49b7-8835-26dd780c7eff',
-        name: 'Using PeriodTracker',
+        name: 'Using Oky',
         tags: { primary: { name: 'mobile', emoji: '📱' } },
         subCategories: [
           '08362b78-16da-4274-ba93-f6c14a3181cb',
@@ -664,7 +791,7 @@ export const en: StaticContent = {
       },
       '1ea6bd55-13de-49e9-8a94-221a4dec5ec5': {
         id: '1ea6bd55-13de-49e9-8a94-221a4dec5ec5',
-        name: 'Your PeriodTracker account',
+        name: 'Your Oky account',
         articles: [
           '2befac34-229a-4865-9d98-ab4a161b1f3b',
           'a48e6a91-6e45-45e2-8b91-987ff9ffc679',
@@ -679,7 +806,7 @@ export const en: StaticContent = {
       },
       'e06a70fa-084a-4157-9ef6-f431205fdff2': {
         id: 'e06a70fa-084a-4157-9ef6-f431205fdff2',
-        name: 'Your questions about PeriodTracker',
+        name: 'Your questions about Oky',
         articles: [
           'cf88e272-406a-4d96-b1cb-84679d527853',
           'c412bf4a-8d2b-4560-8297-a02eaa5fd63d',
@@ -1307,9 +1434,9 @@ export const en: StaticContent = {
       },
       '249d87bd-5ddf-42c4-be14-fc47cace8e3c': {
         id: '249d87bd-5ddf-42c4-be14-fc47cace8e3c',
-        title: 'How does PeriodTracker estimate fertile days?',
+        title: 'How does Oky estimate fertile days?',
         content:
-          'If you have a very regular cycle (meaning you always get your period every 26–32 days), PeriodTracker can use your cycle length to predict and suggest when your fertile days are.\r\n\r\nYou should never use PeriodTracker to try and prevent pregnancy, because ovulation can change. If you have vaginal sex, always use protection (like condoms) to prevent pregnancy!',
+          'If you have a very regular cycle (meaning you always get your period every 26–32 days), Oky can use your cycle length to predict and suggest when your fertile days are.\r\n\r\nYou should never use Oky to try and prevent pregnancy, because ovulation can change. If you have vaginal sex, always use protection (like condoms) to prevent pregnancy!',
         category: 'Family planning',
         subCategory: 'Fertility',
         live: true,
@@ -1424,7 +1551,7 @@ export const en: StaticContent = {
         id: '2bf28cb2-8063-4b89-839d-471ff6f9deba',
         title: 'I said no, but my boyfriend forced me. What should I do?',
         content:
-          "If you said “no” and the other person forced you to have sex, it's rape. If they forced you to do another sexual act, it's sexual assault.\r\n\r\nRape and sexual assault are crimes, whether it was your partner or husband, or if you said \"yes'\" first but then said \"no\".\r\n\r\nIf you're still in danger or if you're injured, get emergency assistance immediately by calling your country's emergency assistance number.\r\n\r\nTell someone you trust, so you don't have to deal with this alone. \r\n\r\nIf you choose to visit a doctor or report the crime to the the police, do this as soon as possible. Don't wash before going, as things like semen, hair or skin can be used for evidence.\r\n\r\nCall one of the organizations listed in PeriodTracker's Help Center so that you can talk to a trained counsellor. They can discuss your options, help you get medical care, including medicine to prevent pregnancy and HIV, and help get counselling if you need it. \r\n\r\nRemember that what happened was not your fault, and you are not alone.",
+          "If you said “no” and the other person forced you to have sex, it's rape. If they forced you to do another sexual act, it's sexual assault.\r\n\r\nRape and sexual assault are crimes, whether it was your partner or husband, or if you said \"yes'\" first but then said \"no\".\r\n\r\nIf you're still in danger or if you're injured, get emergency assistance immediately by calling your country's emergency assistance number.\r\n\r\nTell someone you trust, so you don't have to deal with this alone. \r\n\r\nIf you choose to visit a doctor or report the crime to the the police, do this as soon as possible. Don't wash before going, as things like semen, hair or skin can be used for evidence.\r\n\r\nCall one of the organizations listed in Oky's Help Center so that you can talk to a trained counsellor. They can discuss your options, help you get medical care, including medicine to prevent pregnancy and HIV, and help get counselling if you need it. \r\n\r\nRemember that what happened was not your fault, and you are not alone.",
         category: 'Family planning',
         subCategory: 'Sex',
         live: true,
@@ -1451,7 +1578,7 @@ export const en: StaticContent = {
         id: 'd2b08cb6-9a00-4def-9e6c-72d276f809ac',
         title: "I had sex but I didn't want to. How do I stop feeling bad?",
         content:
-          "If someone forced you to have sex when you made it clear you didn't want to, you should not feel guilty. Be proud of yourself for speaking up and be angry at your partner for not listening, but please, don't feel guilty. Check PeriodTracker's Help Center for organizations who can support you.\r\n\r\nIf you agreed to have sex even though you didn't want to, it might be because you felt pressure to do it. Or you might be feeling guilty because it doesn't line up with your values, or your parents' values. \r\n\r\nYou can't change the past, but you can change the future. Let go of the guilt, and replace it with thoughts about what you can learn. Next time, feel confident to speak up about YOU want to do, and what you think is right. It's your body, and always your choice.",
+          "If someone forced you to have sex when you made it clear you didn't want to, you should not feel guilty. Be proud of yourself for speaking up and be angry at your partner for not listening, but please, don't feel guilty. Check Oky's Help Center for organizations who can support you.\r\n\r\nIf you agreed to have sex even though you didn't want to, it might be because you felt pressure to do it. Or you might be feeling guilty because it doesn't line up with your values, or your parents' values. \r\n\r\nYou can't change the past, but you can change the future. Let go of the guilt, and replace it with thoughts about what you can learn. Next time, feel confident to speak up about YOU want to do, and what you think is right. It's your body, and always your choice.",
         category: 'Family planning',
         subCategory: 'Sex',
         live: true,
@@ -1514,7 +1641,7 @@ export const en: StaticContent = {
         id: 'aaf34c33-c45d-49ad-8db0-fb25f6b273f2',
         title: 'How can I change my body?',
         content:
-          "The answer to that question depends on what you want to change about your body!\r\n\r\nSome things like the strength of your muscles, your weight, or the color of your hair are changeable. You could exercise more, eat a healthier diet, or dye your hair a different color. \r\n\r\nBut other things, like the basic shape of your body and your height, cannot be changed. When it comes to those things, we all have to try to accept ourselves the way we are. \r\n\r\nDid you know that there are three main body types?\r\n\r\n- The ectomorph body type is usually slim and tall. It's hard for them to gain weight and build muscles. \r\n-The endomorph body type usually has more muscle and body fat. People who are endomorphs build muscles and gain weight easily.  \r\n-The mesomorph body type is usually athletic, and strong - neither overweight or underweight. They gain and lose weight without a lot of effort.\r\n\r\nAlthough appearance ideals might tell us one body type is better than the other, that's not true! There is beauty to be found in all bodies - PeriodTracker hopes you can learn to see the beauty in yours.",
+          "The answer to that question depends on what you want to change about your body!\r\n\r\nSome things like the strength of your muscles, your weight, or the color of your hair are changeable. You could exercise more, eat a healthier diet, or dye your hair a different color. \r\n\r\nBut other things, like the basic shape of your body and your height, cannot be changed. When it comes to those things, we all have to try to accept ourselves the way we are. \r\n\r\nDid you know that there are three main body types?\r\n\r\n- The ectomorph body type is usually slim and tall. It's hard for them to gain weight and build muscles. \r\n-The endomorph body type usually has more muscle and body fat. People who are endomorphs build muscles and gain weight easily.  \r\n-The mesomorph body type is usually athletic, and strong - neither overweight or underweight. They gain and lose weight without a lot of effort.\r\n\r\nAlthough appearance ideals might tell us one body type is better than the other, that's not true! There is beauty to be found in all bodies - Oky hopes you can learn to see the beauty in yours.",
         category: 'Health, nutrition and exercise',
         subCategory: 'Bodies and weight',
         live: true,
@@ -1541,7 +1668,7 @@ export const en: StaticContent = {
         id: '101ef278-83ae-42a9-922b-9beb2299a90e',
         title: 'Is it bad that I want to change things about my body?',
         content:
-          "Don't worry, it's totally normal. It can help us feel good if it's done in a positive way, for example if we want to get strong and feel healthy, inside and out. \r\n                                        \r\nBut if you think that you're becoming obsessed with wanting to change yourself, this might have a negative impact on your mental or physical health.\r\n\r\nWarning signs to watch for are feeling constantly worried or depressed about the way you look, or spending more money than you can afford on your looks.\r\n\r\nIf you're experiencing this, go to PeriodTracker's Health Center and find organizations you can contact for support.",
+          "Don't worry, it's totally normal. It can help us feel good if it's done in a positive way, for example if we want to get strong and feel healthy, inside and out. \r\n                                        \r\nBut if you think that you're becoming obsessed with wanting to change yourself, this might have a negative impact on your mental or physical health.\r\n\r\nWarning signs to watch for are feeling constantly worried or depressed about the way you look, or spending more money than you can afford on your looks.\r\n\r\nIf you're experiencing this, go to Oky's Health Center and find organizations you can contact for support.",
         category: 'Health, nutrition and exercise',
         subCategory: 'Bodies and weight',
         live: true,
@@ -1550,7 +1677,7 @@ export const en: StaticContent = {
         id: '839da917-2dcb-48a4-93b6-119aac1ffa26',
         title: 'How can I make my skin whiter?',
         content:
-          "In some cultures, having whiter skin is what people think is beautiful. \r\n\r\nDid you know that in some countries, people tan their skin to be darker? What's 'beautiful' changes between cultures and over time, so it's impossible to live up to! \r\n\r\nSkin lightening creams can contain dangerous chemicals that increase the risk of skin cancer and can cause fatal liver and kidney damage. They're unhealthy, and PeriodTracker doesn't recommend you use them! \r\n\r\nIf you want to make your skin to be healthy and glowing, use natural methods like:\r\n\r\n- Avoid being in the sun for too long\r\n\r\n- Wear hats, sunglasses and long sleeves\r\n\r\n- Use sunscreen every day\r\n\r\n- Cleanse your skin regularly but avoiding aggressive scrubbing\r\n\r\n- Don't smoke or drink alcohol\r\n\r\n- Use natural face masks with papaya, lemon, orange or cucumber",
+          "In some cultures, having whiter skin is what people think is beautiful. \r\n\r\nDid you know that in some countries, people tan their skin to be darker? What's 'beautiful' changes between cultures and over time, so it's impossible to live up to! \r\n\r\nSkin lightening creams can contain dangerous chemicals that increase the risk of skin cancer and can cause fatal liver and kidney damage. They're unhealthy, and Oky doesn't recommend you use them! \r\n\r\nIf you want to make your skin to be healthy and glowing, use natural methods like:\r\n\r\n- Avoid being in the sun for too long\r\n\r\n- Wear hats, sunglasses and long sleeves\r\n\r\n- Use sunscreen every day\r\n\r\n- Cleanse your skin regularly but avoiding aggressive scrubbing\r\n\r\n- Don't smoke or drink alcohol\r\n\r\n- Use natural face masks with papaya, lemon, orange or cucumber",
         category: 'Health, nutrition and exercise',
         subCategory: 'Bodies and weight',
         live: true,
@@ -1846,7 +1973,7 @@ export const en: StaticContent = {
         id: 'c502e300-1e95-46df-bbd8-5326d388c029',
         title: 'My menstrual flow is light, is this normal?',
         content:
-          "Periods are different for everyone and having a light flow may be normal for you! \r\n\r\nIt is important to notice when something about your period changes, and you can use PeriodTracker to do this. If it's lighter than normal, it could be caused by stress, illness, weight gain or loss, your age, using contraception that has hormones in it or pregnancy. ",
+          "Periods are different for everyone and having a light flow may be normal for you! \r\n\r\nIt is important to notice when something about your period changes, and you can use Oky to do this. If it's lighter than normal, it could be caused by stress, illness, weight gain or loss, your age, using contraception that has hormones in it or pregnancy. ",
         category: 'Menstruation and menstrual cycle',
         subCategory: 'Blood, flow and discharge',
         live: true,
@@ -1919,7 +2046,7 @@ export const en: StaticContent = {
         id: '4a327b58-a492-4105-bc4e-d057d180a002',
         title: 'My cycle is irregular, is this a problem?',
         content:
-          "An irregular cycle is normal, especially during the first few years of getting your period. \r\n\r\nUse PeriodTracker to find out what's normal for you!",
+          "An irregular cycle is normal, especially during the first few years of getting your period. \r\n\r\nUse Oky to find out what's normal for you!",
         category: 'Menstruation and menstrual cycle',
         subCategory: 'Irregularity and missed periods',
         live: true,
@@ -1937,7 +2064,7 @@ export const en: StaticContent = {
         id: 'd4b08b3f-b84a-44a9-a54c-2dc2c3a2b611',
         title: 'Is ovulation on Day 14, in the middle of the cycle?',
         content:
-          "When ovulation occurs depends on your cycle, and every girl's cycle is different. \r\n\r\nEven though most girls ovulate 10–15 days before their next period, it can vary a lot. For some girls with periods close together, they may ovulate as little as 6 days before their next period.\r\n\r\nUse PeriodTracker to find out what a typical cycle length looks like for you!",
+          "When ovulation occurs depends on your cycle, and every girl's cycle is different. \r\n\r\nEven though most girls ovulate 10–15 days before their next period, it can vary a lot. For some girls with periods close together, they may ovulate as little as 6 days before their next period.\r\n\r\nUse Oky to find out what a typical cycle length looks like for you!",
         category: 'Menstruation and menstrual cycle',
         subCategory: 'Menstruation and periods',
         live: true,
@@ -1963,7 +2090,7 @@ export const en: StaticContent = {
         id: '369e0969-b729-483b-b070-a80647f9c8ea',
         title: 'What is a menstrual cycle?',
         content:
-          "The menstrual cycle starts with the first day of your period and ends with the start of the next. It's called a cycle because it repeats regularly. \r\n\r\nA menstrual cycle can last between 21-35 days, but can change and is different for everyone.\r\n\r\nWhen you first get your period, your cycle is often not regular, and it may take a few years before it's more regular. \r\n\r\nComparing your cycle to what's 'normal' can make you feel there's something wrong, but every girl's cycle is different! \r\n\r\nUsing PeriodTracker will help you understand what is normal for YOU. Then, if you notice something unusual, you can talk to a grown up you trust and a healthcare professional.",
+          "The menstrual cycle starts with the first day of your period and ends with the start of the next. It's called a cycle because it repeats regularly. \r\n\r\nA menstrual cycle can last between 21-35 days, but can change and is different for everyone.\r\n\r\nWhen you first get your period, your cycle is often not regular, and it may take a few years before it's more regular. \r\n\r\nComparing your cycle to what's 'normal' can make you feel there's something wrong, but every girl's cycle is different! \r\n\r\nUsing Oky will help you understand what is normal for YOU. Then, if you notice something unusual, you can talk to a grown up you trust and a healthcare professional.",
         category: 'Menstruation and menstrual cycle',
         subCategory: 'Menstruation and periods',
         live: true,
@@ -2051,7 +2178,7 @@ export const en: StaticContent = {
         id: '5fd5db0b-fce5-4c13-97df-bacccd9c6502',
         title: 'What is self-harm?',
         content:
-          "Self-harm or self-injury means hurting yourself on purpose.\r\n\r\nThe most common way people self-harm is by cutting themselves. Some people bang or hit their heads, burn or scratch themselves, punch themselves or other things, pull out their hair or pick at wounds to prevent them from healing.\r\n\r\nSelf-harm can also include less violent things, like taking a lot of drugs, drinking too much, or eating too much or too little.\r\n\r\nMost people who self-harm feel shame and guilt about hurting themselves, but find it hard to stop. \r\n\r\nPeople often try to keep it a secret, but it's quite common, especially for teenagers. That doesn't mean it's OK!\r\n\r\nHurting yourself or thinking about hurting yourself is a sign that something is wrong emotionally.\r\n\r\nIt's important to learn healthy ways to cope with emotional pain.\r\n\r\nThe first step is to talk to a parent, trusted adult, psychologist or counsellor. Check PeriodTracker's Health Center for organizations you can contact.\r\n\r\nIf you think a friend may be self-harming, you can:\r\n\r\n- Let your friend know that if they feel down or stressed, they can talk to you\r\n\r\n- Tell your friend you're worried about them, and why.If your friend seems angry or upset, it’s probably because they feel ashamed and are scared to stop. People learn to rely on self-harming to cope with life's struggles\r\n\r\n- Encourage your friend to seek help from their parent, a counsellor or doctor or another adult they trust\r\n\r\n- If you're worried for your friend’s safety and decide you need to tell an adult, let your friend know before you say anything\r\n\r\n- Continue being their friend by showing support, doing the things you enjoy doing together, and letting your friend know that you accept them for who they are",
+          "Self-harm or self-injury means hurting yourself on purpose.\r\n\r\nThe most common way people self-harm is by cutting themselves. Some people bang or hit their heads, burn or scratch themselves, punch themselves or other things, pull out their hair or pick at wounds to prevent them from healing.\r\n\r\nSelf-harm can also include less violent things, like taking a lot of drugs, drinking too much, or eating too much or too little.\r\n\r\nMost people who self-harm feel shame and guilt about hurting themselves, but find it hard to stop. \r\n\r\nPeople often try to keep it a secret, but it's quite common, especially for teenagers. That doesn't mean it's OK!\r\n\r\nHurting yourself or thinking about hurting yourself is a sign that something is wrong emotionally.\r\n\r\nIt's important to learn healthy ways to cope with emotional pain.\r\n\r\nThe first step is to talk to a parent, trusted adult, psychologist or counsellor. Check Oky's Health Center for organizations you can contact.\r\n\r\nIf you think a friend may be self-harming, you can:\r\n\r\n- Let your friend know that if they feel down or stressed, they can talk to you\r\n\r\n- Tell your friend you're worried about them, and why.If your friend seems angry or upset, it’s probably because they feel ashamed and are scared to stop. People learn to rely on self-harming to cope with life's struggles\r\n\r\n- Encourage your friend to seek help from their parent, a counsellor or doctor or another adult they trust\r\n\r\n- If you're worried for your friend’s safety and decide you need to tell an adult, let your friend know before you say anything\r\n\r\n- Continue being their friend by showing support, doing the things you enjoy doing together, and letting your friend know that you accept them for who they are",
         category: 'Mental health',
         subCategory: 'Mental health concerns',
         live: true,
@@ -2060,7 +2187,7 @@ export const en: StaticContent = {
         id: '66376b57-7f08-4ecd-a7b0-a4573797fbf0',
         title: 'How do I know if I am depressed? (or someone else)',
         content:
-          "Here are some of the things people notice when they're depressed:\r\n\r\n- Feeling helpless and hopeless: You feel like nothing will ever get better, nothing matters, and there is nothing you can do to improve your situation.\r\n\r\n- Self-loathing: You believe you're worthless and unlovable, or feel guilty for your behavior. You think about harming yourself or ending your own life\r\n\r\n- Feeling angry or irritable: You get easily annoyed or feel angry, bitter, or even violent. Everything and everyone gets on your nerves\r\n\r\n- Loss of interest and withdrawal from people: You withdraw from friends and family. Things that used to give you pleasure leave you feeling nothing\r\n \r\n- Appetite or weight changes: You lose your appetite and lose a lot of weight in a short time, or you use food to feel better and gain weight\r\n\r\n- Sleep changes: You can't sleep, wake up very early or sleep too much\r\n\r\n- Loss of energy and motivation: You feel exhausted, sluggish, and physically drained. You find it difficult to get out of bed at all. \r\n\r\n- Bad concentration: You can't concentrate or focus on things, like schoolwork or class, and find it hard to make decisions or remember things\r\n\r\nIf you or someone you know has been feeling like this for weeks or longer, it might be serious depression.\r\n\r\nIf you think you might be depressed, talk to a parent or other trusted adult about getting help or call a helpline. Check PeriodTracker's Help Center for organizations you can contact.\r\n\r\nDon’t wait and hope it will go away on its own. Get help as soon as possible.",
+          "Here are some of the things people notice when they're depressed:\r\n\r\n- Feeling helpless and hopeless: You feel like nothing will ever get better, nothing matters, and there is nothing you can do to improve your situation.\r\n\r\n- Self-loathing: You believe you're worthless and unlovable, or feel guilty for your behavior. You think about harming yourself or ending your own life\r\n\r\n- Feeling angry or irritable: You get easily annoyed or feel angry, bitter, or even violent. Everything and everyone gets on your nerves\r\n\r\n- Loss of interest and withdrawal from people: You withdraw from friends and family. Things that used to give you pleasure leave you feeling nothing\r\n \r\n- Appetite or weight changes: You lose your appetite and lose a lot of weight in a short time, or you use food to feel better and gain weight\r\n\r\n- Sleep changes: You can't sleep, wake up very early or sleep too much\r\n\r\n- Loss of energy and motivation: You feel exhausted, sluggish, and physically drained. You find it difficult to get out of bed at all. \r\n\r\n- Bad concentration: You can't concentrate or focus on things, like schoolwork or class, and find it hard to make decisions or remember things\r\n\r\nIf you or someone you know has been feeling like this for weeks or longer, it might be serious depression.\r\n\r\nIf you think you might be depressed, talk to a parent or other trusted adult about getting help or call a helpline. Check Oky's Help Center for organizations you can contact.\r\n\r\nDon’t wait and hope it will go away on its own. Get help as soon as possible.",
         category: 'Mental health',
         subCategory: 'Mental health concerns',
         live: true,
@@ -2069,7 +2196,7 @@ export const en: StaticContent = {
         id: '107d27f8-ec24-4834-9210-0be0338b56de',
         title: 'I feel like dying sometimes... is this normal?',
         content:
-          "Wanting to die or having thoughts about killing yourself is scary. But you're not alone — 1 in 5 people will have suicidal thoughts at some point in their life.\r\n\r\nSometimes life can be so overwhelming, it's sometimes impossible to believe that anything will get better.\r\n\r\nBut many people who have thought about suicide found that those feelings did go away with time, and they were glad they didn't do it.\r\n\r\nYou should talk to someone as soon as possible. This could be a family member, friend, counsellor, doctor or support service. Check PeriodTracker's Help Center for organizations to contact. \r\n\r\nSome other thing you can do:\r\n\r\n- Develop a safety plan. If you've had suicidal thoughts in the past, plan ahead for how to manage them if they come up again\r\n\r\n- Postpone any decision to end your life for 24 hours. Use this time to talk to someone you trust\r\n\r\n- Avoid being alone, especially at night. Stay with someone until the thoughts of hurting yourself don't feel so strong\r\n\r\n- Don't drink or take drugs. These are what's called 'depressants' and actually make you feel worse, even if you feel better for a short time\r\n\r\n- Write down how you feel. Writing in a journal or writing a story, song or poem can help you to understand your feelings better and find solutions\r\n\r\n- Challenge your thoughts. Remember that, just like other thoughts, suicidal thoughts will come and go and thinking something doesn't make it true.\r\n\r\n- Write down what is keeping you from acting on suicidal thoughts. Remind yourself that there are things that you still want to do. Even tiny things make life worth living.\r\n\r\n- Set small goals for yourself. Set goals that will make you feel in control and move forward. Write them down and check them off when you achieve them.\r\n\r\n- Talk to someone who can help. That advice is so important PeriodTracker is mentioning it twice!",
+          "Wanting to die or having thoughts about killing yourself is scary. But you're not alone — 1 in 5 people will have suicidal thoughts at some point in their life.\r\n\r\nSometimes life can be so overwhelming, it's sometimes impossible to believe that anything will get better.\r\n\r\nBut many people who have thought about suicide found that those feelings did go away with time, and they were glad they didn't do it.\r\n\r\nYou should talk to someone as soon as possible. This could be a family member, friend, counsellor, doctor or support service. Check Oky's Help Center for organizations to contact. \r\n\r\nSome other thing you can do:\r\n\r\n- Develop a safety plan. If you've had suicidal thoughts in the past, plan ahead for how to manage them if they come up again\r\n\r\n- Postpone any decision to end your life for 24 hours. Use this time to talk to someone you trust\r\n\r\n- Avoid being alone, especially at night. Stay with someone until the thoughts of hurting yourself don't feel so strong\r\n\r\n- Don't drink or take drugs. These are what's called 'depressants' and actually make you feel worse, even if you feel better for a short time\r\n\r\n- Write down how you feel. Writing in a journal or writing a story, song or poem can help you to understand your feelings better and find solutions\r\n\r\n- Challenge your thoughts. Remember that, just like other thoughts, suicidal thoughts will come and go and thinking something doesn't make it true.\r\n\r\n- Write down what is keeping you from acting on suicidal thoughts. Remind yourself that there are things that you still want to do. Even tiny things make life worth living.\r\n\r\n- Set small goals for yourself. Set goals that will make you feel in control and move forward. Write them down and check them off when you achieve them.\r\n\r\n- Talk to someone who can help. That advice is so important Oky is mentioning it twice!",
         category: 'Mental health',
         subCategory: 'Mental health concerns',
         live: true,
@@ -2087,7 +2214,7 @@ export const en: StaticContent = {
         id: '5d060df1-fb57-4ba8-81cb-f56f82be0b56',
         title: 'I feel sad or worried all the time... should I be worried?',
         content:
-          "It's normal to feel sad, down or worried at times. Most of the time, you can deal with these feelings and get past them. \r\n\r\nIf the sad feelings last for longer than 2 weeks non-stop, you might be dealing with depression.\r\n\r\nDepression is more than feeling sad now and again. It's a feeling of deep sadness, negativity, and hopelessness that lasts for weeks, months, or longer.\r\n\r\nIf you feel worried all the time with intense fear, dread, or panic, or have difficulty sleeping because of your worries, it's called anxiety. \r\n\r\nIf you think you might be depressed or anxious, tell a parent or adult who you trust and ask for help so you can feel better. Check PeriodTracker's Help Center for organizations you can contact for help.",
+          "It's normal to feel sad, down or worried at times. Most of the time, you can deal with these feelings and get past them. \r\n\r\nIf the sad feelings last for longer than 2 weeks non-stop, you might be dealing with depression.\r\n\r\nDepression is more than feeling sad now and again. It's a feeling of deep sadness, negativity, and hopelessness that lasts for weeks, months, or longer.\r\n\r\nIf you feel worried all the time with intense fear, dread, or panic, or have difficulty sleeping because of your worries, it's called anxiety. \r\n\r\nIf you think you might be depressed or anxious, tell a parent or adult who you trust and ask for help so you can feel better. Check Oky's Help Center for organizations you can contact for help.",
         category: 'Mental health',
         subCategory: 'Mental health concerns',
         live: true,
@@ -2096,7 +2223,7 @@ export const en: StaticContent = {
         id: 'a4bc7218-9b6b-4333-b00f-1e021c69802e',
         title: 'I am already married. What can I do?',
         content:
-          "You are not alone. Around the world, there are around 750 million women and girls alive today who were also married under 18. \r\n\r\nIf you are already married, you are entitled to the same rights as other girls your age. Speak to a trusted adult or a local organization that can support you to return to school if your education was disrupted due to your marriage or pregnancy. \r\n\r\nYou are entitled to access sexual and reproductive health care services, and to access to birth control. Speak to a trusted adult, local organization or health provider. Remember, if you are under 18, it can be risky to get pregnant for both you and your baby.\r\n\r\nGirls who are married under 18 are more likely to experience violence from their husbands. If this is happening to you, it's not your fault and you don't deserve to experience violence. Tell someone you trust, and look for support and help immediately from a group. \r\n\r\nCheck PeriodTracker's Help Center for contact details of organizations who can help. ",
+          "You are not alone. Around the world, there are around 750 million women and girls alive today who were also married under 18. \r\n\r\nIf you are already married, you are entitled to the same rights as other girls your age. Speak to a trusted adult or a local organization that can support you to return to school if your education was disrupted due to your marriage or pregnancy. \r\n\r\nYou are entitled to access sexual and reproductive health care services, and to access to birth control. Speak to a trusted adult, local organization or health provider. Remember, if you are under 18, it can be risky to get pregnant for both you and your baby.\r\n\r\nGirls who are married under 18 are more likely to experience violence from their husbands. If this is happening to you, it's not your fault and you don't deserve to experience violence. Tell someone you trust, and look for support and help immediately from a group. \r\n\r\nCheck Oky's Help Center for contact details of organizations who can help. ",
         category: 'My rights',
         subCategory: 'Child marriage',
         live: true,
@@ -2105,7 +2232,7 @@ export const en: StaticContent = {
         id: '57c42e21-512b-45f0-ad6a-79070e4f3e7c',
         title: 'I am young & being pressured to get married. What can I do?',
         content:
-          "PeriodTracker is sorry to hear you're experiencing this. Know that you are not alone, many girls are pressured to marry under the age of 18.\r\n\r\nHere's what you can do:\r\n\r\n- Remember it's your right to decide whether, who and when to marry\r\n\r\n- Say clearly and firmly that you don't want to get married until you're an adult\r\n\r\n- Don't sign any documents that you don't agree with or can't read and understand\r\n\r\n- Look for support and help immediately from a group. Check PeriodTracker's Help Center for a list of organizations to contact\r\n\r\n- Ask a trusted adult to help you or go to a safe place where you can stay away from those putting pressure on you to get married",
+          "Oky is sorry to hear you're experiencing this. Know that you are not alone, many girls are pressured to marry under the age of 18.\r\n\r\nHere's what you can do:\r\n\r\n- Remember it's your right to decide whether, who and when to marry\r\n\r\n- Say clearly and firmly that you don't want to get married until you're an adult\r\n\r\n- Don't sign any documents that you don't agree with or can't read and understand\r\n\r\n- Look for support and help immediately from a group. Check Oky's Help Center for a list of organizations to contact\r\n\r\n- Ask a trusted adult to help you or go to a safe place where you can stay away from those putting pressure on you to get married",
         category: 'My rights',
         subCategory: 'Child marriage',
         live: true,
@@ -2222,7 +2349,7 @@ export const en: StaticContent = {
         id: '3ca96143-d594-4690-acce-a8279800ce0e',
         title: 'Am I just moody or am I depressed?',
         content:
-          "Here are some signs of depression, which is a more serious mental health issue:\r\n\r\n- Feeling that you are a bad person most of the time\r\n\r\n- Feeling like the future is bleak and nothing good will ever happen\r\n\r\n- Sleeping 12 or more hours a day\r\n\r\n- Having a big change in your appetite or weight\r\n\r\n- Getting angry about small things for no reason\r\n\r\n- Spending a lot of time alone instead of with friends and family\r\n\r\n- Using alcohol or drugs to stop feeling bad \r\n\r\n- Doing things that are risky because you don't care about yourself\r\n\r\n- Having thoughts about hurting or killing yourself\r\n\r\nIf these feelings and behaviours happen for longer than 2 weeks, you might be depressed. \r\n\r\nFind an adult you trust, counsellor or psychologist to talk to or call a helpline. PeriodTracker has some numbers you can call, just tap 'Find Help' on the Encyclopedia page.",
+          "Here are some signs of depression, which is a more serious mental health issue:\r\n\r\n- Feeling that you are a bad person most of the time\r\n\r\n- Feeling like the future is bleak and nothing good will ever happen\r\n\r\n- Sleeping 12 or more hours a day\r\n\r\n- Having a big change in your appetite or weight\r\n\r\n- Getting angry about small things for no reason\r\n\r\n- Spending a lot of time alone instead of with friends and family\r\n\r\n- Using alcohol or drugs to stop feeling bad \r\n\r\n- Doing things that are risky because you don't care about yourself\r\n\r\n- Having thoughts about hurting or killing yourself\r\n\r\nIf these feelings and behaviours happen for longer than 2 weeks, you might be depressed. \r\n\r\nFind an adult you trust, counsellor or psychologist to talk to or call a helpline. Oky has some numbers you can call, just tap 'Find Help' on the Encyclopedia page.",
         category: 'Myths and feelings',
         subCategory: 'Feelings',
         live: true,
@@ -2548,7 +2675,7 @@ export const en: StaticContent = {
         id: '70db4f70-faa5-44b5-9a94-19fac1848e52',
         title: "I'm a boy but I feel like I'm really a girl. What can I do?",
         content:
-          "If you have a boy's body, but feel like you're really a girl, you might be transgender.\r\n\r\nThe most important thing you can do is to find someone you trust to talk with about how you feel. \r\n\r\nIf you don’t know anyone, or feel too scared, you can contact an organization that works for transgender people. They can connect you with others who feel the same way and have had similar experiences. Check PeriodTracker's help centre for a list of organisations to contact.\r\n\r\nYou can also spend time looking online, finding Facebook groups, Youtube channels and more where people from around the world share their experiences and advice.\r\n\r\nRemember - it's okay to be transgender! You might feel different, but try to accept it's natural part of who you are, and you can't change it.\r\n\r\nIf someone tells you they can help you to change your gender identity, don't believe them because they may cause you a lot of pain.\r\n\r\nSometimes people who feel different get very depressed -  if you ever feel this way, reach out for help. Check PeriodTracker's help centre for a list of organisations to contact. Many transgender people find that things get easier with time. Good luck!",
+          "If you have a boy's body, but feel like you're really a girl, you might be transgender.\r\n\r\nThe most important thing you can do is to find someone you trust to talk with about how you feel. \r\n\r\nIf you don’t know anyone, or feel too scared, you can contact an organization that works for transgender people. They can connect you with others who feel the same way and have had similar experiences. Check Oky's help centre for a list of organisations to contact.\r\n\r\nYou can also spend time looking online, finding Facebook groups, Youtube channels and more where people from around the world share their experiences and advice.\r\n\r\nRemember - it's okay to be transgender! You might feel different, but try to accept it's natural part of who you are, and you can't change it.\r\n\r\nIf someone tells you they can help you to change your gender identity, don't believe them because they may cause you a lot of pain.\r\n\r\nSometimes people who feel different get very depressed -  if you ever feel this way, reach out for help. Check Oky's help centre for a list of organisations to contact. Many transgender people find that things get easier with time. Good luck!",
         category: 'Personal identity',
         subCategory: 'Gender identity',
         live: true,
@@ -2566,7 +2693,7 @@ export const en: StaticContent = {
         id: '640825e6-8cef-4431-88c6-51b4b84cf2f6',
         title: "I'm a girl but feel like I'm really a boy. What can I do?",
         content:
-          "If you have a girl's body, but feel like you're really a boy, you might be transgender, and that's perfectly OK.\r\n\r\nIt's important to find someone you trust to talk with about how you feel. \r\n\r\nIf you don't know anyone, or feel too scared, contact an organization that works with transgender people. Check PeriodTracker's Help Center for a list of organizations to contact for advice, or to talk to if you feel anxious or depressed.\r\n\r\nYou can also look on Facebook and YouTube for people who have shared their experiences and advice.\r\n\r\nIf someone tells you they can help you to change your gender identity, don't believe them because they may cause you a lot of pain.",
+          "If you have a girl's body, but feel like you're really a boy, you might be transgender, and that's perfectly OK.\r\n\r\nIt's important to find someone you trust to talk with about how you feel. \r\n\r\nIf you don't know anyone, or feel too scared, contact an organization that works with transgender people. Check Oky's Help Center for a list of organizations to contact for advice, or to talk to if you feel anxious or depressed.\r\n\r\nYou can also look on Facebook and YouTube for people who have shared their experiences and advice.\r\n\r\nIf someone tells you they can help you to change your gender identity, don't believe them because they may cause you a lot of pain.",
         category: 'Personal identity',
         subCategory: 'Gender identity',
         live: true,
@@ -2611,7 +2738,7 @@ export const en: StaticContent = {
         id: '9afb6c36-4fba-4929-82f8-84bf04209226',
         title: 'Am I gay?',
         content:
-          "Only you can know if you're gay or not, but it's something you'll be sure of and discover as you grow up. \r\n\r\nMany teenagers go through phases of being attracted to the same sex. For others, the feelings never go away, and they start realizing they might be gay or bisexual, or they realized it very young.\r\n\r\nBecause there is still a lot of discrimination against being gay, you might feel scared, or like you should push any gay feelings away. This is totally understandable, but remember that whatever you decide you are, you're normal.\r\n\r\nIf you're worried or upset, find someone you trust to talk to. You can also contact an organization that's working for lesbian, gay and bisexual rights — you can find some in the PeriodTracker Help Center.\r\n\r\nIf you feel depressed, and are thinking about hurting yourself, get help straight away. Check the PeriodTracker Help Center for organizations who can help.\r\n\r\nMany gay, lesbian and bisexual people find that their lives get better with time. The world is changing and more countries and people are recognizing the rights of people with all sexual orientations. \r\n\r\nWhatever your sexuality, you deserve to be fully accepted and to be with someone you love!",
+          "Only you can know if you're gay or not, but it's something you'll be sure of and discover as you grow up. \r\n\r\nMany teenagers go through phases of being attracted to the same sex. For others, the feelings never go away, and they start realizing they might be gay or bisexual, or they realized it very young.\r\n\r\nBecause there is still a lot of discrimination against being gay, you might feel scared, or like you should push any gay feelings away. This is totally understandable, but remember that whatever you decide you are, you're normal.\r\n\r\nIf you're worried or upset, find someone you trust to talk to. You can also contact an organization that's working for lesbian, gay and bisexual rights — you can find some in the Oky Help Center.\r\n\r\nIf you feel depressed, and are thinking about hurting yourself, get help straight away. Check the Oky Help Center for organizations who can help.\r\n\r\nMany gay, lesbian and bisexual people find that their lives get better with time. The world is changing and more countries and people are recognizing the rights of people with all sexual orientations. \r\n\r\nWhatever your sexuality, you deserve to be fully accepted and to be with someone you love!",
         category: 'Personal identity',
         subCategory: 'Sexual orientation',
         live: true,
@@ -2798,26 +2925,26 @@ export const en: StaticContent = {
         id: 'f38f096e-b609-4f63-92e6-4c3397439976',
         title: 'What happens if I log out of the app?',
         content:
-          "If you have saved your account, when you log out and back in to your account, all of your information will still be there.\r\n \r\nIf you have not saved your account and you log out, you will not be able to log back in to your PeriodTracker account, as PeriodTracker will have no record of your details. Before you log out, PeriodTracker will always remind you to save your account. \r\n \r\nTo make sure that you always have access to your account, go to your profile in the bottom left of the app and click 'Save account'. Make sure you have an internet connection when you do this.",
-        category: 'Using PeriodTracker',
+          "If you have saved your account, when you log out and back in to your account, all of your information will still be there.\r\n \r\nIf you have not saved your account and you log out, you will not be able to log back in to your Oky account, as Oky will have no record of your details. Before you log out, Oky will always remind you to save your account. \r\n \r\nTo make sure that you always have access to your account, go to your profile in the bottom left of the app and click 'Save account'. Make sure you have an internet connection when you do this.",
+        category: 'Using Oky',
         subCategory: 'Keeping your information safe',
         live: true,
       },
       'c2cb67a8-3d80-4097-a3de-97f03419d62f': {
         id: 'c2cb67a8-3d80-4097-a3de-97f03419d62f',
-        title: 'How does PeriodTracker keep my day card and period dates private?',
+        title: 'How does Oky keep my day card and period dates private?',
         content:
-          "PeriodTracker takes your privacy very seriously. PeriodTracker keeps your information private by protecting your account with both a passcode and a secret answer. Keeping your passcode and answer secret keeps your personal information private. \r\n \r\nAnything you put on the day cards about your period flow, mood, or anything else, is only stored on your phone, not on the internet. This means only you can see this information and it is completely private.\r\n \r\nAny information about your period (like the number of period days or when it began and ended) is stored in the PeriodTracker database so that PeriodTracker can make smart and accurate predictions about when your next period will start. This information is extremely secure, and is anonymous. No one can ever identify you from any period information. PeriodTracker has taken very special steps to make sure all of your information stays secure, private and anonymous. \r\n \r\nYou can find out more in the PeriodTracker Privacy Policy in 'Settings'.",
-        category: 'Using PeriodTracker',
+          "Oky takes your privacy very seriously. Oky keeps your information private by protecting your account with both a passcode and a secret answer. Keeping your passcode and answer secret keeps your personal information private. \r\n \r\nAnything you put on the day cards about your period flow, mood, or anything else, is only stored on your phone, not on the internet. This means only you can see this information and it is completely private.\r\n \r\nAny information about your period (like the number of period days or when it began and ended) is stored in the Oky database so that Oky can make smart and accurate predictions about when your next period will start. This information is extremely secure, and is anonymous. No one can ever identify you from any period information. Oky has taken very special steps to make sure all of your information stays secure, private and anonymous. \r\n \r\nYou can find out more in the Oky Privacy Policy in 'Settings'.",
+        category: 'Using Oky',
         subCategory: 'Keeping your information safe',
         live: true,
       },
       '48eace0a-1b2e-46cf-b458-24fffb8f0fa7': {
         id: '48eace0a-1b2e-46cf-b458-24fffb8f0fa7',
-        title: 'What happens if I use PeriodTracker on a different phone?',
+        title: 'What happens if I use Oky on a different phone?',
         content:
-          "If you have saved your account, when you log in on a different phone, all of your information from your previous periods will be there. However, the information you input from your day cards will not be there, as they are stored locally on your device.\r\n \r\nIf you have not saved your account, you will not be able to log in to your PeriodTracker account on your new phone (as PeriodTracker will have no record of your account and cannot transfer it over).\r\n \r\nTo make sure that you always have access to your account, go to your profile in the bottom left of the app and click 'Save account'. Make sure you have an internet connection when you do this.",
-        category: 'Using PeriodTracker',
+          "If you have saved your account, when you log in on a different phone, all of your information from your previous periods will be there. However, the information you input from your day cards will not be there, as they are stored locally on your device.\r\n \r\nIf you have not saved your account, you will not be able to log in to your Oky account on your new phone (as Oky will have no record of your account and cannot transfer it over).\r\n \r\nTo make sure that you always have access to your account, go to your profile in the bottom left of the app and click 'Save account'. Make sure you have an internet connection when you do this.",
+        category: 'Using Oky',
         subCategory: 'Keeping your information safe',
         live: true,
       },
@@ -2825,45 +2952,45 @@ export const en: StaticContent = {
         id: '23f2dae2-18ed-408f-94f5-d6d1b7e8e5e5',
         title: 'Do I lose my information if I update the app?',
         content:
-          "No! As long as you have saved your account, PeriodTracker will always have a record of you, and you can easily log in to the updated app and find your information.\r\n \r\nIf you have not saved your account, you will not be able to log in to your account and access your information if you update, as PeriodTracker will have no record of your account and cannot transfer it over.\r\n \r\nTo make sure that you always have access to your account, go to your profile in the bottom left of the app and click 'Save account'. Make sure you have an internet connection when you do this.",
-        category: 'Using PeriodTracker',
+          "No! As long as you have saved your account, Oky will always have a record of you, and you can easily log in to the updated app and find your information.\r\n \r\nIf you have not saved your account, you will not be able to log in to your account and access your information if you update, as Oky will have no record of your account and cannot transfer it over.\r\n \r\nTo make sure that you always have access to your account, go to your profile in the bottom left of the app and click 'Save account'. Make sure you have an internet connection when you do this.",
+        category: 'Using Oky',
         subCategory: 'Keeping your information safe',
         live: true,
       },
       '2befac34-229a-4865-9d98-ab4a161b1f3b': {
         id: '2befac34-229a-4865-9d98-ab4a161b1f3b',
-        title: 'How does PeriodTracker keep my account secure?',
+        title: 'How does Oky keep my account secure?',
         content:
-          "Your PeriodTracker account is protected by a passcode so that no one but you can log in. \r\n \r\nWhen you log in for the first time, PeriodTracker will ask you to choose a passcode, which you need to remember. You can change this passcode at any time by going to your profile in the bottom left of the app.\r\n \r\nPeriodTracker asks you to choose a secret question and answer when you sign up, which you can use in case you forget your passcode. The secret questions are things that only you know about yourself, but cannot be guessed by other people. Make sure you do not share this with anyone. \r\n \r\nIf you forget your passcode, PeriodTracker will ask you for your secret answer to make sure it is really you. PeriodTracker will never display your secret question on screen. \r\n \r\nOnly you can reset your passcode and secret question and answer, so make sure you don't forget it. We take your privacy seriously, which is why we cannot reset it for you. Make sure you note down your passcode, secret question and secret answer somewhere private.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your PeriodTracker account',
+          "Your Oky account is protected by a passcode so that no one but you can log in. \r\n \r\nWhen you log in for the first time, Oky will ask you to choose a passcode, which you need to remember. You can change this passcode at any time by going to your profile in the bottom left of the app.\r\n \r\nOky asks you to choose a secret question and answer when you sign up, which you can use in case you forget your passcode. The secret questions are things that only you know about yourself, but cannot be guessed by other people. Make sure you do not share this with anyone. \r\n \r\nIf you forget your passcode, Oky will ask you for your secret answer to make sure it is really you. Oky will never display your secret question on screen. \r\n \r\nOnly you can reset your passcode and secret question and answer, so make sure you don't forget it. We take your privacy seriously, which is why we cannot reset it for you. Make sure you note down your passcode, secret question and secret answer somewhere private.",
+        category: 'Using Oky',
+        subCategory: 'Your Oky account',
         live: true,
       },
       'a48e6a91-6e45-45e2-8b91-987ff9ffc679': {
         id: 'a48e6a91-6e45-45e2-8b91-987ff9ffc679',
         title: 'How do I change my secret question?',
         content:
-          "To change your secret question, click on your profile in the bottom left of the app. Click on the profile information at the top (with your name, date of birth, gender, location). Click on the button that says 'Change secret question'. PeriodTracker will ask you to put in your old secret answer, then your new secret question and the answer. Click 'Confirm'.\r\n \r\nDon't forget to make a note of your secret question and answer somewhere private. PeriodTracker cannot reset it for it if you are locked out of your account.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your PeriodTracker account',
+          "To change your secret question, click on your profile in the bottom left of the app. Click on the profile information at the top (with your name, date of birth, gender, location). Click on the button that says 'Change secret question'. Oky will ask you to put in your old secret answer, then your new secret question and the answer. Click 'Confirm'.\r\n \r\nDon't forget to make a note of your secret question and answer somewhere private. Oky cannot reset it for it if you are locked out of your account.",
+        category: 'Using Oky',
+        subCategory: 'Your Oky account',
         live: true,
       },
       'ad8bc678-5d63-4d94-a4ed-0f4119b81653': {
         id: 'ad8bc678-5d63-4d94-a4ed-0f4119b81653',
         title: 'What do I do if I forget my password?',
         content:
-          "If you forget your passcode, click 'Forgot password' on the PeriodTracker welcome screen. PeriodTracker will ask for your name. Put in your name and click 'Confirm'. Then, when PeriodTracker asks for the answer to your secret question, put that in and click 'Confirm'. \r\n \r\nPeriodTracker will then ask you to create a new passcode, and repeat it to confirm. Once you have done that, click 'Confirm'. Make sure to make a note of your new passcode.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your PeriodTracker account',
+          "If you forget your passcode, click 'Forgot password' on the Oky welcome screen. Oky will ask for your name. Put in your name and click 'Confirm'. Then, when Oky asks for the answer to your secret question, put that in and click 'Confirm'. \r\n \r\nOky will then ask you to create a new passcode, and repeat it to confirm. Once you have done that, click 'Confirm'. Make sure to make a note of your new passcode.",
+        category: 'Using Oky',
+        subCategory: 'Your Oky account',
         live: true,
       },
       'c9c3add0-115f-4e71-901b-9f6eb38b9a00': {
         id: 'c9c3add0-115f-4e71-901b-9f6eb38b9a00',
         title: 'How do I change my password?',
         content:
-          "To change your password, go to your profile in the bottom left of the app. Click on the profile information at the top (with your name, date of birth, gender, location). Click on your current passcode, change it to your new one, and click 'Confirm'. PeriodTracker will then ask you to put in your secret answer, to make sure it is really you. Put in your secret answer and click 'Confirm'. \r\n \r\nDon't forget to make a note of your secret answer somewhere private in case you forget your passcode. PeriodTracker cannot reset it for it if you are locked out of your account.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your PeriodTracker account',
+          "To change your password, go to your profile in the bottom left of the app. Click on the profile information at the top (with your name, date of birth, gender, location). Click on your current passcode, change it to your new one, and click 'Confirm'. Oky will then ask you to put in your secret answer, to make sure it is really you. Put in your secret answer and click 'Confirm'. \r\n \r\nDon't forget to make a note of your secret answer somewhere private in case you forget your passcode. Oky cannot reset it for it if you are locked out of your account.",
+        category: 'Using Oky',
+        subCategory: 'Your Oky account',
         live: true,
       },
       'e59cb084-bcf4-414c-8693-bb5255efeab1': {
@@ -2871,8 +2998,8 @@ export const en: StaticContent = {
         title: 'Why do I need to log in every time I open the app?',
         content:
           "This is to protect your account so no one can access it (if someone is using your phone or if you're using theirs).\r\n \r\nIf you don't want to log back in every time, you can change this. Go to 'Settings', and then to 'Passcode Request', and change it to 'Off'.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your PeriodTracker account',
+        category: 'Using Oky',
+        subCategory: 'Your Oky account',
         live: true,
       },
       '7af08105-0498-4ed7-ae0e-c8625cc88ef7': {
@@ -2880,71 +3007,70 @@ export const en: StaticContent = {
         title: 'How do I change my username?',
         content:
           "To change your username, click on your profile in the bottom left of the app. Click on the profile information at the top (with your name, date of birth, gender, location). Click on your current name, change it to your new one, and click 'Confirm'. ",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your PeriodTracker account',
+        category: 'Using Oky',
+        subCategory: 'Your Oky account',
         live: true,
       },
       'c84e2b55-7ec9-4c2c-876e-5da1b8a9f518': {
         id: 'c84e2b55-7ec9-4c2c-876e-5da1b8a9f518',
         title: 'What do I do if I forget my secret answer?',
         content:
-          'PeriodTracker takes your privacy very seriously so we do not have access to your passcode or secret answer. \r\n \r\nThis means we cannot reset it for you if you forget it. If you cannot remember your secret answer or your passcode, and are locked out of your account, you may need to create a new account. \r\n \r\nMake a note of your secret answer somewhere private to avoid being locked out of your account!',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your PeriodTracker account',
+          'Oky takes your privacy very seriously so we do not have access to your passcode or secret answer. \r\n \r\nThis means we cannot reset it for you if you forget it. If you cannot remember your secret answer or your passcode, and are locked out of your account, you may need to create a new account. \r\n \r\nMake a note of your secret answer somewhere private to avoid being locked out of your account!',
+        category: 'Using Oky',
+        subCategory: 'Your Oky account',
         live: true,
       },
       'f0c74fa4-89c8-4a5c-9fbd-b5717a2d773d': {
         id: 'f0c74fa4-89c8-4a5c-9fbd-b5717a2d773d',
         title: 'What do I do if I forget my username?',
         content:
-          'PeriodTracker takes your privacy very seriously, and we do not have access to individual usernames, passcodes or secret answers. This means we cannot retrieve or reset your username. If you forget your username and you are locked out of your account, you may need to create a new account.\r\n \r\nMake sure to make a note of your username somewhere private!',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your PeriodTracker account',
+          'Oky takes your privacy very seriously, and we do not have access to individual usernames, passcodes or secret answers. This means we cannot retrieve or reset your username. If you forget your username and you are locked out of your account, you may need to create a new account.\r\n \r\nMake sure to make a note of your username somewhere private!',
+        category: 'Using Oky',
+        subCategory: 'Your Oky account',
         live: true,
       },
       'cf88e272-406a-4d96-b1cb-84679d527853': {
         id: 'cf88e272-406a-4d96-b1cb-84679d527853',
         title: "Why can't I put in period information for the future?",
         content:
-          'PeriodTracker was not designed to record information in the future. This is to make sure that your period predictions are as accurate as possible. \r\n \r\nHowever, you can make changes for past periods starting from the first period date you gave PeriodTracker.',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          'Oky was not designed to record information in the future. This is to make sure that your period predictions are as accurate as possible. \r\n \r\nHowever, you can make changes for past periods starting from the first period date you gave Oky.',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'c412bf4a-8d2b-4560-8297-a02eaa5fd63d': {
         id: 'c412bf4a-8d2b-4560-8297-a02eaa5fd63d',
-        title: 'Can I use PeriodTracker with more than one user?',
+        title: 'Can I use Oky with more than one user?',
         content:
-          "Yes!\r\n \r\nPeriodTracker has been designed for users like you who may share a phone, or have an app on 1 device with many people logging in. Each girl can create her own individual account but PeriodTracker allows multiple accounts on 1 app and phone. \r\n \r\nNo one else can accidentally log in to your account when they use the PeriodTracker app on the same phone. The app requires you to log in and enter your passcode every time you close the app, and PeriodTracker won't remember login details each time, unless you specifically turn this feature on in 'Settings'.\r\n \r\nIf you want to create another account for your friend using the same phone, log out of your account, and then your friend can create a new account from the welcome screen. Don't forget to note down your passcode and secret answer so you can log back in to your own account.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "Yes!\r\n \r\nOky has been designed for users like you who may share a phone, or have an app on 1 device with many people logging in. Each girl can create her own individual account but Oky allows multiple accounts on 1 app and phone. \r\n \r\nNo one else can accidentally log in to your account when they use the Oky app on the same phone. The app requires you to log in and enter your passcode every time you close the app, and Oky won't remember login details each time, unless you specifically turn this feature on in 'Settings'.\r\n \r\nIf you want to create another account for your friend using the same phone, log out of your account, and then your friend can create a new account from the welcome screen. Don't forget to note down your passcode and secret answer so you can log back in to your own account.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '5ded5c2e-e33f-4420-a008-5c08cae3e02f': {
         id: '5ded5c2e-e33f-4420-a008-5c08cae3e02f',
-        title: "I asked PeriodTracker a question but didn't get a reply - why not?",
+        title: "I asked Oky a question but didn't get a reply - why not?",
         content:
-          "When you send PeriodTracker a message through the 'Contact us' button in 'Settings', we read your message but cannot reply as we do not have your contact information.\r\n \r\nWe love reading your comments and feedback. Please keep talking to us!",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "When you send Oky a message through the 'Contact us' button in 'Settings', we read your message but cannot reply as we do not have your contact information.\r\n \r\nWe love reading your comments and feedback. Please keep talking to us!",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'cd725607-cf6b-4600-a9b4-6e0de105bc6c': {
         id: 'cd725607-cf6b-4600-a9b4-6e0de105bc6c',
-        title: 'Is PeriodTracker also for older girls and women? ',
-        content:
-          'Yes, anyone can use PeriodTracker, and they can use it for as long as they want to!',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+        title: 'Is Oky also for older girls and women? ',
+        content: 'Yes, anyone can use Oky, and they can use it for as long as they want to!',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '0cd4e9e4-519b-4f05-955c-2d18b9758a8e': {
         id: '0cd4e9e4-519b-4f05-955c-2d18b9758a8e',
-        title: 'How does PeriodTracker predict when I will get my next period?',
+        title: 'How does Oky predict when I will get my next period?',
         content:
-          'PeriodTracker is smart and will learn to track your period based on the information you give it. The more often you enter when your period started and ended, the better PeriodTracker can predict your next period!',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          'Oky is smart and will learn to track your period based on the information you give it. The more often you enter when your period started and ended, the better Oky can predict your next period!',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'aaab5e11-b28a-42d2-abd5-fed3af1b364c': {
@@ -2952,35 +3078,35 @@ export const en: StaticContent = {
         title: 'Why do I get stars for day cards on some days, but not all?',
         content:
           'The star bar only appears when you are on your period, and you get stars for filling in the day cards on period days only.',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'bdff486e-728d-4617-8814-51f6f0b05b16': {
         id: 'bdff486e-728d-4617-8814-51f6f0b05b16',
-        title: 'I share a phone with my sister - can I still use PeriodTracker?',
+        title: 'I share a phone with my sister - can I still use Oky?',
         content:
-          "Yes!\r\n \r\nPeriodTracker has been designed for users like you who may share a phone: each girl can create her own individual account but PeriodTracker allows multiple accounts on 1 app and phone. \r\n \r\nDon't worry, your sister can't accidentally log in to your account when she uses PeriodTracker. The app requires you to log in every time you close the app, and PeriodTracker won't remember login details each time, unless you specifically turn this feature on in 'Settings'.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "Yes!\r\n \r\nOky has been designed for users like you who may share a phone: each girl can create her own individual account but Oky allows multiple accounts on 1 app and phone. \r\n \r\nDon't worry, your sister can't accidentally log in to your account when she uses Oky. The app requires you to log in every time you close the app, and Oky won't remember login details each time, unless you specifically turn this feature on in 'Settings'.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '9e20e079-e167-4014-bf94-ec8ac54e2a87': {
         id: '9e20e079-e167-4014-bf94-ec8ac54e2a87',
         title: 'Why is the app sometimes a little slow?',
         content:
-          "PeriodTracker has been designed for girls to use across the world who have many different phone types. We've created PeriodTracker so that it works on slower, older phones as well as on faster or new phones.\r\n \r\nSo that older phones don't crash, there is sometimes a short delay or the app is a little slow.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "Oky has been designed for girls to use across the world who have many different phone types. We've created Oky so that it works on slower, older phones as well as on faster or new phones.\r\n \r\nSo that older phones don't crash, there is sometimes a short delay or the app is a little slow.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '89ec05e8-dc51-44a6-bc82-8d7e49232e83': {
         id: '89ec05e8-dc51-44a6-bc82-8d7e49232e83',
         title: "Why can't I put in a period length of more than 11 days?",
         content:
-          'PeriodTracker was not designed to add a period length of more than 11 days. This is to make sure that your period predictions are as accurate as possible.',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          'Oky was not designed to add a period length of more than 11 days. This is to make sure that your period predictions are as accurate as possible.',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'c971b88f-51de-4854-af6e-f6520a99ba8f': {
@@ -2988,26 +3114,26 @@ export const en: StaticContent = {
         title: 'Can I suggest new topics and content?',
         content:
           "Of course you can, and we love to hear from you!\r\n \r\nYou can send us your topic and content suggestions through the 'Contact us' button in 'Settings' on your app.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '5c9fcf9d-6fe1-47c4-bead-20d3b7be92bc': {
         id: '5c9fcf9d-6fe1-47c4-bead-20d3b7be92bc',
-        title: 'Can I still use PeriodTracker without regular internet access?',
+        title: 'Can I still use Oky without regular internet access?',
         content:
-          "Yes!\r\n \r\nPeriodTracker works offline. You need an internet connection to download it initially from the Play Store, Apple Store or the website, but after that, it can be accessed offline.\r\n \r\nWe recommend you go online at least once (if you can) to save your account. This is to make sure that PeriodTracker has a record of you if you ever log out, or log in on a different phone. To save your account, go to your profile at the bottom left of the app and click 'Save account'. You need an internet connection to do this. \r\n \r\nIf you do not save your account and only ever use PeriodTracker offline, you can still use the app. You can access your account and all your period information, as long as you don't log out or log in on a different phone.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "Yes!\r\n \r\nOky works offline. You need an internet connection to download it initially from the Play Store, Apple Store or the website, but after that, it can be accessed offline.\r\n \r\nWe recommend you go online at least once (if you can) to save your account. This is to make sure that Oky has a record of you if you ever log out, or log in on a different phone. To save your account, go to your profile at the bottom left of the app and click 'Save account'. You need an internet connection to do this. \r\n \r\nIf you do not save your account and only ever use Oky offline, you can still use the app. You can access your account and all your period information, as long as you don't log out or log in on a different phone.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'fc353f5c-7133-416e-9977-dce2dee3b39b': {
         id: 'fc353f5c-7133-416e-9977-dce2dee3b39b',
         title: "Why does it say 'that seems too long for a period'?",
         content:
-          "To make sure your information is as accurate as possible, the maximum period length that you can put in is 11 days. If you try to put in anything longer, PeriodTracker will tell you 'that seems too long for a period'.\r\n \r\nIf your period usually lasts for 11 days or longer, ask a trusted adult or a medical professional for advice. You can find contact information in the 'Where to find help' section.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "To make sure your information is as accurate as possible, the maximum period length that you can put in is 11 days. If you try to put in anything longer, Oky will tell you 'that seems too long for a period'.\r\n \r\nIf your period usually lasts for 11 days or longer, ask a trusted adult or a medical professional for advice. You can find contact information in the 'Where to find help' section.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '8fe9fc83-a79b-4d76-9f09-969a515ea6a5': {
@@ -3015,89 +3141,89 @@ export const en: StaticContent = {
         title: "Why can't I add information for my day cards in the future?",
         content:
           'To ensure information is as accurate as possible, you can only add information on your day card for today or for past days, not the future.',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'bbffc331-38e5-497e-8ed7-eca2951157f5': {
         id: 'bbffc331-38e5-497e-8ed7-eca2951157f5',
         title: 'Is any encyclopedia content restricted for different ages?',
         content:
-          "Content in the PeriodTracker Encyclopedia is developed based on international and local standards and guidance on what is considered age-appropriate information. While some content in the quizzes and 'Did you know' cards is age-restricted and only available to users registered as 15 and older, all content in the Encyclopedia is viewable by all age groups. This is because a user can choose what specific articles to read in the Encyclopedia.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "Content in the Oky Encyclopedia is developed based on international and local standards and guidance on what is considered age-appropriate information. While some content in the quizzes and 'Did you know' cards is age-restricted and only available to users registered as 15 and older, all content in the Encyclopedia is viewable by all age groups. This is because a user can choose what specific articles to read in the Encyclopedia.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '0bdcf661-31e7-4f37-b0dc-3be73b1a5613': {
         id: '0bdcf661-31e7-4f37-b0dc-3be73b1a5613',
         title: 'Why is this app heavier than other apps on my phone?',
         content:
-          'That is because PeriodTracker also works offline (with no internet connection). So everything needs to sit in the app itself (while other apps provide their services only when you are online).\r\n\r\nAll the information that you input on the day cards is stored locally on your phone for privacy reasons, so no-one has access to that highly personal information except you. \r\n\r\nSo it makes the app a little bit heavier than others - but it is designed this way to allow you to use PeriodTracker without the internet, and to keep your information private.',
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          'That is because Oky also works offline (with no internet connection). So everything needs to sit in the app itself (while other apps provide their services only when you are online).\r\n\r\nAll the information that you input on the day cards is stored locally on your phone for privacy reasons, so no-one has access to that highly personal information except you. \r\n\r\nSo it makes the app a little bit heavier than others - but it is designed this way to allow you to use Oky without the internet, and to keep your information private.',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '9a1f2ae9-9c67-4406-8e2d-bded06132669': {
         id: '9a1f2ae9-9c67-4406-8e2d-bded06132669',
         title: "Why does it say 'sorry dear, that's too long ago to change'?",
         content:
-          "While you can make changes to your past periods, PeriodTracker does not allow you to add new information 10 days before the first period you entered when you signed up. If you do, PeriodTracker will tell you 'sorry dear, that's too long ago to change!'",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "While you can make changes to your past periods, Oky does not allow you to add new information 10 days before the first period you entered when you signed up. If you do, Oky will tell you 'sorry dear, that's too long ago to change!'",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '18146dd6-e40e-45f3-be2f-9fe652cf7a6d': {
         id: '18146dd6-e40e-45f3-be2f-9fe652cf7a6d',
         title: 'Why does it ask the weeks between periods and not the days?',
         content:
-          "When we designed PeriodTracker, we asked girls like you what they wanted to see in the app. \r\n \r\nGirls told us that it's hard to remember the exact number of days between their periods, but weeks were much easier. We hope this makes it simpler for you to enter your period information when you sign up.\r\n \r\nEven if you enter the wrong information at first, PeriodTracker is smart and will learn to track your period. The more often you enter when your period started and ended, the better PeriodTracker can predict your next period.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "When we designed Oky, we asked girls like you what they wanted to see in the app. \r\n \r\nGirls told us that it's hard to remember the exact number of days between their periods, but weeks were much easier. We hope this makes it simpler for you to enter your period information when you sign up.\r\n \r\nEven if you enter the wrong information at first, Oky is smart and will learn to track your period. The more often you enter when your period started and ended, the better Oky can predict your next period.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '54998fd6-a254-4bfc-97db-2ee2da2de399': {
         id: '54998fd6-a254-4bfc-97db-2ee2da2de399',
         title: 'Can I change the dates I put in when I first signed up?',
         content:
-          "The period dates you share when you first sign up are only there to help PeriodTracker make your first predictions. You can't go back and change them, but they're not that important. What is important is adding your information every time you get a period. The more information PeriodTracker gets about your periods, the better it gets at getting to know you and having more accurate predictions for you.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "The period dates you share when you first sign up are only there to help Oky make your first predictions. You can't go back and change them, but they're not that important. What is important is adding your information every time you get a period. The more information Oky gets about your periods, the better it gets at getting to know you and having more accurate predictions for you.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'b993fa30-7cf2-4819-b2eb-b42397ef2e98': {
         id: 'b993fa30-7cf2-4819-b2eb-b42397ef2e98',
-        title: 'Can boys use PeriodTracker too?',
+        title: 'Can boys use Oky too?',
         content:
-          "Yes!\r\n \r\nThe information in the Encyclopedia and Help Center is designed for boys as well as girls. You can learn about puberty for both boys and girls, and other things about boys' bodies. \r\n \r\nWhen we were building PeriodTracker, we spoke to both boys and girls to help us create what you see in the app. \r\n \r\nWhile PeriodTracker's period tracking feature is designed for girls, boys can also sign up. If boys just want to use the app to learn and find information without an account, they can click the ‘information’ button on the welcome page that will take them straight to the Encyclopedia without logging in.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "Yes!\r\n \r\nThe information in the Encyclopedia and Help Center is designed for boys as well as girls. You can learn about puberty for both boys and girls, and other things about boys' bodies. \r\n \r\nWhen we were building Oky, we spoke to both boys and girls to help us create what you see in the app. \r\n \r\nWhile Oky's period tracking feature is designed for girls, boys can also sign up. If boys just want to use the app to learn and find information without an account, they can click the ‘information’ button on the welcome page that will take them straight to the Encyclopedia without logging in.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '65769b8b-608b-4125-b36a-e54ef19d3bf5': {
         id: '65769b8b-608b-4125-b36a-e54ef19d3bf5',
-        title: "What does the name 'PeriodTracker' mean?",
+        title: "What does the name 'Oky' mean?",
         content:
-          "PeriodTracker is a fun made-up word that does not have a specific meaning! It was chosen by girls like you when we were creating the app.\r\n \r\nWe like it because it's easy to remember and makes sense across many different countries and languages.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "Oky is a fun made-up word that does not have a specific meaning! It was chosen by girls like you when we were creating the app.\r\n \r\nWe like it because it's easy to remember and makes sense across many different countries and languages.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       'd97e0108-9c9a-4774-bf4d-7c18d66317cf': {
         id: 'd97e0108-9c9a-4774-bf4d-7c18d66317cf',
         title: "Why does it say 'that is too close to the previous period'?",
         content:
-          "There always needs to be a 2-day break between the end of your last period and the start of the next period. If there is less than 2 days, PeriodTracker will tell you 'that seems too close to the previous period'!",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "There always needs to be a 2-day break between the end of your last period and the start of the next period. If there is less than 2 days, Oky will tell you 'that seems too close to the previous period'!",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '6b1050c2-2b59-4779-b1c5-53efce91e502': {
         id: '6b1050c2-2b59-4779-b1c5-53efce91e502',
-        title: 'Will PeriodTracker remember me if I delete it and then reinstall it?',
+        title: 'Will Oky remember me if I delete it and then reinstall it?',
         content:
-          "Yes, PeriodTracker will remember you, as long as you have saved your account!\r\n \r\nIf you have saved your account, when you reinstall the app and log back in to your account, it will have all your information from your previous periods. \r\n \r\nIf you have not saved your account, you will not be able to log in to your PeriodTracker account once you reinstall the app (as PeriodTracker will have no record of your account).\r\n \r\nTo make sure that you always have access to your account, go to your profile in the bottom left of the app and click 'Save account'. Make sure you have an internet connection when you do this.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+          "Yes, Oky will remember you, as long as you have saved your account!\r\n \r\nIf you have saved your account, when you reinstall the app and log back in to your account, it will have all your information from your previous periods. \r\n \r\nIf you have not saved your account, you will not be able to log in to your Oky account once you reinstall the app (as Oky will have no record of your account).\r\n \r\nTo make sure that you always have access to your account, go to your profile in the bottom left of the app and click 'Save account'. Make sure you have an internet connection when you do this.",
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '2740dedf-e6f0-4930-86f4-09069dbd2d5b': {
@@ -3105,15 +3231,15 @@ export const en: StaticContent = {
         title: "My period was due, but it didn't come. What should I do?",
         content:
           "If your period is irregular or you think you missed a period, it is best to ask a trusted adult or a medical professional for advice. Visit the 'Where to find help' section for contact information.",
-        category: 'Using PeriodTracker',
-        subCategory: 'Your questions about PeriodTracker',
+        category: 'Using Oky',
+        subCategory: 'Your questions about Oky',
         live: true,
       },
       '6a93a6d9-923d-4aa5-8a17-3a5e7b978945': {
         id: '6a93a6d9-923d-4aa5-8a17-3a5e7b978945',
         title: 'I think I have been abused sexually…what should I do?',
         content:
-          "First of all, sexual abuse is always the fault of the abuser, never the person who was abused. You are not to blame! \r\n\r\nHere are some things you can do next:\r\n\r\n- Tell someone you trust. If they don't believe you, tell someone else until you find someone who does \r\n\r\n- Contact the police or an organization that works on violence or child protection near you\r\n\r\n- Make a plan to stay safe if you know the person who abused you, like arranging somewhere else to stay, planning how to avoid them, and creating a code word with a friend or family member for when you're in danger\r\n\r\n- Take care of yourself and do things that make you feel good, like being around friends or listening to music to stay calm \r\n\r\nIt's common for abusers to use threats to keep their victims quiet, but don't believe them. They want you to stay silent so they can continue abusing you.\r\n\r\nCheck PeriodTracker's Help Center for organizations near you that can help.",
+          "First of all, sexual abuse is always the fault of the abuser, never the person who was abused. You are not to blame! \r\n\r\nHere are some things you can do next:\r\n\r\n- Tell someone you trust. If they don't believe you, tell someone else until you find someone who does \r\n\r\n- Contact the police or an organization that works on violence or child protection near you\r\n\r\n- Make a plan to stay safe if you know the person who abused you, like arranging somewhere else to stay, planning how to avoid them, and creating a code word with a friend or family member for when you're in danger\r\n\r\n- Take care of yourself and do things that make you feel good, like being around friends or listening to music to stay calm \r\n\r\nIt's common for abusers to use threats to keep their victims quiet, but don't believe them. They want you to stay silent so they can continue abusing you.\r\n\r\nCheck Oky's Help Center for organizations near you that can help.",
         category: 'Violence and staying safe',
         subCategory: 'Sexual abuse',
         live: true,
@@ -3122,7 +3248,7 @@ export const en: StaticContent = {
         id: 'c28dec3f-3627-4bb7-b370-fb3a0c897216',
         title: 'How can I stop someone touching me if I don’t want them to?',
         content:
-          "Remember these 3 words: No! Go! Tell! \r\n\r\n- NO! —Tell the person that you don't like it and you want them to stop\r\n\r\n- GO! — Get away quickly, call for help and yell “Fire!” (people are more likely to come running for fire than for anything else)\r\n\r\n- TELL — share what happend with an adult you trust. If the person doesn't believe you, tell someone else until someone helps you\r\n\r\nGo the PeriodTracker Help Center to find organizations near you that can help. Remember, you did nothing wrong and it's not your fault that this happened to you. \r\n\r\nSexual abusers can be anyone. They are usually straight men, but they can also be female. Almost all sexual abusers are people the victim knows, not strangers.\r\n\r\nYou can't control what other people do, but you can try and protect yourself by: \r\n\r\n- Trusting your feelings. If you feel something is 'weird' when you're with someone, leave — even if nothing sexual has happened\r\n\r\n- Trying not to be alone with someone who makes you feel uncomfortable\r\n\r\n- Ignoring anyone who threatens to gossip or lie about you unless you do what they want \r\n\r\n- Avoiding sharing naked pictures of yourself\r\n\r\n- Thinking carefully about meeting someone you met online without a friend nearby",
+          "Remember these 3 words: No! Go! Tell! \r\n\r\n- NO! —Tell the person that you don't like it and you want them to stop\r\n\r\n- GO! — Get away quickly, call for help and yell “Fire!” (people are more likely to come running for fire than for anything else)\r\n\r\n- TELL — share what happend with an adult you trust. If the person doesn't believe you, tell someone else until someone helps you\r\n\r\nGo the Oky Help Center to find organizations near you that can help. Remember, you did nothing wrong and it's not your fault that this happened to you. \r\n\r\nSexual abusers can be anyone. They are usually straight men, but they can also be female. Almost all sexual abusers are people the victim knows, not strangers.\r\n\r\nYou can't control what other people do, but you can try and protect yourself by: \r\n\r\n- Trusting your feelings. If you feel something is 'weird' when you're with someone, leave — even if nothing sexual has happened\r\n\r\n- Trying not to be alone with someone who makes you feel uncomfortable\r\n\r\n- Ignoring anyone who threatens to gossip or lie about you unless you do what they want \r\n\r\n- Avoiding sharing naked pictures of yourself\r\n\r\n- Thinking carefully about meeting someone you met online without a friend nearby",
         category: 'Violence and staying safe',
         subCategory: 'Sexual abuse',
         live: true,
@@ -3140,7 +3266,7 @@ export const en: StaticContent = {
         id: '407e4840-08a9-4f6b-818d-167801d2655e',
         title: 'A guy touched me in a sexual way. It didn’t feel right, why?',
         content:
-          "If someone touches you sexually and you tell them not to, that's called sexual assault. No one has the right to touch your body unless you say it's OK, that includes your genitals, butt, breasts and mouth.\r\n\r\nSexual assault is when you haven't agreed to do something, or you can't agree because you're drunk, high on drugs, asleep or unconscious, or because you don't understand. \r\n\r\nAny sexual behavior with someone who who is legally too young to consent (agree) is sexual abuse, even if you say yes.\r\n\r\nSexual abuse can come from someone you trust — a father, brother, uncle or family friend — or a stranger. They may tell you to keep it secret but it is important to tell a parent or teacher.\r\n\r\nIf you think you've been sexually assaulted or abused, talk to someone you trust. Sometimes just confiding in someone is enough to make you feel better, but if you want to make sure that person doesn't hurt you or others again, you might decide to report them. \r\n\r\nCheck PeriodTracker's Help Center for a list of organizations to contact for help.",
+          "If someone touches you sexually and you tell them not to, that's called sexual assault. No one has the right to touch your body unless you say it's OK, that includes your genitals, butt, breasts and mouth.\r\n\r\nSexual assault is when you haven't agreed to do something, or you can't agree because you're drunk, high on drugs, asleep or unconscious, or because you don't understand. \r\n\r\nAny sexual behavior with someone who who is legally too young to consent (agree) is sexual abuse, even if you say yes.\r\n\r\nSexual abuse can come from someone you trust — a father, brother, uncle or family friend — or a stranger. They may tell you to keep it secret but it is important to tell a parent or teacher.\r\n\r\nIf you think you've been sexually assaulted or abused, talk to someone you trust. Sometimes just confiding in someone is enough to make you feel better, but if you want to make sure that person doesn't hurt you or others again, you might decide to report them. \r\n\r\nCheck Oky's Help Center for a list of organizations to contact for help.",
         category: 'Violence and staying safe',
         subCategory: 'Sexual abuse',
         live: true,
@@ -3149,7 +3275,7 @@ export const en: StaticContent = {
         id: '93141d1e-5448-4a3a-9217-b92146bbcd6b',
         title: 'What should I do if I’m being sexually harassed?',
         content:
-          "Here's what you can do:\r\n\r\n- Tell them you want them to stop straight away. Be clear and firm and don't worry about being polite! If you know the person, tell them in writing as you'll have a record of asking them to stop\r\n\r\n- Document everything you can. Write down dates, times, places and exactly what happened in detail, including anyone who was there when it happened\r\n\r\n- Keep all emails, voice and text messages as evidence\r\n\r\n- Tell people you trust. If the harassment is at school or work, ask if they have a procedure for handling sexual harassment and follow it\r\n\r\n- It's not always possible, but try your best to never be alone with the harasser \r\n\r\n- Contact an organization that works on violence against women and girls for advice and help. Check PeriodTracker's Help Center for details. \r\n\r\n- Remind yourself that it's NOT your fault. In ALL cases of violence (harassment is a form of violence), the person who was violent is to blame. \r\n\r\nWhile you can't protect yourself completely from sexual harassment, here are a few actions you can try:\r\n\r\n- Ask your school or work to provide education to everyone on sexual harassment\r\n\r\n- Organize a speaker on sexual harassment to come to your school or work\r\n\r\n- Campaign for a policy on sexual harassment for your school or work if there is not something already in place \r\n\r\n- If it's safe, speak up if you see anyone being sexually harassed \r\n\r\n- Talk to your male friends and family about how sexual harassment makes girls feel. It's up to men to change their behavior, not women",
+          "Here's what you can do:\r\n\r\n- Tell them you want them to stop straight away. Be clear and firm and don't worry about being polite! If you know the person, tell them in writing as you'll have a record of asking them to stop\r\n\r\n- Document everything you can. Write down dates, times, places and exactly what happened in detail, including anyone who was there when it happened\r\n\r\n- Keep all emails, voice and text messages as evidence\r\n\r\n- Tell people you trust. If the harassment is at school or work, ask if they have a procedure for handling sexual harassment and follow it\r\n\r\n- It's not always possible, but try your best to never be alone with the harasser \r\n\r\n- Contact an organization that works on violence against women and girls for advice and help. Check Oky's Help Center for details. \r\n\r\n- Remind yourself that it's NOT your fault. In ALL cases of violence (harassment is a form of violence), the person who was violent is to blame. \r\n\r\nWhile you can't protect yourself completely from sexual harassment, here are a few actions you can try:\r\n\r\n- Ask your school or work to provide education to everyone on sexual harassment\r\n\r\n- Organize a speaker on sexual harassment to come to your school or work\r\n\r\n- Campaign for a policy on sexual harassment for your school or work if there is not something already in place \r\n\r\n- If it's safe, speak up if you see anyone being sexually harassed \r\n\r\n- Talk to your male friends and family about how sexual harassment makes girls feel. It's up to men to change their behavior, not women",
         category: 'Violence and staying safe',
         subCategory: 'Sexual harassment',
         live: true,
@@ -3167,7 +3293,7 @@ export const en: StaticContent = {
         id: 'b8c2d7de-96d7-444f-918f-933bdc25296d',
         title: 'A guy has asked for private photos. Should I send them?',
         content:
-          "First, PeriodTracker advises you never to share private photos or videos of yourself over social media, even if you like the person who's asking.\r\n\r\nThey could send it to others, post it online, or blackmail you (which means asking you for money or other things in exchange for them not sharing the photo).\r\n\r\nIf you're under 18, sharing nude or sexual images of a minor online, on a phone, by mail or in any other way is illegal in most countries. \r\n\r\nPictures of minors are considered to be child pornography and sharing them can have serious legal and life-changing consequences for those who took the picture, shared it or requested it. Even if it's a picture of yourself.\r\n\r\nIf someone you like asks you to share a private photo or video, tell them that it makes you feel uncomfortable. \r\n\r\nIf they really care about you, they'll understand. If anyone tries to threaten you into sharing anything, say no and block them. Document it by taking a screenshot. \r\n\r\nIf it continues, tell someone you trust, contact the police or check PeriodTracker's Help Center for a list of organizations who can help you. ",
+          "First, Oky advises you never to share private photos or videos of yourself over social media, even if you like the person who's asking.\r\n\r\nThey could send it to others, post it online, or blackmail you (which means asking you for money or other things in exchange for them not sharing the photo).\r\n\r\nIf you're under 18, sharing nude or sexual images of a minor online, on a phone, by mail or in any other way is illegal in most countries. \r\n\r\nPictures of minors are considered to be child pornography and sharing them can have serious legal and life-changing consequences for those who took the picture, shared it or requested it. Even if it's a picture of yourself.\r\n\r\nIf someone you like asks you to share a private photo or video, tell them that it makes you feel uncomfortable. \r\n\r\nIf they really care about you, they'll understand. If anyone tries to threaten you into sharing anything, say no and block them. Document it by taking a screenshot. \r\n\r\nIf it continues, tell someone you trust, contact the police or check Oky's Help Center for a list of organizations who can help you. ",
         category: 'Violence and staying safe',
         subCategory: 'Sexual harassment',
         live: true,
@@ -3176,7 +3302,7 @@ export const en: StaticContent = {
         id: 'cc999176-e5e8-44b4-b079-738c3955ba1b',
         title: 'What do I do if a guy threatens to share my private photos?',
         content:
-          "If somebody asks you to share something that you're not comfortable with, you have the right to say no. Don't do it! \r\n\r\nHere are some things you can do:\r\n\r\n- Report them to the social media platform you're using because its against the rules of most social media sites\r\n\r\n- Document it by taking screenshots. If you decide to report them, you'll need evidence. Make sure you save their social media profile details, email, phone number or anything else you have\r\n\r\n- Report the threats to the police\r\n\r\n- Block them so they can’t see your photos, and won't be able to chat with you or see what you post\r\n\r\n- Don't try to handle the situation by yourself. If you're under 18, talk with a parent or adult you trust to help you decide what to do\r\n\r\n- Talk with a victim advocate or social worker. You can find them through police stations or domestic violence charities. They can help you gather evidence, keep you safe and get a civil protection or anti-stalking order against the person threatening you\r\n\r\n- Contact a legal aid organization near you for free advice, or ask a lawyer for advice\r\n\r\nCheck PeriodTracker's Help Center for a list of organizations to contact.\r\n\r\nIf you or a friend are having thoughts about suicide or self-injury because of harassment online, contact local emergency services or a suicide helpline. Check PeriodTracker's Help Center for a list of organizations to contact.",
+          "If somebody asks you to share something that you're not comfortable with, you have the right to say no. Don't do it! \r\n\r\nHere are some things you can do:\r\n\r\n- Report them to the social media platform you're using because its against the rules of most social media sites\r\n\r\n- Document it by taking screenshots. If you decide to report them, you'll need evidence. Make sure you save their social media profile details, email, phone number or anything else you have\r\n\r\n- Report the threats to the police\r\n\r\n- Block them so they can’t see your photos, and won't be able to chat with you or see what you post\r\n\r\n- Don't try to handle the situation by yourself. If you're under 18, talk with a parent or adult you trust to help you decide what to do\r\n\r\n- Talk with a victim advocate or social worker. You can find them through police stations or domestic violence charities. They can help you gather evidence, keep you safe and get a civil protection or anti-stalking order against the person threatening you\r\n\r\n- Contact a legal aid organization near you for free advice, or ask a lawyer for advice\r\n\r\nCheck Oky's Help Center for a list of organizations to contact.\r\n\r\nIf you or a friend are having thoughts about suicide or self-injury because of harassment online, contact local emergency services or a suicide helpline. Check Oky's Help Center for a list of organizations to contact.",
         category: 'Violence and staying safe',
         subCategory: 'Sexual harassment',
         live: true,
@@ -4611,89 +4737,405 @@ export const en: StaticContent = {
       },
     },
   },
-  helpCenters: [],
+  helpCenters: [
+    {
+      id: 1,
+      title: 'National Psychology Centre',
+      caption: 'Mongolia',
+      contactOne: '+976 7732 4233',
+      contactTwo: '+23 1209381',
+      address: '',
+      website: 'https://www.facebook.com/NationalPsychologyCenter/',
+      lang: 'en',
+    },
+    {
+      id: 2,
+      title: 'TEPSA (Telepon Pelayanan Sosial Anak)',
+      caption: 'Indonesia',
+      contactOne: '1 500 771 ',
+      contactTwo: '+62 812 38888 002 (Whatsapp)',
+      address:
+        'Jl. P.P.A, RT.5/RW.1, Bambu Apus, Kec. Cipayung, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta 13890',
+      website: 'https://kajsdl.com',
+      lang: 'en',
+    },
+    {
+      id: 3,
+      title: 'Childline Kenya',
+      caption: 'Kenya',
+      contactOne: '116',
+      contactTwo: '+254 722 116 116',
+      address: '',
+      website: 'www.childlinekenya.co.ke',
+      lang: 'en',
+    },
+    {
+      id: 4,
+      title: 'NSPCC/ Childline UK',
+      caption: 'United Kingdom',
+      contactOne: '0800 1111',
+      contactTwo: '',
+      address: '',
+      website: 'www.childline.org.uk',
+      lang: 'en',
+    },
+    {
+      id: 5,
+      title: 'Kids Helpline',
+      caption: 'Australia',
+      contactOne: '1800 55 1800',
+      contactTwo: '',
+      address: '',
+      website: 'www.kidshelpline.com.au',
+      lang: 'en',
+    },
+    {
+      id: 6,
+      title: 'HDI Nigeria',
+      caption: 'Nigeria',
+      contactOne: '0808 0551 376',
+      contactTwo: '',
+      address: 'facebook.com/hdinigeria',
+      website: 'hdinigeria.org/hdinigeria',
+      lang: 'en',
+    },
+    {
+      id: 7,
+      title: 'Childline Thailand 1387',
+      caption: 'Thailand',
+      contactOne: '1387',
+      contactTwo: '',
+      address: 'info@childlinethailand.org',
+      website: 'childlinethailand.org',
+      lang: 'en',
+    },
+    {
+      id: 8,
+      title: 'Childline India Foundation',
+      caption: 'India',
+      contactOne: '1098',
+      contactTwo: '',
+      address: 'facebook.com/ChildlineIndiaFoundation',
+      website: 'www.childlineindia.org',
+      lang: 'en',
+    },
+    {
+      id: 9,
+      title: 'Childhelp',
+      caption: 'US',
+      contactOne: '800 4224453',
+      contactTwo: '',
+      address: '',
+      website: 'www.childhelp.org',
+      lang: 'en',
+    },
+  ],
   avatarMessages: [
     {
       id: '4efdff97-0bdd-4f6c-8731-1738bfc28047',
-      content: 'With PeriodTracker, your privacy always comes first.',
+      content: 'With Oky, your privacy always comes first.',
       live: true,
     },
     {
       id: '72f31423-8616-42b1-b5cd-b01307552197',
-      content: 'PeriodTracker does not collect any personally identifiable information!',
+      content: 'Oky does not collect any personally identifiable information!',
       live: true,
     },
     {
       id: 'b1da95c4-2d86-4c22-8833-2d7cad254386',
-      content: 'Your PeriodTracker info will never be shared.',
+      content: 'Your Oky info will never be shared.',
       live: true,
     },
     {
       id: 'ab09cf38-46d2-464f-8564-a6f0b8fff837',
-      content:
-        "PeriodTracker's data and privacy processes are strict. Your info will never be shared.",
+      content: "Oky's data and privacy processes are strict. Your info will never be shared.",
       live: true,
     },
     {
       id: '89cb4ef2-60c5-46f0-af72-a4cf4c117e6a',
-      content: 'Everything you share with PeriodTracker is completely safe and secure!',
+      content: 'Everything you share with Oky is completely safe and secure!',
       live: true,
     },
     {
       id: 'ca276cc7-63c5-4f72-96ad-ddcb8e364289',
-      content: 'PeriodTracker takes your privacy very seriously.',
+      content: 'Oky takes your privacy very seriously.',
       live: true,
     },
     {
       id: '795474b1-8626-4995-8f92-c9bbb2ce09d4',
-      content: 'Your PeriodTracker account is private and secure.',
+      content: 'Your Oky account is private and secure.',
       live: true,
     },
     {
       id: 'ba76057e-6534-4c96-97c0-0ef2ebaf19f8',
-      content: 'Everything you share with PeriodTracker is safe and secure.',
+      content: 'Everything you share with Oky is safe and secure.',
       live: true,
     },
     {
       id: 'bef3bf25-6216-489e-84f1-bff11cf4d84c',
       content:
-        'PeriodTracker values your privacy. Everything you share with PeriodTracker is completely safe and secure.',
+        'Oky values your privacy. Everything you share with Oky is completely safe and secure.',
       live: true,
     },
     {
       id: '7a92a5aa-8450-449b-91ef-36e5d01494e0',
-      content: 'PeriodTracker values your privacy. None of your info will ever be shared.',
+      content: 'Oky values your privacy. None of your info will ever be shared.',
       live: true,
     },
     {
       id: '1a0eec61-4db6-4b06-bbd5-5707cfebb06f',
-      content: 'All of your period information stays private and secure with PeriodTracker.',
+      content: 'All of your period information stays private and secure with Oky.',
       live: true,
     },
     {
       id: 'a9dedf0d-c7e8-49be-9fe5-010e364afe58',
-      content: 'All your PeriodTracker information is completely secure.',
+      content: 'All your Oky information is completely secure.',
       live: true,
     },
     {
       id: '5211a19a-191b-4b9d-bb03-fc49722be35f',
-      content: "PeriodTracker's data protection systems keep your data private! ",
+      content: "Oky's data protection systems keep your data private! ",
       live: true,
     },
   ],
-  privacyPolicy: [],
-  termsAndConditions: [],
+  privacyPolicy: [
+    { type: 'HEADING', content: 'Oky Privacy Policy' },
+    {
+      type: 'CONTENT',
+      content:
+        'Taking care of your data is important to us. We aim for the highest standards of privacy and security and we are committed to being transparent about how we process and use your data. \n\nThis Privacy Policy explains how your data is collected, stored and used, and what steps we take to ensure your data stays safe.  \n\n\nPlease read our Privacy Policy carefully before using Oky and refer back to it regularly to check for updates. Remember, by accessing and using the Oky app or Oky website, you agree to this Privacy Policy.',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'Oky was developed and is owned by UNICEF. Please do not hesitate to contact us if you have any questions about the use of your data in Oky. To contact us, please email hello@okyapp.info.\n\nFor the purpose of this Privacy Policy, "personal data" means any information that enables us to identify an individual, directly or indirectly, by reference to an identifier such as name, identification number, location data, online identifier or one more factors specific to the individual.',
+    },
+    { type: 'CONTENT', content: '' },
+    {
+      type: 'HEADING',
+      content: '1. What information does Oky collect about you and how do we use it?',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'When you enter information into the Oky app, Oky uses technology to turn that data into helpful information that can help you learn more about your menstrual cycle patterns to enable you to take control of your body and your health. \n\n Oky has been designed to minimize the use of your personal data. Described below are the sources and types of data we collect and process, as well as information on how we process such data. ',
+    },
+    { type: 'HEADING', content: 'Login information' },
+    {
+      type: 'CONTENT',
+      content:
+        'In order to use the period tracker functions on the app, you need to create a login. During login creation, we ask you for a display or user name, date of birth, gender and location (country and province only). We encourage you to select a display name that does not disclose your real name or other information that could identify you – especially if you are under the age of 18. We request this gender, age and location data from you to understand if we are reaching the right audiences; all of this data is aggregated and anonymised.\n',
+    },
+    { type: 'HEADING', content: 'Device data' },
+    {
+      type: 'CONTENT',
+      content:
+        'We collect information on the device you use to access Oky’s services, such as the model, operating system, language, location and the session’s duration. This data is anonymized and is collected to help us understand our users better and how they are engaging with Oky.\n',
+    },
+    { type: 'HEADING', content: 'Engagement data' },
+    {
+      type: 'CONTENT',
+      content:
+        'When you use the Oky app, we and our third-party service providers process engagement data about how you are interacting with the Oky app. This engagement is anonymized, meaning it does not identify you as an individual. We use an App centre together with some customer created tracking features to record these interactions.\n\nWe collect this information to understand your usage of our services, for example which functions of the Oky app you are using and to ensure all the features provided by the Oky app are  functioning properly. We also collect this information to communicate with you about the app and its services. \n',
+    },
+    { type: 'HEADING', content: 'Health and menstruation data' },
+    {
+      type: 'CONTENT',
+      content:
+        'Your information about your health and menstruation that you enter in the calendar feature of the Oky app, such as dates of your past and current periods, is collected and used to predict your future period data. This information is stored on our servers so that you can can have access to that information whenever you log into your account from any device. However, to protect your privacy, we have set up a system where no-one can identify any one user from this stored data. \n\nThe information you enter in your day cards (body, mood, activity and flow, and your daily diary card) is stored locally on your device and only you have access to it.',
+    },
+    { type: 'HEADING', content: 'Surveys' },
+    {
+      type: 'CONTENT',
+      content:
+        'Oky may ask for your feedback about the Oky app through questions and surveys, e.g. on the performance of the app or on the usefulness of the information Oky provides and your experience of using the Oky app. Information given to you via such surveys and questions is processed by Oky to improve our services and your experience with Oky. Any survey responses are anonymous.',
+    },
+    { type: 'HEADING', content: 'Cookies' },
+    {
+      type: 'CONTENT',
+      content:
+        "Cookies, which are small text files which identify your computer, phone, and other devices to our server. \n\nThe Oky website uses Google Analytics, which can use cookies and similar technologies to collect and analyze information about your use of the website and report on activities and trends. You can learn more about Google's practices by going to www.google.com/policies/privacy/partners/.  The information collected through Google Analytics includes your IP address, network location, what browser you are using, device IDs and characteristics, operating system version, language preferences, referring URLs, and information about the usage of the Oky website.\n\nHowever, Google Analytics removes any and all personal information about Oky website users (such as IP addresses) before any analytics are shared with the Oky team, so all website analytics are anoymized and cannot be used to identify you or any individual. ",
+    },
+    { type: 'HEADING', content: 'Aggregate data' },
+    {
+      type: 'CONTENT',
+      content:
+        "We may aggregate information collected through the Oky app for statistical analysis and other lawful purpose, including in research studies intended to improve our understanding of young people's use of technology and digital tools. The results of this research may be shared with third parties, such as our partners, supporters, educators and researchers through conferences, journals and other publications.\n\nIf we do this, all data will be aggregated and anonymous. ",
+    },
+    { type: 'HEADING', content: 'Legal' },
+    {
+      type: 'CONTENT',
+      content:
+        'We may use your information to enforce our Terms of Use, to defend our legal rights, and to comply with our legal obligations and internal policies.\n',
+    },
+    { type: 'HEADING', content: '2. How do we keep your data secure?' },
+    { type: 'HEADING', content: 'Health and sensitive data' },
+    {
+      type: 'CONTENT',
+      content:
+        'We use many reasonable measures - physical and electronic - to prevent unauthorised access and disclosure of your data. However, it is always a possibility that third parties may unlawfully intercept or access your data.\n\n\nSo, although we work extremely hard to safeguard your data, we cannot guarantee that your data will always remain private.\n\nThe security of our servers is regularly checked by experts to ensure your data is protected from unauthorised access. ',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'The following data is stored on our servers: your username, month and year of birth, gender, location (country and province), your period-related data, the menstrual cycle start and end data, and the theme, language and avatar you selected on the Oky app.\n\nHowever, we have put a system in place so that no-one can identify any one user from this stored data. We store this data on our server so that you can access this data when you log into your account from different devices. \n\nYou can contact us with any questions you may have about data security via email: hello@okyapp.info.',
+    },
+    { type: 'HEADING', content: 'Recommendations for protecting your data' },
+    {
+      type: 'CONTENT',
+      content:
+        'We believe the biggest threat to the security and privacy of your data is if someone—probably someone you know—gains access to your device. The data you enter into Oky is private and it should stay that way. We have outlined some ways to keep your devices secure below.',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'i. Activate a unique PIN or password code to create a login. Make it personal and not easy for others to guess. Do not use your date of birth or your name, for example. If you share your device with others, activating a unique PIN or password code will ensure you are the only person who can access your Oky-related data on the device.',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'ii. Set up a feature that will allow you to erase all the data from your device if it’s lost or stolen. For Android, download and set up Find My Device (formerly Android Device Manager) from the Google Play Store and, if needed, use the connected web interface to lock or wipe your phone remotely.',
+    },
+    { type: 'HEADING', content: '3. Third parties websites' },
+    {
+      type: 'CONTENT',
+      content:
+        'The Oky app or website may contain links to other sites that are not covered by this Privacy Policy. This Privacy Policy applies only to the processing of your information by Oky. It does not address, and we are not responsible for, the privacy, information, or other practices of any third parties, including any third party operating any site or service to which the Oky website or app links. \n \n The inclusion of a link on the Oky website or app does not imply endorsement of the linked site or service by UNICEF. Please be aware that the terms of this Privacy Policy do not apply to these outside websites or content, or to any collection of data after you click on links to such outside websites.',
+    },
+    { type: 'HEADING', content: '4. How long does Oky keep your data?' },
+    {
+      type: 'CONTENT',
+      content:
+        "We will only use and store information for so long as it is required for the purposes it was collected for, and as specified in UNICEF's retention policy. We use your data as necessary to comply with our legal obligations, resolve disputes, and enforce our agreements and rights, or if it is not technically and reasonably feasible to remove it. \n\nWe also retain the right to store your data with parties outside of UNICEF's direct control, such as with the servers or databases of a third-party organisation. ",
+    },
+    { type: 'HEADING', content: '5. How can you control your data?' },
+    {
+      type: 'CONTENT',
+      content:
+        'If you have registered an account with us, you can access most information associated with your account by logging in and using the account setting page. \n\nIf you want to delete your account and/or your contributed data, you can delete it from the app. Once you delete your account, all the data will be erased from our servers. ',
+    },
+    { type: 'HEADING', content: '6. Notifications of changes to the Privacy Policy' },
+    {
+      type: 'CONTENT',
+      content:
+        "We review our security measures and our Privacy Policy, and we may modify our policies as we deem appropriate.  If we make changes to our privacy practices, we will post a notification to the Oky website and app alerting you that the Privacy Policy has been amended.\n\nSuch changes will be effective immediately upon posting them to the Oky app and website. For this reason, we encourage you to check our Privacy Policy frequently. The 'Last updated' date at the bottom of this page indicates when this Privacy Policy was last revised.\n\nYour continued use of the Oky app and website  following these changes means that you accept the revised Privacy Policy.",
+    },
+    { type: 'HEADING', content: '7. Contact us' },
+    {
+      type: 'CONTENT',
+      content:
+        'Feel free to contact us if you require further information about this Privacy Policy. \n\nTo contact us please email hello@okyapp.info.\n\nLast updated 1st December 2021.\n',
+    },
+  ],
+  termsAndConditions: [
+    { type: 'HEADING', content: 'Oky Terms and Conditions' },
+    { type: 'HEADING', content: 'User agreement' },
+    {
+      type: 'CONTENT',
+      content:
+        'These Terms of Use are an agreement between you and Oky that set the rules for your interactions with the Oky app and website.\n\nOky is a period tracker app for girls and created with girls. It provides information about menstruation in fun, creative and positive ways. Please read these Terms of Use carefully. By using the Oky app, you agree that you have read, understood, and accepted the terms and conditions contained below. If you do not agree to any of these terms and conditions, please do not use the Oky app.\n\nOky is targeted at young people from ages 10 and older. If you are under 16 years old, we encourage you to discuss your use and engagememnt on the Oky app with your parents or guardians and make sure that they consent to your use of the Oky app.\n\nThese Terms of Use are subject to change, so please make sure you check out the Oky Terms of Use on the app or on the website from time to time. The date of the most recent revisions will appear at the bottom of this page. If you continue to use the Oky app, this means that you accept any changes to or revisions of these Terms of Use.\n',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'Your privacy is very important to us – please also read our Privacy Policy, which will walk you through how the Oky app collects, stores, and uses the information that you provide to us. By using the Oky app, you are confirming to us that you are agreeing to our Privacy Policy.',
+    },
+    { type: 'HEADING', content: 'Account creation and security' },
+    {
+      type: 'CONTENT',
+      content:
+        'In order for you to use the period tracker functions on the Oky app, you will need to register on the Oky app and create an account. Creating an account is optional but doing so will allow you to track your periods and other health information on the day cards (such as body, mood, activity and flow, and your daily diary card). If you do not create an account, you will still have access to Oky’s information in the encyclopaedia.\n\nDuring account creation, we ask you to create a username or display name, indicate your month and year of birth, your gender and location (country and province only). We encourage you to create a username or display name that is not your real name or discloses your real name or other information that could identify you – especially if you are under the age of 18 years.',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'Once you create your account, you will be required to select a secret question and provide an answer. Please keep this information safe since it is the only way to access your account if you forget your password.\n\nOnce you create your account you can edit your username or display name by choosing a different one, change your password or change your secret question and password.\n\nTo see how we handle your personal information, please see our Privacy Policy.',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'You are responsible for keeping your password, secret question and answer secret and your account secure. You are responsible for all uses of your account, even if your account is used by someone else. You may not use another person’s Oky account without their permission.\n\nIf you have any reason to believe that your account is no longer secure – if your password has been stolen, for instance – you should change your password as soon as possible. If you forget your password, you will be prompted to input your secret answer in order to access your account.',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'If you have forgotten your secret question and answer, you will have several opportunities to try, however, if you cannot remember, you will have to create a new account to continue using the Oky app. If you create a new account, kindly note that you will not be able to retrieve your previous information associated with your other account.\n\nOky does not have access to your account and cannot change, retrieve or reset passwords or secret questions for its users.',
+    },
+    { type: 'HEADING', content: 'Rules of usage' },
+    {
+      type: 'CONTENT',
+      content:
+        'Oky is an app that is open to and welcomes young people from around the world. Due to the diversity of our users, Oky aims to create an environment where any young person feels comfortable, no matter their nationality, gender, cultural background, religion, sexual orientation or political conviction.Oky’s core values are positivity, openness, respect, inclusiveness, dialogue, collaboration and constructiveness.You agree to comply with all applicable laws and regulations in your country when you use the Oky app.',
+    },
+    { type: 'CONTENT', content: ' ' },
+    { type: 'HEADING', content: 'Content' },
+    {
+      type: 'CONTENT',
+      content:
+        'Oky is a way to monitor and learn about your menstrual cycle, as well as provide information about your period and female health. The service is provided for free for personal and private use. Everything on the Oky app is for you and your peers but not for commercial use.Please do not use the Oky app for contraceptive or medical purposes. In case of any individual health issues, consult a medical professional.Oky is not intended to replace contraceptive measures and/or medical advice: it is only intended to provide information. By using the Oky app you agree to use it for the intended purpose only and particularly not for contraception and/or medical purposes.',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'Except for any user-generated content, Oky owns and retains all rights in and to the Oky code, the design, functionality, and architecture of the Oky app, and any software, support materials or content provided through this site (collectively the “Oky IP”). Except for any rights explicitly granted under these Terms of Use, you are not granted any rights in and to any Oky IP. If you want to use Oky IP in a way that is not allowed by these Terms of Use, you must first contact the Oky team and get permission.\n\nUnless we say otherwise, all the materials provided by Oky on the app and website are licensed under the Creative Commons license: Attribution 4.0 International (CC BY 4.0). This license allows you and others to copy and redistribute the content on Oky app. This license requires you to attribute any material you use to the original author. When you use any of Oky materials, please use the following attribution: “Oky is developed by the United Nations Children’s Fund. See http://www.okyapp.info”. If you still have questions, please feel free to visit the Creative Commons FAQ page, where you will find more information.\n',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'Please note that the Oky app and the Oky support materials may contain images, sounds and videos that are trademarked by third parties. Nothing in these Terms of Use or the Creative Commons license limits or reduces a third party’s intellectual property rights. You may not use these materials to label, promote, or endorse any product or service. You are solely responsible for any violation of a third party’s intellectual property rights caused by your misuse of these materials.\n\nOky, the Oky app and UNICEF names and emblems/logos are the exclusive property of UNICEF. They are protected under international and national laws. Unauthorized use is prohibited. They may not be copied or reproduced in any way without the prior written permission of UNICEF. Requests for permission should be sent to us at hello@okyapp.info.\n',
+    },
+    { type: 'HEADING', content: 'Changes to Terms and Conditions' },
+    {
+      type: 'CONTENT',
+      content:
+        'UNICEF amends these terms from time to time. Every time you wish to use Oky, please check these terms to ensure you understand the terms that apply at that time.',
+    },
+    { type: 'HEADING', content: 'External links and resources' },
+    {
+      type: 'CONTENT',
+      content:
+        "Oky may link to other websites and resources that are not under Oky and or UNICEF's control. The inclusion of such links does not imply an endorsement or approval by Oky and or UNICEF of any website, product or service. \n\n\nWhen you click on links on the Oky app or website, some of them may lead you to other places on the internet, so please keep that in mind and click carefully! We have not checked out all of the other sites and we cannot guarantee that they are always accurate or reliable. We also do not support these sites, their opinions or anything that they are trying to sell. Also note that these other sites are subject to their own terms of use. Oky does not assume any responsibility for content on such other sites.\n\nUNICEF and or Oky does not assume any responsibility or liability in respect of such websites, including, for example, responsibility or liability for the accuracy or reliability of any information, data, opinions, advice or statements made on those web sites.",
+    },
+    { type: 'HEADING', content: 'Disclaimer' },
+    {
+      type: 'CONTENT',
+      content:
+        'What you read on the Oky app or website is not necessarily written by the Oky team and or UNICEF staff, so the views and opinions voiced on the Oky app and website are not necessarily the same as those of UNICEF and or Oky team.\nAll content that Oky provides or is provided “as is”. This simply means that we cannot guarantee that everything you find on this site will be completely accurate or error-free. The Oky content is periodically added to, changed, improved, or updated without notice. Make sure you use content on the Oky app or website thoughtfully and responsibly.',
+    },
+    {
+      type: 'CONTENT',
+      content:
+        "The Oky app and website may be updated and changed from time to time to provide updated information, links or provide new functionality and reflect changes to our users' needs.It is not guaranteed that the Oky app, or any content on it, will always be available or be uninterrupted. We may suspend or withdraw or restrict the availability of all or any part of the Oky app for operational or other reasons. We will try to give you reasonable notice of any suspension or withdrawal.You agree that you are solely responsible for any issues that you may encounter that result from your use of the Oky app. Under no circumstances can UNICEF and or Oky be held responsible for any damages or injuries you may have related to your use of the Oky app.",
+    },
+    {
+      type: 'CONTENT',
+      content:
+        'You agree to indemnify, at your own expense, UNICEF, its officials, employees, consultants and agents, against any claims, including your costs and expenses, by any third party, resulting from your use of the Oky app and website.\nThe mention of names of specific companies or products on the Oky app or website does not imply any intention to infringe proprietary rights, nor should it be interpreted as an endorsement or recommendation on the part of UNICEF and or Oky.The use of particular designations of countries or territories or maps on this site does not reflect a position by UNICEF and or Oky on the legal status of such countries or territories, of their authorities and institutions or of the delimitation of their boundaries.',
+    },
+    { type: 'HEADING', content: 'Contact us' },
+    {
+      type: 'CONTENT',
+      content:
+        'If you have any questions about Oky, please contact us at hello@okyapp.info .\n\nLast updated 1st December 2021',
+    },
+  ],
   about: [
     {
       type: 'CONTENT',
       content:
-        'PeriodTracker is a mobile phone app that helps girls to take control of their periods and their lives. Feel more confident by tracking your period, and getting the facts that all girls should know.',
+        'Oky is a mobile phone app that helps girls to take control of their periods and their lives. Feel more confident by tracking your period, and getting the facts that all girls should know.',
     },
-    { type: 'HEADING', content: 'What is PeriodTracker? ' },
+    { type: 'HEADING', content: 'What is Oky? ' },
     {
       type: 'CONTENT',
       content:
-        'PeriodTracker is a period tracking app designed for girls and by girls: it’s fun and positive because we want to reverse the shyness and bad feelings that periods can sometimes cause!',
+        'Oky is a period tracking app designed for girls and by girls: it’s fun and positive because we want to reverse the shyness and bad feelings that periods can sometimes cause!',
+    },
+    { type: 'HEADING', content: 'Why did UNICEF create Oky?' },
+    {
+      type: 'CONTENT',
+      content:
+        'UNICEF created Oky as part of its mission to promote girl’s education and health, by changing one of the world’s biggest taboos: menstruation.\n',
     },
     {
       type: 'CONTENT',
@@ -4703,24 +5145,30 @@ export const en: StaticContent = {
     {
       type: 'CONTENT',
       content:
-        'It can be difficult to find trustworthy, quality information online that is relevant. There is so much misinformation out there. All this can make periods stressful, when they don’t need to be. PeriodTracker is designed to help girls manage their periods with confidence, because girls should be able to make informed decisions about their bodies and their lives.',
+        'It can be difficult to find trustworthy, quality information online that is relevant. There is so much misinformation out there. All this can make periods stressful, when they don’t need to be. Oky is designed to help girls manage their periods with confidence, because girls should be able to make informed decisions about their bodies and their lives.',
     },
-    { type: 'HEADING', content: 'How does PeriodTracker work?' },
+    { type: 'HEADING', content: 'How did UNICEF create Oky?' },
     {
       type: 'CONTENT',
       content:
-        'PeriodTracker allows you to add information about your period, body, activities and mood, and based on this, provides predictions about you next period and ovulation cycle. There is a calendar, which acts as a diary and helps with reminders. PeriodTracker gives tips and motivation through games & quizzes too!',
+        'We spent months talking to more than 400 girls in Mongolia and Indonesia about their periods, their fears, their hopes and their lives, and worked together to co-create Oky! Of course, we also worked with our education and medical experts to ensure that Oky reflect UNICEF’s ethics and its high health standards and guidelines. ',
     },
-    { type: 'HEADING', content: 'How is PeriodTracker different?' },
+    { type: 'HEADING', content: 'How does Oky work?' },
     {
       type: 'CONTENT',
       content:
-        'PeriodTracker is different from other period tracking apps because it is aimed particularly at girls. PeriodTracker is not a business, it is a service for girls that aims to be inclusive and non-judgemental, and maintains the highest privacy and data protection standards.',
+        'Oky allows you to add information about your period, body, activities and mood, and based on this, provides predictions about you next period and ovulation cycle. There is a calendar, which acts as a diary and helps with reminders. Oky gives tips and motivation through games & quizzes too!',
+    },
+    { type: 'HEADING', content: 'How is Oky different?' },
+    {
+      type: 'CONTENT',
+      content:
+        'Oky is different from other period tracking apps because it is aimed particularly at girls. Oky is not a business, it is a service for girls that aims to be inclusive and non-judgemental, and maintains the highest privacy and data protection standards.',
     },
     {
       type: 'CONTENT',
       content:
-        'PeriodTracker is developed in an open way so others can learn from the process of creating a digital public health resource. This way, it can be useful to more people and contribute to changing the way our digital information is used for profit rather than for public good.',
+        'Oky is developed in an open way so others can learn from the process of creating a digital public health resource. This way, it can be useful to more people and contribute to changing the way our digital information is used for profit rather than for public good.',
     },
   ],
   aboutBanner: '',

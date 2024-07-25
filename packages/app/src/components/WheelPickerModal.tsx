@@ -41,7 +41,6 @@ export const WheelPickerModal = ({
 
   const [visible, setIsVisible] = React.useState(false);
   const toggleVisible = () => {
-    console.log("*** toggleVisible");
     setIsVisible((current) => !current);
     setWheelOption(initialOption);
     setQuery("");
@@ -53,8 +52,6 @@ export const WheelPickerModal = ({
   };
 
   const displayValue = initialOption?.label || props.placeholder || "";
-
-  console.log("*** ToggleComponent", !!ToggleComponent);
 
   return (
     <>

@@ -4,9 +4,6 @@ const s = (state: ReduxState) => state.app;
 const predictionS = (state: ReduxState) => state.prediction;
 export const currentLocaleSelector = (state: ReduxState) => s(state).locale;
 
-export const currentChosenRegionSelector = (state: ReduxState) =>
-  s(state).chosenRegion;
-
 export const currentThemeSelector = (state: ReduxState) => s(state).theme;
 
 export const currentAvatarSelector = (state: ReduxState) => s(state).avatar;

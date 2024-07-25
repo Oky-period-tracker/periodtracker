@@ -2,7 +2,6 @@
 // eslint-disable-next-line
 // @ts-nocheck
 import { Actions } from "../types";
-import { currentLocale } from "../../i18n";
 // import DeviceInfo from "react-native-device-info";
 // import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from "@oky/core";
 import { v4 as uuidv4 } from "uuid";
@@ -13,11 +12,10 @@ import {
   defaultAvatar,
   defaultTheme,
 } from "../../core/modules/translations";
+import { initialLocale } from "../../translations";
 
 export interface AppState {
-  appLocale: string;
   locale: string;
-  chosenRegion: string;
   appVersionName: string;
   appVersionCode: string;
   firebaseToken: string;
@@ -48,9 +46,7 @@ const initialState: AppState = {
   appVersionName: "", // DeviceInfo.getVersion(),
   appVersionCode: "", //DeviceInfo.getBuildNumber(),
   firebaseToken: null,
-  appLocale: currentLocale(),
-  locale: currentLocale(),
-  chosenRegion: "en", // @TODO: PENAL CODE change to currentLocale() if no penal code   // @TODO: LANGUAGES This is commented in case the client wants multiple languages
+  locale: initialLocale,
   hasOpened: false,
   isTutorialOneActive: true,
   isTutorialTwoActive: true,
@@ -103,8 +99,8 @@ export function appReducer(
     case "SET_UPDATED_VERSION":
       return {
         ...state,
-        appVersionName: "", //DeviceInfo.getVersion(),
-        appVersionCode: "", //DeviceInfo.getBuildNumber(),
+        appVersionName: "", //DeviceInfo.getVersion(),  TODO:
+        appVersionCode: "", //DeviceInfo.getBuildNumber(), TODO:
       };
     case "STORE_FIREBASE_KEY":
       return {
@@ -115,11 +111,6 @@ export function appReducer(
       return {
         ...state,
         locale: action.payload.locale,
-      };
-    case "SET_CHOSEN_REGION":
-      return {
-        ...state,
-        chosenRegion: action.payload.region,
       };
     case "SET_HAS_OPENED":
       return {

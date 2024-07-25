@@ -27,10 +27,6 @@ export function storeFirebaseKey(firebaseToken: string) {
   return createAction("STORE_FIREBASE_KEY", { firebaseToken });
 }
 
-export function setChosenRegion(region: string) {
-  return createAction("SET_CHOSEN_REGION", { region });
-}
-
 export function setHasOpened(hasOpened: boolean) {
   return createAction("SET_HAS_OPENED", { hasOpened });
 }

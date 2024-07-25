@@ -79,7 +79,7 @@ export function contentReducer(
   switch (action.type) {
     case "INIT_STALE_CONTENT":
       return {
-        ...state,
+        ...initialState,
         ...action.payload,
       };
 

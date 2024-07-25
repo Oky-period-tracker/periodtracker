@@ -12,7 +12,7 @@ import {
   defaultAvatar,
   defaultTheme,
 } from "../../core/modules/translations";
-import { initialLocale } from "../../translations";
+import { initialLocale } from "../../hooks/useTranslate";
 
 export interface AppState {
   locale: string;

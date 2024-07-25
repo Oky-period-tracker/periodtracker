@@ -1,7 +1,7 @@
 import React from "react";
 import { Text as RNText, TextProps as RNTextProps } from "react-native";
 import { PaletteStatus, palette } from "../config/theme";
-import { translate } from "../translations";
+import { useTranslate } from "../hooks/useTranslate";
 
 export type CustomTextProps = RNTextProps & {
   status?: PaletteStatus;
@@ -15,6 +15,7 @@ export const Text: React.FC<CustomTextProps> = ({
   enableTranslate = true,
   ...props
 }) => {
+  const translate = useTranslate();
   const color = palette[status].text;
 
   const getContent = () => {

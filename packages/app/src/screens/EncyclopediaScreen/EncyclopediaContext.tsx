@@ -6,6 +6,7 @@ import {
   allCategoriesSelector,
   allSubCategoriesSelector,
   allVideosSelector,
+  currentLocaleSelector,
 } from "../../redux/selectors";
 import { Article, Category, SubCategory, VideoData } from "../../core/types";
 
@@ -50,6 +51,7 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
   const subCategories = useSelector(allSubCategoriesSelector);
   const articles = useSelector(allArticlesSelector);
   const allVideos = useSelector(allVideosSelector);
+  const locale = useSelector(currentLocaleSelector);
 
   const articlesWithParentIds: ArticleWithParentIds[] = React.useMemo(() => {
     return getArticlesWithParentIds(articles, categories, subCategories);
@@ -80,6 +82,10 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
     selectedCategoryIds.length === 0
       ? categoryIds
       : categoryIds.filter((item) => selectedCategoryIds.includes(item));
+
+  React.useEffect(() => {
+    setSelectedCategoryIds([]);
+  }, [locale]);
 
   return (
     <EncyclopediaContext.Provider

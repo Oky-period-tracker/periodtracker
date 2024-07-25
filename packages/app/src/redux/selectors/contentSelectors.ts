@@ -107,7 +107,8 @@ export const allQuizzesSelectors = (state: ReduxState) => {
 };
 
 export const allDidYouKnowsSelectors = (state: ReduxState) => {
-  // TODO_ALEX: FIXME
+  // TODO: FIXME
+  // FYI Age restriction occurs server side now
   const isUserYoungerThan15 = true;
   // moment()
   //   .utc()

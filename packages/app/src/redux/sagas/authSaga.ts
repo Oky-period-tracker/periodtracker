@@ -175,8 +175,8 @@ function* onDeleteAccountRequest(
       name,
       password,
     });
-    yield put(actions.updateAllSurveyContent([])); // TODO_ALEX
-    yield put(actions.updateCompletedSurveys([])); // TODO_ALEX
+    yield put(actions.updateAllSurveyContent([])); // TODO: ?
+    yield put(actions.updateCompletedSurveys([])); // TODO: ?
 
     //  ===================== TODO: NAVIGATION ===================== //
 

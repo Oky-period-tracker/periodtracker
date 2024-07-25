@@ -23,7 +23,7 @@ function* onRehydrate(action: RehydrateAction) {
   }
 
   const now = new Date().getTime();
-  // TODO_ALEX what time interval should we use?
+  // TODO: what time interval should we use?
   const fetchInterval = 0; // 1000 * 60 * 60 * 24 // 24 hours
   // @ts-expect-error TODO:
   const timeFetched = action.payload && action.payload.content?.timeFetched;
@@ -34,7 +34,6 @@ function* onRehydrate(action: RehydrateAction) {
   }
 }
 
-// TODO_ALEX: survey
 function* onFetchSurveyContent() {
   // @ts-expect-error TODO:
   const locale = yield select(selectors.currentLocaleSelector);
@@ -121,7 +120,7 @@ function* onSetLocale(action: ExtractActionFromActionType<"SET_LOCALE">) {
     yield put(actions.setTtsActive(false));
   }
   // unsubscribe from topic
-  // TODO_ALEX: use locales from submodule
+  // TODO:: use locales from submodule
   // messaging().unsubscribeFromTopic("oky_en_notifications");
   // messaging().unsubscribeFromTopic("oky_id_notifications");
   // messaging().unsubscribeFromTopic("oky_mn_notifications");

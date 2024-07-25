@@ -39,7 +39,7 @@ const combineTranslations = (translations: TranslationObject[]) => {
   }, {});
 };
 
-// TODO_ALEX fix typecasting
+// TODO: fix typecasting
 export const allTranslations = combineTranslations([
   appTranslations as unknown as TranslationObject,
   localeTranslations as unknown as TranslationObject,

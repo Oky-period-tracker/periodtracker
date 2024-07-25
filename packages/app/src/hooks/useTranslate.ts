@@ -73,6 +73,6 @@ export const useTranslate = () => {
       );
     }
 
-    return capitalizeFirstLetter(translation || "");
+    return capitalizeFirstLetter(translation || key);
   };
 };

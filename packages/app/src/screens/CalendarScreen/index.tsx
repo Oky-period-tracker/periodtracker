@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { Calendar, CalendarProps, DateData } from "react-native-calendars";
+import {
+  Calendar,
+  CalendarProps,
+  DateData,
+  LocaleConfig,
+} from "react-native-calendars";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { DisplayButton } from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -18,15 +23,25 @@ import { DayModal } from "../../components/DayModal";
 import { useSelector } from "react-redux";
 import {
   allCardAnswersSelector,
+  currentLocaleSelector,
   isFuturePredictionSelector,
 } from "../../redux/selectors";
 import { Hr } from "../../components/Hr";
+import { calendarTranslations } from "../../core/modules";
 
 // TODO: dynamic start & end dates?
 const startDate = moment().startOf("day").subtract(24, "months");
 const endDate = moment().startOf("day").add(12, "months");
 
+LocaleConfig.locales = {
+  ...LocaleConfig.locales,
+  ...calendarTranslations,
+};
+
 const CalendarScreen: ScreenComponent<"Calendar"> = ({ navigation }) => {
+  const locale = useSelector(currentLocaleSelector);
+  LocaleConfig.defaultLocale = locale;
+
   const [selected, setSelected] = useState("");
   const date = moment(selected);
   const dataEntry = usePredictDay(date);

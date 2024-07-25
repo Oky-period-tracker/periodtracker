@@ -37,8 +37,11 @@ export const ArticleContent = ({ articleId, text }: ArticleContentProps) => {
           );
         }
 
-        // TODO: disable translate
-        return <Text key={key}>{part}</Text>;
+        return (
+          <Text key={key} enableTranslate={false}>
+            {part}
+          </Text>
+        );
       })}
     </>
   );

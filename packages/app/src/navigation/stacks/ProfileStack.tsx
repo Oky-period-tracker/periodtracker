@@ -18,11 +18,11 @@ const config: StackConfig<keyof ProfileStackParamList> = {
       component: ProfileScreen,
     },
     EditProfile: {
-      title: "Edit Profile",
+      title: "profile_edit",
       component: EditProfileScreen,
     },
     AvatarAndTheme: {
-      title: "Avatars & Themes",
+      title: "avatar_amp_themes",
       component: AvatarAndThemeScreen,
     },
   },

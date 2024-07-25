@@ -34,14 +34,6 @@ export function toAge(birthday: Moment) {
   return years;
 }
 
-export const formatMonthYear = (date?: string) => {
-  if (!date) {
-    return "";
-  }
-  const momentDate = moment(date);
-  return momentDate.format("MMM") + " " + momentDate.format("YYYY");
-};
-
 export const isFutureDate = (date: Moment) => {
   return moment(date).isAfter(moment());
 };

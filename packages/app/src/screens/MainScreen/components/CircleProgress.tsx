@@ -32,7 +32,7 @@ export const CircleProgress = ({
         sliceColor={sliceColor}
         style={styles.pie}
       />
-      <Text style={styles.numberText}>
+      <Text style={styles.numberText} enableTranslate={false}>
         {cycleLength === 100 ? "-" : cycleLength}
       </Text>
       <Text>days</Text>

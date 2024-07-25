@@ -316,7 +316,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             onPress={togglePasswordModal}
             style={styles.securityButton}
           >
-            <Text style={styles.securityButtonText}>Change password</Text>
+            <Text style={styles.securityButtonText}>change_password</Text>
           </TouchableOpacity>
         </View>
         <Hr />
@@ -325,7 +325,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             onPress={toggleSecretModal}
             style={styles.securityButton}
           >
-            <Text style={styles.securityButtonText}>Change Secret</Text>
+            <Text style={styles.securityButtonText}>change_secret</Text>
           </TouchableOpacity>
         </View>
       </View>

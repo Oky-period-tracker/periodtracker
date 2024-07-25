@@ -16,6 +16,7 @@ export const InfoDisplay = ({
         <Text
           key={`info-${i}`}
           style={[styles.text, item.type === "HEADING" && styles.heading]}
+          enableTranslate={false}
         >
           {item.content}
         </Text>

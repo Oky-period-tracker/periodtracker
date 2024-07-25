@@ -13,11 +13,13 @@ export const A = ({
   href,
   onPress,
   style,
+  enableTranslate = false,
   ...props
 }: TextProps & {
   href?: string;
   onPress?: () => void;
   textStyle?: StyleProp<TextStyle>;
+  enableTranslate?: boolean;
 }) => {
   const onPressLink = () => {
     if (href) {
@@ -31,7 +33,14 @@ export const A = ({
     }
   };
 
-  return <Text onPress={onPressLink} style={[styles.text, style]} {...props} />;
+  return (
+    <Text
+      onPress={onPressLink}
+      style={[styles.text, style]}
+      enableTranslate={enableTranslate}
+      {...props}
+    />
+  );
 };
 
 const openURL = (href: string, target = "_blank") => {

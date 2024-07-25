@@ -15,10 +15,12 @@ import {
   unlockAsync,
 } from "expo-screen-orientation";
 import { IS_TABLET, IS_WEB } from "../../../services/device";
+import { useTranslate } from "../../../hooks/useTranslate";
 
 export const VideoPlayerModal = () => {
   const { width: screenWidth, height: screenHeight } = useScreenDimensions();
   const { selectedVideoId, setSelectedVideoId } = useEncyclopedia();
+  const translate = useTranslate();
 
   const videoData = useSelector((state) =>
     videoByIDSelector(state, selectedVideoId)
@@ -54,19 +56,31 @@ export const VideoPlayerModal = () => {
     videoData?.youtubeId && videoData?.youtubeId.length > 0;
   const canPlayYoutubeVideo = hasYoutubeVideo && canUseInternet;
 
+  const ConfirmAlert = () => {
+    Alert.alert(
+      translate("internet_required_title"),
+      translate("internet_required_text"),
+      [
+        {
+          text: translate("cancel"),
+          onPress: close,
+          style: "cancel",
+        },
+        {
+          text: translate("yes"),
+          onPress: onConfirm,
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   React.useEffect(() => {
     if (bundledSource || canPlayYoutubeVideo || !hasYoutubeVideo) {
       return;
     }
 
-    ConfirmAlert({
-      title: "internet_required_title",
-      text: "internet_required_text",
-      // title: translate('internet_required_title'),
-      // text: translate('internet_required_text'),
-      onPress: onConfirm,
-      onCancel: close,
-    });
+    ConfirmAlert();
   }, []);
 
   const videoAspectRatio = 16 / 9; // Aspect ratios might need to be saved in VideoData object if they vary
@@ -118,37 +132,6 @@ export const VideoPlayerModal = () => {
         </View>
       </View>
     </Modal>
-  );
-};
-
-const ConfirmAlert = ({
-  title,
-  text,
-  onPress,
-  onCancel,
-}: {
-  title: string;
-  text: string;
-  onPress: () => void;
-  onCancel: () => void;
-}) => {
-  Alert.alert(
-    title,
-    text,
-    [
-      {
-        text: "cancel",
-        // text: translate('cancel'),
-        onPress: onCancel,
-        style: "cancel",
-      },
-      {
-        text: "yes",
-        // text: translate("yes"),
-        onPress,
-      },
-    ],
-    { cancelable: false }
   );
 };
 

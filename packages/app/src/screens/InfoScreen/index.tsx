@@ -22,14 +22,13 @@ const InfoScreen: ScreenComponent<"Info"> = ({ navigation }) => {
     },
     {
       title: "privacy_policy",
-      description:
-        "privacy_info",
+      description: "privacy_info",
       onPress: () => navigation.navigate("Privacy"),
       component: <ArrowRight />,
     },
     {
       title: "encyclopedia",
-      description: "empty",
+      description: "",
       onPress: () => navigation.navigate("Encyclopedia"),
       component: <ArrowRight />,
     },

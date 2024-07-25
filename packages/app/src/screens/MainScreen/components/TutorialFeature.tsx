@@ -8,6 +8,11 @@ import { DatePicker } from "../../../components/DatePicker";
 import { NotesCard } from "../../DayScreen/components/DayTracker/NotesCard";
 import { useScreenDimensions } from "../../../hooks/useScreenDimensions";
 import { EmojiQuestionCard } from "../../DayScreen/components/DayTracker/EmojiQuestionCard";
+import { LocaleConfig } from "react-native-calendars";
+import { calendarTranslations } from "../../../core/modules";
+import { useSelector } from "../../../redux/useSelector";
+import { currentLocaleSelector } from "../../../redux/selectors";
+import { CloudOutline } from "../../../components/icons/CloudOutline";
 
 export const TutorialFeature = () => {
   const { state, stepConfig } = useTutorial();
@@ -25,17 +30,17 @@ export const CloudColors = () => {
   return (
     <View style={styles.clouds}>
       <View style={styles.cloudColumn}>
-        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
+        <Text style={styles.cloudText}>period</Text>
         <Cloud status={"danger"} />
       </View>
 
       <View style={styles.cloudColumn}>
-        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
+        <Text style={styles.cloudText}>ovulation</Text>
         <Cloud status={"tertiary"} />
       </View>
 
       <View style={styles.cloudColumn}>
-        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
+        <Text style={styles.cloudText}>non_period</Text>
         <Cloud status={"neutral"} />
       </View>
     </View>
@@ -46,24 +51,32 @@ export const CloudPrediction = () => {
   return (
     <View style={styles.clouds}>
       <View style={styles.cloudColumn}>
-        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
-        <Cloud status={"basic"} />
+        <Text style={styles.cloudText}>unverified_button</Text>
+        <CloudOutline status={"danger"} />
       </View>
 
       <View style={styles.cloudColumn}>
-        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
+        <Text style={styles.cloudText}>period</Text>
         <Cloud status={"danger"} />
       </View>
 
       <View style={styles.cloudColumn}>
-        <Text enableTranslate={false} style={styles.cloudText}>Period Day</Text>
+        <Text style={styles.cloudText}>non_period</Text>
         <Cloud status={"neutral"} />
       </View>
     </View>
   );
 };
 
+LocaleConfig.locales = {
+  ...LocaleConfig.locales,
+  ...calendarTranslations,
+};
+
 export const CalendarFeature = () => {
+  const locale = useSelector(currentLocaleSelector);
+  LocaleConfig.defaultLocale = locale;
+
   return (
     <View style={styles.calendarContainer}>
       <DatePicker
@@ -111,6 +124,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   cloudColumn: {
+    width: 80 + 16,
     margin: 8,
     flexDirection: "column",
     alignItems: "center",

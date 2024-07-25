@@ -12,7 +12,7 @@ export const AvatarMessage = () => {
 
   return (
     <View style={styles.container}>
-      <Text>{message}</Text>
+      <Text enableTranslate={false}>{message}</Text>
       <View style={styles.triangle} />
     </View>
   );

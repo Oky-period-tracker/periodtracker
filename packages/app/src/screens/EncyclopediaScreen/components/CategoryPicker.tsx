@@ -35,6 +35,7 @@ export const CategoryPicker = () => {
         text={"videos"}
         onPress={onVideosPress}
         status={videosStatus}
+        enableTranslate={true}
       />
 
       {allCategories.map((category) => {

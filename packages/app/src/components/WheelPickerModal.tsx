@@ -1,9 +1,4 @@
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { Input, InputProps } from "./Input";
 import { Modal } from "./Modal";
 import React from "react";
@@ -21,6 +16,7 @@ export const WheelPickerModal = ({
   searchEnabled,
   ToggleComponent,
   inputWrapperStyle,
+  enableTranslate = false,
   ...props
 }: {
   initialOption: WheelPickerOption | undefined;
@@ -30,6 +26,7 @@ export const WheelPickerModal = ({
   searchEnabled?: boolean;
   ToggleComponent?: React.FC<{ onPress: () => void }>;
   inputWrapperStyle?: ViewStyle;
+  enableTranslate?: boolean;
 } & InputProps) => {
   const { query, setQuery, results } = useSearch<WheelPickerOption>({
     options,
@@ -44,6 +41,7 @@ export const WheelPickerModal = ({
 
   const [visible, setIsVisible] = React.useState(false);
   const toggleVisible = () => {
+    console.log("*** toggleVisible");
     setIsVisible((current) => !current);
     setWheelOption(initialOption);
     setQuery("");
@@ -55,6 +53,8 @@ export const WheelPickerModal = ({
   };
 
   const displayValue = initialOption?.label || props.placeholder || "";
+
+  console.log("*** ToggleComponent", !!ToggleComponent);
 
   return (
     <>
@@ -86,6 +86,7 @@ export const WheelPickerModal = ({
             onChange={setWheelOption}
             resetDeps={[visible]}
             allowUndefined={allowUndefined}
+            enableTranslate={enableTranslate}
           />
         </View>
 

@@ -1,10 +1,23 @@
 import React from "react";
-import { Calendar, CalendarProps, DateData } from "react-native-calendars";
+import {
+  Calendar,
+  CalendarProps,
+  DateData,
+  LocaleConfig,
+} from "react-native-calendars";
 import { StyleSheet, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DisplayButton } from "./Button";
 import { formatDate } from "../services/utils";
 import { MarkedDates } from "react-native-calendars/src/types";
+import { calendarTranslations } from "../core/modules";
+import { useSelector } from "react-redux";
+import { currentLocaleSelector } from "../redux/selectors";
+
+LocaleConfig.locales = {
+  ...LocaleConfig.locales,
+  ...calendarTranslations,
+};
 
 export const DatePicker = ({
   selectedDate,
@@ -13,6 +26,9 @@ export const DatePicker = ({
   selectedDate: Date;
   onDayPress: (day: DateData) => void;
 }) => {
+  const locale = useSelector(currentLocaleSelector);
+  LocaleConfig.defaultLocale = locale;
+
   const dateString = formatDate(selectedDate);
 
   const markedDates: MarkedDates = {
@@ -30,6 +46,8 @@ export const DatePicker = ({
         style={styles.calendar}
         theme={theme}
         markedDates={markedDates}
+        enableSwipeMonths
+        hideExtraDays
         renderArrow={(direction) => {
           return (
             <DisplayButton style={styles.arrowButton}>

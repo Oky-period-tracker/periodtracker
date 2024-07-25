@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { answerDailyCard } from "../../../../redux/actions";
 import { DayModal } from "../../../../components/DayModal";
 import { useToggle } from "../../../../hooks/useToggle";
+import { useTranslate } from "../../../../hooks/useTranslate";
 
 export const EmojiQuestionCard = ({
   topic,
@@ -31,6 +32,8 @@ export const EmojiQuestionCard = ({
   mutuallyExclusive?: boolean;
   includeDayModal?: boolean;
 }) => {
+  const translate = useTranslate();
+
   const mutuallyExclusive = topic === "flow";
   const includeDayModal = topic === "flow";
   const [dayModalVisible, toggleDayModal] = useToggle();
@@ -91,12 +94,14 @@ export const EmojiQuestionCard = ({
               onEmojiPress(key);
             };
 
+            const text = translate(key);
+
             return (
               <EmojiBadge
                 key={key}
                 onPress={onPress}
                 emoji={emoji}
-                text={key}
+                text={text}
                 status={status}
                 size={size}
                 style={styles.emojiBadge}

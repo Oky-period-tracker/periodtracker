@@ -1,5 +1,3 @@
-import { Moment } from "moment";
-
 export type ValueOf<T> = T[keyof T];
 
 export function recordToArray<T extends object>(obj?: T) {
@@ -36,12 +34,4 @@ export const reactNodeExists = (node: React.ReactNode): boolean => {
 export const formatDate = (date: Date) => {
   // 'YYYY-MM-DD'
   return date.toISOString().split("T")[0];
-};
-
-export const formatMomentDayMonth = (date?: Moment) => {
-  // `DD MMM`
-  if (!date) {
-    return "";
-  }
-  return `${date.format("DD")}\n${date.format("MMM")}`;
 };

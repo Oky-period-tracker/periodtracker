@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  StyleProp,
   StyleSheet,
   TextInput,
   TextInputProps,
@@ -10,9 +11,10 @@ import {
 import { Text } from "./Text";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { ErrorText } from "./ErrorText";
+import { useTranslate } from "../hooks/useTranslate";
 
 export type InputProps = TextInputProps & {
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   inputStyle?: TextInputProps["style"];
   errors?: string[]; // TODO:
   errorKey?: string; // TODO:
@@ -36,6 +38,9 @@ export const Input = ({
   actionRight,
   ...props
 }: InputProps) => {
+  const translate = useTranslate();
+  const placeholderText = translate(placeholder || "");
+
   const ref = React.useRef<TextInput>(null);
 
   const onPress = () => {
@@ -52,6 +57,7 @@ export const Input = ({
       {hasError && <ErrorText>{errorKey}</ErrorText>}
       <TouchableOpacity
         onPress={onPress}
+        disabled={displayOnly}
         activeOpacity={1}
         style={[styles.container, props.multiline && styles.multiline, style]}
       >
@@ -60,15 +66,16 @@ export const Input = ({
           {displayOnly ? (
             <Text
               style={[styles.input, !value && { color: placeholderTextColor }]}
+              enableTranslate={false}
             >
-              {value || placeholder}
+              {value || placeholderText}
             </Text>
           ) : (
             <TextInput
               {...props}
               ref={ref}
               value={value}
-              placeholder={placeholder}
+              placeholder={placeholderText}
               style={[styles.input, inputStyle]}
               placeholderTextColor={placeholderTextColor}
             />

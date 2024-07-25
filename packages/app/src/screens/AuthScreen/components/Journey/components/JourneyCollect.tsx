@@ -4,15 +4,13 @@ import {
   WheelPicker,
   WheelPickerOption,
 } from "../../../../../components/WheelPicker";
-import { dayOptions, weekOptions } from "../journeyConfig";
 import { DateData } from "react-native-calendars";
 import { DatePicker } from "../../../../../components/DatePicker";
 
 export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
-  const { state, dispatch } = useJourney();
+  const { state, dispatch, dayOptions, weekOptions } = useJourney();
 
   const day = dayOptions.find((item) => item.value === state.periodLength);
-
   const week = weekOptions.find((item) => item.value === state.cycleLength);
 
   const setDate = (day: DateData) => {

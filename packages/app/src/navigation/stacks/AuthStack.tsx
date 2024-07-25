@@ -28,7 +28,7 @@ const config: StackConfig<keyof AuthStackParamList> = {
   initialRouteName: "Auth",
   screens: {
     Auth: {
-      title: "empty",
+      title: "",
       component: AuthScreen,
     },
     Info: {
@@ -52,11 +52,11 @@ const config: StackConfig<keyof AuthStackParamList> = {
       component: EncyclopediaScreen,
     },
     Articles: {
-      title: "Articles",
+      title: "",
       component: ArticlesScreen,
     },
     Help: {
-      title: "Find Help",
+      title: "find help",
       component: FindHelpScreen,
     },
   },

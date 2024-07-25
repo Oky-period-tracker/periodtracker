@@ -24,6 +24,7 @@ export type WheelPickerProps = {
   onChange: (option: WheelPickerOption | undefined) => void;
   resetDeps: unknown[];
   allowUndefined?: boolean;
+  enableTranslate?: boolean;
 };
 
 export const WheelPicker = ({
@@ -32,6 +33,7 @@ export const WheelPicker = ({
   onChange,
   resetDeps,
   allowUndefined = true,
+  enableTranslate = false,
 }: WheelPickerProps) => {
   const allOptions = React.useMemo(() => {
     if (allowUndefined) {
@@ -118,9 +120,18 @@ export const WheelPicker = ({
           onPress={onPress}
           style={[styles.item, isSelected && styles.selectedItem]}
         >
-          <Text enableTranslate={false} style={isSelected ? styles.selectedItemText : undefined}>
-            {item ? item.label : "Select"}
-          </Text>
+          {item ? (
+            <Text
+              enableTranslate={enableTranslate}
+              style={isSelected ? styles.selectedItemText : undefined}
+            >
+              {item.label}
+            </Text>
+          ) : (
+            <Text style={isSelected ? styles.selectedItemText : undefined}>
+              {"select"}
+            </Text>
+          )}
         </TouchableOpacity>
       );
     },

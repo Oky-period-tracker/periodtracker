@@ -4,13 +4,13 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { IconButton } from "../../../components/IconButton";
 import { DayData, useDayScroll } from "../DayScrollContext";
-import { formatMomentDayMonth } from "../../../services/utils";
 
 import { useDayStatus } from "../../../hooks/useDayStatus";
 import { useTutorial } from "../TutorialContext";
 import { useSelector } from "react-redux";
 import { isTutorialOneActiveSelector } from "../../../redux/selectors";
 import { useLoading } from "../../../contexts/LoadingProvider";
+import { useFormatDate } from "../../../hooks/useFormatDate";
 
 export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { data, wheelPanGesture, wheelAnimatedStyle } = useDayScroll();
@@ -32,6 +32,7 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
   const { dispatch: tutorialDispatch } = useTutorial();
 
   const isTutorialOneActive = useSelector(isTutorialOneActiveSelector);
+  const { formatMomentDayMonth } = useFormatDate();
 
   const {
     constants,

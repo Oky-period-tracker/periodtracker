@@ -51,15 +51,13 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
     },
     {
       title: "privacy_policy",
-      description:
-        "privacy_info",
+      description: "privacy_info",
       onPress: () => navigation.navigate("Privacy"),
       component: <ArrowRight />,
     },
     {
       title: "access_setting",
-      description:
-        "settings_info",
+      description: "settings_info",
       onPress: () => navigation.navigate("Access"),
       component: <ArrowRight />,
     },
@@ -87,7 +85,7 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
 
       <View style={styles.buttonContainer}>
         <Button onPress={logOut} status={"secondary"} style={styles.button}>
-          log_out
+          logout
         </Button>
         <Button
           onPress={deleteAccount}

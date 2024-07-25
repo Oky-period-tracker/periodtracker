@@ -35,7 +35,7 @@ export const ForgotPassword = () => {
         <Input
           value={name}
           onChangeText={setName}
-          placeholder="Name"
+          placeholder="name"
           errors={errors}
           errorKey={"username_too_short"}
           errorsVisible={errorsVisible}
@@ -43,7 +43,7 @@ export const ForgotPassword = () => {
         <Input
           value={answer}
           onChangeText={setAnswer}
-          placeholder="Secret answer"
+          placeholder="secret_answer"
           errors={errors}
           errorKey={"password_too_short"}
           errorsVisible={errorsVisible}

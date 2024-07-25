@@ -291,8 +291,9 @@ export const en: AppTranslations = {
   Oct: "Oct",
   Nov: "Nov",
   Dec: "Dec",
-  username_too_short: "Uesrname is too short, minimum 3 characters",
   password_too_short: "Passcode is too short, minimum 3 characters",
+  // -------------------------Error messages-----------------------------
+  username_too_short: "Username is too short, minimum 3 characters",
   passcodes_mismatch: "Passcodes do not match",
   secret_q_error_heading: "Secret question",
   secret_que_info: `For extra privacy, we will ask you this question if you forget your passcode.`,
@@ -487,4 +488,7 @@ These combined data points allow the app to make associations and identify patte
     "This is not available offline. Please confirm that are ok with using your data, or you are connected to wifi.",
   choose_one: "Choose one option from the list",
   secret_too_short: "Secret answer is too short, minimum 1 character",
+  // NEW
+  select: "Select",
+  change_password: "Change password",
 };

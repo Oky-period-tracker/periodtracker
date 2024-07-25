@@ -5,7 +5,6 @@ import { Text } from "./Text";
 import { Modal, ModalProps } from "./Modal";
 import { IconButton } from "./IconButton";
 import moment from "moment";
-import { formatMomentDayMonth } from "../services/utils";
 import {
   useHistoryPrediction,
   useIsActiveSelector,
@@ -36,6 +35,7 @@ import { Button } from "./Button";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 import { isFutureDate } from "../services/dateUtils";
+import { useFormatDate } from "../hooks/useFormatDate";
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
 export const DayModal = ({
@@ -46,6 +46,8 @@ export const DayModal = ({
   const selectedDayInfo = data;
   const inputDay = data.date;
   const { setAvatarMessage } = useAvatarMessage();
+  const { formatMomentDayMonth } = useFormatDate();
+
   // const dataEntry = usePredictDay(date);
 
   // const { id: themeName } = useTheme();
@@ -222,7 +224,7 @@ export const DayModal = ({
     //   analytics().logEvent("periodDayCloudTap", { user: currentUser });
     // }
     if (isFutureDate(inputDay)) {
-      setAvatarMessage("too_far_ahead");
+      setAvatarMessage("too_far_ahead", true);
       toggleVisible();
       return;
     }
@@ -275,7 +277,7 @@ export const DayModal = ({
     //   analytics().logEvent('noPeriodDayCloudTap', { user: currentUser })
     // }
     if (moment(inputDay).isAfter(moment())) {
-      setAvatarMessage("too_far_ahead");
+      setAvatarMessage("too_far_ahead", true);
       toggleVisible();
       return;
     }

@@ -35,7 +35,7 @@ export const DeleteAccount = () => {
         <Input
           value={name}
           onChangeText={setName}
-          placeholder="Name"
+          placeholder="name"
           errors={errors}
           errorKey={"username_too_short"}
           errorsVisible={errorsVisible}
@@ -43,7 +43,7 @@ export const DeleteAccount = () => {
         <Input
           value={password}
           onChangeText={setPassword}
-          placeholder="Password"
+          placeholder="password"
           secureTextEntry={true}
           errors={errors}
           errorKey={"password_too_short"}

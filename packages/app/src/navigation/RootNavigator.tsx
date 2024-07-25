@@ -71,8 +71,6 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
         screens: {
           Home: "",
           Calendar: "calendar",
-          TutorialOne: "tutorial-1",
-          TutorialTwo: "tutorial-2",
           Day: "day",
         },
       },
@@ -89,7 +87,7 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
       settings: {
         path: "settings",
         screens: {
-          Settings: "empty",
+          Settings: "",
           Access: "access_setting",
           Terms: "t_and_c",
           About: "about",

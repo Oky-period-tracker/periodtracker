@@ -13,6 +13,7 @@ type EmojiBadgeProps = {
   status?: ButtonProps["status"];
   size?: BadgeSize;
   disabled?: boolean;
+  enableTranslate?: boolean;
 };
 
 export const EmojiBadge = ({
@@ -23,6 +24,7 @@ export const EmojiBadge = ({
   status,
   size = "medium",
   disabled,
+  enableTranslate = false,
 }: EmojiBadgeProps) => {
   const dimensions = sizes[size];
 
@@ -38,9 +40,16 @@ export const EmojiBadge = ({
         onPress={onPress}
         disabled={disabled}
       >
-        <Text enableTranslate={false} style={{ fontSize: dimensions.emoji }}>{emoji}</Text>
+        <Text enableTranslate={false} style={{ fontSize: dimensions.emoji }}>
+          {emoji}
+        </Text>
       </Button>
-      <Text style={[styles.text, { fontSize: dimensions.text }]}>{text}</Text>
+      <Text
+        enableTranslate={enableTranslate}
+        style={[styles.text, { fontSize: dimensions.text }]}
+      >
+        {text}
+      </Text>
     </View>
   );
 };

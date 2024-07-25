@@ -20,11 +20,11 @@ const config: StackConfig<keyof EncyclopediaStackParamList> = {
       component: EncyclopediaScreen,
     },
     Articles: {
-      title: "Articles",
+      title: "",
       component: ArticlesScreen,
     },
     Help: {
-      title: "Find Help",
+      title: "find help",
       component: FindHelpScreen,
     },
   },

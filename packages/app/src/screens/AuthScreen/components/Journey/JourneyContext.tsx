@@ -1,4 +1,7 @@
 import React from "react";
+import { generateRange } from "../../../../services/utils";
+import { useTranslate } from "../../../../hooks/useTranslate";
+import { WheelPickerOption } from "../../../../components/WheelPicker";
 
 export type JourneyStep =
   | "first_period"
@@ -46,6 +49,14 @@ const initialState: JourneyState = {
   cycleLength: "3",
 };
 
+const DAYS_MIN = 1;
+const DAYS_MAX = 10;
+const WEEKS_MIN = 1;
+const WEEKS_MAX = 6;
+
+const daysRange = generateRange(DAYS_MIN, DAYS_MAX);
+const weeksRange = generateRange(WEEKS_MIN, WEEKS_MAX);
+
 function reducer(state: JourneyState, action: Action): JourneyState {
   switch (action.type) {
     case "continue":
@@ -72,6 +83,8 @@ export type JourneyContext = {
   state: JourneyState;
   dispatch: React.Dispatch<Action>;
   step: JourneyStep;
+  dayOptions: WheelPickerOption[];
+  weekOptions: WheelPickerOption[];
 };
 
 const defaultValue: JourneyContext = {
@@ -80,14 +93,29 @@ const defaultValue: JourneyContext = {
     //
   },
   step: journeySteps[0],
+  dayOptions: [],
+  weekOptions: [],
 };
 
 const JourneyContext = React.createContext<JourneyContext>(defaultValue);
 
 export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
-
   const step = journeySteps[state.stepIndex];
+
+  const translate = useTranslate();
+  const days = translate("days");
+  const weeks = translate("weeks");
+
+  const dayOptions = daysRange.map((item) => ({
+    label: `${item} ${days}`,
+    value: `${item}`,
+  }));
+
+  const weekOptions = weeksRange.map((item) => ({
+    label: `${item} ${weeks}`,
+    value: `${item}`,
+  }));
 
   return (
     <JourneyContext.Provider
@@ -95,6 +123,8 @@ export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
         state,
         dispatch,
         step,
+        dayOptions,
+        weekOptions,
       }}
     >
       {children}

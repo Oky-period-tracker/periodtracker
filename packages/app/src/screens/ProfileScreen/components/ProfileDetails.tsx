@@ -13,15 +13,18 @@ import {
   currentUserSelector,
 } from "../../../redux/selectors";
 import { useTodayPrediction } from "../../../contexts/PredictionProvider";
-import { formatMonthYear } from "../../../services/dateUtils";
 import { getAsset } from "../../../services/asset";
 import { SaveAccountButton } from "./SaveAccountButton";
+import { useTranslate } from "../../../hooks/useTranslate";
+import { useFormatDate } from "../../../hooks/useFormatDate";
 
 export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
   const currentUser = useSelector(currentUserSelector);
   const avatar = useSelector(currentAvatarSelector);
   const theme = useSelector(currentThemeSelector);
   const todayInfo = useTodayPrediction();
+  const translate = useTranslate();
+  const { formatMonthYear } = useFormatDate();
 
   const goToEdit = () => {
     navigation.navigate("EditProfile");
@@ -31,10 +34,12 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
     navigation.navigate("AvatarAndTheme");
   };
 
+  const days = translate("days");
+
   const cycleLength =
-    todayInfo.cycleLength === 100 ? "-" : `${todayInfo.cycleLength} days`;
+    todayInfo.cycleLength === 100 ? "-" : `${todayInfo.cycleLength} ${days}`;
   const periodLength =
-    todayInfo.periodLength === 0 ? "-" : `${todayInfo.periodLength} days`;
+    todayInfo.periodLength === 0 ? "-" : `${todayInfo.periodLength} ${days}`;
 
   return (
     <View style={styles.container}>
@@ -67,13 +72,13 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
             <Text enableTranslate={false} style={[styles.text, styles.bold]}>
               {currentUser?.name}
             </Text>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+            <Text style={[styles.text, styles.bold]}>
               {currentUser?.gender}
             </Text>
             <Text enableTranslate={false} style={[styles.text, styles.bold]}>
               {formatMonthYear(currentUser?.dateOfBirth)}
             </Text>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+            <Text style={[styles.text, styles.bold]}>
               {currentUser?.location}
             </Text>
           </View>

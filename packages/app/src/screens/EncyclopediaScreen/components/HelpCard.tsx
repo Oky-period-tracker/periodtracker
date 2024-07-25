@@ -9,7 +9,7 @@ import { Text } from "../../../components/Text";
 export const HelpCard = ({ ...props }: TouchableOpacityProps) => {
   return (
     <TouchableOpacity style={styles.helpCard} {...props}>
-      <Text>Find Help</Text>
+      <Text>find help</Text>
     </TouchableOpacity>
   );
 };

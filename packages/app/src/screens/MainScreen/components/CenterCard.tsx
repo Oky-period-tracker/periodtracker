@@ -23,8 +23,8 @@ export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
           ? todaysInfo.daysLeftOnPeriod
           : todaysInfo.daysUntilNextPeriod}
       </Text>
-      <Text enableTranslate={false} style={styles.text} status={status}>
-        {todaysInfo.onPeriod ? "days left" : "days to go"}
+      <Text style={styles.text} status={status}>
+        {todaysInfo.onPeriod ? "left" : "to_go"}
       </Text>
     </View>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet } from "react-native";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Input } from "./Input";
 import { Button } from "./Button";
@@ -7,9 +7,10 @@ import { Button } from "./Button";
 type SearchBarProps = {
   query: string;
   setQuery: (value: string) => void;
+  style?: StyleProp<ViewStyle>;
 };
 
-export const SearchBar = ({ query, setQuery }: SearchBarProps) => {
+export const SearchBar = ({ query, setQuery, style }: SearchBarProps) => {
   const reset = () => {
     setQuery("");
   };
@@ -18,7 +19,8 @@ export const SearchBar = ({ query, setQuery }: SearchBarProps) => {
     <Input
       value={query}
       onChangeText={setQuery}
-      placeholder={"Search"}
+      style={style}
+      placeholder={"type_to_search"}
       actionRight={
         query.length > 0 && (
           <Button style={styles.closeButton} status={"basic"} onPress={reset}>

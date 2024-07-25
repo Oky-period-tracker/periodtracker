@@ -45,15 +45,16 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
     };
   }, [state.stepIndex]);
 
+  const no = state.stepIndex === 0 ? "No" : "dont_remember";
+  const yes = state.stepIndex === 0 ? "Yes" : "remember";
+
   return (
     <View style={styles.container}>
       <View style={styles.body}>
         {status === "unknown" && (
           <>
             <Text style={styles.question}>{questionText}</Text>
-            <Text style={styles.disclaimer}>
-            survey_description
-            </Text>
+            <Text style={styles.disclaimer}>survey_description</Text>
           </>
         )}
         {status === "yes" && (
@@ -69,11 +70,11 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
         {status === "unknown" ? (
           <>
             <TouchableOpacity onPress={onNo} style={styles.button}>
-              <Text style={styles.buttonText}>No</Text>
+              <Text style={styles.buttonText}>{no}</Text>
             </TouchableOpacity>
             <Vr />
             <TouchableOpacity onPress={onYes} style={styles.button}>
-              <Text style={styles.buttonText}>Yes</Text>
+              <Text style={styles.buttonText}>{yes}</Text>
             </TouchableOpacity>
           </>
         ) : (

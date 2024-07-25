@@ -30,7 +30,7 @@ export const AskUserInfo = () => {
       <Input
         value={state.name}
         onChangeText={onChangeName}
-        placeholder="Name"
+        placeholder="name"
         errors={errors}
         errorKey={"username_too_short"}
         errorsVisible={state.errorsVisible}
@@ -47,7 +47,7 @@ export const AskUserInfo = () => {
       <Input
         value={state.password}
         onChangeText={onChangePassword}
-        placeholder="Password"
+        placeholder="password"
         secureTextEntry={true}
         errors={errors}
         errorKey={"password_too_short"}
@@ -62,7 +62,7 @@ export const AskUserInfo = () => {
       <Input
         value={state.passwordConfirm}
         onChangeText={onChangeConfirmPassword}
-        placeholder="Confirm password"
+        placeholder="confirm_password"
         secureTextEntry={true}
         errors={errors}
         errorKey={"passcodes_mismatch"}

@@ -20,9 +20,13 @@ export const AskAgree = () => {
     <View style={styles.container}>
       <Text>
         <Text>accept_conditions_1</Text>
-        <A onPress={goToPrivacy}>accept_conditions_2</A>
+        <A onPress={goToPrivacy} enableTranslate>
+          accept_conditions_2
+        </A>
         <Text>accept_conditions_3</Text>
-        <A onPress={goToTerms}>accept_conditions_4</A>
+        <A onPress={goToTerms} enableTranslate>
+          accept_conditions_4
+        </A>
         <Text>accept_conditions_5</Text>
       </Text>
       <Checkbox label={"i_agree"} onPress={toggleAgree} checked={state.agree} />

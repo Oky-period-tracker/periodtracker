@@ -46,7 +46,7 @@ export const NotesCard = ({ dataEntry }: { dataEntry?: DayData }) => {
         <Input
           value={notes}
           onChangeText={setNotes}
-          placeholder="write anything you like about your day"
+          placeholder="daily_note_description"
           multiline={true}
         />
       </View>

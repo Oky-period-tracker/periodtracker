@@ -36,14 +36,8 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   const category = useSelector((s) => categoryByIDSelector(s, categoryId));
   const subCategoriesById = useSelector(allSubCategoriesByIdSelector);
 
-  // Add safety checks for category and subCategoriesById
-  if (!category) {
-    console.error(`Category not found for id: ${categoryId}`);
-    return null;
-  }
-
   const subCategories = React.useMemo(() => {
-    return category.subCategories?.reduce<SubCategory[]>(
+    return category?.subCategories?.reduce<SubCategory[]>(
       (acc, subcategoryId) => {
         if (subcategoryIds.includes(subcategoryId)) {
           const subCategory = subCategoriesById[subcategoryId];
@@ -57,10 +51,18 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     );
   }, [category, subcategoryIds]);
 
+  // Add safety checks for category and subCategoriesById
+  if (!category) {
+    console.error(`Category not found for id: ${categoryId}`);
+    return null;
+  }
+
   return (
     <>
       <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
-        <Text style={styles.categoryName}>{category.name}</Text>
+        <Text enableTranslate={false} style={styles.categoryName}>
+          {category.name}
+        </Text>
         <DisplayButton status={"basic"} style={styles.categoryEmoji}>
           {!!category.tags?.primary?.emoji && (
             <Text enableTranslate={false}>{category.tags.primary.emoji}</Text>
@@ -78,7 +80,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
               })
             }
           >
-            <Text>{subcategory.name}</Text>
+            <Text enableTranslate={false}>{subcategory.name}</Text>
           </TouchableOpacity>
         ))}
     </>
@@ -105,7 +107,7 @@ const AccordionVideosItem = () => {
       >
         <Text style={styles.videosTitle}>{"videos"}</Text>
         <DisplayButton status={"basic"} style={styles.categoryEmoji}>
-          <Text>{"🎥"}</Text>
+          <Text enableTranslate={false}>{"🎥"}</Text>
         </DisplayButton>
       </TouchableOpacity>
       {expanded &&
@@ -117,7 +119,7 @@ const AccordionVideosItem = () => {
               setSelectedVideoId(video.id);
             }}
           >
-            <Text>{video.title}</Text>
+            <Text enableTranslate={false}>{video.title}</Text>
           </TouchableOpacity>
         ))}
       <VideoPlayerModal />

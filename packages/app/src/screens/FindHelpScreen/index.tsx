@@ -4,7 +4,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { HelpCenterCard } from "./components/HelpCenterCard";
-import { Input } from "../../components/Input";
 import { useSearch } from "../../hooks/useSearch";
 import { Button } from "../../components/Button";
 import { useToggle } from "../../hooks/useToggle";
@@ -17,6 +16,7 @@ import {
 } from "../../redux/selectors";
 import { useDispatch } from "react-redux";
 import { setSavedHelpCenters } from "../../redux/actions";
+import { SearchBar } from "../../components/SearchBar";
 
 const FindHelpScreen: ScreenComponent<"Help"> = () => {
   const helpCenters = useSelector(allHelpCentersForCurrentLocale);
@@ -91,12 +91,7 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
     <Screen>
       <View style={styles.searchRow}>
         <View style={styles.filterButton}>{/* Spacer */}</View>
-        <Input
-          value={query}
-          onChangeText={setQuery}
-          placeholder={"search"}
-          style={styles.search}
-        />
+        <SearchBar query={query} setQuery={setQuery} style={styles.search} />
         <Button
           style={styles.filterButton}
           status={hasFilters ? "secondary" : "basic"}

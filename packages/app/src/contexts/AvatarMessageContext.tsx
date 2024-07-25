@@ -3,10 +3,11 @@ import { useSelector } from "react-redux";
 import { allAvatarText } from "../redux/selectors";
 import { useScreenFocus } from "../hooks/useScreenFocus";
 import _ from "lodash";
+import { useTranslate } from "../hooks/useTranslate";
 
 export type AvatarMessageContext = {
   message: null | string;
-  setAvatarMessage: (translationKey: string) => void;
+  setAvatarMessage: (text: string, shouldTranslate?: boolean) => void;
 };
 
 const defaultValue: AvatarMessageContext = {
@@ -26,10 +27,10 @@ export const AvatarMessageProvider = ({
   const allMessages = useSelector(allAvatarText);
   const isScreenFocussed = useScreenFocus();
   const [message, setMessage] = React.useState("");
+  const translate = useTranslate();
 
-  const setAvatarMessage = (translationKey: string) => {
-    setMessage(translationKey);
-    // setMessage(translate(translationKey)); // TODO: translate
+  const setAvatarMessage = (text: string, shouldTranslate = false) => {
+    setMessage(shouldTranslate ? translate(text) : text);
   };
 
   const setRandomAvatarMessage = () => {

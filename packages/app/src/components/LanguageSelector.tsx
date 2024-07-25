@@ -47,6 +47,7 @@ export const LanguageSelector = (props: ButtonProps) => {
       options={options}
       onSelect={onSelect}
       ToggleComponent={LanguageButton}
+      enableTranslate
     />
   );
 };

@@ -32,10 +32,16 @@ export const HelpCenterCard = ({
     <TouchableOpacity onPress={toggleExpanded} style={styles.helpCenterCard}>
       <View style={styles.topRow}>
         <View style={styles.topRowText}>
-          <Text style={styles.title}>{helpCenter.title}</Text>
-          <Text style={styles.caption}>{helpCenter.caption}</Text>
+          <Text style={styles.title} enableTranslate={false}>
+            {helpCenter.title}
+          </Text>
+          <Text style={styles.caption} enableTranslate={false}>
+            {helpCenter.caption}
+          </Text>
         </View>
-        <Text style={styles.emoji}>{emoji}</Text>
+        <Text style={styles.emoji} enableTranslate={false}>
+          {emoji}
+        </Text>
         <Button
           style={styles.saveButton}
           status={isSaved ? "danger" : "basic"}
@@ -51,17 +57,25 @@ export const HelpCenterCard = ({
 
       {expanded && (
         <>
-          <Text style={styles.subtitle}>Phone number:</Text>
-          <Text style={styles.text}>{helpCenter.contactOne}</Text>
+          <Text style={styles.subtitle}>card_phone_number</Text>
+          <Text style={styles.text} enableTranslate={false}>
+            {helpCenter.contactOne}
+          </Text>
           {helpCenter.contactTwo && (
-            <Text style={styles.text}>{helpCenter.contactTwo}</Text>
+            <Text style={styles.text} enableTranslate={false}>
+              {helpCenter.contactTwo}
+            </Text>
           )}
 
-          <Text style={styles.subtitle}>Address:</Text>
-          <Text style={styles.text}>{helpCenter.address}</Text>
+          <Text style={styles.subtitle}>card_address</Text>
+          <Text style={styles.text} enableTranslate={false}>
+            {helpCenter.address}
+          </Text>
           {/* TODO: Region and Subregion */}
 
-          <Text style={styles.subtitle}>Website:</Text>
+          <Text style={styles.subtitle} enableTranslate={false}>
+            card_website
+          </Text>
           {websites.map((website) => (
             <A key={website} href={website} style={styles.website}>
               {website}

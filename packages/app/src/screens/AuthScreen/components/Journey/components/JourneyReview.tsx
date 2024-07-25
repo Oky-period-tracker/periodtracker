@@ -59,13 +59,14 @@ export const JourneyReview = () => {
             <React.Fragment key={`journey-review-${step}`}>
               <TouchableOpacity onPress={onPress} style={styles.row}>
                 <DisplayButton style={styles.iconLeft}>
-                  {/* @ts-expect-error TODO */}
+                  {/* @ts-expect-error TODO: */}
                   <FontAwesome size={20} name={iconName} color={"#fff"} />
                 </DisplayButton>
 
                 <View style={styles.rowBody}>
                   <Text style={styles.question}>{questionText}</Text>
-                  <Text style={styles.answer}>
+                  <Text style={styles.answer} enableTranslate={false}>
+                    {/* TODO: translate date string & yes/no*/}
                     {getAnswerForStep(state, step)}
                   </Text>
                 </View>

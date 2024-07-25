@@ -5,7 +5,6 @@ import { DisplayButton } from "./Button";
 import { EmojiBadge } from "./EmojiBadge";
 import { IconButton } from "./IconButton";
 import { DayData, useDayScroll } from "../screens/MainScreen/DayScrollContext";
-import { formatMomentDayMonth } from "../services/utils";
 import { emojiOptions } from "../screens/DayScreen/components/DayTracker/config";
 import { useSelector } from "../redux/useSelector";
 import moment from "moment";
@@ -24,6 +23,8 @@ import { isFutureDate } from "../services/dateUtils";
 import { useDayStatus } from "../hooks/useDayStatus";
 import { Text } from "./Text";
 import { ThemeName } from "../core/modules/translations";
+import { useTranslate } from "../hooks/useTranslate";
+import { useFormatDate } from "../hooks/useFormatDate";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -41,7 +42,8 @@ const IconSizeForTheme: Record<ThemeName, number> = {
 export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const { setLoading } = useLoading();
   const { setAvatarMessage } = useAvatarMessage();
-
+  const { formatMomentDayMonth } = useFormatDate();
+  const translate = useTranslate();
   const { dispatch: tutorialDispatch } = useTutorial();
   const { isDragging, constants } = useDayScroll();
   const { CARD_WIDTH, CARD_MARGIN } = constants;
@@ -72,7 +74,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     }
 
     if (isFutureDate(dataEntry.date)) {
-      setAvatarMessage("carousel_no_access");
+      setAvatarMessage("carousel_no_access", true);
       return;
     }
 
@@ -101,9 +103,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
           style={{ width: CARD_WIDTH / 3 }}
         >
           <View style={styles.viewDayText}>
-            <Text enableTranslate={true} style={styles.dayText}>
-              Day
-            </Text>
+            <Text style={styles.dayText}>Day</Text>
             <Text enableTranslate={false} style={styles.dayText}>
               {` ${day}`}
             </Text>
@@ -147,11 +147,13 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
               emojiOptions[key][answer]
             : defaultEmoji;
 
+          const text = translate(key);
+
           return (
             <EmojiBadge
               key={`${dataEntry.date}-${key}`}
               emoji={emoji}
-              text={key} // TODO: translate
+              text={text}
               status={isEmojiActive ? status : "basic"}
               disabled
             />

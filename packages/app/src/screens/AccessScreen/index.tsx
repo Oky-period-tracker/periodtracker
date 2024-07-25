@@ -11,6 +11,7 @@ import { shareApp } from "../../redux/actions";
 import { useDispatch } from "react-redux";
 import { WEBSITE_URL } from "../../config/env";
 import { useLoading } from "../../contexts/LoadingProvider";
+import { useTranslate } from "../../hooks/useTranslate";
 
 const AccessScreen: ScreenComponent<"Access"> = ({ navigation }) => {
   const { setLoading } = useLoading();
@@ -61,6 +62,7 @@ const LaunchButton = (props: ButtonProps) => {
 
 const ShareButton = () => {
   const dispatch = useDispatch();
+  const translate = useTranslate();
 
   const shareLink = () => {
     if (!Sharing.isAvailableAsync()) {
@@ -70,8 +72,7 @@ const ShareButton = () => {
     dispatch(shareApp());
 
     Sharing.shareAsync(WEBSITE_URL, {
-      dialogTitle: "join_oky_message",
-      // translate('join_oky_message'), // TODO:
+      dialogTitle: translate("join_oky_message"),
     });
   };
 

@@ -32,7 +32,7 @@ export const AskSecret = () => {
         initialOption={initialSecretOption}
         options={questionOptions}
         onSelect={onChangeQuestion}
-        placeholder={"Secret Question"}
+        placeholder={"secret_question"}
         errors={errors}
         errorKey={"no_secret_question"}
         errorsVisible={state.errorsVisible}
@@ -47,7 +47,7 @@ export const AskSecret = () => {
       <Input
         value={state.secretAnswer}
         onChangeText={onChangeAnswer}
-        placeholder="Answer"
+        placeholder="secret_answer"
         errors={errors}
         errorKey={"secret_too_short"}
         errorsVisible={state.errorsVisible}

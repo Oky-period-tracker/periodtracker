@@ -16,12 +16,13 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
 
   return (
     <Screen>
+      <HelpCard onPress={goToHelpScreen} />
+
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        <HelpCard onPress={goToHelpScreen} />
         <SearchBar query={query} setQuery={setQuery} />
         <CategoryPicker />
         <Accordion />

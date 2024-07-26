@@ -11,14 +11,14 @@ export const AuthToggle = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={onLogInPress}>
-        <Text style={styles.text}>log_in</Text>
+      <TouchableOpacity style={styles.button} onPress={onSignUpPress}>
+        <Text style={styles.text}>sign_up</Text>
       </TouchableOpacity>
 
       <Hr />
 
-      <TouchableOpacity style={styles.button} onPress={onSignUpPress}>
-        <Text style={styles.text}>sign_up</Text>
+      <TouchableOpacity style={styles.button} onPress={onLogInPress}>
+        <Text style={styles.text}>log_in</Text>
       </TouchableOpacity>
     </View>
   );

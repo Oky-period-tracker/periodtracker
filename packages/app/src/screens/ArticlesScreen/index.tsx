@@ -12,6 +12,7 @@ import {
   articlesSelector,
   subCategoryByIDSelector,
 } from "../../redux/selectors";
+import { palette } from "../../config/theme";
 
 const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   const { query, setQuery, articleIds } = useEncyclopedia();
@@ -84,10 +85,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 24,
+    color: palette["danger"].base,
   },
   subCategory: {
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 24,
+    color: palette["danger"].base,
   },
 });

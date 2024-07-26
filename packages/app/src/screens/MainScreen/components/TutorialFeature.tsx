@@ -13,6 +13,7 @@ import { calendarTranslations } from "../../../core/modules";
 import { useSelector } from "../../../redux/useSelector";
 import { currentLocaleSelector } from "../../../redux/selectors";
 import { CloudOutline } from "../../../components/icons/CloudOutline";
+import moment from "moment";
 
 export const TutorialFeature = () => {
   const { state, stepConfig } = useTutorial();
@@ -80,7 +81,7 @@ export const CalendarFeature = () => {
   return (
     <View style={styles.calendarContainer}>
       <DatePicker
-        selectedDate={new Date()}
+        selectedDate={moment()}
         onDayPress={() => {
           //
         }}

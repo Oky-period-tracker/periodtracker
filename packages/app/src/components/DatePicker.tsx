@@ -8,11 +8,11 @@ import {
 import { StyleSheet, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DisplayButton } from "./Button";
-import { formatDate } from "../services/utils";
 import { MarkedDates } from "react-native-calendars/src/types";
 import { calendarTranslations } from "../core/modules";
 import { useSelector } from "react-redux";
 import { currentLocaleSelector } from "../redux/selectors";
+import { Moment } from "moment";
 
 LocaleConfig.locales = {
   ...LocaleConfig.locales,
@@ -23,13 +23,13 @@ export const DatePicker = ({
   selectedDate,
   onDayPress,
 }: {
-  selectedDate: Date;
+  selectedDate: Moment;
   onDayPress: (day: DateData) => void;
 }) => {
   const locale = useSelector(currentLocaleSelector);
   LocaleConfig.defaultLocale = locale;
 
-  const dateString = formatDate(selectedDate);
+  const dateString = selectedDate.format("YYYY-MM-DD");
 
   const markedDates: MarkedDates = {
     [dateString]: {

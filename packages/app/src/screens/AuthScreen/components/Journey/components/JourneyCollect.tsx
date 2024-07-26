@@ -6,6 +6,7 @@ import {
 } from "../../../../../components/WheelPicker";
 import { DateData } from "react-native-calendars";
 import { DatePicker } from "../../../../../components/DatePicker";
+import moment from "moment";
 
 export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const { state, dispatch, dayOptions, weekOptions } = useJourney();
@@ -14,7 +15,7 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const week = weekOptions.find((item) => item.value === state.cycleLength);
 
   const setDate = (day: DateData) => {
-    const value = new Date(day.timestamp);
+    const value = moment(day.timestamp);
     dispatch({ type: "startDate", value });
   };
 

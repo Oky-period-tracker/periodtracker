@@ -37,6 +37,7 @@ export const AskSecret = () => {
         errorKey={"no_secret_question"}
         errorsVisible={state.errorsVisible}
         allowUndefined={false}
+        enableTranslate
         actionLeft={
           <InfoButton
             title={"secret_q_error_heading"}

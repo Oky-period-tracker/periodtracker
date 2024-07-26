@@ -2,6 +2,8 @@ import React from "react";
 import { generateRange } from "../../../../services/utils";
 import { useTranslate } from "../../../../hooks/useTranslate";
 import { WheelPickerOption } from "../../../../components/WheelPicker";
+import moment, { Moment } from "moment";
+import { useFormatDate } from "../../../../hooks/useFormatDate";
 
 export type JourneyStep =
   | "first_period"
@@ -20,7 +22,7 @@ type JourneyState = {
   stepIndex: number;
   // Answers
   isActive: boolean;
-  startDate: Date;
+  startDate: Moment;
   periodLength: string | undefined; // days
   cycleLength: string | undefined; // weeks
 };
@@ -37,9 +39,7 @@ type Action<T extends keyof JourneyState = keyof JourneyState> =
       type: "skip";
     };
 
-const now = new Date().getTime();
-const twoWeeks = 1000 * 60 * 60 * 24 * 7 * 2;
-const twoWeeksAgo = new Date(now - twoWeeks);
+const twoWeeksAgo = moment.utc().startOf("day").clone().subtract(14, "days");
 
 const initialState: JourneyState = {
   stepIndex: 0,
@@ -85,16 +85,16 @@ export type JourneyContext = {
   step: JourneyStep;
   dayOptions: WheelPickerOption[];
   weekOptions: WheelPickerOption[];
+  getAnswerForStep: (state: JourneyState, step: JourneyStep) => string;
 };
 
 const defaultValue: JourneyContext = {
   state: initialState,
-  dispatch: () => {
-    //
-  },
+  dispatch: () => {},
   step: journeySteps[0],
   dayOptions: [],
   weekOptions: [],
+  getAnswerForStep: () => "",
 };
 
 const JourneyContext = React.createContext<JourneyContext>(defaultValue);
@@ -103,6 +103,7 @@ export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const step = journeySteps[state.stepIndex];
 
+  const { formatDayMonthYear } = useFormatDate();
   const translate = useTranslate();
   const days = translate("days");
   const weeks = translate("weeks");
@@ -117,6 +118,22 @@ export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
     value: `${item}`,
   }));
 
+  const getAnswerForStep = (state: JourneyState, step: JourneyStep): string => {
+    switch (step) {
+      case "first_period":
+        return translate(state.isActive ? "Yes" : "No");
+
+      case "when_last_period":
+        return state.isActive ? formatDayMonthYear(state.startDate) : "-";
+
+      case "number_days":
+        return state.isActive && state.periodLength ? state.periodLength : "-";
+
+      case "number_weeks_between":
+        return state.isActive && state.cycleLength ? state.cycleLength : "-";
+    }
+  };
+
   return (
     <JourneyContext.Provider
       value={{
@@ -125,6 +142,7 @@ export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
         step,
         dayOptions,
         weekOptions,
+        getAnswerForStep,
       }}
     >
       {children}
@@ -134,20 +152,4 @@ export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
 
 export const useJourney = () => {
   return React.useContext(JourneyContext);
-};
-
-export const getAnswerForStep = (state: JourneyState, step: JourneyStep) => {
-  switch (step) {
-    case "first_period":
-      return state.isActive ? "Yes" : "No";
-
-    case "when_last_period":
-      return state.isActive ? state.startDate.toDateString() : "N/A";
-
-    case "number_days":
-      return state.isActive ? state.periodLength : "N/A";
-
-    case "number_weeks_between":
-      return state.isActive ? state.cycleLength : "N/A";
-  }
 };

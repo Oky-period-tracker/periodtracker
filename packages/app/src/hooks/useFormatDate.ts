@@ -27,5 +27,15 @@ export const useFormatDate = () => {
     return monthName + " " + momentDate.format("YYYY");
   };
 
-  return { formatMonthYear, formatMomentDayMonth };
+  const formatDayMonthYear = (date?: Moment) => {
+    if (!date) {
+      return "";
+    }
+    const momentDate = moment(date);
+    const monthNumber = parseInt(momentDate.format("M")) - 1;
+    const monthName = translations.monthNamesShort[monthNumber];
+    return `${date.format("DD")} ${monthName} ${momentDate.format("YYYY")}`;
+  };
+
+  return { formatMomentDayMonth, formatMonthYear, formatDayMonthYear };
 };

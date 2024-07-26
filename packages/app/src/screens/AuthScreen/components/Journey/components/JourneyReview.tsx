@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useJourney, journeySteps, getAnswerForStep } from "../JourneyContext";
+import { useJourney, journeySteps } from "../JourneyContext";
 import { Hr } from "../../../../../components/Hr";
 import { journeyConfig } from "../journeyConfig";
 import { DisplayButton } from "../../../../../components/Button";
@@ -12,7 +12,7 @@ import { useAuth } from "../../../../../contexts/AuthContext";
 import { Text } from "../../../../../components/Text";
 
 export const JourneyReview = () => {
-  const { state, dispatch } = useJourney();
+  const { state, dispatch, getAnswerForStep } = useJourney();
 
   const goToStep = (value: number) => {
     dispatch({ type: "stepIndex", value });

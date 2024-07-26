@@ -60,10 +60,17 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   return (
     <>
       <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
-        <Text enableTranslate={false} style={styles.categoryName}>
+        <Text
+          status={expanded ? "danger" : "secondary"}
+          style={styles.categoryName}
+          enableTranslate={false}
+        >
           {category.name}
         </Text>
-        <DisplayButton status={"basic"} style={styles.categoryEmoji}>
+        <DisplayButton
+          status={expanded ? "danger" : "basic"}
+          style={styles.categoryEmoji}
+        >
           {!!category.tags?.primary?.emoji && (
             <Text enableTranslate={false}>{category.tags.primary.emoji}</Text>
           )}
@@ -105,8 +112,16 @@ const AccordionVideosItem = () => {
         style={[styles.category, styles.videos]}
         onPress={toggleExpanded}
       >
-        <Text style={styles.videosTitle}>{"videos"}</Text>
-        <DisplayButton status={"basic"} style={styles.categoryEmoji}>
+        <Text
+          status={expanded ? "danger" : "secondary"}
+          style={styles.videosTitle}
+        >
+          {"videos"}
+        </Text>
+        <DisplayButton
+          status={expanded ? "danger" : "basic"}
+          style={styles.categoryEmoji}
+        >
           <Text enableTranslate={false}>{"🎥"}</Text>
         </DisplayButton>
       </TouchableOpacity>

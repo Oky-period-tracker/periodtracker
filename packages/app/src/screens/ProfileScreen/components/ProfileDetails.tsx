@@ -150,7 +150,8 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    height: 100,
+    flex: 1,
+    minHeight: 100,
     padding: 12,
     alignItems: "center",
     justifyContent: "center",
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
   },
   avatarImage: {
     width: "100%",
-    height: "100%",
+    height: 80,
     alignSelf: "center",
     aspectRatio: 1,
     resizeMode: "contain",

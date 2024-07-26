@@ -123,12 +123,12 @@ export const WheelPicker = ({
           {item ? (
             <Text
               enableTranslate={enableTranslate}
-              style={isSelected ? styles.selectedItemText : undefined}
+              style={[styles.text, isSelected && styles.selectedItemText]}
             >
               {item.label}
             </Text>
           ) : (
-            <Text style={isSelected ? styles.selectedItemText : undefined}>
+            <Text style={[styles.text, isSelected && styles.selectedItemText]}>
               {"select"}
             </Text>
           )}
@@ -203,8 +203,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#f0f0f0",
   },
+  text: {
+    textAlign: "center",
+  },
   selectedItemText: {
-    fontSize: 16,
+    // fontSize: 16, TODO: Add ITEM_HEIGHT prop to allow for multiline options with larger fontsize when selected
     fontWeight: "bold",
   },
   bottomSpace: {

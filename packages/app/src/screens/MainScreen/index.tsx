@@ -21,6 +21,7 @@ import {
   useStopLoadingEffect,
 } from "../../contexts/LoadingProvider";
 import { AvatarMessageProvider } from "../../contexts/AvatarMessageContext";
+import { IS_ANDROID } from "../../services/device";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
   useFetchSurvey();
@@ -76,39 +77,42 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation, route }) => {
   const goToCalendar = () => navigation.navigate("Calendar");
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.body} onLayout={onBodyLayout}>
-        <View style={styles.topLeft} onLayout={onTopLeftLayout}>
-          <CircleProgress
-            onPress={goToCalendar}
-            style={circleProgressHidden && styles.hidden}
-          />
-          <TouchableOpacity
-            onPress={goToCalendar}
-            style={circleProgressHidden && styles.hidden}
+    <>
+      <View style={styles.screen}>
+        <View style={styles.body} onLayout={onBodyLayout}>
+          <View style={styles.topLeft} onLayout={onTopLeftLayout}>
+            <CircleProgress
+              onPress={goToCalendar}
+              style={circleProgressHidden && styles.hidden}
+            />
+            <TouchableOpacity
+              onPress={goToCalendar}
+              style={circleProgressHidden && styles.hidden}
+            >
+              <Text>calendar</Text>
+            </TouchableOpacity>
+            <Avatar style={avatarHidden && styles.hidden} />
+          </View>
+
+          <View
+            style={[styles.wheelContainer, { width, right: -width / 2 }]}
+            onLayout={onWheelLayout}
           >
-            <Text>calendar</Text>
-          </TouchableOpacity>
-          <Avatar style={avatarHidden && styles.hidden} />
+            <Wheel style={wheelHidden && styles.hidden} />
+            <CenterCard style={centerCardHidden && styles.hidden} />
+          </View>
         </View>
 
         <View
-          style={[styles.wheelContainer, { width, right: -width / 2 }]}
-          onLayout={onWheelLayout}
+          style={[styles.carouselContainer, carouselHidden && styles.hidden]}
         >
-          <Wheel style={wheelHidden && styles.hidden} />
-          <CenterCard style={centerCardHidden && styles.hidden} />
+          <Carousel />
         </View>
+
+        <TutorialArrow />
+        <TutorialTextbox />
+        <TutorialFeature />
       </View>
-
-      <View style={[styles.carouselContainer, carouselHidden && styles.hidden]}>
-        <Carousel />
-      </View>
-
-      <TutorialArrow />
-      <TutorialTextbox />
-      <TutorialFeature />
-
       {selectedItem && (
         <DayModal
           visible={dayModalVisible}
@@ -116,7 +120,7 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation, route }) => {
           data={selectedItem}
         />
       )}
-    </View>
+    </>
   );
 };
 
@@ -159,6 +163,6 @@ const styles = StyleSheet.create({
   },
   // Tutorial
   hidden: {
-    opacity: 0.05,
+    opacity: IS_ANDROID ? 0.05 : 0.1,
   },
 });

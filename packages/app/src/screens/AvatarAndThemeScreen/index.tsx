@@ -12,7 +12,8 @@ import {
 } from "../../redux/selectors";
 import { useDispatch } from "react-redux";
 import { setAvatar, setTheme } from "../../redux/actions";
-import { PaletteStatus } from "../../config/theme";
+import { PaletteStatus, palette } from "../../config/theme";
+import { Text } from "../../components/Text";
 
 const AvatarAndThemeScreen = () => {
   return <AvatarAndThemeSelect />;
@@ -49,6 +50,7 @@ export const AvatarAndThemeSelect = ({
 
   return (
     <Screen style={styles.screen}>
+      <Text style={styles.title}>avatar_amp_themes_login</Text>
       <View style={styles.avatars}>
         {avatarNames.map((avatar) => {
           const { showCheck, checkStatus } = getCheckStatus({
@@ -72,6 +74,9 @@ export const AvatarAndThemeSelect = ({
                 source={getAsset(`avatars.${avatar}.theme`)}
                 style={styles.avatarImage}
               />
+              <Text style={styles.name} enableTranslate={false}>
+                {avatar}
+              </Text>
               {showCheck && (
                 <CheckButton style={styles.check} status={checkStatus} />
               )}
@@ -103,6 +108,9 @@ export const AvatarAndThemeSelect = ({
                 source={getAsset(`backgrounds.${theme}.default`)}
                 style={styles.themeImage}
               />
+              <Text style={styles.name} enableTranslate={false}>
+                {theme}
+              </Text>
               {showCheck && (
                 <CheckButton style={styles.check} status={checkStatus} />
               )}
@@ -154,6 +162,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignContent: "center",
   },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: palette["secondary"].base,
+    textAlign: "center",
+    marginBottom: 12,
+  },
   avatars: {
     flexDirection: "row",
     justifyContent: "center",
@@ -204,5 +219,14 @@ const styles = StyleSheet.create({
     height: "100%",
     alignSelf: "center",
     resizeMode: "cover",
+  },
+  name: {
+    position: "absolute",
+    top: 2,
+    left: 0,
+    width: "100%",
+    fontWeight: "bold",
+    color: palette["secondary"].base,
+    textAlign: "center",
   },
 });

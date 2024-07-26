@@ -1,16 +1,22 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { JourneyStep, useJourney } from "../JourneyContext";
 import { JourneyCollect } from "./JourneyCollect";
 import { journeyConfig } from "../journeyConfig";
 import { Vr } from "../../../../../components/Vr";
 import { Text } from "../../../../../components/Text";
+import { useSelector } from "../../../../../redux/useSelector";
+import { currentAvatarSelector } from "../../../../../redux/selectors";
+import { getAsset } from "../../../../../services/asset";
+import { palette } from "../../../../../config/theme";
 
 type Status = "unknown" | "no" | "yes";
 
 export const JourneyCard = ({ step }: { step: JourneyStep }) => {
   const { state, dispatch } = useJourney();
   const [status, setStatus] = React.useState<Status>("unknown");
+
+  const selectedAvatar = useSelector(currentAvatarSelector);
 
   const { questionText, noText, yesText } = journeyConfig[step];
 
@@ -53,17 +59,31 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
       <View style={styles.body}>
         {status === "unknown" && (
           <>
+            <Image
+              resizeMode="contain"
+              source={getAsset(`avatars.${selectedAvatar}.bubbles`)}
+              style={styles.image}
+            />
             <Text style={styles.question}>{questionText}</Text>
             <Text style={styles.disclaimer}>survey_description</Text>
           </>
         )}
         {status === "yes" && (
           <>
-            <Text style={styles.response}>{yesText}</Text>
+            <Text style={styles.yesTitle}>{yesText}</Text>
             <JourneyCollect step={step} />
           </>
         )}
-        {status === "no" && <Text style={styles.response}>{noText}</Text>}
+        {status === "no" && (
+          <>
+            <Image
+              resizeMode="contain"
+              source={getAsset(`avatars.${selectedAvatar}.stationary_colour`)}
+              style={styles.image}
+            />
+            <Text style={styles.response}>{noText}</Text>
+          </>
+        )}
       </View>
 
       <View style={styles.buttons}>
@@ -100,15 +120,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 24,
   },
+  image: {
+    marginBottom: 48,
+  },
   disclaimer: {
     textAlign: "center",
     fontSize: 10,
   },
   question: {
     textAlign: "center",
-    fontSize: 18,
+    fontSize: 26,
     fontWeight: "bold",
-    marginBottom: 12,
+    marginBottom: 48,
+    color: palette["secondary"].base,
+  },
+  yesTitle: {
+    textAlign: "center",
+    color: palette["secondary"].base,
+    fontWeight: "bold",
+    fontSize: 20,
+    marginBottom: 24,
   },
   response: {
     textAlign: "center",

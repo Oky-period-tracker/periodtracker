@@ -7,6 +7,7 @@ import { Hr } from "./Hr";
 import { useSearch } from "../hooks/useSearch";
 import { SearchBar } from "./SearchBar";
 import { Text } from "./Text";
+import { useTranslate } from "../hooks/useTranslate";
 
 export const WheelPickerModal = ({
   initialOption,
@@ -28,6 +29,7 @@ export const WheelPickerModal = ({
   inputWrapperStyle?: ViewStyle;
   enableTranslate?: boolean;
 } & InputProps) => {
+  const translate = useTranslate();
   const { query, setQuery, results } = useSearch<WheelPickerOption>({
     options,
     keys: searchKeys,
@@ -51,7 +53,8 @@ export const WheelPickerModal = ({
     toggleVisible();
   };
 
-  const displayValue = initialOption?.label || props.placeholder || "";
+  const value = initialOption?.label || props.placeholder || "";
+  const displayValue = enableTranslate ? translate(value) : value;
 
   return (
     <>

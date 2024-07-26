@@ -9,11 +9,11 @@ import {
   WheelPickerOption,
   useInitialWheelOption,
 } from "../../../components/WheelPicker";
-import { helpCenterAttributes } from "../../../data/helpCenter";
 import { Checkbox } from "../../../components/Checkbox";
 import { Vr } from "../../../components/Vr";
 import { useProvinceOptions } from "../../../hooks/useProvinceOptions";
 import { useCountryOptions } from "../../../hooks/useCountryOptions";
+import { useHelpCenterAttributes } from "../useHelpCenterAttributes";
 
 type HelpFiltersModalProps = {
   visible: boolean;
@@ -55,6 +55,7 @@ export const HelpFiltersModal = ({
     WheelPickerOption | undefined
   >(initialProvince);
 
+  const helpCenterAttributes = useHelpCenterAttributes();
   const [selectedAttributes, setSelectedAttributes] = React.useState<number[]>(
     []
   );
@@ -161,6 +162,7 @@ export const HelpFiltersModal = ({
                 onPress={onPress}
                 checked={checked}
                 size={"small"}
+                enableTranslate={false}
               />
             );
           })}
@@ -170,7 +172,7 @@ export const HelpFiltersModal = ({
       <Hr />
       <View style={styles.buttons}>
         <TouchableOpacity onPress={clearFilters} style={styles.confirm}>
-          <Text enableTranslate={false} style={styles.confirmText}>Clear all</Text>
+          <Text style={styles.confirmText}>clear_filters</Text>
         </TouchableOpacity>
         <Vr />
         <TouchableOpacity onPress={confirm} style={styles.confirm}>
@@ -192,17 +194,17 @@ type FilterTab = {
 const tabs: FilterTab[] = [
   {
     section: "region",
-    title: "Country",
+    title: "country",
     icon: "map",
   },
   {
     section: "subregion",
-    title: "Province",
+    title: "province",
     icon: "map-marker",
   },
   {
     section: "attributes",
-    title: "Attributes",
+    title: "attributes",
     icon: "tags",
   },
 ];

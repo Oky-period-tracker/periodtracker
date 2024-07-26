@@ -1,5 +1,5 @@
 export interface HelpCenterAttribute {
-  id: number
-  emoji: string
-  attributeName: string
+  id: number;
+  emoji: string;
+  name: string;
 }

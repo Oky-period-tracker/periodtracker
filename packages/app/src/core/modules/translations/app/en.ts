@@ -491,4 +491,6 @@ These combined data points allow the app to make associations and identify patte
   // NEW
   select: "Select",
   change_password: "Change password",
+  attributes: "Attributes",
+  clear_filters: "Clear all",
 };

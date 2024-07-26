@@ -480,4 +480,6 @@ export interface AppTranslations {
   incorrect?: string;
   secret_too_short?: string;
   change_password?: string;
+  attributes?: string;
+  clear_filters?: string;
 }

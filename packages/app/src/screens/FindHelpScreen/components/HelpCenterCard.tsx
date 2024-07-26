@@ -5,8 +5,8 @@ import { Text } from "../../../components/Text";
 import { A } from "../../../components/A";
 import { useToggle } from "../../../hooks/useToggle";
 import { Button } from "../../../components/Button";
-import { helpCenterAttributes } from "../../../data/helpCenter";
 import { HelpCenter } from "../../../core/types";
+import { useHelpCenterAttributes } from "../useHelpCenterAttributes";
 
 export const HelpCenterCard = ({
   helpCenter,
@@ -18,6 +18,8 @@ export const HelpCenterCard = ({
   onSavePress: () => void;
 }) => {
   const [expanded, toggleExpanded] = useToggle();
+  const helpCenterAttributes = useHelpCenterAttributes();
+
   const websites = helpCenter.website.split(",");
 
   const emoji = React.useMemo(() => {

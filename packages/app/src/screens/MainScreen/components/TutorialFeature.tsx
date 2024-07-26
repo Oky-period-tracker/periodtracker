@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     margin: 8,
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   cloudText: {
     textAlign: "center",

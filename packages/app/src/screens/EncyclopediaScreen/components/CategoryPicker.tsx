@@ -7,7 +7,8 @@ import { allCategoriesSelector } from "../../../redux/selectors";
 
 export const CategoryPicker = () => {
   const allCategories = useSelector(allCategoriesSelector);
-  const { selectedCategoryIds, setSelectedCategoryIds } = useEncyclopedia();
+  const { selectedCategoryIds, setSelectedCategoryIds, videos } =
+    useEncyclopedia();
 
   const handlePress = (categoryId: string) => {
     setSelectedCategoryIds((prevSelected) =>
@@ -30,13 +31,15 @@ export const CategoryPicker = () => {
       style={styles.contentContainer}
       showsHorizontalScrollIndicator={false}
     >
-      <EmojiBadge
-        emoji={"🎥"}
-        text={"videos"}
-        onPress={onVideosPress}
-        status={videosStatus}
-        enableTranslate={true}
-      />
+      {videos.length > 0 && (
+        <EmojiBadge
+          emoji={"🎥"}
+          text={"videos"}
+          onPress={onVideosPress}
+          status={videosStatus}
+          enableTranslate={true}
+        />
+      )}
 
       {allCategories.map((category) => {
         const onPress = () => handlePress(category.id);

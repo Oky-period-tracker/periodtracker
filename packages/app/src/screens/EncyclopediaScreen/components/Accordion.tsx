@@ -102,7 +102,7 @@ const AccordionVideosItem = () => {
   const videosCategoryNotSelected =
     selectedCategoryIds.length > 0 && !selectedCategoryIds.includes("videos");
 
-  if (videosCategoryNotSelected) {
+  if (videosCategoryNotSelected || !videos.length) {
     return null;
   }
 

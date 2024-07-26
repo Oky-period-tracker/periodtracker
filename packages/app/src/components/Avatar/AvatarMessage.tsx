@@ -2,11 +2,13 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "../Text";
 import { useAvatarMessage } from "../../contexts/AvatarMessageContext";
+import { useTutorial } from "../../screens/MainScreen/TutorialContext";
 
 export const AvatarMessage = () => {
   const { message } = useAvatarMessage();
+  const { state } = useTutorial();
 
-  if (!message) {
+  if (!message || state.isPlaying) {
     return null;
   }
 

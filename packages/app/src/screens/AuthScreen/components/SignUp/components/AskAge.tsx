@@ -8,10 +8,10 @@ import { InfoButton } from "../../../../../components/InfoButton";
 import { useMonths } from "../../../../../hooks/useMonths";
 
 export const AskAge = () => {
-  const { state, dispatch, errors } = useSignUp();
+  const { state, dispatch } = useSignUp();
   const { months, monthOptions } = useMonths();
 
-  const month = state.month ? months[state.month] : undefined;
+  const month = state.month !== undefined ? months[state.month] : undefined;
   const year = state.year?.toString();
 
   const onChangeMonth = (option: WheelPickerOption | undefined) => {
@@ -36,10 +36,7 @@ export const AskAge = () => {
         initialOption={initialMonth}
         options={monthOptions}
         onSelect={onChangeMonth}
-        placeholder={"what month were you born"}
-        errors={errors}
-        errorKey={"no_month"}
-        errorsVisible={state.errorsVisible}
+        placeholder={"month_of_birth"}
         actionLeft={
           <InfoButton title={"birth_info_heading"} content={"birth_info"} />
         }
@@ -48,10 +45,7 @@ export const AskAge = () => {
         initialOption={initialYear}
         options={yearOptions}
         onSelect={onChangeYear}
-        placeholder={"what year were you born"}
-        errors={errors}
-        errorKey={"no_year"}
-        errorsVisible={state.errorsVisible}
+        placeholder={"year_of_birth"}
       />
     </View>
   );

@@ -112,8 +112,8 @@ function reducer(state: SignUpState, action: Action): SignUpState {
     }
 
     case "month": {
-      const month = action.value as number;
-      if (!state.year) {
+      const month = action.value as number | undefined;
+      if (!state.year || month === undefined) {
         return {
           ...state,
           month,
@@ -130,8 +130,8 @@ function reducer(state: SignUpState, action: Action): SignUpState {
     }
 
     case "year": {
-      const year = action.value as number;
-      if (!state.month || isNaN(state.month)) {
+      const year = action.value as number | undefined;
+      if (!year || state.month === undefined || isNaN(state.month)) {
         return {
           ...state,
           year,
@@ -208,7 +208,6 @@ const validateStep = (
   if (step === "secret") {
     if (!state.secretQuestion) {
       isValid = false;
-      errors.push("no_secret_question");
     }
 
     if (state.secretAnswer.length < 1) {
@@ -221,13 +220,10 @@ const validateStep = (
   if (step === "age") {
     if (!state.year) {
       isValid = false;
-      errors.push("no_year");
     }
 
-    // if (state.month === undefined || isNaN(state.month)) { // TODO: check january passes check
-    if (!state.month || isNaN(state.month)) {
+    if (state.month === undefined || isNaN(state.month)) {
       isValid = false;
-      errors.push("no_month");
     }
 
     if (!state.dateOfBirth) {

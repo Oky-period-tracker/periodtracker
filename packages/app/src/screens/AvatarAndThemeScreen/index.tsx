@@ -50,7 +50,9 @@ export const AvatarAndThemeSelect = ({
 
   return (
     <Screen style={styles.screen}>
-      <Text style={styles.title}>avatar_amp_themes_login</Text>
+      {isInitialSelection && (
+        <Text style={styles.title}>avatar_amp_themes_login</Text>
+      )}
       <View style={styles.avatars}>
         {avatarNames.map((avatar) => {
           const { showCheck, checkStatus } = getCheckStatus({

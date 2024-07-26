@@ -42,6 +42,7 @@ export const SurveyCollect = () => {
                 checked={checked}
                 checkedStatus={"danger"}
                 checkedTextStatus={"danger"}
+                enableTranslate={false}
               />
             );
           })}

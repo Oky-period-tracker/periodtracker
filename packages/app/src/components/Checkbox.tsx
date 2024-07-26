@@ -13,6 +13,7 @@ type CheckboxProps = {
   size?: CheckBoxSize;
   checkedStatus?: PaletteStatus;
   checkedTextStatus?: PaletteStatus;
+  enableTranslate?: boolean;
 };
 
 export const Checkbox = ({
@@ -22,6 +23,7 @@ export const Checkbox = ({
   size = "medium",
   checkedStatus = "primary",
   checkedTextStatus = "basic",
+  enableTranslate = true,
 }: CheckboxProps) => {
   const sizes = sizeValues[size];
 
@@ -37,6 +39,7 @@ export const Checkbox = ({
       <Text
         style={{ fontWeight: sizes.fontWeight }}
         status={checked ? checkedTextStatus : "basic"}
+        enableTranslate={enableTranslate}
       >
         {label}
       </Text>

@@ -53,7 +53,7 @@ export const WheelPickerModal = ({
     toggleVisible();
   };
 
-  const value = initialOption?.label || props.placeholder || "";
+  const value = initialOption?.label || "";
   const displayValue = enableTranslate ? translate(value) : value;
 
   return (

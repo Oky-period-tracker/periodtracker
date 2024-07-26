@@ -1,48 +1,38 @@
 import React from "react";
 import { View, Image, StyleSheet } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 import { DisplayButton } from "../../../components/Button";
 import { Text } from "../../../components/Text";
 import { assets } from "../../../assets";
+import { palette } from "../../../config/theme";
 
-interface CardProps {
-  title: string;
-  iconType: "fontawesome" | "custom";
-  fontAwesomeName?: keyof typeof FontAwesome.glyphMap;
-  iconComponent?: React.ReactNode;
-  iconHeading: string;
+interface WelcomeCardProps {
+  icon: React.ReactNode;
+  subtitle: string;
   description: string;
 }
 
-const Card: React.FC<CardProps> = ({
-  iconType,
-  fontAwesomeName,
-  iconComponent,
-  iconHeading,
+export const WelcomeCard = ({
+  icon,
+  subtitle,
   description,
-}) => {
-  const renderIcon = () => {
-    switch (iconType) {
-      case "fontawesome":
-        return <FontAwesome name={fontAwesomeName} size={40} color="white" />;
-      case "custom":
-        return iconComponent;
-      default:
-        return null;
-    }
-  };
-
+}: WelcomeCardProps) => {
   return (
     <View style={styles.page}>
       <View style={styles.welcomeContainer}>
-        <Image source={assets.static.launch_icon} style={styles.logo} />
-        <Text style={styles.headText}>auth_welcome</Text>
+        <Image
+          source={assets.static.launch_icon}
+          style={styles.logo}
+          resizeMode={"contain"}
+        />
+        <Text style={styles.title}>auth_welcome</Text>
       </View>
-      <DisplayButton status={"primary"} style={styles.displayImage}>
-        {renderIcon()}
+
+      <DisplayButton status={"primary"} style={styles.button}>
+        {icon}
       </DisplayButton>
-      <Text style={styles.iconHead}>{iconHeading}</Text>
-      <Text style={styles.belowText}>{description}</Text>
+
+      <Text style={styles.subtitle}>{subtitle}</Text>
+      <Text style={styles.description}>{description}</Text>
     </View>
   );
 };
@@ -51,50 +41,42 @@ const styles = StyleSheet.create({
   page: {
     flex: 1,
     width: "100%",
-    marginBottom: 80,
     justifyContent: "center",
     alignItems: "center",
-  },
-  button: {
-    marginLeft: "auto",
-  },
-  displayImage: {
-    height: 80,
-    width: 80,
-  },
-
-  logo: {
-    width: 150,
-    height: 150,
+    padding: 24,
   },
   welcomeContainer: {
     width: "100%",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 16,
+    marginBottom: 24,
   },
-  headText: {
-    fontSize: 28,
+  logo: {
+    width: 100,
+    height: 100,
+  },
+  title: {
+    fontSize: 26,
     flex: 1,
     textAlign: "center",
     fontWeight: "bold",
-    fontFamily: "Roboto",
-    color: "#e3629b",
-    marginRight: 32,
+    color: palette["danger"].base,
+    marginBottom: 16,
   },
-  iconHead: {
+  button: {
+    height: 80,
+    width: 80,
+    marginBottom: 24,
+  },
+  subtitle: {
     fontSize: 20,
     fontWeight: "bold",
-    marginTop: 16,
+    marginBottom: 24,
+    textAlign: "center",
   },
-  belowText: {
-    fontSize: 15,
-    fontWeight: "600",
-    marginTop: 16,
-    paddingHorizontal: 32,
+  description: {
+    fontSize: 16,
     textAlign: "center",
   },
 });
-
-export default Card;

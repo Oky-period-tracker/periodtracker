@@ -34,7 +34,7 @@ export const CategoryPicker = () => {
       {videos.length > 0 && (
         <EmojiBadge
           emoji={"🎥"}
-          text={"videos"}
+          text={"videos_tag"}
           onPress={onVideosPress}
           status={videosStatus}
           enableTranslate={true}

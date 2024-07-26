@@ -493,4 +493,5 @@ These combined data points allow the app to make associations and identify patte
   change_password: "Change password",
   attributes: "Attributes",
   clear_filters: "Clear all",
+  videos_tag: "videos",
 };

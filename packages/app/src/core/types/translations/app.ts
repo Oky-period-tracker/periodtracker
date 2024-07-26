@@ -482,4 +482,5 @@ export interface AppTranslations {
   change_password?: string;
   attributes?: string;
   clear_filters?: string;
+  videos_tag?: string;
 }

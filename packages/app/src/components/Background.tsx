@@ -6,11 +6,13 @@ import { currentThemeSelector } from "../redux/selectors";
 import { getAsset } from "../services/asset";
 import { ThemeName } from "../core/modules";
 import { useTodayPrediction } from "../contexts/PredictionProvider";
+import { useAuth } from "../contexts/AuthContext";
 
 export const Background = ({ children }: PropsWithChildren) => {
   const { onPeriod } = useTodayPrediction();
+  const { isLoggedIn } = useAuth();
   const theme = useSelector(currentThemeSelector);
-  const image = getBackgroundImage(theme, onPeriod);
+  const image = getBackgroundImage(theme, onPeriod && isLoggedIn);
 
   return (
     <ImageBackground source={image} style={styles.default}>

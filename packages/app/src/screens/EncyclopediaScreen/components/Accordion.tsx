@@ -51,9 +51,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     );
   }, [category, subcategoryIds]);
 
-  // Add safety checks for category and subCategoriesById
   if (!category) {
-    console.error(`Category not found for id: ${categoryId}`);
     return null;
   }
 
@@ -152,7 +150,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    height: 80,
+    minHeight: 80,
     backgroundColor: "#fff",
     borderRadius: 20,
     marginVertical: 4,
@@ -169,6 +167,7 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 16,
     fontWeight: "bold",
+    flex: 1,
   },
   categoryEmoji: {
     width: 40,
@@ -180,7 +179,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "flex-end",
     width: "90%",
-    height: 60,
+    minHeight: 60,
     backgroundColor: "#fff",
     borderRadius: 20,
     marginVertical: 4,

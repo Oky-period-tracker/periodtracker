@@ -16,6 +16,7 @@ import { DeleteAccount } from "./components/DeleteAccount";
 import { ForgotPassword } from "./components/ForgotPassword";
 import { LanguageSelector } from "../../components/LanguageSelector";
 import { useStopLoadingEffect } from "../../contexts/LoadingProvider";
+import { AuthScreenHeader } from "./components/AuthScreenHeader";
 
 const AuthScreen = (props: ScreenProps<"Auth">) => {
   useStopLoadingEffect();
@@ -38,6 +39,8 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
 
   return (
     <SafeScreen>
+      {authMode === "start" && <AuthScreenHeader />}
+
       <AnimatedContainer style={styles.container}>
         {authMode === "start" && <AuthToggle />}
         {authMode === "log_in" && <LogIn />}

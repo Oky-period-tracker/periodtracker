@@ -45,9 +45,8 @@ const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
 
   return (
     <Screen>
-      <SearchBar query={query} setQuery={setQuery} />
-
       <ScrollView style={styles.scrollView}>
+        <SearchBar query={query} setQuery={setQuery} />
         {articles.map((article) => {
           return (
             <View style={styles.card} key={article.id}>

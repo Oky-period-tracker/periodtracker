@@ -55,7 +55,6 @@ export function authReducer(
   switch (action.type) {
     case REHYDRATE:
       return {
-        // @ts-expect-error TODO:
         ...(action.payload && action.payload.auth),
         // reset state when store is re-hydrated
         ..._.pick(initialState, [
@@ -76,7 +75,6 @@ export function authReducer(
     case "LOGIN_SUCCESS":
       return {
         ...state,
-        // @ts-expect-error TODO:
         appToken: action.payload.appToken,
         error: null,
         isLoggingIn: false,

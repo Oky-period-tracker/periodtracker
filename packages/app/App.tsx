@@ -24,7 +24,11 @@ function App() {
     if (Constants.appOwnership === null) {
       import("./firebase/firebase")
         .then(() => {
-          analytics().logAppOpen();
+          analytics()
+            .logAppOpen()
+            .then(() => {
+              console.log("Firebase initialized");
+            });
         })
         .catch((error) => {
           console.error("Firebase initialization error:", error);

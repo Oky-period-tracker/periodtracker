@@ -115,7 +115,7 @@ function RootNavigator() {
 
   const hasAccess = user && isLoggedIn;
 
-  //eslint-disable-next-line 
+  //eslint-disable-next-line
   const linking: LinkingOptions<any> = hasAccess
     ? loggedInLinking
     : loggedOutLinking;
@@ -141,7 +141,18 @@ function RootNavigator() {
               screen_class: currentRouteName,
             });
             if (currentRouteName === "Encyclopedia") {
-              analytics().logEvent("users_accessing_encyclopedia");
+              if (hasAccess) {
+                analytics().logEvent("encyclopedia_logged_in");
+              } else {
+                analytics().logEvent("encyclopedia_logged_out");
+              }
+            }
+            if (currentRouteName == "Help") {
+              if (hasAccess) {
+                analytics().logEvent("help_logged_in");
+              } else {
+                analytics().logEvent("help_logged_out");
+              }
             }
           }
         };

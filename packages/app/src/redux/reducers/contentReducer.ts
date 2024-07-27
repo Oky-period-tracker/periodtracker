@@ -100,7 +100,6 @@ export function contentReducer(
         privacyPolicy: action.payload.privacyPolicy,
         termsAndConditions: action.payload.termsAndConditions,
         about: action.payload.about,
-        // @ts-expect-error TODO:
         aboutBanner: shouldUpdateBanner
           ? action.payload.aboutBanner
           : state.aboutBanner,

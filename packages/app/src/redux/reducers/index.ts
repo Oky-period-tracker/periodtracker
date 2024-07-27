@@ -9,6 +9,7 @@ import { authReducer } from "./authReducer";
 import { contentReducer } from "./contentReducer";
 import { predictionReducer } from "./predictionReducer";
 import { helpCenterReducer } from "./helpCenterReducer";
+import lastClickedDateReducer from "./lastDateReducer";
 
 const reducer = combineReducers({
   analytics: analyticsReducer,
@@ -18,6 +19,7 @@ const reducer = combineReducers({
   content: contentReducer,
   prediction: predictionReducer,
   helpCenters: helpCenterReducer,
+  lastClickedDate: lastClickedDateReducer
   // Optional Modules
   // flower: flowerReducer, TODO: Flower state should be saved per user
 });

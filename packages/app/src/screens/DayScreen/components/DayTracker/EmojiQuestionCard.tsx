@@ -20,6 +20,10 @@ import { answerDailyCard } from "../../../../redux/actions";
 import { DayModal } from "../../../../components/DayModal";
 import { useToggle } from "../../../../hooks/useToggle";
 import { useTranslate } from "../../../../hooks/useTranslate";
+import Constants from "expo-constants";
+import analytics from "@react-native-firebase/analytics";
+import moment from "moment";
+import { updateLastClickedEmojiDate } from "../../../../redux/actions";
 
 export const EmojiQuestionCard = ({
   topic,
@@ -45,10 +49,26 @@ export const EmojiQuestionCard = ({
     : {};
 
   const dispatch = useDispatch();
+  const lastClickedDate = useSelector(
+    (state) => state.lastClickedDate.lastClickedEmojiDate
+  );
 
   const onEmojiPress = (answer: string) => {
     if (!userID || !dataEntry) {
       return;
+    }
+    const todayDate = moment().format("YYYY-MM-DD");
+    console.log("lastClickedDate", lastClickedDate);
+    console.log("todayDate", todayDate);
+    if (lastClickedDate !== todayDate) {
+      if (Constants.appOwnership != "expo") {
+        analytics()
+          .logEvent("daily_card_answeredEmoji")
+          .then(() => {
+            console.log("logged daily_card_answeredEmoji");
+          });
+      }
+      dispatch(updateLastClickedEmojiDate(todayDate));
     }
 
     dispatch(

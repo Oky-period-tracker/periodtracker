@@ -7,6 +7,7 @@ import { IconButton } from "./IconButton";
 import { DayData, useDayScroll } from "../screens/MainScreen/DayScrollContext";
 import { emojiOptions } from "../screens/DayScreen/components/DayTracker/config";
 import { useSelector } from "../redux/useSelector";
+import { useDispatch } from "react-redux";
 import moment from "moment";
 import {
   cardAnswerSelector,
@@ -24,6 +25,9 @@ import { useDayStatus } from "../hooks/useDayStatus";
 import { ThemeName } from "../core/modules/translations";
 import { useTranslate } from "../hooks/useTranslate";
 import { useFormatDate } from "../hooks/useFormatDate";
+import analytics from "@react-native-firebase/analytics";
+import Constants from "expo-constants";
+import { updateLastClickedCardDate } from "../redux/actions";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -60,6 +64,10 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
 
   //eslint-disable-next-line
   const navigation = useNavigation() as any; // @TODO: Fixme
+  const dispatch = useDispatch();
+  const lastClickedDate = useSelector(
+    (state) => state.lastClickedDate.lastClickedCardDate
+  );
 
   const onPress = () => {
     if (isDragging?.current) {
@@ -75,6 +83,18 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     if (isFutureDate(dataEntry.date)) {
       setAvatarMessage("carousel_no_access", true);
       return;
+    }
+
+    const todayDate = moment().format("YYYY-MM-DD");
+    if (lastClickedDate !== todayDate) {
+      if (Constants.appOwnership != "expo") {
+        analytics()
+          .logEvent("daily_card_clicked")
+          .then(() => {
+            console.log("logged daily_card_clicked");
+          });
+      }
+      dispatch(updateLastClickedCardDate(todayDate));
     }
 
     navigation.navigate("Day", { date: dataEntry.date });

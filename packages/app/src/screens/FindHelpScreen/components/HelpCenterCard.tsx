@@ -20,7 +20,7 @@ export const HelpCenterCard = ({
   const [expanded, toggleExpanded] = useToggle();
   const helpCenterAttributes = useHelpCenterAttributes();
 
-  const websites = helpCenter.website.split(",");
+  const websites = helpCenter.website?.split(",");
 
   const emoji = React.useMemo(() => {
     return (

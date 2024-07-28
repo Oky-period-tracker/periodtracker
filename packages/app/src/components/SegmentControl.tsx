@@ -67,14 +67,13 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "center",
     padding: 4,
   },
   option: {
     flexDirection: "column",
     alignItems: "center",
     margin: 4,
-    flex: 1,
   },
   optionText: {
     fontSize: 10,

@@ -11,11 +11,12 @@ import { useDispatch } from "react-redux";
 import { deleteAccountRequest, logoutRequest } from "../../redux/actions";
 import { useAuth } from "../../contexts/AuthContext";
 import { useSelector } from "../../redux/useSelector";
-import { currentUserSelector } from "../../redux/selectors";
+import { appTokenSelector, currentUserSelector } from "../../redux/selectors";
 import { useTranslate } from "../../hooks/useTranslate";
 
 const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector);
+  const appToken = useSelector(appTokenSelector);
   const dispatch = useDispatch();
   const { setIsLoggedIn } = useAuth();
   const translate = useTranslate();
@@ -41,7 +42,9 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
   const logOutAlert = () => {
     Alert.alert(
       translate("are_you_sure"),
-      translate("logout_account_description"),
+      currentUser?.isGuest || !appToken
+        ? translate("logout_account_description")
+        : "",
       [
         {
           text: translate("cancel"),

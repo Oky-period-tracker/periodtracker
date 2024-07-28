@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Modal, ModalProps } from "../../components/Modal";
 import { Hr } from "../../components/Hr";
 import { Text } from "../../components/Text";
@@ -14,8 +14,10 @@ import { formatPassword } from "../../services/auth";
 import { WheelPickerModal } from "../../components/WheelPickerModal";
 import { questionOptions } from "../../config/options";
 import { WheelPickerOption } from "../../components/WheelPicker";
+import { useTranslate } from "../../hooks/useTranslate";
 
 export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
+  const translate = useTranslate();
   const currentUser = useSelector(currentUserSelector) as User;
   const appToken = useSelector(appTokenSelector);
   const reduxDispatch = useDispatch();
@@ -46,6 +48,32 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
     (item) => item.value === secretQuestion
   );
 
+  const successAlert = () => {
+    Alert.alert(
+      translate("secret_change_success"),
+      translate("secret_change_success_description"),
+      [
+        {
+          text: translate("continue"),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const failAlert = () => {
+    Alert.alert(
+      translate("secret_change_fail"),
+      translate("secret_change_fail_description"),
+      [
+        {
+          text: translate("continue"),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   const sendRequest = async (
     previousSecretAnswer: string,
     nextSecretAnswer: string
@@ -68,30 +96,15 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
       return;
     }
 
-    const hasChanged =
-      currentUser.secretAnswer !== nextFormatted ||
-      currentUser.secretQuestion !== secretQuestion;
-    if (!hasChanged) {
-      return;
-    }
-
-    if (previousFormatted !== currentUser.secretAnswer) {
-      // TODO: show error
-      return;
-    }
-
-    if (!appToken) {
-      updateReduxState(nextFormatted);
-      toggleVisible();
-      return;
-    }
-
     try {
       await sendRequest(previousFormatted, nextFormatted);
       updateReduxState(nextFormatted);
       toggleVisible();
+      successAlert();
     } catch (error) {
-      // TODO: show alert
+      setPreviousSecret("");
+      setNextSecret("");
+      failAlert();
     }
   };
 
@@ -109,23 +122,21 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
         <Input
           value={previousSecret}
           onChangeText={setPreviousSecret}
-          placeholder="Secret answer"
+          placeholder="old_secret_answer"
           secureTextEntry={true}
-          // errors={errors}
-          // errorKey={"secret_too_short"}
-          // errorsVisible={errorsVisible}
         />
         <WheelPickerModal
           initialOption={initialSecretOption}
           options={questionOptions}
           onSelect={onChangeQuestion}
-          placeholder={"Secret Question"}
+          placeholder={"secret_question"}
           allowUndefined={false}
+          enableTranslate={true}
         />
         <Input
           value={nextSecret}
           onChangeText={setNextSecret}
-          placeholder="Secret answer"
+          placeholder="secret_answer"
           secureTextEntry={true}
           errors={errors}
           errorKeys={["secret_too_short"]}
@@ -157,7 +168,6 @@ const validate = (previous: string, next: string, question: string) => {
 
   if (!question) {
     isValid = false;
-    errors.push("no_secret_question");
   }
 
   return { isValid, errors };
@@ -169,8 +179,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   modalBody: {
-    paddingVertical: 24,
-    paddingHorizontal: 48,
+    padding: 24,
   },
   title: {
     fontSize: 20,

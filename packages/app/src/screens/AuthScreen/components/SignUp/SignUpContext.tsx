@@ -96,6 +96,8 @@ const prefilledState: SignUpState = {
 
 const initialState = FAST_SIGN_UP ? prefilledState : defaultState;
 
+const MINIMUM_NAME_LENGTH = 3;
+
 function reducer(state: SignUpState, action: Action): SignUpState {
   switch (action.type) {
     case "continue": {
@@ -187,8 +189,12 @@ const validateStep = (
 
   // ========== information ========== //
   if (step === "information") {
-    if (state.name.length < 3) {
-      // TODO: check availability
+    if (!state.nameAvailable) {
+      isValid = false;
+      errors.push("name_taken_error");
+    }
+
+    if (state.name.length < MINIMUM_NAME_LENGTH) {
       isValid = false;
       errors.push("username_too_short");
     }
@@ -289,7 +295,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
 
   const [debouncedName] = useDebounce(state.name, 500);
   React.useEffect(() => {
-    if (!debouncedName) {
+    if (!debouncedName || debouncedName.length < MINIMUM_NAME_LENGTH) {
       return;
     }
 
@@ -317,6 +323,8 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       cleanup = true;
     };
   }, [debouncedName]);
+
+  console.log("*** nameAvailable", state.nameAvailable);
 
   // Finish
   React.useEffect(() => {

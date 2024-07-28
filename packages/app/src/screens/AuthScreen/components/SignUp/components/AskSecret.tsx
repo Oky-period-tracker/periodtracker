@@ -33,9 +33,6 @@ export const AskSecret = () => {
         options={questionOptions}
         onSelect={onChangeQuestion}
         placeholder={"secret_question"}
-        errors={errors}
-        errorKey={"no_secret_question"}
-        errorsVisible={state.errorsVisible}
         allowUndefined={false}
         enableTranslate
         actionLeft={
@@ -50,7 +47,7 @@ export const AskSecret = () => {
         onChangeText={onChangeAnswer}
         placeholder="secret_answer"
         errors={errors}
-        errorKey={"secret_too_short"}
+        errorKeys={["secret_too_short"]}
         errorsVisible={state.errorsVisible}
         actionLeft={
           <InfoButton

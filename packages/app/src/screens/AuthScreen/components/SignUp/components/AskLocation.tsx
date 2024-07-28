@@ -11,7 +11,7 @@ import { useProvinceOptions } from "../../../../../hooks/useProvinceOptions";
 import { useCountryOptions } from "../../../../../hooks/useCountryOptions";
 
 export const AskLocation = () => {
-  const { state, dispatch, errors } = useSignUp();
+  const { state, dispatch } = useSignUp();
 
   const onChangeCountry = (option: WheelPickerOption | undefined) => {
     dispatch({ type: "country", value: option?.value });
@@ -41,9 +41,6 @@ export const AskLocation = () => {
         options={countryOptions}
         onSelect={onChangeCountry}
         placeholder={"country"}
-        errors={errors}
-        errorKey={"no_country"}
-        errorsVisible={state.errorsVisible}
         searchEnabled
       />
       <WheelPickerModal
@@ -51,18 +48,12 @@ export const AskLocation = () => {
         options={provinceOptions}
         onSelect={onChangeProvince}
         placeholder={"province"}
-        errors={errors}
-        errorKey={"no_province"}
-        errorsVisible={state.errorsVisible}
         searchEnabled
       />
       <SegmentControl
         options={locations}
         selected={state.location}
         onSelect={onChangeLocation}
-        errors={errors}
-        errorKey={"no_location"}
-        errorsVisible={state.errorsVisible}
       />
     </View>
   );

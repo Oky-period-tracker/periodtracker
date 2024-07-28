@@ -37,7 +37,7 @@ export const DeleteAccount = () => {
           onChangeText={setName}
           placeholder="name"
           errors={errors}
-          errorKey={"username_too_short"}
+          errorKeys={["username_too_short"]}
           errorsVisible={errorsVisible}
         />
         <Input
@@ -46,12 +46,10 @@ export const DeleteAccount = () => {
           placeholder="password"
           secureTextEntry={true}
           errors={errors}
-          errorKey={"password_too_short"}
+          errorKeys={["password_too_short"]}
           errorsVisible={errorsVisible}
         />
-        {requestStatus === "fail" && (
-          <ErrorText>incorrect</ErrorText>
-        )}
+        {requestStatus === "fail" && <ErrorText>incorrect</ErrorText>}
       </View>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>

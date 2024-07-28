@@ -17,7 +17,7 @@ export type InputProps = TextInputProps & {
   style?: StyleProp<ViewStyle>;
   inputStyle?: TextInputProps["style"];
   errors?: string[]; // TODO:
-  errorKey?: string; // TODO:
+  errorKeys?: string[]; // TODO:
   errorsVisible?: boolean;
   displayOnly?: boolean;
   actionLeft?: React.ReactNode;
@@ -30,7 +30,7 @@ export const Input = ({
   style,
   inputStyle,
   errors,
-  errorKey,
+  errorKeys,
   errorsVisible,
   placeholderTextColor = "#28b9cb",
   displayOnly = false,
@@ -49,8 +49,15 @@ export const Input = ({
     }
   };
 
-  const hasError =
-    errorsVisible && errorKey && errors && errors.includes(errorKey);
+  const activeErrorKeys = errorKeys?.reduce<string[]>((acc, errorKey) => {
+    if (errors?.includes(errorKey)) {
+      return [...acc, errorKey];
+    }
+    return acc;
+  }, []);
+
+  const errorKey = activeErrorKeys?.[0];
+  const hasError = errorsVisible && errorKey;
 
   return (
     <>

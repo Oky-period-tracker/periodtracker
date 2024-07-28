@@ -32,7 +32,7 @@ export const AskUserInfo = () => {
         onChangeText={onChangeName}
         placeholder="name"
         errors={errors}
-        errorKey={"username_too_short"}
+        errorKeys={["username_too_short", "name_taken_error"]}
         errorsVisible={state.errorsVisible}
         actionLeft={<InfoButton title={"name"} content={"name_info_label"} />}
       />
@@ -40,9 +40,6 @@ export const AskUserInfo = () => {
         options={genders}
         selected={state.gender}
         onSelect={onChangeGender}
-        errors={errors}
-        errorKey={"no_gender"}
-        errorsVisible={state.errorsVisible}
       />
       <Input
         value={state.password}
@@ -50,7 +47,7 @@ export const AskUserInfo = () => {
         placeholder="password"
         secureTextEntry={true}
         errors={errors}
-        errorKey={"password_too_short"}
+        errorKeys={["password_too_short"]}
         errorsVisible={state.errorsVisible}
         actionLeft={
           <InfoButton
@@ -65,7 +62,7 @@ export const AskUserInfo = () => {
         placeholder="confirm_password"
         secureTextEntry={true}
         errors={errors}
-        errorKey={"passcodes_mismatch"}
+        errorKeys={["passcodes_mismatch"]}
         errorsVisible={state.errorsVisible}
       />
     </View>

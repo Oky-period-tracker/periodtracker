@@ -487,8 +487,8 @@ These combined data points allow the app to make associations and identify patte
   internet_required_text:
     "This is not available offline. Please confirm that are ok with using your data, or you are connected to wifi.",
   choose_one: "Choose one option from the list",
-  secret_too_short: "Secret answer is too short, minimum 1 character",
   // NEW
+  secret_too_short: "Secret answer is too short, minimum 1 character",
   select: "Select",
   change_password: "Change password",
   attributes: "Attributes",

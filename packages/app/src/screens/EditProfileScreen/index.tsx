@@ -243,7 +243,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             onChangeText={onChangeName}
             placeholder="Name"
             errors={errors}
-            errorKey={"username_too_short"}
+            errorKeys={["username_too_short"]}
             errorsVisible={true}
           />
         </View>
@@ -254,9 +254,6 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             options={genders}
             selected={state.gender}
             onSelect={onChangeGender}
-            errors={errors}
-            errorKey={"no_gender"}
-            errorsVisible={true}
           />
         </View>
 
@@ -267,10 +264,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             initialOption={initialMonth}
             options={monthOptions}
             onSelect={onChangeMonth}
-            placeholder={"what month were you born"}
-            errors={errors}
-            errorKey={"no_month"}
-            errorsVisible={true}
+            placeholder={"month_of_birth"}
           />
         </View>
 
@@ -281,10 +275,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             initialOption={initialYear}
             options={yearOptions}
             onSelect={onChangeYear}
-            placeholder={"what year were you born"}
-            errors={errors}
-            errorKey={"no_year"}
-            errorsVisible={true}
+            placeholder={"year_of_birth"}
           />
         </View>
 
@@ -294,9 +285,6 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
             options={locations}
             selected={state.location}
             onSelect={onChangeLocation}
-            errors={errors}
-            errorKey={"no_location"}
-            errorsVisible={true}
           />
         </View>
 

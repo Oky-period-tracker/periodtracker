@@ -120,9 +120,6 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
           options={questionOptions}
           onSelect={onChangeQuestion}
           placeholder={"Secret Question"}
-          errors={errors}
-          errorKey={"no_secret_question"}
-          errorsVisible={errorsVisible}
           allowUndefined={false}
         />
         <Input
@@ -131,7 +128,7 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
           placeholder="Secret answer"
           secureTextEntry={true}
           errors={errors}
-          errorKey={"secret_too_short"}
+          errorKeys={["secret_too_short"]}
           errorsVisible={errorsVisible}
         />
       </View>

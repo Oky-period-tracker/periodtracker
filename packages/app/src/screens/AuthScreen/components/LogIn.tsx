@@ -58,7 +58,7 @@ export const LogIn = () => {
           onChangeText={setName}
           placeholder="enter_name"
           errors={errors}
-          errorKey={"username_too_short"}
+          errorKeys={["username_too_short"]}
           errorsVisible={errorsVisible}
           editable={!user}
         />
@@ -68,7 +68,7 @@ export const LogIn = () => {
           placeholder="password"
           secureTextEntry={true}
           errors={errors}
-          errorKey={"password_too_short"}
+          errorKeys={["password_too_short"]}
           errorsVisible={errorsVisible}
         />
         {success === false && (

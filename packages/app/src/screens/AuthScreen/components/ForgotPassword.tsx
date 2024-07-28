@@ -1,31 +1,89 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { AuthHeader } from "./AuthHeader";
 import { Hr } from "../../../components/Hr";
 import { Input } from "../../../components/Input";
-import { ErrorText } from "../../../components/ErrorText";
 import { Text } from "../../../components/Text";
-
-type RequestStatus = "unknown" | "success" | "fail";
+import { httpClient } from "../../../services/HttpClient";
+import { formatPassword } from "../../../services/auth";
+import { useTranslate } from "../../../hooks/useTranslate";
+import { useAuthMode } from "../AuthModeContext";
 
 export const ForgotPassword = () => {
+  const translate = useTranslate();
   const [name, setName] = React.useState("");
   const [answer, setAnswer] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [passwordConfirm, setPasswordConfirm] = React.useState("");
+  const { setAuthMode } = useAuthMode();
 
   const [errorsVisible, setErrorsVisible] = React.useState(false);
-  const { errors } = validateCredentials(name, answer);
 
-  const [requestStatus, setRequestStatus] =
-    React.useState<RequestStatus>("unknown");
+  const { errors } = validateCredentials({
+    name,
+    answer,
+    password,
+    passwordConfirm,
+  });
 
-  const onConfirm = () => {
+  const successAlert = () => {
+    Alert.alert(
+      translate("password_change_success"),
+      translate("password_change_success_description"),
+      [
+        {
+          text: translate("continue"),
+          onPress: () => {
+            // TODO: log in the user instead?
+            setAuthMode("start");
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const failAlert = () => {
+    Alert.alert(
+      translate("password_change_fail"),
+      translate("password_change_fail_description"),
+      [
+        {
+          text: translate("continue"),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const onConfirm = async () => {
     if (errors.length) {
       setErrorsVisible(true);
       return;
     }
 
-    // TODO:
-    setRequestStatus("fail");
+    try {
+      // Check exists
+      await httpClient.getUserInfo(name);
+
+      // Reset
+      await httpClient.resetPassword({
+        name,
+        secretAnswer: formatPassword(answer),
+        password: formatPassword(password),
+      });
+
+      successAlert();
+    } catch (e) {
+      failAlert();
+    }
+
+    // Reset
+    setName("");
+    setAnswer("");
+    setPassword("");
+    setPasswordConfirm("");
+    setErrorsVisible(false);
   };
 
   return (
@@ -45,10 +103,27 @@ export const ForgotPassword = () => {
           onChangeText={setAnswer}
           placeholder="secret_answer"
           errors={errors}
+          errorKeys={["secret_too_short"]}
+          errorsVisible={errorsVisible}
+        />
+        <Input
+          value={password}
+          onChangeText={setPassword}
+          placeholder="password"
+          secureTextEntry={true}
+          errors={errors}
           errorKeys={["password_too_short"]}
           errorsVisible={errorsVisible}
         />
-        {requestStatus === "fail" && <ErrorText>incorrect</ErrorText>}
+        <Input
+          value={passwordConfirm}
+          onChangeText={setPasswordConfirm}
+          placeholder="confirm_password"
+          secureTextEntry={true}
+          errors={errors}
+          errorKeys={["passcodes_mismatch"]}
+          errorsVisible={errorsVisible}
+        />
       </View>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
@@ -58,7 +133,17 @@ export const ForgotPassword = () => {
   );
 };
 
-const validateCredentials = (name: string, answer: string) => {
+const validateCredentials = ({
+  name,
+  answer,
+  password,
+  passwordConfirm,
+}: {
+  name: string;
+  answer: string;
+  password: string;
+  passwordConfirm: string;
+}) => {
   const errors: string[] = [];
   let isValid = true;
 
@@ -69,7 +154,17 @@ const validateCredentials = (name: string, answer: string) => {
 
   if (answer.length < 1) {
     isValid = false;
+    errors.push("secret_too_short");
+  }
+
+  if (password.length < 3) {
+    isValid = false;
     errors.push("password_too_short");
+  }
+
+  if (password !== passwordConfirm) {
+    isValid = false;
+    errors.push("passcodes_mismatch");
   }
 
   return { isValid, errors };

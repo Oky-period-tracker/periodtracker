@@ -21,7 +21,6 @@ import { useLoading } from "../contexts/LoadingProvider";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 import { isFutureDate } from "../services/dateUtils";
 import { useDayStatus } from "../hooks/useDayStatus";
-import { Text } from "./Text";
 import { ThemeName } from "../core/modules/translations";
 import { useTranslate } from "../hooks/useTranslate";
 import { useFormatDate } from "../hooks/useFormatDate";
@@ -82,6 +81,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   };
 
   const day = dataEntry.cycleDay === 0 ? "-" : dataEntry.cycleDay;
+  const dayText = `${translate("Day")} ${day}`;
 
   return (
     <TouchableOpacity
@@ -101,13 +101,9 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
           appearance={appearance}
           textStyle={styles.dayText}
           style={{ width: CARD_WIDTH / 3 }}
+          enableTranslate={false}
         >
-          <View style={styles.viewDayText}>
-            <Text style={styles.dayText}>Day</Text>
-            <Text enableTranslate={false} style={styles.dayText}>
-              {` ${day}`}
-            </Text>
-          </View>
+          {dayText}
         </DisplayButton>
         <IconButton
           status={status}
@@ -183,10 +179,6 @@ const styles = StyleSheet.create({
   dayText: {
     color: "#fff",
     fontWeight: "bold",
-  },
-  viewDayText: {
-    flexDirection: "row",
-    alignItems: "center",
   },
   iconRight: {
     height: 24,

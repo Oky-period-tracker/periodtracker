@@ -7,6 +7,8 @@ import { createAccountRequest } from "../../../../redux/actions";
 import { formatPassword } from "../../../../services/auth";
 import { uuidv4 } from "../../../../services/uuid";
 import moment from "moment";
+import { httpClient } from "../../../../services/HttpClient";
+import { useDebounce } from "../../../../hooks/useDebounce";
 
 export type SignUpStep =
   | "confirmation"
@@ -29,6 +31,7 @@ type SignUpState = Omit<
 > & {
   stepIndex: number;
   agree: boolean;
+  nameAvailable: boolean;
   passwordConfirm: string;
   month?: number;
   year?: number;
@@ -50,6 +53,7 @@ type Action<T extends keyof SignUpState = keyof SignUpState> =
 const defaultState: SignUpState = {
   stepIndex: 0,
   agree: false,
+  nameAvailable: true,
   errorsVisible: false,
   name: "",
   password: "",
@@ -71,6 +75,7 @@ const defaultState: SignUpState = {
 const prefilledState: SignUpState = {
   stepIndex: 0,
   agree: true,
+  nameAvailable: true,
   errorsVisible: false,
   name: "aaa",
   password: "aaa",
@@ -281,6 +286,37 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
   const { setAuthMode } = useAuthMode();
 
   const reduxDispatch = useDispatch();
+
+  const [debouncedName] = useDebounce(state.name, 500);
+  React.useEffect(() => {
+    if (!debouncedName) {
+      return;
+    }
+
+    let cleanup = false;
+    const checkUserNameAvailability = async () => {
+      try {
+        await httpClient.getUserInfo(debouncedName);
+        if (cleanup) {
+          return;
+        }
+        // user does exist
+        dispatch({ type: "nameAvailable", value: false });
+      } catch (err) {
+        if (cleanup) {
+          return;
+        }
+
+        // user does not exist
+        dispatch({ type: "nameAvailable", value: true });
+      }
+    };
+    checkUserNameAvailability();
+
+    return () => {
+      cleanup = true;
+    };
+  }, [debouncedName]);
 
   // Finish
   React.useEffect(() => {

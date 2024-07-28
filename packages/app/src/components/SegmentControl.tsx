@@ -53,7 +53,9 @@ export const SegmentControl = ({
                 color={"#fff"}
               />
             </Button>
-            <Text style={styles.optionText}>{option.label}</Text>
+            <Text enableTranslate={true} style={styles.optionText}>
+              {option.label}
+            </Text>
           </View>
         );
       })}
@@ -65,18 +67,19 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "space-around",
     padding: 4,
   },
   option: {
     flexDirection: "column",
     alignItems: "center",
     margin: 4,
+    flex: 1,
   },
   optionText: {
-    fontSize: 12,
+    fontSize: 10,
     textAlign: "center",
+    width: 80,
   },
   iconContainer: {
     width: 40,

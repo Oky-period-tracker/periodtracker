@@ -207,7 +207,7 @@ export class PredictionEngine {
         });
 
         // feed back relevant styling information for Calendar shape {'2019-05-12': { styles...}}
-        const newKey = date.format("YYYY-MM-DD");
+        const newEntry = date.format("YYYY-MM-DD");
         let newValue = {
           selected: true,
           selectedColor: "#91d9e2",
@@ -269,7 +269,7 @@ export class PredictionEngine {
 
         markedDates = {
           ...markedDates,
-          [newKey]: newValue,
+          [newEntry]: newValue,
         };
       } else {
         const newEntry = date.format("YYYY-MM-DD");

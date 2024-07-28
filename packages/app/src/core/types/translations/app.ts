@@ -487,4 +487,8 @@ export interface AppTranslations {
   error?: string;
   success?: string;
   delete_account_success?: string;
+  password_change_success?: string;
+  password_change_success_description?: string;
+  password_change_fail?: string;
+  password_change_fail_description?: string;
 }

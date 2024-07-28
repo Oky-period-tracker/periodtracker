@@ -1,21 +1,22 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Modal, ModalProps } from "../../components/Modal";
 import { Hr } from "../../components/Hr";
 import { Text } from "../../components/Text";
 import { Input } from "../../components/Input";
 import { useSelector } from "../../redux/useSelector";
-import { appTokenSelector, currentUserSelector } from "../../redux/selectors";
+import { currentUserSelector } from "../../redux/selectors";
 import { User } from "../../redux/reducers/authReducer";
 import { httpClient } from "../../services/HttpClient";
 import { useDispatch } from "react-redux";
 import { editUser } from "../../redux/actions";
 import { formatPassword } from "../../services/auth";
+import { useTranslate } from "../../hooks/useTranslate";
 
 export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
+  const translate = useTranslate();
   const currentUser = useSelector(currentUserSelector) as User;
   const name = currentUser.name;
-  const appToken = useSelector(appTokenSelector);
   const reduxDispatch = useDispatch();
 
   const [secret, setSecret] = React.useState("");
@@ -26,6 +27,32 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   const formattedSecret = formatPassword(secret);
 
   const { isValid, errors } = validate(formattedPassword);
+
+  const successAlert = () => {
+    Alert.alert(
+      translate("password_change_success"),
+      translate("password_change_success_description"),
+      [
+        {
+          text: translate("continue"),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const failAlert = () => {
+    Alert.alert(
+      translate("password_change_fail"),
+      translate("password_change_fail_description"),
+      [
+        {
+          text: translate("continue"),
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   const sendRequest = async (password: string, secretAnswer: string) => {
     await httpClient.resetPassword({
@@ -46,33 +73,24 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
       return;
     }
 
-    const hasPasswordChanged = currentUser.password !== formattedPassword;
-    if (!hasPasswordChanged) {
-      return;
-    }
-
-    if (formattedSecret !== currentUser.secretAnswer) {
-      // TODO: show error
-      return;
-    }
-
-    if (!appToken) {
-      updateReduxState(formattedPassword);
-      toggleVisible();
-      return;
-    }
+    // const hasPasswordChanged = currentUser.password !== formattedPassword;
+    // if (!hasPasswordChanged) {
+    //   // TODO: Inform user no change ?
+    //   return;
+    // }
 
     try {
       await sendRequest(formattedPassword, formattedSecret);
       updateReduxState(formattedPassword);
       toggleVisible();
+      successAlert();
     } catch (error) {
-      // TODO: show alert
+      failAlert();
     }
   };
 
+  // Reset
   React.useEffect(() => {
-    // Reset
     setSecret("");
     setNewPassword("");
     setErrorsVisible(false);
@@ -97,7 +115,6 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
           errorsVisible={errorsVisible}
         />
       </View>
-
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.modalConfirm}>
         <Text style={styles.modalConfirmText}>confirm</Text>

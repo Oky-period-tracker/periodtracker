@@ -241,7 +241,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
           <Input
             value={state.name}
             onChangeText={onChangeName}
-            placeholder="Name"
+            placeholder="name"
             errors={errors}
             errorKeys={["username_too_short"]}
             errorsVisible={true}

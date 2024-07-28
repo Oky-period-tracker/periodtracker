@@ -1,31 +1,55 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { AuthHeader } from "./AuthHeader";
 import { Hr } from "../../../components/Hr";
 import { Input } from "../../../components/Input";
-import { ErrorText } from "../../../components/ErrorText";
 import { Text } from "../../../components/Text";
-
-type RequestStatus = "unknown" | "success" | "fail";
+import { httpClient } from "../../../services/HttpClient";
+import { formatPassword } from "../../../services/auth";
+import { useTranslate } from "../../../hooks/useTranslate";
+import { useAuthMode } from "../AuthModeContext";
 
 export const DeleteAccount = () => {
+  const { setAuthMode } = useAuthMode();
+  const translate = useTranslate();
+
   const [name, setName] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const [errorsVisible, setErrorsVisible] = React.useState(false);
   const { errors } = validateCredentials(name, password);
 
-  const [requestStatus, setRequestStatus] =
-    React.useState<RequestStatus>("unknown");
+  const goBack = () => {
+    setAuthMode("start");
+  };
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     if (errors.length) {
       setErrorsVisible(true);
       return;
     }
 
-    // TODO:
-    setRequestStatus("fail");
+    try {
+      // Check user exists
+      await httpClient.getUserInfo(name);
+
+      // Delete
+      await httpClient.deleteUserFromPassword({
+        name,
+        password: formatPassword(password),
+      });
+
+      Alert.alert("success", "delete_account_success", [
+        {
+          text: translate("continue"),
+          onPress: goBack,
+        },
+      ]);
+    } catch (e) {
+      Alert.alert("error", "delete_account_fail");
+      setName("");
+      setPassword("");
+    }
   };
 
   return (
@@ -49,7 +73,6 @@ export const DeleteAccount = () => {
           errorKeys={["password_too_short"]}
           errorsVisible={errorsVisible}
         />
-        {requestStatus === "fail" && <ErrorText>incorrect</ErrorText>}
       </View>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>

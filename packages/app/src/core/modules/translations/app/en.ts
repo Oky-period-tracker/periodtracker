@@ -494,4 +494,6 @@ These combined data points allow the app to make associations and identify patte
   attributes: "Attributes",
   clear_filters: "Clear all",
   videos_tag: "videos",
+  delete_account_fail: "Unable to delete the account",
+  error: "Error",
 };

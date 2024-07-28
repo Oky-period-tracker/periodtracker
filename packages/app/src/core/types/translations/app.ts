@@ -483,4 +483,8 @@ export interface AppTranslations {
   attributes?: string;
   clear_filters?: string;
   videos_tag?: string;
+  delete_account_fail?: string;
+  error?: string;
+  success?: string;
+  delete_account_success?: string;
 }

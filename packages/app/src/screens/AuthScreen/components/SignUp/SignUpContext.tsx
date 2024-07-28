@@ -324,8 +324,6 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
     };
   }, [debouncedName]);
 
-  console.log("*** nameAvailable", state.nameAvailable);
-
   // Finish
   React.useEffect(() => {
     if (step) {

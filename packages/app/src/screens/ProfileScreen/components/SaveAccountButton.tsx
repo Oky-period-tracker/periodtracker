@@ -3,22 +3,25 @@ import { useDispatch } from "react-redux";
 import { Button } from "../../../components/Button";
 import { convertGuestAccount } from "../../../redux/actions";
 import { useSelector } from "../../../redux/useSelector";
-import { authError, currentUserSelector } from "../../../redux/selectors";
+import {
+  authError,
+  connectAccountAttemptsSelector,
+  currentUserSelector,
+} from "../../../redux/selectors";
 import { ErrorText } from "../../../components/ErrorText";
 import { StyleSheet, View } from "react-native";
 
 export const SaveAccountButton = () => {
   const currentUser = useSelector(currentUserSelector);
-  // TODO:
-  // eslint-disable-next-line
-  const errorCode: any = useSelector(authError);
+  const connectAccountCount = useSelector(connectAccountAttemptsSelector);
+  const errorCode = useSelector(authError);
   const dispatch = useDispatch();
 
-  const [errorsVisible, setErrorsVisible] = React.useState(false);
-  const showError = errorsVisible && errorCode;
+  const [pressed, setPressed] = React.useState(false);
+  const [error, setError] = React.useState(false);
 
   const onPress = () => {
-    setErrorsVisible(true);
+    setPressed(true);
     if (!currentUser) {
       return;
     }
@@ -26,14 +29,37 @@ export const SaveAccountButton = () => {
     dispatch(convertGuestAccount(currentUser));
   };
 
+  // Display error
+  React.useEffect(() => {
+    if (!pressed) {
+      return;
+    }
+    setError(true);
+  }, [connectAccountCount, error, errorCode]);
+
+  // Hide error
+  React.useEffect(() => {
+    if (!error) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setError(false);
+      setPressed(false);
+    }, 10000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [error]);
+
   return (
     <View style={styles.wrapper}>
       <Button onPress={onPress} style={styles.button}>
         connect_account
       </Button>
-      {showError && (
+      {error && (
         <ErrorText style={styles.error}>
-          {/* TODO: what error codes are actually used? */}
           {errorCode === 409 ? "error_same_name" : "error_connect_guest"}
         </ErrorText>
       )}
@@ -44,6 +70,7 @@ export const SaveAccountButton = () => {
 const styles = StyleSheet.create({
   wrapper: {
     flexDirection: "column",
+    alignItems: "center",
   },
   button: {
     width: 140,

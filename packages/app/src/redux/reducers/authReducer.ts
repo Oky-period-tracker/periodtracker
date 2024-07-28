@@ -30,7 +30,7 @@ export interface UserMetadata {
 
 export interface AuthState {
   appToken: string | null;
-  error: string | null;
+  error: string | number | null;
   isCreatingAccount: boolean;
   isLoggingIn: boolean;
   loginFailedCount: number;

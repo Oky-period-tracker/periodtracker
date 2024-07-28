@@ -20,8 +20,7 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
     navigation.navigate("Contact");
   };
 
-  const consentQuestion =
-    "Will you answer a few questions? It will take 2 to 3 minutes";
+  const consentQuestion = "will_you_answer_survey_questions";
 
   if (!state.survey) {
     return null;

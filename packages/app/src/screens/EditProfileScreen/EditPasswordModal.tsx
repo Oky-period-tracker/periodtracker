@@ -102,7 +102,7 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
         <Input
           value={secret}
           onChangeText={setSecret}
-          placeholder="old_secret_answer"
+          placeholder="secret_answer"
           secureTextEntry={true}
         />
         <Input
@@ -141,8 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   modalBody: {
-    paddingVertical: 24,
-    paddingHorizontal: 48,
+    padding: 24,
   },
   title: {
     fontSize: 20,

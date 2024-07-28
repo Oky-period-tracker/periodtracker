@@ -1,8 +1,8 @@
 import { generateRange } from "../services/utils";
 
 export const genders = [
-  { value: "Female", label: "Female", iconName: "female" },
   { value: "Male", label: "Male", iconName: "male" },
+  { value: "Female", label: "Female", iconName: "female" },
   { value: "Other", label: "Other", iconName: "genderless" },
 ];
 

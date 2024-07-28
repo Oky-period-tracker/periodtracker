@@ -167,27 +167,27 @@ function* onDeleteAccountRequest(
 ) {
   // const { setLoading } = action.payload;
   const state: ReduxState = yield select();
+
   const user = selectors.currentUserSelector(state);
+
   // setLoading(true);
+  // TODO: if guest & no app token, just log out to delete local redux state, no DB account to delete so dont send request
   try {
     const { name, password } = action.payload;
     yield httpClient.deleteUserFromPassword({
       name,
       password,
     });
+
     yield put(actions.updateAllSurveyContent([])); // TODO: ?
     yield put(actions.updateCompletedSurveys([])); // TODO: ?
-
-    //  ===================== TODO: NAVIGATION ===================== //
-
-    // yield call(navigateAndReset, "LoginStack", null);
 
     if (user) {
       yield put(actions.logout());
     }
   } catch (err) {
     // setLoading(false);
-    Alert.alert("Error", "Unable to delete the account");
+    Alert.alert("error", "delete_account_fail");
   }
 }
 

@@ -24,7 +24,7 @@ export const SurveyConsent = () => {
         checkedTextStatus={"danger"}
       />
       <Checkbox
-        label={"No - Not now"}
+        label={"not_now"}
         onPress={onNoPress}
         checked={agree === false}
         checkedStatus={"danger"}

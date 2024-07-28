@@ -16,8 +16,6 @@ export const isTutorialOneActiveSelector = (state: ReduxState) =>
 export const isTutorialTwoActiveSelector = (state: ReduxState) =>
   s(state).isTutorialTwoActive;
 
-export const isTtsActiveSelector = (state: ReduxState) => s(state).isTtsActive;
-
 export const isLoginPasswordActiveSelector = (state: ReduxState) =>
   s(state).isLoginPasswordActive;
 

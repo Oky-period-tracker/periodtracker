@@ -43,10 +43,6 @@ export function setLoginPassword(isLoginPasswordActive: boolean) {
   return createAction("SET_LOGIN_PASSWORD_ACTIVE", { isLoginPasswordActive });
 }
 
-export function setTtsActive(isTtsActive: boolean) {
-  return createAction("SET_TTS_ACTIVE", { isTtsActive });
-}
-
 export function setFuturePredictionActive(isFuturePredictionActive: boolean) {
   return createAction("SET_FUTURE_PREDICTION_ACTIVE", {
     isFuturePredictionActive,

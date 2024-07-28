@@ -23,7 +23,7 @@ export interface AppState {
   isTutorialOneActive: boolean;
   isTutorialTwoActive: boolean;
   isLoginPasswordActive: boolean; // @deprecated
-  isTtsActive: boolean;
+  isTtsActive: boolean; // @deprecated
   isFuturePredictionActive: boolean;
   theme: ThemeName;
   avatar: AvatarName;
@@ -51,7 +51,6 @@ const initialState: AppState = {
   isTutorialOneActive: true,
   isTutorialTwoActive: true,
   isLoginPasswordActive: true,
-  isTtsActive: false,
   isFuturePredictionActive: true,
   theme: defaultTheme,
   avatar: defaultAvatar,
@@ -131,11 +130,6 @@ export function appReducer(
       return {
         ...state,
         isLoginPasswordActive: action.payload.isLoginPasswordActive,
-      };
-    case "SET_TTS_ACTIVE":
-      return {
-        ...state,
-        isTtsActive: action.payload.isTtsActive,
       };
     case "SET_FUTURE_PREDICTION_ACTIVE":
       return {

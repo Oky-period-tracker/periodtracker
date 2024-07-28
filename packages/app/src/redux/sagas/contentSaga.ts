@@ -113,12 +113,7 @@ function* onFetchContentRequest(
 
 function* onSetLocale(action: ExtractActionFromActionType<"SET_LOCALE">) {
   const { locale } = action.payload;
-  // @ts-expect-error TODO:
-  const isTtsActive = yield select(selectors.isTtsActiveSelector);
-  if (isTtsActive) {
-    // yield call(closeOutTTs)
-    yield put(actions.setTtsActive(false));
-  }
+
   // unsubscribe from topic
   // TODO:: use locales from submodule
   // messaging().unsubscribeFromTopic("oky_en_notifications");

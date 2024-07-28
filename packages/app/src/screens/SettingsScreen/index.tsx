@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
@@ -12,11 +12,13 @@ import { deleteAccountRequest, logoutRequest } from "../../redux/actions";
 import { useAuth } from "../../contexts/AuthContext";
 import { useSelector } from "../../redux/useSelector";
 import { currentUserSelector } from "../../redux/selectors";
+import { useTranslate } from "../../hooks/useTranslate";
 
 const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector);
   const dispatch = useDispatch();
   const { setIsLoggedIn } = useAuth();
+  const translate = useTranslate();
 
   const logOut = () => {
     dispatch(logoutRequest());
@@ -31,8 +33,44 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
       deleteAccountRequest({
         name: currentUser.name,
         password: currentUser.password,
-        // setLoading,
+        // setLoading, TODO: ?
       })
+    );
+  };
+
+  const logOutAlert = () => {
+    Alert.alert(
+      translate("are_you_sure"),
+      translate("logout_account_description"),
+      [
+        {
+          text: translate("cancel"),
+          style: "cancel",
+        },
+        {
+          text: translate("yes"),
+          onPress: logOut,
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const deleteAccountAlert = () => {
+    Alert.alert(
+      translate("are_you_sure"),
+      translate("delete_account_description"),
+      [
+        {
+          text: translate("cancel"),
+          style: "cancel",
+        },
+        {
+          text: translate("yes"),
+          onPress: deleteAccount,
+        },
+      ],
+      { cancelable: false }
     );
   };
 
@@ -84,11 +122,15 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <Button onPress={logOut} status={"secondary"} style={styles.button}>
+        <Button
+          onPress={logOutAlert}
+          status={"secondary"}
+          style={styles.button}
+        >
           logout
         </Button>
         <Button
-          onPress={deleteAccount}
+          onPress={deleteAccountAlert}
           status={"basic"}
           style={[styles.button, styles.deleteButton]}
         >

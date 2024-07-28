@@ -14,6 +14,7 @@ import { Text } from "../../../components/Text";
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector);
+  const [wasPreLoggedIn] = React.useState(!!user);
   const dispatch = useDispatch();
   const { setIsLoggedIn } = useAuth();
 
@@ -40,14 +41,19 @@ export const LogIn = () => {
         return;
       }
 
-      // TODO: Set redux state instead of local state ? Or make ErrorProvider
-      // dispatch(setAuthError({ error: errorStatusCode }))
       setSuccess(false);
       return;
     }
 
     dispatch(loginRequest({ name, password: formatPassword(password) }));
   };
+
+  React.useEffect(() => {
+    if (wasPreLoggedIn || !user) {
+      return;
+    }
+    setIsLoggedIn(true);
+  }, [user]);
 
   return (
     <>

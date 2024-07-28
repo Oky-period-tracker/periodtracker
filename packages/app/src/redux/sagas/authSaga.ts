@@ -1,4 +1,4 @@
-import { all, put, select, takeLatest, delay } from "redux-saga/effects";
+import { all, put, select, takeLatest } from "redux-saga/effects";
 import { REHYDRATE } from "redux-persist";
 import { Alert } from "react-native";
 import { v4 as uuidv4 } from "uuid";
@@ -75,10 +75,6 @@ function* onLoginRequest(action: ExtractActionFromActionType<"LOGIN_REQUEST">) {
       // @TODO: execute migration based on storeVersion
       yield put(actions.refreshStore({ userID: user.id, ...partialState }));
     }
-
-    yield delay(5000); // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-    //  ===================== TODO: NAVIGATION ===================== //
-    // yield call(navigateAndReset, "MainStack", null);
   } catch (error) {
     let errorMessage = "request_fail";
     // @ts-expect-error TODO:

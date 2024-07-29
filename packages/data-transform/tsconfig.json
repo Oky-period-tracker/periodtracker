@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "target": "ES6",
+      "module": "commonjs",
+      "strict": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "outDir": "./dist",
+      "resolveJsonModule": true,
+      "moduleResolution": "node",
+      "sourceMap": true
+    },
+    "include": [
+      "data-transform/src/**/*.ts" // Ensure it points to the correct directory
+    ],
+    "exclude": [
+      "node_modules",
+      "dist"
+    ]
+  }
+  

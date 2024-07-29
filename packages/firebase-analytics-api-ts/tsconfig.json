@@ -7,6 +7,10 @@
       "strict": true,
       "esModuleInterop": true
     },
-    "include": ["src"]
+    "include": ["src"],
+    "rules": {
+  "no-console": false
+}
+
   }
   

@@ -48,8 +48,10 @@
     "nohoist": []
   },
   "devDependencies": {
+    "fs-extra": "^11.1.1",
     "husky": "^2.3.0",
     "lint-staged": "^8.1.7",
+    "lottie-parser": "^0.1.0",
     "patch-package": "^6.1.4",
     "postinstall-postinstall": "^2.0.0",
     "prettier": "2.0.5",
@@ -57,9 +59,7 @@
     "tslint": "^5.17.0",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-react": "^4.0.0",
-    "fs-extra": "^11.1.1",
-    "lottie-parser": "^0.1.0"
+    "tslint-react": "^4.0.0"
   },
   "husky": {
     "hooks": {
@@ -72,5 +72,8 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "dependencies": {
+    "firebase-admin": "^12.2.0"
   }
 }

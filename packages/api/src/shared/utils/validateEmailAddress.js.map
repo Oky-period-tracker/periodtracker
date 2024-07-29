@@ -1,0 +1,1 @@
+{"version":3,"file":"validateEmailAddress.js","sourceRoot":"","sources":["validateEmailAddress.ts"],"names":[],"mappings":";;AAAA,oDAGC;AAHD,SAAgB,oBAAoB,CAAC,KAAa;IAChD,MAAM,KAAK,GAAG,yJAAyJ,CAAA;IACvK,OAAO,KAAK,CAAC,IAAI,CAAC,MAAM,CAAC,KAAK,CAAC,CAAC,WAAW,EAAE,CAAC,CAAA;AAChD,CAAC"}

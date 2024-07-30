@@ -1,3 +1,5 @@
+import { StyleSheet } from "react-native";
+
 export type PaletteStatus =
   | "primary"
   | "secondary"
@@ -69,3 +71,16 @@ export const palette: Record<
 };
 
 export const starColor = "#F6AC3F";
+
+export const globalStyles = StyleSheet.create({
+  shadow: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 2,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+});

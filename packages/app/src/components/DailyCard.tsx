@@ -15,7 +15,7 @@ import {
 } from "../redux/selectors";
 import { useNavigation } from "@react-navigation/native";
 import { defaultEmoji } from "../config/options";
-import { starColor } from "../config/theme";
+import { globalStyles, starColor } from "../config/theme";
 import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useLoading } from "../contexts/LoadingProvider";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
@@ -89,6 +89,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
       disabled={disabled}
       style={[
         styles.card,
+        globalStyles.shadow,
         {
           width: CARD_WIDTH,
           marginHorizontal: CARD_MARGIN / 2,
@@ -164,7 +165,6 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
     backgroundColor: "#fff",
-    overflow: "hidden",
     aspectRatio: 1.5,
     flexDirection: "column",
     padding: 12,

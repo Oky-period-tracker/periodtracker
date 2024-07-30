@@ -13,6 +13,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useSelector } from "../../redux/useSelector";
 import { appTokenSelector, currentUserSelector } from "../../redux/selectors";
 import { useTranslate } from "../../hooks/useTranslate";
+import { globalStyles } from "../../config/theme";
 
 const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector);
@@ -112,7 +113,7 @@ const SettingsScreen: ScreenComponent<"Settings"> = ({ navigation }) => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, globalStyles.shadow]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1;
           return (
@@ -166,7 +167,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     width: "100%",
-    overflow: "hidden",
   },
   buttonContainer: {
     flexDirection: "row",

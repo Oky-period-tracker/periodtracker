@@ -4,6 +4,7 @@ import { Text } from "../../../components/Text";
 import { useScreenDimensions } from "../../../hooks/useScreenDimensions";
 import { useTodayPrediction } from "../../../contexts/PredictionProvider";
 import { useDayStatus } from "../../../hooks/useDayStatus";
+import { globalStyles } from "../../../config/theme";
 
 export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { width } = useScreenDimensions();
@@ -14,6 +15,7 @@ export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
     <View
       style={[
         styles.container,
+        globalStyles.shadow,
         { left: width / 2 - WIDTH - MARGIN_RIGHT },
         style,
       ]}

@@ -12,6 +12,7 @@ import {
 } from "../../../redux/selectors";
 import { VideoPlayerModal } from "./VideoPlayer";
 import { SubCategory } from "../../../core/types";
+import { globalStyles } from "../../../config/theme";
 
 export const Accordion = () => {
   const { filteredCategoryIds } = useEncyclopedia();
@@ -57,7 +58,10 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
   return (
     <>
-      <TouchableOpacity style={styles.category} onPress={toggleExpanded}>
+      <TouchableOpacity
+        style={[styles.category, globalStyles.shadow]}
+        onPress={toggleExpanded}
+      >
         <Text
           status={expanded ? "danger" : "secondary"}
           style={styles.categoryName}
@@ -78,7 +82,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
         subCategories.map((subcategory) => (
           <TouchableOpacity
             key={subcategory.id}
-            style={styles.subcategory}
+            style={[styles.subcategory, globalStyles.shadow]}
             onPress={() =>
               navigation.navigate("Articles", {
                 subcategoryId: subcategory.id,
@@ -107,7 +111,7 @@ const AccordionVideosItem = () => {
   return (
     <>
       <TouchableOpacity
-        style={[styles.category, styles.videos]}
+        style={[styles.category, styles.videos, globalStyles.shadow]}
         onPress={toggleExpanded}
       >
         <Text
@@ -127,7 +131,7 @@ const AccordionVideosItem = () => {
         videos.map((video) => (
           <TouchableOpacity
             key={video.id}
-            style={styles.subcategory}
+            style={[styles.subcategory, globalStyles.shadow]}
             onPress={() => {
               setSelectedVideoId(video.id);
             }}

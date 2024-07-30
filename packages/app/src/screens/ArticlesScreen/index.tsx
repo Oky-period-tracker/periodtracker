@@ -12,7 +12,7 @@ import {
   articlesSelector,
   subCategoryByIDSelector,
 } from "../../redux/selectors";
-import { palette } from "../../config/theme";
+import { globalStyles, palette } from "../../config/theme";
 
 const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
   const { query, setQuery, articleIds } = useEncyclopedia();
@@ -46,11 +46,18 @@ const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
 
   return (
     <Screen>
-      <ScrollView style={styles.scrollView}>
-        <SearchBar query={query} setQuery={setQuery} />
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={{ paddingHorizontal: 12 }}
+      >
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          style={globalStyles.shadow}
+        />
         {articles.map((article) => {
           return (
-            <View style={styles.card} key={article.id}>
+            <View style={[styles.card, globalStyles.shadow]} key={article.id}>
               <Text style={styles.title} enableTranslate={false}>
                 {article.title}
               </Text>
@@ -72,6 +79,7 @@ const styles = StyleSheet.create({
   scrollView: {
     width: "100%",
     height: "100%",
+    // paddingHorizontal: 12,
   },
   card: {
     backgroundColor: "#fff",

@@ -7,6 +7,7 @@ import { useToggle } from "../../../hooks/useToggle";
 import { Button } from "../../../components/Button";
 import { HelpCenter } from "../../../core/types";
 import { useHelpCenterAttributes } from "../useHelpCenterAttributes";
+import { globalStyles } from "../../../config/theme";
 
 export const HelpCenterCard = ({
   helpCenter,
@@ -31,7 +32,10 @@ export const HelpCenterCard = ({
   }, [helpCenter]);
 
   return (
-    <TouchableOpacity onPress={toggleExpanded} style={styles.helpCenterCard}>
+    <TouchableOpacity
+      onPress={toggleExpanded}
+      style={[styles.helpCenterCard, globalStyles.shadow]}
+    >
       <View style={styles.topRow}>
         <View style={styles.topRowText}>
           <Text style={styles.title} enableTranslate={false}>

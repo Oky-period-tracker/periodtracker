@@ -17,6 +17,7 @@ import { getAsset } from "../../../services/asset";
 import { SaveAccountButton } from "./SaveAccountButton";
 import { useTranslate } from "../../../hooks/useTranslate";
 import { useFormatDate } from "../../../hooks/useFormatDate";
+import { globalStyles } from "../../../config/theme";
 
 export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
   const currentUser = useSelector(currentUserSelector);
@@ -42,7 +43,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
     todayInfo.periodLength === 0 ? "-" : `${todayInfo.periodLength} ${days}`;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, globalStyles.shadow]}>
       {currentUser?.isGuest && (
         <>
           <View style={styles.row}>

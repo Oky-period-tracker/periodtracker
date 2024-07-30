@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { WEBSITE_URL } from "../../config/env";
 import { useLoading } from "../../contexts/LoadingProvider";
 import { useTranslate } from "../../hooks/useTranslate";
+import { globalStyles } from "../../config/theme";
 
 const AccessScreen: ScreenComponent<"Access"> = ({ navigation }) => {
   const { setLoading } = useLoading();
@@ -41,7 +42,7 @@ const AccessScreen: ScreenComponent<"Access"> = ({ navigation }) => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, globalStyles.shadow]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1;
           return (
@@ -86,6 +87,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     width: "100%",
-    overflow: "hidden",
   },
 });

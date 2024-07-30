@@ -8,6 +8,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { Button } from "./Button";
+import { globalStyles } from "../config/theme";
 
 type SwiperProps = {
   index: number;
@@ -90,7 +91,9 @@ export const Swiper = ({
   return (
     <View style={styles.container} onLayout={onLayout}>
       <GestureDetector gesture={panGesture}>
-        <Animated.View style={[styles.pagesContainer, animatedStyle]}>
+        <Animated.View
+          style={[styles.pagesContainer, globalStyles.shadow, animatedStyle]}
+        >
           {pages.map((page, i) => (
             <View key={i} style={styles.page}>
               {page}

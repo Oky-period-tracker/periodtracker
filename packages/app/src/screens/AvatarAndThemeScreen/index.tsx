@@ -12,7 +12,7 @@ import {
 } from "../../redux/selectors";
 import { useDispatch } from "react-redux";
 import { setAvatar, setTheme } from "../../redux/actions";
-import { PaletteStatus, palette } from "../../config/theme";
+import { PaletteStatus, globalStyles, palette } from "../../config/theme";
 import { Text } from "../../components/Text";
 
 const AvatarAndThemeScreen = () => {
@@ -70,18 +70,20 @@ export const AvatarAndThemeSelect = ({
             <TouchableOpacity
               key={avatar}
               onPress={onPress}
-              style={styles.avatar}
+              style={[styles.avatar, globalStyles.shadow]}
             >
-              <Image
-                source={getAsset(`avatars.${avatar}.theme`)}
-                style={styles.avatarImage}
-              />
-              <Text style={styles.name} enableTranslate={false}>
-                {avatar}
-              </Text>
-              {showCheck && (
-                <CheckButton style={styles.check} status={checkStatus} />
-              )}
+              <View style={styles.body}>
+                <Image
+                  source={getAsset(`avatars.${avatar}.theme`)}
+                  style={styles.avatarImage}
+                />
+                <Text style={styles.name} enableTranslate={false}>
+                  {avatar}
+                </Text>
+                {showCheck && (
+                  <CheckButton style={styles.check} status={checkStatus} />
+                )}
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -104,18 +106,20 @@ export const AvatarAndThemeSelect = ({
             <TouchableOpacity
               key={theme}
               onPress={onPress}
-              style={styles.theme}
+              style={[styles.theme, globalStyles.shadow]}
             >
-              <Image
-                source={getAsset(`backgrounds.${theme}.default`)}
-                style={styles.themeImage}
-              />
-              <Text style={styles.name} enableTranslate={false}>
-                {theme}
-              </Text>
-              {showCheck && (
-                <CheckButton style={styles.check} status={checkStatus} />
-              )}
+              <View style={styles.body}>
+                <Image
+                  source={getAsset(`backgrounds.${theme}.default`)}
+                  style={styles.themeImage}
+                />
+                <Text style={styles.name} enableTranslate={false}>
+                  {theme}
+                </Text>
+                {showCheck && (
+                  <CheckButton style={styles.check} status={checkStatus} />
+                )}
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -179,12 +183,9 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   avatar: {
-    backgroundColor: "#fff",
     width: 80,
     height: 80,
-    borderRadius: 20,
     margin: 4,
-    overflow: "hidden",
   },
   themes: {
     flexDirection: "row",
@@ -194,15 +195,20 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   theme: {
-    backgroundColor: "#fff",
     minWidth: 100,
     height: 100,
-    borderRadius: 20,
     flexBasis: "40%",
     margin: 8,
-    overflow: "hidden",
+  },
+  body: {
+    backgroundColor: "#fff",
     borderColor: "#fff",
     borderWidth: 4,
+
+    overflow: "hidden",
+    width: "100%",
+    height: "100%",
+    borderRadius: 20,
   },
   check: {
     position: "absolute",

@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Text } from "../../../components/Text";
 import { useTutorial } from "../TutorialContext";
 import { useScreenDimensions } from "../../../hooks/useScreenDimensions";
+import { globalStyles } from "../../../config/theme";
 
 export const TutorialTextbox = () => {
   const { state, stepConfig } = useTutorial();
@@ -15,7 +16,14 @@ export const TutorialTextbox = () => {
   const { title, text, textBoxTop } = stepConfig;
 
   return (
-    <View style={[styles.box, { width: width - 48 }, textBoxTop && styles.top]}>
+    <View
+      style={[
+        styles.box,
+        globalStyles.shadow,
+        { width: width - 48 },
+        textBoxTop && styles.top,
+      ]}
+    >
       <Text style={styles.title} status={"primary"}>
         {title}
       </Text>

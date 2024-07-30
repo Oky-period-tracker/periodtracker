@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "./Text";
+import { globalStyles } from "../config/theme";
 
 export const InfoDisplay = ({
   content,
@@ -11,7 +12,7 @@ export const InfoDisplay = ({
   }[];
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, globalStyles.shadow]}>
       {content.map((item, i) => (
         <Text
           key={`info-${i}`}
@@ -29,7 +30,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     borderRadius: 20,
-    width: "100%",
     marginVertical: 4,
     padding: 24,
   },

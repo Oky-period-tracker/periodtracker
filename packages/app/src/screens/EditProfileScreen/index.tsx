@@ -20,6 +20,7 @@ import { useToggle } from "../../hooks/useToggle";
 import { EditPasswordModal } from "./EditPasswordModal";
 import { EditSecretModal } from "./EditSecretModal";
 import { useMonths } from "../../hooks/useMonths";
+import { globalStyles } from "../../config/theme";
 
 type EditProfileState = {
   name: User["name"];
@@ -235,7 +236,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
   return (
     <Screen>
       {/* =============== Profile =============== */}
-      <View style={styles.container}>
+      <View style={[styles.container, globalStyles.shadow]}>
         {/* ===== Name ===== */}
         <View style={styles.segment}>
           <Input
@@ -298,7 +299,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
       </View>
 
       {/* =============== Security =============== */}
-      <View style={styles.securityContainer}>
+      <View style={[styles.securityContainer, globalStyles.shadow]}>
         <View style={styles.segment}>
           <TouchableOpacity
             onPress={togglePasswordModal}
@@ -338,7 +339,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: "100%",
     borderRadius: 20,
-    overflow: "hidden",
     padding: 24,
     marginBottom: 12,
   },
@@ -359,7 +359,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     width: "100%",
     borderRadius: 20,
-    overflow: "hidden",
   },
   securityButton: {
     padding: 24,

@@ -14,6 +14,7 @@ import { useSelector } from "../../../redux/useSelector";
 import { currentLocaleSelector } from "../../../redux/selectors";
 import { CloudOutline } from "../../../components/icons/CloudOutline";
 import moment from "moment";
+import { globalStyles } from "../../../config/theme";
 
 export const TutorialFeature = () => {
   const { state, stepConfig } = useTutorial();
@@ -79,7 +80,7 @@ export const CalendarFeature = () => {
   LocaleConfig.defaultLocale = locale;
 
   return (
-    <View style={styles.calendarContainer}>
+    <View style={[styles.calendarContainer, globalStyles.shadow]}>
       <DatePicker
         selectedDate={moment()}
         onDayPress={() => {
@@ -98,7 +99,9 @@ export const ActivityCardFeature = () => {
   const h = w / aspectRatio;
 
   return (
-    <View style={[styles.notesCard, { width: w, height: h }]}>
+    <View
+      style={[styles.notesCard, globalStyles.shadow, { width: w, height: h }]}
+    >
       <EmojiQuestionCard topic={"activity"} size={"small"} />
     </View>
   );
@@ -112,7 +115,9 @@ export const NotesFeature = () => {
   const h = w / aspectRatio;
 
   return (
-    <View style={[styles.notesCard, { width: w, height: h }]}>
+    <View
+      style={[styles.notesCard, globalStyles.shadow, { width: w, height: h }]}
+    >
       <NotesCard />
     </View>
   );

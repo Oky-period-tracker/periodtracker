@@ -7,7 +7,7 @@ import {
   View,
   ViewProps,
 } from "react-native";
-import { PaletteStatus, palette } from "../config/theme";
+import { PaletteStatus, globalStyles, palette } from "../config/theme";
 import { Appearance } from "./IconButton";
 import { Text } from "./Text";
 
@@ -32,7 +32,12 @@ export const Button = ({
 
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor: colors.base }, style]}
+      style={[
+        styles.container,
+        globalStyles.shadow,
+        { backgroundColor: colors.base },
+        style,
+      ]}
       onPress={onPress}
       {...props}
     >
@@ -55,7 +60,12 @@ export const DisplayButton = ({
 
   return (
     <View
-      style={[styles.container, { backgroundColor: colors.base }, style]}
+      style={[
+        styles.container,
+        globalStyles.shadow,
+        { backgroundColor: colors.base },
+        style,
+      ]}
       {...props}
     >
       <ButtonInner status={status} {...props} />

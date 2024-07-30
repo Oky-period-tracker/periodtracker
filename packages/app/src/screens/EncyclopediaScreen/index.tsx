@@ -7,6 +7,7 @@ import { CategoryPicker } from "./components/CategoryPicker";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { useEncyclopedia } from "./EncyclopediaContext";
 import { SearchBar } from "../../components/SearchBar";
+import { globalStyles } from "../../config/theme";
 
 const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
   navigation,
@@ -23,7 +24,11 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
-        <SearchBar query={query} setQuery={setQuery} />
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          style={globalStyles.shadow}
+        />
         <CategoryPicker />
         <Accordion />
       </ScrollView>
@@ -37,6 +42,7 @@ const styles = StyleSheet.create({
   scrollView: {
     width: "100%",
     height: "100%",
+    // padding: 12,
   },
   container: {
     alignItems: "center",

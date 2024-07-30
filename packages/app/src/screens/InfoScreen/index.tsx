@@ -5,6 +5,7 @@ import { TouchableRow, TouchableRowProps } from "../../components/TouchableRow";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Hr } from "../../components/Hr";
 import { ScreenComponent } from "../../navigation/RootNavigator";
+import { globalStyles } from "../../config/theme";
 
 const InfoScreen: ScreenComponent<"Info"> = ({ navigation }) => {
   const rows: TouchableRowProps[] = [
@@ -36,7 +37,7 @@ const InfoScreen: ScreenComponent<"Info"> = ({ navigation }) => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <View style={[styles.container, globalStyles.shadow]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1;
           return (
@@ -62,7 +63,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     width: "100%",
-    overflow: "hidden",
   },
   buttonContainer: {
     flexDirection: "row",

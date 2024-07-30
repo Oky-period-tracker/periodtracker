@@ -5,7 +5,7 @@ import { Hr } from "../../../components/Hr";
 import { Input } from "../../../components/Input";
 import { ErrorText } from "../../../components/ErrorText";
 import { useSelector } from "../../../redux/useSelector";
-import { authError, currentUserSelector } from "../../../redux/selectors";
+import { currentUserSelector } from "../../../redux/selectors";
 import { useAuth } from "../../../contexts/AuthContext";
 import { formatPassword } from "../../../services/auth";
 import { useDispatch } from "react-redux";
@@ -21,7 +21,6 @@ export const LogIn = () => {
   const [name, setName] = React.useState(user ? user.name : "");
   const [password, setPassword] = React.useState("");
 
-  const reduxAuthError = useSelector(authError);
   const [errorsVisible, setErrorsVisible] = React.useState(false);
   const { errors } = validateCredentials(name, password);
 
@@ -36,6 +35,7 @@ export const LogIn = () => {
     if (user) {
       const formattedPassword = formatPassword(password);
       const success = user.password === formattedPassword;
+
       if (success) {
         setIsLoggedIn(true);
         return;
@@ -77,10 +77,7 @@ export const LogIn = () => {
           errorKeys={["password_too_short"]}
           errorsVisible={errorsVisible}
         />
-        {success === false && (
-          <ErrorText>Incorrect username or password</ErrorText>
-        )}
-        {reduxAuthError && <ErrorText>{reduxAuthError}</ErrorText>}
+        {success === false && <ErrorText>password_incorrect</ErrorText>}
       </View>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>

@@ -1,6 +1,5 @@
 import * as React from "react";
-import * as Sharing from "expo-sharing";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Share } from "react-native";
 import { Screen } from "../../components/Screen";
 import { Hr } from "../../components/Hr";
 import { ScreenComponent } from "../../navigation/RootNavigator";
@@ -66,15 +65,17 @@ const ShareButton = () => {
   const translate = useTranslate();
 
   const shareLink = () => {
-    if (!Sharing.isAvailableAsync()) {
-      return;
-    }
+    const message = translate("join_oky_message");
+    const title = message;
 
+    const shareOptions = {
+      title,
+      message,
+      url: WEBSITE_URL,
+    };
+
+    Share.share(shareOptions);
     dispatch(shareApp());
-
-    Sharing.shareAsync(WEBSITE_URL, {
-      dialogTitle: translate("join_oky_message"),
-    });
   };
 
   return <Button onPress={shareLink}>share</Button>;

@@ -42,10 +42,12 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
 
   return (
     <View style={styles.page}>
-      <Text style={styles.title}>Quiz</Text>
-      <Text>Test your knowledge when it comes to periods and body stuff!</Text>
+      <Text style={styles.title}>quiz</Text>
+      <Text>daily_quiz_content</Text>
       <View style={styles.body}>
-        <Text style={styles.question}>{question}</Text>
+        <Text style={styles.question} enableTranslate={false}>
+          {question}
+        </Text>
         {answeredQuestion && (
           <>
             <View style={styles.checkboxContainer}>
@@ -56,6 +58,7 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
               <Text
                 status={answeredQuestion.isCorrect ? "primary" : "secondary"}
                 style={styles.label}
+                enableTranslate={false}
               >
                 {answeredQuestion.answer}
               </Text>
@@ -63,6 +66,7 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
             <Text
               style={styles.response}
               status={answeredQuestion.isCorrect ? "primary" : "secondary"}
+              enableTranslate={false}
             >
               {answeredQuestion.response}
             </Text>
@@ -96,7 +100,11 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
                 style={styles.checkboxContainer}
               >
                 <DisplayButton style={styles.checkbox} status={"basic"} />
-                <Text status={"basic"} style={styles.label}>
+                <Text
+                  status={"basic"}
+                  style={styles.label}
+                  enableTranslate={false}
+                >
                   {answer.text}
                 </Text>
               </TouchableOpacity>

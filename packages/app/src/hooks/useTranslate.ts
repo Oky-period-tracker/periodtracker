@@ -11,8 +11,16 @@ import { ENV } from "../config/env";
 import { useSelector } from "react-redux";
 import { currentLocaleSelector } from "../redux/selectors";
 
-const deviceLocale = getLocales()[0].languageCode;
-export const initialLocale = deviceLocale ? deviceLocale : defaultLocale;
+let locale = defaultLocale;
+
+try {
+  const deviceLocale = getLocales()[0]?.languageCode;
+  locale = (deviceLocale ? deviceLocale : defaultLocale) as Locale;
+} catch (e) {
+  //
+}
+
+export const initialLocale = locale;
 
 type TranslationObject = Record<Locale, Record<string, string>>;
 

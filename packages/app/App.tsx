@@ -13,6 +13,7 @@ import { ResponsiveProvider } from "./src/contexts/ResponsiveContext";
 import { PredictionProvider } from "./src/contexts/PredictionProvider";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { LoadingProvider } from "./src/contexts/LoadingProvider";
+import { StatusBar } from "react-native";
 
 function App() {
   useOrientationLock();
@@ -28,6 +29,7 @@ function App() {
                   <EncyclopediaProvider>
                     <Background>
                       <LoadingProvider>
+                        <StatusBar hidden />
                         <RootNavigator />
                       </LoadingProvider>
                     </Background>

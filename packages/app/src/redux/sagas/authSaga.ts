@@ -1,5 +1,4 @@
-import { all, put, select, takeLatest } from "redux-saga/effects";
-import { REHYDRATE } from "redux-persist";
+import { all, delay, fork, put, select, takeLatest } from "redux-saga/effects";
 import { Alert } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 import { ExtractActionFromActionType } from "../types";
@@ -17,15 +16,31 @@ import { ReduxState } from "../reducers";
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T;
 
-function* onRehydrate() {
-  const state: ReduxState = yield select();
+function* periodicallyAttemptConvertGuestAccount() {
+  let userSaved = false;
+  let attempts = 0;
+  const maxAttempts = 10;
 
-  const appToken = selectors.appTokenSelector(state);
-  const user = selectors.currentUserSelector(state);
+  while (!userSaved && attempts <= maxAttempts) {
+    const duration = 1000 * 60 * 5; // 5 minutes
+    yield delay(duration);
 
-  // convert guest account
-  if (!appToken && user && user.isGuest) {
+    // @ts-expect-error TODO:
+    const appToken = yield select(selectors.appTokenSelector);
+    // @ts-expect-error TODO:
+    const user = yield select(selectors.currentUserSelector);
+
+    if (!user) {
+      return;
+    }
+
+    if (appToken && !user.isGuest) {
+      userSaved = true;
+      return;
+    }
+
     yield put(actions.convertGuestAccount(user));
+    attempts++;
   }
 }
 
@@ -241,7 +256,7 @@ function* onJourneyCompletion(
 
 export function* authSaga() {
   yield all([
-    takeLatest(REHYDRATE, onRehydrate),
+    fork(periodicallyAttemptConvertGuestAccount),
     takeLatest("LOGOUT_REQUEST", onLogoutRequest),
     takeLatest("LOGIN_REQUEST", onLoginRequest),
     takeLatest("DELETE_ACCOUNT_REQUEST", onDeleteAccountRequest),

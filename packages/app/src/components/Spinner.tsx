@@ -32,15 +32,6 @@ export const Spinner = () => {
   return (
     <View style={styles.screen}>
       <View style={styles.container}>
-        <Animated.View style={[styles.row, animatedStyle]}>
-          <View style={styles.wrapper}>
-            <View style={[styles.semiCircle, styles.a]} />
-          </View>
-          <View style={[styles.wrapper, styles.flipped]}>
-            <View style={[styles.semiCircle, styles.b]} />
-          </View>
-        </Animated.View>
-
         <View style={styles.inner}>
           <Image
             resizeMode="contain"
@@ -48,6 +39,14 @@ export const Spinner = () => {
             style={styles.image}
           />
         </View>
+
+        <Animated.View style={[animatedStyle]}>
+          <Image
+            resizeMode="contain"
+            source={assets.static.spin_load_circle}
+            style={styles.image}
+          />
+        </Animated.View>
       </View>
     </View>
   );
@@ -57,8 +56,8 @@ const size = 120;
 
 const styles = StyleSheet.create({
   image: {
-    width: size * 0.8,
-    height: size * 0.8,
+    width: size,
+    height: size,
   },
   screen: {
     flex: 1,
@@ -71,33 +70,7 @@ const styles = StyleSheet.create({
   },
   inner: {
     position: "absolute",
-    top: size * 0.1,
-    left: size * 0.1,
-    width: size * 0.8,
-    height: size * 0.8,
-    borderRadius: 999,
-    overflow: "hidden",
-  },
-  row: {
-    flexDirection: "row",
-  },
-  wrapper: {
-    width: size / 2,
-    height: size,
-    overflow: "hidden",
-  },
-  flipped: {
-    transform: [{ rotate: "180deg" }],
-  },
-  semiCircle: {
-    width: size,
-    height: size,
-    borderRadius: size / 2,
-  },
-  a: {
-    backgroundColor: "#2AB9CB",
-  },
-  b: {
-    backgroundColor: "#F59202",
+    top: 0,
+    left: 0,
   },
 });

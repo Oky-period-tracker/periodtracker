@@ -5,6 +5,7 @@ import { A } from "../../../../../components/A";
 import { useNavigation } from "@react-navigation/native";
 import { Text } from "../../../../../components/Text";
 import { AuthCardBody } from "../../AuthCardBody";
+import { StyleSheet } from "react-native";
 
 export const AskAgree = () => {
   const { state, dispatch } = useSignUp();
@@ -17,7 +18,7 @@ export const AskAgree = () => {
   const goToTerms = () => navigation.navigate("Terms");
 
   return (
-    <AuthCardBody>
+    <AuthCardBody style={styles.container}>
       <Text>
         <Text>accept_conditions_1</Text>
         <A onPress={goToPrivacy} enableTranslate>
@@ -33,3 +34,9 @@ export const AskAgree = () => {
     </AuthCardBody>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+  },
+});

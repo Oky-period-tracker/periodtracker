@@ -149,6 +149,7 @@ export const WheelPicker = ({
         snapToInterval={ITEM_HEIGHT}
         decelerationRate="fast"
         onScroll={handleScroll}
+        scrollEventThrottle={64}
         getItemLayout={getItemLayout}
         initialNumToRender={VISIBLE_ITEMS}
         maxToRenderPerBatch={VISIBLE_ITEMS * 2}
@@ -214,3 +215,5 @@ const styles = StyleSheet.create({
     height: height - ITEM_HEIGHT,
   },
 });
+
+// const e =

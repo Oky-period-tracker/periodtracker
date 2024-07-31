@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Text } from "./Text";
 
-const ITEM_HEIGHT = 40;
+const ITEM_HEIGHT = 60;
 const VISIBLE_ITEMS = 3;
 const height = ITEM_HEIGHT * VISIBLE_ITEMS;
 
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   selectedItemText: {
-    // fontSize: 16, TODO: Add ITEM_HEIGHT prop to allow for multiline options with larger fontsize when selected
+    fontSize: 16,
     fontWeight: "bold",
   },
   bottomSpace: {

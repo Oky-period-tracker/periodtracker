@@ -108,18 +108,16 @@ export const AvatarAndThemeSelect = ({
               onPress={onPress}
               style={[styles.theme, globalStyles.shadow]}
             >
-              <View style={styles.body}>
-                <Image
-                  source={getAsset(`backgrounds.${theme}.default`)}
-                  style={styles.themeImage}
-                />
-                <Text style={styles.name} enableTranslate={false}>
-                  {theme}
-                </Text>
-                {showCheck && (
-                  <CheckButton style={styles.check} status={checkStatus} />
-                )}
-              </View>
+              <Image
+                source={getAsset(`backgrounds.${theme}.icon`)}
+                style={styles.themeImage}
+              />
+              <Text style={styles.name} enableTranslate={false}>
+                {theme}
+              </Text>
+              {showCheck && (
+                <CheckButton style={styles.check} status={checkStatus} />
+              )}
             </TouchableOpacity>
           );
         })}
@@ -227,6 +225,9 @@ const styles = StyleSheet.create({
     height: "100%",
     alignSelf: "center",
     resizeMode: "cover",
+    borderColor: "#fff",
+    borderWidth: 4,
+    borderRadius: 20,
   },
   name: {
     position: "absolute",

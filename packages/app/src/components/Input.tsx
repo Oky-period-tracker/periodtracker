@@ -64,7 +64,7 @@ export const Input = ({
       {hasError && <ErrorText>{errorKey}</ErrorText>}
       <TouchableOpacity
         onPress={onPress}
-        disabled={displayOnly}
+        disabled={displayOnly || !props.multiline}
         activeOpacity={1}
         style={[styles.container, props.multiline && styles.multiline, style]}
       >
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 99,
   },
   multiline: {
     flex: 1,

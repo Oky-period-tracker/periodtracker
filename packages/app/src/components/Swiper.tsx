@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, LayoutChangeEvent } from "react-native";
+import { View, StyleSheet, LayoutChangeEvent, PixelRatio } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -31,7 +31,8 @@ export const Swiper = ({
   };
 
   const fullWidth = containerWidth + marginRight;
-  const threshold = containerWidth / 3; // Drag 1/3 of card width to swipe
+  const pixelRatio = PixelRatio.get();
+  const threshold = containerWidth / pixelRatio / 3; // Drag 1/3 of card width to swipe
 
   const translationX = useSharedValue(0);
   const totalTranslationX = useSharedValue(0);

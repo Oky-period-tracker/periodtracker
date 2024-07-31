@@ -13,4 +13,4 @@ export const PREDICTION_ENDPOINT =
 export const WEBSITE_URL = process.env.EXPO_PUBLIC_WEBSITE_URL || "";
 
 // Development purposes only
-export const FAST_SIGN_UP = true;
+export const FAST_SIGN_UP = !!process.env.EXPO_PUBLIC_FAST_SIGN_UP;

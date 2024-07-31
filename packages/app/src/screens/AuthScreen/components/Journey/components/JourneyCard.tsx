@@ -75,14 +75,14 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
           </>
         )}
         {status === "no" && (
-          <>
+          <View style={styles.no}>
             <Image
               resizeMode="contain"
               source={getAsset(`avatars.${selectedAvatar}.stationary_colour`)}
               style={styles.image}
             />
             <Text style={styles.response}>{noText}</Text>
-          </>
+          </View>
         )}
       </View>
 
@@ -117,6 +117,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     padding: 24,
+  },
+  no: {
+    alignItems: "center",
   },
   image: {
     marginBottom: 48,

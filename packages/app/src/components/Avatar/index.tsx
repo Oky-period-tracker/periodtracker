@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   container: {
     margin: 8,
     position: "absolute",
-    top: -52, // CircleProgress height
+    top: -40, // CircleProgress height
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",

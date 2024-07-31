@@ -87,7 +87,7 @@ const ICON_SIZE = 12;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 32,
+    bottom: 28,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",

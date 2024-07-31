@@ -5,12 +5,13 @@ const s = (state: ReduxState) => state.content;
 
 export const articlesSelector = (state: ReduxState) => s(state).articles;
 
-export const allArticlesSelector = (state: ReduxState) =>
-  s(state).articles.allIds.map((id) => s(state).articles.byId[id]);
-
-export const allArticlesWithParentIdsSelector = (state: ReduxState) => {
+export const allArticlesSelector = (state: ReduxState) => {
+  if (!s(state).articles?.allIds || s(state).articles?.byId) {
+    return [];
+  }
   return s(state).articles.allIds.map((id) => s(state).articles.byId[id]);
 };
+
 export const allVideosSelector = (state: ReduxState) => {
   if (!s(state)?.videos?.allIds || !s(state)?.videos?.byId) return [];
   // @ts-expect-error TODO:
@@ -25,37 +26,39 @@ export const videoByIDSelector = (state: ReduxState, id) =>
   s(state)?.videos?.byId[id];
 
 export const articlesObjectByIDSelector = (state: ReduxState) =>
-  s(state).articles.byId;
+  s(state).articles?.byId ?? {};
 
 // TODO:
 
 export const allHelpCentersForCurrentLocale = (state: ReduxState) =>
   s(state).helpCenters.filter((item) => item.lang === state.app.locale);
 
-export const allCategoriesSelector = (state: ReduxState) =>
-  s(state).categories.allIds.map((id) => s(state).categories.byId[id]);
-
-export const allCategoryEmojis = (state: ReduxState) => {
-  const categories = allCategoriesSelector(state);
-
-  return categories.map((item) => {
-    return { tag: item.tags.primary.name, emoji: item.tags.primary.emoji };
-  });
+export const allCategoriesSelector = (state: ReduxState) => {
+  if (!s(state).categories?.allIds || !s(state).categories?.byId) {
+    return [];
+  }
+  return s(state).categories.allIds.map((id) => s(state).categories?.byId[id]);
 };
 
-export const allSubCategoriesSelector = (state: ReduxState) =>
-  s(state).subCategories.allIds.map((id) => s(state).subCategories.byId[id]);
+export const allSubCategoriesSelector = (state: ReduxState) => {
+  if (!s(state).subCategories?.byId || !s(state).subCategories?.allIds) {
+    return [];
+  }
+  return s(state).subCategories?.allIds.map(
+    (id) => s(state).subCategories.byId[id]
+  );
+};
 
 export const allSubCategoriesByIdSelector = (state: ReduxState) =>
-  s(state).subCategories.byId;
+  s(state).subCategories?.byId ?? {};
 
 // @ts-expect-error TODO:
 export const categoryByIDSelector = (state: ReduxState, id) =>
-  s(state).categories.byId[id];
+  s(state).categories?.byId[id];
 
 // @ts-expect-error TODO:
 export const subCategoryByIDSelector = (state: ReduxState, id) =>
-  s(state).subCategories.byId[id];
+  s(state).subCategories?.byId[id];
 
 export const allAvatarText = (state: ReduxState) => s(state).avatarMessages;
 

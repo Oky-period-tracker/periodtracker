@@ -9,7 +9,6 @@ export const useHelpCenterAttributes = () => {
   const locale = useSelector(currentLocaleSelector) as Locale;
 
   return React.useMemo(() => {
-    // @ts-expect-error TODO:
     return helpCenterAttributes[locale] as HelpCenterAttribute[];
   }, [countries, locale]);
 };

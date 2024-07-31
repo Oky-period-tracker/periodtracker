@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { setAvatar, setTheme } from "../../redux/actions";
 import { PaletteStatus, globalStyles, palette } from "../../config/theme";
 import { Text } from "../../components/Text";
+import Constants from "expo-constants";
+import analytics from "@react-native-firebase/analytics";
 
 const AvatarAndThemeScreen = () => {
   return <AvatarAndThemeSelect />;
@@ -36,6 +38,22 @@ export const AvatarAndThemeSelect = ({
   const [selectedTheme, setSelectedTheme] = React.useState(currentTheme);
 
   const confirm = () => {
+    if (Constants.appOwnership != "expo") {
+      if (selectedAvatar != currentAvatar) {
+        analytics()
+          .logEvent("AvatarChanged", {
+            selectedAvatar: selectedAvatar,
+          })
+          .then(() => console.log("AvatarChanged logged"));
+      }
+      if (selectedTheme != currentTheme) {
+        analytics()
+          .logEvent("ThemeChanged", {
+            selectedTheme: selectedTheme,
+          })
+          .then(() => console.log("ThemeChanged logged"));
+      }
+    }
     dispatch(setAvatar(selectedAvatar));
     dispatch(setTheme(selectedTheme));
     onConfirm?.();

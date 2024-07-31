@@ -13,6 +13,10 @@ import {
 import { VideoPlayerModal } from "./VideoPlayer";
 import { SubCategory } from "../../../core/types";
 import { globalStyles } from "../../../config/theme";
+import Constants from "expo-constants";
+import analytics from "@react-native-firebase/analytics";
+import { currentUserSelector } from "../../../redux/selectors";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export const Accordion = () => {
   const { filteredCategoryIds } = useEncyclopedia();
@@ -31,11 +35,67 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   //eslint-disable-next-line
   const navigation = useNavigation() as any; // @TODO: Fixme
   const [expanded, toggleExpanded] = useToggle();
+  const user = useSelector(currentUserSelector);
+  const { isLoggedIn } = useAuth();
+
+  const hasAccess = user && isLoggedIn;
 
   const { subcategoryIds } = useEncyclopedia();
 
+  const PressedCategory = () => {
+    toggleExpanded();
+    if (!expanded && Constants.appOwnership != "expo") {
+      if (hasAccess) {
+        analytics()
+          .logEvent("EncyclopediaCategoryExpanded_logged_in", {
+            EncyclopediaCategoryName: category.name,
+            user: user.id,
+          })
+          .then(() =>
+            console.log("EncyclopediaCategoryExpanded_logged_in logged")
+          );
+      } else {
+        analytics()
+          .logEvent("EncyclopediaCategoryExpanded_logged_out", {
+            EncyclopediaCategoryName: category.name,
+          })
+          .then(() =>
+            console.log("EncyclopediaCategoryExpanded_logged_out logged")
+          );
+      }
+    }
+  };
+
   const category = useSelector((s) => categoryByIDSelector(s, categoryId));
   const subCategoriesById = useSelector(allSubCategoriesByIdSelector);
+
+  // Add safety checks for category and subCategoriesById
+  if (!category) {
+    console.error(`Category not found for id: ${categoryId}`);
+    return null;
+  }
+
+  const pressedSubCategory =
+    (subcategoryId: string, subcategoryName: string) => () => {
+      navigation.navigate("Articles", { subcategoryId });
+
+      if (Constants.appOwnership != "expo") {
+        if (hasAccess) {
+          analytics()
+            .logEvent("SubCategoryPressed_logged_in", {
+              EncyclopediaSubcategoryName: subcategoryName,
+              user: user.id,
+            })
+            .then(() => console.log("SubCategoryPressed_logged_in logged"));
+        } else {
+          analytics()
+            .logEvent("SubCategoryPressed_logged_out", {
+              EncyclopediaSubcategoryName: subcategoryName,
+            })
+            .then(() => console.log("SubCategoryPressed_logged_out logged"));
+        }
+      }
+    };
 
   const subCategories = React.useMemo(() => {
     return category?.subCategories?.reduce<SubCategory[]>(
@@ -60,7 +120,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     <>
       <TouchableOpacity
         style={[styles.category, globalStyles.shadow]}
-        onPress={toggleExpanded}
+        onPress={PressedCategory}
       >
         <Text
           status={expanded ? "danger" : "secondary"}
@@ -83,11 +143,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
           <TouchableOpacity
             key={subcategory.id}
             style={[styles.subcategory, globalStyles.shadow]}
-            onPress={() =>
-              navigation.navigate("Articles", {
-                subcategoryId: subcategory.id,
-              })
-            }
+            onPress={pressedSubCategory(subcategory.id, subcategory.name)}
           >
             <Text enableTranslate={false}>{subcategory.name}</Text>
           </TouchableOpacity>

@@ -7,6 +7,8 @@ import { availableAppLocales } from "../core/modules";
 import { useDispatch } from "react-redux";
 import { setLocale } from "../redux/actions";
 import { WheelPickerOption } from "./WheelPicker";
+import Constants from "expo-constants";
+import analytics from "@react-native-firebase/analytics";
 
 export const LanguageSelector = (props: ButtonProps) => {
   const locale = useSelector(currentLocaleSelector);
@@ -15,6 +17,11 @@ export const LanguageSelector = (props: ButtonProps) => {
   const onSelect = (option?: WheelPickerOption) => {
     if (!option) {
       return;
+    }
+    if(Constants.appOwnership != 'expo'){
+      analytics().logEvent('LanguageChanged',{
+        selectedLanguage: option.value
+      }).then(() => console.log('LanguageChanged logged'))
     }
     dispatch(setLocale(option.value));
   };

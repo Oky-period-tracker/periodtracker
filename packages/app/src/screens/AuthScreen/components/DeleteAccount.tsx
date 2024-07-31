@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { AuthHeader } from "./AuthHeader";
 import { Hr } from "../../../components/Hr";
 import { Input } from "../../../components/Input";
@@ -8,6 +8,7 @@ import { httpClient } from "../../../services/HttpClient";
 import { formatPassword } from "../../../services/auth";
 import { useTranslate } from "../../../hooks/useTranslate";
 import { useAuthMode } from "../AuthModeContext";
+import { AuthCardBody } from "./AuthCardBody";
 
 export const DeleteAccount = () => {
   const { setAuthMode } = useAuthMode();
@@ -55,7 +56,7 @@ export const DeleteAccount = () => {
   return (
     <>
       <AuthHeader title={"delete_account"} />
-      <View style={styles.container}>
+      <AuthCardBody>
         <Input
           value={name}
           onChangeText={setName}
@@ -73,7 +74,7 @@ export const DeleteAccount = () => {
           errorKeys={["password_too_short"]}
           errorsVisible={errorsVisible}
         />
-      </View>
+      </AuthCardBody>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
         <Text style={styles.confirmText}>confirm</Text>
@@ -100,11 +101,6 @@ const validateCredentials = (name: string, password: string) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
   confirm: {
     padding: 24,
   },

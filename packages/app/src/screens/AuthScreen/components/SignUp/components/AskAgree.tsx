@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { Checkbox } from "../../../../../components/Checkbox";
 import { A } from "../../../../../components/A";
 import { useNavigation } from "@react-navigation/native";
 import { Text } from "../../../../../components/Text";
+import { AuthCardBody } from "../../AuthCardBody";
 
 export const AskAgree = () => {
   const { state, dispatch } = useSignUp();
@@ -17,7 +17,7 @@ export const AskAgree = () => {
   const goToTerms = () => navigation.navigate("Terms");
 
   return (
-    <View style={styles.container}>
+    <AuthCardBody>
       <Text>
         <Text>accept_conditions_1</Text>
         <A onPress={goToPrivacy} enableTranslate>
@@ -30,28 +30,6 @@ export const AskAgree = () => {
         <Text>accept_conditions_5</Text>
       </Text>
       <Checkbox label={"i_agree"} onPress={toggleAgree} checked={state.agree} />
-    </View>
+    </AuthCardBody>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "column",
-    width: "100%",
-    padding: 24,
-    alignItems: "center",
-  },
-  checkWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 24,
-  },
-  checkBox: {
-    width: 32,
-    height: 32,
-    marginRight: 12,
-  },
-  label: {
-    fontWeight: "bold",
-  },
-});

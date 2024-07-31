@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { SegmentControl } from "../../../../../components/SegmentControl";
@@ -9,6 +8,7 @@ import {
 } from "../../../../../components/WheelPicker";
 import { useProvinceOptions } from "../../../../../hooks/useProvinceOptions";
 import { useCountryOptions } from "../../../../../hooks/useCountryOptions";
+import { AuthCardBody } from "../../AuthCardBody";
 
 export const AskLocation = () => {
   const { state, dispatch } = useSignUp();
@@ -35,7 +35,7 @@ export const AskLocation = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <AuthCardBody>
       <WheelPickerModal
         initialOption={initialCountry}
         options={countryOptions}
@@ -55,7 +55,7 @@ export const AskLocation = () => {
         selected={state.location}
         onSelect={onChangeLocation}
       />
-    </View>
+    </AuthCardBody>
   );
 };
 
@@ -63,11 +63,3 @@ const locations = [
   { value: "Urban", label: "Urban", iconName: "building" },
   { value: "Rural", label: "Rural", iconName: "leaf" },
 ];
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-});

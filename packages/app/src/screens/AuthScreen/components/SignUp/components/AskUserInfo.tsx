@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { Input } from "../../../../../components/Input";
 import { SegmentControl } from "../../../../../components/SegmentControl";
 import { genders } from "../../../../../config/options";
 import { InfoButton } from "../../../../../components/InfoButton";
+import { AuthCardBody } from "../../AuthCardBody";
 
 export const AskUserInfo = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -26,7 +26,7 @@ export const AskUserInfo = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <AuthCardBody>
       <Input
         value={state.name}
         onChangeText={onChangeName}
@@ -65,14 +65,6 @@ export const AskUserInfo = () => {
         errorKeys={["passcodes_mismatch"]}
         errorsVisible={state.errorsVisible}
       />
-    </View>
+    </AuthCardBody>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-});

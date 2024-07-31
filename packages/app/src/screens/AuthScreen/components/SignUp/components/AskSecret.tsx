@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { Input } from "../../../../../components/Input";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 import { questionOptions } from "../../../../../config/options";
 import { InfoButton } from "../../../../../components/InfoButton";
+import { AuthCardBody } from "../../AuthCardBody";
 
 export const AskSecret = () => {
   const { state, dispatch, errors } = useSignUp();
@@ -27,7 +27,7 @@ export const AskSecret = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <AuthCardBody>
       <WheelPickerModal
         initialOption={initialSecretOption}
         options={questionOptions}
@@ -56,14 +56,6 @@ export const AskSecret = () => {
           />
         }
       />
-    </View>
+    </AuthCardBody>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-});

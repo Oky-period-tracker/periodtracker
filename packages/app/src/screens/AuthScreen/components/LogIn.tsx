@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { AuthHeader } from "./AuthHeader";
 import { Hr } from "../../../components/Hr";
 import { Input } from "../../../components/Input";
@@ -11,6 +11,7 @@ import { formatPassword } from "../../../services/auth";
 import { useDispatch } from "react-redux";
 import { loginRequest } from "../../../redux/actions";
 import { Text } from "../../../components/Text";
+import { AuthCardBody } from "./AuthCardBody";
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector);
@@ -58,7 +59,7 @@ export const LogIn = () => {
   return (
     <>
       <AuthHeader title={"log_in"} />
-      <View style={styles.container}>
+      <AuthCardBody>
         <Input
           value={name}
           onChangeText={setName}
@@ -78,7 +79,7 @@ export const LogIn = () => {
           errorsVisible={errorsVisible}
         />
         {success === false && <ErrorText>password_incorrect</ErrorText>}
-      </View>
+      </AuthCardBody>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
         <Text style={styles.confirmText}>confirm</Text>
@@ -105,11 +106,6 @@ const validateCredentials = (name: string, password: string) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
   confirm: {
     padding: 24,
   },

@@ -1,11 +1,11 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
 import { useSignUp } from "../SignUpContext";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 import { yearOptions } from "../../../../../config/options";
 import { InfoButton } from "../../../../../components/InfoButton";
 import { useMonths } from "../../../../../hooks/useMonths";
+import { AuthCardBody } from "../../AuthCardBody";
 
 export const AskAge = () => {
   const { state, dispatch } = useSignUp();
@@ -31,7 +31,7 @@ export const AskAge = () => {
   const initialYear = yearOptions.find((item) => item.value === year);
 
   return (
-    <View style={styles.container}>
+    <AuthCardBody>
       <WheelPickerModal
         initialOption={initialMonth}
         options={monthOptions}
@@ -47,14 +47,6 @@ export const AskAge = () => {
         onSelect={onChangeYear}
         placeholder={"year_of_birth"}
       />
-    </View>
+    </AuthCardBody>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-  },
-});

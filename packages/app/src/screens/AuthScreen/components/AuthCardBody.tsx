@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     padding: 24,
+    paddingVertical: 32,
     alignItems: "center",
   },
 });

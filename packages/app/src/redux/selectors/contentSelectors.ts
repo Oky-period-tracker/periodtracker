@@ -6,7 +6,7 @@ const s = (state: ReduxState) => state.content;
 export const articlesSelector = (state: ReduxState) => s(state).articles;
 
 export const allArticlesSelector = (state: ReduxState) => {
-  if (!s(state).articles?.allIds || s(state).articles?.byId) {
+  if (!s(state).articles?.allIds || !s(state).articles?.byId) {
     return [];
   }
   return s(state).articles.allIds.map((id) => s(state).articles.byId[id]);

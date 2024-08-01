@@ -9,8 +9,10 @@ import {
 import { useProvinceOptions } from "../../../../../hooks/useProvinceOptions";
 import { useCountryOptions } from "../../../../../hooks/useCountryOptions";
 import { AuthCardBody } from "../../AuthCardBody";
+import { useTranslate } from "../../../../../hooks/useTranslate";
 
 export const AskLocation = () => {
+  const translate = useTranslate();
   const { state, dispatch } = useSignUp();
 
   const onChangeCountry = (option: WheelPickerOption | undefined) => {
@@ -41,6 +43,7 @@ export const AskLocation = () => {
         options={countryOptions}
         onSelect={onChangeCountry}
         placeholder={"country"}
+        accessibilityLabel={translate("search_country")}
         searchEnabled
       />
       <WheelPickerModal

@@ -5,8 +5,10 @@ import { SegmentControl } from "../../../../../components/SegmentControl";
 import { genders } from "../../../../../config/options";
 import { InfoButton } from "../../../../../components/InfoButton";
 import { AuthCardBody } from "../../AuthCardBody";
+import { useTranslate } from "../../../../../hooks/useTranslate";
 
 export const AskUserInfo = () => {
+  const translate = useTranslate();
   const { state, dispatch, errors } = useSignUp();
 
   const onChangeName = (value: string) => {
@@ -34,7 +36,13 @@ export const AskUserInfo = () => {
         errors={errors}
         errorKeys={["username_too_short", "name_taken_error"]}
         errorsVisible={state.errorsVisible}
-        actionLeft={<InfoButton title={"name"} content={"name_info_label"} />}
+        actionLeft={
+          <InfoButton
+            title={"name"}
+            content={"name_info_label"}
+            accessibilityLabel={translate("name_info_label")}
+          />
+        }
       />
       <SegmentControl
         options={genders}

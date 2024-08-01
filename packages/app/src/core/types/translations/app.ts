@@ -491,4 +491,5 @@ export interface AppTranslations {
   password_change_success_description?: string;
   password_change_fail?: string;
   password_change_fail_description?: string;
+  info_button?: string; // accessibility label
 }

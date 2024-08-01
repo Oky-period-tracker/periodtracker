@@ -14,7 +14,9 @@ export const AvatarMessage = () => {
 
   return (
     <View style={styles.container}>
-      <Text enableTranslate={false}>{message}</Text>
+      <Text enableTranslate={false} accessibilityLabel={message}>
+        {message}
+      </Text>
       <View style={styles.triangle} />
     </View>
   );

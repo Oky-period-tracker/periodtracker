@@ -126,7 +126,12 @@ export const VideoPlayerModal = () => {
               width={width}
             />
           )}
-          <Button style={styles.closeButton} status={"basic"} onPress={close}>
+          <Button
+            style={styles.closeButton}
+            status={"basic"}
+            onPress={close}
+            accessibilityLabel={translate("close")}
+          >
             <FontAwesome name="close" size={12} color="white" />
           </Button>
         </View>

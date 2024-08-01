@@ -14,6 +14,7 @@ type CheckboxProps = {
   checkedStatus?: PaletteStatus;
   checkedTextStatus?: PaletteStatus;
   enableTranslate?: boolean;
+  accessibilityLabel?: string;
 };
 
 export const Checkbox = ({
@@ -24,11 +25,16 @@ export const Checkbox = ({
   checkedStatus = "primary",
   checkedTextStatus = "basic",
   enableTranslate = true,
+  accessibilityLabel,
 }: CheckboxProps) => {
   const sizes = sizeValues[size];
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={onPress}
+      accessibilityLabel={accessibilityLabel}
+    >
       <DisplayButton
         status={checked ? checkedStatus : "basic"}
         style={[

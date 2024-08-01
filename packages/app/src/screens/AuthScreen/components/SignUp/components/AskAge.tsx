@@ -6,8 +6,10 @@ import { yearOptions } from "../../../../../config/options";
 import { InfoButton } from "../../../../../components/InfoButton";
 import { useMonths } from "../../../../../hooks/useMonths";
 import { AuthCardBody } from "../../AuthCardBody";
+import { useTranslate } from "../../../../../hooks/useTranslate";
 
 export const AskAge = () => {
+  const translate = useTranslate();
   const { state, dispatch } = useSignUp();
   const { months, monthOptions } = useMonths();
 
@@ -37,6 +39,7 @@ export const AskAge = () => {
         options={monthOptions}
         onSelect={onChangeMonth}
         placeholder={"month_of_birth"}
+        accessibilityLabel={translate("month_selector")}
         actionLeft={
           <InfoButton title={"birth_info_heading"} content={"birth_info"} />
         }

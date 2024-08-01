@@ -89,6 +89,7 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
         disabled={!isSelected}
         status={status}
         appearance={appearance}
+        accessibilityLabel={text}
       />
     </Animated.View>
   );

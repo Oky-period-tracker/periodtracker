@@ -29,13 +29,15 @@ export const DateBadge = ({
   const IconSize = IconSizeForTheme[theme] ?? 80;
   const day = dataEntry.cycleDay === 0 ? "-" : dataEntry.cycleDay;
   const dayText = `${translate("Day")} ${day}`;
+  const iconText = formatMomentDayMonth(dataEntry.date);
 
   return (
     <>
       <IconButton
         status={status}
         appearance={appearance}
-        text={formatMomentDayMonth(dataEntry.date)}
+        text={iconText}
+        accessibilityLabel={iconText}
         size={IconSize}
         style={style}
         onPress={toggleVisible}
@@ -46,6 +48,7 @@ export const DateBadge = ({
         textStyle={styles.dayText}
         style={styles.button}
         onPress={toggleVisible}
+        accessibilityLabel={dayText}
         enableTranslate={false}
       >
         {dayText}

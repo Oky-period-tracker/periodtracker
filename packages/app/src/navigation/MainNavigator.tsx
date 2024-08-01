@@ -53,7 +53,7 @@ function MainNavigator() {
         options={{
           ...options,
           tabBarIcon: ({ focused, size }) => (
-            <TabIcon focused={focused}>
+            <TabIcon focused={focused} accessibilityLabel={"profile"}>
               <UserIcon size={size} />
             </TabIcon>
           ),
@@ -65,7 +65,7 @@ function MainNavigator() {
         options={{
           ...options,
           tabBarIcon: ({ focused, size }) => (
-            <TabIcon focused={focused}>
+            <TabIcon focused={focused} accessibilityLabel={"home"}>
               <FontAwesome size={size} name={"calendar"} color={"#fff"} />
             </TabIcon>
           ),
@@ -77,7 +77,7 @@ function MainNavigator() {
         options={{
           ...options,
           tabBarIcon: ({ focused, size }) => (
-            <TabIcon focused={focused}>
+            <TabIcon focused={focused} accessibilityLabel={"encyclopedia"}>
               <FontAwesome size={size} name={"book"} color={"#fff"} />
             </TabIcon>
           ),
@@ -89,7 +89,7 @@ function MainNavigator() {
         options={{
           ...options,
           tabBarIcon: ({ focused, size }) => (
-            <TabIcon focused={focused}>
+            <TabIcon focused={focused} accessibilityLabel={"settings"}>
               <FontAwesome size={size} name={"gear"} color={"#fff"} />
             </TabIcon>
           ),

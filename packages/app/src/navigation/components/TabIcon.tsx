@@ -1,18 +1,19 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { DisplayButton } from "../../components/Button";
+import { ButtonProps, DisplayButton } from "../../components/Button";
 
 export const TabIcon = ({
   focused,
   children,
-}: {
-  children: React.ReactNode;
+  ...props
+}: ButtonProps & {
   focused: boolean;
 }) => {
   return (
     <DisplayButton
       status={focused ? "primary" : "basic"}
       style={styles.tabIcon}
+      {...props}
     >
       {children}
     </DisplayButton>

@@ -1,5 +1,10 @@
 import React from "react";
-import { StyleSheet, TextStyle, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  ViewProps,
+} from "react-native";
 import { Text } from "./Text";
 import { SvgIconProps } from "./icons/types";
 import Cloud from "./icons/Cloud";
@@ -21,6 +26,7 @@ type IconButtonProps = SvgIconProps & {
   text?: string;
   textStyle?: TextStyle;
   disabled?: boolean;
+  accessibilityLabel?: ViewProps["accessibilityLabel"];
 };
 
 const IconForTheme: Record<
@@ -54,6 +60,7 @@ export const IconButton = ({
   size = 80,
   onPress,
   disabled,
+  accessibilityLabel,
 }: IconButtonProps) => {
   const theme = useSelector(currentThemeSelector);
   const Icon = IconForTheme?.[theme]?.[appearance] ?? Cloud;
@@ -63,6 +70,7 @@ export const IconButton = ({
       style={[styles.button, { width: size, height: size }, style]}
       onPress={onPress}
       disabled={disabled}
+      accessibilityLabel={accessibilityLabel}
     >
       <Icon status={status} style={styles.icon} />
       <Text

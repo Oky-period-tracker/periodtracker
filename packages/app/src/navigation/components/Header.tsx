@@ -7,12 +7,15 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { CustomStackNavigationOptions } from "./NavigationStack";
 import { IS_ANDROID } from "../../services/device";
 import { Text } from "../../components/Text";
+import { DateBadge } from "../../components/DateBadge";
 
 export type HeaderProps = NativeStackHeaderProps & {
   options: CustomStackNavigationOptions;
 };
 
-export const Header = ({ navigation, options }: HeaderProps) => {
+export const Header = ({ navigation, options, route }: HeaderProps) => {
+  // @ts-expect-error TODO:
+  const date = route.params?.date; // DayScreen
   const title = options.title;
   const enableTranslate = !options?.disableTranslate;
   const showBackButton = options.allowGoBack && navigation.canGoBack();
@@ -28,9 +31,13 @@ export const Header = ({ navigation, options }: HeaderProps) => {
           <FontAwesome size={12} name={"arrow-left"} color={"#fff"} />
         </Button>
       ) : null}
-      <Text enableTranslate={enableTranslate} style={styles.title}>
-        {title}
-      </Text>
+      {date ? (
+        <DateBadge date={date} style={styles.dateBadge} />
+      ) : (
+        <Text enableTranslate={enableTranslate} style={styles.title}>
+          {title}
+        </Text>
+      )}
     </SafeAreaView>
   );
 };
@@ -42,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 24,
-    paddingBottom: IS_ANDROID ? 20 : 0,
+    paddingBottom: IS_ANDROID ? 20 : -20,
   },
   button: {
     width: 24,
@@ -53,5 +60,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: "auto",
     color: "#F49200",
+  },
+  dateBadge: {
+    marginLeft: "auto",
   },
 });

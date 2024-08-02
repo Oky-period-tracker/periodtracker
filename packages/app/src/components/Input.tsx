@@ -16,8 +16,8 @@ import { useTranslate } from "../hooks/useTranslate";
 export type InputProps = TextInputProps & {
   style?: StyleProp<ViewStyle>;
   inputStyle?: TextInputProps["style"];
-  errors?: string[]; // TODO:
-  errorKeys?: string[]; // TODO:
+  errors?: string[];
+  errorKeys?: string[];
   errorsVisible?: boolean;
   displayOnly?: boolean;
   actionLeft?: React.ReactNode;

@@ -268,7 +268,7 @@ type SignUpContext = {
   dispatch: React.Dispatch<Action>;
   step: SignUpStep;
   isValid: boolean;
-  errors: string[]; // TODO:
+  errors: string[];
 };
 
 const defaultValue: SignUpContext = {
@@ -331,7 +331,6 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
     }
 
     if (!state.country || !state.province) {
-      // TODO: ERROR
       return;
     }
 

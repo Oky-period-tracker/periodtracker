@@ -73,12 +73,6 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
       return;
     }
 
-    // const hasPasswordChanged = currentUser.password !== formattedPassword;
-    // if (!hasPasswordChanged) {
-    //   // TODO: Inform user no change ?
-    //   return;
-    // }
-
     try {
       await sendRequest(formattedPassword, formattedSecret);
       updateReduxState(formattedPassword);

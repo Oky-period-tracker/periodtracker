@@ -1,7 +1,3 @@
-// TODO:
-// eslint-disable-next-line
-// @ts-nocheck
-
 export const ENV = process.env.EXPO_PUBLIC_ENV || "production";
 
 export const API_BASE_URL =

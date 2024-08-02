@@ -66,7 +66,6 @@ export const JourneyReview = () => {
                 <View style={styles.rowBody}>
                   <Text style={styles.question}>{questionText}</Text>
                   <Text style={styles.answer} enableTranslate={false}>
-                    {/* TODO: translate date string & yes/no*/}
                     {getAnswerForStep(state, step)}
                   </Text>
                 </View>

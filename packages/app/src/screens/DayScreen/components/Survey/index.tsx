@@ -5,19 +5,13 @@ import { Hr } from "../../../../components/Hr";
 import { SurveyConsent } from "./SurveyConsent";
 import { useSurvey } from "./SurveyContext";
 import { SurveyCollect } from "./SurveyCollect";
-import { Button } from "../../../../components/Button";
-import { ScreenProps } from "../../../../navigation/RootNavigator";
 import { InfoButton } from "../../../../components/InfoButton";
 
-export const Survey = ({ navigation }: ScreenProps<"Day">) => {
+export const Survey = () => {
   const { state, dispatch } = useSurvey();
 
   const onConfirm = () => {
     dispatch({ type: "continue" });
-  };
-
-  const goToContact = () => {
-    navigation.navigate("Contact");
   };
 
   const consentQuestion = "will_you_answer_survey_questions";
@@ -41,18 +35,9 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
         <Text>choose_one</Text>
 
         {state.hasAnsweredAll ? (
-          <>
-            <Text style={styles.thanks} status={"danger"}>
-              thank_you_msg
-            </Text>
-            <Button
-              onPress={goToContact}
-              style={styles.contact}
-              status={"basic"}
-            >
-              contact_us
-            </Button>
-          </>
+          <Text style={styles.thanks} status={"danger"}>
+            thank_you_msg
+          </Text>
         ) : state.consented ? (
           <>
             <Text style={styles.question} enableTranslate={false}>

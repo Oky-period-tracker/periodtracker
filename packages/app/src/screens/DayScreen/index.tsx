@@ -44,7 +44,7 @@ const DayScreen: ScreenComponent<"Day"> = (props) => {
     <Screen>
       {hasSurvey ? (
         <SurveyProvider survey={newSurvey} onFinish={onFinishSurvey}>
-          <Survey {...props} />
+          <Survey />
         </SurveyProvider>
       ) : (
         <DayTracker {...props} />

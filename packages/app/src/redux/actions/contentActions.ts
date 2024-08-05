@@ -26,7 +26,7 @@ export function initStaleContent(payload: {
   privacyPolicy: PrivacyPolicy;
   termsAndConditions: TermsAndConditions;
   about: About;
-  aboutBanner: string;
+  aboutBanner?: string;
 }) {
   return createAction("INIT_STALE_CONTENT", payload);
 }

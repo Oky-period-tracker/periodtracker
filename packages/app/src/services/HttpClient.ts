@@ -5,6 +5,8 @@ import {
   API_BASE_URL,
   PREDICTION_ENDPOINT,
 } from "../config/env";
+import { Locale } from "../core/modules";
+import { User } from "../types";
 // import * as config from "../config";
 
 export const httpClient = createHttpClient(API_BASE_URL, API_BASE_CMS_URL, {
@@ -185,16 +187,92 @@ export function createHttpClient(
 
       return response.data;
     },
-    // TODO:
-    // eslint-disable-next-line
-    fetchSurveys: async ({ locale, userID }: any) => {
+    fetchAvatarMessages: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.AvatarMessagesResponse> =
+        await axios.get(`${cmsEndpoint}/mobile/avatar-messages/${locale}`);
+      return response.data;
+    },
+    fetchEncyclopedia: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.EncyclopediaResponse> =
+        await axios.get(`${cmsEndpoint}/mobile/articles/${locale}`);
+      return response.data;
+    },
+    fetchVideos: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.EncyclopediaResponse> =
+        await axios.get(`${cmsEndpoint}/mobile/videos/${locale}`);
+      return response.data;
+    },
+    fetchSurveys: async ({
+      locale,
+      userID,
+    }: {
+      locale: Locale;
+      userID: User;
+    }) => {
       const response: AxiosResponse<types.SurveysResponse> = await axios.get(
         `${cmsEndpoint}/mobile/new-surveys/${locale}?user_id=${userID.id}`
       );
       return response.data;
     },
-    // @ts-expect-error TODO:
-    fetchSingleNotification: async ({ locale }) => {
+    fetchPrivacyPolicy: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.PrivacyResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/privacy-policy/${locale}`
+      );
+
+      return response.data;
+    },
+    fetchTermsAndConditions: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.TermsAndConditionsResponse> =
+        await axios.get(`${cmsEndpoint}/mobile/terms-and-conditions/${locale}`);
+
+      return response.data;
+    },
+    fetchAbout: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.AboutResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/about/${locale}`
+      );
+
+      return response.data;
+    },
+    fetchAboutBanner: async ({ locale }: { locale: Locale }) => {
+      // @deprecated
+      const response: AxiosResponse<types.AboutBannerResponse> =
+        await axios.get(`${cmsEndpoint}/mobile/about-banner/${locale}`);
+
+      return response.data;
+    },
+    fetchAboutBannerConditional: async ({
+      locale,
+      timestamp = 0,
+    }: {
+      locale: Locale;
+      timestamp: number;
+    }) => {
+      const response: AxiosResponse<types.AboutBannerConditionalResponse> =
+        await axios.get(
+          `${cmsEndpoint}/mobile/about-banner-conditional/${locale}?timestamp=${timestamp}`
+        );
+
+      return response.data;
+    },
+    fetchQuizzes: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.QuizzesResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/quizzes/${locale}`
+      );
+      return response.data;
+    },
+    fetchDidYouKnows: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.DidYouKnowsResponse> =
+        await axios.get(`${cmsEndpoint}/mobile/didyouknows/${locale}`);
+      return response.data;
+    },
+    fetchHelpCenters: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.HelpCenterResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/help-center/${locale}`
+      );
+      return response.data;
+    },
+    fetchSingleNotification: async ({ locale }: { locale: Locale }) => {
       const response: AxiosResponse<types.EncyclopediaResponse> =
         await axios.get(`${cmsEndpoint}/mobile/notification/${locale}`);
       return response.data;
@@ -236,12 +314,12 @@ export function createHttpClient(
       );
       return response.data;
     },
-    // @ts-expect-error TODO:
-    fetchContent: async ({ locale, timestamp = 0 }) => {
-      const response: AxiosResponse<types.ContentResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/content/${locale}?timestamp=${timestamp}`
-      );
-      return response.data;
-    },
+    // TODO:
+    // fetchContent: async ({ locale, timestamp = 0 }) => {
+    //   const response: AxiosResponse<types.ContentResponse> = await axios.get(
+    //     `${cmsEndpoint}/mobile/content/${locale}?timestamp=${timestamp}`
+    //   );
+    //   return response.data;
+    // },
   };
 }

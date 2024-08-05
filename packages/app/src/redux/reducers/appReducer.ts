@@ -2,7 +2,7 @@
 // eslint-disable-next-line
 // @ts-nocheck
 import { Actions } from "../types";
-// import DeviceInfo from "react-native-device-info";
+import * as Application from 'expo-application';
 // import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from "@oky/core";
 import { v4 as uuidv4 } from "uuid";
 import { RehydrateAction, REHYDRATE } from "redux-persist";
@@ -43,8 +43,8 @@ export interface AppState {
 }
 
 const initialState: AppState = {
-  appVersionName: "", // DeviceInfo.getVersion(),
-  appVersionCode: "", //DeviceInfo.getBuildNumber(),
+  appVersionName: Application.nativeApplicationVersion, 
+  appVersionCode: Application.nativeBuildVersion,
   firebaseToken: null,
   locale: initialLocale,
   hasOpened: false,
@@ -98,8 +98,8 @@ export function appReducer(
     case "SET_UPDATED_VERSION":
       return {
         ...state,
-        appVersionName: "", //DeviceInfo.getVersion(),  TODO:
-        appVersionCode: "", //DeviceInfo.getBuildNumber(), TODO:
+        appVersionName: Application.nativeApplicationVersion, 
+        appVersionCode: Application.nativeBuildVersion, 
       };
     case "STORE_FIREBASE_KEY":
       return {

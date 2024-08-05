@@ -153,7 +153,7 @@ export const SurveyProvider = ({
       id: state.survey.id,
       user_id: currentUser.id,
       isCompleted: true,
-      isSurveyAnswered: false,
+      isSurveyAnswered: true,
       questions: state.answers,
       utcDateTime: moment(),
     };

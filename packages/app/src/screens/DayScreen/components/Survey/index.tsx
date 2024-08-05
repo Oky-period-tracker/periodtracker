@@ -53,10 +53,17 @@ export const Survey = ({ navigation }: ScreenProps<"Day">) => {
               contact_us
             </Button>
           </>
+        ) : state.consented ? (
+          <>
+            <Text style={styles.question} enableTranslate={false}>
+              {question}
+            </Text>
+            <SurveyCollect />
+          </>
         ) : (
           <>
-            <Text style={styles.question}>{question}</Text>
-            {!state.consented ? <SurveyConsent /> : <SurveyCollect />}
+            <Text style={styles.question}>{consentQuestion}</Text>
+            <SurveyConsent />
           </>
         )}
       </View>

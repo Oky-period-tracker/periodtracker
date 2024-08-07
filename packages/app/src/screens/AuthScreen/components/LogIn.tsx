@@ -56,9 +56,11 @@ export const LogIn = () => {
     setIsLoggedIn(true);
   }, [user]);
 
+  const title = wasPreLoggedIn ? "password_request" : "log_in";
+
   return (
     <>
-      <AuthHeader title={"log_in"} />
+      <AuthHeader title={title} />
       <AuthCardBody>
         <Input
           value={name}

@@ -51,6 +51,7 @@ export const SurveyCollect = () => {
         <Input
           value={state.answerDraft}
           onChangeText={setAnswerDraft}
+          placeholder={"type_answer_placeholder"}
           multiline={true}
         />
       )}

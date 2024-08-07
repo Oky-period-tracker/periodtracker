@@ -7,11 +7,12 @@ import { useFormatDate } from "../hooks/useFormatDate";
 import { useSelector } from "react-redux";
 import { currentThemeSelector } from "../redux/selectors";
 import { Moment } from "moment";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { DayModal } from "./DayModal";
 import { useToggle } from "../hooks/useToggle";
 import { Button } from "./Button";
 import { useTranslate } from "../hooks/useTranslate";
+import { InfoButton } from "./InfoButton";
 
 export const DateBadge = ({
   date,
@@ -32,14 +33,21 @@ export const DateBadge = ({
   const iconText = formatMomentDayMonth(dataEntry.date);
 
   return (
-    <>
+    <View style={[styles.container, style]}>
+      {dataEntry.onFertile && (
+        <InfoButton
+          title={"fertile_popup_heading"}
+          content={"fertile_popup"}
+          status={status}
+        />
+      )}
       <IconButton
         status={status}
         appearance={appearance}
         text={iconText}
         accessibilityLabel={iconText}
         size={IconSize}
-        style={style}
+        style={styles.iconButton}
         onPress={toggleVisible}
       />
       <Button
@@ -58,7 +66,7 @@ export const DateBadge = ({
         toggleVisible={toggleVisible}
         data={dataEntry}
       />
-    </>
+    </View>
   );
 };
 
@@ -70,9 +78,15 @@ const IconSizeForTheme: Record<ThemeName, number> = {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconButton: {
+    marginHorizontal: 8,
+  },
   button: {
     width: 100,
-    marginLeft: 8,
   },
   dayText: {
     color: "#fff",

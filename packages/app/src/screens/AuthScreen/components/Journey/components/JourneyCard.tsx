@@ -59,11 +59,13 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
       <View style={styles.body}>
         {status === "unknown" && (
           <>
-            <Image
-              resizeMode="contain"
-              source={getAsset(`avatars.${selectedAvatar}.bubbles`)}
-              style={styles.image}
-            />
+            <View style={styles.imageWrapper}>
+              <Image
+                resizeMode="contain"
+                source={getAsset(`avatars.${selectedAvatar}.bubbles`)}
+                style={styles.image}
+              />
+            </View>
             <Text style={styles.question}>{questionText}</Text>
             <Text style={styles.disclaimer}>survey_description</Text>
           </>
@@ -119,6 +121,9 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   no: {
+    alignItems: "center",
+  },
+  imageWrapper: {
     alignItems: "center",
   },
   image: {

@@ -24,13 +24,11 @@ export const ru: AppTranslations = {
   daily_note_description: `Напишите все, что хотите, о сегодняшнем дне!`,
   connect_account_info: `"Oky" работает в офлайн-режиме, поэтому информация, которую вы записываете, хранится на вашем телефоне. Чтобы избежать потери этой информации в случае утери или смены телефона, подключитесь к Интернету и нажмите "Сохранить аккаунт"`,
   forgot_password: "Забыли пароль?",
-  back_to_signup: "Вернуться к регистрации",
   carousel_no_access: `Упс! Невозможно заполнить ваш ежедневник на дни вперед! 😅`,
   confirm: "Подтвердить",
   calendar: "Календарь",
   connect_account: "Сохранить аккаунт",
   delete_account: "Удалить аккаунт",
-  delete_account_button: "Удалить\nаккаунт",
   encyclopedia: "Энциклопедия",
   day: "День",
   quiz: "ЕЖЕДНЕВНАЯ\nВИКТОРИНА",
@@ -39,7 +37,6 @@ export const ru: AppTranslations = {
   didYouKnow: "А ЗНАЕТЕ ЛИ ВЫ?",
   birth_info_heading: `Месяц рождения`,
   birth_info: `Эта информация помогает нам делать более точные прогнозы относительно вашего цикла месячных, а также удостовериться, что мы работаем с правильной возрастной аудиторией.`,
-  birth_month_and_year: "Дата рождения",
   name: "Имя пользователя",
   enter_name: "Введите свое имя",
   name_info_label:
@@ -105,7 +102,6 @@ export const ru: AppTranslations = {
   friend: "Я - Ваш друг Oky",
   friends_onboard: `Приветливые персонажи помогут вам разобраться с приложением!`,
   continue: "Продолжить",
-  welcome_heading: `Добро пожаловать\nв "Oky"!`,
   i_agree: "Согласна (-ен)",
 
   // ------------------------- Settings ----------------------------
@@ -161,8 +157,6 @@ export const ru: AppTranslations = {
   location: "Местность",
   share_qr_description: 'Расскажите об "Oky" своим друзьям',
   privacy_policy: "Личные данные",
-  text_to_speech: "Голосовой помощник",
-  text_to_speech_info: "Прочесть весь текст вслух!",
   future_prediciton: "предсказание будущего",
   future_prediciton_info: "Показать дни будущего периода",
   password_request: "Запрос пароля",
@@ -175,10 +169,6 @@ export const ru: AppTranslations = {
 
   share_period_details_heading: `Расскажи Oky о периоде месячных для лучшего прогноза, у тебя сегодня идут месячные?`,
   // ------------------------------------------------------------------
-  day_card_mood: "НАСТРОЕНИЕ",
-  day_card_body: "ТЕЛО",
-  day_card_activity: "АКТИВНОСТЬ",
-  day_card_flow: "ВЫДЕЛЕНИЯ",
   period: "Дни месячных",
   non_period: "Дни отсутствия месячных",
   ovulation: "Фертильный период",
@@ -186,7 +176,6 @@ export const ru: AppTranslations = {
   too_far_behind: `К сожалению, нельзя изменить информацию, введенную так давно!`,
   too_far_ahead: `Вы не можете заполнить информацию на несколько дней вперед! 😅`,
   too_close: `Прошло слишком мало времени со времени со дня последних месячных!`,
-  period_too_long: `Невозможно изменить информацию - месячные не могут длиться так долго!`,
   cycle_length: "Продолжительность\nцикла",
   period_length: "Продолжительность\nмесячных",
   contact_us: "Связаться\nс нами",
@@ -234,8 +223,6 @@ export const ru: AppTranslations = {
   // survey
   week: "неделя",
   weeks: "недели",
-  i_remember: "Помню",
-  i_dont_remember: "Не помню",
   survey_question_1: "У вас уже появились месячные?",
   survey_description: `Давайте начнем узнавать себя! Вся информация останется между нами. Если вы не хотите отвечать, проведите пальцем по экрану влево.`,
   survey_question_2: "Вы помните, когда начались ваши последние месячные?",
@@ -327,7 +314,6 @@ export const ru: AppTranslations = {
   could_not_change_secret: "Не удалось изменить секретный ответ",
   wrong_old_secret_answer: "Неверный ответ на секретный вопрос",
   close_try_again: "Закрыть и попробовать снова",
-  user_not_found: "Пользователь не найден",
   fertile_popup_heading: `Фертильные дни`,
   fertile_popup: `"Oky" использует предоставленную вами информацию для составления прогноза продолжительности месячных и времени овуляции. Однако эта информация не является точным прогнозом ваших фертильных дней.`,
   name_taken_error: "Имя пользователя уже занято",
@@ -344,130 +330,6 @@ export const ru: AppTranslations = {
   daily_body_heading: `Что вы ощущали в своем теле сегодня?`,
 
   // ---------------------settings content-----------------------
-  about_heading_1: `Что такое "Oky"? \n`,
-  about_heading_2: `Для чего ЮНИСЕФ разработал "Oky"? \n`,
-  about_heading_3: `Как ЮНИСЕФ создавал "Oky"? \n`,
-  about_heading_4: `Как работает "Oky"? \n`,
-  about_heading_5: `В чем отличия "Oky"? \n`,
-
-  about_content_1: `«Oky» - это приложение для мобильных телефонов, которое помогает девочкам взять под контроль свои месячные и свою жизнь. Почувствуйте себя увереннее, отслеживая свои месячные и узнавая факты, которые должны знать все девушки. \n`,
-  about_content_2: `«Oky» - это приложение для отслеживания месячных, разработанное девушками для девушек. Работать в нём весело и просто. Задача приложения – помочь девушкам справиться со стеснением и негативными чувствами, которые иногда могут быть вызваны месячными! \n`,
-  about_content_3: `ЮНИСЕФ создал «Oky» в рамках своей миссии по содействию образованию и укреплению здоровья девочек путем изменения отношения к одной из наиболее табуированных тем в мире - менструации. \n \n`,
-  about_content_4: `У всех женщин и девочек бывают месячные. Это естественно. Но девочек по-прежнему стыдят за это. Им часто не хватает информации о многочисленных изменениях, происходящих с их телом в этот важный период жизни. \n \n`,
-  about_content_5: `В Интернете бывает сложно найти в Интернете достоверную, качественную и актуальную информацию. Он изобилует неверной информацией! Она может привести к ненужному стрессу во время менструации. Приложение «Oky» было создано для того, чтобы помочь девочкам вести себя уверенно во время месячных и знать, что делать, чтобы принимать обоснованные решения относительно своего тела и жизни.\n\n`,
-  about_content_6: `В течение нескольких месяцев мы беседовали с более чем 400 девочками в Монголии и Индонезии об их месячных, страхах, надеждах и жизни, и вместе работали над созданием «Oky»! Конечно, мы также работали с нашими экспертами в области образования и медицины, чтобы удостовериться, что «Oky» отражает этику ЮНИСЕФ и его высокие стандарты и рекомендации в области здравоохранения.  \n \n`,
-  about_content_7: `«Oky» позволяет добавлять информацию о ваших месячных, теле, активности и настроении и на основе этого делает прогнозы относительно следующих месячных и цикла овуляции. Есть календарь, который работает как дневник и выдает напоминания. «Oky» также дает советы и повышает мотивацию пользователей с помощью игр и викторин!\n\n`,
-  about_content_8: `«Oky» отличается от других приложений для отслеживания месячных тем, что оно ориентировано в первую очередь на девушек. «Oky» - это не бизнес, это сервис для девушек, который стремится быть инклюзивным и не предвзятым, и поддерживает самые высокие стандарты конфиденциальности и защиты данных. \n \n `,
-  about_content_9: `«Oky» разрабатывается открытым способом, чтобы другие могли учиться в процессе создания цифрового ресурса общественного здравоохранения. Таким образом, приложение может быть полезно большему числу людей и способствовать изменению ситуации, когда цифровая информация используется для получения прибыли, а не для общественного блага`,
-
-  privacy_heading_1: `OKY ЛИЧНЫЕ ДАННЫЕ\n\n`,
-  privacy_heading_2: `1. Какую информацию о вас собирает Oky?\n\n`,
-  privacy_heading_3: `1.1 Чтобы предоставить вам наши услуги и понять ваши потребности\n`,
-  privacy_heading_4: `Информация для входа\n\n`,
-  privacy_heading_5: `Данные устройства\n\n`,
-  privacy_heading_6: `Как эта информация собирается\n\n`,
-  privacy_heading_7: `1.2 Чтобы предоставить вам персонализированную информацию о вашем периоде и вашем здоровье\n\n`,
-  privacy_heading_8: `Состояние и конфиденциальные данные\n\n`,
-  privacy_heading_9: `Совокупные данные\n\n`,
-  privacy_heading_10: `2. Безопасность данных\n\n`,
-  privacy_heading_11: `Рекомендации по защите ваших данных\n\n`,
-  privacy_heading_12: `3. Сторонние веб-сайты\n\n`,
-  privacy_heading_13: `4. Уведомления об изменениях в Политике конфиденциальности\n\n`,
-
-  privacy_content_1: `Taking care of your information is important to Oky. We do our best so that the information you enter into the app is kept as private and as safe as possible. The information that you share about your menstrual cycle is very personal and we respect that.\n
-    When you enter information into the app, Oky uses technology to turn that ‘data’ into helpful information that can help you learn more about your menstrual cycle patterns, to enable you to take control of your body and your health: for example, by giving you information about managing menstruation or pain.\n
-    We aim for the highest standards of privacy and security and we are committed to being transparent about how we process and use data.\n`,
-  privacy_content_1_1: `This Privacy Policy explains what happens to the data you enter when you track your period: how your information is collected, stored and used, and what steps we take to ensure your data stays safe.\n
-    Please read our Privacy Policy carefully before using Oky and refer back to it regularly to check for updates. Remember, by accessing and using the app or website, you agree to this Privacy Policy\n
-    Oky is made by UNICEF. Please do not hesitate to contact us if you have any questions about the use of data in Oky. There is a contact form on the Oky website:\n\n`,
-  privacy_content_2: `For the purpose of this Privacy Policy, “Personal Information” means any information that enables us to identify an individual, directly or indirectly, by reference to an identifier such as name, identification number, location data, online identifier or one or more factors specific to the individual.\n
-    Described below are the purposes for which we obtain and process personal information and the sources and types of data processed for these purposes:\n\n`,
-  privacy_content_3: `In order to use the period tracker functions on the app, you need to create a login. During login creation, we ask you for a display or user name, date of birth, gender and location. We encourage you to select a display name that does not disclose your real name or other information that could identify you – especially if you are under the age of 18.\n`,
-  privacy_content_4: `On the app, we collect information on the device you use to access Oky’s services, such as the model, operating system, language, location and the session’s duration. \n\n`,
-  privacy_content_5: `When you use the app, we and our third-party service providers process data about how you are interacting with the app. We use an App center together with some custom created tracking features to record these interactions.\n`,
-  privacy_content_6: `We do this to understand your usage of our services, for example which functions of the app you are using and to ensure all the features provided by the app are  functioning properly. We collect this information and use it to better understand which features are most useful to all our users and to communicate with you about the app and its services. \n \n 
-    For instance, we are currently tracking whether the user is modifying the start of their period, as this provides insightful information regarding the accuracy of the predictions.\n`,
-  privacy_content_7: `We also do this to enable us to send reminders to your smartphone via in-app messages and push notifications. You can change how you receive notifications in the app and on your device at any time by going to Settings.\n`,
-  privacy_content_8: `In summary, we process this data to give you the best service possible through Oky.\n`,
-  privacy_content_9: `We do not process personal data that identifies you as a person (such as your first name, surname, email) or health-related data.\n`,
-  privacy_content_10: `Similarly, we use Google Analytics to track a user’s interactions with the website. This will allow us to assess which pages have been visited the most, the duration of each visit etc.\n\n`,
-  privacy_content_11: `On our website (https://okyapp.info/), we use cookies, which are small text files which identify your computer, phone, and other devices to our server. By using the website, you consent to the placement of cookies and similar technologies in your browser in accordance with this Privacy Policy. The information collected in this manner through the website includes your IP address, network location, what browser you are using, device IDs and characteristics, operating system version, language preferences, referring URLs, and information about the usage of our website.\n`,
-  privacy_content_12: `We also work with Google Analytics, which uses cookies and similar technologies to collect and analyze information about the use of the website and report on activities and trends. You can learn more about Google’s practices by going to https://www.google.com/policies/privacy/partners/. \n`,
-  privacy_content_13: `If you do not want information collected through the use of cookies, most browsers allow you to automatically decline cookies or be given the choice of declining or accepting the transfer to your computer of a particular cookie (or cookies) from a particular website. \n \n 
-    You may also wish to refer to http://www.allaboutcookies.org/manage-cookies/index.html for more general information about cookies.  If, however, you do not accept our cookies, you may experience some inconvenience in your use of the website.\n\n`,
-  privacy_content_14: `The information you track using Oky about your health and activities is considered sensitive personal data. For the Oky app, most of the data is stored, including the user’s interaction with the prediction engine. \n \n 
-    The user’s user name, language, theme and answers to the daily cards and quizzes are stored, and it is recorded if a user modifies their period prediction, shortens it, modifies current prediction etc.\n`,
-  privacy_content_15: `If the user deletes their account, all the data will be erased from the servers.\n\n`,
-  privacy_content_16: `Health data, such as dates of your past and current periods, and mood, body or activity events you track in the app (e.g. pain, bloating, exercise, sleep, menstrual flow) are collected and used to provide services to you – such as predicting future period dates or providing you with reminders or notifications related to menstruation and health. \n \n 
-    The predictive technology used by Oky processes this data and provides you with information. However, your personal information in these regards is not shared with any other parties.\n`,
-  privacy_content_17: `Oky uses questions in the app to ask your feedback about the app, e.g. on the performance of the app or on the usefulness of the information Oky provides and your experience of using the app. \n \n 
-    Information given by you via such surveys and questions is processed by Oky for the purposes as set out in this Privacy Policy.`,
-  privacy_content_18: `Information you enter in the Notes  remains completely private: this information is not collected, accessed or used by the app in any way.\n\n`,
-  privacy_content_19: `We may de-identify and aggregate information collected through the app for statistical analysis and other lawful purpose, including in research studies intended to improve our understanding of young people’s use of technology and digital tools. \n \n 
-    The results of this research may be shared with third parties, such as our partners, supporters, educators and researchers through conferences, journals, and other publications. If we do this, all data will be aggregated and none of your data will be used to identify you: we will not process personal data that identifies you as a person (such as your first name, surname, email) or health-related data.\n`,
-  privacy_content_20: `Some further information that may be useful about your personal information and privacy:\n`,
-  privacy_content_21: `i. We may use your Personal Information to enforce our Terms of Use, to defend our legal rights, and to comply with our legal obligations and internal policies.\n
-    ii. Oky has been designed to minimize the use of your personal data. We only collect and process your data for the purposes described above.\n
-    iii. The security of our servers is regularly checked by experts to ensure your data is protected from unauthorized access. You can contact us with any questions you may have about the security of our services, there is a contact form on the Oky website.\n
-    iv. We do not retain your data in an identifiable format for longer than necessary to deliver our services.\n
-    v. As a user of Oky you may exercise your user rights to request information on your personal data processed by Oky. Upon your request, this information will be provided to you electronically.\n\n
-      `,
-  privacy_content_22: `We use many reasonable measures – physical and electronic – to prevent your Personal Information against unauthorized access and disclosure. However, it is always a possibility that third parties may unlawfully intercept or access your Personal Information or private communications. \n \n 
-    So, although we work extremely hard to safeguard your Personal Information, we cannot guarantee that your information or communications will always remain private.\n`,
-  privacy_content_23: `We believe the biggest threat to the security and privacy of your data is if someone—probably someone you know—gains access to your device. The data you enter into Oky is private and it should stay that way. We have outlined some ways to keep your devices secure below.\n`,
-  privacy_content_24: `i. Activate a unique PIN or password code to create a login. Make it personal and not easy for others to guess. Do not use your date of birth or your name, for example. If you share your device with others, activating a unique PIN or password code will ensure you are the only person who can access your Oky-related data on the device.\n`,
-  privacy_content_25: `ii. Set up a feature that will allow you to erase all the data from your device if it's lost or stolen.\n`,
-  privacy_content_26: `For Android, download and set up Find My Device (formerly Android Device Manager) from the Google Play Store and, if needed, use the connected web interface to lock or wipe your phone remotely.\n\n`,
-  privacy_content_27: `Our app or website may contain links to other sites that are not covered by this Privacy Policy. This Privacy Policy applies only to the processing of your Personal Information by Oky. It does not address, and we are not responsible for, the privacy, information, or other practices of any third parties, including any third party operating any site or service to which the website or app links. \n \n 
-    The inclusion of a link on the website or app does not imply endorsement of the linked site or service by UNICEF. Please be aware that the terms of this Privacy Policy do not apply to these outside websites or content, or to any collection of data after you click on links to such outside websites.\n\n`,
-  privacy_content_28: `We review our security measures and our Privacy Policy and we may modify our policies as we deem appropriate. If we make changes to our privacy practices, we will post a notification to our website or app alerting that the Privacy Policy has been amended. \n \n
-    Such changes will be effective immediately upon posting them to our app or website. For this reason, we encourage you to check our Privacy Policy frequently.  The “Last Updated” date at the bottom of this page indicates when this Privacy Policy was last revised. \n \n 
-    Your continued use of our app or website following these changes means that you accept the revised Privacy Policy.\n`,
-  privacy_content_29: `Feel free to contact us if you require further information about this Privacy Policy. There is a contact form on the Oky website: https://okyapp.info/ \n
-    Last updated: 16th October 2019`,
-  // endregion
-
-  // region t&c
-  t_and_c_heading_1: `Oky Terms and Conditions\n`,
-  t_and_c_heading_2: `By using Oky you accept these terms. If you do not agree to these terms, you must not use Oky.\n`,
-  t_and_c_heading_3: `Content\n`,
-  t_and_c_heading_4: `Data and usage\n`,
-  t_and_c_heading_5: `Content updates\n`,
-  t_and_c_heading_6: `Changes to Terms and Conditions\n`,
-  t_and_c_heading_7: `Changes to the app\n`,
-  t_and_c_heading_8: `Suspension or withdrawal of the app\n`,
-  t_and_c_heading_9: `Making other users aware of these Terms and Conditions\n`,
-  t_and_c_heading_10: `Keeping login details safe\n`,
-  t_and_c_heading_11: `Your location\n`,
-  t_and_c_heading_12: `External links and resources\n`,
-  t_and_c_heading_13: `Loss or damage\n`,
-  t_and_c_heading_14: `Your personal information\n`,
-  t_and_c_heading_15: `Disputes\n`,
-  t_and_c_heading_16: `UNICEF name and emblem\n`,
-
-  t_and_c_content_1: `Oky is a way to monitor and learn about your menstrual cycle, as well as provide information  about your period and female health. The service is provided for free. \n\n
-    PLEASE DO NOT USE “Oky” FOR CONTRACEPTIVE OR MEDICAL PURPOSES. IN CASE OF ANY INDIVIDUAL HEALTH ISSUES, CONSULT A MEDICAL PROFESSIONAL.\n\n`,
-  t_and_c_content_2: `Oky  is not intended to replace contraceptive measures and/or medical advice: it is only intended to provide information. By using Oky you agree to use it for the intended purpose only and particularly not for contraception and/or medical purposes.\n\n`,
-  t_and_c_content_3: `Oky provides general informational content about female health, menstruation, fertility and related topics. It collects data that is entered by   users related to their menstrual cycle, physical activities, health and bodies. \n \n
-    Oky processes these  data points in correlation with medical information about the menstrual cycle (such as cycle length) and other female health information. \n\n
-    These combined data points allow the app to make associations and identify patterns between events related to the menstrual cycle and female health using simple mathematical/statistical formulas and algorithm-based calculations.\n\n`,
-  t_and_c_content_4: `For information about the data that we collect and use please see our Privacy Policy.\n\n`,
-  t_and_c_content_5: `Although UNICEF makes reasonable efforts to update the information on Oky, we make no representations, warranties or guarantees, whether express or implied, that the content on Oky is accurate, complete or up to date.\n\n`,
-  t_and_c_content_6: `UNICEF amends these terms from time to time. Every time you wish to use Oky, please check these terms to ensure you understand the terms that apply at that time.\n\n`,
-  t_and_c_content_7: `UNICEF may update and change Oky from time to time to provide updated information, links or provide new functionality and reflect changes to our users' needs.\n\n`,
-  t_and_c_content_8: `Oky is available free of charge. UNICEF does not guarantee that Oky, or any content on it, will always be available or be uninterrupted. We may suspend or withdraw or restrict the availability of all or any part of Oky for operational or other reasons. We will try to give you reasonable notice of any suspension or withdrawal.\n\n`,
-  t_and_c_content_9: `If anyone else uses Oky through your device, you are also responsible for ensuring that they are aware of these terms of use and other applicable terms and conditions, and that they comply with them.\n\n`,
-  t_and_c_content_10: `If you choose, or you are provided with, a user identification code, password or any other piece of information as part of UNICEF security procedures, you must treat such information as confidential. You must not disclose it to any third party.\n\n`,
-  t_and_c_content_11: `UNICEF has the right to disable any user identification code or password, whether chosen by you or allocated by us, at any time, if in our reasonable opinion you have failed to comply with any of the provisions of these terms of use.\n\n`,
-  t_and_c_content_12: `By using Oky, you agree that the location you provide when signing up is accurate. \n \n`,
-  t_and_c_content_13: `Oky may link to other websites and resources that are not under UNICEF's control. The inclusion of such links does not imply an endorsement or approval by UNICEF of any website, product or service.\n\n`,
-  t_and_c_content_14: `UNICEF does not assume any responsibility or liability in respect of such websites, including, for example, responsibility or liability for the accuracy or reliability of any information, data, opinions, advice or statements made on those web sites.\n`,
-  t_and_c_content_15: `Everything on this site is for you and your peers, not for commercial use.\n`,
-  t_and_c_content_17: `We do not exclude or limit in any way our liability to you where it would be unlawful to do so. This includes liability for death or personal injury caused by our negligence or the negligence of our employees, agents or subcontractors and for fraud or fraudulent misrepresentation.\n\n`,
-  t_and_c_content_18: `Please note that we only provide Oky for personal, domestic and private use. You agree not to use Oky for any commercial or business purposes, and we have no liability to you for any loss of profit, loss of business, business interruption, or loss of business opportunity.\n\n`,
-  t_and_c_content_19: `We will only use your personal information as set out in our Privacy Policy.\n\n`,
-  t_and_c_content_20: `These  terms of use, their subject matter and their formation, are governed by US law. The courts of the US will have exclusive jurisdiction.\n\n`,
-  t_and_c_content_21: `The UNICEF name and emblem are the exclusive property of UNICEF. They are protected under international law. Unauthorized use is prohibited. They may not be copied or reproduced in any way without the prior written permission of UNICEF. If you have any questions about this please contact UNICEF.`,
   // endregion
   privacy_policy_link: 'Ссылка на Политику конфиденциальности "Oky"',
   t_and_c_link: 'Ссылка на Положения и условия "Oky"',
@@ -475,23 +337,8 @@ export const ru: AppTranslations = {
   clear_search: "Очистить поиск",
   arrow_button: "Кнопка-стрелка",
   // main page text
-  main_calendar_screen: "Главное окно календаря",
-  calendar_shortcut: "Ярлык календаря",
   avatar: "Аватар",
-  wheel_text: "Колесо с ежедневными прогнозами месячных",
-  large_day_card: "Большая дневная карточка",
-  previous_month: "Предыдущий месяц",
-  next_month: "Следующий месяц",
-  text_input: "Введите текст",
   // prediction change
-  daily_card_and_period_info:
-    "Быстрый переход к дневным карточкам и информации о месячных",
-  period_day_cloud: "Облако дня месячных",
-  no_period_day_cloud: "Облако дня без месячных",
-  green_btn_with_two_arrows:
-    "Зеленая кнопка с 2 стрелками для перехода вверх и вниз",
-  reason_text_input: "Ввод текста причины",
-  message_text_input: "Ввод текста сообщения",
   //   flower_message_step_3_0: 'Отслеживание цикла - означает заботу о себе.',
   //   flower_message_step_3_1: 'Нажми на меня и расцвети!😊',
   //   flower_message_step_3_2: 'Не забывай отслеживать свой цикл и заботиться о себе!💪',

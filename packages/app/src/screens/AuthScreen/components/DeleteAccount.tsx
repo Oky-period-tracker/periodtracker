@@ -40,7 +40,7 @@ export const DeleteAccount = () => {
         password: formatPassword(password),
       });
 
-      Alert.alert("success", "delete_account_success", [
+      Alert.alert("success", "delete_account_completed", [
         {
           text: translate("continue"),
           onPress: goBack,
@@ -77,7 +77,7 @@ export const DeleteAccount = () => {
       </AuthCardBody>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
-        <Text style={styles.confirmText}>confirm</Text>
+        <Text style={styles.confirmText}>confirm_and_delete</Text>
       </TouchableOpacity>
     </>
   );

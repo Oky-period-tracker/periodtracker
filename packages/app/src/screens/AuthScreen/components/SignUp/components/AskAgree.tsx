@@ -26,7 +26,7 @@ export const AskAgree = () => {
 
         <A
           onPress={goToPrivacy}
-          accessibilityLabel={translate(`privacy_and_policy_link`)}
+          accessibilityLabel={translate(`privacy_policy_link`)}
           enableTranslate
         >
           accept_conditions_2

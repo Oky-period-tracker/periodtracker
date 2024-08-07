@@ -18,6 +18,7 @@ import { SaveAccountButton } from "./SaveAccountButton";
 import { useTranslate } from "../../../hooks/useTranslate";
 import { useFormatDate } from "../../../hooks/useFormatDate";
 import { globalStyles } from "../../../config/theme";
+import { InfoButton } from "../../../components/InfoButton";
 
 export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
   const currentUser = useSelector(currentUserSelector);
@@ -46,8 +47,17 @@ export const ProfileDetails = ({ navigation }: ScreenProps<"Profile">) => {
     <View style={[styles.container, globalStyles.shadow]}>
       {currentUser?.isGuest && (
         <>
-          <View style={styles.row}>
-            <SaveAccountButton />
+          <View style={styles.column}>
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <InfoButton title={"alert"} content={"connect_account_info"} />
+                <Text style={styles.infoLabel}>guest_mode_user_alert</Text>
+              </View>
+
+              <View style={styles.column}>
+                <SaveAccountButton />
+              </View>
+            </View>
           </View>
           <Hr />
         </>
@@ -158,10 +168,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   column: {
+    flex: 1,
     flexBasis: "33%",
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
+  },
+  infoLabel: {
+    marginTop: 12,
   },
   icon: {
     width: 52,

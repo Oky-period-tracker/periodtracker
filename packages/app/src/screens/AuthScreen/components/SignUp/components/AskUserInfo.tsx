@@ -45,6 +45,7 @@ export const AskUserInfo = () => {
         }
       />
       <SegmentControl
+        label={"your_gender"}
         options={genders}
         selected={state.gender}
         onSelect={onChangeGender}

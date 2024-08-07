@@ -12,15 +12,17 @@ type SegmentControlOption = {
 };
 
 type SegmentControlProps = {
+  label?: string;
   selected: string;
   options: SegmentControlOption[];
   onSelect: (value: string) => void;
-  errors?: string[]; // TODO:
-  errorKey?: string; // TODO:
+  errors?: string[];
+  errorKey?: string;
   errorsVisible?: boolean;
 };
 
 export const SegmentControl = ({
+  label,
   selected,
   options,
   onSelect,
@@ -32,43 +34,53 @@ export const SegmentControl = ({
     errorsVisible && errorKey && errors && errors.includes(errorKey);
 
   return (
-    <View style={styles.container}>
-      {hasError && <ErrorText>{errorKey}</ErrorText>}
+    <View style={styles.wrapper}>
+      {label && <Text style={styles.label}>{label}</Text>}
+      <View style={styles.container}>
+        {hasError && <ErrorText>{errorKey}</ErrorText>}
 
-      {options.map((option) => {
-        const isSelected = selected === option.value;
-        const onPress = () => onSelect(option.value);
+        {options.map((option) => {
+          const isSelected = selected === option.value;
+          const onPress = () => onSelect(option.value);
 
-        return (
-          <View key={`segment-${option.value}`} style={styles.option}>
-            <Button
-              status={isSelected ? "primary" : "basic"}
-              style={styles.iconContainer}
-              onPress={onPress}
-            >
-              <FontAwesome
-                size={20}
-                // @ts-expect-error TODO
-                name={option.iconName}
-                color={"#fff"}
-              />
-            </Button>
-            <Text enableTranslate={true} style={styles.optionText}>
-              {option.label}
-            </Text>
-          </View>
-        );
-      })}
+          return (
+            <View key={`segment-${option.value}`} style={styles.option}>
+              <Button
+                status={isSelected ? "primary" : "basic"}
+                style={styles.iconContainer}
+                onPress={onPress}
+              >
+                <FontAwesome
+                  size={20}
+                  // @ts-expect-error TODO:
+                  name={option.iconName}
+                  color={"#fff"}
+                />
+              </Button>
+              <Text enableTranslate={true} style={styles.optionText}>
+                {option.label}
+              </Text>
+            </View>
+          );
+        })}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
   container: {
     width: "100%",
     flexDirection: "row",
     justifyContent: "center",
     padding: 4,
+  },
+  label: {
+    color: "#28b9cb",
   },
   option: {
     flexDirection: "column",

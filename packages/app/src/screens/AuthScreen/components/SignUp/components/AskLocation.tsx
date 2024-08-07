@@ -54,6 +54,7 @@ export const AskLocation = () => {
         searchEnabled
       />
       <SegmentControl
+        label={"location"}
         options={locations}
         selected={state.location}
         onSelect={onChangeLocation}

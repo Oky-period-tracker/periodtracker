@@ -252,6 +252,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
         {/* ===== Gender ===== */}
         <View style={styles.segment}>
           <SegmentControl
+            label={"your_gender"}
             options={genders}
             selected={state.gender}
             onSelect={onChangeGender}
@@ -283,6 +284,7 @@ const EditProfileScreen: ScreenComponent<"EditProfile"> = ({ navigation }) => {
         {/* ===== Location ===== */}
         <View style={styles.segment}>
           <SegmentControl
+            label={"location"}
             options={locations}
             selected={state.location}
             onSelect={onChangeLocation}

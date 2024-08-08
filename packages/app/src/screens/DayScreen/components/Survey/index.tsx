@@ -6,12 +6,17 @@ import { SurveyConsent } from "./SurveyConsent";
 import { useSurvey } from "./SurveyContext";
 import { SurveyCollect } from "./SurveyCollect";
 import { InfoButton } from "../../../../components/InfoButton";
+import { Vr } from "../../../../components/Vr";
 
 export const Survey = () => {
   const { state, dispatch } = useSurvey();
 
   const onConfirm = () => {
     dispatch({ type: "continue" });
+  };
+
+  const onSkip = () => {
+    dispatch({ type: "skip" });
   };
 
   const consentQuestion = "will_you_answer_survey_questions";
@@ -58,11 +63,21 @@ export const Survey = () => {
       </View>
 
       <Hr />
-      <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
-        <Text style={styles.confirmText}>
-          {isLastQuestion ? "submit" : "confirm"}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.buttons}>
+        {state.consented && !isLastQuestion && !state.hasAnsweredAll && (
+          <>
+            <TouchableOpacity onPress={onSkip} style={styles.button}>
+              <Text style={styles.buttonText}>{"skip"}</Text>
+            </TouchableOpacity>
+            <Vr />
+          </>
+        )}
+        <TouchableOpacity onPress={onConfirm} style={styles.button}>
+          <Text style={styles.buttonText}>
+            {isLastQuestion ? "submit" : "confirm"}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -108,10 +123,16 @@ const styles = StyleSheet.create({
   contact: {
     alignSelf: "center",
   },
-  confirm: {
+  buttons: {
+    alignSelf: "flex-end",
+    width: "100%",
+    flexDirection: "row",
+  },
+  button: {
+    flex: 1,
     padding: 24,
   },
-  confirmText: {
+  buttonText: {
     textAlign: "center",
     fontWeight: "bold",
   },

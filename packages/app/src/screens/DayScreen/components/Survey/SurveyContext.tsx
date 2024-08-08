@@ -34,6 +34,9 @@ type Action<T extends keyof SurveyState = keyof SurveyState> =
     }
   | {
       type: "continue";
+    }
+  | {
+      type: "skip";
     };
 
 const initialState: SurveyState = {
@@ -106,6 +109,15 @@ function reducer(state: SurveyState, action: Action): SurveyState {
         answerDraft: "",
         answerIndex: null,
         answers,
+      };
+    }
+
+    case "skip": {
+      const nextQuestionIndex = getNextSurveyQuestionIndex(state);
+
+      return {
+        ...state,
+        questionIndex: nextQuestionIndex,
       };
     }
 

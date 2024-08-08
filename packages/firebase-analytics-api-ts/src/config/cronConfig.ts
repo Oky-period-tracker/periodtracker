@@ -1,20 +1,11 @@
-// src/config/cronConfig.ts
 import cron from 'node-cron';
+import { main } from '../main';
 
-const scheduleAnalyticsFetch = () => {
-  console.log('Scheduling analytics fetch...');
-  cron.schedule('0 0 * * *', async () => {
-    console.log('Running scheduled task...');
-    await fetchAnalyticsData();
+// Function to schedule analytics fetching
+export function scheduleAnalyticsFetch() {
+  // Schedule the task to run daily at midnight
+  cron.schedule('0 0 * * *', () => {
+    console.log('Running scheduled task: Fetching analytics events');
+    main().catch(console.error);
   });
-  console.log('Scheduled analytics fetch.');
-};
-
-async function fetchAnalyticsData() {
-  console.log('Starting data fetch...');
-  // Add your data fetching logic here
-  console.log('Data fetch complete.');
 }
-
-
-export { scheduleAnalyticsFetch };

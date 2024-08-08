@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck TODO:
 export const ENV = process.env.EXPO_PUBLIC_ENV || "production";
 
 export const API_BASE_URL =

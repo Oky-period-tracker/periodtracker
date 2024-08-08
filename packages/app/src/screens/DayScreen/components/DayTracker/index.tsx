@@ -10,12 +10,18 @@ import { ScreenProps } from "../../../../navigation/RootNavigator";
 import { DayModal } from "../../../../components/DayModal";
 import { useToggle } from "../../../../hooks/useToggle";
 
-export const DayTracker = ({ route }: ScreenProps<"Day">) => {
+export const DayTracker = ({ navigation, route }: ScreenProps<"Day">) => {
   const dataEntry = usePredictDay(route.params.date);
 
   const [visible, toggleVisible] = useToggle();
 
   const [index, setIndex] = React.useState(0);
+
+  const goBack = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  };
 
   const isOnPeriod = dataEntry.onPeriod;
   const dateIsEven = route.params.date.day() % 2 === 0;
@@ -30,7 +36,7 @@ export const DayTracker = ({ route }: ScreenProps<"Day">) => {
     <EmojiQuestionCard topic={"body"} dataEntry={dataEntry} />,
     <EmojiQuestionCard topic={"activity"} dataEntry={dataEntry} />,
     <EmojiQuestionCard topic={"flow"} dataEntry={dataEntry} />,
-    <NotesCard dataEntry={dataEntry} />,
+    <NotesCard dataEntry={dataEntry} goBack={goBack} />,
   ];
 
   // Insert Quiz | DidYouKnow at Start or End

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Input } from "../../../../components/Input";
 import { Text } from "../../../../components/Text";
 import { Hr } from "../../../../components/Hr";
@@ -11,8 +11,16 @@ import { useSelector } from "../../../../redux/useSelector";
 import { DayData } from "../../../MainScreen/DayScrollContext";
 import { useDispatch } from "react-redux";
 import { answerNotesCard } from "../../../../redux/actions";
+import { useTranslate } from "../../../../hooks/useTranslate";
 
-export const NotesCard = ({ dataEntry }: { dataEntry?: DayData }) => {
+export const NotesCard = ({
+  dataEntry,
+  goBack,
+}: {
+  dataEntry?: DayData;
+  goBack?: () => void;
+}) => {
+  const translate = useTranslate();
   const userID = useSelector(currentUserSelector)?.id;
 
   const reduxEntry = useSelector((state) =>
@@ -37,6 +45,13 @@ export const NotesCard = ({ dataEntry }: { dataEntry?: DayData }) => {
         utcDateTime: dataEntry?.date,
       })
     );
+
+    Alert.alert(translate("note_saved"), translate("note_saved_caption"), [
+      {
+        text: translate("continue"),
+        onPress: goBack,
+      },
+    ]);
   };
 
   return (

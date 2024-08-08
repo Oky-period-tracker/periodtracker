@@ -5,11 +5,13 @@ import { SegmentControl } from "../../../../../components/SegmentControl";
 import { genders } from "../../../../../config/options";
 import { InfoButton } from "../../../../../components/InfoButton";
 import { AuthCardBody } from "../../AuthCardBody";
-import { useTranslate } from "../../../../../hooks/useTranslate";
+import { useAccessibilityLabel } from "../../../../../hooks/useAccessibilityLabel";
 
 export const AskUserInfo = () => {
-  const translate = useTranslate();
   const { state, dispatch, errors } = useSignUp();
+
+  const getAccessibilityLabel = useAccessibilityLabel();
+  const label = getAccessibilityLabel("name_info_label");
 
   const onChangeName = (value: string) => {
     dispatch({ type: "name", value });
@@ -40,7 +42,7 @@ export const AskUserInfo = () => {
           <InfoButton
             title={"name"}
             content={"name_info_label"}
-            accessibilityLabel={translate("name_info_label")}
+            accessibilityLabel={label}
           />
         }
       />

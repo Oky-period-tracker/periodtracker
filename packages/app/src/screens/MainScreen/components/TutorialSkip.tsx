@@ -4,11 +4,12 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Button } from "../../../components/Button";
 import { StyleSheet } from "react-native";
 import { useTutorial } from "../TutorialContext";
-import { useTranslate } from "../../../hooks/useTranslate";
+import { useAccessibilityLabel } from "../../../hooks/useAccessibilityLabel";
 
 export const TutorialSkip = () => {
   const { dispatch, steps } = useTutorial();
-  const translate = useTranslate();
+  const getAccessibilityLabel = useAccessibilityLabel();
+  const label = getAccessibilityLabel("close");
 
   const onSkip = () => {
     dispatch({ type: "skip", value: steps.length });
@@ -20,7 +21,7 @@ export const TutorialSkip = () => {
         name="close"
         size={24}
         color="white"
-        accessibilityLabel={translate("close")}
+        accessibilityLabel={label}
       />
     </Button>
   );

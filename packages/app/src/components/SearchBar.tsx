@@ -3,7 +3,7 @@ import { StyleProp, StyleSheet, ViewStyle } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Input } from "./Input";
 import { Button } from "./Button";
-import { useTranslate } from "../hooks/useTranslate";
+import { useAccessibilityLabel } from "../hooks/useAccessibilityLabel";
 
 type SearchBarProps = {
   query: string;
@@ -12,7 +12,8 @@ type SearchBarProps = {
 };
 
 export const SearchBar = ({ query, setQuery, style }: SearchBarProps) => {
-  const translate = useTranslate();
+  const getAccessibilityLabel = useAccessibilityLabel();
+  const label = getAccessibilityLabel("clear_search");
 
   const reset = () => {
     setQuery("");
@@ -30,7 +31,7 @@ export const SearchBar = ({ query, setQuery, style }: SearchBarProps) => {
             style={styles.closeButton}
             status={"basic"}
             onPress={reset}
-            accessibilityLabel={translate("clear_search")}
+            accessibilityLabel={label}
           >
             <FontAwesome name="close" size={12} color="white" />
           </Button>

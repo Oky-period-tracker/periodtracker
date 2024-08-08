@@ -16,11 +16,15 @@ import {
 } from "expo-screen-orientation";
 import { IS_TABLET, IS_WEB } from "../../../services/device";
 import { useTranslate } from "../../../hooks/useTranslate";
+import { useAccessibilityLabel } from "../../../hooks/useAccessibilityLabel";
 
 export const VideoPlayerModal = () => {
   const { width: screenWidth, height: screenHeight } = useScreenDimensions();
   const { selectedVideoId, setSelectedVideoId } = useEncyclopedia();
   const translate = useTranslate();
+
+  const getAccessibilityLabel = useAccessibilityLabel();
+  const label = getAccessibilityLabel("close");
 
   const videoData = useSelector((state) =>
     videoByIDSelector(state, selectedVideoId)
@@ -130,7 +134,7 @@ export const VideoPlayerModal = () => {
             style={styles.closeButton}
             status={"basic"}
             onPress={close}
-            accessibilityLabel={translate("close")}
+            accessibilityLabel={label}
           >
             <FontAwesome name="close" size={12} color="white" />
           </Button>

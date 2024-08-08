@@ -6,12 +6,13 @@ import { useNavigation } from "@react-navigation/native";
 import { Text } from "../../../../../components/Text";
 import { AuthCardBody } from "../../AuthCardBody";
 import { StyleSheet } from "react-native";
-import { useTranslate } from "../../../../../hooks/useTranslate";
+import { useAccessibilityLabel } from "../../../../../hooks/useAccessibilityLabel";
 
 export const AskAgree = () => {
-  const translate = useTranslate();
   const { state, dispatch } = useSignUp();
   const toggleAgree = () => dispatch({ type: "agree", value: !state.agree });
+
+  const getAccessibilityLabel = useAccessibilityLabel();
 
   const navigation = useNavigation();
   // @ts-expect-error TODO:
@@ -26,7 +27,7 @@ export const AskAgree = () => {
 
         <A
           onPress={goToPrivacy}
-          accessibilityLabel={translate(`privacy_policy_link`)}
+          accessibilityLabel={getAccessibilityLabel(`privacy_policy_link`)}
           enableTranslate
         >
           accept_conditions_2
@@ -35,7 +36,7 @@ export const AskAgree = () => {
 
         <A
           onPress={goToTerms}
-          accessibilityLabel={translate("t_and_c_link")}
+          accessibilityLabel={getAccessibilityLabel("t_and_c_link")}
           enableTranslate
         >
           accept_conditions_4
@@ -46,7 +47,7 @@ export const AskAgree = () => {
         label={"i_agree"}
         onPress={toggleAgree}
         checked={state.agree}
-        accessibilityLabel={translate("i_agree")}
+        accessibilityLabel={getAccessibilityLabel("i_agree")}
       />
     </AuthCardBody>
   );

@@ -8,7 +8,7 @@ import { CustomStackNavigationOptions } from "./NavigationStack";
 import { IS_ANDROID } from "../../services/device";
 import { Text } from "../../components/Text";
 import { DateBadge } from "../../components/DateBadge";
-import { useTranslate } from "../../hooks/useTranslate";
+import { useAccessibilityLabel } from "../../hooks/useAccessibilityLabel";
 
 export type HeaderProps = NativeStackHeaderProps & {
   options: CustomStackNavigationOptions;
@@ -20,8 +20,8 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
   const title = options.title;
   const enableTranslate = !options?.disableTranslate;
   const showBackButton = options.allowGoBack && navigation.canGoBack();
-  const translate = useTranslate();
-  const accessibilityLabel = translate("arrow_button");
+  const getAccessibilityLabel = useAccessibilityLabel();
+  const label = getAccessibilityLabel("arrow_button");
 
   const onBackPress = () => {
     navigation.goBack();
@@ -33,7 +33,7 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
         <Button
           onPress={onBackPress}
           style={styles.button}
-          accessibilityLabel={accessibilityLabel}
+          accessibilityLabel={label}
         >
           <FontAwesome size={12} name={"arrow-left"} color={"#fff"} />
         </Button>

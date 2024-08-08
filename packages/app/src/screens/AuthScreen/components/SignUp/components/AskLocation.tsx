@@ -9,11 +9,14 @@ import {
 import { useProvinceOptions } from "../../../../../hooks/useProvinceOptions";
 import { useCountryOptions } from "../../../../../hooks/useCountryOptions";
 import { AuthCardBody } from "../../AuthCardBody";
-import { useTranslate } from "../../../../../hooks/useTranslate";
+import { useAccessibilityLabel } from "../../../../../hooks/useAccessibilityLabel";
+import { locations } from "../../../../../config/options";
 
 export const AskLocation = () => {
-  const translate = useTranslate();
   const { state, dispatch } = useSignUp();
+
+  const getAccessibilityLabel = useAccessibilityLabel();
+  const label = getAccessibilityLabel("search_country");
 
   const onChangeCountry = (option: WheelPickerOption | undefined) => {
     dispatch({ type: "country", value: option?.value });
@@ -43,7 +46,7 @@ export const AskLocation = () => {
         options={countryOptions}
         onSelect={onChangeCountry}
         placeholder={"country"}
-        accessibilityLabel={translate("search_country")}
+        accessibilityLabel={label}
         searchEnabled
       />
       <WheelPickerModal
@@ -62,8 +65,3 @@ export const AskLocation = () => {
     </AuthCardBody>
   );
 };
-
-const locations = [
-  { value: "Urban", label: "Urban", iconName: "building" },
-  { value: "Rural", label: "Rural", iconName: "leaf" },
-];

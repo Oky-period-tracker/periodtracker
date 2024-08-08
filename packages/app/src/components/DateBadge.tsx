@@ -13,6 +13,7 @@ import { useToggle } from "../hooks/useToggle";
 import { Button } from "./Button";
 import { useTranslate } from "../hooks/useTranslate";
 import { InfoButton } from "./InfoButton";
+import { useAccessibilityLabel } from "../hooks/useAccessibilityLabel";
 
 export const DateBadge = ({
   date,
@@ -32,6 +33,10 @@ export const DateBadge = ({
   const dayText = `${translate("Day")} ${day}`;
   const iconText = formatMomentDayMonth(dataEntry.date);
 
+  const getAccessibilityLabel = useAccessibilityLabel();
+  const iconLabel = getAccessibilityLabel(iconText, false);
+  const dayLabel = getAccessibilityLabel(dayText, false);
+
   return (
     <View style={[styles.container, style]}>
       {dataEntry.onFertile && (
@@ -45,7 +50,7 @@ export const DateBadge = ({
         status={status}
         appearance={appearance}
         text={iconText}
-        accessibilityLabel={iconText}
+        accessibilityLabel={iconLabel}
         size={IconSize}
         style={styles.iconButton}
         onPress={toggleVisible}
@@ -56,7 +61,7 @@ export const DateBadge = ({
         textStyle={styles.dayText}
         style={styles.button}
         onPress={toggleVisible}
-        accessibilityLabel={dayText}
+        accessibilityLabel={dayLabel}
         enableTranslate={false}
       >
         {dayText}

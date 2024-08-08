@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { useToggle } from "../hooks/useToggle";
 import { Modal } from "./Modal";
 import { Text } from "./Text";
-import { useTranslate } from "../hooks/useTranslate";
+import { useAccessibilityLabel } from "../hooks/useAccessibilityLabel";
 
 type InfoButtonProps = ButtonProps & {
   title: string;
@@ -20,7 +20,9 @@ export const InfoButton = ({
   ...props
 }: InfoButtonProps) => {
   const [visible, toggleVisible] = useToggle();
-  const translate = useTranslate();
+
+  const getAccessibilityLabel = useAccessibilityLabel();
+  const label = getAccessibilityLabel(accessibilityLabel ?? "info_button");
 
   return (
     <>
@@ -28,7 +30,7 @@ export const InfoButton = ({
         onPress={toggleVisible}
         style={styles.default}
         status={"danger_light"}
-        accessibilityLabel={accessibilityLabel ?? translate("info_button")}
+        accessibilityLabel={label}
         {...props}
       >
         <FontAwesome size={12} name={"info"} color={"#fff"} />

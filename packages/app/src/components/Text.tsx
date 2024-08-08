@@ -26,14 +26,8 @@ export const Text: React.FC<CustomTextProps> = ({
   };
 
   return (
-    <RNText style={[styles.text, { color }, style]} {...props}>
+    <RNText style={[{ color }, style]} {...props}>
       {getContent()}
     </RNText>
   );
-};
-
-const styles = {
-  text: {
-    fontFamily:"Roboto",
-  },
 };

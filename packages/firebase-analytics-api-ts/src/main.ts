@@ -1,5 +1,12 @@
 import { google } from 'googleapis';
 import path from 'path';
+// src/main.ts
+
+import { scheduleAnalyticsFetch } from './config/cronConfig';
+
+// Call the function to schedule analytics fetch
+scheduleAnalyticsFetch();
+
 
 async function authenticate() {
   const auth = new google.auth.GoogleAuth({

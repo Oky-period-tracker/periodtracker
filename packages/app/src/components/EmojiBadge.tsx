@@ -6,7 +6,8 @@ import { Text } from "./Text";
 export type BadgeSize = "tiny" | "small" | "medium" | "large";
 
 type EmojiBadgeProps = {
-  emoji: string;
+  emoji?: string;
+  children?: React.ReactElement;
   text: string;
   onPress?: () => void;
   style?: ViewStyle;
@@ -18,6 +19,7 @@ type EmojiBadgeProps = {
 
 export const EmojiBadge = ({
   emoji,
+  children,
   text,
   onPress,
   style,
@@ -40,9 +42,13 @@ export const EmojiBadge = ({
         onPress={onPress}
         disabled={disabled}
       >
-        <Text enableTranslate={false} style={{ fontSize: dimensions.emoji }}>
-          {emoji}
-        </Text>
+        {children ? (
+          children
+        ) : (
+          <Text enableTranslate={false} style={{ fontSize: dimensions.emoji }}>
+            {emoji}
+          </Text>
+        )}
       </Button>
       <Text
         enableTranslate={enableTranslate}

@@ -1,5 +1,6 @@
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { EmojiBadge } from "../../../components/EmojiBadge";
 import { useEncyclopedia } from "../EncyclopediaContext";
 import { useSelector } from "react-redux";
@@ -18,9 +19,16 @@ export const CategoryPicker = () => {
     );
   };
 
+  const clearFilters = () => {
+    setSelectedCategoryIds([]);
+  };
+
+  const clearStatus = selectedCategoryIds.length > 0 ? "danger" : "basic";
+
   const onVideosPress = () => {
     handlePress("videos");
   };
+
   const videosStatus = selectedCategoryIds.includes("videos")
     ? "danger"
     : "basic";
@@ -31,6 +39,15 @@ export const CategoryPicker = () => {
       style={styles.contentContainer}
       showsHorizontalScrollIndicator={false}
     >
+      <EmojiBadge
+        text={"clear_filters"}
+        onPress={clearFilters}
+        status={clearStatus}
+        enableTranslate={true}
+      >
+        <FontAwesome size={20} name={"close"} color={"#fff"} />
+      </EmojiBadge>
+
       {videos.length > 0 && (
         <EmojiBadge
           emoji={"🎥"}

@@ -285,7 +285,7 @@ export interface AppTranslations {
   password_error_content: string;
   request_error: string;
   thank_you: string;
-  thank_you_content: string; // TODO:
+  thank_you_content: string;
   reset_secret_question: string; // TODO:
   reset_password_question: string; // TODO:
   change_secret: string;

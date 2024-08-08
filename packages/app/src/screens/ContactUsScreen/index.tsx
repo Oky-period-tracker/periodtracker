@@ -16,16 +16,22 @@ import {
 } from "../../redux/selectors";
 import { ErrorText } from "../../components/ErrorText";
 import { Input } from "../../components/Input";
+import { WheelPickerModal } from "../../components/WheelPickerModal";
+import { reasonOptions } from "../../config/options";
+import { WheelPickerOption } from "../../components/WheelPicker";
 
 const ContactUsScreen: ScreenComponent<"Contact"> = () => {
   const user = useSelector(currentUserSelector);
   const locale = useSelector(currentLocaleSelector);
 
-  const [reason, setReason] = React.useState("");
+  const [reason, setReason] = React.useState<WheelPickerOption | undefined>(
+    undefined
+  );
+
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState(false);
 
-  const invalid = reason === "" || reason === "reason" || message === "";
+  const invalid = !reason || message === "";
 
   const [visible, toggleVisible] = useToggle();
 
@@ -59,7 +65,13 @@ const ContactUsScreen: ScreenComponent<"Contact"> = () => {
   return (
     <Screen>
       <View style={styles.container}>
-        <Input placeholder="reason" onChangeText={setReason} value={reason} />
+        <WheelPickerModal
+          initialOption={reason}
+          placeholder={"reason"}
+          options={reasonOptions}
+          onSelect={setReason}
+          enableTranslate
+        />
         <Input
           placeholder="message"
           onChangeText={setMessage}
@@ -82,11 +94,7 @@ const ContactUsScreen: ScreenComponent<"Contact"> = () => {
         toggleVisible={toggleVisible}
       >
         <Text style={styles.modalTitle}>thank_you</Text>
-        <Text enableTranslate={false}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem
-          deleniti enim quo alias. Odit nostrum expedita, ducimus voluptas vero
-          totam modi officia reprehenderit.
-        </Text>
+        <Text enableTranslate={false}>thank_you_content</Text>
       </Modal>
     </Screen>
   );
@@ -104,10 +112,9 @@ const styles = StyleSheet.create({
     maxHeight: 400,
     marginBottom: 24,
     justifyContent: "center",
-    alignItems: "center",
   },
-
   button: {
+    alignSelf: "center",
     marginTop: 12,
   },
   modal: {

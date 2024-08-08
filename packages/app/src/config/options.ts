@@ -32,3 +32,16 @@ export const questionOptions = secretQuestions.map((item) => ({
 }));
 
 export const defaultEmoji = "💁‍♀️";
+
+const reasons = [
+  // "reason",
+  "report_bug",
+  "request_topic",
+  "Other",
+  "problem_app",
+];
+
+export const reasonOptions = reasons.map((item) => ({
+  label: item,
+  value: item,
+}));

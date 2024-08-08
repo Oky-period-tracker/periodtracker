@@ -278,7 +278,6 @@ export const en: AppTranslations = {
   Oct: "Oct",
   Nov: "Nov",
   Dec: "Dec",
-  password_too_short: "Passcode is too short, minimum 3 characters",
   // -------------------------Error messages-----------------------------
   username_too_short: "Username is too short, minimum 3 characters",
   passcodes_mismatch: "Passcodes do not match",
@@ -302,7 +301,6 @@ export const en: AppTranslations = {
   error_same_name:
     "There is a user with the same name.\nPlease change your name and try again.",
   no_user_in_database: "No account with that user name.",
-  incorrect: "Incorrect username or answer",
   password_incorrect: "Passcode incorrect",
   something_went_wrong: "Something went wrong",
   could_not_change_secret: "Could not change the secret answer",
@@ -339,12 +337,19 @@ export const en: AppTranslations = {
     "This is not available offline. Please confirm that are ok with using your data, or you are connected to wifi.",
   choose_one: "Choose one option from the list",
   // NEW
-  secret_too_short: "Secret answer is too short, minimum 1 character",
+
   select: "Select",
+  password_too_short: "Passcode is too short, minimum 3 characters",
+  incorrect: "Incorrect username or answer",
+  secret_too_short: "Secret answer is too short, minimum 1 character",
   change_password: "Change password",
   attributes: "Attributes",
   clear_filters: "Clear all",
   videos_tag: "videos",
   delete_account_fail: "Unable to delete the account",
   error: "Error",
+  success: "Success",
+  password_change_fail: "",
+  password_change_fail_description: "",
+  info_button: "",
 };

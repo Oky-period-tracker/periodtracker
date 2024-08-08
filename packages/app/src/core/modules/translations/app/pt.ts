@@ -342,5 +342,19 @@ export const pt: AppTranslations = {
     "Isso não está disponível off-line. Por favor, confirme se você está de acordo com o uso de seus dados ou se está conectado ao Wi-Fi.",
   choose_one: "Escolha uma opção da lista",
   // NEW
-  select: "Select",
+  select: "Selecione",
+  password_too_short: "A senha é muito curta, mínimo de 3 caracteres",
+  incorrect: "Nome de usuário ou resposta incorreta",
+  secret_too_short:
+    "A resposta secreta é muito curta, com mínimo de 1 caractere",
+  change_password: "Alterar a senha",
+  attributes: "Atributos",
+  clear_filters: "Limpar tudo",
+  videos_tag: "vídeos",
+  delete_account_fail: "Não é possível excluir a conta",
+  error: "Erro",
+  success: "Sucesso",
+  password_change_fail: "",
+  password_change_fail_description: "",
+  info_button: "",
 };

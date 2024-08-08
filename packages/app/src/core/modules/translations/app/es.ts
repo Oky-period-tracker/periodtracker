@@ -354,5 +354,20 @@ export const es: AppTranslations = {
   password_incorrect: "contraseña incorrecta",
   choose_one: "Elija una opción de la lista",
   // NEW
-  select: "Select",
+  select: "Seleccionar",
+  password_too_short:
+    "El código de acceso es demasiado corto, mínimo 3 caracteres",
+  incorrect: "Nombre de usuario o respuesta incorrecta",
+  secret_too_short:
+    "La respuesta secreta es demasiado corta, mínimo 1 carácter.",
+  change_password: "Cambiar la contraseña",
+  attributes: "Atributos",
+  clear_filters: "Limpiar todo",
+  videos_tag: "vídeos",
+  delete_account_fail: "No se puede eliminar la cuenta",
+  error: "Error",
+  success: "Éxito",
+  password_change_fail: "",
+  password_change_fail_description: "",
+  info_button: "",
 };

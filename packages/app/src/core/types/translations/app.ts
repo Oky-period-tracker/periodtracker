@@ -325,27 +325,19 @@ export interface AppTranslations {
   internet_required_title: string;
   internet_required_text: string;
 
-  // ===== OPTIONAL ===== //
-  // articles
-  disclaimer?: string;
-  // HAPTIC_AND_SOUND
-  haptic_request?: string;
-  sound_request?: string;
-  // ASK_CITY
-  search_city?: string;
-  // ==================== NEW ==================== //
-  select?: string;
-  password_too_short?: string;
-  incorrect?: string;
-  secret_too_short?: string;
-  change_password?: string;
-  attributes?: string;
-  clear_filters?: string;
-  videos_tag?: string;
-  delete_account_fail?: string;
-  error?: string;
-  success?: string;
-  password_change_fail?: string;
-  password_change_fail_description?: string;
-  info_button?: string; // accessibility label
+  // ==================== V2 ==================== //
+  select: string;
+  password_too_short: string;
+  incorrect: string;
+  secret_too_short: string;
+  change_password: string;
+  attributes: string;
+  clear_filters: string;
+  videos_tag: string;
+  delete_account_fail: string;
+  error: string;
+  success: string;
+  password_change_fail: string;
+  password_change_fail_description: string;
+  info_button: string;
 }

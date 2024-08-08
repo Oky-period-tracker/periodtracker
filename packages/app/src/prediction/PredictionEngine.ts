@@ -186,8 +186,11 @@ export class PredictionEngine {
   ) {
     const loop = moment(startDate);
     let markedDates = {};
+    const today = moment().startOf("day");
     while (loop <= endDate) {
       const newDate = moment(loop.date(loop.date() + 1)).startOf("day");
+
+      const isToday = newDate.isSame(today);
 
       const { onPeriod, onFertile, date } = this.predictDay(newDate);
       if (onPeriod || onFertile) {
@@ -242,6 +245,14 @@ export class PredictionEngine {
             selectedColor: "#fff",
             selectedTextColor: "#E3629B",
             dotColor: "#e3629b",
+          };
+        }
+
+        if (isToday) {
+          newValue = {
+            selected: true,
+            selectedColor: "#FF8C00",
+            selectedTextColor: "#fff",
           };
         }
 

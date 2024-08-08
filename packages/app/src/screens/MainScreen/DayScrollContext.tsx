@@ -15,6 +15,7 @@ import _ from "lodash";
 import { useToggle } from "../../hooks/useToggle";
 import { useCalculateFullInfoForDateRange } from "../../contexts/PredictionProvider";
 import { PredictionDayInfo } from "../../prediction";
+import { useDebounceEffect } from "../../hooks/useDebounceEffect";
 
 export type DayData = PredictionDayInfo;
 
@@ -181,6 +182,13 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     const { height } = event.nativeEvent.layout;
     setDiameter(height);
   };
+
+  const [visible, setVisible] = React.useState(false);
+  const onSizeSettled = () => {
+    setVisible(true);
+  };
+  // Reduce jerky initial render
+  useDebounceEffect(onSizeSettled, 500, [diameter]);
 
   const [dayModalVisible, toggleDayModal] = useToggle();
 
@@ -365,6 +373,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       transform: [{ rotate: `${rotationAngle.value}rad` }],
       width: diameter,
       height: diameter,
+      opacity: visible ? 1 : 0,
     };
   });
 

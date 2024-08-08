@@ -24,6 +24,10 @@ import { AvatarMessageProvider } from "../../contexts/AvatarMessageContext";
 import { IS_ANDROID } from "../../services/device";
 
 const MainScreen: ScreenComponent<"Home"> = (props) => {
+  const { setLoading } = useLoading();
+  React.useEffect(() => {
+    setLoading(true);
+  }, []);
   useFetchSurvey();
   useStopLoadingEffect();
 

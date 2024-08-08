@@ -1,6 +1,10 @@
 import React from "react";
 
-export const useDebounceEffect = (func: () => void, delay: number) => {
+export const useDebounceEffect = (
+  func: () => void,
+  delay: number,
+  deps: unknown[] = []
+) => {
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
@@ -17,5 +21,5 @@ export const useDebounceEffect = (func: () => void, delay: number) => {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [func, delay]);
+  }, [func, delay, ...deps]);
 };

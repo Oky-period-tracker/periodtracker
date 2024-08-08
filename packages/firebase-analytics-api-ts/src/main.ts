@@ -1,76 +1,86 @@
-import { google } from 'googleapis'
-import path from 'path'
+import { google } from 'googleapis';
+import path from 'path';
 
 async function authenticate() {
   const auth = new google.auth.GoogleAuth({
     keyFile: path.join(__dirname, '../credentials/client_secrets.json'),
     scopes: ['https://www.googleapis.com/auth/analytics.readonly'],
-  })
+  });
 
-  return await auth.getClient()
+  return await auth.getClient();
 }
 
 async function getUserMetrics(authClient: any, propertyId: string) {
-  const analyticsData = google.analyticsdata('v1beta')
+  const analyticsData = google.analyticsdata('v1beta');
 
-  // Request DAUs for the last 30 days
-  const response = await analyticsData.properties.runReport({
+  // Request DAUs for today
+  const dailyResponse = await analyticsData.properties.runReport({
     auth: authClient,
     property: `properties/${propertyId}`,
     requestBody: {
       metrics: [{ name: 'activeUsers' }], // Daily Active Users
-      dateRanges: [
-        { startDate: '30daysAgo', endDate: 'today' }, // 30 days period
-      ],
-      dimensions: [{ name: 'date' }], // Group by date to get DAUs for each day
+      dateRanges: [{ startDate: 'today', endDate: 'today' }],
     },
-  })
+  });
 
-  // Calculate Daily Active Users for today
+  // Request MAUs for the last 30 days
+  const monthlyResponse = await analyticsData.properties.runReport({
+    auth: authClient,
+    property: `properties/${propertyId}`,
+    requestBody: {
+      metrics: [{ name: 'active28DayUsers' }], // Monthly Active Users
+      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+    },
+  });
+
   const dailyActiveUsers =
-    response.data.rows?.[response.data.rows.length - 1].metricValues?.[0].value || '0'
+    dailyResponse.data.rows?.[0]?.metricValues?.[0]?.value || '0';
+  const monthlyActiveUsers =
+    monthlyResponse.data.rows?.[0]?.metricValues?.[0]?.value || '0';
 
-  // Calculate Monthly Active Users by summing up unique users over the past 30 days
-  const monthlyActiveUsers = response.data.rows?.reduce((total, row) => {
-    return total + parseInt(row.metricValues?.[0].value || '0', 10)
-  }, 0)
-
-  return { dailyActiveUsers, monthlyActiveUsers }
+  return { dailyActiveUsers, monthlyActiveUsers };
 }
 
 async function getUsersByCountry(authClient: any, propertyId: string) {
-  const analyticsData = google.analyticsdata('v1beta')
+  const analyticsData = google.analyticsdata('v1beta');
 
+  // Request active users by country for the last 30 days
   const response = await analyticsData.properties.runReport({
     auth: authClient,
     property: `properties/${propertyId}`,
     requestBody: {
       metrics: [{ name: 'activeUsers' }],
-      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }], // Modify this range as needed
-      dimensions: [{ name: 'country' }], // Group by country
+      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }], // 30 days data
+      dimensions: [{ name: 'country' }],
     },
-  })
+  });
 
   const usersByCountry = response.data.rows?.map((row) => ({
-    country: row.dimensionValues?.[0].value || 'Unknown',
-    users: row.metricValues?.[0].value || '0',
-  }))
+    country: row.dimensionValues?.[0]?.value || 'Unknown',
+    users: row.metricValues?.[0]?.value || '0',
+  }));
 
-  return usersByCountry
+  // Debug logging for better insights
+  console.log('Raw response for users by country:', JSON.stringify(response.data, null, 2));
+
+  return usersByCountry;
 }
 
 async function main() {
-  const propertyId = '450226830' // Replace with your actual property ID
-  const authClient = await authenticate()
-  const { dailyActiveUsers, monthlyActiveUsers } = await getUserMetrics(authClient, propertyId)
-  const usersByCountry = await getUsersByCountry(authClient, propertyId)
+  const propertyId = '450226830'; // Replace with your actual property ID
+  const authClient = await authenticate();
+  const { dailyActiveUsers, monthlyActiveUsers } = await getUserMetrics(
+    authClient,
+    propertyId
+  );
+  const usersByCountry = await getUsersByCountry(authClient, propertyId);
 
-  // console.log(`Daily Active Users: ${dailyActiveUsers}`);
-  // console.log(`Monthly Active Users (sum of DAUs): ${monthlyActiveUsers}`);
-  // console.log('Users by Country:');
+  console.log(`Daily Active Users (Today): ${dailyActiveUsers}`);
+  console.log(`Monthly Active Users (Last 30 Days): ${monthlyActiveUsers}`);
+  console.log('Users by Country (Last 30 Days):');
   usersByCountry?.forEach((user) => {
-    // console.log(`${user.country}: ${user.users}`);
-  })
+    console.log(`${user.country}: ${user.users}`);
+  });
 }
 
-main().catch(console.error)
+main().catch(console.error);

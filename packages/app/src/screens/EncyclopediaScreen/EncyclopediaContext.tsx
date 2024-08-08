@@ -84,7 +84,9 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
       : categoryIds.filter((item) => selectedCategoryIds.includes(item));
 
   React.useEffect(() => {
+    setQuery("");
     setSelectedCategoryIds([]);
+    setSelectedVideoId(undefined);
   }, [locale]);
 
   return (

@@ -27,7 +27,7 @@ export const VideoPlayerModal = () => {
   const label = getAccessibilityLabel("close");
 
   const videoData = useSelector((state) =>
-    videoByIDSelector(state, selectedVideoId)
+    videoByIDSelector(state, selectedVideoId || "")
   );
 
   const close = () => {

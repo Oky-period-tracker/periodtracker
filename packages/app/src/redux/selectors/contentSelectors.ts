@@ -1,80 +1,103 @@
 import _ from "lodash";
 import { ReduxState } from "../reducers";
+import { isDefined } from "../../services/utils";
 
 const s = (state: ReduxState) => state.content;
 
 export const articlesSelector = (state: ReduxState) => s(state).articles;
 
 export const allArticlesSelector = (state: ReduxState) => {
-  if (!s(state).articles?.allIds || !s(state).articles?.byId) {
+  const articles = s(state)?.articles;
+  if (!articles?.allIds || !articles?.byId) {
     return [];
   }
-  return s(state).articles.allIds.map((id) => s(state).articles.byId[id]);
+  return articles.allIds.map((id) => articles.byId?.[id]).filter(isDefined);
 };
 
 export const allVideosSelector = (state: ReduxState) => {
-  if (!s(state)?.videos?.allIds || !s(state)?.videos?.byId) return [];
-  // @ts-expect-error TODO:
-  return s(state).videos.allIds.map((id) => s(state).videos.byId[id]);
-};
-
-// @ts-expect-error TODO:
-export const articleByIDSelector = (state: ReduxState, id) =>
-  s(state).articles.byId[id];
-// @ts-expect-error TODO:
-export const videoByIDSelector = (state: ReduxState, id) =>
-  s(state)?.videos?.byId[id];
-
-export const articlesObjectByIDSelector = (state: ReduxState) =>
-  s(state).articles?.byId ?? {};
-
-// TODO:
-
-export const allHelpCentersForCurrentLocale = (state: ReduxState) =>
-  s(state).helpCenters.filter((item) => item.lang === state.app.locale);
-
-export const allCategoriesSelector = (state: ReduxState) => {
-  if (!s(state).categories?.allIds || !s(state).categories?.byId) {
+  const videos = s(state)?.videos;
+  if (!videos?.allIds || !videos?.byId) {
     return [];
   }
-  return s(state).categories.allIds.map((id) => s(state).categories?.byId[id]);
+  return videos.allIds.map((id) => videos.byId?.[id]).filter(isDefined);
+};
+
+export const articleByIDSelector = (state: ReduxState, id: string) => {
+  const articles = s(state).articles;
+  return articles.byId?.[id];
+};
+
+export const videoByIDSelector = (state: ReduxState, id: string) => {
+  return s(state)?.videos?.byId?.[id];
+};
+
+export const articlesObjectByIDSelector = (state: ReduxState) => {
+  return s(state).articles?.byId ?? {};
+};
+
+export const allHelpCentersForCurrentLocale = (state: ReduxState) => {
+  return s(state).helpCenters.filter((item) => item.lang === state.app?.locale);
+};
+
+export const allCategoriesSelector = (state: ReduxState) => {
+  const categories = s(state)?.categories;
+  if (!categories?.allIds || !categories?.byId) {
+    return [];
+  }
+  return categories.allIds
+    .map((id) => categories?.byId?.[id])
+    .filter(isDefined);
 };
 
 export const allSubCategoriesSelector = (state: ReduxState) => {
-  if (!s(state).subCategories?.byId || !s(state).subCategories?.allIds) {
+  const subCategories = s(state)?.subCategories;
+  if (!subCategories?.byId || !subCategories?.allIds) {
     return [];
   }
-  return s(state).subCategories?.allIds.map(
-    (id) => s(state).subCategories.byId[id]
-  );
+  return subCategories?.allIds
+    .map((id) => subCategories.byId?.[id])
+    .filter(isDefined);
 };
 
-export const allSubCategoriesByIdSelector = (state: ReduxState) =>
-  s(state).subCategories?.byId ?? {};
+export const allSubCategoriesByIdSelector = (state: ReduxState) => {
+  return s(state)?.subCategories?.byId ?? {};
+};
 
-// @ts-expect-error TODO:
-export const categoryByIDSelector = (state: ReduxState, id) =>
-  s(state).categories?.byId[id];
+export const categoryByIDSelector = (state: ReduxState, id: string) => {
+  return s(state)?.categories?.byId?.[id];
+};
 
-// @ts-expect-error TODO:
-export const subCategoryByIDSelector = (state: ReduxState, id) =>
-  s(state).subCategories?.byId[id];
+export const subCategoryByIDSelector = (state: ReduxState, id: string) => {
+  return s(state)?.subCategories?.byId?.[id];
+};
 
-export const allAvatarText = (state: ReduxState) => s(state).avatarMessages;
+export const allAvatarText = (state: ReduxState) => {
+  return s(state)?.avatarMessages;
+};
 
-export const privacyContent = (state: ReduxState) => s(state).privacyPolicy;
+export const privacyContent = (state: ReduxState) => {
+  return s(state)?.privacyPolicy;
+};
 
-export const termsAndConditionsContent = (state: ReduxState) =>
-  s(state).termsAndConditions;
+export const termsAndConditionsContent = (state: ReduxState) => {
+  return s(state)?.termsAndConditions;
+};
 
-export const aboutContent = (state: ReduxState) => s(state).about;
+export const aboutContent = (state: ReduxState) => {
+  return s(state)?.about;
+};
 
-export const allSurveysSelector = (state: ReduxState) => s(state).allSurveys;
+export const allSurveysSelector = (state: ReduxState) => {
+  return s(state)?.allSurveys;
+};
 
-export const completedSurveysSelector = (state: ReduxState) =>
-  s(state).completedSurveys;
+export const completedSurveysSelector = (state: ReduxState) => {
+  return s(state)?.completedSurveys;
+};
 
-export const aboutBannerSelector = (state: ReduxState) => s(state).aboutBanner;
+export const aboutBannerSelector = (state: ReduxState) => {
+  return s(state)?.aboutBanner;
+};
 
 export const allQuizzesSelectors = (state: ReduxState) => {
   // TODO: FIXME

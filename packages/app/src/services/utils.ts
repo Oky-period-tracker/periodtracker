@@ -35,3 +35,13 @@ export const formatDate = (date: Date) => {
   // 'YYYY-MM-DD'
   return date.toISOString().split("T")[0];
 };
+
+/**
+ * TypeSafe undefined check
+ * Ensures correct type is returned when using filter()
+ * @example
+ * array.filter(isDefined)
+ */
+export const isDefined = <T>(item: T | undefined): item is T => {
+  return !!item;
+};

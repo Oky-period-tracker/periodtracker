@@ -24,6 +24,10 @@ export const Survey = () => {
 
   const question = state.consented ? currentQuestion.question : consentQuestion;
 
+  const isLastQuestion =
+    state.questionIndex === state.survey.questions.length - 1 &&
+    !state.hasAnsweredAll;
+
   return (
     <View style={styles.page}>
       <View style={styles.body}>
@@ -55,7 +59,9 @@ export const Survey = () => {
 
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
-        <Text style={styles.confirmText}>confirm</Text>
+        <Text style={styles.confirmText}>
+          {isLastQuestion ? "submit" : "confirm"}
+        </Text>
       </TouchableOpacity>
     </View>
   );

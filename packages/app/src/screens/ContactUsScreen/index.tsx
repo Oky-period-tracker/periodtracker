@@ -94,7 +94,7 @@ const ContactUsScreen: ScreenComponent<"Contact"> = () => {
         toggleVisible={toggleVisible}
       >
         <Text style={styles.modalTitle}>thank_you</Text>
-        <Text enableTranslate={false}>thank_you_content</Text>
+        <Text>thank_you_content</Text>
       </Modal>
     </Screen>
   );

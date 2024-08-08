@@ -1,10 +1,12 @@
 import React from "react";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { JourneyStep, useJourney } from "../JourneyContext";
 import { WheelPickerOption } from "../../../../../components/WheelPicker";
 import { DateData } from "react-native-calendars";
 import { DatePicker } from "../../../../../components/DatePicker";
 import moment from "moment";
 import { WheelPickerModal } from "../../../../../components/WheelPickerModal";
+import { palette } from "../../../../../config/theme";
 
 export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const { state, dispatch, dayOptions, weekOptions } = useJourney();
@@ -37,6 +39,9 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
           initialOption={day}
           options={dayOptions}
           onSelect={setPeriodLength}
+          actionRight={
+            <FontAwesome size={12} name={"pencil"} color={palette.basic.dark} />
+          }
         />
       )}
       {step === "number_weeks_between" && (
@@ -44,6 +49,9 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
           initialOption={week}
           options={weekOptions}
           onSelect={setCycleLength}
+          actionRight={
+            <FontAwesome size={12} name={"pencil"} color={palette.basic.dark} />
+          }
         />
       )}
     </>

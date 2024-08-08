@@ -78,14 +78,24 @@ export const Input = ({
               {value || placeholderText}
             </Text>
           ) : (
-            <TextInput
-              {...props}
-              ref={ref}
-              value={value}
-              placeholder={placeholderText}
-              style={[styles.input, inputStyle]}
-              placeholderTextColor={placeholderTextColor}
-            />
+            <>
+              {!value && (
+                // Separate from <TextInput> so that the cursor is centered
+                <Text
+                  style={[styles.placeholder, { color: placeholderTextColor }]}
+                  enableTranslate={false}
+                >
+                  {placeholderText}
+                </Text>
+              )}
+              <TextInput
+                {...props}
+                ref={ref}
+                value={value}
+                style={[styles.input, inputStyle]}
+                autoCorrect={false}
+              />
+            </>
           )}
           <View style={styles.sideComponent}>
             {actionRight}
@@ -128,5 +138,11 @@ const styles = StyleSheet.create({
   multiline: {
     flex: 1,
     justifyContent: "flex-start",
+  },
+  placeholder: {
+    position: "absolute",
+    width: "100%",
+    alignSelf: "center",
+    textAlign: "center",
   },
 });

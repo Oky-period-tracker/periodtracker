@@ -390,7 +390,8 @@ export const ru: AppTranslations = {
   delete_account_fail: "Невозможно удалить аккаунт",
   error: "Ошибка",
   success: "Успех",
-  password_change_fail: "",
-  password_change_fail_description: "",
-  info_button: "",
+  unsuccessful: "Неудачный",
+  secret_change_success_description: "Ваш секрет успешно сброшен",
+  password_change_fail_description: "Не удалось изменить пароль.",
+  info_button: "кнопка информации",
 };

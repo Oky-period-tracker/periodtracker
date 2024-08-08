@@ -349,7 +349,8 @@ export const en: AppTranslations = {
   delete_account_fail: "Unable to delete the account",
   error: "Error",
   success: "Success",
-  password_change_fail: "",
-  password_change_fail_description: "",
-  info_button: "",
+  unsuccessful: "Unsuccessful",
+  secret_change_success_description: "Your secret has been successfully reset",
+  password_change_fail_description: "Could not change the password",
+  info_button: "information button",
 };

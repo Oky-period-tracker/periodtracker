@@ -354,7 +354,8 @@ export const pt: AppTranslations = {
   delete_account_fail: "Não é possível excluir a conta",
   error: "Erro",
   success: "Sucesso",
-  password_change_fail: "",
-  password_change_fail_description: "",
-  info_button: "",
+  unsuccessful: "Mal sucedido",
+  secret_change_success_description: "O seu segredo foi redefinido com sucesso",
+  password_change_fail_description: "Não foi possível alterar a palavra-passe",
+  info_button: "botão de informação",
 };

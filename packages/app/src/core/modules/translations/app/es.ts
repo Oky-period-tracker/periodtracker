@@ -300,7 +300,7 @@ export const es: AppTranslations = {
   send: "enviar",
   thank_you: "Gracias",
   thank_you_content:
-    ": ¡Gracias por escribirnos! Tus comentarios nos ayudan a mejorar 🙂. Lo sentimos pero no podemos responder a cada mensaje individualmente. \n \n Si necesitas ayuda urgente ve a la Enciclopedia> Buscar ayuda para ver los detalles de las organizaciones que puedes contactar.",
+    "¡Gracias por escribirnos! Tus comentarios nos ayudan a mejorar 🙂. Lo sentimos pero no podemos responder a cada mensaje individualmente. \n \n Si necesitas ayuda urgente ve a la Enciclopedia> Buscar ayuda para ver los detalles de las organizaciones que puedes contactar.",
   logout: "Cerrar sesión",
   are_you_sure: "¿Está seguro?",
   logout_account_description:
@@ -367,7 +367,8 @@ export const es: AppTranslations = {
   delete_account_fail: "No se puede eliminar la cuenta",
   error: "Error",
   success: "Éxito",
-  password_change_fail: "",
-  password_change_fail_description: "",
-  info_button: "",
+  unsuccessful: "Fracasado",
+  secret_change_success_description: "descripción del éxito del cambio secreto",
+  password_change_fail_description: "No se pudo cambiar la contraseña",
+  info_button: "botón de información",
 };

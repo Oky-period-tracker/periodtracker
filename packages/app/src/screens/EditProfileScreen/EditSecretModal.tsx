@@ -50,7 +50,7 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
 
   const successAlert = () => {
     Alert.alert(
-      translate("secret_change_success"),
+      translate("success"),
       translate("secret_change_success_description"),
       [
         {
@@ -63,8 +63,8 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
 
   const failAlert = () => {
     Alert.alert(
-      translate("secret_change_fail"),
-      translate("secret_change_fail_description"),
+      translate("unsuccessful"),
+      translate("could_not_change_secret"),
       [
         {
           text: translate("continue"),

@@ -337,7 +337,8 @@ export interface AppTranslations {
   delete_account_fail: string;
   error: string;
   success: string;
-  password_change_fail: string;
+  unsuccessful: string;
+  secret_change_success_description: string;
   password_change_fail_description: string;
   info_button: string;
 }

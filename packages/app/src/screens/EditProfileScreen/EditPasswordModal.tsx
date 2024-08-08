@@ -30,8 +30,8 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
 
   const successAlert = () => {
     Alert.alert(
-      translate("password_change_success"),
-      translate("password_change_success_description"),
+      translate("success"),
+      translate("forgot_password_completed"),
       [
         {
           text: translate("continue"),
@@ -43,7 +43,7 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
 
   const failAlert = () => {
     Alert.alert(
-      translate("password_change_fail"),
+      translate("unsuccessful"),
       translate("password_change_fail_description"),
       [
         {

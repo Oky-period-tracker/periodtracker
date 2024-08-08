@@ -346,7 +346,9 @@ export const fr: AppTranslations = {
   delete_account_fail: "Impossible de supprimer le compte",
   error: "Erreur",
   success: "Succès",
-  password_change_fail: "",
-  password_change_fail_description: "",
-  info_button: "",
+  unsuccessful: "Infructueux",
+  secret_change_success_description:
+    "Votre secret a été réinitialisé avec succès",
+  password_change_fail_description: "Impossible de changer le mot de passe",
+  info_button: "bouton d'information",
 };

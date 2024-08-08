@@ -260,7 +260,7 @@ export const es: AppTranslations = {
     "Oky procesará la información que compartas para mejorar nuestros servicios y tu experiencia. Las respuestas a las encuestas son anónimas. Para saber más sobre cómo Oky utiliza tus datos consulta la política de privacidad en el menú de configuración.",
   encyclopedia: "enciclopedia",
   type_to_search: "Escribe para buscar",
-  "find help": "",
+  "find help": "encontrar ayuda",
   clear_search: "Borrar búsqueda",
   arrow_button: "Pulsador de flecha",
   card_address: "Dirección:",

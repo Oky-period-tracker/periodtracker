@@ -4,5 +4,6 @@ node_modules
 .env
 src/redux/config.ts
 google-services.json
+google-services.json.*
 GoogleService-Info.plist
 firebase/config.ts

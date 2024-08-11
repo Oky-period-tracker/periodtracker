@@ -24,8 +24,8 @@ async function login(): Promise<string[]> {
       password,
     })
 
-    // console.log('Sending login request to:', loginUrl);
-    // console.log('Login payload:', payload);
+    console.log('Sending login request to:', loginUrl);
+    console.log('Login payload:', payload);
 
     const response: AxiosResponse = await axios.post(loginUrl, payload, {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -34,9 +34,9 @@ async function login(): Promise<string[]> {
     })
 
     if (response.status === 302) {
-      // console.log('Login successful, redirected to:', response.headers['location']);
+      console.log('Login successful, redirected to:', response.headers['location']);
     } else {
-      // console.log('Response:', response.data);
+      console.log('Response:', response.data);
     }
 
     const cookies = response.headers['set-cookie']
@@ -48,8 +48,8 @@ async function login(): Promise<string[]> {
     if (axios.isAxiosError(error)) {
       console.error('Axios error:', error.message)
       if (error.response) {
-        // console.error('Status code:', error.response.status);
-        // console.error('Response data:', error.response.data);
+        console.error('Status code:', error.response.status);
+        console.error('Response data:', error.response.data);
       }
     } else {
       console.error('Error logging in:', error)
@@ -60,7 +60,7 @@ async function login(): Promise<string[]> {
 
 async function fetchAnalytics(cookies: string[]): Promise<any> {
   try {
-    // console.log(`Fetching analytics from ${endpoint}`);
+    console.log(`Fetching analytics from ${endpoint}`);
     const response: AxiosResponse = await axios.get(endpoint, {
       headers: {
         Accept: 'application/json',
@@ -68,8 +68,8 @@ async function fetchAnalytics(cookies: string[]): Promise<any> {
       },
       maxRedirects: 0, // For debugging purposes
     })
-    // console.log(`Status: ${response.status}`);
-    // console.log(`Headers: ${JSON.stringify(response.headers)}`);
+    console.log(`Status: ${response.status}`);
+    console.log(`Headers: ${JSON.stringify(response.headers)}`);
     return response.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -89,7 +89,7 @@ async function main() {
   try {
     const cookies = await login()
     const data = await fetchAnalytics(cookies)
-    // console.log('Fetched Analytics Data:', JSON.stringify(data, null, 2));
+    console.log('Fetched Analytics Data:', JSON.stringify(data, null, 2));
   } catch (error) {
     console.error('Error:', error)
   }

@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.unicef.oky'
+    namespace 'com.oky'
     defaultConfig {
-        applicationId 'com.unicef.oky'
+        applicationId 'com.oky'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 80

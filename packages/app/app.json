@@ -16,11 +16,11 @@
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
-      "bundleIdentifier": "com.unicef.oky",
+      "bundleIdentifier": "com.oky",
       "permissions": ["INTERNET"]
     },
     "android": {
-      "package": "com.unicef.oky",
+      "package": "com.oky",
       "googleServicesFile": "./google-services.json",
       "versionCode": 80,
       "versionName": "8.0.0",

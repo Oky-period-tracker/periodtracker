@@ -1,4 +1,4 @@
-package com.unicef.oky
+package com.oky
 
 import android.os.Build
 import android.os.Bundle

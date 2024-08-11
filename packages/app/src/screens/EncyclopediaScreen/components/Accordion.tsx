@@ -143,7 +143,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
           <TouchableOpacity
             key={subcategory.id}
             style={[styles.subcategory, globalStyles.shadow]}
-            onPress={pressedSubCategory(subcategory.id, subcategory.name)}
+            onPress={() => pressedSubCategory(subcategory.id, subcategory.name)}
           >
             <Text enableTranslate={false}>{subcategory.name}</Text>
           </TouchableOpacity>

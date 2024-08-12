@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
+    fontWeight: "bold",
   },
   outline: {
     margin: "auto",

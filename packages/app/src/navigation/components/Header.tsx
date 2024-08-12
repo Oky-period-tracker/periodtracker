@@ -63,7 +63,9 @@ const styles = StyleSheet.create({
     height: 24,
   },
   title: {
+    flex: 1,
     fontSize: 24,
+    textAlign: "right",
     fontWeight: "bold",
     marginLeft: "auto",
     color: "#F49200",

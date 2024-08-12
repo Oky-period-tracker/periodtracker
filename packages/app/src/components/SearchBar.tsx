@@ -4,6 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import { Input } from "./Input";
 import { Button } from "./Button";
 import { useAccessibilityLabel } from "../hooks/useAccessibilityLabel";
+import { palette } from "../config/theme";
 
 type SearchBarProps = {
   query: string;
@@ -25,6 +26,9 @@ export const SearchBar = ({ query, setQuery, style }: SearchBarProps) => {
       onChangeText={setQuery}
       style={style}
       placeholder={"type_to_search"}
+      actionLeft={
+        <FontAwesome name="search" size={12} color={palette.basic.base} />
+      }
       actionRight={
         query.length > 0 && (
           <Button

@@ -35,7 +35,7 @@ export async function fetchAnalyticsData() {
 
   console.log('User Metrics by Country (Last 30 Days):');
   userMetricsByCountry?.forEach((metric: UserMetrics) => {
-    console.log(`Country: ${metric.country}, Total Users: ${metric.activeUsers}, DAU: ${metric.dau}, MAU: ${metric.mau}`);
+    console.log(`Country: ${metric.country} (${metric.countryCode}), Total Users: ${metric.activeUsers}, DAU: ${metric.dau}, MAU: ${metric.mau}`);
   });
 }
 

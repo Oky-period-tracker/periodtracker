@@ -2,6 +2,7 @@ import { google } from 'googleapis';
 
 export interface UserMetrics {
   country: string;
+  countryCode: string; // Country code
   activeUsers: string; // Total active users
   dau: string;         // Daily active users
   mau: string;         // Monthly active users
@@ -33,7 +34,10 @@ export async function getUserMetricsByCountry(authClient: any, propertyId: strin
     property: `properties/${propertyId}`,
     auth: authClient,
     requestBody: {
-      dimensions: [{ name: 'country' }],
+      dimensions: [
+        { name: 'country' },
+        { name: 'countryIsoCode' } // Country ISO Code
+      ],
       metrics: [
         { name: 'activeUsers' },    // Total active users
         { name: 'active1DayUsers' }, // Daily active users
@@ -47,6 +51,7 @@ export async function getUserMetricsByCountry(authClient: any, propertyId: strin
 
   return rows.map(row => ({
     country: row.dimensionValues?.[0]?.value || 'Unknown',
+    countryCode: row.dimensionValues?.[1]?.value || 'Unknown', // Country code
     activeUsers: row.metricValues?.[0]?.value || '0',  // Total active users
     dau: row.metricValues?.[1]?.value || '0',          // Daily active users
     mau: row.metricValues?.[2]?.value || '0',          // Monthly active users

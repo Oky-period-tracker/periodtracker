@@ -28,9 +28,11 @@ export const InfoDisplay = ({
 
 const styles = StyleSheet.create({
   container: {
+    marginHorizontal: 12,
     backgroundColor: "#fff",
     borderRadius: 20,
-    marginVertical: 4,
+    marginTop: 4,
+    marginBottom: 80,
     padding: 24,
   },
   text: {

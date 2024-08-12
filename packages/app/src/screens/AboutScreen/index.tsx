@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StyleSheet, ScrollView, Image } from "react-native";
 import { InfoDisplay } from "../../components/InfoDisplay";
-import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { useSelector } from "../../redux/useSelector";
 import {
@@ -22,22 +21,16 @@ const AboutScreen: ScreenComponent<"About"> = () => {
       assets?.general?.aboutBanner[locale];
 
   return (
-    <Screen>
-      <ScrollView style={styles.scrollView}>
-        <Image source={source} style={styles.banner} resizeMode="contain" />
-        <InfoDisplay content={content} />
-      </ScrollView>
-    </Screen>
+    <ScrollView>
+      <Image source={source} style={styles.banner} resizeMode="contain" />
+      <InfoDisplay content={content} />
+    </ScrollView>
   );
 };
 
 export default AboutScreen;
 
 const styles = StyleSheet.create({
-  scrollView: {
-    width: "100%",
-    height: "100%",
-  },
   banner: {
     width: "100%",
     height: 200,

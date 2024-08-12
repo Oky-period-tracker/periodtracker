@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
   },
   disclaimer: {
     textAlign: "center",
-    fontSize: 10,
   },
   question: {
     textAlign: "center",

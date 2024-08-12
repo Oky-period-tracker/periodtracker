@@ -1,5 +1,11 @@
 import React from "react";
-import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Input } from "../../../../components/Input";
 import { Text } from "../../../../components/Text";
 import { Hr } from "../../../../components/Hr";
@@ -55,7 +61,7 @@ export const NotesCard = ({
   };
 
   return (
-    <>
+    <KeyboardAvoidingView style={styles.container}>
       <View style={styles.page}>
         <Input value={title} onChangeText={setTitle} placeholder="title" />
         <Input
@@ -69,11 +75,15 @@ export const NotesCard = ({
       <TouchableOpacity onPress={onPress} style={styles.confirm}>
         <Text style={styles.confirmText}>confirm</Text>
       </TouchableOpacity>
-    </>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+  },
   page: {
     flex: 1,
     width: "100%",

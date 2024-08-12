@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, StyleSheet } from "react-native";
 import { Button } from "../../components/Button";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
@@ -64,7 +64,7 @@ const ContactUsScreen: ScreenComponent<"Contact"> = () => {
 
   return (
     <Screen>
-      <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.container}>
         <WheelPickerModal
           initialOption={reason}
           placeholder={"reason"}
@@ -86,7 +86,7 @@ const ContactUsScreen: ScreenComponent<"Contact"> = () => {
         >
           send
         </Button>
-      </View>
+      </KeyboardAvoidingView>
 
       <Modal
         style={styles.modal}

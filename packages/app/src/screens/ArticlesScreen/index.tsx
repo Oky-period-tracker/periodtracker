@@ -48,7 +48,7 @@ const ArticlesScreen: ScreenComponent<"Articles"> = ({ navigation, route }) => {
     <Screen>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={{ paddingHorizontal: 12 }}
+        contentContainerStyle={styles.contentContainer}
       >
         <SearchBar
           query={query}
@@ -81,11 +81,14 @@ const styles = StyleSheet.create({
     height: "100%",
     // paddingHorizontal: 12,
   },
+  contentContainer: {
+    paddingHorizontal: 12,
+  },
   card: {
     backgroundColor: "#fff",
     width: "100%",
     minHeight: 120,
-    margin: 4,
+    marginVertical: 4,
     borderRadius: 20,
     padding: 24,
   },

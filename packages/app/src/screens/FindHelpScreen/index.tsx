@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 14,
     fontWeight: "bold",
   },
   caption: {

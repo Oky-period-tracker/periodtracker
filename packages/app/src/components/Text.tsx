@@ -1,5 +1,9 @@
 import React from "react";
-import { Text as RNText, TextProps as RNTextProps } from "react-native";
+import {
+  Text as RNText,
+  TextProps as RNTextProps,
+  StyleSheet,
+} from "react-native";
 import { PaletteStatus, palette } from "../config/theme";
 import { useTranslate } from "../hooks/useTranslate";
 
@@ -26,8 +30,14 @@ export const Text: React.FC<CustomTextProps> = ({
   };
 
   return (
-    <RNText style={[{ color }, style]} {...props}>
+    <RNText style={[styles.default, { color }, style]} {...props}>
       {getContent()}
     </RNText>
   );
 };
+
+const styles = StyleSheet.create({
+  default: {
+    fontSize: 14,
+  },
+});

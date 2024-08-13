@@ -64,7 +64,7 @@ export const JourneyReview = () => {
                 </DisplayButton>
 
                 <View style={styles.rowBody}>
-                  <Text style={styles.question}>{questionText}</Text>
+                  <Text>{questionText}</Text>
                   <Text style={styles.answer} enableTranslate={false}>
                     {getAnswerForStep(state, step)}
                   </Text>
@@ -112,11 +112,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 8,
   },
-  question: {
-    fontSize: 12,
-  },
   answer: {
     fontWeight: "bold",
+    fontSize: 16,
   },
   iconLeft: {
     width: 40,
@@ -139,7 +137,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: "center",
-    fontSize: 14,
     fontWeight: "bold",
   },
 });

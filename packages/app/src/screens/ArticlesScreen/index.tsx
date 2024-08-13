@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     color: palette["danger"].base,
   },
   subCategory: {
-    fontSize: 14,
     fontWeight: "bold",
     marginBottom: 24,
     color: palette["danger"].base,

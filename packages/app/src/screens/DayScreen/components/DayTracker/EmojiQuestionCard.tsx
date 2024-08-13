@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#F49200",
     marginBottom: 24,

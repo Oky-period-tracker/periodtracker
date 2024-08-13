@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: 24,
+    fontSize: 26,
     textAlign: "right",
     fontWeight: "bold",
     marginLeft: "auto",

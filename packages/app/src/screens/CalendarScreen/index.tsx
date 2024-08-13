@@ -168,7 +168,7 @@ const MESSAGE_DURATION = 5000;
 
 const theme: CalendarProps["theme"] = {
   monthTextColor: "#f49200",
-  textMonthFontSize: 20,
+  textMonthFontSize: 26,
   textMonthFontWeight: "bold",
 };
 

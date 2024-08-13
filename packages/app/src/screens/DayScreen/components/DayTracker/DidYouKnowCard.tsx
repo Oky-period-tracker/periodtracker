@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#F49200",
     marginBottom: 24,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   content: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
     color: "#E3629B",
     marginBottom: 24,

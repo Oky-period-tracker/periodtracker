@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   text: {
     color: palette["secondary"].base,
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 20,
     position: "absolute",
     textAlign: "center",
     bottom: 12,

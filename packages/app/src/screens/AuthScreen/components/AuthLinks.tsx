@@ -41,6 +41,5 @@ const styles = StyleSheet.create({
   text: {
     textDecorationLine: "underline",
     fontWeight: "bold",
-    fontSize: 12,
   },
 });

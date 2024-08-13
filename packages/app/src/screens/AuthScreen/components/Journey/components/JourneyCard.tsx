@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
   },
   response: {
     textAlign: "center",
-    fontSize: 14,
   },
   buttons: {
     alignSelf: "flex-end",
@@ -163,7 +162,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     textAlign: "center",
-    fontSize: 14,
     fontWeight: "bold",
   },
 });

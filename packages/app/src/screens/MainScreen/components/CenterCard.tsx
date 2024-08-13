@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: {
-    fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
     flex: 1,

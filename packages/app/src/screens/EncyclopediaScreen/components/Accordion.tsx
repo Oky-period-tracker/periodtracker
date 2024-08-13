@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffe6e3",
   },
   videosTitle: {
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: "bold",
   },
   categoryName: {

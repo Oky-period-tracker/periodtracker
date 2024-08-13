@@ -4,6 +4,8 @@ import { useTranslate } from "../../../../hooks/useTranslate";
 import { WheelPickerOption } from "../../../../components/WheelPicker";
 import moment, { Moment } from "moment";
 import { useFormatDate } from "../../../../hooks/useFormatDate";
+import { useSelector } from "../../../../redux/useSelector";
+import { currentUserSelector } from "../../../../redux/selectors";
 
 export type JourneyStep =
   | "first_period"
@@ -25,6 +27,7 @@ type JourneyState = {
   startDate: Moment;
   periodLength: string | undefined; // days
   cycleLength: string | undefined; // weeks
+  hasSkipped: boolean;
 };
 
 type Action<T extends keyof JourneyState = keyof JourneyState> =
@@ -47,6 +50,7 @@ const initialState: JourneyState = {
   startDate: twoWeeksAgo,
   periodLength: "5",
   cycleLength: "3",
+  hasSkipped: false,
 };
 
 const DAYS_MIN = 1;
@@ -68,7 +72,8 @@ function reducer(state: JourneyState, action: Action): JourneyState {
     case "skip":
       return {
         ...state,
-        stepIndex: journeySteps.length - 1,
+        stepIndex: journeySteps.length, // Review step
+        hasSkipped: true,
       };
 
     default:
@@ -100,6 +105,8 @@ const defaultValue: JourneyContext = {
 const JourneyContext = React.createContext<JourneyContext>(defaultValue);
 
 export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
+  const currentUser = useSelector(currentUserSelector);
+
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const step = journeySteps[state.stepIndex];
 
@@ -133,6 +140,26 @@ export const JourneyProvider = ({ children }: React.PropsWithChildren) => {
         return state.isActive && state.cycleLength ? state.cycleLength : "-";
     }
   };
+
+  React.useEffect(() => {
+    if (!currentUser) {
+      return;
+    }
+
+    const isMale = currentUser?.gender === "Male";
+
+    if (!isMale || state.hasSkipped) {
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      dispatch({ type: "skip" });
+    }, 256); // Time for screen to render
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [currentUser]);
 
   return (
     <JourneyContext.Provider

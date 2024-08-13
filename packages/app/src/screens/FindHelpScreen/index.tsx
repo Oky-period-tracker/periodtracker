@@ -1,7 +1,6 @@
 import * as React from "react";
 import { StyleSheet, ScrollView, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { HelpCenterCard } from "./components/HelpCenterCard";
 import { useSearch } from "../../hooks/useSearch";
@@ -17,6 +16,7 @@ import {
 import { useDispatch } from "react-redux";
 import { setSavedHelpCenters } from "../../redux/actions";
 import { SearchBar } from "../../components/SearchBar";
+import { globalStyles } from "../../config/theme";
 
 const FindHelpScreen: ScreenComponent<"Help"> = () => {
   const helpCenters = useSelector(allHelpCentersForCurrentLocale);
@@ -88,10 +88,14 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
     filters.region || filters.subRegion || filters.attributes.length;
 
   return (
-    <Screen>
+    <View>
       <View style={styles.searchRow}>
         <View style={styles.filterButton}>{/* Spacer */}</View>
-        <SearchBar query={query} setQuery={setQuery} style={styles.search} />
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          style={[styles.search, globalStyles.shadow]}
+        />
         <Button
           style={styles.filterButton}
           status={hasFilters ? "secondary" : "basic"}
@@ -134,7 +138,7 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
         onConfirm={setFilters}
         filters={filters}
       />
-    </Screen>
+    </View>
   );
 };
 
@@ -152,9 +156,11 @@ const styles = StyleSheet.create({
   scrollView: {
     width: "100%",
     height: "100%",
+    padding: 12,
   },
   searchRow: {
     flexDirection: "row",
+    padding: 12,
   },
   search: {
     flex: 1,

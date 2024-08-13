@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { Accordion } from "./components/Accordion";
-import { Screen } from "../../components/Screen";
 import { HelpCard } from "./components/HelpCard";
 import { CategoryPicker } from "./components/CategoryPicker";
 import { ScreenComponent } from "../../navigation/RootNavigator";
@@ -16,7 +15,7 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
   const goToHelpScreen = () => navigation.navigate("Help");
 
   return (
-    <Screen>
+    <>
       <HelpCard onPress={goToHelpScreen} />
 
       <ScrollView
@@ -32,7 +31,7 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
         <CategoryPicker />
         <Accordion />
       </ScrollView>
-    </Screen>
+    </>
   );
 };
 
@@ -40,9 +39,8 @@ export default EncyclopediaScreen;
 
 const styles = StyleSheet.create({
   scrollView: {
-    width: "100%",
+    padding: 12,
     height: "100%",
-    // padding: 12,
   },
   container: {
     alignItems: "center",

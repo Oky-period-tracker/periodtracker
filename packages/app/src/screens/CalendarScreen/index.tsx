@@ -28,6 +28,7 @@ import {
 } from "../../redux/selectors";
 import { Hr } from "../../components/Hr";
 import { calendarTranslations } from "../../core/modules";
+import { globalStyles } from "../../config/theme";
 
 // TODO: dynamic start & end dates?
 const startDate = moment().startOf("day").subtract(24, "months");
@@ -103,20 +104,26 @@ const CalendarScreen: ScreenComponent<"Calendar"> = ({ navigation }) => {
 
   return (
     <View style={styles.screen}>
-      <View style={[styles.messageBoxContainer, { opacity: messageOpacity }]}>
-        <View style={styles.messageBox}>
+      <View
+        style={[
+          styles.messageBoxContainer,
+          globalStyles.shadow,
+          { opacity: messageOpacity },
+        ]}
+      >
+        <View style={[styles.messageBox, globalStyles.elevation]}>
           <Text>{message}</Text>
         </View>
       </View>
 
-      <View style={styles.container}>
+      <View style={[styles.container, globalStyles.shadow]}>
         <Calendar
           onDayPress={onDayPress}
-          style={styles.calendar}
+          style={[styles.calendar, globalStyles.elevation]}
           theme={theme}
           enableSwipeMonths
           hideExtraDays
-          renderArrow={(direction) => {
+          renderArrow={(direction: "left" | "right") => {
             return (
               <DisplayButton style={styles.arrowButton}>
                 <FontAwesome

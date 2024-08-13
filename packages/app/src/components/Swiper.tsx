@@ -96,7 +96,7 @@ export const Swiper = ({
           style={[styles.pagesContainer, globalStyles.shadow, animatedStyle]}
         >
           {pages.map((page, i) => (
-            <View key={i} style={styles.page}>
+            <View key={i} style={[styles.page, globalStyles.shadow]}>
               {page}
             </View>
           ))}

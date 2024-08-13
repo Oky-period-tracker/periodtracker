@@ -9,6 +9,7 @@ import { Moment } from "moment";
 import { Text } from "../../../components/Text";
 import { useMonths } from "../../../hooks/useMonths";
 import { useTranslate } from "../../../hooks/useTranslate";
+import { globalStyles } from "../../../config/theme";
 
 export const CycleCard = ({
   item,
@@ -45,7 +46,7 @@ export const CycleCard = ({
   const periodEndMonth = months[periodEndMonthIndex];
 
   return (
-    <View style={styles.cycleCard}>
+    <View style={[styles.cycleCard, globalStyles.shadow]}>
       {/* ===== Header ===== */}
       <View style={styles.cycleCardHeader}>
         <View style={styles.row}>

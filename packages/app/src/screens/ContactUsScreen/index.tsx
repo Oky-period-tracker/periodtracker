@@ -7,7 +7,7 @@ import { useToggle } from "../../hooks/useToggle";
 import { httpClient } from "../../services/HttpClient";
 import { Modal } from "../../components/Modal";
 import { Text } from "../../components/Text";
-import { palette } from "../../config/theme";
+import { globalStyles, palette } from "../../config/theme";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import {
@@ -64,7 +64,7 @@ const ContactUsScreen: ScreenComponent<"Contact"> = () => {
 
   return (
     <Screen>
-      <KeyboardAvoidingView style={styles.container}>
+      <KeyboardAvoidingView style={[styles.container, globalStyles.shadow]}>
         <WheelPickerModal
           initialOption={reason}
           placeholder={"reason"}

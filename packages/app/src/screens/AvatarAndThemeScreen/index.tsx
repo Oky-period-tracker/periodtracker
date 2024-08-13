@@ -72,7 +72,7 @@ export const AvatarAndThemeSelect = ({
               onPress={onPress}
               style={[styles.avatar, globalStyles.shadow]}
             >
-              <View style={styles.body}>
+              <View style={[styles.avatarBody, globalStyles.elevation]}>
                 <Image
                   source={getAsset(`avatars.${avatar}.theme`)}
                   style={styles.avatarImage}
@@ -108,16 +108,18 @@ export const AvatarAndThemeSelect = ({
               onPress={onPress}
               style={[styles.theme, globalStyles.shadow]}
             >
-              <Image
-                source={getAsset(`backgrounds.${theme}.icon`)}
-                style={styles.themeImage}
-              />
-              <Text style={styles.name} enableTranslate={false}>
-                {theme}
-              </Text>
-              {showCheck && (
-                <CheckButton style={styles.check} status={checkStatus} />
-              )}
+              <View style={[styles.themeBody, globalStyles.elevation]}>
+                <Image
+                  source={getAsset(`backgrounds.${theme}.icon`)}
+                  style={styles.themeImage}
+                />
+                <Text style={styles.name} enableTranslate={false}>
+                  {theme}
+                </Text>
+                {showCheck && (
+                  <CheckButton style={styles.check} status={checkStatus} />
+                )}
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -198,12 +200,16 @@ const styles = StyleSheet.create({
     flexBasis: "40%",
     margin: 8,
   },
-  body: {
+  avatarBody: {
     backgroundColor: "#fff",
     borderColor: "#fff",
     borderWidth: 4,
-
     overflow: "hidden",
+    width: "100%",
+    height: "100%",
+    borderRadius: 20,
+  },
+  themeBody: {
     width: "100%",
     height: "100%",
     borderRadius: 20,

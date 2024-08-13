@@ -83,4 +83,8 @@ export const globalStyles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
   },
+  // Sometimes Android shadow has to be applied to a different component compared to iOS
+  elevation: {
+    elevation: 4,
+  },
 });

@@ -42,13 +42,15 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
     <SafeScreen>
       {authMode === "start" && <AuthScreenHeader />}
 
-      <AnimatedContainer style={[styles.container, globalStyles.shadow]}>
-        {authMode === "start" && <AuthToggle />}
-        {authMode === "log_in" && <LogIn />}
-        {authMode === "sign_up" && <SignUp />}
-        {authMode === "forgot_password" && <ForgotPassword />}
-        {authMode === "delete_account" && <DeleteAccount />}
-      </AnimatedContainer>
+      <View style={[styles.wrapper, globalStyles.shadow]}>
+        <AnimatedContainer style={[styles.container, globalStyles.elevation]}>
+          {authMode === "start" && <AuthToggle />}
+          {authMode === "log_in" && <LogIn />}
+          {authMode === "sign_up" && <SignUp />}
+          {authMode === "forgot_password" && <ForgotPassword />}
+          {authMode === "delete_account" && <DeleteAccount />}
+        </AnimatedContainer>
+      </View>
 
       {authMode === "welcome" && <Welcome />}
       {authMode === "onboard_journey" && <Journey />}
@@ -71,6 +73,9 @@ const AuthScreenInner = ({ navigation }: ScreenProps<"Auth">) => {
 export default AuthScreen;
 
 const styles = StyleSheet.create({
+  wrapper: {
+    width: "100%",
+  },
   container: {
     backgroundColor: "#fff",
     borderRadius: 20,

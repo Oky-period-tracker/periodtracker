@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.oky">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -33,8 +33,8 @@
        <!-- ================== (Start) Optional to allow Scheduled notifications ================== -->
       <!-- <receiver android:exported="true" android:name="io.invertase.firebase.notifications.RNFirebaseNotificationReceiver"/>
       <receiver android:enabled="true" android:exported="true"  android:name="io.invertase.firebase.notifications.RNFirebaseNotificationsRebootReceiver"> -->
-        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
-                    android:value="true"/>
+        <!-- <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
+                    android:value="true"/> -->
         <!-- Change the resource name to your App's accent color - or any other color you want -->
         
         <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />

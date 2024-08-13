@@ -45,8 +45,9 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
 
   const onPress = () => {
     if (isTutorialOneActive) {
-      setLoading(true);
-      tutorialDispatch({ type: "start", value: "tutorial_one" });
+      setLoading(true, "please_wait_tutorial", () => {
+        tutorialDispatch({ type: "start", value: "tutorial_one" });
+      });
       return;
     }
 

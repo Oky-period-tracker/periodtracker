@@ -61,10 +61,11 @@ const MainScreenInner: ScreenComponent<"Home"> = ({ navigation, route }) => {
   useFocusEffect(
     React.useCallback(() => {
       if (route.params?.tutorial) {
-        setLoading(true);
-        tutorialDispatch({ type: "start", value: route.params?.tutorial });
-        // Reset to prevent re-triggering
-        navigation.setParams({ tutorial: undefined });
+        setLoading(true, "please_wait_tutorial", () => {
+          tutorialDispatch({ type: "start", value: route.params?.tutorial });
+          // Reset to prevent re-triggering
+          navigation.setParams({ tutorial: undefined });
+        });
       }
     }, [route.params?.tutorial])
   );

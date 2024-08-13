@@ -17,8 +17,9 @@ const AccessScreen: ScreenComponent<"Access"> = ({ navigation }) => {
   const { setLoading } = useLoading();
 
   const launchTutorial = () => {
-    setLoading(true);
-    navigation.navigate("Home", { tutorial: "tutorial_two" });
+    setLoading(true, "please_wait_tutorial", () => {
+      navigation.navigate("Home", { tutorial: "tutorial_two" });
+    });
   };
 
   const rows: TouchableRowProps[] = [

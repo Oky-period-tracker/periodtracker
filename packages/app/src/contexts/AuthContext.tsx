@@ -15,14 +15,11 @@ const AuthContext = React.createContext<AuthContext>(defaultValue);
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const [isLoggedIn, setIsLoggedInState] = React.useState(false);
-
   const { setLoading } = useLoading();
 
   const setIsLoggedIn = (value: boolean) => {
     setLoading(true);
-    setTimeout(() => {
-      setIsLoggedInState(value);
-    }, 300);
+    setIsLoggedInState(value);
   };
 
   return (

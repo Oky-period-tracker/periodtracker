@@ -67,7 +67,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     }
 
     if (isTutorialTwoActive) {
-      setLoading(true);
+      setLoading(true, "please_wait_tutorial");
       tutorialDispatch({ type: "start", value: "tutorial_two" });
       return;
     }

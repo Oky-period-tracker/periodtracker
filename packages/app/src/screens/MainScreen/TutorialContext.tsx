@@ -190,17 +190,17 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
       return;
     }
 
-    setLoading(true);
+    setLoading(true, "please_wait_back", () => {
+      if (state.tutorial === "tutorial_one") {
+        reduxDispatch(setTutorialOneActive(false));
+      }
 
-    if (state.tutorial === "tutorial_one") {
-      reduxDispatch(setTutorialOneActive(false));
-    }
+      if (state.tutorial === "tutorial_two") {
+        reduxDispatch(setTutorialTwoActive(false));
+      }
 
-    if (state.tutorial === "tutorial_two") {
-      reduxDispatch(setTutorialTwoActive(false));
-    }
-
-    dispatch({ type: "reset" });
+      dispatch({ type: "reset" });
+    });
   });
 
   useStopLoadingEffect();

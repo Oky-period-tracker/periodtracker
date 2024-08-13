@@ -156,8 +156,8 @@ export interface AppTranslations {
   future_prediciton: string;
   future_prediciton_info: string;
   password_request: string;
-  please_wait_tutorial: string; // TODO:
-  please_wait_back: string; // TODO:
+  please_wait_tutorial: string;
+  please_wait_back: string;
   launch: string;
   to_daily_card: string;
   change_period: string;

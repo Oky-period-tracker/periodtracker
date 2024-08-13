@@ -36,6 +36,7 @@ import { useTutorial } from "../screens/MainScreen/TutorialContext";
 import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 import { isFutureDate } from "../services/dateUtils";
 import { useFormatDate } from "../hooks/useFormatDate";
+import { useLoading } from "../contexts/LoadingProvider";
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
 export const DayModal = ({
@@ -331,11 +332,14 @@ const LaunchTutorialButton = ({
 }: {
   toggleVisible: () => void;
 }) => {
+  const { setLoading } = useLoading();
   const { dispatch } = useTutorial();
 
   const onPress = () => {
     toggleVisible(); // Hide DayModal
-    dispatch({ type: "start", value: "tutorial_one" });
+    setLoading(true, "please_wait_tutorial", () => {
+      dispatch({ type: "start", value: "tutorial_one" });
+    });
   };
 
   return (

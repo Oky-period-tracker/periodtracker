@@ -8,8 +8,10 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { assets } from "../assets";
+import { Text } from "./Text";
+import { palette } from "../config/theme";
 
-export const Spinner = () => {
+export const Spinner = ({ text }: { text?: string }) => {
   const rotation = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -31,6 +33,7 @@ export const Spinner = () => {
 
   return (
     <View style={styles.screen}>
+      {text && <Text style={styles.text}>{text}</Text>}
       <View style={styles.container}>
         <View style={styles.inner}>
           <Image
@@ -72,5 +75,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
+  },
+  text: {
+    width: "100%",
+    paddingHorizontal: 24,
+    marginBottom: 24,
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
+    color: palette.secondary.text,
   },
 });

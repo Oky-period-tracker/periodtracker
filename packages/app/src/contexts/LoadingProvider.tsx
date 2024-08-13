@@ -4,7 +4,11 @@ import { Spinner } from "../components/Spinner";
 
 export type LoadingContext = {
   loading: boolean;
-  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setLoading: (
+    value: boolean,
+    message?: string,
+    whileLoading?: () => void
+  ) => void;
 };
 
 const defaultValue: LoadingContext = {
@@ -15,7 +19,21 @@ const defaultValue: LoadingContext = {
 const LoadingContext = React.createContext<LoadingContext>(defaultValue);
 
 export const LoadingProvider = ({ children }: React.PropsWithChildren) => {
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoadingState] = React.useState(false);
+  const [text, setText] = React.useState<string>();
+
+  const setLoading = (
+    value: boolean,
+    message?: string,
+    whileLoading?: () => void
+  ) => {
+    setText(message);
+    setLoadingState(value);
+
+    setTimeout(() => {
+      whileLoading?.();
+    }, 256);
+  };
 
   return (
     <LoadingContext.Provider
@@ -33,7 +51,8 @@ export const LoadingProvider = ({ children }: React.PropsWithChildren) => {
         supportedOrientations={["portrait", "landscape"]}
       >
         <View style={styles.backDrop} />
-        <Spinner />
+
+        <Spinner text={text} />
       </Modal>
     </LoadingContext.Provider>
   );
@@ -43,7 +62,7 @@ export const useLoading = () => {
   return React.useContext(LoadingContext);
 };
 
-export const useStopLoadingEffect = (duration = 1000) => {
+export const useStopLoadingEffect = (duration = 1500) => {
   const { loading, setLoading } = useLoading();
   React.useEffect(() => {
     if (!loading) {

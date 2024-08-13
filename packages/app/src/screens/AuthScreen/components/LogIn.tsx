@@ -94,14 +94,12 @@ const validateCredentials = (name: string, password: string) => {
   const errors: string[] = [];
   let isValid = true;
 
-  if (name.length < 3) {
+  if (!name.length) {
     isValid = false;
-    errors.push("username_too_short");
   }
 
-  if (password.length < 3) {
+  if (!password.length) {
     isValid = false;
-    errors.push("password_too_short");
   }
 
   return { isValid, errors };

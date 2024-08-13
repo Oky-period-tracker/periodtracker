@@ -48,7 +48,7 @@ export const DatePicker = ({
         markedDates={markedDates}
         enableSwipeMonths
         hideExtraDays
-        renderArrow={(direction) => {
+        renderArrow={(direction: "left" | "right") => {
           return (
             <DisplayButton style={styles.arrowButton}>
               <FontAwesome
@@ -92,17 +92,5 @@ const styles = StyleSheet.create({
   arrowButton: {
     width: 24,
     height: 24,
-  },
-  selectedContainer: {
-    // borderColor,
-    borderWidth: 2,
-    backgroundColor: "#CF386D",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  selectedText: {
-    color: "#CF386D",
-    fontWeight: "600",
-    fontSize: 14,
   },
 });

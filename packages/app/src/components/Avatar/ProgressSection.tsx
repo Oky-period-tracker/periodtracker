@@ -68,7 +68,6 @@ export const ProgressSection = ({
 };
 
 const getHeart = (numberOfElements: number) => {
-  console.log("*** ");
   if (numberOfElements === null) return "heart-outline";
   if (numberOfElements < 50) return "heart-outline";
   if (numberOfElements < 100) return "heart-half";

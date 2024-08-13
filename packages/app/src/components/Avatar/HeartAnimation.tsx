@@ -7,7 +7,7 @@ import {
   StyleProp,
   ViewStyle,
 } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { palette } from "../../config/theme";
 
 // TODO: Rewrite using reanimated ?
@@ -156,7 +156,7 @@ function AnimatedShape({
       ]}
       onLayout={handleOnLayout}
     >
-      <FontAwesome name={"heart"} color={palette.danger.base} size={size} />
+      <Ionicons name={"heart"} color={palette.danger.base} size={size} />
     </Animated.View>
   );
 }

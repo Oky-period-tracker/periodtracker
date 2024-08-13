@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { cardAnswerSelector } from "../../redux/selectors";
 import moment from "moment";
 import { useSelector } from "../../redux/useSelector";
@@ -40,7 +41,7 @@ export const ProgressSection = ({
     <View style={[styles.container]} pointerEvents={"none"}>
       {/* ===== Hearts ===== */}
       <View style={styles.section}>
-        <FontAwesome
+        <Ionicons
           name={getHeart(heartPercent)}
           color={palette.danger.base}
           size={ICON_SIZE}
@@ -67,11 +68,12 @@ export const ProgressSection = ({
 };
 
 const getHeart = (numberOfElements: number) => {
-  if (numberOfElements === null) return "heart-o";
-  if (numberOfElements < 50) return "heart-o";
-  if (numberOfElements >= 50) return "heart"; // TODO: half-heart
+  console.log("*** ");
+  if (numberOfElements === null) return "heart-outline";
+  if (numberOfElements < 50) return "heart-outline";
+  if (numberOfElements < 100) return "heart-half";
   if (numberOfElements >= 100) return "heart";
-  return "heart-o";
+  return "heart-outline";
 };
 
 const getStar = (numberOfElements: number) => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { Text } from "../../../components/Text";
 import { A } from "../../../components/A";
 import { useToggle } from "../../../hooks/useToggle";
@@ -53,9 +53,9 @@ export const HelpCenterCard = ({
           status={isSaved ? "danger" : "basic"}
           onPress={onSavePress}
         >
-          <FontAwesome
+          <Ionicons
             size={18}
-            name={isSaved ? `heart` : `heart-o`}
+            name={isSaved ? `heart` : `heart-outline`}
             color={"#fff"}
           />
         </Button>

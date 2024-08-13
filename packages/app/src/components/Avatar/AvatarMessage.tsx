@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Text } from "../Text";
 import { useAvatarMessage } from "../../contexts/AvatarMessageContext";
 import { useTutorial } from "../../screens/MainScreen/TutorialContext";
+import { globalStyles } from "../../config/theme";
 
 export const AvatarMessage = () => {
   const { message } = useAvatarMessage();
@@ -13,11 +14,11 @@ export const AvatarMessage = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, globalStyles.shadow]}>
       <Text enableTranslate={false} accessibilityLabel={message}>
         {message}
       </Text>
-      <View style={styles.triangle} />
+      <View style={[styles.triangle]} />
     </View>
   );
 };

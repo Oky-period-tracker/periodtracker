@@ -13,11 +13,18 @@ import { useLoading } from "../../../contexts/LoadingProvider";
 import { useFormatDate } from "../../../hooks/useFormatDate";
 
 export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
-  const { data, wheelPanGesture, wheelAnimatedStyle } = useDayScroll();
+  const { data, wheelPanGesture, wheelAnimatedStyle, visible } = useDayScroll();
 
   return (
     <GestureDetector gesture={wheelPanGesture}>
-      <Animated.View style={[styles.container, wheelAnimatedStyle, style]}>
+      <Animated.View
+        style={[
+          styles.container,
+          wheelAnimatedStyle,
+          { opacity: visible ? 1 : 0 },
+          style,
+        ]}
+      >
         {data.map((item, index) => (
           <WheelButton key={`wheel-button-${index}`} {...{ item, index }} />
         ))}

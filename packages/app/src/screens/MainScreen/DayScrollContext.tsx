@@ -47,6 +47,7 @@ export type DayScrollContext = {
   wheelAnimatedStyle: AnimatedStyle;
   rotationAngle: SharedValue<number> | null;
   diameter: number;
+  visible: boolean;
   // Modal
   dayModalVisible: boolean;
   toggleDayModal: () => void;
@@ -119,6 +120,7 @@ const defaultValue: DayScrollContext = {
     };
   },
   diameter: 0,
+  visible: false,
   // Modal
   dayModalVisible: false,
   toggleDayModal: () => {},
@@ -373,7 +375,6 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       transform: [{ rotate: `${rotationAngle.value}rad` }],
       width: diameter,
       height: diameter,
-      opacity: visible ? 1 : 0,
     };
   });
 
@@ -398,6 +399,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
         wheelAnimatedStyle,
         rotationAngle,
         diameter,
+        visible,
         // Modal
         dayModalVisible,
         toggleDayModal,

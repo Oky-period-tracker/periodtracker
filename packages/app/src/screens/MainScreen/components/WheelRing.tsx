@@ -3,11 +3,12 @@ import { ReduxState } from "../../../redux/reducers";
 import { useSelector } from "../../../redux/useSelector";
 import { useDayScroll } from "../DayScrollContext";
 import { getDayStatus } from "../../../hooks/useDayStatus";
-import { palette } from "../../../config/theme";
+import { palette, PaletteStatus } from "../../../config/theme";
 import PieChart from "react-native-pie-chart";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "../../../components/Text";
 import { ButtonProps } from "../../../components/Button";
+import { Appearance } from "../../../components/IconButton";
 
 export const WheelRing = () => {
   const { data, diameter, constants } = useDayScroll();
@@ -39,21 +40,7 @@ export const WheelRing = () => {
         (acc, curr) => {
           const { status, appearance } = getDayStatus(reduxState, curr);
 
-          let border = palette.neutral.dark;
-          let fill = palette.neutral.base;
-
-          if (status === "danger" && appearance === "outline") {
-            border = palette.danger.base;
-            fill = palette.basic.highlight;
-          }
-          if (status === "danger") {
-            border = palette.danger.dark;
-            fill = palette.danger.base;
-          }
-          if (status === "tertiary") {
-            border = palette.tertiary.dark;
-            fill = palette.tertiary.base;
-          }
+          const { border, fill } = getSegmentColors(status, appearance);
 
           const newSeries = [
             BORDER_PERCENTAGE,
@@ -120,6 +107,31 @@ export const WheelRingButton = ({
       </Text>
     </TouchableOpacity>
   );
+};
+
+const getSegmentColors = (status: PaletteStatus, appearance: Appearance) => {
+  if (status === "danger" && appearance === "outline") {
+    return {
+      border: palette.danger.base,
+      fill: palette.basic.highlight,
+    };
+  }
+  if (status === "danger") {
+    return {
+      border: palette.danger.dark,
+      fill: palette.danger.base,
+    };
+  }
+  if (status === "tertiary") {
+    return {
+      border: palette.tertiary.dark,
+      fill: palette.tertiary.base,
+    };
+  }
+  return {
+    border: palette.neutral.dark,
+    fill: palette.neutral.base,
+  };
 };
 
 const OUTER_BORDER_WIDTH = 12;

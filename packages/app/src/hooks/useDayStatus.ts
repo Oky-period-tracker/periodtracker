@@ -70,8 +70,6 @@ export const getDayStatus = (
     };
   }
 
-  // TODO: theres some issue with the predicted days, for some reason they appear as if  isVerified is true, but the dailycards correctly are aware that they are not, likely something due to the dact that we are selecting redux state in this weird way
-
   if (dataEntry.onPeriod && !isVerified) {
     return {
       status: "danger",

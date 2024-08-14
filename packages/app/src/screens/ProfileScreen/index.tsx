@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FlatList } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import { Screen } from "../../components/Screen";
 import { ScreenComponent } from "../../navigation/RootNavigator";
 import { CycleCard } from "./components/CycleCard";
@@ -12,6 +12,7 @@ const ProfileScreen: ScreenComponent<"Profile"> = (props) => {
   return (
     <Screen>
       <FlatList
+        style={styles.flatList}
         ListHeaderComponent={<ProfileDetails {...props} />}
         showsVerticalScrollIndicator={false}
         data={History}
@@ -25,3 +26,9 @@ const ProfileScreen: ScreenComponent<"Profile"> = (props) => {
 };
 
 export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  flatList: {
+    width: "100%",
+  },
+});

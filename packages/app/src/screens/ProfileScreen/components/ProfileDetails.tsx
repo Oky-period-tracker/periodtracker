@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    flex: 1,
+    width: "100%",
     minHeight: 100,
     padding: 12,
     alignItems: "center",
@@ -169,8 +169,6 @@ const styles = StyleSheet.create({
   },
   column: {
     flex: 1,
-    flexBasis: "33%",
-    height: "100%",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -196,13 +194,12 @@ const styles = StyleSheet.create({
   },
   themeWrapper: {
     width: "100%",
-    height: "100%",
     borderRadius: 20,
     overflow: "hidden",
   },
   themeImage: {
     width: "100%",
-    height: "100%",
+    height: 80,
     alignSelf: "center",
     resizeMode: "cover",
   },

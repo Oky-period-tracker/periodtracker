@@ -8,12 +8,20 @@ import { DayData, useDayScroll } from "../DayScrollContext";
 import { useDayStatus } from "../../../hooks/useDayStatus";
 import { useTutorial } from "../TutorialContext";
 import { useSelector } from "react-redux";
-import { isTutorialOneActiveSelector } from "../../../redux/selectors";
+import {
+  currentThemeSelector,
+  isTutorialOneActiveSelector,
+} from "../../../redux/selectors";
 import { useLoading } from "../../../contexts/LoadingProvider";
 import { useFormatDate } from "../../../hooks/useFormatDate";
+import { WheelRing, WheelRingButton } from "./WheelRing";
+import { wheelRingThemes } from "../../../core/modules";
 
 export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { data, wheelPanGesture, wheelAnimatedStyle, visible } = useDayScroll();
+
+  const theme = useSelector(currentThemeSelector);
+  const includeRing = wheelRingThemes.includes(theme);
 
   return (
     <GestureDetector gesture={wheelPanGesture}>
@@ -25,6 +33,7 @@ export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
           style,
         ]}
       >
+        {includeRing && <WheelRing />}
         {data.map((item, index) => (
           <WheelButton key={`wheel-button-${index}`} {...{ item, index }} />
         ))}
@@ -40,6 +49,9 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
 
   const isTutorialOneActive = useSelector(isTutorialOneActiveSelector);
   const { formatMomentDayMonth } = useFormatDate();
+
+  const theme = useSelector(currentThemeSelector);
+  const includeRing = wheelRingThemes.includes(theme);
 
   const {
     constants,
@@ -90,15 +102,26 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
 
   return (
     <Animated.View style={[styles.button, position, wheelButtonAnimatedStyle]}>
-      <IconButton
-        size={BUTTON_SIZE}
-        text={text}
-        onPress={onPress}
-        disabled={!isSelected}
-        status={status}
-        appearance={appearance}
-        accessibilityLabel={text}
-      />
+      {includeRing ? (
+        <WheelRingButton
+          text={text}
+          onPress={onPress}
+          disabled={!isSelected}
+          status={status}
+          appearance={appearance}
+          accessibilityLabel={text}
+        />
+      ) : (
+        <IconButton
+          size={BUTTON_SIZE}
+          text={text}
+          onPress={onPress}
+          disabled={!isSelected}
+          status={status}
+          appearance={appearance}
+          accessibilityLabel={text}
+        />
+      )}
     </Animated.View>
   );
 };

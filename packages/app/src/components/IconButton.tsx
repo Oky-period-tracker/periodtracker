@@ -8,15 +8,10 @@ import {
 import { Text } from "./Text";
 import { SvgIconProps } from "./icons/types";
 import Cloud from "./icons/Cloud";
-import { CloudOutline } from "./icons/CloudOutline";
-import { StarOutline } from "./icons/StarOutline";
-import { CircleOutline } from "./icons/CircleOutline";
-import { Star } from "./icons/Star";
-import { Circle } from "./icons/Circle";
 import { useSelector } from "react-redux";
 import { currentThemeSelector } from "../redux/selectors";
 import { palette } from "../config/theme";
-import { ThemeName } from "../core/modules/translations";
+import { IconForTheme } from "../core/modules/translations";
 
 export type Appearance = "fill" | "outline";
 
@@ -27,28 +22,6 @@ type IconButtonProps = SvgIconProps & {
   textStyle?: TextStyle;
   disabled?: boolean;
   accessibilityLabel?: ViewProps["accessibilityLabel"];
-};
-
-const IconForTheme: Record<
-  ThemeName,
-  Record<Appearance, React.FC<SvgIconProps>>
-> = {
-  hills: {
-    fill: Cloud,
-    outline: CloudOutline,
-  },
-  mosaic: {
-    fill: Star,
-    outline: StarOutline,
-  },
-  village: {
-    fill: Cloud,
-    outline: CloudOutline,
-  },
-  desert: {
-    fill: Circle,
-    outline: CircleOutline,
-  },
 };
 
 export const IconButton = ({

@@ -18,12 +18,16 @@ export const WheelRing = () => {
   const coverRadius =
     diameter > 0 ? Math.round((innerCircleSize / diameter) * 100) / 100 : 0.1;
 
-  const outerInnerCircleSize = innerCircleSize - 24;
+  const outerInnerCircleSize = innerCircleSize - OUTER_BORDER_WIDTH * 2;
 
   const outerCoverRadius =
     diameter > 0
       ? Math.round((outerInnerCircleSize / diameter) * 100) / 100
       : 0.1;
+
+  const segmentPercentage =
+    Math.round((100 / constants.NUMBER_OF_BUTTONS) * 100) / 100;
+  const segmentBodyPercentage = segmentPercentage - BORDER_PERCENTAGE * 2;
 
   const { series, sliceColor, sliceColorOuter } = React.useMemo(
     () =>
@@ -51,10 +55,11 @@ export const WheelRing = () => {
             fill = palette.tertiary.base;
           }
 
-          // TODO: these numbers assume NUMBER_OF_BUTTONS = 12
-          // 100 / 12 = 8.3
-          //  0.5 + 7.3 + 0.5 = 8.3
-          const newSeries = [0.5, 7.3, 0.5];
+          const newSeries = [
+            BORDER_PERCENTAGE,
+            segmentBodyPercentage,
+            BORDER_PERCENTAGE,
+          ];
           const newSliceColor = [border, fill, border];
           const newSliceColorOuter = [border, border, border];
 
@@ -76,11 +81,11 @@ export const WheelRing = () => {
   return (
     <>
       <PieChart
-        widthAndHeight={diameter + 12}
+        widthAndHeight={diameter + OUTER_BORDER_WIDTH}
         series={series}
         sliceColor={sliceColorOuter}
         coverRadius={outerCoverRadius}
-        style={[styles.pie, { position: "absolute" }]}
+        style={[styles.pie, styles.borderPie]}
       />
       <PieChart
         widthAndHeight={diameter}
@@ -117,12 +122,18 @@ export const WheelRingButton = ({
   );
 };
 
+const OUTER_BORDER_WIDTH = 12;
+const BORDER_PERCENTAGE = 0.5;
+
 const styles = StyleSheet.create({
   pie: {
     // 45 Shift to align pie with segments
     // 30 to rotate by 1 segment
     // 360 / 12 = 30
     transform: [{ rotate: `${45 + 30}deg` }],
+  },
+  borderPie: {
+    position: "absolute",
   },
   text: {
     width: "60%",

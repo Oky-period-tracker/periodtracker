@@ -15,7 +15,7 @@ import { IconForTheme } from "../core/modules/translations";
 
 export type Appearance = "fill" | "outline";
 
-type IconButtonProps = SvgIconProps & {
+export type IconButtonProps = SvgIconProps & {
   appearance?: Appearance;
   onPress?: () => void;
   text?: string;

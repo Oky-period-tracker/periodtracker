@@ -104,6 +104,7 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
     <Animated.View style={[styles.button, position, wheelButtonAnimatedStyle]}>
       {includeRing ? (
         <WheelRingButton
+          size={BUTTON_SIZE}
           text={text}
           onPress={onPress}
           disabled={!isSelected}

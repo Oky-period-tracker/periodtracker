@@ -7,8 +7,7 @@ import { palette, PaletteStatus } from "../../../config/theme";
 import PieChart from "react-native-pie-chart";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "../../../components/Text";
-import { ButtonProps } from "../../../components/Button";
-import { Appearance } from "../../../components/IconButton";
+import { Appearance, IconButtonProps } from "../../../components/IconButton";
 
 export const WheelRing = () => {
   const { data, diameter, constants } = useDayScroll();
@@ -90,12 +89,21 @@ export const WheelRingButton = ({
   status = "neutral",
   appearance,
   text,
+  size,
   ...props
-}: ButtonProps & {
-  text: string;
-}) => {
+}: IconButtonProps) => {
   return (
-    <TouchableOpacity onPress={onPress} {...props}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.button,
+        {
+          width: size,
+          height: size,
+        },
+      ]}
+      {...props}
+    >
       <Text
         style={[
           styles.text,
@@ -146,6 +154,10 @@ const styles = StyleSheet.create({
   },
   borderPie: {
     position: "absolute",
+  },
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     width: "60%",

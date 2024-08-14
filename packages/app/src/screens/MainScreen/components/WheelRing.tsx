@@ -51,6 +51,9 @@ export const WheelRing = () => {
             fill = palette.tertiary.base;
           }
 
+          // TODO: these numbers assume NUMBER_OF_BUTTONS = 12
+          // 100 / 12 = 8.3
+          //  0.5 + 7.3 + 0.5 = 8.3
           const newSeries = [0.5, 7.3, 0.5];
           const newSliceColor = [border, fill, border];
           const newSliceColorOuter = [border, border, border];

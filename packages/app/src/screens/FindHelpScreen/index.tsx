@@ -130,6 +130,8 @@ const FindHelpScreen: ScreenComponent<"Help"> = () => {
             />
           );
         })}
+
+        <View style={styles.spacer} />
       </ScrollView>
 
       <HelpFiltersModal
@@ -155,7 +157,6 @@ export default FindHelpScreen;
 const styles = StyleSheet.create({
   scrollView: {
     width: "100%",
-    height: "100%",
     padding: 12,
   },
   searchRow: {
@@ -193,5 +194,8 @@ const styles = StyleSheet.create({
   },
   website: {
     marginBottom: 8,
+  },
+  spacer: {
+    height: 200,
   },
 });

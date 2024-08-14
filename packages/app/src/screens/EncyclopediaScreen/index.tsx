@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, View } from "react-native";
 import { Accordion } from "./components/Accordion";
 import { HelpCard } from "./components/HelpCard";
 import { CategoryPicker } from "./components/CategoryPicker";
@@ -30,6 +30,7 @@ const EncyclopediaScreen: ScreenComponent<"Encyclopedia"> = ({
         />
         <CategoryPicker />
         <Accordion />
+        <View style={styles.spacer} />
       </ScrollView>
     </>
   );
@@ -64,5 +65,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     color: "black",
+  },
+  spacer: {
+    height: 200,
   },
 });

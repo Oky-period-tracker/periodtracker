@@ -49,22 +49,14 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     }
 
     if (hasAccess) {
-      analytics?.()
-        .logEvent("EncyclopediaCategoryExpanded_logged_in", {
-          EncyclopediaCategoryName: category.name,
-          user: user.id,
-        })
-        .then(() =>
-          console.log("EncyclopediaCategoryExpanded_logged_in logged")
-        );
+      analytics?.().logEvent("EncyclopediaCategoryExpanded_logged_in", {
+        EncyclopediaCategoryName: category.name,
+        user: user.id,
+      });
     } else {
-      analytics?.()
-        .logEvent("EncyclopediaCategoryExpanded_logged_out", {
-          EncyclopediaCategoryName: category.name,
-        })
-        .then(() =>
-          console.log("EncyclopediaCategoryExpanded_logged_out logged")
-        );
+      analytics?.().logEvent("EncyclopediaCategoryExpanded_logged_out", {
+        EncyclopediaCategoryName: category.name,
+      });
     }
   };
 
@@ -82,18 +74,14 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
       navigation.navigate("Articles", { subcategoryId });
 
       if (hasAccess) {
-        analytics?.()
-          .logEvent("SubCategoryPressed_logged_in", {
-            EncyclopediaSubcategoryName: subcategoryName,
-            user: user.id,
-          })
-          .then(() => console.log("SubCategoryPressed_logged_in logged"));
+        analytics?.().logEvent("SubCategoryPressed_logged_in", {
+          EncyclopediaSubcategoryName: subcategoryName,
+          user: user.id,
+        });
       } else {
-        analytics?.()
-          .logEvent("SubCategoryPressed_logged_out", {
-            EncyclopediaSubcategoryName: subcategoryName,
-          })
-          .then(() => console.log("SubCategoryPressed_logged_out logged"));
+        analytics?.().logEvent("SubCategoryPressed_logged_out", {
+          EncyclopediaSubcategoryName: subcategoryName,
+        });
       }
     };
 

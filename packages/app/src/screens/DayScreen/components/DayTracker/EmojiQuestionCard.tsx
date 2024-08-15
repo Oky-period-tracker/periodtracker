@@ -60,11 +60,8 @@ export const EmojiQuestionCard = ({
     console.log("lastClickedDate", lastClickedDate);
     console.log("todayDate", todayDate);
     if (lastClickedDate !== todayDate) {
-      analytics?.()
-        .logEvent("daily_card_answeredEmoji")
-        .then(() => {
-          console.log("logged daily_card_answeredEmoji");
-        });
+      analytics?.().logEvent("daily_card_answeredEmoji");
+
       dispatch(updateLastClickedEmojiDate(todayDate));
     }
 

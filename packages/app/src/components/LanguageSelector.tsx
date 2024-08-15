@@ -18,11 +18,9 @@ export const LanguageSelector = (props: ButtonProps) => {
       return;
     }
 
-    analytics?.()
-      .logEvent("LanguageChanged", {
-        selectedLanguage: option.value,
-      })
-      .then(() => console.log("LanguageChanged logged"));
+    analytics?.().logEvent("LanguageChanged", {
+      selectedLanguage: option.value,
+    });
 
     dispatch(setLocale(option.value));
   };

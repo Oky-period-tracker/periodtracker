@@ -86,11 +86,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
 
     const todayDate = moment().format("YYYY-MM-DD");
     if (lastClickedDate !== todayDate) {
-      analytics?.()
-        .logEvent("daily_card_clicked")
-        .then(() => {
-          console.log("logged daily_card_clicked");
-        });
+      analytics?.().logEvent("daily_card_clicked");
 
       dispatch(updateLastClickedCardDate(todayDate));
     }

@@ -38,18 +38,14 @@ export const AvatarAndThemeSelect = ({
 
   const confirm = () => {
     if (selectedAvatar != currentAvatar) {
-      analytics?.()
-        .logEvent("AvatarChanged", {
-          selectedAvatar: selectedAvatar,
-        })
-        .then(() => console.log("AvatarChanged logged"));
+      analytics?.().logEvent("AvatarChanged", {
+        selectedAvatar: selectedAvatar,
+      });
     }
     if (selectedTheme != currentTheme) {
-      analytics?.()
-        .logEvent("ThemeChanged", {
-          selectedTheme: selectedTheme,
-        })
-        .then(() => console.log("ThemeChanged logged"));
+      analytics?.().logEvent("ThemeChanged", {
+        selectedTheme: selectedTheme,
+      });
     }
     dispatch(setAvatar(selectedAvatar));
     dispatch(setTheme(selectedTheme));

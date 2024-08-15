@@ -20,11 +20,7 @@ function App() {
   useOrientationLock();
 
   React.useEffect(() => {
-    analytics?.()
-      .logAppOpen()
-      .then(() => {
-        console.log("Firebase initialized");
-      });
+    analytics?.().logAppOpen();
   }, []);
 
   return (

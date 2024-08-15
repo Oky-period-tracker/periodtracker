@@ -41,27 +41,30 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
   const { subcategoryIds } = useEncyclopedia();
 
-  const PressedCategory = () => {
+  const onCategoryPress = () => {
     toggleExpanded();
-    if (!expanded) {
-      if (hasAccess) {
-        analytics?.()
-          .logEvent("EncyclopediaCategoryExpanded_logged_in", {
-            EncyclopediaCategoryName: category.name,
-            user: user.id,
-          })
-          .then(() =>
-            console.log("EncyclopediaCategoryExpanded_logged_in logged")
-          );
-      } else {
-        analytics?.()
-          .logEvent("EncyclopediaCategoryExpanded_logged_out", {
-            EncyclopediaCategoryName: category.name,
-          })
-          .then(() =>
-            console.log("EncyclopediaCategoryExpanded_logged_out logged")
-          );
-      }
+
+    if (expanded) {
+      return;
+    }
+
+    if (hasAccess) {
+      analytics?.()
+        .logEvent("EncyclopediaCategoryExpanded_logged_in", {
+          EncyclopediaCategoryName: category.name,
+          user: user.id,
+        })
+        .then(() =>
+          console.log("EncyclopediaCategoryExpanded_logged_in logged")
+        );
+    } else {
+      analytics?.()
+        .logEvent("EncyclopediaCategoryExpanded_logged_out", {
+          EncyclopediaCategoryName: category.name,
+        })
+        .then(() =>
+          console.log("EncyclopediaCategoryExpanded_logged_out logged")
+        );
     }
   };
 
@@ -74,7 +77,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     return null;
   }
 
-  const pressedSubCategory =
+  const onSubCategoryPress =
     (subcategoryId: string, subcategoryName: string) => () => {
       navigation.navigate("Articles", { subcategoryId });
 
@@ -117,7 +120,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     <>
       <TouchableOpacity
         style={[styles.category, globalStyles.shadow]}
-        onPress={PressedCategory}
+        onPress={onCategoryPress}
       >
         <Text
           status={expanded ? "danger" : "secondary"}
@@ -140,7 +143,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
           <TouchableOpacity
             key={subcategory.id}
             style={[styles.subcategory, globalStyles.shadow]}
-            onPress={() => pressedSubCategory(subcategory.id, subcategory.name)}
+            onPress={() => onSubCategoryPress(subcategory.id, subcategory.name)}
           >
             <Text enableTranslate={false}>{subcategory.name}</Text>
           </TouchableOpacity>

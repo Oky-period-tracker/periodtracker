@@ -13,7 +13,6 @@ import {
 import { VideoPlayerModal } from "./VideoPlayer";
 import { SubCategory } from "../../../core/types";
 import { globalStyles } from "../../../config/theme";
-import Constants from "expo-constants";
 import { currentUserSelector } from "../../../redux/selectors";
 import { useAuth } from "../../../contexts/AuthContext";
 import { analytics } from "../../../firebase/firebase";
@@ -44,7 +43,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
   const PressedCategory = () => {
     toggleExpanded();
-    if (!expanded && Constants.appOwnership != "expo") {
+    if (!expanded) {
       if (hasAccess) {
         analytics?.()
           .logEvent("EncyclopediaCategoryExpanded_logged_in", {

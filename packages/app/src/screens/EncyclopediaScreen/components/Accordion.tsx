@@ -63,12 +63,6 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   const category = useSelector((s) => categoryByIDSelector(s, categoryId));
   const subCategoriesById = useSelector(allSubCategoriesByIdSelector);
 
-  // Add safety checks for category and subCategoriesById
-  if (!category) {
-    console.error(`Category not found for id: ${categoryId}`);
-    return null;
-  }
-
   const onSubCategoryPress =
     (subcategoryId: string, subcategoryName: string) => () => {
       navigation.navigate("Articles", { subcategoryId });

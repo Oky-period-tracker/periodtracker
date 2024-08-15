@@ -21,7 +21,7 @@ export const TouchableRow = ({
     <TouchableOpacity style={styles.row} onPress={onPress} disabled={disabled}>
       <View style={styles.rowLeft}>
         <Text style={styles.title}>{title}</Text>
-        <Text>{description}</Text>
+        {description && <Text>{description}</Text>}
       </View>
       {component && <View style={styles.rowRight}>{component}</View>}
     </TouchableOpacity>

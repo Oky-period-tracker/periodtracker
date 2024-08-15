@@ -57,8 +57,7 @@ export const EmojiQuestionCard = ({
       return;
     }
     const todayDate = moment().format("YYYY-MM-DD");
-    console.log("lastClickedDate", lastClickedDate);
-    console.log("todayDate", todayDate);
+
     if (lastClickedDate !== todayDate) {
       analytics?.().logEvent("daily_card_answeredEmoji");
 

@@ -63,8 +63,11 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   const category = useSelector((s) => categoryByIDSelector(s, categoryId));
   const subCategoriesById = useSelector(allSubCategoriesByIdSelector);
 
-  const onSubCategoryPress =
-    (subcategoryId: string, subcategoryName: string) => () => {
+  const onSubCategoryPress = (
+    subcategoryId: string,
+    subcategoryName: string
+  ) => {
+    return () => {
       navigation.navigate("Articles", { subcategoryId });
 
       if (hasAccess) {
@@ -78,6 +81,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
         });
       }
     };
+  };
 
   const subCategories = React.useMemo(() => {
     return category?.subCategories?.reduce<SubCategory[]>(
@@ -125,7 +129,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
           <TouchableOpacity
             key={subcategory.id}
             style={[styles.subcategory, globalStyles.shadow]}
-            onPress={() => onSubCategoryPress(subcategory.id, subcategory.name)}
+            onPress={onSubCategoryPress(subcategory.id, subcategory.name)}
           >
             <Text enableTranslate={false}>{subcategory.name}</Text>
           </TouchableOpacity>

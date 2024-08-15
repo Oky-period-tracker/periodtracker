@@ -109,6 +109,8 @@ const theme: Theme = {
   },
 };
 
+const routesToTrack = ["Encyclopedia", "Help"];
+
 function RootNavigator() {
   const user = useSelector(currentUserSelector);
   const { isLoggedIn } = useAuth();
@@ -131,35 +133,33 @@ function RootNavigator() {
           routeNameRef.current = currentRoute.name;
         }
       }}
-      onStateChange={async () => {
+      onStateChange={() => {
         const previousRouteName = routeNameRef.current;
         const currentRouteName = navigationRef.getCurrentRoute()?.name || null;
-        const trackScreenView = () => {
-          if (currentRouteName) {
-            analytics?.().logScreenView({
-              screen_name: currentRouteName,
-              screen_class: currentRouteName,
-            });
-            if (currentRouteName === "Encyclopedia") {
-              if (hasAccess) {
-                analytics?.().logEvent("encyclopedia_logged_in");
-              } else {
-                analytics?.().logEvent("encyclopedia_logged_out");
-              }
-            }
-            if (currentRouteName == "Help") {
-              if (hasAccess) {
-                analytics?.().logEvent("help_logged_in");
-              } else {
-                analytics?.().logEvent("help_logged_out");
-              }
-            }
-          }
-        };
 
-        if (previousRouteName !== currentRouteName) {
-          routeNameRef.current = currentRouteName;
-          trackScreenView();
+        if (previousRouteName === currentRouteName) {
+          return;
+        }
+
+        routeNameRef.current = currentRouteName;
+
+        if (!currentRouteName) {
+          return;
+        }
+
+        analytics?.().logScreenView({
+          screen_name: currentRouteName,
+          screen_class: currentRouteName,
+        });
+
+        if (!routesToTrack.includes(currentRouteName)) {
+          return;
+        }
+
+        if (hasAccess) {
+          analytics?.().logEvent(`${currentRouteName}_logged_in`);
+        } else {
+          analytics?.().logEvent(`${currentRouteName}_logged_out`);
         }
       }}
       linking={linking}

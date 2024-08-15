@@ -85,7 +85,7 @@ export const VideoPlayerModal = () => {
     }
 
     ConfirmAlert();
-  }, []);
+  }, [bundledSource, canPlayYoutubeVideo, hasYoutubeVideo]);
 
   const videoAspectRatio = 16 / 9; // Aspect ratios might need to be saved in VideoData object if they vary
 

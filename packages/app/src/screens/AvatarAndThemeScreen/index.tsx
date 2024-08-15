@@ -15,7 +15,7 @@ import { setAvatar, setTheme } from "../../redux/actions";
 import { PaletteStatus, globalStyles, palette } from "../../config/theme";
 import { Text } from "../../components/Text";
 import Constants from "expo-constants";
-import { analytics } from "../../../firebase/firebase";
+import { analytics } from "../../firebase/firebase";
 
 const AvatarAndThemeScreen = () => {
   return <AvatarAndThemeSelect />;

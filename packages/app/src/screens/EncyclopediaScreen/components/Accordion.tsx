@@ -16,7 +16,7 @@ import { globalStyles } from "../../../config/theme";
 import Constants from "expo-constants";
 import { currentUserSelector } from "../../../redux/selectors";
 import { useAuth } from "../../../contexts/AuthContext";
-import { analytics } from "../../../../firebase/firebase";
+import { analytics } from "../../../firebase/firebase";
 
 export const Accordion = () => {
   const { filteredCategoryIds } = useEncyclopedia();

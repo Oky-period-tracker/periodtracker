@@ -8,7 +8,7 @@ import { isFuturePredictionActiveSelector } from "../redux/selectors";
 import { userUpdateFuturePrediction } from "../redux/actions";
 import { useTodayPrediction } from "../contexts/PredictionProvider";
 import { currentUserSelector } from "../redux/selectors";
-import { analytics } from "../../firebase/firebase";
+import { analytics } from "../firebase/firebase";
 
 export const Switch = () => {
   const isSwitchedOn = useSelector(isFuturePredictionActiveSelector);

@@ -23,7 +23,7 @@ import { useTranslate } from "../../../../hooks/useTranslate";
 import Constants from "expo-constants";
 import moment from "moment";
 import { updateLastClickedEmojiDate } from "../../../../redux/actions";
-import { analytics } from "../../../../../firebase/firebase";
+import { analytics } from "../../../../firebase/firebase";
 
 export const EmojiQuestionCard = ({
   topic,

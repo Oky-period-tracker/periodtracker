@@ -14,26 +14,17 @@ import { PredictionProvider } from "./src/contexts/PredictionProvider";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { LoadingProvider } from "./src/contexts/LoadingProvider";
 import { StatusBar } from "react-native";
-import analytics from "@react-native-firebase/analytics";
-import Constants from "expo-constants";
+import { analytics } from "./firebase/firebase";
 
 function App() {
   useOrientationLock();
 
   React.useEffect(() => {
-    if (Constants.appOwnership === null) {
-      import("./firebase/firebase")
-        .then(() => {
-          analytics()
-            .logAppOpen()
-            .then(() => {
-              console.log("Firebase initialized");
-            });
-        })
-        .catch((error) => {
-          console.error("Firebase initialization error:", error);
-        });
-    }
+    analytics?.()
+      .logAppOpen()
+      .then(() => {
+        console.log("Firebase initialized");
+      });
   }, []);
 
   return (

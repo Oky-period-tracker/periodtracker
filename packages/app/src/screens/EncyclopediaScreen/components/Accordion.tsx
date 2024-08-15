@@ -14,9 +14,9 @@ import { VideoPlayerModal } from "./VideoPlayer";
 import { SubCategory } from "../../../core/types";
 import { globalStyles } from "../../../config/theme";
 import Constants from "expo-constants";
-import analytics from "@react-native-firebase/analytics";
 import { currentUserSelector } from "../../../redux/selectors";
 import { useAuth } from "../../../contexts/AuthContext";
+import { analytics } from "../../../../firebase/firebase";
 
 export const Accordion = () => {
   const { filteredCategoryIds } = useEncyclopedia();
@@ -46,7 +46,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     toggleExpanded();
     if (!expanded && Constants.appOwnership != "expo") {
       if (hasAccess) {
-        analytics()
+        analytics?.()
           .logEvent("EncyclopediaCategoryExpanded_logged_in", {
             EncyclopediaCategoryName: category.name,
             user: user.id,
@@ -55,7 +55,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
             console.log("EncyclopediaCategoryExpanded_logged_in logged")
           );
       } else {
-        analytics()
+        analytics?.()
           .logEvent("EncyclopediaCategoryExpanded_logged_out", {
             EncyclopediaCategoryName: category.name,
           })
@@ -79,21 +79,19 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     (subcategoryId: string, subcategoryName: string) => () => {
       navigation.navigate("Articles", { subcategoryId });
 
-      if (Constants.appOwnership != "expo") {
-        if (hasAccess) {
-          analytics()
-            .logEvent("SubCategoryPressed_logged_in", {
-              EncyclopediaSubcategoryName: subcategoryName,
-              user: user.id,
-            })
-            .then(() => console.log("SubCategoryPressed_logged_in logged"));
-        } else {
-          analytics()
-            .logEvent("SubCategoryPressed_logged_out", {
-              EncyclopediaSubcategoryName: subcategoryName,
-            })
-            .then(() => console.log("SubCategoryPressed_logged_out logged"));
-        }
+      if (hasAccess) {
+        analytics?.()
+          .logEvent("SubCategoryPressed_logged_in", {
+            EncyclopediaSubcategoryName: subcategoryName,
+            user: user.id,
+          })
+          .then(() => console.log("SubCategoryPressed_logged_in logged"));
+      } else {
+        analytics?.()
+          .logEvent("SubCategoryPressed_logged_out", {
+            EncyclopediaSubcategoryName: subcategoryName,
+          })
+          .then(() => console.log("SubCategoryPressed_logged_out logged"));
       }
     };
 

@@ -25,8 +25,7 @@ import { useDayStatus } from "../hooks/useDayStatus";
 import { ThemeName } from "../core/modules/translations";
 import { useTranslate } from "../hooks/useTranslate";
 import { useFormatDate } from "../hooks/useFormatDate";
-import analytics from "@react-native-firebase/analytics";
-import Constants from "expo-constants";
+import { analytics } from "../../firebase/firebase";
 import { updateLastClickedCardDate } from "../redux/actions";
 
 type DailyCardProps = {
@@ -87,13 +86,12 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
 
     const todayDate = moment().format("YYYY-MM-DD");
     if (lastClickedDate !== todayDate) {
-      if (Constants.appOwnership != "expo") {
-        analytics()
-          .logEvent("daily_card_clicked")
-          .then(() => {
-            console.log("logged daily_card_clicked");
-          });
-      }
+      analytics?.()
+        .logEvent("daily_card_clicked")
+        .then(() => {
+          console.log("logged daily_card_clicked");
+        });
+
       dispatch(updateLastClickedCardDate(todayDate));
     }
 

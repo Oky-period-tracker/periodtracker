@@ -15,7 +15,7 @@ import { setAvatar, setTheme } from "../../redux/actions";
 import { PaletteStatus, globalStyles, palette } from "../../config/theme";
 import { Text } from "../../components/Text";
 import Constants from "expo-constants";
-import analytics from "@react-native-firebase/analytics";
+import { analytics } from "../../../firebase/firebase";
 
 const AvatarAndThemeScreen = () => {
   return <AvatarAndThemeSelect />;
@@ -40,14 +40,14 @@ export const AvatarAndThemeSelect = ({
   const confirm = () => {
     if (Constants.appOwnership != "expo") {
       if (selectedAvatar != currentAvatar) {
-        analytics()
+        analytics?.()
           .logEvent("AvatarChanged", {
             selectedAvatar: selectedAvatar,
           })
           .then(() => console.log("AvatarChanged logged"));
       }
       if (selectedTheme != currentTheme) {
-        analytics()
+        analytics?.()
           .logEvent("ThemeChanged", {
             selectedTheme: selectedTheme,
           })

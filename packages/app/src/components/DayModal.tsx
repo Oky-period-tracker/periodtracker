@@ -37,7 +37,7 @@ import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 import { isFutureDate } from "../services/dateUtils";
 import { useFormatDate } from "../hooks/useFormatDate";
 import { useLoading } from "../contexts/LoadingProvider";
-import analytics from "@react-native-firebase/analytics";
+import { analytics } from "../../firebase/firebase";
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
 export const DayModal = ({
@@ -222,13 +222,7 @@ export const DayModal = ({
   };
 
   function onYesPress() {
-    const logOnPeriod = async () => {
-      const isConnected = await fetchNetworkConnectionStatus();
-      if (isConnected) {
-        analytics().logEvent("periodDayCloudTap", { user: currentUser });
-      }
-    };
-    logOnPeriod();
+    analytics?.().logEvent("periodDayCloudTap", { user: currentUser });
 
     if (isFutureDate(inputDay)) {
       setAvatarMessage("too_far_ahead", true);
@@ -286,18 +280,14 @@ export const DayModal = ({
   }
 
   const onNoPress = () => {
-    const logOnPeriod = async () => {
-      const isConnected = await fetchNetworkConnectionStatus();
-      if (isConnected) {
-        analytics().logEvent("noPeriodDayCloudTap", { user: currentUser });
-      }
-    };
-    logOnPeriod();
+    analytics?.().logEvent("noPeriodDayCloudTap", { user: currentUser });
+
     if (moment(inputDay).isAfter(moment())) {
       setAvatarMessage("too_far_ahead", true);
       toggleVisible();
       return;
     }
+
     if (selectedDayInfoEngine.onPeriod) {
       if (actionBlue) {
         dispatch({

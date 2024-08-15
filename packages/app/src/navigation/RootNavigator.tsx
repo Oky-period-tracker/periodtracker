@@ -18,7 +18,7 @@ import AuthStack, { AuthStackParamList } from "./stacks/AuthStack";
 import { useSelector } from "../redux/useSelector";
 import { currentUserSelector } from "../redux/selectors";
 import { useAuth } from "../contexts/AuthContext";
-import analytics from "@react-native-firebase/analytics";
+import { analytics } from "../../firebase/firebase";
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList;
 
@@ -136,22 +136,22 @@ function RootNavigator() {
         const currentRouteName = navigationRef.getCurrentRoute()?.name || null;
         const trackScreenView = () => {
           if (currentRouteName) {
-            analytics().logScreenView({
+            analytics?.().logScreenView({
               screen_name: currentRouteName,
               screen_class: currentRouteName,
             });
             if (currentRouteName === "Encyclopedia") {
               if (hasAccess) {
-                analytics().logEvent("encyclopedia_logged_in");
+                analytics?.().logEvent("encyclopedia_logged_in");
               } else {
-                analytics().logEvent("encyclopedia_logged_out");
+                analytics?.().logEvent("encyclopedia_logged_out");
               }
             }
             if (currentRouteName == "Help") {
               if (hasAccess) {
-                analytics().logEvent("help_logged_in");
+                analytics?.().logEvent("help_logged_in");
               } else {
-                analytics().logEvent("help_logged_out");
+                analytics?.().logEvent("help_logged_out");
               }
             }
           }

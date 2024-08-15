@@ -21,9 +21,9 @@ import { DayModal } from "../../../../components/DayModal";
 import { useToggle } from "../../../../hooks/useToggle";
 import { useTranslate } from "../../../../hooks/useTranslate";
 import Constants from "expo-constants";
-import analytics from "@react-native-firebase/analytics";
 import moment from "moment";
 import { updateLastClickedEmojiDate } from "../../../../redux/actions";
+import { analytics } from "../../../../../firebase/firebase";
 
 export const EmojiQuestionCard = ({
   topic,
@@ -62,7 +62,7 @@ export const EmojiQuestionCard = ({
     console.log("todayDate", todayDate);
     if (lastClickedDate !== todayDate) {
       if (Constants.appOwnership != "expo") {
-        analytics()
+        analytics?.()
           .logEvent("daily_card_answeredEmoji")
           .then(() => {
             console.log("logged daily_card_answeredEmoji");

@@ -7,9 +7,8 @@ import { useDispatch } from "react-redux";
 import { isFuturePredictionActiveSelector } from "../redux/selectors";
 import { userUpdateFuturePrediction } from "../redux/actions";
 import { useTodayPrediction } from "../contexts/PredictionProvider";
-import Constants from "expo-constants";
-import analytics from "@react-native-firebase/analytics";
 import { currentUserSelector } from "../redux/selectors";
+import { analytics } from "../../firebase/firebase";
 
 export const Switch = () => {
   const isSwitchedOn = useSelector(isFuturePredictionActiveSelector);
@@ -20,22 +19,26 @@ export const Switch = () => {
   const user = useSelector(currentUserSelector);
 
   const onYesPress = () => {
-    if(Constants.appOwnership != 'expo' && user){
-      analytics().logEvent('FuturePredictionSwitchedOn',{
-        user: user.id
-      }).then(() => console.log('FuturePredictionSwitchedOn logged'))
+    if (user) {
+      analytics?.()
+        .logEvent("FuturePredictionSwitchedOn", {
+          user: user.id,
+        })
+        .then(() => console.log("FuturePredictionSwitchedOn logged"));
     }
     dispatch(userUpdateFuturePrediction(true, currentStartDate));
   };
 
   const onNoPress = () => {
-    if(Constants.appOwnership != 'expo' && user){
-      analytics().logEvent('FuturePredictionSwitchedOff',{
-        user: user.id
-      }).then(() => console.log('FuturePredictionSwitchedOff logged'))
-    dispatch(userUpdateFuturePrediction(false, currentStartDate));
-  }
-};
+    if (user) {
+      analytics?.()
+        .logEvent("FuturePredictionSwitchedOff", {
+          user: user.id,
+        })
+        .then(() => console.log("FuturePredictionSwitchedOff logged"));
+      dispatch(userUpdateFuturePrediction(false, currentStartDate));
+    }
+  };
 
   return (
     <View style={styles.container}>

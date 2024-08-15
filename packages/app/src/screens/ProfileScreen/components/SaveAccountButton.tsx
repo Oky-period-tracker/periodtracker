@@ -22,11 +22,6 @@ export const SaveAccountButton = () => {
 
   const onPress = () => {
     setPressed(true);
-    // TODO: ?
-    //enable this to check crashlytics is working or not
-    // if(Constants.appOwnership !== "expo") {
-    //   crashlytics().crash();
-    // }
 
     if (!currentUser) {
       return;

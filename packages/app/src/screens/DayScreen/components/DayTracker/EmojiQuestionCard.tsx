@@ -22,7 +22,7 @@ import { useToggle } from "../../../../hooks/useToggle";
 import { useTranslate } from "../../../../hooks/useTranslate";
 import moment from "moment";
 import { updateLastClickedEmojiDate } from "../../../../redux/actions";
-import { analytics } from "../../../../firebase/firebase";
+import { analytics } from "../../../../services/firebase";
 
 export const EmojiQuestionCard = ({
   topic,

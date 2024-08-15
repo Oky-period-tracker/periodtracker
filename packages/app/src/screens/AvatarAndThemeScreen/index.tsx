@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { setAvatar, setTheme } from "../../redux/actions";
 import { PaletteStatus, globalStyles, palette } from "../../config/theme";
 import { Text } from "../../components/Text";
-import { analytics } from "../../firebase/firebase";
+import { analytics } from "../../services/firebase";
 
 const AvatarAndThemeScreen = () => {
   return <AvatarAndThemeSelect />;

@@ -15,7 +15,7 @@ import { SubCategory } from "../../../core/types";
 import { globalStyles } from "../../../config/theme";
 import { currentUserSelector } from "../../../redux/selectors";
 import { useAuth } from "../../../contexts/AuthContext";
-import { analytics } from "../../../firebase/firebase";
+import { analytics } from "../../../services/firebase";
 
 export const Accordion = () => {
   const { filteredCategoryIds } = useEncyclopedia();

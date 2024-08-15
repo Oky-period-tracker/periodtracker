@@ -25,7 +25,7 @@ import { useDayStatus } from "../hooks/useDayStatus";
 import { ThemeName } from "../core/modules/translations";
 import { useTranslate } from "../hooks/useTranslate";
 import { useFormatDate } from "../hooks/useFormatDate";
-import { analytics } from "../firebase/firebase";
+import { analytics } from "../services/firebase";
 import { updateLastClickedCardDate } from "../redux/actions";
 
 type DailyCardProps = {

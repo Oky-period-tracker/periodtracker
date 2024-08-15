@@ -37,7 +37,7 @@ import { useAvatarMessage } from "../contexts/AvatarMessageContext";
 import { isFutureDate } from "../services/dateUtils";
 import { useFormatDate } from "../hooks/useFormatDate";
 import { useLoading } from "../contexts/LoadingProvider";
-import { analytics } from "../firebase/firebase";
+import { analytics } from "../services/firebase";
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
 export const DayModal = ({

@@ -14,7 +14,7 @@ import { PredictionProvider } from "./src/contexts/PredictionProvider";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import { LoadingProvider } from "./src/contexts/LoadingProvider";
 import { StatusBar } from "react-native";
-import { analytics } from "./src/firebase/firebase";
+import { analytics } from "./src/services/firebase";
 
 function App() {
   useOrientationLock();

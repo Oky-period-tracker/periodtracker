@@ -7,7 +7,7 @@ import { availableAppLocales } from "../core/modules";
 import { useDispatch } from "react-redux";
 import { setLocale } from "../redux/actions";
 import { WheelPickerOption } from "./WheelPicker";
-import { analytics } from "../firebase/firebase";
+import { analytics } from "../services/firebase";
 
 export const LanguageSelector = (props: ButtonProps) => {
   const locale = useSelector(currentLocaleSelector);

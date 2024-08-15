@@ -18,7 +18,7 @@ import AuthStack, { AuthStackParamList } from "./stacks/AuthStack";
 import { useSelector } from "../redux/useSelector";
 import { currentUserSelector } from "../redux/selectors";
 import { useAuth } from "../contexts/AuthContext";
-import { analytics } from "../firebase/firebase";
+import { analytics } from "../services/firebase";
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList;
 

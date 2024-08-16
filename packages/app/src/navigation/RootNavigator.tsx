@@ -157,9 +157,9 @@ function RootNavigator() {
         }
 
         if (hasAccess) {
-          analytics?.().logEvent(`${currentRouteName}_logged_in`);
+          analytics?.().logEvent(`${currentRouteName}LoggedIn`);
         } else {
-          analytics?.().logEvent(`${currentRouteName}_logged_out`);
+          analytics?.().logEvent(`${currentRouteName}LoggedOut`);
         }
       }}
       linking={linking}

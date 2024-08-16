@@ -49,12 +49,12 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
     }
 
     if (hasAccess) {
-      analytics?.().logEvent("EncyclopediaCategoryExpanded_logged_in", {
+      analytics?.().logEvent("encyclopediaCategoryExpandedLoggedIn", {
         EncyclopediaCategoryName: category.name,
         user: user.id,
       });
     } else {
-      analytics?.().logEvent("EncyclopediaCategoryExpanded_logged_out", {
+      analytics?.().logEvent("encyclopediaCategoryExpandedLoggedOut", {
         EncyclopediaCategoryName: category.name,
       });
     }
@@ -68,12 +68,12 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
       navigation.navigate("Articles", { subcategoryId });
 
       if (hasAccess) {
-        analytics?.().logEvent("SubCategoryPressed_logged_in", {
+        analytics?.().logEvent("subCategoryPressedLoggedIn", {
           EncyclopediaSubcategoryName: subcategoryName,
           user: user.id,
         });
       } else {
-        analytics?.().logEvent("SubCategoryPressed_logged_out", {
+        analytics?.().logEvent("SubCategoryPressedLoggedOut", {
           EncyclopediaSubcategoryName: subcategoryName,
         });
       }

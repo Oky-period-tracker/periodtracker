@@ -222,7 +222,7 @@ export const DayModal = ({
   };
 
   function onYesPress() {
-    analytics?.().logEvent("periodDayCloudTap", { user: currentUser });
+    analytics?.().logEvent("periodDayCloudTap", { user: currentUser.id });
 
     if (isFutureDate(inputDay)) {
       setAvatarMessage("too_far_ahead", true);
@@ -280,7 +280,7 @@ export const DayModal = ({
   }
 
   const onNoPress = () => {
-    analytics?.().logEvent("noPeriodDayCloudTap", { user: currentUser });
+    analytics?.().logEvent("noPeriodDayCloudTap", { user: currentUser.id });
 
     if (moment(inputDay).isAfter(moment())) {
       setAvatarMessage("too_far_ahead", true);

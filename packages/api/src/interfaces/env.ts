@@ -18,6 +18,7 @@ export const env = {
   deleteAccountUrl: process.env.DELETE_ACCOUNT_URL,
   app: {
     secret: process.env.APPLICATION_SECRET,
+    secondarySecret: process.env.SECONDARY_APPLICATION_SECRET,
   },
   db: {
     type: process.env.DATABASE_TYPE,

@@ -54,6 +54,7 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
   const includeRing = wheelRingThemes.includes(theme);
 
   const {
+    state,
     constants,
     calculateButtonPosition,
     rotationAngle,
@@ -77,7 +78,7 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
 
   const position = calculateButtonPosition(index);
   const text = formatMomentDayMonth(item.date);
-  const isSelected = index === selectedIndex?.value;
+  const isSelected = index === state.currentIndex;
 
   const wheelButtonAnimatedStyle = useAnimatedStyle(() => {
     if (

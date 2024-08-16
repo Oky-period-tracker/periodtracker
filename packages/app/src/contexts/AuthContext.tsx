@@ -14,7 +14,7 @@ const defaultValue: AuthContext = {
 const AuthContext = React.createContext<AuthContext>(defaultValue);
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
-  const [isLoggedIn, setIsLoggedInState] = React.useState(false);
+  const [isLoggedIn, setIsLoggedInState] = React.useState(true);
   const { setLoading } = useLoading();
 
   const setIsLoggedIn = (value: boolean) => {

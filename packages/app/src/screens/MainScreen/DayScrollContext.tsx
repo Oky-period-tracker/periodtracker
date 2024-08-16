@@ -28,7 +28,15 @@ type DayScrollConstants = {
   NUMBER_OF_BUTTONS: number;
 };
 
+type DayScrollState = {
+  startDate: Moment;
+  endDate: Moment;
+  currentIndex: number;
+  offset: number;
+};
+
 export type DayScrollContext = {
+  state: DayScrollState;
   data: DayData[];
   selectedItem: DayData | null;
   selectedIndex: SharedValue<number> | null;
@@ -51,13 +59,6 @@ export type DayScrollContext = {
   // Modal
   dayModalVisible: boolean;
   toggleDayModal: () => void;
-};
-
-type DayScrollState = {
-  startDate: Moment;
-  endDate: Moment;
-  currentIndex: number;
-  offset: number;
 };
 
 const RESET_DURATION = 8000;
@@ -96,7 +97,23 @@ const constants: DayScrollConstants = {
   NUMBER_OF_BUTTONS,
 };
 
+const getInitialState = () => {
+  const today = moment().startOf("day");
+  const todayMinusSevenDays = moment(today.clone().add(-7, "days"));
+  const todaysPlusFourDays = moment(today.clone().add(4, "days"));
+
+  const initialState: DayScrollState = {
+    startDate: todayMinusSevenDays,
+    endDate: todaysPlusFourDays,
+    currentIndex: INITIAL_INDEX,
+    offset: 0,
+  };
+
+  return initialState;
+};
+
 const defaultValue: DayScrollContext = {
+  state: getInitialState(),
   data: [],
   selectedItem: null,
   constants,
@@ -127,21 +144,6 @@ const defaultValue: DayScrollContext = {
 };
 
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue);
-
-const getInitialState = () => {
-  const today = moment().startOf("day");
-  const todayMinusSevenDays = moment(today.clone().add(-7, "days"));
-  const todaysPlusFourDays = moment(today.clone().add(4, "days"));
-
-  const initialState: DayScrollState = {
-    startDate: todayMinusSevenDays,
-    endDate: todaysPlusFourDays,
-    currentIndex: INITIAL_INDEX,
-    offset: 0,
-  };
-
-  return initialState;
-};
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   // ================ State ================ //
@@ -228,8 +230,10 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       offset.value = 0;
       totalOffset.value = 0;
       disabled.value = false;
+
       translationX.value = withTiming(INITIAL_X);
       totalTranslationX.value = withTiming(INITIAL_X);
+
       rotationAngle.value = withTiming(0);
       totalRotation.value = withTiming(0);
 
@@ -381,6 +385,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   return (
     <DayScrollContext.Provider
       value={{
+        state,
         data,
         selectedItem,
         constants,

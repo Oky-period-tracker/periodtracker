@@ -50,12 +50,14 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
     if (hasAccess) {
       analytics?.().logEvent("categoryPressedLoggedIn", {
-        EncyclopediaCategoryName: category.name,
-        user: user.id,
+        userId: user.id,
+        categoryId: category.id,
+        categoryName: category.name,
       });
     } else {
       analytics?.().logEvent("categoryPressedLoggedOut", {
-        EncyclopediaCategoryName: category.name,
+        categoryId: category.id,
+        categoryName: category.name,
       });
     }
   };
@@ -72,12 +74,14 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
       if (hasAccess) {
         analytics?.().logEvent("subCategoryPressedLoggedIn", {
-          EncyclopediaSubcategoryName: subcategoryName,
-          user: user.id,
+          userId: user.id,
+          subcategoryId,
+          subcategoryName,
         });
       } else {
         analytics?.().logEvent("subCategoryPressedLoggedOut", {
-          EncyclopediaSubcategoryName: subcategoryName,
+          subcategoryId,
+          subcategoryName,
         });
       }
     };

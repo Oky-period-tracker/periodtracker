@@ -37,6 +37,9 @@ export const AvatarAndThemeSelect = ({
   const [selectedTheme, setSelectedTheme] = React.useState(currentTheme);
 
   const confirm = () => {
+    dispatch(setAvatar(selectedAvatar));
+    dispatch(setTheme(selectedTheme));
+
     if (selectedAvatar != currentAvatar) {
       analytics?.().logEvent("avatarChanged", {
         selectedAvatar: selectedAvatar,
@@ -47,8 +50,7 @@ export const AvatarAndThemeSelect = ({
         selectedTheme: selectedTheme,
       });
     }
-    dispatch(setAvatar(selectedAvatar));
-    dispatch(setTheme(selectedTheme));
+
     onConfirm?.();
   };
 

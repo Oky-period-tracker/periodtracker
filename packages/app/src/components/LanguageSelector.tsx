@@ -18,11 +18,11 @@ export const LanguageSelector = (props: ButtonProps) => {
       return;
     }
 
+    dispatch(setLocale(option.value));
+
     analytics?.().logEvent("languageChanged", {
       selectedLanguage: option.value,
     });
-
-    dispatch(setLocale(option.value));
   };
 
   const initialIndex =

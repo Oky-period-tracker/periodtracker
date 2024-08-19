@@ -19,22 +19,25 @@ export const Switch = () => {
   const user = useSelector(currentUserSelector);
 
   const onYesPress = () => {
-    if (user && !isSwitchedOn) {
-      analytics?.().logEvent("futurePredictionSwitchedOn", {
-        user: user.id,
-      });
+    if (!user || isSwitchedOn) {
+      return;
     }
+
     dispatch(userUpdateFuturePrediction(true, currentStartDate));
+    analytics?.().logEvent("futurePredictionSwitchedOn", {
+      user: user.id,
+    });
   };
 
   const onNoPress = () => {
-    if (user && isSwitchedOn) {
-      analytics?.().logEvent("futurePredictionSwitchedOff", {
-        user: user.id,
-      });
-
-      dispatch(userUpdateFuturePrediction(false, currentStartDate));
+    if (!user || !isSwitchedOn) {
+      return;
     }
+
+    dispatch(userUpdateFuturePrediction(false, currentStartDate));
+    analytics?.().logEvent("futurePredictionSwitchedOff", {
+      user: user.id,
+    });
   };
 
   return (

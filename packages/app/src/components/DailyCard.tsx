@@ -86,9 +86,8 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
 
     const todayDate = moment().format("YYYY-MM-DD");
     if (lastClickedDate !== todayDate) {
-      analytics?.().logEvent("dailyCardClicked");
-
       dispatch(updateLastClickedCardDate(todayDate));
+      analytics?.().logEvent("dailyCardPressed");
     }
 
     navigation.navigate("Day", { date: dataEntry.date });

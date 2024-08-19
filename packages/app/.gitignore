@@ -6,4 +6,5 @@ src/redux/config.ts
 google-services.json
 google-services.json.*
 GoogleService-Info.plist
+GoogleService-Info.plist.*
 src/firebase/config.ts

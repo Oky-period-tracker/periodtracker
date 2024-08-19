@@ -15,13 +15,13 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "googleServicesFile": "./GoogleService-Info.plist",
+      "googleServicesFile": "./ios/GoogleService-Info.plist",
       "bundleIdentifier": "com.oky",
       "permissions": ["INTERNET"]
     },
     "android": {
       "package": "com.oky",
-      "googleServicesFile": "./google-services.json",
+      "googleServicesFile": "./android/app/google-services.json",
       "versionCode": 80,
       "versionName": "8.0.0",
       "adaptiveIcon": {

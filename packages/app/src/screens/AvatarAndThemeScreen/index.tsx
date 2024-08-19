@@ -38,12 +38,12 @@ export const AvatarAndThemeSelect = ({
 
   const confirm = () => {
     if (selectedAvatar != currentAvatar) {
-      analytics?.().logEvent("AvatarChanged", {
+      analytics?.().logEvent("avatarChanged", {
         selectedAvatar: selectedAvatar,
       });
     }
     if (selectedTheme != currentTheme) {
-      analytics?.().logEvent("ThemeChanged", {
+      analytics?.().logEvent("themeChanged", {
         selectedTheme: selectedTheme,
       });
     }

@@ -18,7 +18,7 @@ export const LanguageSelector = (props: ButtonProps) => {
       return;
     }
 
-    analytics?.().logEvent("LanguageChanged", {
+    analytics?.().logEvent("languageChanged", {
       selectedLanguage: option.value,
     });
 

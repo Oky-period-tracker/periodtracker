@@ -124,6 +124,7 @@ function RootNavigator() {
 
   const navigationRef = useNavigationContainerRef();
   const routeNameRef = React.useRef<string | null>(null);
+
   return (
     <NavigationContainer
       ref={navigationRef}
@@ -157,9 +158,9 @@ function RootNavigator() {
         }
 
         if (hasAccess) {
-          analytics?.().logEvent(`${currentRouteName}LoggedIn`);
+          analytics?.().logEvent(`viewed${currentRouteName}LoggedIn`);
         } else {
-          analytics?.().logEvent(`${currentRouteName}LoggedOut`);
+          analytics?.().logEvent(`viewed${currentRouteName}LoggedOut`);
         }
       }}
       linking={linking}

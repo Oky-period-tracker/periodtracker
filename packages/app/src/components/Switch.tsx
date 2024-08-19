@@ -20,7 +20,7 @@ export const Switch = () => {
 
   const onYesPress = () => {
     if (user && !isSwitchedOn) {
-      analytics?.().logEvent("FuturePredictionSwitchedOn", {
+      analytics?.().logEvent("futurePredictionSwitchedOn", {
         user: user.id,
       });
     }
@@ -29,7 +29,7 @@ export const Switch = () => {
 
   const onNoPress = () => {
     if (user && isSwitchedOn) {
-      analytics?.().logEvent("FuturePredictionSwitchedOff", {
+      analytics?.().logEvent("futurePredictionSwitchedOff", {
         user: user.id,
       });
 

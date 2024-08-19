@@ -230,11 +230,6 @@ export const DayModal = ({
       return;
     }
 
-    // if (moment(inputDay).isAfter(moment())) {
-    //   setDisplayTextStatic("too_far_ahead");
-    //   toggleVisible();
-    //   return;
-    // }
     if (addNewCycleHistory) {
       if (selectedDayInfo.onPeriod) {
         reduxDispatch(

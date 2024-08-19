@@ -13,6 +13,7 @@ import {
   cardAnswerSelector,
   currentThemeSelector,
   isTutorialTwoActiveSelector,
+  lastPressedCardSelector,
 } from "../redux/selectors";
 import { useNavigation } from "@react-navigation/native";
 import { defaultEmoji } from "../config/options";
@@ -26,7 +27,7 @@ import { ThemeName } from "../core/modules/translations";
 import { useTranslate } from "../hooks/useTranslate";
 import { useFormatDate } from "../hooks/useFormatDate";
 import { analytics } from "../services/firebase";
-import { updateLastClickedCardDate } from "../redux/actions";
+import { updateLastPressedCardDate } from "../redux/actions";
 
 type DailyCardProps = {
   dataEntry: DayData;
@@ -64,9 +65,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   //eslint-disable-next-line
   const navigation = useNavigation() as any; // @TODO: Fixme
   const dispatch = useDispatch();
-  const lastClickedDate = useSelector(
-    (state) => state.lastClickedDate.lastClickedCardDate
-  );
+  const lastPressedDate = useSelector(lastPressedCardSelector);
 
   const onPress = () => {
     if (isDragging?.current) {
@@ -85,8 +84,8 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     }
 
     const todayDate = moment().format("YYYY-MM-DD");
-    if (lastClickedDate !== todayDate) {
-      dispatch(updateLastClickedCardDate(todayDate));
+    if (lastPressedDate !== todayDate) {
+      dispatch(updateLastPressedCardDate(todayDate));
       analytics?.().logEvent("dailyCardPressed");
     }
 

@@ -64,3 +64,15 @@ export function toggleHaptic(isHapticActive: boolean) {
 export function toggleSound(isSoundActive: boolean) {
   return createAction("TOGGLE_SOUND", { isSoundActive });
 }
+
+export const updateLastPressedCardDate = (
+  date: string // YYYY-MM-DD
+) => {
+  return createAction("UPDATE_LAST_PRESSED_CARD_DATE", date);
+};
+
+export const updateLastPressedEmojiDate = (
+  date: string // YYYY-MM-DD
+) => {
+  return createAction("UPDATE_LAST_PRESSED_EMOJI_DATE", date);
+};

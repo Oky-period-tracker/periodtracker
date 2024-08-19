@@ -2,7 +2,7 @@
 // eslint-disable-next-line
 // @ts-nocheck
 import { Actions } from "../types";
-import * as Application from 'expo-application';
+import * as Application from "expo-application";
 // import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from "@oky/core";
 import { v4 as uuidv4 } from "uuid";
 import { RehydrateAction, REHYDRATE } from "redux-persist";
@@ -40,10 +40,12 @@ export interface AppState {
   dailyCardLastUsed?: number;
   isHapticActive?: boolean;
   isSoundActive?: boolean;
+  lastPressedCardDate: null | string;
+  lastPressedEmojiDate: null | string;
 }
 
 const initialState: AppState = {
-  appVersionName: Application.nativeApplicationVersion, 
+  appVersionName: Application.nativeApplicationVersion,
   appVersionCode: Application.nativeBuildVersion,
   firebaseToken: null,
   locale: initialLocale,
@@ -60,6 +62,8 @@ const initialState: AppState = {
   deviceId: uuidv4(),
   isHapticActive: true,
   isSoundActive: true,
+  lastPressedCardDate: null,
+  lastPressedEmojiDate: null,
 };
 
 export function appReducer(
@@ -98,8 +102,8 @@ export function appReducer(
     case "SET_UPDATED_VERSION":
       return {
         ...state,
-        appVersionName: Application.nativeApplicationVersion, 
-        appVersionCode: Application.nativeBuildVersion, 
+        appVersionName: Application.nativeApplicationVersion,
+        appVersionCode: Application.nativeBuildVersion,
       };
     case "STORE_FIREBASE_KEY":
       return {
@@ -153,6 +157,17 @@ export function appReducer(
         ...state,
         isSoundActive: action.payload.isSoundActive,
       };
+    case "UPDATE_LAST_PRESSED_CARD_DATE":
+      return {
+        ...state,
+        lastPressedCardDate: action.payload,
+      };
+    case "UPDATE_LAST_PRESSED_EMOJI_DATE":
+      return {
+        ...state,
+        lastPressedEmojiDate: action.payload,
+      };
+
     default:
       return state;
   }

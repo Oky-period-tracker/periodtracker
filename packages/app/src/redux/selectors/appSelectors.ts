@@ -44,3 +44,9 @@ export const isHapticActiveSelector = (state: ReduxState) =>
 
 export const isSoundActiveSelector = (state: ReduxState) =>
   s(state).isSoundActive;
+
+export const lastPressedCardSelector = (state: ReduxState) =>
+  s(state).lastPressedCardDate;
+
+export const lastPressedEmojiSelector = (state: ReduxState) =>
+  s(state).lastPressedEmojiDate;

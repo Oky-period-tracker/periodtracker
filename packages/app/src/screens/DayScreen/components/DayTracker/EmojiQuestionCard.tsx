@@ -13,15 +13,18 @@ import { Text } from "../../../../components/Text";
 import {
   cardAnswerSelector,
   currentUserSelector,
+  lastPressedEmojiSelector,
 } from "../../../../redux/selectors";
 import { DayData } from "../../../MainScreen/DayScrollContext";
 import { useDispatch } from "react-redux";
-import { answerDailyCard } from "../../../../redux/actions";
+import {
+  answerDailyCard,
+  updateLastPressedEmojiDate,
+} from "../../../../redux/actions";
 import { DayModal } from "../../../../components/DayModal";
 import { useToggle } from "../../../../hooks/useToggle";
 import { useTranslate } from "../../../../hooks/useTranslate";
 import moment from "moment";
-import { updateLastClickedEmojiDate } from "../../../../redux/actions";
 import { analytics } from "../../../../services/firebase";
 
 export const EmojiQuestionCard = ({
@@ -48,9 +51,7 @@ export const EmojiQuestionCard = ({
     : {};
 
   const dispatch = useDispatch();
-  const lastClickedDate = useSelector(
-    (state) => state.lastClickedDate.lastClickedEmojiDate
-  );
+  const lastClickedDate = useSelector(lastPressedEmojiSelector);
 
   const onEmojiPress = (answer: string) => {
     if (!userID || !dataEntry) {
@@ -59,7 +60,7 @@ export const EmojiQuestionCard = ({
     const todayDate = moment().format("YYYY-MM-DD");
 
     if (lastClickedDate !== todayDate) {
-      dispatch(updateLastClickedEmojiDate(todayDate));
+      dispatch(updateLastPressedEmojiDate(todayDate));
       analytics?.().logEvent("dailyCardAnsweredEmoji");
     }
 

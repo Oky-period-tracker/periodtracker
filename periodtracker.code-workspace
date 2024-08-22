@@ -23,6 +23,9 @@
       "path": "packages/core/src/modules/translations"
     },
     {
+      "path" : "packages/app"
+    },
+    {
       "name": "apk/release",
       "path": "packages/mobile/android/app/build/outputs/apk/release"
     },

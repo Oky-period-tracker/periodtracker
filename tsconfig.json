@@ -6,7 +6,11 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "module": "commonjs",
     "noErrorTruncation": true,
     "noFallthroughCasesInSwitch": true,
@@ -22,6 +26,9 @@
     "strictNullChecks": false,
     "suppressImplicitAnyIndexErrors": false,
     "target": "es6",
-    "typeRoots": ["./node_modules/@types"]
-  }
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  },
+  "extends": "expo/tsconfig.base"
 }

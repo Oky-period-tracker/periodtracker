@@ -21,7 +21,7 @@ const AboutScreen: ScreenComponent<"About"> = () => {
       assets?.general?.aboutBanner[locale];
 
   return (
-    <ScrollView>
+    <ScrollView horizontal={true}>
       <Image source={source} style={styles.banner} resizeMode="contain" />
       <InfoDisplay content={content} />
     </ScrollView>

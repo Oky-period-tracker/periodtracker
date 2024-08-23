@@ -474,10 +474,22 @@ export const Routes = [
     action: 'update',
   },
   {
+    method: 'put',
+    route: '/help-center',
+    controller: HelpCenterController,
+    action: 'bulkUpdate',
+  },
+  {
     method: 'delete',
     route: '/help-center/:id',
     controller: HelpCenterController,
     action: 'remove',
+  },
+  {
+    method: 'get',
+    route: '/help-center-attributes',
+    controller: HelpCenterController,
+    action: 'helpCenterAttributes',
   },
 
   // ------------ Privacy Policy Api ----------------

@@ -1,5 +1,5 @@
 # FROM --platform=linux/amd64 node:22.3.0
-FROM node:22.3.0
+FROM node:20.16.0
 
 WORKDIR /usr/src/app
 

@@ -30,5 +30,4 @@
       "./node_modules/@types"
     ]
   },
-  "extends": "expo/tsconfig.base"
 }

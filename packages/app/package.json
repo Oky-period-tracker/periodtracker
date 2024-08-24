@@ -1,12 +1,13 @@
 {
-  "name": "app",
+  "name": "@oky/app",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start-legacy": "cross-env NODE_OPTIONS=--openssl-legacy-provider expo start",
+    "start": "cross-env NODE_OPTIONS=--openssl-legacy-provider expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
+    "clean": "tsc",
     "ts:check": "tsc",
     "reinstall": "rm -rf node_modules && yarn",
     "lint": "eslint .",

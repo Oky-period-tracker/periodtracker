@@ -29,16 +29,10 @@ export class HelpCenterController {
     })
 
     helpCenters.forEach((helpCenter, hIndex) => {
-      helpCenterData.locations?.forEach((location) => {
-        if (location.name === helpCenter.location) {
-          helpCenters[hIndex].location = location
-        }
-      })
-
       helpCenterData.attributes.forEach((attrib) => {
         if (attrib.id === helpCenter.primaryAttributeId) {
           helpCenters[hIndex].attributeName = attrib.attributeName
-          helpCenters[hIndex].emoji = attrib.name
+          helpCenters[hIndex].name = attrib.name
           helpCenters[hIndex].emoji = attrib.emoji
         }
       })

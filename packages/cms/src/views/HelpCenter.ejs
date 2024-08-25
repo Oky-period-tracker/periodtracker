@@ -38,8 +38,8 @@
                 <th ><%= __('Contact')%> 1</th>
                 <th ><%= __('Contact')%> 2</th>
                 <th ><%= __('Address')%></th>
-                <th><%= __('Province')%></th>
-                <th><%= __('City')%></th>
+                <th><%= __('Location')%></th>
+                <th><%= __('Place')%></th>
                 <th><%= __('Website')%></th>
                 <th><%= __('Actions')%></th>
                 <th><%= __('Live')%></th>
@@ -48,11 +48,17 @@
       </table>
     </div>
   </div>
+  <span id="localeJSON" hidden>
+    { "locale": "<%= currentUser?.lang %>"}
+  </span>
   <span id="helpCentersJSON" hidden>
     <%= JSON.stringify(helpCenters); %>
   </span>
   <span id="locationsJSON" hidden>
     <%= JSON.stringify(locations); %>
+  </span>
+  <span id="placesJSON" hidden>
+    <%= JSON.stringify(places); %>
   </span>
   <span id="attributesJSON" hidden>
     <%= JSON.stringify(attributes); %>

@@ -1,3 +1,7 @@
+var locale = JSON.parse($('#localeJSON').text()).locale
+var locations = JSON.parse($('#locationsJSON').text())
+var places = JSON.parse($('#placesJSON').text())
+
 $(document).ready(() => {
   'use strict'
   // GET help centers
@@ -15,13 +19,8 @@ $(document).ready(() => {
   // GET help center attributes
   prepareAttributes()
 
-  var locations = JSON.parse($('#locationsJSON').text())
-
-  locations.sort(function (a, b) {
-    return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-  })
-  $.each(locations, function (i, location) {
-    $('#locationDropdown').append($('<option />').val(location.name).text(location.name))
+  $.each(Object.entries(locations), function (i, [key, location]) {
+    $('#locationDropdown').append($('<option />').val(key).text(location[locale]))
     if (!$('#locationDropdown').find(':selected').val()) {
       $('#placeDropdown').attr('disabled', true)
     }
@@ -64,25 +63,17 @@ $('#locationDropdown').on('change', (e, params) => {
   $('#placeDropdown').attr('disabled', true)
   $('#placeDropdown').empty()
 
-  var locations = JSON.parse($('#locationsJSON').text())
+  const selectedLocation = $('#locationDropdown').find(':selected').val()
 
-  const selected = $('#locationDropdown').find(':selected').val()
+  if (selectedLocation) {
+    const locationPlaces = places.filter((place) => place.code === selectedLocation)
 
-  if (selected) {
-    const location = locations.find((item) => item.name === selected)
+    $.each(locationPlaces, function (i, place) {
+      $('#placeDropdown').append($(`<option id=${place.uid}/>`).val(place.uid).text(place[locale]))
 
-    if (!location) {
-      return
-    }
-
-    location.places.sort(function (a, b) {
-      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-    })
-    $.each(location.places, function (i, place) {
-      $('#placeDropdown').append($(`<option id=${place.name}/>`).val(place.name).text(place.name))
       if (params) {
-        if (params.placeCode === place.name) {
-          $(`#${place.name}`).attr('selected', true)
+        if (params.placeCode === place.uid.toString()) {
+          $(`#${place.uid}`).attr('selected', true)
         }
       }
     })
@@ -256,8 +247,26 @@ const initializeDataTable = (result) => {
     { data: 'contactOne' },
     { data: 'contactTwo' },
     { data: 'address' },
-    { data: 'location' },
-    { data: 'place' },
+    {
+      data: 'location',
+      render: (meta) => {
+        if (locations?.[meta]?.[locale]) {
+          return locations[meta][locale]
+        }
+        return meta
+      },
+    },
+    {
+      data: 'place',
+      render: (meta) => {
+        const id = parseInt(meta)
+        const place = places.find((item) => item.uid === id)?.[locale]
+        if (place) {
+          return place
+        }
+        return meta
+      },
+    },
     { data: 'website' },
   ]
   $('#helpCenterTable thead tr').clone(true).addClass('filters').appendTo('#helpCenterTable thead')

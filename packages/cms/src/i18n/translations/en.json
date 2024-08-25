@@ -197,5 +197,7 @@
 	"Bulk import/export": "Bulk import/export",
 	"Provider Name": "Provider Name",
 	"Province": "Province",
-	"City": "City"
+	"City": "City",
+	"Location": "Location",
+	"Place": "Place"
 }

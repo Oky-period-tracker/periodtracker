@@ -6,11 +6,14 @@ export class HelpCenterAttributes {
   id: number
 
   @Column()
-  attributeName: string
+  name: string
 
   @Column()
-  description: string
+  emoji: string
 
   @Column()
   isActive: boolean
+
+  @Column()
+  lang: string
 }

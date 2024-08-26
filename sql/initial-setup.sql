@@ -315,29 +315,6 @@ ADD "sortingKey" integer DEFAULT nextval('periodtracker.article_sorting_key') NO
 
 --------------------------------------------------------------------------------------------------------
 
-CREATE SEQUENCE periodtracker.help_center_sorting_key INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775806 START 1 CACHE 1;
-
-ALTER TABLE help_center
-ADD "location" text DEFAULT NULL,
-ADD "place" text DEFAULT NULL,
-ADD "isAvailableNationwide" boolean DEFAULT true,
-ADD "primaryAttributeId" integer DEFAULT NULL,
-ADD "otherAttributes" text DEFAULT NULL,
-ADD "isActive" boolean DEFAULT false,
-ADD "sortingKey" integer DEFAULT nextval('periodtracker.help_center_sorting_key') NOT NULL;
-
-----
-
-ALTER TABLE "periodtracker".article
-ADD "voiceOverKey" text DEFAULT NULL;
-
-----
-
-ALTER TABLE oky_user
-ADD COLUMN metadata json DEFAULT '{}';
-
----
-
 CREATE SEQUENCE periodtracker.video_sorting_key INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775806 START 1 CACHE 1;
 
 ALTER TABLE video
@@ -348,8 +325,8 @@ ADD "sortingKey" integer DEFAULT nextval('periodtracker.video_sorting_key') NOT 
 CREATE SEQUENCE periodtracker.help_center_sorting_key INCREMENT 1 MINVALUE 1 MAXVALUE 9223372036854775806 START 1 CACHE 1;
 
 ALTER TABLE help_center
-ADD "location" text DEFAULT NULL,
-ADD "place" text DEFAULT NULL,
+ADD "region" text DEFAULT NULL,
+ADD "subRegion" text DEFAULT NULL,
 ADD "isAvailableNationwide" boolean DEFAULT true,
 ADD "primaryAttributeId" integer DEFAULT NULL,
 ADD "otherAttributes" text DEFAULT NULL,

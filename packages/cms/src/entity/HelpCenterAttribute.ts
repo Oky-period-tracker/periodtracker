@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
 @Entity()
-export class HelpCenterAttributes {
+export class HelpCenterAttribute {
   @PrimaryGeneratedColumn()
   id: number
 

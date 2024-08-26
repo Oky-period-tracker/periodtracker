@@ -24,7 +24,7 @@ import { Question } from '../entity/Question'
 import { env } from '../env'
 import { Video } from '../entity/Video'
 import { cmsLanguages } from '../i18n/options'
-import { helpCenterData } from '../optional'
+import { HelpCenterAttribute } from '../entity/HelpCenterAttribute'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -35,6 +35,7 @@ export class RenderController {
   private userRepository = getRepository(User)
   private didYouKnowRepository = getRepository(DidYouKnow)
   private helpCenterRepository = getRepository(HelpCenter)
+  private helpCenterAttributeRepository = getRepository(HelpCenterAttribute)
   private aboutRepository = getRepository(About)
   private aboutBannerRepository = getRepository(AboutBanner)
   private termsAndConditionsRepository = getRepository(TermsAndConditions)
@@ -154,11 +155,15 @@ export class RenderController {
     const helpCenters = await this.helpCenterRepository.find({
       where: { lang: request.user.lang },
     })
+    const helpCenterAttributes = await this.helpCenterAttributeRepository.find({
+      where: { lang: request.user.lang },
+    })
+
     this.render(response, 'HelpCenter', {
       helpCenters,
       locations: countries,
       places: provinces,
-      attributes: helpCenterData.attributes,
+      attributes: helpCenterAttributes,
     })
   }
 

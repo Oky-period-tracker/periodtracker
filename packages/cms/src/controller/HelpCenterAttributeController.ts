@@ -1,9 +1,13 @@
 import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
-import { HelpCenterAttributes } from '../entity/HelpCenterAttributes'
+import { HelpCenterAttribute } from '../entity/HelpCenterAttribute'
 
-export class HelpCenterAttributesController {
-  private helpCenterAttributeRepository = getRepository(HelpCenterAttributes)
+export class HelpCenterAttributeController {
+  private helpCenterAttributeRepository = getRepository(HelpCenterAttribute)
+
+  async mobileHelpCenterAttributes(request: Request, response: Response, next: NextFunction) {
+    return this.helpCenterAttributeRepository.find({ where: { lang: request.params.lang } })
+  }
 
   async all(request: Request, response: Response, next: NextFunction) {
     return this.helpCenterAttributeRepository.find()
@@ -23,8 +27,6 @@ export class HelpCenterAttributesController {
     const helpCenterAttributeToUpdate = await this.helpCenterAttributeRepository.findOne(
       request.params.id,
     )
-    helpCenterAttributeToUpdate.attributeName = request.body.attributeName
-    helpCenterAttributeToUpdate.description = request.body.description
     helpCenterAttributeToUpdate.isActive = request.body.isActive
     await this.helpCenterAttributeRepository.save(helpCenterAttributeToUpdate)
     return helpCenterAttributeToUpdate

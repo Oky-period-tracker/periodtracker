@@ -28,16 +28,6 @@ export class HelpCenterController {
       },
     })
 
-    helpCenters.forEach((helpCenter, hIndex) => {
-      helpCenterData.attributes.forEach((attrib) => {
-        if (attrib.id === helpCenter.primaryAttributeId) {
-          helpCenters[hIndex].attributeName = attrib.attributeName
-          helpCenters[hIndex].name = attrib.name
-          helpCenters[hIndex].emoji = attrib.emoji
-        }
-      })
-    })
-
     return helpCenters
   }
 

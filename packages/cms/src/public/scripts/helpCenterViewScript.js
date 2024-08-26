@@ -561,7 +561,7 @@ const prepareAttributes = () => {
       $('<option></option>')
         .attr('value', attribute.id)
         .attr('required', true)
-        .text(attribute.attributeName),
+        .text(`${attribute.emoji} ${attribute.name}`),
     )
 
     otherAttributesContainer.append(
@@ -572,9 +572,9 @@ const prepareAttributes = () => {
                       type="checkbox" 
                       class="form-check-input other-attributes" 
                       value="${attribute.id}"
-                      id="${attribute.attributeName}"
+                      id="${attribute.name}"
                     />
-                    <label class="mb-0" for="${attribute.attributeName}">${attribute.attributeName}</label>
+                    <label class="mb-0" for="${attribute.name}">${attribute.emoji} ${attribute.name}</label>
                   </div>
                 </div>`,
     )

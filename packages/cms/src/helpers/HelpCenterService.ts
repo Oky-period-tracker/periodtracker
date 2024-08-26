@@ -16,8 +16,8 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     primaryAttribute,
     otherAttributes,
     isActive,
-    place,
-    location,
+    region,
+    subRegion,
   } = req.body
 
   if (helpCenterPayload) {
@@ -33,8 +33,8 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     helpCenterPayload.contactOne = contactOne
     helpCenterPayload.contactTwo = contactTwo
     helpCenterPayload.address = address
-    helpCenterPayload.place = place
-    helpCenterPayload.location = location
+    helpCenterPayload.region = region
+    helpCenterPayload.subRegion = subRegion
     helpCenterPayload.isAvailableNationwide = isAvailableNationwide ? true : false
     helpCenterPayload.primaryAttributeId = primaryAttribute
     helpCenterPayload.otherAttributes = otherAttributes
@@ -56,8 +56,8 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     otherAttributes,
     isActive: isActive ? true : false,
     lang: req.user.lang,
-    place,
-    location,
+    region,
+    subRegion,
   }
 }
 

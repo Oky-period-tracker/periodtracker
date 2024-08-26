@@ -1,6 +1,6 @@
 var locale = JSON.parse($('#localeJSON').text()).locale
-var locations = JSON.parse($('#locationsJSON').text())
-var places = JSON.parse($('#placesJSON').text())
+var regions = JSON.parse($('#regionsJSON').text())
+var subRegions = JSON.parse($('#subRegionsJSON').text())
 
 $(document).ready(() => {
   'use strict'
@@ -19,10 +19,10 @@ $(document).ready(() => {
   // GET help center attributes
   prepareAttributes()
 
-  $.each(Object.entries(locations), function (i, [key, location]) {
-    $('#locationDropdown').append($('<option />').val(key).text(location[locale]))
-    if (!$('#locationDropdown').find(':selected').val()) {
-      $('#placeDropdown').attr('disabled', true)
+  $.each(Object.entries(regions), function (i, [key, region]) {
+    $('#regionDropdown').append($('<option />').val(key).text(region[locale]))
+    if (!$('#regionDropdown').find(':selected').val()) {
+      $('#subRegionDropdown').attr('disabled', true)
     }
   })
 
@@ -49,35 +49,37 @@ $(document).ready(() => {
 
   $('#isAvailableNationwide').on('change', (e) => {
     if (e.target.checked) {
-      $('#locationDropdown').attr('disabled', true)
-      $('#locationDropdown').val(null)
-      $('#placeDropdown').attr('disabled', true)
-      $('#placeDropdown').val(null)
+      $('#regionDropdown').attr('disabled', true)
+      $('#regionDropdown').val(null)
+      $('#subRegionDropdown').attr('disabled', true)
+      $('#subRegionDropdown').val(null)
     } else {
-      $('#locationDropdown').removeAttr('disabled')
+      $('#regionDropdown').removeAttr('disabled')
     }
   })
 })
 
-$('#locationDropdown').on('change', (e, params) => {
-  $('#placeDropdown').attr('disabled', true)
-  $('#placeDropdown').empty()
+$('#regionDropdown').on('change', (e, params) => {
+  $('#subRegionDropdown').attr('disabled', true)
+  $('#subRegionDropdown').empty()
 
-  const selectedLocation = $('#locationDropdown').find(':selected').val()
+  const selectedRegion = $('#regionDropdown').find(':selected').val()
 
-  if (selectedLocation) {
-    const locationPlaces = places.filter((place) => place.code === selectedLocation)
+  if (selectedRegion) {
+    const regionSubRegions = subRegions.filter((subRegion) => subRegion.code === selectedRegion)
 
-    $.each(locationPlaces, function (i, place) {
-      $('#placeDropdown').append($(`<option id=${place.uid}/>`).val(place.uid).text(place[locale]))
+    $.each(regionSubRegions, function (i, subRegion) {
+      $('#subRegionDropdown').append(
+        $(`<option id=${subRegion.uid}/>`).val(subRegion.uid).text(subRegion[locale]),
+      )
 
       if (params) {
-        if (params.placeCode === place.uid.toString()) {
-          $(`#${place.uid}`).attr('selected', true)
+        if (params.placeCode === subRegion.uid.toString()) {
+          $(`#${subRegion.uid}`).attr('selected', true)
         }
       }
     })
-    $('#placeDropdown').attr('disabled', false)
+    $('#subRegionDropdown').attr('disabled', false)
   }
 })
 
@@ -140,7 +142,7 @@ $('#help-center-form').on('submit', (event) => {
     data: output,
   }
 
-  let locationPlace = { location: '', place: '' }
+  let place = { region: '', subRegion: '' }
   let isAvailableNationwide = false
   let isAttribExist = false
   let helpCenterError = ''
@@ -165,18 +167,18 @@ $('#help-center-form').on('submit', (event) => {
       isAttribExist = true
     }
 
-    if (name === 'location') {
-      locationPlace.location = value
+    if (name === 'region') {
+      place.region = value
     }
 
-    if (name === 'place') {
-      locationPlace.place = value
+    if (name === 'subRegion') {
+      place.subRegion = value
     }
   })
 
   // if (!isAvailableNationwide) {
-  //   if (!locationPlace.location || !locationPlace.place) {
-  //     helpCenterError = `Please select a location & place, or select available nationwide`
+  //   if (!regionPlace.region || !regionPlace.place) {
+  //     helpCenterError = `Please select a region & place, or select available nationwide`
   //   }
   // }
 
@@ -248,21 +250,21 @@ const initializeDataTable = (result) => {
     { data: 'contactTwo' },
     { data: 'address' },
     {
-      data: 'location',
+      data: 'region',
       render: (meta) => {
-        if (locations?.[meta]?.[locale]) {
-          return locations[meta][locale]
+        if (regions?.[meta]?.[locale]) {
+          return regions[meta][locale]
         }
         return meta
       },
     },
     {
-      data: 'place',
+      data: 'subRegion',
       render: (meta) => {
         const id = parseInt(meta)
-        const place = places.find((item) => item.uid === id)?.[locale]
-        if (place) {
-          return place
+        const subRegion = subRegions.find((item) => item.uid === id)?.[locale]
+        if (subRegion) {
+          return subRegion
         }
         return meta
       },
@@ -445,7 +447,7 @@ const prepareEdit = (id) => {
     type: 'GET',
     success: async (result) => {
       $('#formhelpCenterId').val(id)
-      $('#placeDropdown').attr('disabled', false)
+      $('#subRegionDropdown').attr('disabled', false)
       $('#helpCenterModal').modal({ show: true })
       for (key in result) {
         if (key !== 'website' && key !== 'otherAttributes' && key !== 'primaryAttributeId') {
@@ -494,8 +496,8 @@ const prepareEdit = (id) => {
           }
         }
 
-        if (key === 'location') {
-          $('#locationDropdown').trigger('change', { placeCode: result['place'] })
+        if (key === 'region') {
+          $('#regionDropdown').trigger('change', { placeCode: result['subRegion'] })
         }
       }
     },
@@ -511,21 +513,21 @@ $('#helpCenterModal').on('hidden.bs.modal', function () {
   const keys = [
     'address',
     'caption',
-    'place',
+    'subRegion',
     'contactOne',
     'contactTwo',
     'id',
     'isAvailableNationwide',
     'title',
-    'location',
+    'region',
     'otherAttributes',
   ]
 
   keys.forEach((key) => {
     $(`[name='${key}']`).val('')
-    if (key === 'place') {
-      $(`#placeDropdown`).empty()
-      $(`#placeDropdown`).append('<option selected disabled>N/A</option>')
+    if (key === 'subRegion') {
+      $(`#subRegionDropdown`).empty()
+      $(`#subRegionDropdown`).append('<option selected disabled>N/A</option>')
     }
     if (key === 'otherAttributes') {
       $('#other-attributes-container').html('')

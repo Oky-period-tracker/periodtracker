@@ -161,8 +161,8 @@ export class RenderController {
 
     this.render(response, 'HelpCenter', {
       helpCenters,
-      locations: countries,
-      places: provinces,
+      regions: countries,
+      subRegions: provinces,
       attributes: helpCenterAttributes,
     })
   }

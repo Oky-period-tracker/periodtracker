@@ -193,5 +193,9 @@
   "Videos": "Видео",
   "Add Video": "Добавить видео",
   "app_release_date": "Дата выхода приложения",
-  "Order": "Порядок сортировки"
+  "Order": "Порядок сортировки",
+  "Bulk import/export": "Bulk import/export",
+  "Provider Name": "Provider Name",
+  "Region": "Region",
+  "Subregion": "Subregion"
 }

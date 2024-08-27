@@ -18,6 +18,7 @@ import { TermsAndConditionsController } from './controller/TermsAndConditionsCon
 import { PrivacyPolicyController } from './controller/PrivacyPolicyController'
 import { DataController } from './controller/DataController'
 import { VideoController } from './controller/VideoController'
+import { HelpCenterAttributeController } from './controller/HelpCenterAttributeController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -474,10 +475,22 @@ export const Routes = [
     action: 'update',
   },
   {
+    method: 'put',
+    route: '/help-center',
+    controller: HelpCenterController,
+    action: 'bulkUpdate',
+  },
+  {
     method: 'delete',
     route: '/help-center/:id',
     controller: HelpCenterController,
     action: 'remove',
+  },
+  {
+    method: 'get',
+    route: '/help-center-attributes',
+    controller: HelpCenterController,
+    action: 'helpCenterAttributes',
   },
 
   // ------------ Privacy Policy Api ----------------
@@ -679,6 +692,13 @@ export const Routes = [
     route: '/mobile/help-center/:lang',
     controller: HelpCenterController,
     action: 'mobileHelpCenterByLanguage',
+    isPublic: true,
+  },
+  {
+    method: 'get',
+    route: '/mobile/help-center-attribute/:lang',
+    controller: HelpCenterAttributeController,
+    action: 'mobileHelpCenterAttributes',
     isPublic: true,
   },
   {

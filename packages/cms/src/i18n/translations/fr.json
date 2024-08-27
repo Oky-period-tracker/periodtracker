@@ -193,5 +193,9 @@
   "Videos": "Vidéos",
   "Add Video": "Ajouter une vidéo",
   "app_release_date": "Date app released",
-  "Order": "classer"
+  "Order": "classer",
+  "Bulk import/export": "Bulk import/export",
+  "Provider Name": "Provider Name",
+  "Region": "Region",
+  "Subregion": "Subregion"
 }

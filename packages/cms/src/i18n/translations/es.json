@@ -197,5 +197,9 @@
   "Order": "Orden",
   "Subcategory Management": "Gestión por subcategorías",
   "Subcategories": "Subcategorías",
-  "Categories": "Categorías"
+  "Categories": "Categorías",
+  "Bulk import/export": "Bulk import/export",
+  "Provider Name": "Provider Name",
+  "Region": "Region",
+  "Subregion": "Subregion"
 }

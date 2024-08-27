@@ -193,5 +193,11 @@
   "Videos": "Vídeos",
   "Add Video": "Adicionar vídeo",
   "app_release_date": "Data de lançamento do aplicativo",
-  "Order": "Ordem"
+  "Order": "Ordem",
+  "Bulk import/export": "Bulk import/export",
+  "Provider Name": "Provider Name",
+  "Province": "Province",
+  "City": "City",
+  "Region": "Region",
+  "Subregion": "Subregion"
 }

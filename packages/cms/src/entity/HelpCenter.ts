@@ -23,6 +23,27 @@ export class HelpCenter {
   @Column()
   website: string
 
+  @Column({ nullable: true })
+  region: string
+
+  @Column({ nullable: true })
+  subRegion: string
+
   @Column()
   lang: string
+
+  @Column()
+  isAvailableNationwide: boolean
+
+  @Column()
+  primaryAttributeId: number
+
+  @Column({ nullable: true })
+  otherAttributes: string
+
+  @Column({ default: false })
+  isActive: boolean
+
+  @Column({ generated: 'increment' })
+  sortingKey: number
 }

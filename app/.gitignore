@@ -15,3 +15,6 @@ android/app/google-services.json.*
 # assets
 ios/app/Images.xcassets
 android/app/src/main/res
+
+# Android
+android/local.properties

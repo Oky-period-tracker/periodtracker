@@ -5,27 +5,20 @@ import { logger } from './logger'
 const placeholder = '{APPLICATION_ID}'
 
 const templates = [
-  'packages/mobile/android/app/BUCK.dist',
-  'packages/mobile/android/app/src/main/AndroidManifest.xml.dist',
-  'packages/mobile/android/app/templates/MainActivity.java.dist',
-  'packages/mobile/android/app/templates/MainApplication.java.dist',
-  'packages/mobile/android/app/templates/ReactNativeFilpper.java.dist',
+  'app/android/app/src/main/AndroidManifest.xml.dist',
+  'app/android/app/src/templates/MainActivity.kt.dist',
+  'app/android/app/src/templates/MainApplication.kt.dist',
 ]
 
 const destinations = [
-  'packages/mobile/android/app/BUCK',
-  'packages/mobile/android/app/src/main/AndroidManifest.xml',
-  'packages/mobile/android/app/src/main/java/{APPLICATION_PATH}/MainActivity.java',
-  'packages/mobile/android/app/src/main/java/{APPLICATION_PATH}/MainApplication.java',
-  'packages/mobile/android/app/src/debug/java/{APPLICATION_PATH}/ReactNativeFilpper.java',
+  'app/android/app/src/main/AndroidManifest.xml',
+  'app/android/app/src/main/java/{APPLICATION_PATH}/MainActivity.kt',
+  'app/android/app/src/main/java/{APPLICATION_PATH}/MainApplication.kt',
 ]
 
-const foldersToClean = [
-  'packages/mobile/android/app/src/debug/java',
-  'packages/mobile/android/app/src/main/java',
-]
+const foldersToClean = ['app/android/app/src/debug/java', 'app/android/app/src/main/java']
 
-const gradlePropertiesPath = path.join(__dirname, 'packages/mobile/android/gradle.properties')
+const gradlePropertiesPath = path.join(__dirname, 'app/android/gradle.properties')
 const gradleProperties = fs.readFileSync(gradlePropertiesPath, 'utf8')
 
 const applicationIdMatch = gradleProperties.match(/^APPLICATION_ID=(.+)$/m)

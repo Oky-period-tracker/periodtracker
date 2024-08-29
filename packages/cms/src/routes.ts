@@ -814,18 +814,18 @@ export const Routes = [
     controller: DataController,
     action: 'generateContentTs',
   },
-  {
-    method: 'get',
-    route: '/data/generate-content-sheet',
-    controller: DataController,
-    action: 'generateContentSheet',
-  },
-  {
-    method: 'get',
-    route: '/data/generate-app-translations-sheet',
-    controller: DataController,
-    action: 'generateAppTranslationsSheet',
-  },
+  // { TODO:
+  //   method: 'get',
+  //   route: '/data/generate-content-sheet',
+  //   controller: DataController,
+  //   action: 'generateContentSheet',
+  // },
+  // {
+  //   method: 'get',
+  //   route: '/data/generate-app-translations-sheet',
+  //   controller: DataController,
+  //   action: 'generateAppTranslationsSheet',
+  // },
   {
     method: 'get',
     route: '/data/generate-cms-translations-sheet',

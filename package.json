@@ -14,12 +14,14 @@
     "copy-assets": "ts-node copyAssets.ts",
     "database-sync:enable": "ts-node setDatabaseSync.ts --enable",
     "database-sync:disable": "ts-node setDatabaseSync.ts --disable",
-    "rm": "yarn workspaces run rm && yarn cache clean && rm -rf node_modules",
+    "rm": "yarn workspaces run rm && yarn rm:app && yarn cache clean && rm -rf node_modules",
     "rm:docker": "docker stop $(docker ps -q); docker system prune -a",
+    "rm:app": "if [ -z \"$DOCKER_ENV\" ]; then cd app && yarn rm; fi",
     "reinstall": "yarn run rm && yarn",
     "clean": "yarn workspaces run clean",
     "compile": "yarn workspace @oky/core compile && yarn workspaces run compile",
     "dev": "yarn run clean && yarn run compile && concurrently --kill-others \"docker-compose up\"",
+    "dev:mobile": "cd app && npx expo start -c",
     "prod:web": "docker-compose -f docker-compose.yml build && docker-compose -f docker-compose.yml up",
     "format": "yarn workspaces run format",
     "lint": "yarn workspaces run lint",
@@ -32,7 +34,8 @@
     "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh",
     "modules:checkout": "./bin/modules/checkout.sh",
     "copy-config": "./bin/setup/config.sh",
-    "update-android-app-id": "ts-node update-android-app-id.ts"
+    "update-android-app-id": "ts-node update-android-app-id.ts",
+    "postinstall": "if [ -z \"$DOCKER_ENV\" ]; then cd app && yarn; fi"
   },
   "workspaces": {
     "packages": [

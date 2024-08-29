@@ -1,5 +1,5 @@
 // import { AvatarName, ThemeName } from "@oky/core";
-import { AvatarName, ThemeName } from '../../core/modules/translations'
+import { AvatarName, ThemeName } from '../../resources/translations'
 import { createAction } from '../helpers'
 import { PartialStateSnapshot } from '../types/partialStore'
 

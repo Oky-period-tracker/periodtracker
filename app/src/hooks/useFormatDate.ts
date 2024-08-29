@@ -1,5 +1,5 @@
 import moment, { Moment } from 'moment'
-import { Locale, calendarTranslations } from '../core/modules'
+import { Locale, calendarTranslations } from '../resources/translations'
 import { currentLocaleSelector } from '../redux/selectors'
 import { useSelector } from '../redux/useSelector'
 

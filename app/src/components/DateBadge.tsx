@@ -1,5 +1,5 @@
 import React from 'react'
-import { ThemeName } from '../core/modules'
+import { ThemeName } from '../resources/translations'
 import { useDayStatus } from '../hooks/useDayStatus'
 import { IconButton } from './IconButton'
 import { usePredictDay } from '../contexts/PredictionProvider'

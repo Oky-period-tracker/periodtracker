@@ -19,7 +19,7 @@ import {
   isFuturePredictionSelector,
 } from '../../redux/selectors'
 import { Hr } from '../../components/Hr'
-import { calendarTranslations } from '../../core/modules'
+import { calendarTranslations } from '../../resources/translations'
 import { globalStyles } from '../../config/theme'
 
 // TODO: dynamic start & end dates?

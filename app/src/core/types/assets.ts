@@ -1,6 +1,6 @@
 import { ImageSourcePropType } from 'react-native'
 import { AnimationObject } from 'lottie-react-native'
-import { AvatarName, Locale, ThemeName } from '../modules/translations'
+import { AvatarName, Locale, ThemeName } from '../../resources/translations'
 
 export interface AppAssets {
   avatars: Record<

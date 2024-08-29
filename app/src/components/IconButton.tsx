@@ -6,7 +6,7 @@ import Cloud from './icons/Cloud'
 import { useSelector } from 'react-redux'
 import { currentThemeSelector } from '../redux/selectors'
 import { palette } from '../config/theme'
-import { IconForTheme } from '../core/modules/translations'
+import { IconForTheme } from '../resources/translations'
 
 export type Appearance = 'fill' | 'outline'
 

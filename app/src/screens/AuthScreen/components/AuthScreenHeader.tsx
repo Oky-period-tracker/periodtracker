@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import { assets } from '../../../assets'
+import { assets } from '../../../resources/assets'
 import { Text } from '../../../components/Text'
 import { palette } from '../../../config/theme'
 

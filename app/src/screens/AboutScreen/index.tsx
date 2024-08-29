@@ -4,7 +4,7 @@ import { InfoDisplay } from '../../components/InfoDisplay'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { useSelector } from '../../redux/useSelector'
 import { aboutBannerSelector, aboutContent, currentLocaleSelector } from '../../redux/selectors'
-import { assets } from '../../assets'
+import { assets } from '../../resources/assets'
 
 const AboutScreen: ScreenComponent<'About'> = () => {
   const content = useSelector(aboutContent)

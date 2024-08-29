@@ -12,7 +12,7 @@ import { currentThemeSelector, isTutorialOneActiveSelector } from '../../../redu
 import { useLoading } from '../../../contexts/LoadingProvider'
 import { useFormatDate } from '../../../hooks/useFormatDate'
 import { WheelRing, WheelRingButton } from './WheelRing'
-import { wheelRingThemes } from '../../../core/modules'
+import { wheelRingThemes } from '../../../resources/translations'
 
 export const Wheel = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { data, wheelPanGesture, wheelAnimatedStyle, visible } = useDayScroll()

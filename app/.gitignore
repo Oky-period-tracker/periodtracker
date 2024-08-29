@@ -22,4 +22,5 @@ ios/app/Images.xcassets
 android/app/src/main/res
 
 # Android
+android/gradle.properties
 android/local.properties

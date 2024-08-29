@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Required to run
-assets_path="app/src/assets"
-translations_path="packages/core/src/modules/translations"
+resources_path="app/src/resources"
 
 # Required to deploy
 k8s_path=".k8s"

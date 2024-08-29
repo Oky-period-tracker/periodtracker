@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "podinstall": "cd ios; pod install; cd ..",
     "reverse-ports": "adb reverse tcp:3000 tcp:3000 && adb reverse tcp:5000 tcp:5000 && adb reverse tcp:8000 tcp:8000 && adb reverse tcp:8080 tcp:8080 && adb reverse tcp:8081 tcp:8081",
-    "remove-unused-assets": "ts-node --transpile-only removeUnusedAssets.ts"
+    "remove-unused-assets": "ts-node --transpile-only removeUnusedAssets.ts",
+    "rm": "shx rm -rf node_modules"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
@@ -67,6 +68,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "shx": "^0.3.3",
     "@babel/core": "^7.24.0",
     "@eslint/compat": "^1.1.0",
     "@eslint/js": "^9.5.0",

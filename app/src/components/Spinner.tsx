@@ -7,7 +7,7 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated'
-import { assets } from '../assets'
+import { assets } from '../resources/assets'
 import { Text } from './Text'
 import { palette } from '../config/theme'
 

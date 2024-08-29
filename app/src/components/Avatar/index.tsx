@@ -1,6 +1,6 @@
 import React from 'react'
 import LottieView from 'lottie-react-native'
-import { assets } from '../../assets'
+import { assets } from '../../resources/assets'
 import { useDayScroll } from '../../screens/MainScreen/DayScrollContext'
 import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import { ProgressSection } from './ProgressSection'

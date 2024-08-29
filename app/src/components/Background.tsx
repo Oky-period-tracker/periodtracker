@@ -4,7 +4,7 @@ import { PropsWithChildren } from 'react'
 import { useSelector } from '../redux/useSelector'
 import { currentThemeSelector } from '../redux/selectors'
 import { getAsset } from '../services/asset'
-import { ThemeName } from '../core/modules'
+import { ThemeName } from '../resources/translations'
 import { useTodayPrediction } from '../contexts/PredictionProvider'
 import { useAuth } from '../contexts/AuthContext'
 

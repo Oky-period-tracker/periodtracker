@@ -6,7 +6,7 @@ import * as Application from 'expo-application'
 // import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from "@oky/core";
 import { v4 as uuidv4 } from 'uuid'
 import { RehydrateAction, REHYDRATE } from 'redux-persist'
-import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from '../../core/modules/translations'
+import { AvatarName, ThemeName, defaultAvatar, defaultTheme } from '../../resources/translations'
 import { initialLocale } from '../../hooks/useTranslate'
 
 export interface AppState {

@@ -3,7 +3,7 @@ import { WheelPickerOption } from '../components/WheelPicker'
 import { useSelector } from '../redux/useSelector'
 import { currentLocaleSelector } from '../redux/selectors'
 import { Locale } from 'expo-localization'
-import { provinces } from '../core/modules/translations'
+import { provinces } from '../resources/translations'
 
 export const useProvinceOptions = (country: string | undefined): WheelPickerOption[] => {
   const locale = (useSelector(currentLocaleSelector) as unknown) as Locale // TODO:

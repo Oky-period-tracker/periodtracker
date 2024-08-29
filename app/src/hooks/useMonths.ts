@@ -1,6 +1,6 @@
 import { useSelector } from '../redux/useSelector'
 import { currentLocaleSelector } from '../redux/selectors'
-import { Locale, calendarTranslations } from '../core/modules/translations'
+import { Locale, calendarTranslations } from '../resources/translations'
 import React from 'react'
 
 export const useMonths = () => {

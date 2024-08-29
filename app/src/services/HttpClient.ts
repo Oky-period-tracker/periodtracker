@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import * as types from '../core/api/types'
 import { API_BASE_CMS_URL, API_BASE_URL, PREDICTION_ENDPOINT } from '../config/env'
-import { Locale } from '../core/modules'
+import { Locale } from '../resources/translations'
 import { User } from '../types'
 // import * as config from "../config";
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { WheelPickerOption } from '../components/WheelPicker'
 import { useSelector } from '../redux/useSelector'
 import { currentLocaleSelector } from '../redux/selectors'
-import { Locale, countries } from '../core/modules/translations'
+import { Locale, countries } from '../resources/translations'
 
 export const useCountryOptions = (): WheelPickerOption[] => {
   const locale = useSelector(currentLocaleSelector) as Locale

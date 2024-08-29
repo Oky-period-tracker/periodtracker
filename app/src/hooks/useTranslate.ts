@@ -6,7 +6,7 @@ import {
   defaultLocale,
   localeTranslations,
   themeTranslations,
-} from '../core/modules/translations'
+} from '../resources/translations'
 import { ENV } from '../config/env'
 import { useSelector } from 'react-redux'
 import { currentLocaleSelector } from '../redux/selectors'

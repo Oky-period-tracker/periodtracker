@@ -5,7 +5,7 @@ import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
 import * as selectors from '../selectors'
 import * as actions from '../actions'
-import { Locale, liveContent as staleContent } from '../../core/modules'
+import { Locale, content as staleContent } from '../../resources/translations'
 import _ from 'lodash'
 import {
   fromAvatarMessages,

@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, StyleSheet } from 'react-native'
 import { DisplayButton } from '../../../components/Button'
 import { Text } from '../../../components/Text'
-import { assets } from '../../../assets'
+import { assets } from '../../../resources/assets'
 import { palette } from '../../../config/theme'
 
 interface WelcomeCardProps {

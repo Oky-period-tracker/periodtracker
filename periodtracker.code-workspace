@@ -13,14 +13,11 @@
       "path": "app"
     },
     {
-      "path": "packages/components/src/assets"
-    },
-    {
-      "path": "packages/core/src/modules/translations"
+      "path": "app/src/resources"
     },
     {
       "name": "apk/release",
-      "path": "packages/mobile/android/app/build/outputs/apk/release"
+      "path": "app/android/app/build/outputs/apk/release"
     },
     {
       "path": "./"

@@ -6,15 +6,11 @@
     {
       "path": "packages/cms"
     },
-
-    {
-      "path": "packages/components"
-    },
     {
       "path": "packages/core"
     },
     {
-      "path": "packages/mobile"
+      "path": "app"
     },
     {
       "path": "packages/components/src/assets"

@@ -24,3 +24,6 @@ android/app/src/main/res
 # Android
 android/gradle.properties
 android/local.properties
+android/app/src/main/AndroidManifest.xml
+android/app/src/main/java/
+android/app/src/debug/java/

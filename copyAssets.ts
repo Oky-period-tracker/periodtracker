@@ -4,20 +4,17 @@ import * as path from 'path'
 const sources = [
   {
     name: 'iOS',
-    source: './packages/components/src/assets/mobile/Images.xcassets',
-    destination: './packages/mobile/ios/oky/Images.xcassets',
+    source: './app/src/resources/assets/mobile/Images.xcassets',
+    destination: './app/ios/app/Images.xcassets',
   },
   {
     name: 'android',
-    source: './packages/components/src/assets/mobile/android',
-    destination: './packages/mobile/android/app/src/main/res',
+    source: './app/src/resources/assets/mobile/android',
+    destination: './app/android/app/src/main/res',
   },
 ]
 
-async function getFiles(
-  dirPath: string,
-  parentPath: string = '',
-): Promise<string[]> {
+async function getFiles(dirPath: string, parentPath: string = ''): Promise<string[]> {
   const entries = await fs.readdir(dirPath, { withFileTypes: true })
 
   const files = entries

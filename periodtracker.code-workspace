@@ -14,7 +14,7 @@
       "path": "packages/core"
     },
     {
-      "path": "packages/mobile"
+      "path": "packages/app"
     },
     {
       "path": "packages/components/src/assets"

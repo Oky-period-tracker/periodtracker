@@ -20,7 +20,7 @@
     "reinstall": "yarn run rm && yarn",
     "clean": "yarn workspaces run clean",
     "compile": "yarn workspace @oky/core compile && yarn workspaces run compile",
-    "dev": "yarn run clean && yarn run compile && concurrently --kill-others \"docker-compose up\" \"yarn workspace @oky/mobile compile -w\" \"yarn workspace @oky/mobile start\"",
+    "dev": "yarn run clean && yarn run compile && concurrently --kill-others \"docker-compose up\" \"yarn workspace @oky/app start\" ",
     "dev:mobile": "yarn run clean && yarn run compile && concurrently --kill-others \"yarn workspace @oky/mobile compile -w\" \"yarn workspace @oky/mobile start\"",
     "prod:web": "docker-compose -f docker-compose.yml build && docker-compose -f docker-compose.yml up",
     "format": "yarn workspaces run format",
@@ -38,7 +38,7 @@
     "clean:mobile": "yarn workspace @oky/mobile run clean:android",
     "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets",
     "modules:checkout": "./bin/modules/checkout.sh",
-    "copy-config": "./bin/setup/config.sh",
+    "copy-config": "  ./bin/setup/config.sh",
     "update-android-app-id": "ts-node update-android-app-id.ts"
   },
   "workspaces": {
@@ -48,18 +48,21 @@
     "nohoist": []
   },
   "devDependencies": {
-    "husky": "^2.3.0",
-    "lint-staged": "^8.1.7",
-    "patch-package": "^6.1.4",
+    "cross-env": "^7.0.3",
+    "fs-extra": "^11.2.0",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.9",
+    "lottie-parser": "^0.1.0",
+    "metro": "^0.80.10",
+    "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.0.0",
-    "prettier": "2.0.5",
-    "ts-node": "^10.4.0",
-    "tslint": "^5.17.0",
+    "prettier": "3.3.3",
+    "ts-node": "^10.9.2",
+    "tslint": "^6.1.3",
     "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-react": "^4.0.0",
-    "fs-extra": "^11.1.1",
-    "lottie-parser": "^0.1.0"
+    "tslint-react": "^5.0.0",
+    "typescript": "^5.5.4"
   },
   "husky": {
     "hooks": {
@@ -72,5 +75,8 @@
       "prettier --write",
       "git add"
     ]
+  },
+  "dependencies": {
+    "connect-flash": "^0.1.1"
   }
 }

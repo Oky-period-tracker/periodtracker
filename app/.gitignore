@@ -4,6 +4,11 @@ node_modules
 
 .env
 
+# Expo
+app.json
+eas.json
+
+# Redux
 src/redux/config.ts
 
 # Firebase

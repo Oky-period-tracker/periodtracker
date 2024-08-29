@@ -29,3 +29,7 @@ copy_if_not_exists app/android/local.properties.dist app/android/local.propertie
 
 # Redux encryption
 copy_if_not_exists app/src/redux/config.ts.dist app/src/redux/config.ts
+
+# Expo
+copy_if_not_exists app/app.json.dist app/app.json
+copy_if_not_exists app/eas.json.dist app/eas.json

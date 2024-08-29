@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Required to run
-assets_path="packages/components/src/assets"
+assets_path="app/src/assets"
 translations_path="packages/core/src/modules/translations"
 
 # Required to deploy

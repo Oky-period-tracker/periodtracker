@@ -29,7 +29,7 @@
     "test:prediction-engine": "yarn workspace @oky/core run test",
     "reverse:all-ports": "adb reverse tcp:3000 tcp:3000 && adb reverse tcp:5000 tcp:5000 && adb reverse tcp:8000 tcp:8000 && adb reverse tcp:8080 tcp:8080 && adb reverse tcp:8081 tcp:8081",
     "deploy:k8s": "yarn test && ./.k8s/deploy-k8s.sh",
-    "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh && yarn copy-assets",
+    "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh",
     "modules:checkout": "./bin/modules/checkout.sh",
     "copy-config": "./bin/setup/config.sh",
     "update-android-app-id": "ts-node update-android-app-id.ts"

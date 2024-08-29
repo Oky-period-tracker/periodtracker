@@ -11,6 +11,7 @@ fi
 # Add the submodules
 git submodule add $k8s_url $k8s_path
 git submodule add $resources_url $resources_path
+git submodule add $common_url $common_path
 git submodule add $delete_account_url $delete_account_path
 
 # Optional modules

@@ -8,6 +8,12 @@ node_modules
 app.json
 eas.json
 
+# Continuous native generation
+android
+android_backup
+ios
+ios_backup
+
 # Redux
 src/redux/config.ts
 

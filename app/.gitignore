@@ -14,9 +14,6 @@ android_backup
 ios
 ios_backup
 
-# Redux
-src/redux/config.ts
-
 # Firebase
 ios/GoogleService-Info.plist
 ios/GoogleService-Info.plist.*

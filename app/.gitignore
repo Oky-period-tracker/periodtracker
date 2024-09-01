@@ -1,12 +1,7 @@
 .DS_Store
 node_modules
 .expo
-
 .env
-
-# Expo
 eas.json
-
-# Continuous native generation
 android
 ios

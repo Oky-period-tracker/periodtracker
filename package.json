@@ -7,11 +7,8 @@
     "validate:images": "yarn add sharp@0.28.3 && ts-node validateImages.ts",
     "remove-unused-assets": "ts-node removeUnusedAssets.ts",
     "generate-sql": "ts-node generateSQL.ts",
-    "generate-live-ts": "ts-node generateLiveTs.ts",
-    "generate-content-files": "yarn generate-sql && yarn generate-live-ts",
     "provinces": "ts-node --transpile-only merge-provinces.ts",
     "countries": "ts-node --transpile-only merge-countries.ts",
-    "copy-assets": "ts-node copyAssets.ts",
     "database-sync:enable": "ts-node setDatabaseSync.ts --enable",
     "database-sync:disable": "ts-node setDatabaseSync.ts --disable",
     "rm": "yarn workspaces run rm && yarn rm:app && yarn cache clean && rm -rf node_modules",
@@ -34,7 +31,6 @@
     "modules": "./bin/modules/remove.sh && ./bin/modules/pull.sh",
     "modules:checkout": "./bin/modules/checkout.sh",
     "copy-config": "./bin/setup/config.sh",
-    "update-android-app-id": "ts-node update-android-app-id.ts",
     "postinstall": "if [ -z \"$DOCKER_ENV\" ]; then cd app && yarn; fi"
   },
   "workspaces": {

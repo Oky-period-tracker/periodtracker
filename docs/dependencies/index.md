@@ -5,9 +5,14 @@ These instructions assume that you are using an apple Mac.
 ### Required:
 
 - [VS code](https://code.visualstudio.com/)
+- [Docker desktop](https://www.docker.com/products/docker-desktop/)
+
+### Recommended:
+
+These are not required however they can be used as an alternative to eas for creating builds, and simulators & emulators can be useful for development
+
 - [Xcode](https://developer.apple.com/xcode/)
 - [Android studio](https://developer.android.com/studio)
-- [Docker desktop](https://www.docker.com/products/docker-desktop/)
 
 [Here](vscode.md) you will find recommendations for using vscode
 
@@ -16,10 +21,6 @@ These instructions assume that you are using an apple Mac.
 <strong>Note:</strong> Follow the android studio setup recommended by react native. At the time of development the SDK build tools version used was `28.0.3` as indicated in the `build.gradle`.
 
 You will need to login / create a dockerhub account
-
-### Optional but recommended:
-
-- [Warp](https://www.warp.dev/)
 
 ---
 
@@ -59,16 +60,10 @@ nvm install 16.13.1
 
 ---
 
-## React native cli
+## EAS CLI
 
 ```bash
-npm i -g @react-native-community/cli@6.3.1
-```
-
-To check installed version of react-native-community/cli and its dev depedencies, use following command:
-
-```bash
-yarn list --pattern @react-native-community/cli
+npm install -g eas-cli
 ```
 
 ---
@@ -79,16 +74,6 @@ yarn list --pattern @react-native-community/cli
 
 ```bash
 brew install yarn
-```
-
----
-
-## Cocoapods
-
-A dependency manager required for iOS development
-
-```bash
-brew install cocoapods
 ```
 
 ---

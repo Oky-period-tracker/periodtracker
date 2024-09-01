@@ -1,12 +1,6 @@
 import { google } from 'googleapis';
 
-export interface UserMetrics {
-  country: string;
-  countryCode: string; // Country code
-  activeUsers: string; // Total active users
-  dau: string;         // Daily active users
-  mau: string;         // Monthly active users
-}
+
 
 export async function getEventsData(authClient: any, propertyId: string) {
   const analytics = google.analyticsdata('v1beta');
@@ -27,33 +21,57 @@ export async function getEventsData(authClient: any, propertyId: string) {
   }));
 }
 
+export interface UserMetrics {
+  country: string;
+  totalUsers: string;
+  dau: string; // Daily Active Users
+  mau: string; // Monthly Active Users
+}
+
+
+
 export async function getUserMetricsByCountry(authClient: any, propertyId: string): Promise<UserMetrics[]> {
   const analyticsData = google.analyticsdata('v1beta');
 
-  const response = await analyticsData.properties.runReport({
+  // Fetch Total Users
+  const totalUsersResponse = await analyticsData.properties.runReport({
     property: `properties/${propertyId}`,
     auth: authClient,
     requestBody: {
-      dimensions: [
-        { name: 'country' },
-        { name: 'countryIsoCode' } // Country ISO Code
-      ],
+      dimensions: [{ name: 'country' }],
+      metrics: [{ name: 'totalUsers' }], // Fetch Total Users
+      dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
+    },
+  });
+
+  // Fetch DAU and MAU
+  const dauMauResponse = await analyticsData.properties.runReport({
+    property: `properties/${propertyId}`,
+    auth: authClient,
+    requestBody: {
+      dimensions: [{ name: 'country' }],
       metrics: [
-        { name: 'activeUsers' },    // Total active users
-        { name: 'active1DayUsers' }, // Daily active users
-        { name: 'active28DayUsers' } // Monthly active users
+        { name: 'dauPerMau' }, // Fetch DAU per MAU
       ],
       dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
     },
   });
 
-  const rows = response.data.rows || [];
+  const totalUsersRows = totalUsersResponse.data.rows || [];
+  const dauMauRows = dauMauResponse.data.rows || [];
 
-  return rows.map(row => ({
-    country: row.dimensionValues?.[0]?.value || 'Unknown',
-    countryCode: row.dimensionValues?.[1]?.value || 'Unknown', // Country code
-    activeUsers: row.metricValues?.[0]?.value || '0',  // Total active users
-    dau: row.metricValues?.[1]?.value || '0',          // Daily active users
-    mau: row.metricValues?.[2]?.value || '0',          // Monthly active users
-  }));
+  return totalUsersRows.map((row, index) => {
+    const country = row.dimensionValues?.[0]?.value || 'Unknown';
+    const totalUsers = row.metricValues?.[0]?.value || '0';
+
+    const dau = dauMauRows[index]?.metricValues?.[0]?.value || '0';
+    const mau = (parseInt(totalUsers) * parseFloat(dau)).toFixed(0); // Calculate MAU using DAU per MAU ratio
+
+    return {
+      country,
+      totalUsers,
+      dau,
+      mau,
+    };
+  });
 }

@@ -4,14 +4,32 @@ Before deploying, make sure to run the tests and fix any issues. Read more about
 
 ## Mobile
 
-Before deploying, check:
+There are several ways to create release builds, the recommended way is with eas, these builds can be created locally or via eas servers, building online is free within certain usage limits, however building locally is always free
 
-- APPLICATION_ID for android: `/packages/mobile/android/gradle.properties`
-- PRODUCT_BUNDLE_IDENTIFIER for iOS: `/packages/mobile/ios/release.xcconfig`
-- Other values in the above files are correct, such as APP_DISPLAY_NAME, VERSION_CODE
-- The values in `/packages/mobile/.env.production` file
+This command has the `--local` tag meaning that the build is created locally on your machine, not on eas servers.
 
-[Deploy android](./android.md)
+```bash
+npx eas build --platform android --profile production --local
+```
+
+You can configure these builds in the /app/eas.json file, for example you can change the buildType to `apk` or `aab`
+
+```
+"android": {
+    "buildType": "apk"
+}
+```
+
+It is recommended to submit an .aab file to the Play Store rather than an .apk, however apk will also be needed for download via our website
+
+[Read more here](https://docs.expo.dev/build/introduction/) about eas builds
+
+Alternatively you can still create builds locally via Xcode, Android Studio, or gradle commands same as a bare react native app, this circumvents the need for an expo account
+
+```bash
+cd app/android
+./gradlew assembleRelease
+```
 
 ---
 

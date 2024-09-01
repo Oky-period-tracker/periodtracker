@@ -5,28 +5,8 @@ node_modules
 .env
 
 # Expo
-app.json
 eas.json
 
 # Continuous native generation
 android
-android_backup
 ios
-ios_backup
-
-# Firebase
-ios/GoogleService-Info.plist
-ios/GoogleService-Info.plist.*
-android/app/google-services.json
-android/app/google-services.json.*
-
-# assets
-ios/app/Images.xcassets
-android/app/src/main/res
-
-# Android
-android/gradle.properties
-android/local.properties
-android/app/src/main/AndroidManifest.xml
-android/app/src/main/java/
-android/app/src/debug/java/

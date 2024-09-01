@@ -66,68 +66,51 @@ VALUES (-1, 'admin', '$2b$10$cslKchhKRBsWG.dCsspbb.mkY9.opLl1t1Oxs3j2E01/Zm3llW/
 
 Your `/translations` submodule should contain SQL files eg `insert-content-en.sql`, execute this as well to insert content into the DB. [See here](./localisation/translations.md) for how to generate these SQL files when setting up your own repo / adding a new language.
 
-## Start react native
+## Expo
 
-### Run react native for Android
-
-Start the simulator, then run react-native for android:
+Inside the `/app` folder
 
 ```bash
-cd packages/mobile
-npx react-native run-android
-cd ../../
+cd app
 ```
 
-Reverse the ports to have access to the functionality of the api/cms.
+ExpoGo is a fast and simple way to run the app for development without native code. Once started you will see options in your terminal
+
+```bash
+npx expo start
+```
+
+Prebuild your `/android` and `/ios` folders.
+These folders are generated based on the `app.json` in your resources submodule. The `--clean` flag will delete these folders before re creating them, I recommend using this flag so that you don't rely on changes made directly in these untracked folders
+
+```bash
+npx expo prebuild --clean
+```
+
+Create a development build,
+Unlike ExpoGo, these builds make use of the native code in the `/android` and `/ios` folders
+
+```bash
+npx expo run:android
+```
+
+From the root of this project, you can start expo with this command
+
+```bash
+yarn dev:mobile
+```
+
+On android emulator, you may need to reverse ports for http requests to work
 
 ```bash
 yarn reverse:all-ports
 ```
 
-Or for just a single service (in this case API) run:
-
-```bash
-adb reverse tcp:3000 tcp:3000
-```
-
-If you have multiple devices connected, you need to specify the device to reverse the ports on
-
-List your devices
-
-```bash
-adb devices
-```
-
-Reverse the ports
-
-```bash
-adb -s <device name> reverse tcp:3000 tcp:3000
-adb -s <device name> reverse tcp:5000 tcp:5000
-```
-
-If there are android build errors. Try open the project in Android Studio, clean build and re-sync the gradle files.
-
-### Run react native for iOS
-
-Open the project in Xcode
-Select periodtracker.xcworkspace located in the packages/mobiles/ios, and press the play button to create a build.
-
-Alternatively, via the command line:
-
-Run react-native for iOS (you can choose relevant simulator/emulator):
-
-```bash
-cd packages/mobile
-npx react-native run-ios --simulator="iPhone 12 Pro"
-```
-
-<strong>Note:</strong> you will need access to Unicef Apple developer account so you can create your development certificate and profile before running the ios app using xcode. Please contact your product manager to gain access.
-
 ---
 
 ### Tips
 
-To speed up the sign up process in the app, search the code for `FAST_SIGN_UP` and change it to `true`, this simply adds in some default values into the form fields, including a random 4 char username and password `aaa`. Do not commit this change.
+To speed up the sign up process in the app, set `EXPO_PUBLIC_FAST_SIGN_UP` to `true` in your `.env`, this adds in some default values into the form fields, including a random 4 char username and password `aaa`.
 
 If you want to install a npm module, without re-building the docker images, just run:
 

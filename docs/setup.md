@@ -26,15 +26,13 @@ yarn
 
 ## Environment configuration
 
-There are several untracked files which need to be created for the project to run, these include .env, .properties and .xcconfig files. These can all be created from their templates with this one command
+There are several untracked files which need to be created for the project to run, such as .env files. These can all be created from their templates with this one command
 
-> Please note that if you already have already created and edited these files, running this command overwrite those changes
+> If your .env files already exist, re-running this command will not overwrite them
 
 ```bash
 yarn copy-config
 ```
-
-> For an explanation of this command, go [here](./setup_details.md#copy-config)
 
 ## Modules
 
@@ -57,23 +55,12 @@ yarn modules
 For firebase to run, you need 3 files
 
 - /packages/cms/firebase-config.json
-- /packages/mobile/android/app/google-services.json
-- /packages/mobile/ios/GoogleService-Info.plist
-
-These files are untracked so each country change these without needing to make changes to this core repo, and to keep the firebase details private.
+- /app/src/resources/google-services.json
+- /app/src/resources/GoogleService-Info.plist
 
 If you are setting up this project for the first time, you will need to set up firebase you will need to create your own [Firebase](https://learn.buildfire.com/en/articles/2060582-how-to-set-up-your-firebase-certificates-for-ios-and-android) Project. Alternatively, if you are taking over a project, request these files from whoever has access to your firebase project.
 
-You will need to enter your application id / bundle id. The values of these ids can be edited in these files:
-
-- APPLICATION_ID for android: `/packages/mobile/android/gradle.properties`
-- PRODUCT_BUNDLE_IDENTIFIER for iOS: `/packages/mobile/ios/release.xcconfig`
-
-When you have changed the APPLICATION_ID, run this command to update other android configuration files with this id
-
-```bash
-yarn update-android-app-id
-```
+You will need to enter your application id / bundle id. The values of these ids can be edited in your`app.json`, which should be kept in your `/app/src/resources` submodule
 
 You will need to have 2 apps via the [firebase console](https://console.firebase.google.com/), within your new project. An iOS app and Android app, for the react native app. Download the config files for each app and place them in the correct location, the steps can be found [here](https://learn.buildfire.com/en/articles/2060582-how-to-set-up-your-firebase-certificates-for-ios-and-android).
 
@@ -82,10 +69,6 @@ For the CMS, go to:
 
 This will automatically download a json file, rename this as `firebase-config.json` and save it in the /cms folder as listed above.
 
-### Push notifications
+<!-- ### Push notifications
 
-You will need to enable push notifications so that users can send and receive notifications from the CMS. Follow the steps [above](https://learn.buildfire.com/en/articles/2060582-how-to-set-up-your-firebase-certificates-for-ios-and-android) to make sure everything is correctly configured. For Apple you will need to make sure you have added the [Apple Push Notifications](https://learn.buildfire.com/en/articles/5760994-how-to-set-up-your-apple-push-notification-key-for-your-ios-firebase-certificate).
-
-### Crashalytics
-
-In order to be able to diagnose any issue and receive reports regarding instabilities or crashes, setup Firebase crashalytics. You can find instructions [here](https://medium.com/@Bigscal-Technologies/crashlytics-in-react-native-763b53dd5e97).
+You will need to enable push notifications so that users can send and receive notifications from the CMS. Follow the steps [above](https://learn.buildfire.com/en/articles/2060582-how-to-set-up-your-firebase-certificates-for-ios-and-android) to make sure everything is correctly configured. For Apple you will need to make sure you have added the [Apple Push Notifications](https://learn.buildfire.com/en/articles/5760994-how-to-set-up-your-apple-push-notification-key-for-your-ios-firebase-certificate). -->

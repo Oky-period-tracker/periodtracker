@@ -5,11 +5,12 @@ import { encryptTransform } from 'redux-persist-transform-encrypt'
 import createSagaMiddleware from 'redux-saga'
 import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
-import { config } from './config'
 import { version } from './version'
+import { REDUX_ENCRYPT_KEY } from '../config/env'
+
 
 const encryptor = encryptTransform({
-  secretKey: config.REDUX_ENCRYPT_KEY,
+  secretKey: REDUX_ENCRYPT_KEY,
   onError: function (/* error */) {
     // @TODO: Handle the error.
   },

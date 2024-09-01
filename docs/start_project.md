@@ -97,7 +97,7 @@ npx expo run:android
 From the root of this project, you can start expo with this command
 
 ```bash
-yarn dev:mobile
+yarn dev:app
 ```
 
 On android emulator, you may need to reverse ports for http requests to work

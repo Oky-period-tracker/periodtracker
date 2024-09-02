@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, Share } from 'react-native'
+import { View, StyleSheet, Share, ShareContent } from 'react-native'
 import { Screen } from '../../components/Screen'
 import { Hr } from '../../components/Hr'
 import { ScreenComponent } from '../../navigation/RootNavigator'
@@ -66,13 +66,12 @@ const ShareButton = () => {
   const translate = useTranslate()
 
   const shareLink = () => {
-    const message = translate('join_oky_message')
+    const message = `${translate('join_oky_message')} ${WEBSITE_URL}`
     const title = message
 
-    const shareOptions = {
+    const shareOptions: ShareContent = {
       title,
       message,
-      url: WEBSITE_URL,
     }
 
     Share.share(shareOptions)

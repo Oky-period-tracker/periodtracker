@@ -15,6 +15,8 @@ import { useProvinceOptions } from '../../../hooks/useProvinceOptions'
 import { useCountryOptions } from '../../../hooks/useCountryOptions'
 import { helpCenterAttributesSelector } from '../../../redux/selectors'
 import { useSelector } from '../../../redux/useSelector'
+import { useSearch } from '../../../hooks/useSearch'
+import { SearchBar } from '../../../components/SearchBar'
 
 type HelpFiltersModalProps = {
   visible: boolean
@@ -84,6 +86,18 @@ export const HelpFiltersModal = ({
     setProvinceWheelOption(undefined)
   }, [countryWheelOption])
 
+  const countrySearch = useSearch<WheelPickerOption>({
+    options: countryOptions,
+    keys: countrySearchKeys,
+    type: 'startsWith',
+  })
+
+  const provinceSearch = useSearch<WheelPickerOption>({
+    options: provinceOptions,
+    keys: provinceSearchKeys,
+    type: 'startsWith',
+  })
+
   const title = tabs.find((tab) => tab.section === section)?.title || ''
 
   return (
@@ -119,9 +133,10 @@ export const HelpFiltersModal = ({
 
       {section === 'region' && (
         <View style={styles.modalBody}>
+          <SearchBar query={countrySearch.query} setQuery={countrySearch.setQuery} />
           <WheelPicker
             initialOption={countryWheelOption}
-            options={countryOptions}
+            options={countrySearch.results}
             onChange={setCountryWheelOption}
             resetDeps={[visible]}
           />
@@ -130,9 +145,10 @@ export const HelpFiltersModal = ({
 
       {section === 'subregion' && (
         <View style={styles.modalBody}>
+          <SearchBar query={provinceSearch.query} setQuery={provinceSearch.setQuery} />
           <WheelPicker
             initialOption={provinceWheelOption}
-            options={provinceOptions}
+            options={provinceSearch.results}
             onChange={setProvinceWheelOption}
             resetDeps={[visible]}
           />
@@ -179,6 +195,14 @@ export const HelpFiltersModal = ({
     </Modal>
   )
 }
+
+const countrySearchKeys = [
+  'label' as const,
+]
+
+const provinceSearchKeys = [
+  'label' as const,
+]
 
 type FilterSection = 'region' | 'subregion' | 'attributes'
 

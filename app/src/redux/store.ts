@@ -6,11 +6,10 @@ import createSagaMiddleware from 'redux-saga'
 import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import { version } from './version'
-import { REDUX_ENCRYPT_KEY } from '../config/env'
-
+import { config } from '../resources/redux'
 
 const encryptor = encryptTransform({
-  secretKey: REDUX_ENCRYPT_KEY,
+  secretKey: config.REDUX_ENCRYPT_KEY,
   onError: function (/* error */) {
     // @TODO: Handle the error.
   },

@@ -1,0 +1,134 @@
+{
+  "eventsData": [
+    {
+      "eventName": "screen_view",
+      "eventCount": "739"
+    },
+    {
+      "eventName": "encyclopedia_logged_in",
+      "eventCount": "73"
+    },
+    {
+      "eventName": "user_engagement",
+      "eventCount": "61"
+    },
+    {
+      "eventName": "app_open",
+      "eventCount": "41"
+    },
+    {
+      "eventName": "daily_card_clicked",
+      "eventCount": "22"
+    },
+    {
+      "eventName": "session_start",
+      "eventCount": "20"
+    },
+    {
+      "eventName": "encyclopedia_logged_out",
+      "eventCount": "19"
+    },
+    {
+      "eventName": "CategoryExpanded",
+      "eventCount": "18"
+    },
+    {
+      "eventName": "users_accessing_encyclopedia",
+      "eventCount": "13"
+    },
+    {
+      "eventName": "EncyclopediaCategoryExpanded_logged_in",
+      "eventCount": "12"
+    },
+    {
+      "eventName": "help_logged_in",
+      "eventCount": "12"
+    },
+    {
+      "eventName": "EncyclopediaCategoryExpanded_logged_out",
+      "eventCount": "11"
+    },
+    {
+      "eventName": "SubCategoryPressed_logged_in",
+      "eventCount": "10"
+    },
+    {
+      "eventName": "daily_card_answeredEmoji",
+      "eventCount": "9"
+    },
+    {
+      "eventName": "AvatarChanged",
+      "eventCount": "8"
+    },
+    {
+      "eventName": "FuturePredictionSwitchedOn",
+      "eventCount": "7"
+    },
+    {
+      "eventName": "ThemeChanged",
+      "eventCount": "7"
+    },
+    {
+      "eventName": "first_open",
+      "eventCount": "7"
+    },
+    {
+      "eventName": "FuturePredictionSwitchedOff",
+      "eventCount": "6"
+    },
+    {
+      "eventName": "SubCategoryPressed_logged_out",
+      "eventCount": "6"
+    },
+    {
+      "eventName": "app_remove",
+      "eventCount": "6"
+    },
+    {
+      "eventName": "SubCategoryPressed",
+      "eventCount": "5"
+    },
+    {
+      "eventName": "help_logged_out",
+      "eventCount": "4"
+    },
+    {
+      "eventName": "onboard_complete",
+      "eventCount": "4"
+    },
+    {
+      "eventName": "LanguageChanged",
+      "eventCount": "3"
+    },
+    {
+      "eventName": "notification_receive",
+      "eventCount": "3"
+    },
+    {
+      "eventName": "periodDayCloudTap",
+      "eventCount": "3"
+    },
+    {
+      "eventName": "noPeriodDayCloudTap",
+      "eventCount": "2"
+    },
+    {
+      "eventName": "notification_dismiss",
+      "eventCount": "2"
+    },
+    {
+      "eventName": "app_exception",
+      "eventCount": "1"
+    }
+  ],
+  "userMetricsByCountry": [
+    {
+      "country": "India",
+      "countryCode": "IN",
+      "activeUsers": "7",
+      "dau": "7",
+      "mau": "8"
+    }
+  ],
+  "timestamp": "2024-08-15T05:40:12.300Z"
+}

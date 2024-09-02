@@ -18,6 +18,3 @@ copy_if_not_exists bin/modules/urls.sh.dist bin/modules/urls.sh
 copy_if_not_exists packages/api/.env.dist packages/api/.env
 copy_if_not_exists packages/cms/.env.dist packages/cms/.env
 copy_if_not_exists app/.env.dist app/.env
-
-# Expo
-copy_if_not_exists app/eas.json.dist app/eas.json

@@ -22,21 +22,13 @@ Next it clones / updates the git submodules:
 ./bin/modules/pull.sh
 ```
 
-The iOS/Android app icons are kept in the /assets repository but they need to be copied into the correct places. This is done via this command
-
-```bash
-yarn copy-assets
-```
-
-> If you make changes to your app icons in the /assets submodule, you will need to run this command again to copy them across
-
 ## Create your own
 
 By default `urls.sh` file contains the public whitelabelled modules. Changing the urls in this file and re-running the `yarn modules` command will replace those modules with the new urls.
 
 Follow these steps to create your own git repo to use as a sub module.
 
-As an example, this is how you can make your own `assets` module
+As an example, this is how you can make your own `resources` module
 
 Follow the steps outlined in the [setup](./setup.md#modules) to pull the current modules.
 
@@ -45,7 +37,7 @@ Create a new repository on the [github website](https://github.com/new)
 In the terminal, go to the folder of the module that you want to replace. You can find the paths for all the git submodules [here](../bin//modules/paths.sh)
 
 ```bash
-cd packages/components/src/assets
+cd app/src/resources
 ```
 
 Delete the .git directory to disassociate this directory from the original repository
@@ -95,7 +87,7 @@ git push -u origin master
 
 > You can also use the above commands to wipe the history of an existing repository and start fresh, for example you may want to do this if you want to remove sensitive information from the history, before making the repo public. The only difference is that you will need to include `-f` in the `git push` command.
 
-Update your [urls.sh](../bin//modules/urls.sh) file, so that `assets_url` is now the url for your new repository
+Update your [urls.sh](../bin//modules/urls.sh) file, so that `resources_url` is now the url for your new repository
 
 Return to the root directory
 
@@ -121,8 +113,7 @@ For clarity I recommend naming your submodules using the following pattern
 `periodtracker_purpose-label`
 
 For example:
-`periodtracker_translations-en`
-`periodtracker_assets-fr`
+`periodtracker_resources-fr`
 
 Label may not always be required:
 `periodtracker_flower`

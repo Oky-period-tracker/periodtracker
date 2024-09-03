@@ -2188,6 +2188,11 @@
   dependencies:
     stacktrace-js "^2.0.2"
 
+"@react-native-firebase/messaging@^20.4.0":
+  version "20.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-20.4.0.tgz#4f616bd5df0bf3feffc768968bec763ed2f702eb"
+  integrity sha512-Ju0rQLoJIzur+QQSQ3O2q/7aBnJa9dyT7kY1tt52vRJ38Bm3/W1NKcYPbbfqMV+N6Nelonlxs1/kaQmo/p+/AA==
+
 "@react-native/assets-registry@0.74.87":
   version "0.74.87"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.74.87.tgz#7dda64e48db14597e19e15f679e31abbb1c1fb4d"

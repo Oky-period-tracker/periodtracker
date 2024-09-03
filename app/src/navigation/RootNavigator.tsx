@@ -19,6 +19,7 @@ import { useSelector } from '../redux/useSelector'
 import { currentUserSelector } from '../redux/selectors'
 import { useAuth } from '../contexts/AuthContext'
 import { analytics } from '../services/firebase'
+import { useMessaging } from '../hooks/useMessaging'
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList
 
@@ -112,6 +113,7 @@ const theme: Theme = {
 const routesToTrack = ['Encyclopedia', 'Help']
 
 function RootNavigator() {
+  useMessaging()
   const user = useSelector(currentUserSelector)
   const { isLoggedIn } = useAuth()
 

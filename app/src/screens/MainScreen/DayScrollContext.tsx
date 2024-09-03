@@ -10,6 +10,7 @@ import {
   runOnJS,
   SharedValue,
   withSpring,
+  ReduceMotion,
 } from 'react-native-reanimated'
 import _ from 'lodash'
 import { useToggle } from '../../hooks/useToggle'
@@ -61,6 +62,11 @@ export type DayScrollContext = {
   toggleDayModal: () => void
 }
 
+// Override device reduce motion setting
+const reanimatedConfig = {
+  reduceMotion: ReduceMotion.Never,
+};
+
 const RESET_DURATION = 8000
 const SCROLL_SPEED_MULTIPLIER = 2
 const SETTLE_DURATION = 350
@@ -68,6 +74,7 @@ const SELECTED_SCALE = 1.2
 const SPRING_CONFIG = {
   damping: 5,
   stiffness: 300,
+  ...reanimatedConfig,
 }
 
 // Carousel
@@ -228,11 +235,11 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       totalOffset.value = 0
       disabled.value = false
 
-      translationX.value = withTiming(INITIAL_X)
-      totalTranslationX.value = withTiming(INITIAL_X)
+      translationX.value = withTiming(INITIAL_X, reanimatedConfig)
+      totalTranslationX.value = withTiming(INITIAL_X, reanimatedConfig)
 
-      rotationAngle.value = withTiming(0)
-      totalRotation.value = withTiming(0)
+      rotationAngle.value = withTiming(0, reanimatedConfig)
+      totalRotation.value = withTiming(0, reanimatedConfig)
 
       setState(getInitialState())
       isActive.value = false
@@ -322,14 +329,14 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     // === Settle Carousel === //
     const endX = totalTranslationX.value + displacement
     const endPosition = calculateClosestCardPosition(endX)
-    translationX.value = withTiming(endPosition, { duration: SETTLE_DURATION })
+    translationX.value = withTiming(endPosition, { duration: SETTLE_DURATION, ...reanimatedConfig })
     totalTranslationX.value = endPosition
 
     // === Settle Wheel === //
     const angle = calculateRotationAngle(displacement)
     const endAngle = calculateClosestSegmentAngle(totalRotation.value + angle)
     totalRotation.value = endAngle
-    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION }, () => {
+    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION, ...reanimatedConfig }, () => {
       // === Spring Scale === //
       selectedScale.value = withSpring(
         SELECTED_SCALE,

@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     height: '100%',
     alignSelf: 'center',
     resizeMode: 'cover',
+    backgroundColor:'#fff',
     borderColor: '#fff',
     borderWidth: 4,
     borderRadius: 20,

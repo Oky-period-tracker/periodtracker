@@ -41,7 +41,6 @@
     "expo-device": "~6.0.2",
     "expo-linking": "~6.3.1",
     "expo-localization": "~15.0.3",
-    "expo-notifications": "~0.28.16",
     "expo-screen-orientation": "~7.0.5",
     "lodash": "^4.17.21",
     "lottie-react-native": "6.7.0",

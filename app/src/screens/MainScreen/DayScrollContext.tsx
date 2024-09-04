@@ -20,7 +20,7 @@ import { useDebounceEffect } from '../../hooks/useDebounceEffect'
 
 export type DayData = PredictionDayInfo
 
-type DayScrollConstants = {
+interface DayScrollConstants {
   CARD_WIDTH: number
   CARD_MARGIN: number
   FULL_CARD_WIDTH: number
@@ -29,14 +29,14 @@ type DayScrollConstants = {
   NUMBER_OF_BUTTONS: number
 }
 
-type DayScrollState = {
+interface DayScrollState {
   startDate: Moment
   endDate: Moment
   currentIndex: number
   offset: number
 }
 
-export type DayScrollContext = {
+export interface DayScrollContext {
   state: DayScrollState
   data: DayData[]
   selectedItem: DayData | null
@@ -65,7 +65,7 @@ export type DayScrollContext = {
 // Override device reduce motion setting
 const reanimatedConfig = {
   reduceMotion: ReduceMotion.Never,
-};
+}
 
 const RESET_DURATION = 8000
 const SCROLL_SPEED_MULTIPLIER = 2
@@ -125,7 +125,9 @@ const defaultValue: DayScrollContext = {
   selectedItem: null,
   constants,
   selectedIndex: null,
-  onBodyLayout: () => {},
+  onBodyLayout: () => {
+    //
+  },
   isDragging: null,
   // Carousel
   carouselPanGesture: Gesture.Pan(),
@@ -135,7 +137,9 @@ const defaultValue: DayScrollContext = {
   selectedScale: null,
   // Wheel
   wheelPanGesture: Gesture.Pan(),
-  wheelAnimatedStyle: {},
+  wheelAnimatedStyle: {
+    //
+  },
   rotationAngle: null,
   calculateButtonPosition: () => {
     return {
@@ -147,7 +151,9 @@ const defaultValue: DayScrollContext = {
   visible: false,
   // Modal
   dayModalVisible: false,
-  toggleDayModal: () => {},
+  toggleDayModal: () => {
+    //
+  },
 }
 
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue)
@@ -336,21 +342,25 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     const angle = calculateRotationAngle(displacement)
     const endAngle = calculateClosestSegmentAngle(totalRotation.value + angle)
     totalRotation.value = endAngle
-    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION, ...reanimatedConfig }, () => {
-      // === Spring Scale === //
-      selectedScale.value = withSpring(
-        SELECTED_SCALE,
-        SPRING_CONFIG,
-        // === Finished - Update state === //
-        (finished) => {
-          if (finished) {
-            disabled.value = false
-            runOnJS(handleInfiniteData)(change)
-            runOnJS(setIsDragging)(false)
-          }
-        },
-      )
-    })
+    rotationAngle.value = withTiming(
+      endAngle,
+      { duration: SETTLE_DURATION, ...reanimatedConfig },
+      () => {
+        // === Spring Scale === //
+        selectedScale.value = withSpring(
+          SELECTED_SCALE,
+          SPRING_CONFIG,
+          // === Finished - Update state === //
+          (finished) => {
+            if (finished) {
+              disabled.value = false
+              runOnJS(handleInfiniteData)(change)
+              runOnJS(setIsDragging)(false)
+            }
+          },
+        )
+      },
+    )
   }
 
   const carouselPanGesture = Gesture.Pan()

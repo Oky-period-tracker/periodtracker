@@ -60,7 +60,7 @@
     }
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "*.{ts,tsx} -e \"app\"": [
       "tslint --fix",
       "prettier --write",
       "git add"

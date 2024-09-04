@@ -19,7 +19,7 @@ const AvatarAndThemeScreen = () => {
 
 export default AvatarAndThemeScreen
 
-type AvatarAndThemeSelectProps = {
+interface AvatarAndThemeSelectProps {
   onConfirm?: () => void
 }
 
@@ -35,14 +35,14 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
     dispatch(setAvatar(selectedAvatar))
     dispatch(setTheme(selectedTheme))
 
-    if (selectedAvatar != currentAvatar) {
+    if (selectedAvatar !== currentAvatar) {
       analytics?.().logEvent('avatarChanged', {
-        selectedAvatar: selectedAvatar,
+        selectedAvatar,
       })
     }
-    if (selectedTheme != currentTheme) {
+    if (selectedTheme !== currentTheme) {
       analytics?.().logEvent('themeChanged', {
-        selectedTheme: selectedTheme,
+        selectedTheme,
       })
     }
 
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: palette['secondary'].base,
+    color: palette.secondary.base,
     textAlign: 'center',
     marginBottom: 12,
   },
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     height: '100%',
     alignSelf: 'center',
     resizeMode: 'cover',
-    backgroundColor:'#fff',
+    backgroundColor: '#fff',
     borderColor: '#fff',
     borderWidth: 4,
     borderRadius: 20,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     fontWeight: 'bold',
-    color: palette['secondary'].base,
+    color: palette.secondary.base,
     textAlign: 'center',
   },
 })

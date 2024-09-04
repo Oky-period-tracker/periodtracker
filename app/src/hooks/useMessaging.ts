@@ -5,7 +5,7 @@ import { currentLocaleSelector } from '../redux/selectors'
 import { IS_ANDROID } from '../services/device'
 import { messaging } from '../services/firebase'
 
-export const useMessaging = () => {  
+export const useMessaging = () => {
   const locale = useSelector(currentLocaleSelector)
 
   React.useEffect(() => {
@@ -30,7 +30,7 @@ export const useMessaging = () => {
 }
 
 const requestPermission = async () => {
-  if(!messaging) {
+  if (!messaging) {
     return false
   }
 
@@ -43,11 +43,11 @@ const requestPermission = async () => {
       return true
     }
 
-    const status = await PermissionsAndroid.request(
+    const androidStatus = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     )
-    
-    return status === 'granted'
+
+    return androidStatus === 'granted'
   }
 
   /* 
@@ -59,7 +59,8 @@ const requestPermission = async () => {
   */
   const status = await messaging().hasPermission()
 
-  if (status === 1) { // AUTHORIZED
+  // AUTHORIZED
+  if (status === 1) {
     return true
   }
 

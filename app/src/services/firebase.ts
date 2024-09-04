@@ -6,6 +6,7 @@ import { FirebaseMessagingTypes }  from '@react-native-firebase/messaging'
 import Constants from 'expo-constants'
 
 // Don't use firebase with ExpoGo, causes a crash on iOS
+const isExpoGo = Constants?.executionEnvironment === 'storeClient'
 
 let analytics:
   | ReactNativeFirebase.FirebaseModuleWithStatics<
@@ -15,7 +16,7 @@ let analytics:
   | undefined
 
 try {
-  if (Constants.appOwnership != 'expo') {
+  if (!isExpoGo) {
     analytics = require('@react-native-firebase/analytics').default
   }
 } catch (e) {
@@ -30,7 +31,7 @@ let crashlytics:
   | undefined
 
 try {
-  if (Constants.appOwnership != 'expo') {
+  if (!isExpoGo) {
     crashlytics = require('@react-native-firebase/crashlytics').default
     // Enable this to check crashlytics is working or not
     // crashlytics?.().crash();
@@ -44,7 +45,7 @@ let messaging:
   | undefined
 
 try {
-  if (Constants.appOwnership != 'expo') {
+  if (!isExpoGo) {
     messaging = require('@react-native-firebase/messaging').default
   }
 } catch (e) {

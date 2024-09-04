@@ -52,9 +52,13 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
   const allVideos = useSelector(allVideosSelector)
   const locale = useSelector(currentLocaleSelector)
 
+  const liveArticles: Article[] = React.useMemo(() => {
+    return articles.filter((item) => item?.live !== false)
+  }, [articles])
+
   const articlesWithParentIds: ArticleWithParentIds[] = React.useMemo(() => {
-    return getArticlesWithParentIds(articles, categories, subCategories)
-  }, [articles, categories, subCategories])
+    return getArticlesWithParentIds(liveArticles, categories, subCategories)
+  }, [liveArticles, categories, subCategories])
 
   const { query, setQuery, results } = useSearch<ArticleWithParentIds>({
     options: articlesWithParentIds,

@@ -35,7 +35,14 @@ export const SaveAccountButton = () => {
     if (!pressed) {
       return
     }
-    setError(true)
+
+    const timeout = setTimeout(() => {
+      setError(true)
+    }, 2000)
+
+    return () => {
+      clearTimeout(timeout)
+    }
   }, [connectAccountCount, error, errorCode])
 
   // Hide error
@@ -52,7 +59,7 @@ export const SaveAccountButton = () => {
     return () => {
       clearTimeout(timeout)
     }
-  }, [error])
+  }, [error, currentUser?.name])
 
   return (
     <View style={styles.wrapper}>

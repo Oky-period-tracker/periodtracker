@@ -1,14 +1,14 @@
-import globals from "globals";
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
-import { fixupConfigRules } from "@eslint/compat";
+import globals from 'globals'
+import pluginJs from '@eslint/js'
+import tseslint from 'typescript-eslint'
+import pluginReactConfig from 'eslint-plugin-react/configs/recommended.js'
+import { fixupConfigRules } from '@eslint/compat'
 
 export default [
   {
-    files: ["**/*.js"],
+    files: ['**/*.js'],
     languageOptions: {
-      sourceType: "commonjs",
+      sourceType: 'commonjs',
     },
   },
   {
@@ -19,7 +19,7 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["**/*.jsx"],
+    files: ['**/*.jsx'],
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
@@ -30,7 +30,7 @@ export default [
   },
   ...fixupConfigRules(pluginReactConfig),
   {
-    files: ["**/*.jsx", "**/*.tsx"],
+    files: ['**/*.jsx', '**/*.tsx'],
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
@@ -39,9 +39,9 @@ export default [
       },
     },
     rules: {
-      "react/prop-types": "off",
-      "react/jsx-key": "off",
-      "react/no-unescaped-entities": "off",
+      'react/prop-types': 'off',
+      'react/jsx-key': 'off',
+      'react/no-unescaped-entities': 'off',
       /* 
         TODO: 
         no semi colons
@@ -59,17 +59,17 @@ export default [
   {
     settings: {
       react: {
-        version: "detect", // Automatically detect the React version
+        version: 'detect', // Automatically detect the React version
       },
     },
   },
   {
     ignores: [
-      ".expo",
-      "android",
-      "ios",
-      "src/prediction/*", // TODO:
-      "src/core/*", // TODO:
+      '.expo',
+      'android',
+      'ios',
+      'src/prediction/*', // TODO:
+      'src/core/*', // TODO:
     ],
   },
-];
+]

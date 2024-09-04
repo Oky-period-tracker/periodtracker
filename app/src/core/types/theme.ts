@@ -1,4 +1,4 @@
-import { ThemeName } from "../../resources/translations"
+import { ThemeName } from '../../resources/translations'
 
 export interface Theme {
   id: ThemeName

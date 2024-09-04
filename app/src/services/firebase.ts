@@ -2,7 +2,7 @@
 import { ReactNativeFirebase } from '@react-native-firebase/app'
 import { FirebaseAnalyticsTypes } from '@react-native-firebase/analytics'
 import { FirebaseCrashlyticsTypes } from '@react-native-firebase/crashlytics'
-import { FirebaseMessagingTypes }  from '@react-native-firebase/messaging'
+import { FirebaseMessagingTypes } from '@react-native-firebase/messaging'
 import Constants from 'expo-constants'
 
 // Don't use firebase with ExpoGo, causes a crash on iOS
@@ -41,7 +41,10 @@ try {
 }
 
 let messaging:
-  | ReactNativeFirebase.FirebaseModuleWithStatics<FirebaseMessagingTypes.Module, FirebaseMessagingTypes.Statics>
+  | ReactNativeFirebase.FirebaseModuleWithStatics<
+      FirebaseMessagingTypes.Module,
+      FirebaseMessagingTypes.Statics
+    >
   | undefined
 
 try {

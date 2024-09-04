@@ -18,14 +18,14 @@ import { useSelector } from '../../../redux/useSelector'
 import { useSearch } from '../../../hooks/useSearch'
 import { SearchBar } from '../../../components/SearchBar'
 
-type HelpFiltersModalProps = {
+interface HelpFiltersModalProps {
   visible: boolean
   toggleVisible: () => void
   onConfirm: (value: HelpFilters) => void
   filters: HelpFilters
 }
 
-export type HelpFilters = {
+export interface HelpFilters {
   region: string | undefined
   subRegion: string | undefined
   attributes: number[]
@@ -196,17 +196,13 @@ export const HelpFiltersModal = ({
   )
 }
 
-const countrySearchKeys = [
-  'label' as const,
-]
+const countrySearchKeys = ['label' as const]
 
-const provinceSearchKeys = [
-  'label' as const,
-]
+const provinceSearchKeys = ['label' as const]
 
 type FilterSection = 'region' | 'subregion' | 'attributes'
 
-type FilterTab = {
+interface FilterTab {
   section: FilterSection
   title: string
   icon: string

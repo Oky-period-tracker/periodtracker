@@ -1,11 +1,11 @@
 import React from 'react'
 import { PermissionsAndroid } from 'react-native'
-import messaging from '@react-native-firebase/messaging'
 import { useSelector } from '../redux/useSelector'
 import { currentLocaleSelector } from '../redux/selectors'
 import { IS_ANDROID } from '../services/device'
+import { messaging } from '../services/firebase'
 
-export const useMessaging = () => {
+export const useMessaging = () => {  
   const locale = useSelector(currentLocaleSelector)
 
   React.useEffect(() => {
@@ -18,18 +18,22 @@ export const useMessaging = () => {
         return
       }
 
-      messaging().subscribeToTopic(topicName)
+      messaging?.().subscribeToTopic(topicName)
     }
 
     handleMessaging()
 
     return () => {
-      messaging().unsubscribeFromTopic(topicName)
+      messaging?.().unsubscribeFromTopic(topicName)
     }
   }, [locale])
 }
 
 const requestPermission = async () => {
+  if(!messaging) {
+    return false
+  }
+
   if (IS_ANDROID) {
     const alreadyGranted = await PermissionsAndroid.check(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,

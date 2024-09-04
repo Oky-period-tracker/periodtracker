@@ -24,18 +24,6 @@ export interface AppAssets {
     launch_icon: ImageSourcePropType
     spin_load_face: ImageSourcePropType
     spin_load_circle: ImageSourcePropType
-    icons: {
-      starOrange: {
-        empty: ImageSourcePropType
-        half: ImageSourcePropType
-        full: ImageSourcePropType
-      }
-      heart: {
-        empty: ImageSourcePropType
-        half: ImageSourcePropType
-        full: ImageSourcePropType
-      }
-    }
   }
   general: {
     aboutBanner: Record<Locale, ImageSourcePropType>

@@ -24,10 +24,7 @@
     "no-increment-decrement": false,
     "no-namespace": false,
     "no-reference": false,
-    "no-this-assignment": [
-      true,
-      { "allowed-names": ["^self$"], "allow-destructuring": true }
-    ],
+    "no-this-assignment": [true, { "allowed-names": ["^self$"], "allow-destructuring": true }],
     "no-unused-variable": true,
     "object-literal-sort-keys": false,
     "object-shorthand-properties-first": false,
@@ -47,5 +44,6 @@
     ],
     "quotemark": false
   },
-  "rulesDirectory": []
+  "rulesDirectory": [],
+  "exclude": ["./app"]
 }

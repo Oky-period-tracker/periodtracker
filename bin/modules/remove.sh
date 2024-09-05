@@ -7,7 +7,7 @@ rm -rf ./.git/modules/
 rm -rf .gitmodules
 
 # Declare an array with the paths
-declare -a paths=($k8s_path $assets_path $translations_path $delete_account_path $flower_path)
+declare -a paths=($k8s_path $resources_path $common_path $delete_account_path $flower_path)
 
 # Loop over the paths, and remove all the files
 for path in "${paths[@]}"; do

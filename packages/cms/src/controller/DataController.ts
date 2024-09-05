@@ -17,8 +17,8 @@ import {
   fromDidYouKnows,
   fromHelpCenters,
   fromAvatarMessages,
-  appTranslations,
-  content,
+  // appTranslations,
+  // content,
   defaultLocale,
   countries,
   provinces,
@@ -149,7 +149,7 @@ export class DataController {
     response.setHeader('Content-type', 'text/plain')
     response.send(fileContent) // Send the file data as a response
   }
-
+  /*
   async generateContentSheet(request: Request, response: Response, next: NextFunction) {
     const shouldFilter = request.query?.filter === 'new'
 
@@ -171,7 +171,7 @@ export class DataController {
       INNER JOIN ${env.db.schema}.subcategory sc  
       ON ar.subcategory = sc.id::varchar
       WHERE ar.lang = $1
-      /* AND ar.live = true */
+      // AND ar.live = true 
       ORDER BY ca.title, sc.title ASC
       `,
       [request.user.lang],
@@ -430,6 +430,7 @@ export class DataController {
     )
     response.send(buffer) // Send the file data as a response
   }
+*/
 
   async uploadContentSheet(request: Request, response: Response, next: NextFunction) {
     // Ensure a file was uploaded
@@ -476,7 +477,8 @@ export class DataController {
     }, {})
 
     // Generate new Ids for everything if it is a new locale
-    const isNewLocale = !content[locale]
+    // const isNewLocale = !content[locale] TODO:
+    const isNewLocale = true
 
     const { articles, categories, subCategories } = formatEncyclopediaData(
       encyclopediaJson,
@@ -536,7 +538,8 @@ export class DataController {
     response.send(fileContent) // Send the file data as a response
   }
 
-  async generateAppTranslationsSheet(request: Request, response: Response, next: NextFunction) {
+  /*   
+async generateAppTranslationsSheet(request: Request, response: Response, next: NextFunction) {
     const buffer = generateSingleTabSheet(appTranslations[defaultLocale], 'app')
 
     const filename = 'app-translations.xlsx'
@@ -548,7 +551,8 @@ export class DataController {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
     response.send(buffer) // Send the file data as a response
-  }
+  } 
+    */
 
   async generateCmsTranslationsSheet(request: Request, response: Response, next: NextFunction) {
     const buffer = generateSingleTabSheet(cmsTranslations[defaultLocale], 'cms')

@@ -12,8 +12,8 @@ fi
 
 # List of submodule paths; ensure these are relative to the root of your superproject
 SUBMODULE_PATHS=(
-    $assets_path
-    $translations_path
+    $resources_path
+    $common_path
     $k8s_path
     $delete_account_path
     $flower_path

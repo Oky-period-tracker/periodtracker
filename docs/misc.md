@@ -1,10 +1,15 @@
 ## Common commands
 
-How install packages:
+Install packages:
 
 ```bash
-yarn workspace @oky/mobile add react-native-linear-gradient
-yarn workspace @oky/components add redux
+npx expo install
+```
+
+Check the expo project
+
+```bash
+npx expo-doctor
 ```
 
 How run the backend in production mode:
@@ -51,22 +56,6 @@ docker volume rm $(docker volume ls -q)
 1. `yarn run test:prediction-engine` runs the prediction engine test suite
 2. `yarn run test:saga` runs the redux and sagas test suite
 3. `yarn run test:all` will run both consecutively
-
-### React Developer Tools
-
-You can use it to debug the React component hierarchy. Run:
-
-```bash
-yarn devtools
-```
-
-If you're not in a simulator then you also need to run the following in a command prompt:
-
-```bash
-adb reverse tcp:8097 tcp:8097
-```
-
----
 
 Use this command to allow the emulator to access the internet:
 

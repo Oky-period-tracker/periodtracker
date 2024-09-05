@@ -35,6 +35,7 @@ const FindHelpScreen: ScreenComponent<'Help'> = () => {
       }
 
       if (
+        filters.region &&
         filters.subRegion &&
         item.subRegion &&
         !item.subRegion?.split(',').includes(filters.subRegion)

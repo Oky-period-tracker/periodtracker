@@ -148,7 +148,7 @@ export const HelpFiltersModal = ({
           <SearchBar query={provinceSearch.query} setQuery={provinceSearch.setQuery} />
           <WheelPicker
             initialOption={provinceWheelOption}
-            options={provinceSearch.results}
+            options={countryWheelOption ? provinceSearch.results : []}
             onChange={setProvinceWheelOption}
             resetDeps={[visible]}
           />

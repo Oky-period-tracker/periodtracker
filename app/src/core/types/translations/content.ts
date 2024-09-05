@@ -204,6 +204,8 @@ export interface HelpCenterAttribute {
   emoji: string
   name: string
   attributeName?: string // TODO:redundant
+  isActive?: boolean
+  lang?: string
 }
 
 export interface HelpCenterAttributes extends Array<HelpCenterAttribute> {}

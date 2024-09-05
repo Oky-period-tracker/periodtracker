@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     marginBottom: 80, // Same as Swiper footer
+    maxWidth: 800,
   },
   body: {
     width: '100%',

@@ -3,7 +3,6 @@ import { Modal as RNModal, StyleSheet, TouchableOpacity, View, ViewStyle } from 
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
-import { IS_WEB } from '../services/device'
 import { useAccessibilityLabel } from '../hooks/useAccessibilityLabel'
 import { Button, ButtonProps } from './Button'
 
@@ -62,9 +61,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    alignItems: IS_WEB ? 'center' : undefined,
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   children: {
+    flex: 1,
     margin: 24,
   },
   closeButton: {

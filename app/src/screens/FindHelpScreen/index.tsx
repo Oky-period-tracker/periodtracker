@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux'
 import { setSavedHelpCenters } from '../../redux/actions'
 import { SearchBar } from '../../components/SearchBar'
 import { globalStyles } from '../../config/theme'
+import { Screen } from '../../components/Screen'
 
 const FindHelpScreen: ScreenComponent<'Help'> = () => {
   const helpCenters = useSelector(allHelpCentersForCurrentLocale)
@@ -83,7 +84,7 @@ const FindHelpScreen: ScreenComponent<'Help'> = () => {
   const hasFilters = filters.region || filters.subRegion || filters.attributes.length
 
   return (
-    <View>
+    <Screen>
       <View style={styles.searchRow}>
         <View style={styles.filterButton}>{/* Spacer */}</View>
         <SearchBar query={query} setQuery={setQuery} style={[styles.search, globalStyles.shadow]} />
@@ -131,7 +132,7 @@ const FindHelpScreen: ScreenComponent<'Help'> = () => {
         onConfirm={setFilters}
         filters={filters}
       />
-    </View>
+    </Screen>
   )
 }
 

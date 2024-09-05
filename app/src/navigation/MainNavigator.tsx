@@ -10,20 +10,13 @@ import SettingsStack, { SettingsStackParamList } from './stacks/SettingsStack'
 import { TabIcon } from './components/TabIcon'
 import { UserIcon } from '../components/icons/UserIcon'
 import { IS_IOS } from '../services/device'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export type MainStackParamList = {
   profile: NavigatorScreenParams<ProfileStackParamList>
   home: NavigatorScreenParams<HomeStackParamList>
   encyclopedia: NavigatorScreenParams<EncyclopediaStackParamList>
   settings: NavigatorScreenParams<SettingsStackParamList>
-}
-
-const screenOptions: BottomTabNavigationOptions = {
-  tabBarStyle: {
-    minHeight: 60,
-    padding: IS_IOS ? 8 : 0,
-    backgroundColor: '#F1F1F1',
-  },
 }
 
 const options: BottomTabNavigationOptions = {
@@ -40,6 +33,17 @@ const options: BottomTabNavigationOptions = {
 const Tab = createBottomTabNavigator()
 
 function MainNavigator() {
+  const insets = useSafeAreaInsets()
+
+  const screenOptions: BottomTabNavigationOptions = {
+    tabBarStyle: {
+      minHeight: 60,
+      padding: IS_IOS ? 8 : 0,
+      backgroundColor: '#F1F1F1',
+      paddingBottom: insets.bottom,
+    },
+  }
+
   return (
     <Tab.Navigator initialRouteName={'home'} screenOptions={screenOptions}>
       <Tab.Screen

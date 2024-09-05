@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button } from '../../components/Button'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
@@ -28,26 +28,34 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      {showBackButton ? (
-        <Button onPress={onBackPress} style={styles.button} accessibilityLabel={label}>
-          <FontAwesome size={12} name={'arrow-left'} color={'#fff'} />
-        </Button>
-      ) : null}
-      {date ? (
-        <DateBadge date={date} style={styles.dateBadge} />
-      ) : (
-        <Text enableTranslate={enableTranslate} style={styles.title}>
-          {title}
-        </Text>
-      )}
-    </SafeAreaView>
+    <View style={styles.wrapper}>
+      <SafeAreaView style={styles.container}>
+        {showBackButton ? (
+          <Button onPress={onBackPress} style={styles.button} accessibilityLabel={label}>
+            <FontAwesome size={12} name={'arrow-left'} color={'#fff'} />
+          </Button>
+        ) : null}
+        {date ? (
+          <DateBadge date={date} style={styles.dateBadge} />
+        ) : (
+          <Text enableTranslate={enableTranslate} style={styles.title}>
+            {title}
+          </Text>
+        )}
+      </SafeAreaView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     width: '100%',
+    maxWidth: 800,
     minHeight: 80,
     alignItems: 'center',
     flexDirection: 'row',

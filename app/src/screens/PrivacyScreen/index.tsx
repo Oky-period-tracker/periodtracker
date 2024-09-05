@@ -4,14 +4,17 @@ import { InfoDisplay } from '../../components/InfoDisplay'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { useSelector } from '../../redux/useSelector'
 import { privacyContent } from '../../redux/selectors'
+import { Screen } from '../../components/Screen'
 
 const PrivacyScreen: ScreenComponent<'Privacy'> = () => {
   const content = useSelector(privacyContent)
 
   return (
-    <ScrollView>
-      <InfoDisplay content={content} />
-    </ScrollView>
+    <Screen>
+      <ScrollView>
+        <InfoDisplay content={content} />
+      </ScrollView>
+    </Screen>
   )
 }
 

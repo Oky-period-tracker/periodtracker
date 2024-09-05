@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ScreenComponent } from '../../navigation/RootNavigator'
-import { Screen } from '../../components/Screen'
+import { FullScreen } from '../../components/Screen'
 import { DayTracker } from './components/DayTracker'
 import { Survey } from './components/Survey'
 import { SurveyProvider } from './components/Survey/SurveyContext'
@@ -34,7 +34,7 @@ const DayScreen: ScreenComponent<'Day'> = (props) => {
   }
 
   return (
-    <Screen>
+    <FullScreen>
       {hasSurvey ? (
         <SurveyProvider survey={newSurvey} onFinish={onFinishSurvey}>
           <Survey />
@@ -42,7 +42,7 @@ const DayScreen: ScreenComponent<'Day'> = (props) => {
       ) : (
         <DayTracker {...props} />
       )}
-    </Screen>
+    </FullScreen>
   )
 }
 

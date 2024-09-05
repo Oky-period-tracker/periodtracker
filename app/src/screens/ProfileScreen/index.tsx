@@ -29,6 +29,7 @@ export default ProfileScreen
 
 const styles = StyleSheet.create({
   flatList: {
+    paddingHorizontal: 12,
     width: '100%',
   },
 })

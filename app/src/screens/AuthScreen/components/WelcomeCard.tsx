@@ -31,6 +31,9 @@ export const WelcomeCard = ({ icon, subtitle, description }: WelcomeCardProps) =
 
 const styles = StyleSheet.create({
   page: {
+    maxWidth: 800,
+    backgroundColor: '#FFF',
+    borderRadius: 20,
     flex: 1,
     width: '100%',
     justifyContent: 'center',
@@ -40,7 +43,7 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
     marginBottom: 24,
   },
@@ -50,7 +53,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 26,
-    flex: 1,
     textAlign: 'center',
     fontWeight: 'bold',
     color: palette['danger'].base,

@@ -7,13 +7,14 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { useEncyclopedia } from './EncyclopediaContext'
 import { SearchBar } from '../../components/SearchBar'
 import { globalStyles } from '../../config/theme'
+import { Screen } from '../../components/Screen'
 
 const EncyclopediaScreen: ScreenComponent<'Encyclopedia'> = ({ navigation }) => {
   const { query, setQuery } = useEncyclopedia()
   const goToHelpScreen = () => navigation.navigate('Help')
 
   return (
-    <>
+    <Screen>
       <HelpCard onPress={goToHelpScreen} />
 
       <ScrollView
@@ -26,7 +27,7 @@ const EncyclopediaScreen: ScreenComponent<'Encyclopedia'> = ({ navigation }) => 
         <Accordion />
         <View style={styles.spacer} />
       </ScrollView>
-    </>
+    </Screen>
   )
 }
 

@@ -36,7 +36,7 @@ const InfoScreen: ScreenComponent<'Info'> = ({ navigation }) => {
   ]
 
   return (
-    <Screen>
+    <Screen style={styles.screen}>
       <View style={[styles.container, globalStyles.shadow]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1
@@ -57,6 +57,9 @@ export default InfoScreen
 const ArrowRight = () => <FontAwesome size={12} name={'arrow-right'} color={'#D1D0D2'} />
 
 const styles = StyleSheet.create({
+  screen: {
+    paddingHorizontal: 12,
+  },
   container: {
     backgroundColor: '#fff',
     borderRadius: 20,

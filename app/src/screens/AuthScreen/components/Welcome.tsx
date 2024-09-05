@@ -8,6 +8,7 @@ import { UserIcon } from '../../../components/icons/UserIcon'
 import { WelcomeCard } from './WelcomeCard'
 import { useDispatch } from 'react-redux'
 import { setHasOpened } from '../../../redux/actions'
+import { FullScreen } from '../../../components/Screen'
 
 export const Welcome = () => {
   const [index, setIndex] = React.useState(0)
@@ -31,7 +32,14 @@ export const Welcome = () => {
   ]
 
   return (
-    <Swiper index={index} setIndex={setIndex} pages={pages} renderActionRight={renderActionRight} />
+    <FullScreen>
+      <Swiper
+        index={index}
+        setIndex={setIndex}
+        pages={pages}
+        renderActionRight={renderActionRight}
+      />
+    </FullScreen>
   )
 }
 

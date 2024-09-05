@@ -114,6 +114,9 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
+    maxWidth: 800,
+    backgroundColor: '#FFF',
+    borderRadius: 20,
   },
   body: {
     flex: 1,

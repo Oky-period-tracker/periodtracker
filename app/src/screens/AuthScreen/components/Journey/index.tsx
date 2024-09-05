@@ -3,12 +3,15 @@ import { Swiper } from '../../../../components/Swiper'
 import { JourneyProvider, journeySteps, useJourney } from './JourneyContext'
 import { JourneyCard } from './components/JourneyCard'
 import { JourneyReview } from './components/JourneyReview'
+import { FullScreen } from '../../../../components/Screen'
 
 export const Journey = () => {
   return (
-    <JourneyProvider>
-      <JourneyInner />
-    </JourneyProvider>
+    <FullScreen>
+      <JourneyProvider>
+        <JourneyInner />
+      </JourneyProvider>
+    </FullScreen>
   )
 }
 

@@ -159,6 +159,7 @@ const getCheckStatus = ({
 
 const styles = StyleSheet.create({
   screen: {
+    maxWidth: 800,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -192,6 +193,7 @@ const styles = StyleSheet.create({
   },
   theme: {
     minWidth: 100,
+    maxWidth: 180,
     height: 100,
     flexBasis: '40%',
     margin: 8,

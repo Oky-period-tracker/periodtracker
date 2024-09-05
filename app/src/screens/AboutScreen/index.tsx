@@ -5,6 +5,7 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { useSelector } from '../../redux/useSelector'
 import { aboutBannerSelector, aboutContent, currentLocaleSelector } from '../../redux/selectors'
 import { assets } from '../../resources/assets'
+import { Screen } from '../../components/Screen'
 
 const AboutScreen: ScreenComponent<'About'> = () => {
   const content = useSelector(aboutContent)
@@ -17,10 +18,12 @@ const AboutScreen: ScreenComponent<'About'> = () => {
       assets?.general?.aboutBanner[locale]
 
   return (
-    <ScrollView>
-      <Image source={source} style={styles.banner} resizeMode="contain" />
-      <InfoDisplay content={content} />
-    </ScrollView>
+    <Screen>
+      <ScrollView>
+        <Image source={source} style={styles.banner} resizeMode="contain" />
+        <InfoDisplay content={content} />
+      </ScrollView>
+    </Screen>
   )
 }
 

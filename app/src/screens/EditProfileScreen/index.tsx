@@ -230,7 +230,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   const confirmStatus = canConfirm ? 'primary' : 'basic'
 
   return (
-    <Screen>
+    <Screen style={styles.screen}>
       {/* =============== Profile =============== */}
       <View style={[styles.container, globalStyles.shadow]}>
         {/* ===== Name ===== */}
@@ -317,6 +317,9 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
 export default EditProfileScreen
 
 const styles = StyleSheet.create({
+  screen: {
+    paddingHorizontal: 12,
+  },
   container: {
     backgroundColor: '#fff',
     width: '100%',

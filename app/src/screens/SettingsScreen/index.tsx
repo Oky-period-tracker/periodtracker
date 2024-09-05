@@ -110,7 +110,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   ]
 
   return (
-    <Screen>
+    <Screen style={styles.screen}>
       <View style={[styles.container, globalStyles.shadow]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1
@@ -155,6 +155,9 @@ const PredictionControls = () => {
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    paddingHorizontal: 12,
+  },
   container: {
     backgroundColor: '#fff',
     borderRadius: 20,

@@ -123,6 +123,9 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'column',
     padding: 24,
+    maxWidth: 800,
+    backgroundColor: '#FFF',
+    borderRadius: 20,
   },
   button: {
     marginLeft: 'auto',

@@ -95,44 +95,48 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const messageOpacity = message ? 1 : 0
 
   return (
-    <View style={styles.screen}>
-      <View style={[styles.messageBoxContainer, globalStyles.shadow, { opacity: messageOpacity }]}>
-        <View style={[styles.messageBox, globalStyles.elevation]}>
-          <Text>{message}</Text>
+    <View style={styles.wrapper}>
+      <View style={styles.screen}>
+        <View
+          style={[styles.messageBoxContainer, globalStyles.shadow, { opacity: messageOpacity }]}
+        >
+          <View style={[styles.messageBox, globalStyles.elevation]}>
+            <Text>{message}</Text>
+          </View>
         </View>
-      </View>
 
-      <View style={[styles.container, globalStyles.shadow]}>
-        <Calendar
-          onDayPress={onDayPress}
-          style={[styles.calendar, globalStyles.elevation]}
-          theme={theme}
-          enableSwipeMonths
-          hideExtraDays
-          renderArrow={(direction: 'left' | 'right') => {
-            return (
-              <DisplayButton style={styles.arrowButton}>
-                <FontAwesome size={12} name={`arrow-${direction}`} color={'#fff'} />
-              </DisplayButton>
-            )
-          }}
-          markedDates={markedDates}
-        />
-      </View>
-
-      <Modal visible={choiceModalVisible} toggleVisible={toggleChoiceModalVisible}>
-        <View style={styles.modalBody}>
-          <TouchableOpacity onPress={toDailyCard} style={styles.confirm}>
-            <Text style={styles.confirmText}>to_daily_card</Text>
-          </TouchableOpacity>
-          <Hr />
-          <TouchableOpacity onPress={toDayModal} style={styles.confirm}>
-            <Text style={styles.confirmText}>change_period</Text>
-          </TouchableOpacity>
+        <View style={[styles.container, globalStyles.shadow]}>
+          <Calendar
+            onDayPress={onDayPress}
+            style={[styles.calendar, globalStyles.elevation]}
+            theme={theme}
+            enableSwipeMonths
+            hideExtraDays
+            renderArrow={(direction: 'left' | 'right') => {
+              return (
+                <DisplayButton style={styles.arrowButton}>
+                  <FontAwesome size={12} name={`arrow-${direction}`} color={'#fff'} />
+                </DisplayButton>
+              )
+            }}
+            markedDates={markedDates}
+          />
         </View>
-      </Modal>
 
-      <DayModal data={dataEntry} visible={dayModalVisible} toggleVisible={toggleDayModal} />
+        <Modal visible={choiceModalVisible} toggleVisible={toggleChoiceModalVisible}>
+          <View style={styles.modalBody}>
+            <TouchableOpacity onPress={toDailyCard} style={styles.confirm}>
+              <Text style={styles.confirmText}>to_daily_card</Text>
+            </TouchableOpacity>
+            <Hr />
+            <TouchableOpacity onPress={toDayModal} style={styles.confirm}>
+              <Text style={styles.confirmText}>change_period</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <DayModal data={dataEntry} visible={dayModalVisible} toggleVisible={toggleDayModal} />
+      </View>
     </View>
   )
 }
@@ -148,11 +152,18 @@ const theme: CalendarProps['theme'] = {
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   screen: {
     flex: 1,
     height: '100%',
     width: '100%',
     paddingHorizontal: 12,
+    maxWidth: 800,
   },
   container: {
     borderRadius: 20,

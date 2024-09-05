@@ -38,8 +38,16 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
     return <AvatarAndThemeSelect onConfirm={onConfirm} />
   }
 
+  if (authMode === 'welcome') {
+    return <Welcome />
+  }
+
+  if (authMode === 'onboard_journey') {
+    return <Journey />
+  }
+
   return (
-    <SafeScreen>
+    <SafeScreen style={styles.screen}>
       {authMode === 'start' && <AuthScreenHeader />}
 
       <View style={[styles.wrapper, globalStyles.shadow]}>
@@ -51,9 +59,6 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
           {authMode === 'delete_account' && <DeleteAccount />}
         </AnimatedContainer>
       </View>
-
-      {authMode === 'welcome' && <Welcome />}
-      {authMode === 'onboard_journey' && <Journey />}
 
       {authMode === 'start' && (
         <>
@@ -73,6 +78,9 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
 export default AuthScreen
 
 const styles = StyleSheet.create({
+  screen: {
+    paddingHorizontal: 12,
+  },
   wrapper: {
     width: '100%',
   },

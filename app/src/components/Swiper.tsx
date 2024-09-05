@@ -134,8 +134,6 @@ const styles = StyleSheet.create({
   page: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderRadius: 20,
     overflow: 'hidden',
     width: '100%',
     marginRight,

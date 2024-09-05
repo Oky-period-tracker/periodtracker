@@ -67,15 +67,18 @@ $('#regionDropdown').on('change', (e, params) => {
 
   if (selectedRegion) {
     const regionSubRegions = subRegions.filter((subRegion) => subRegion.code === selectedRegion)
-
+    $('#subRegionDropdown').append($(`<option id="-1"/>`).val(null).text('all'))
     $.each(regionSubRegions, function (i, subRegion) {
       $('#subRegionDropdown').append(
         $(`<option id=${subRegion.uid}/>`).val(subRegion.uid).text(subRegion[locale]),
       )
 
       if (params) {
-        if (params.placeCode === subRegion.uid.toString()) {
-          $(`#${subRegion.uid}`).attr('selected', true)
+        const isSelected = params.placeCode.split(',').includes(subRegion.uid.toString())
+        if (isSelected) {
+          document
+            .querySelector(`#subRegionDropdown option[id="${subRegion.uid}"]`)
+            ?.setAttribute('selected', true)
         }
       }
     })
@@ -136,6 +139,11 @@ $('#help-center-form').on('submit', (event) => {
 
   const helpCenter = output.find((element) => element.name === 'helpCenterId')
 
+  let data = output
+  if (!data.find((item) => item.name === 'subRegion')) {
+    data = [...data, { name: 'subRegion', value: null }]
+  }
+
   const payload = {
     url: Number(helpCenter.value) ? `/help-center/${helpCenter.value}` : '/help-center',
     type: Number(helpCenter.value) ? 'PUT' : 'POST',
@@ -167,13 +175,13 @@ $('#help-center-form').on('submit', (event) => {
       isAttribExist = true
     }
 
-    if (name === 'region') {
-      place.region = value
-    }
+    // if (name === 'region') {
+    //   place.region = value
+    // }
 
-    if (name === 'subRegion') {
-      place.subRegion = value
-    }
+    // if (name === 'subRegion') {
+    //   place.subRegion = value
+    // }
   })
 
   // if (!isAvailableNationwide) {

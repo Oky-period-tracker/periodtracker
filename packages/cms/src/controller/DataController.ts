@@ -22,10 +22,10 @@ import {
   defaultLocale,
   countries,
   provinces,
+  // cmsTranslations,
 } from '@oky/core'
-import { EncyclopediaResponse, EncyclopediaResponseItem } from '@oky/core/src/api/types'
+// import { EncyclopediaResponse, EncyclopediaResponseItem } from '@oky/core/src/api/types'
 import { env } from '../env'
-import { cmsTranslations } from '../i18n/options'
 
 export class DataController {
   private articleRepository = getRepository(Article)
@@ -554,19 +554,19 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
   } 
     */
 
-  async generateCmsTranslationsSheet(request: Request, response: Response, next: NextFunction) {
-    const buffer = generateSingleTabSheet(cmsTranslations[defaultLocale], 'cms')
+  // async generateCmsTranslationsSheet(request: Request, response: Response, next: NextFunction) {
+  //   const buffer = generateSingleTabSheet(cmsTranslations[defaultLocale], 'cms')
 
-    const filename = 'cms-translations.xlsx'
+  //   const filename = 'cms-translations.xlsx'
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', `attachment; filename=${filename}`)
-    response.setHeader(
-      'Content-type',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    )
-    response.send(buffer) // Send the file data as a response
-  }
+  //   // Set the headers to inform the browser about file type and suggested filename
+  //   response.setHeader('Content-disposition', `attachment; filename=${filename}`)
+  //   response.setHeader(
+  //     'Content-type',
+  //     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //   )
+  //   response.send(buffer) // Send the file data as a response
+  // }
 
   async uploadAppTranslationsSheet(request: Request, response: Response, next: NextFunction) {
     // Ensure a file was uploaded

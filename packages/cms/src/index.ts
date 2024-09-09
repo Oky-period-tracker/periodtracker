@@ -16,7 +16,8 @@ import { env } from './env'
 import ormconfig from '../ormconfig'
 import { DataController } from './controller/DataController'
 import multer from 'multer'
-import { cmsLocales } from './i18n/options'
+import path from 'path'
+import { cmsLocales, defaultLocale } from '@oky/core'
 
 createConnection(ormconfig)
   .then(() => {
@@ -34,8 +35,11 @@ createConnection(ormconfig)
     app.use(express.static(__dirname + '/public'))
     i18n.configure({
       locales: cmsLocales,
-      directory: __dirname + '/i18n/translations',
-      defaultLocale: env.defaultLocale,
+      directory: path.join(
+        path.dirname(require.resolve('@oky/core/package.json')),
+        'src/common/translations',
+      ),
+      defaultLocale,
       cookie: 'i18n',
     })
 
@@ -62,7 +66,7 @@ createConnection(ormconfig)
       // @ts-ignore
       res.locals.globalErrors = req.flash('error')
       res.locals.currentUser = req.user
-      i18n.setLocale(req, req.user ? req.user.lang : env.defaultLocale)
+      i18n.setLocale(req, req.user ? req.user.lang : defaultLocale)
       next()
     })
 

@@ -7,6 +7,7 @@ import { DatePicker } from '../../../../../components/DatePicker'
 import moment from 'moment'
 import { WheelPickerModal } from '../../../../../components/WheelPickerModal'
 import { palette } from '../../../../../config/theme'
+import { asLocal } from '../../../../../services/dateUtils'
 
 export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const { state, dispatch, dayOptions, weekOptions } = useJourney()
@@ -15,7 +16,7 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const week = weekOptions.find((item) => item.value === state.cycleLength)
 
   const setDate = (day: DateData) => {
-    const value = moment(day.timestamp)
+    const value = asLocal(moment(day.timestamp))
     dispatch({ type: 'startDate', value })
   }
 

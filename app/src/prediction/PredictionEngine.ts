@@ -180,6 +180,22 @@ export class PredictionEngine {
       const isToday = newDate.isSame(today)
 
       const { onPeriod, onFertile, date } = this.predictDay(newDate)
+
+      if (isToday) {
+        const todayValue = {
+          selected: true,
+          selectedColor: '#FF8C00',
+          selectedTextColor: '#fff',
+        }
+
+        const newEntry = date.format('YYYY-MM-DD')
+        markedDates = {
+          ...markedDates,
+          [newEntry]: todayValue,
+        }
+        continue
+      }
+
       if (onPeriod || onFertile) {
         const tempArr = Object.keys(verifiedPeriodsData)
         const tempValuesArr = Object.values(verifiedPeriodsData)
@@ -232,14 +248,6 @@ export class PredictionEngine {
             selectedColor: '#fff',
             selectedTextColor: '#E3629B',
             dotColor: '#e3629b',
-          }
-        }
-
-        if (isToday) {
-          newValue = {
-            selected: true,
-            selectedColor: '#FF8C00',
-            selectedTextColor: '#fff',
           }
         }
 

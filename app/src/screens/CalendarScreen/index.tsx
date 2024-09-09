@@ -10,7 +10,7 @@ import { useToggle } from '../../hooks/useToggle'
 
 import { useCalculateStatusForDateRange, usePredictDay } from '../../contexts/PredictionProvider'
 import moment from 'moment'
-import { isFutureDate } from '../../services/dateUtils'
+import { asLocal, isFutureDate } from '../../services/dateUtils'
 import { DayModal } from '../../components/DayModal'
 import { useSelector } from 'react-redux'
 import {
@@ -69,7 +69,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   }
 
   const onDayPress = (day: DateData) => {
-    const selectedMoment = moment(day.dateString)
+    const selectedMoment = asLocal(moment(day.dateString))
     if (isFutureDate(selectedMoment)) {
       setMessage(`too_far_ahead`)
       return

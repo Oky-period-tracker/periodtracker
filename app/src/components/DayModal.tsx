@@ -65,8 +65,10 @@ export const DayModal = ({ data, visible, toggleVisible }: { data: DayData } & M
   React.useEffect(() => {
     if (moment(inputDay).diff(moment(currentCycleInfo.cycleStart), 'days') < 0) {
       setNewCycleHistory(true)
+    } else {
+      setNewCycleHistory(false)
     }
-  }, [addNewCycleHistory])
+  }, [addNewCycleHistory, inputDay])
 
   // const minimizeToTutorial = () => {
   //   toggleVisible();

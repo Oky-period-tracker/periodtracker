@@ -18,19 +18,33 @@ import { useToggle } from '../../../../hooks/useToggle'
 import { useTranslate } from '../../../../hooks/useTranslate'
 import moment from 'moment'
 import { analytics } from '../../../../services/firebase'
+import { useResponsive } from '../../../../contexts/ResponsiveContext'
 
 export const EmojiQuestionCard = ({
   topic,
   dataEntry,
   size = 'large',
+  tutorial = false,
 }: {
   topic: keyof EmojiQuestionOptions
   dataEntry?: DayData
   size?: BadgeSize
   mutuallyExclusive?: boolean
   includeDayModal?: boolean
+  tutorial?: boolean
 }) => {
   const translate = useTranslate()
+  const { UIConfig } = useResponsive()
+
+  // Tutorial styles
+  const {
+    titleFontSize,
+    titleMargin,
+    textFontSize,
+    questionFontSize,
+    questionMargin,
+    emojiMargin,
+  } = UIConfig.tutorial.emojiCard
 
   const mutuallyExclusive = topic === 'flow'
   const includeDayModal = topic === 'flow'
@@ -86,9 +100,38 @@ export const EmojiQuestionCard = ({
 
   return (
     <View style={styles.page}>
-      <Text style={styles.title}>{title}</Text>
-      <Text>{description}</Text>
-      <Text style={styles.question}>{question}</Text>
+      <Text
+        style={[
+          styles.title,
+          tutorial && {
+            fontSize: titleFontSize,
+            marginBottom: titleMargin,
+          },
+        ]}
+      >
+        {title}
+      </Text>
+      <Text
+        style={
+          tutorial && {
+            fontSize: textFontSize,
+          }
+        }
+      >
+        {description}
+      </Text>
+      <Text
+        style={[
+          styles.question,
+          tutorial && {
+            marginTop: questionMargin,
+            marginBottom: questionMargin,
+            fontSize: questionFontSize,
+          },
+        ]}
+      >
+        {question}
+      </Text>
       <View style={styles.body}>
         <View style={styles.emojiContainer}>
           {options.map(([key, emoji]) => {
@@ -109,7 +152,7 @@ export const EmojiQuestionCard = ({
                 text={text}
                 status={status}
                 size={size}
-                style={styles.emojiBadge}
+                style={[styles.emojiBadge, tutorial && { marginVertical: emojiMargin }]}
               />
             )
           })}

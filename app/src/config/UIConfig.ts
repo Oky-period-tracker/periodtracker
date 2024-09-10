@@ -1,3 +1,5 @@
+import { BadgeSize } from '../components/EmojiBadge'
+
 export type BreakPointSize = 's' | 'm' // | 'l' | 'xl'
 
 export interface UIConfig {
@@ -11,6 +13,15 @@ export interface UIConfig {
   tutorial: {
     paddingTop: number
     paddingBottom: number
+    emojiCard: {
+      titleFontSize: number
+      titleMargin: number
+      questionFontSize: number
+      textFontSize: number
+      questionMargin: number
+      emojiMargin: number
+      badgeSize: BadgeSize
+    }
   }
   avatar: {
     position: number
@@ -40,6 +51,15 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     tutorial: {
       paddingTop: 12,
       paddingBottom: 12,
+      emojiCard: {
+        titleFontSize: 16,
+        titleMargin: 12,
+        textFontSize: 10,
+        questionFontSize: 14,
+        questionMargin: 8,
+        emojiMargin: 4,
+        badgeSize: 'tiny',
+      },
     },
     avatar: {
       position: -20,
@@ -62,6 +82,15 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     tutorial: {
       paddingTop: 120,
       paddingBottom: 80,
+      emojiCard: {
+        titleFontSize: 20,
+        titleMargin: 24,
+        questionFontSize: 16,
+        textFontSize: 14,
+        questionMargin: 12,
+        emojiMargin: 12,
+        badgeSize: 'small',
+      },
     },
     avatar: {
       position: -40,

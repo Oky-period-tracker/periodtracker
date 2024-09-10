@@ -5,18 +5,23 @@ import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 import { useTodayPrediction } from '../../../contexts/PredictionProvider'
 import { useDayStatus } from '../../../hooks/useDayStatus'
 import { globalStyles } from '../../../config/theme'
+import { useResponsive } from '../../../contexts/ResponsiveContext'
 
 export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { width } = useScreenDimensions()
   const todaysInfo = useTodayPrediction()
   const { status } = useDayStatus(todaysInfo)
+  const { UIConfig } = useResponsive()
 
   return (
     <View
       style={[
         styles.container,
         globalStyles.shadow,
-        { left: width / 2 - WIDTH - MARGIN_RIGHT },
+        {
+          width: UIConfig.centerCard.width,
+          left: width / 2 - UIConfig.centerCard.width - MARGIN_RIGHT,
+        },
         style,
       ]}
     >
@@ -30,12 +35,10 @@ export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   )
 }
 
-const WIDTH = 120
 const MARGIN_RIGHT = 8
 
 const styles = StyleSheet.create({
   container: {
-    width: WIDTH,
     height: 80,
     backgroundColor: '#FFF',
     position: 'absolute',

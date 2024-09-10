@@ -6,12 +6,14 @@ import { recordToArray } from '../services/utils'
 export type ResponsiveContext = {
   width: number
   height: number
+  size: BreakPointSize
   UIConfig: UIConfig
 }
 
 const defaultValue: ResponsiveContext = {
   width: 0,
   height: 0,
+  size: 'm',
   UIConfig: responsiveConfig.s,
 }
 
@@ -28,6 +30,7 @@ export const ResponsiveProvider = ({ children }: React.PropsWithChildren) => {
       value={{
         width,
         height,
+        size,
         UIConfig,
       }}
     >
@@ -40,11 +43,11 @@ export const useResponsive = () => {
   return React.useContext(ResponsiveContext)
 }
 
-const getSize = (width: number) => {
+const getSize = (length: number) => {
   let size: BreakPointSize = 's'
 
   recordToArray(breakPoints).forEach(([key, value]) => {
-    if (width >= value) {
+    if (length >= value) {
       size = key
     }
   })

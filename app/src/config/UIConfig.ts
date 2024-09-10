@@ -32,6 +32,10 @@ export interface UIConfig {
     barHeight: number
     iconSize: number
   }
+  misc: {
+    touchableRowPadding: number
+    touchableRowHeight: number
+  }
 }
 
 export const breakPoints: Record<BreakPointSize, number> = {
@@ -70,6 +74,10 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       barHeight: 6,
       iconSize: 10,
     },
+    misc: {
+      touchableRowPadding: 12,
+      touchableRowHeight: 80,
+    },
   },
   m: {
     carousel: {
@@ -100,6 +108,10 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       marginVertical: 1,
       barHeight: 8,
       iconSize: 12,
+    },
+    misc: {
+      touchableRowPadding: 24,
+      touchableRowHeight: 100,
     },
   },
 }

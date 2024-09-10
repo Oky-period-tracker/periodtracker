@@ -9,9 +9,11 @@ import { ProgressBar } from './ProgressBar'
 import { palette, starColor } from '../../config/theme'
 import { SharedValue, runOnJS, useAnimatedReaction } from 'react-native-reanimated'
 import { HeartAnimation } from './HeartAnimation'
+import { useResponsive } from '../../contexts/ResponsiveContext'
 
 export const ProgressSection = ({ heartProgress }: { heartProgress: SharedValue<number> }) => {
   const [progress, setProgress] = React.useState(0)
+  const { UIConfig } = useResponsive()
 
   useAnimatedReaction(
     () => heartProgress.value,
@@ -28,27 +30,57 @@ export const ProgressSection = ({ heartProgress }: { heartProgress: SharedValue<
   const starPercent = Math.min(Object.keys(cardAnswersToday).length * 25, 100)
 
   return (
-    <View style={[styles.container]} pointerEvents={'none'}>
+    <View
+      style={[
+        styles.container,
+        {
+          bottom: UIConfig.progressSection.position,
+        },
+      ]}
+      pointerEvents={'none'}
+    >
       {/* ===== Hearts ===== */}
-      <View style={styles.section}>
+      <View
+        style={[
+          styles.section,
+          {
+            marginVertical: UIConfig.progressSection.marginVertical,
+          },
+        ]}
+      >
         <Ionicons
           name={getHeart(heartPercent)}
           color={palette.danger.base}
-          size={ICON_SIZE}
+          size={UIConfig.progressSection.iconSize}
           style={styles.icon}
         />
-        <ProgressBar color={palette.danger.base} value={heartPercent} />
+        <ProgressBar
+          color={palette.danger.base}
+          value={heartPercent}
+          height={UIConfig.progressSection.barHeight}
+        />
       </View>
 
       {/* ===== Stars ===== */}
-      <View style={styles.section}>
+      <View
+        style={[
+          styles.section,
+          {
+            marginVertical: UIConfig.progressSection.marginVertical,
+          },
+        ]}
+      >
         <FontAwesome
           name={getStar(Object.keys(cardAnswersToday).length)}
           color={starColor}
-          size={ICON_SIZE}
+          size={UIConfig.progressSection.iconSize}
           style={styles.icon}
         />
-        <ProgressBar color={starColor} value={starPercent} />
+        <ProgressBar
+          color={starColor}
+          value={starPercent}
+          height={UIConfig.progressSection.barHeight}
+        />
       </View>
 
       {/* ===== Animated hearts ===== */}
@@ -73,12 +105,9 @@ const getStar = (numberOfElements: number) => {
   return 'star-o'
 }
 
-const ICON_SIZE = 12
-
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 28,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -89,7 +118,7 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 1,
+    marginVertical: 0,
   },
   icon: {
     marginRight: 4,

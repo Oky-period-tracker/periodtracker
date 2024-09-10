@@ -15,6 +15,12 @@ export interface UIConfig {
   avatar: {
     position: number
   }
+  progressSection: {
+    position: number
+    marginVertical: number
+    barHeight: number
+    iconSize: number
+  }
 }
 
 export const breakPoints: Record<BreakPointSize, number> = {
@@ -38,6 +44,12 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     avatar: {
       position: -20,
     },
+    progressSection: {
+      position: 24,
+      marginVertical: 0,
+      barHeight: 6,
+      iconSize: 10,
+    },
   },
   m: {
     carousel: {
@@ -53,6 +65,12 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     },
     avatar: {
       position: -40,
+    },
+    progressSection: {
+      position: 28,
+      marginVertical: 1,
+      barHeight: 8,
+      iconSize: 12,
     },
   },
 }

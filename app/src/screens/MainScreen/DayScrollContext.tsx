@@ -169,7 +169,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   }
 
   // ================ State ================ //
-  const [state, setState] = React.useState(getInitialState(INITIAL_X))
+  const [state, setState] = React.useState(getInitialState(INITIAL_INDEX))
   const { startDate, endDate } = state
 
   const isDragging = React.useRef(false)
@@ -256,7 +256,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       rotationAngle.value = withTiming(0, reanimatedConfig)
       totalRotation.value = withTiming(0, reanimatedConfig)
 
-      setState(getInitialState(INITIAL_X))
+      setState(getInitialState(INITIAL_INDEX))
       isActive.value = false
     }, RESET_DURATION)
 

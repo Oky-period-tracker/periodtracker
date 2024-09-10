@@ -65,7 +65,7 @@ export const Input = ({
       {hasError && <ErrorText>{errorKey}</ErrorText>}
       <TouchableOpacity
         onPress={onPress}
-        disabled={displayOnly || !props.multiline}
+        disabled={displayOnly} // Disabled only for displayOnly mode
         activeOpacity={1}
         style={[
           styles.container,
@@ -74,7 +74,7 @@ export const Input = ({
           style,
         ]}
       >
-        <View style={styles.wrapper}>
+        <View style={[styles.wrapper, props.multiline && styles.multiline]}>
           <View style={styles.sideComponent}>{actionLeft}</View>
           {displayOnly ? (
             <Text
@@ -86,7 +86,6 @@ export const Input = ({
           ) : (
             <>
               {!value && (
-                // Separate from <TextInput> so that the cursor is centered
                 <Text
                   style={[styles.placeholder, { color: placeholderTextColor }]}
                   enableTranslate={false}
@@ -139,7 +138,6 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   multiline: {
-    flex: 1,
     justifyContent: 'flex-start',
   },
   placeholder: {

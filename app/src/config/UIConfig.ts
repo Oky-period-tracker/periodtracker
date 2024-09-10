@@ -8,6 +8,10 @@ export interface UIConfig {
   centerCard: {
     width: number
   }
+  tutorial: {
+    paddingTop: number
+    paddingBottom: number
+  }
 }
 
 export const breakPoints: Record<BreakPointSize, number> = {
@@ -24,6 +28,10 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     centerCard: {
       width: 100,
     },
+    tutorial: {
+      paddingTop: 12,
+      paddingBottom: 12,
+    },
   },
   m: {
     carousel: {
@@ -32,6 +40,10 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     },
     centerCard: {
       width: 120,
+    },
+    tutorial: {
+      paddingTop: 120,
+      paddingBottom: 80,
     },
   },
 }

@@ -20,7 +20,7 @@ const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
   const allArticles = useSelector(articlesSelector)
 
   const articles = React.useMemo(() => {
-    return subcategory.articles.reduce<Article[]>((acc, articleId) => {
+    return subcategory?.articles.reduce<Article[]>((acc, articleId) => {
       if (articleIds.includes(articleId)) {
         acc.push(allArticles.byId[articleId])
       }
@@ -43,7 +43,7 @@ const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
     <Screen>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <SearchBar query={query} setQuery={setQuery} style={globalStyles.shadow} />
-        {articles.map((article) => {
+        {articles?.map((article) => {
           return (
             <View style={[styles.card, globalStyles.shadow]} key={article.id}>
               <Text style={styles.title} enableTranslate={false}>

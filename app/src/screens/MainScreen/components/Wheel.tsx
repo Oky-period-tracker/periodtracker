@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10, // Above CenterCard
   },
   button: {
     position: 'absolute',

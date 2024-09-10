@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { View, StyleSheet, Alert } from 'react-native'
+import { View, StyleSheet, Alert, ScrollView } from 'react-native'
 import { Button } from '../../components/Button'
-import { Screen } from '../../components/Screen'
 import { Hr } from '../../components/Hr'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { TouchableRow, TouchableRowProps } from '../../components/TouchableRow'
@@ -110,7 +109,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   ]
 
   return (
-    <Screen style={styles.screen}>
+    <ScrollView contentContainerStyle={styles.screen}>
       <View style={[styles.container, globalStyles.shadow]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1
@@ -142,7 +141,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
           contact_us
         </Button>
       </View>
-    </Screen>
+    </ScrollView>
   )
 }
 

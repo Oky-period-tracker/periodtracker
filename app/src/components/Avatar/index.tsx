@@ -16,6 +16,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { AvatarMessage } from './AvatarMessage'
+import { useResponsive } from '../../contexts/ResponsiveContext'
 
 interface AnimationConfig {
   start: number
@@ -46,6 +47,7 @@ const defaultDance = animationSequences.danceFour
 export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const avatar = useSelector(currentAvatarSelector)
   const { diameter } = useDayScroll()
+  const { UIConfig } = useResponsive()
 
   const isJumpingToggled = useSharedValue(false)
   const isDancingToggled = useSharedValue(false)
@@ -144,7 +146,11 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const lottieHeight = lottieWidth / lottieAspectRatio
 
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.container, style]} activeOpacity={1}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.container, { top: UIConfig.avatar.position }, style]}
+      activeOpacity={1}
+    >
       <AvatarMessage />
       <AnimatedLottieView
         resizeMode="contain"
@@ -165,7 +171,6 @@ const styles = StyleSheet.create({
   container: {
     margin: 8,
     position: 'absolute',
-    top: -40, // CircleProgress height
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',

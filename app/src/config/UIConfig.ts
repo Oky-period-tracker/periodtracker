@@ -12,6 +12,9 @@ export interface UIConfig {
     paddingTop: number
     paddingBottom: number
   }
+  avatar: {
+    position: number
+  }
 }
 
 export const breakPoints: Record<BreakPointSize, number> = {
@@ -32,6 +35,9 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       paddingTop: 12,
       paddingBottom: 12,
     },
+    avatar: {
+      position: -20,
+    },
   },
   m: {
     carousel: {
@@ -44,6 +50,9 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     tutorial: {
       paddingTop: 120,
       paddingBottom: 80,
+    },
+    avatar: {
+      position: -40,
     },
   },
 }

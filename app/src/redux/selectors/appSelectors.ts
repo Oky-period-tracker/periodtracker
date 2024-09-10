@@ -5,9 +5,9 @@ const s = (state: ReduxState) => state.app
 const predictionS = (state: ReduxState) => state.prediction
 
 export const currentLocaleSelector = (state: ReduxState) => {
-  const stateLocale = s(state).locale
+  const stateLocale = s(state)?.locale
   const locales = Object.keys(appTranslations)
-  if (!locales.includes(stateLocale)) {
+  if (!stateLocale || !locales.includes(stateLocale)) {
     return defaultLocale
   }
   return stateLocale

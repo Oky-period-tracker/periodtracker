@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import {Platform, Alert, KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Input } from '../../../../components/Input'
 import { Text } from '../../../../components/Text'
 import { Hr } from '../../../../components/Hr'
@@ -22,8 +22,20 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
   const [notes, setNotes] = React.useState(reduxEntry.notes)
 
   const onPress = () => {
+    
     if (!userID || !dataEntry) {
       return
+
+    }
+
+    if(!title && !notes){
+      if(Platform.OS == 'web'){
+        window.alert("Please fill data")
+      }
+      else{
+        Alert.alert("Please fill data");
+      }
+
     }
 
     reduxDispatch(

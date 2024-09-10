@@ -14,17 +14,23 @@ import { TutorialProvider, useTutorial } from './TutorialContext'
 import { TutorialTextbox } from './components/TutorialTextbox'
 import { TutorialArrow } from './components/TutorialArrow'
 import { TutorialFeature } from './components/TutorialFeature'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { useFetchSurvey } from '../../hooks/useFetchSurvey'
 import { useLoading, useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AvatarMessageProvider } from '../../contexts/AvatarMessageContext'
 import { IS_ANDROID } from '../../services/device'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
+  const isFocused = useIsFocused()
   const { setLoading } = useLoading()
+
   React.useEffect(() => {
+    if (!isFocused) {
+      return
+    }
     setLoading(true)
-  }, [])
+  }, [isFocused])
+
   useFetchSurvey()
   useStopLoadingEffect()
 

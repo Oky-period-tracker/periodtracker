@@ -23,7 +23,7 @@ function* periodicallyAttemptConvertGuestAccount() {
   const maxAttempts = 10
 
   while (!userSaved && attempts <= maxAttempts) {
-    const duration = 1000 * 60 * 5 // 5 minutes
+    const duration = 1000 * 60 // 1 minute
     yield delay(duration)
 
     // @ts-expect-error TODO:

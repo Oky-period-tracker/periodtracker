@@ -143,6 +143,13 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const lottieWidth = diameter * 0.33 - 12
   const lottieHeight = lottieWidth / lottieAspectRatio
 
+  // - Top half of lottie is empty space, +72 height of CircleProgress
+  let marginTop = -lottieHeight / 1.75 + 72
+  if (avatar === 'oky') {
+    // TODO: Oky lottie different size to the rest
+    marginTop = -lottieHeight / 2.25 + 72
+  }
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -152,8 +159,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         {
           width: lottieWidth,
           height: lottieHeight,
-          // - Top half of lottie is empty space, +72 height of CircleProgress
-          marginTop: -lottieHeight / 1.75 + 72,
+          marginTop,
         },
       ]}
       activeOpacity={1}
@@ -176,6 +182,7 @@ const AnimatedLottieView = Animated.createAnimatedComponent(LottieView)
 
 const styles = StyleSheet.create({
   container: {
+    marginLeft: 12,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',

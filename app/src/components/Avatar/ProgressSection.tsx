@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { cardAnswerSelector } from '../../redux/selectors'
+import { cardAnswerSelector, currentAvatarSelector } from '../../redux/selectors'
 import moment from 'moment'
 import { useSelector } from '../../redux/useSelector'
 import { ProgressBar } from './ProgressBar'
@@ -18,6 +18,7 @@ export const ProgressSection = ({
   heartProgress: SharedValue<number>
   lottieHeight: number
 }) => {
+  const avatar = useSelector(currentAvatarSelector)
   const [progress, setProgress] = React.useState(0)
   const { UIConfig } = useResponsive()
 
@@ -35,12 +36,21 @@ export const ProgressSection = ({
 
   const starPercent = Math.min(Object.keys(cardAnswersToday).length * 25, 100)
 
+  let bottom = lottieHeight / 10
+  let backgroundColor = '#fff'
+  if (avatar === 'oky') {
+    // TODO: Oky lottie different size to the rest
+    bottom = -lottieHeight / 20
+    backgroundColor = 'transparent'
+  }
+
   return (
     <View
       style={[
         styles.container,
         {
-          bottom: lottieHeight / 10,
+          backgroundColor,
+          bottom,
         },
       ]}
       pointerEvents={'none'}

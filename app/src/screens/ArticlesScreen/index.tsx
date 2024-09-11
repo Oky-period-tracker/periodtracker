@@ -46,9 +46,11 @@ const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
         {articles?.map((article) => {
           return (
             <View style={[styles.card, globalStyles.shadow]} key={article.id}>
-              <Text style={styles.title} enableTranslate={false}>
-                {article.title}
-              </Text>
+              {article.title && (
+                <Text style={styles.title} enableTranslate={false}>
+                  {article.title}
+                </Text>
+              )}
               <Text style={styles.subCategory} enableTranslate={false}>
                 {subcategory.name}
               </Text>

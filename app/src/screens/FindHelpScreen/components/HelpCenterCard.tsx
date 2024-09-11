@@ -8,7 +8,9 @@ import { Button } from '../../../components/Button'
 import { HelpCenter } from '../../../core/types'
 import { globalStyles } from '../../../config/theme'
 import { useSelector } from '../../../redux/useSelector'
-import { helpCenterAttributesSelector } from '../../../redux/selectors'
+import { currentUserSelector, helpCenterAttributesSelector } from '../../../redux/selectors'
+import { analytics } from '../../../services/firebase'
+import { useAuth } from '../../../contexts/AuthContext'
 
 export const HelpCenterCard = ({
   helpCenter,
@@ -22,6 +24,34 @@ export const HelpCenterCard = ({
   const [expanded, toggleExpanded] = useToggle()
   const helpCenterAttributes = useSelector(helpCenterAttributesSelector)
 
+  const user = useSelector(currentUserSelector)
+  const { isLoggedIn } = useAuth()
+  const hasAccess = user && isLoggedIn
+  console.log('*** HelpCenterCard')
+
+  const onPress = () => {
+    toggleExpanded()
+
+    console.log('*** onPress')
+
+    if (expanded) {
+      return
+    }
+
+    if (hasAccess) {
+      analytics?.().logEvent('helpCenterPressedLoggedIn', {
+        userId: user.id,
+        helpCenterId: helpCenter.id,
+        helpCenterTitle: helpCenter.title,
+      })
+    } else {
+      analytics?.().logEvent('helpCenterPressedLoggedOut', {
+        helpCenterId: helpCenter.id,
+        helpCenterTitle: helpCenter.title,
+      })
+    }
+  }
+
   const websites = helpCenter.website?.split(',')
 
   const emoji = React.useMemo(() => {
@@ -32,7 +62,7 @@ export const HelpCenterCard = ({
   }, [helpCenter])
 
   return (
-    <TouchableOpacity onPress={toggleExpanded} style={[styles.helpCenterCard, globalStyles.shadow]}>
+    <TouchableOpacity onPress={onPress} style={[styles.helpCenterCard, globalStyles.shadow]}>
       <View style={styles.topRow}>
         <View style={styles.topRowText}>
           <Text style={styles.title} enableTranslate={false}>

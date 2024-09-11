@@ -16,7 +16,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { AvatarMessage } from './AvatarMessage'
-import { useResponsive } from '../../contexts/ResponsiveContext'
 
 interface AnimationConfig {
   start: number
@@ -47,7 +46,6 @@ const defaultDance = animationSequences.danceFour
 export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const avatar = useSelector(currentAvatarSelector)
   const { diameter } = useDayScroll()
-  const { UIConfig } = useResponsive()
 
   const isJumpingToggled = useSharedValue(false)
   const isDancingToggled = useSharedValue(false)
@@ -148,7 +146,16 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.container, { top: UIConfig.avatar.position }, style]}
+      style={[
+        styles.container,
+        style,
+        {
+          width: lottieWidth,
+          height: lottieHeight,
+          // - Top half of lottie is empty space, +72 height of CircleProgress
+          marginTop: -lottieHeight / 1.75 + 72,
+        },
+      ]}
       activeOpacity={1}
     >
       <AvatarMessage />
@@ -160,7 +167,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         autoPlay={false}
         loop={false}
       />
-      <ProgressSection heartProgress={animatedHearts} />
+      <ProgressSection heartProgress={animatedHearts} lottieHeight={lottieHeight} />
     </TouchableOpacity>
   )
 }
@@ -169,8 +176,6 @@ const AnimatedLottieView = Animated.createAnimatedComponent(LottieView)
 
 const styles = StyleSheet.create({
   container: {
-    margin: 8,
-    position: 'absolute',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',

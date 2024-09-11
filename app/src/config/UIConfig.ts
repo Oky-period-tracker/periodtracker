@@ -23,11 +23,7 @@ export interface UIConfig {
       badgeSize: BadgeSize
     }
   }
-  avatar: {
-    position: number
-  }
   progressSection: {
-    position: number
     marginVertical: number
     barHeight: number
     iconSize: number
@@ -40,7 +36,7 @@ export interface UIConfig {
 
 export const breakPoints: Record<BreakPointSize, number> = {
   s: 0,
-  m: 740,
+  m: 840,
 }
 
 export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
@@ -65,11 +61,7 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
         badgeSize: 'tiny',
       },
     },
-    avatar: {
-      position: -20,
-    },
     progressSection: {
-      position: 24,
       marginVertical: 0,
       barHeight: 6,
       iconSize: 10,
@@ -100,11 +92,7 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
         badgeSize: 'small',
       },
     },
-    avatar: {
-      position: -40,
-    },
     progressSection: {
-      position: 28,
       marginVertical: 1,
       barHeight: 8,
       iconSize: 12,

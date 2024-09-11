@@ -11,7 +11,13 @@ import { SharedValue, runOnJS, useAnimatedReaction } from 'react-native-reanimat
 import { HeartAnimation } from './HeartAnimation'
 import { useResponsive } from '../../contexts/ResponsiveContext'
 
-export const ProgressSection = ({ heartProgress }: { heartProgress: SharedValue<number> }) => {
+export const ProgressSection = ({
+  heartProgress,
+  lottieHeight,
+}: {
+  heartProgress: SharedValue<number>
+  lottieHeight: number
+}) => {
   const [progress, setProgress] = React.useState(0)
   const { UIConfig } = useResponsive()
 
@@ -34,7 +40,7 @@ export const ProgressSection = ({ heartProgress }: { heartProgress: SharedValue<
       style={[
         styles.container,
         {
-          bottom: UIConfig.progressSection.position,
+          bottom: lottieHeight / 10,
         },
       ]}
       pointerEvents={'none'}

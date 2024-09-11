@@ -8,10 +8,11 @@ import { globalStyles } from '../../../config/theme'
 import { useResponsive } from '../../../contexts/ResponsiveContext'
 
 export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
-  const { width } = useScreenDimensions()
+  const { width: screenWidth } = useScreenDimensions()
   const todaysInfo = useTodayPrediction()
   const { status } = useDayStatus(todaysInfo)
   const { UIConfig } = useResponsive()
+  const { width, numberFontSize, textFontSize } = UIConfig.centerCard
 
   return (
     <View
@@ -19,16 +20,20 @@ export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         styles.container,
         globalStyles.shadow,
         {
-          width: UIConfig.centerCard.width,
-          left: width / 2 - UIConfig.centerCard.width - MARGIN_RIGHT,
+          width,
+          left: screenWidth / 2 - width - MARGIN_RIGHT,
         },
         style,
       ]}
     >
-      <Text enableTranslate={false} style={styles.number} status={status}>
+      <Text
+        enableTranslate={false}
+        style={[styles.number, { fontSize: numberFontSize }]}
+        status={status}
+      >
         {todaysInfo.onPeriod ? todaysInfo.daysLeftOnPeriod : todaysInfo.daysUntilNextPeriod}
       </Text>
-      <Text style={styles.text} status={status}>
+      <Text style={[styles.text, { fontSize: textFontSize }]} status={status}>
         {todaysInfo.onPeriod ? 'left' : 'to_go'}
       </Text>
     </View>

@@ -9,6 +9,8 @@ export interface UIConfig {
   }
   centerCard: {
     width: number
+    numberFontSize: number
+    textFontSize: number
   }
   tutorial: {
     paddingTop: number
@@ -47,6 +49,8 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     },
     centerCard: {
       width: 100,
+      numberFontSize: 26,
+      textFontSize: 12,
     },
     tutorial: {
       paddingTop: 12,
@@ -78,6 +82,8 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     },
     centerCard: {
       width: 120,
+      numberFontSize: 36,
+      textFontSize: 14,
     },
     tutorial: {
       paddingTop: 120,

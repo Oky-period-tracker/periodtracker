@@ -110,7 +110,7 @@ export const ForgotPassword = () => {
         <Input
           value={password}
           onChangeText={setPassword}
-          placeholder="password"
+          placeholder="new_password"
           secureTextEntry={true}
           errors={errors}
           errorKeys={['password_too_short']}

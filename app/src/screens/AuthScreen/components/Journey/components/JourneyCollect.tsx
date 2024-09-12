@@ -16,7 +16,7 @@ export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const week = weekOptions.find((item) => item.value === state.cycleLength)
 
   const setDate = (day: DateData) => {
-    const value = asLocal(moment(day.timestamp))
+    const value = asLocal(moment(day.dateString))
     dispatch({ type: 'startDate', value })
   }
 

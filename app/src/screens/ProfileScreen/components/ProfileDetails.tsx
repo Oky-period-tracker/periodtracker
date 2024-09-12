@@ -81,10 +81,10 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
             <Text enableTranslate={false} style={[styles.text, styles.bold]}>
               {currentUser?.name}
             </Text>
-            <Text style={[styles.text, styles.bold]}>{currentUser?.gender}</Text>
             <Text enableTranslate={false} style={[styles.text, styles.bold]}>
               {formatMonthYear(currentUser?.dateOfBirth)}
             </Text>
+            <Text style={[styles.text, styles.bold]}>{currentUser?.gender}</Text>
             <Text style={[styles.text, styles.bold]}>{currentUser?.location}</Text>
           </View>
         </View>

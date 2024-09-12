@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from './Text'
+import { useResponsive } from '../contexts/ResponsiveContext'
 
 export interface TouchableRowProps {
   title: string
@@ -17,8 +18,16 @@ export const TouchableRow = ({
   component,
   disabled,
 }: TouchableRowProps) => {
+  const { UIConfig } = useResponsive()
+  const padding = UIConfig.misc.touchableRowPadding
+  const height = UIConfig.misc.touchableRowHeight
+
   return (
-    <TouchableOpacity style={styles.row} onPress={onPress} disabled={disabled}>
+    <TouchableOpacity
+      style={[styles.row, { height, padding }]}
+      onPress={onPress}
+      disabled={disabled}
+    >
       <View style={styles.rowLeft}>
         <Text style={styles.title}>{title}</Text>
         {description && <Text>{description}</Text>}

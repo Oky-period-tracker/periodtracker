@@ -1,8 +1,17 @@
+import { appTranslations, defaultLocale } from '../../resources/translations'
 import { ReduxState } from '../reducers'
 
 const s = (state: ReduxState) => state.app
 const predictionS = (state: ReduxState) => state.prediction
-export const currentLocaleSelector = (state: ReduxState) => s(state).locale
+
+export const currentLocaleSelector = (state: ReduxState) => {
+  const stateLocale = s(state)?.locale
+  const locales = Object.keys(appTranslations)
+  if (!stateLocale || !locales.includes(stateLocale)) {
+    return defaultLocale
+  }
+  return stateLocale
+}
 
 export const currentThemeSelector = (state: ReduxState) => s(state).theme
 

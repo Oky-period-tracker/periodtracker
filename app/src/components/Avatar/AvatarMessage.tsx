@@ -4,8 +4,11 @@ import { Text } from '../Text'
 import { useAvatarMessage } from '../../contexts/AvatarMessageContext'
 import { useTutorial } from '../../screens/MainScreen/TutorialContext'
 import { globalStyles } from '../../config/theme'
+import { useSelector } from 'react-redux'
+import { currentAvatarSelector } from '../../redux/selectors'
 
 export const AvatarMessage = () => {
+  const avatar = useSelector(currentAvatarSelector)
   const { message } = useAvatarMessage()
   const { state } = useTutorial()
 
@@ -13,8 +16,16 @@ export const AvatarMessage = () => {
     return null
   }
 
+  let top = 80
+  const backgroundColor = '#fff'
+  if (avatar === 'oky') {
+    // TODO: Oky lottie different size to the rest
+    top = 0
+    'transparent'
+  }
+
   return (
-    <View style={[styles.container, globalStyles.shadow]}>
+    <View style={[styles.container, { top, backgroundColor }, globalStyles.shadow]}>
       <Text enableTranslate={false} accessibilityLabel={message}>
         {message}
       </Text>

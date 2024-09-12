@@ -14,6 +14,7 @@ import { TutorialTwoStep, getTutorialTwoConfig, tutorialTwoSteps } from './tutor
 import { useDispatch } from 'react-redux'
 import { setTutorialOneActive, setTutorialTwoActive } from '../../redux/actions'
 import { useLoading, useStopLoadingEffect } from '../../contexts/LoadingProvider'
+import { useResponsive } from '../../contexts/ResponsiveContext'
 
 export type Tutorial = 'tutorial_one' | 'tutorial_two'
 
@@ -131,6 +132,8 @@ const TutorialContext = React.createContext<TutorialContext>(defaultValue)
 export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState)
 
+  const { UIConfig } = useResponsive()
+
   const { setLoading } = useLoading()
 
   const { width: screenWidth, height: screenHeight } = useScreenDimensions()
@@ -154,6 +157,7 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
           wheelLayout,
           screenWidth,
           screenHeight,
+          config: UIConfig,
         })
 
   const rotationAngle = useSharedValue(0)

@@ -9,10 +9,12 @@ import { DayData } from '../../../MainScreen/DayScrollContext'
 import { useDispatch } from 'react-redux'
 import { answerNotesCard } from '../../../../redux/actions'
 import { useTranslate } from '../../../../hooks/useTranslate'
+import { useLoading } from '../../../../contexts/LoadingProvider'
 
 export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?: () => void }) => {
   const translate = useTranslate()
   const userID = useSelector(currentUserSelector)?.id
+  const { setLoading } = useLoading()
 
   const reduxEntry = useSelector((state) => notesAnswerSelector(state, dataEntry?.date))
 
@@ -20,6 +22,11 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
 
   const [title, setTitle] = React.useState(reduxEntry.title)
   const [notes, setNotes] = React.useState(reduxEntry.notes)
+
+  const onContinue = () => {
+    setLoading(true)
+    goBack?.()
+  }
 
   const onPress = () => {
     if (!userID || !dataEntry) {
@@ -38,7 +45,7 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
     Alert.alert(translate('note_saved'), translate('note_saved_caption'), [
       {
         text: translate('continue'),
-        onPress: goBack,
+        onPress: onContinue,
       },
     ])
   }

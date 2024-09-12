@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
-import { Screen } from '../../components/Screen'
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { Button } from '../../components/Button'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { useDispatch, useSelector } from 'react-redux'
@@ -230,7 +229,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   const confirmStatus = canConfirm ? 'primary' : 'basic'
 
   return (
-    <Screen style={styles.screen}>
+    <ScrollView contentContainerStyle={styles.screen}>
       {/* =============== Profile =============== */}
       <View style={[styles.container, globalStyles.shadow]}>
         {/* ===== Name ===== */}
@@ -310,7 +309,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
       {/* ===== Modals ===== */}
       <EditPasswordModal visible={passwordModalVisible} toggleVisible={togglePasswordModal} />
       <EditSecretModal visible={secretModalVisible} toggleVisible={toggleSecretModal} />
-    </Screen>
+    </ScrollView>
   )
 }
 

@@ -25,6 +25,7 @@ const MainScreen: ScreenComponent<'Home'> = (props) => {
   React.useEffect(() => {
     setLoading(true)
   }, [])
+
   useFetchSurvey()
   useStopLoadingEffect()
 

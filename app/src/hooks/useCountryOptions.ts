@@ -9,7 +9,7 @@ export const useCountryOptions = (): WheelPickerOption[] => {
 
   const countryOptions = React.useMemo(() => {
     return Object.entries(countries).map(([key, item]) => ({
-      label: item[locale],
+      label: item?.[locale],
       value: key,
     }))
   }, [countries, locale])

@@ -17,6 +17,7 @@ import { useToggle } from '../../hooks/useToggle'
 import { useCalculateFullInfoForDateRange } from '../../contexts/PredictionProvider'
 import { PredictionDayInfo } from '../../prediction'
 import { useDebounceEffect } from '../../hooks/useDebounceEffect'
+import { useResponsive } from '../../contexts/ResponsiveContext'
 
 export type DayData = PredictionDayInfo
 
@@ -77,34 +78,7 @@ const SPRING_CONFIG = {
   ...reanimatedConfig,
 }
 
-// Carousel
-const CARD_WIDTH = 220
-const CARD_MARGIN = 32
-const FULL_CARD_WIDTH = CARD_WIDTH + CARD_MARGIN
-const SELECTED_WIDTH = CARD_WIDTH * SELECTED_SCALE
-const FULL_SELECTED_WIDTH = SELECTED_WIDTH + CARD_MARGIN
-const CARD_SCALED_DIFFERENCE = FULL_SELECTED_WIDTH - FULL_CARD_WIDTH
-
-// Wheel
-const BUTTON_SIZE = 80
-const NUMBER_OF_BUTTONS = 12
-const ANGLE_FULL_CIRCLE = 2 * Math.PI
-const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS
-const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH
-
-const INITIAL_INDEX = NUMBER_OF_BUTTONS / 2
-const INITIAL_X = -FULL_CARD_WIDTH * (NUMBER_OF_BUTTONS / 2)
-
-const constants: DayScrollConstants = {
-  CARD_WIDTH,
-  CARD_MARGIN,
-  FULL_CARD_WIDTH,
-  CARD_SCALED_DIFFERENCE,
-  BUTTON_SIZE,
-  NUMBER_OF_BUTTONS,
-}
-
-const getInitialState = () => {
+const getInitialState = (index: number) => {
   const today = moment().startOf('day')
   const todayMinusSevenDays = moment(today.clone().add(-7, 'days'))
   const todaysPlusFourDays = moment(today.clone().add(4, 'days'))
@@ -112,7 +86,7 @@ const getInitialState = () => {
   const initialState: DayScrollState = {
     startDate: todayMinusSevenDays,
     endDate: todaysPlusFourDays,
-    currentIndex: INITIAL_INDEX,
+    currentIndex: index,
     offset: 0,
   }
 
@@ -120,10 +94,17 @@ const getInitialState = () => {
 }
 
 const defaultValue: DayScrollContext = {
-  state: getInitialState(),
+  state: getInitialState(6), // 12/2
   data: [],
   selectedItem: null,
-  constants,
+  constants: {
+    BUTTON_SIZE: 80,
+    CARD_MARGIN: 32,
+    CARD_SCALED_DIFFERENCE: 44,
+    CARD_WIDTH: 220,
+    FULL_CARD_WIDTH: 252,
+    NUMBER_OF_BUTTONS: 12,
+  },
   selectedIndex: null,
   onBodyLayout: () => {
     //
@@ -159,8 +140,36 @@ const defaultValue: DayScrollContext = {
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue)
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
+  const { UIConfig } = useResponsive()
+  // Carousel
+  const CARD_WIDTH = UIConfig.carousel.cardWidth
+  const CARD_MARGIN = UIConfig.carousel.cardMargin
+  const FULL_CARD_WIDTH = CARD_WIDTH + CARD_MARGIN
+  const SELECTED_WIDTH = CARD_WIDTH * SELECTED_SCALE
+  const FULL_SELECTED_WIDTH = SELECTED_WIDTH + CARD_MARGIN
+  const CARD_SCALED_DIFFERENCE = FULL_SELECTED_WIDTH - FULL_CARD_WIDTH
+
+  // Wheel
+  const BUTTON_SIZE = 80
+  const NUMBER_OF_BUTTONS = 12
+  const ANGLE_FULL_CIRCLE = 2 * Math.PI
+  const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS
+  const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH
+
+  const INITIAL_INDEX = NUMBER_OF_BUTTONS / 2
+  const INITIAL_X = -FULL_CARD_WIDTH * (NUMBER_OF_BUTTONS / 2)
+
+  const constants: DayScrollConstants = {
+    CARD_WIDTH,
+    CARD_MARGIN,
+    FULL_CARD_WIDTH,
+    CARD_SCALED_DIFFERENCE,
+    BUTTON_SIZE,
+    NUMBER_OF_BUTTONS,
+  }
+
   // ================ State ================ //
-  const [state, setState] = React.useState(getInitialState())
+  const [state, setState] = React.useState(getInitialState(INITIAL_INDEX))
   const { startDate, endDate } = state
 
   const isDragging = React.useRef(false)
@@ -194,7 +203,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const onBodyLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout
-    setDiameter(height)
+    setDiameter(height) //
   }
 
   const [visible, setVisible] = React.useState(false)
@@ -247,7 +256,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       rotationAngle.value = withTiming(0, reanimatedConfig)
       totalRotation.value = withTiming(0, reanimatedConfig)
 
-      setState(getInitialState())
+      setState(getInitialState(INITIAL_INDEX))
       isActive.value = false
     }, RESET_DURATION)
 

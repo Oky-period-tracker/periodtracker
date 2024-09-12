@@ -341,4 +341,5 @@ export interface AppTranslations {
   secret_change_success_description: string
   password_change_fail_description: string
   info_button: string
+  new_password: string
 }

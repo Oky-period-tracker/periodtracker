@@ -15,6 +15,7 @@ import { currentLocaleSelector } from '../../../redux/selectors'
 import { CloudOutline } from '../../../components/icons/CloudOutline'
 import moment from 'moment'
 import { globalStyles } from '../../../config/theme'
+import { useResponsive } from '../../../contexts/ResponsiveContext'
 
 export const TutorialFeature = () => {
   const { state, stepConfig } = useTutorial()
@@ -93,6 +94,10 @@ export const CalendarFeature = () => {
 
 export const ActivityCardFeature = () => {
   const { width } = useScreenDimensions()
+  const { UIConfig } = useResponsive()
+
+  // Tutorial styles
+  const { badgeSize } = UIConfig.tutorial.emojiCard
 
   const aspectRatio = 0.75
   const w = width - 60 - 24 - 24 - 24
@@ -100,7 +105,7 @@ export const ActivityCardFeature = () => {
 
   return (
     <View style={[styles.notesCard, globalStyles.shadow, { width: w, height: h }]}>
-      <EmojiQuestionCard topic={'activity'} size={'small'} />
+      <EmojiQuestionCard topic={'activity'} size={badgeSize} tutorial={true} />
     </View>
   )
 }

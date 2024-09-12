@@ -9,6 +9,7 @@ import { IS_ANDROID } from '../../services/device'
 import { Text } from '../../components/Text'
 import { DateBadge } from '../../components/DateBadge'
 import { useAccessibilityLabel } from '../../hooks/useAccessibilityLabel'
+import { useResponsive } from '../../contexts/ResponsiveContext'
 
 export type HeaderProps = NativeStackHeaderProps & {
   options: CustomStackNavigationOptions
@@ -23,8 +24,14 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
   const getAccessibilityLabel = useAccessibilityLabel()
   const label = getAccessibilityLabel('arrow_button')
 
+  const { size } = useResponsive()
+
   const onBackPress = () => {
     navigation.goBack()
+  }
+
+  if (route.name === 'Home' && size === 's') {
+    return <View style={styles.spacer} />
   }
 
   return (
@@ -76,5 +83,8 @@ const styles = StyleSheet.create({
   },
   dateBadge: {
     marginLeft: 'auto',
+  },
+  spacer: {
+    height: 12,
   },
 })

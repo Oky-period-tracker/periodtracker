@@ -102,7 +102,7 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
         <Input
           value={newPassword}
           onChangeText={setNewPassword}
-          placeholder="password"
+          placeholder="new_password"
           secureTextEntry={true}
           errors={errors}
           errorKeys={['password_too_short']}

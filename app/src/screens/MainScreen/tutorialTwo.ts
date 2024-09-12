@@ -1,6 +1,7 @@
 import { LayoutRectangle } from 'react-native'
 import { TutorialStepConfig } from './TutorialContext'
 import { ActivityCardFeature, CalendarFeature, NotesFeature } from './components/TutorialFeature'
+import { UIConfig } from '../../config/UIConfig'
 
 export type TutorialTwoStep = 'track' | 'summary' | 'stars' | 'activity' | 'dairy' | 'calendar'
 
@@ -13,25 +14,30 @@ export const tutorialTwoSteps: TutorialTwoStep[] = [
   'calendar',
 ]
 
-const constants = {
-  CARD_SCALED_DIFFERENCE: 44,
-  CARD_WIDTH: 220,
-  FULL_CARD_WIDTH: 252,
-}
+const SELECTED_SCALE = 1.2
 
 export const getTutorialTwoConfig = ({
   topLeftLayout,
   wheelLayout,
   screenWidth,
+  config,
 }: {
   topLeftLayout: LayoutRectangle | undefined
   wheelLayout: LayoutRectangle | undefined
   screenWidth: number
   screenHeight: number
+  config: UIConfig
 }): Record<TutorialTwoStep, TutorialStepConfig> | undefined => {
   if (!topLeftLayout || !wheelLayout || !screenWidth) {
     return undefined
   }
+
+  const CARD_WIDTH = config.carousel.cardWidth
+  const CARD_MARGIN = config.carousel.cardMargin
+  const FULL_CARD_WIDTH = CARD_WIDTH + CARD_MARGIN
+  const SELECTED_WIDTH = CARD_WIDTH * SELECTED_SCALE
+  const FULL_SELECTED_WIDTH = SELECTED_WIDTH + CARD_MARGIN
+  const CARD_SCALED_DIFFERENCE = FULL_SELECTED_WIDTH - FULL_CARD_WIDTH
 
   return {
     track: {
@@ -44,7 +50,7 @@ export const getTutorialTwoConfig = ({
     },
     summary: {
       rotationAngle: -90,
-      translationX: constants.CARD_SCALED_DIFFERENCE,
+      translationX: CARD_SCALED_DIFFERENCE,
       translationY: (wheelLayout?.height ?? 0) / 2 - 30, // arrow height
       title: 'tutorial_10_content',
       text: 'tutorial_10',
@@ -52,7 +58,7 @@ export const getTutorialTwoConfig = ({
     },
     stars: {
       rotationAngle: -90,
-      translationX: constants.CARD_SCALED_DIFFERENCE + constants.CARD_WIDTH - 30,
+      translationX: CARD_SCALED_DIFFERENCE + CARD_WIDTH - 30,
       translationY: (wheelLayout?.height ?? 0) / 2 - 30, // arrow height
       title: 'tutorial_11_content',
       text: 'tutorial_11',

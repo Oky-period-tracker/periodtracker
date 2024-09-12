@@ -8,6 +8,7 @@ import { calendarTranslations } from '../resources/translations'
 import { useSelector } from 'react-redux'
 import { currentLocaleSelector } from '../redux/selectors'
 import { Moment } from 'moment'
+import { asLocal } from '../services/dateUtils'
 
 LocaleConfig.locales = {
   ...LocaleConfig.locales,
@@ -24,7 +25,7 @@ export const DatePicker = ({
   const locale = useSelector(currentLocaleSelector)
   LocaleConfig.defaultLocale = locale
 
-  const dateString = selectedDate.format('YYYY-MM-DD')
+  const dateString = asLocal(selectedDate).format('YYYY-MM-DD')
 
   const markedDates: MarkedDates = {
     [dateString]: {

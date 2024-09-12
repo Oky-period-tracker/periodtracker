@@ -4,6 +4,7 @@ import { useTutorial } from '../screens/MainScreen/TutorialContext'
 import { useThrottledFunction } from '../hooks/useThrottledFunction'
 import { TutorialSkip } from '../screens/MainScreen/components/TutorialSkip'
 import { useLoading } from '../contexts/LoadingProvider'
+import { useResponsive } from '../contexts/ResponsiveContext'
 
 export interface TutorialContainerProps {
   children?: React.ReactNode
@@ -12,6 +13,7 @@ export interface TutorialContainerProps {
 export const TutorialContainer = ({ children }: TutorialContainerProps) => {
   const { dispatch } = useTutorial()
   const { loading } = useLoading()
+  const { UIConfig } = useResponsive()
 
   const onContinue = () => {
     dispatch({ type: 'continue' })
@@ -28,7 +30,15 @@ export const TutorialContainer = ({ children }: TutorialContainerProps) => {
       statusBarTranslucent={true}
       supportedOrientations={['portrait', 'landscape']}
     >
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {
+            paddingTop: UIConfig.tutorial.paddingTop,
+            paddingBottom: UIConfig.tutorial.paddingBottom,
+          },
+        ]}
+      >
         <TutorialSkip />
         <View style={styles.backDrop} />
         <TouchableOpacity style={styles.touchableOverlay} onPress={continueThrottled} />
@@ -51,7 +61,5 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    paddingTop: 120, // Header height
-    paddingBottom: 80, // TabBar height
   },
 })

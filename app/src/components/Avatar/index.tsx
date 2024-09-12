@@ -143,8 +143,27 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const lottieWidth = diameter * 0.33 - 12
   const lottieHeight = lottieWidth / lottieAspectRatio
 
+  // - Top half of lottie is empty space, +72 height of CircleProgress
+  let marginTop = -lottieHeight / 1.75 + 72
+  if (avatar === 'oky') {
+    // TODO: Oky lottie different size to the rest
+    marginTop = -lottieHeight / 2.25 + 72
+  }
+
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.container, style]} activeOpacity={1}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.container,
+        style,
+        {
+          width: lottieWidth,
+          height: lottieHeight,
+          marginTop,
+        },
+      ]}
+      activeOpacity={1}
+    >
       <AvatarMessage />
       <AnimatedLottieView
         resizeMode="contain"
@@ -154,7 +173,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         autoPlay={false}
         loop={false}
       />
-      <ProgressSection heartProgress={animatedHearts} />
+      <ProgressSection heartProgress={animatedHearts} lottieHeight={lottieHeight} />
     </TouchableOpacity>
   )
 }
@@ -163,9 +182,7 @@ const AnimatedLottieView = Animated.createAnimatedComponent(LottieView)
 
 const styles = StyleSheet.create({
   container: {
-    margin: 8,
-    position: 'absolute',
-    top: -40, // CircleProgress height
+    marginLeft: 12,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',

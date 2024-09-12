@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { Button, ButtonProps } from './Button'
 import { Text } from './Text'
 
@@ -10,7 +10,7 @@ interface EmojiBadgeProps {
   children?: React.ReactElement
   text: string
   onPress?: () => void
-  style?: ViewStyle
+  style?: StyleProp<ViewStyle>
   status?: ButtonProps['status']
   size?: BadgeSize
   disabled?: boolean
@@ -72,7 +72,7 @@ const sizes: Record<
     circle: 20,
     emoji: 10,
     text: 8,
-    margin: 0,
+    margin: 1,
   },
   small: {
     container: 48,

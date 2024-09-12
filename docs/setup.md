@@ -69,6 +69,26 @@ For the CMS, go to:
 
 This will automatically download a json file, rename this as `firebase-config.json` and save it in the /cms folder as listed above.
 
-<!-- ### Push notifications
+### Push notifications
 
-You will need to enable push notifications so that users can send and receive notifications from the CMS. Follow the steps [above](https://learn.buildfire.com/en/articles/2060582-how-to-set-up-your-firebase-certificates-for-ios-and-android) to make sure everything is correctly configured. For Apple you will need to make sure you have added the [Apple Push Notifications](https://learn.buildfire.com/en/articles/5760994-how-to-set-up-your-apple-push-notification-key-for-your-ios-firebase-certificate). -->
+The app makes use of firebase messaging to receive push notifications from the CMS.
+
+Ensure that your `app.json` file includes this:
+
+```json
+{
+  "expo": {
+    "ios": {
+      "entitlements": {
+        "aps-environment": “production”
+      }
+    }
+  }
+}
+```
+
+For Apple you will need to make sure you have added the [Apple Push Notifications](https://learn.buildfire.com/en/articles/5760994-how-to-set-up-your-apple-push-notification-key-for-your-ios-firebase-certificate).
+
+Read more [here](https://rnfirebase.io/messaging/usage), bear in mind that this is an expo managed project, so changes within the native `/android` and `/ios` folders are not required
+
+Notifications can also be customised eg the colour, via the `app.json`

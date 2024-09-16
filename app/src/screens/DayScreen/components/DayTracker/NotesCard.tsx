@@ -1,5 +1,5 @@
 import React from 'react'
-import {Platform, Alert, KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Input } from '../../../../components/Input'
 import { Text } from '../../../../components/Text'
 import { Hr } from '../../../../components/Hr'
@@ -11,6 +11,7 @@ import { answerNotesCard } from '../../../../redux/actions'
 import { useTranslate } from '../../../../hooks/useTranslate'
 import { useLoading } from '../../../../contexts/LoadingProvider'
 import { useColor } from '../../../../hooks/useColor'
+import useAlert from '../../../../hooks/useAlert'
 
 export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?: () => void }) => {
   const translate = useTranslate()
@@ -18,6 +19,7 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
   const { setLoading } = useLoading()
   const { backgroundColor } = useColor()
 
+  const showAlert = useAlert()
   const reduxEntry = useSelector((state) => notesAnswerSelector(state, dataEntry?.date))
 
   const reduxDispatch = useDispatch()
@@ -31,20 +33,12 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
   }
 
   const onPress = () => {
-    
     if (!userID || !dataEntry) {
       return
-
     }
 
-    if(!title && !notes){
-      if(Platform.OS == 'web'){
-        window.alert("Please fill data")
-      }
-      else{
-        Alert.alert("Please fill data");
-      }
-
+    if (!title || !notes) {
+      showAlert('request_error')
     }
 
     reduxDispatch(

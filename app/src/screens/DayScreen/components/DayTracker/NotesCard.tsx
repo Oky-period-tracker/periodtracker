@@ -9,11 +9,13 @@ import { DayData } from '../../../MainScreen/DayScrollContext'
 import { useDispatch } from 'react-redux'
 import { answerNotesCard } from '../../../../redux/actions'
 import { useTranslate } from '../../../../hooks/useTranslate'
+import useAlert from '../../../../hooks/useAlert'
 
 export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?: () => void }) => {
   const translate = useTranslate()
   const userID = useSelector(currentUserSelector)?.id
 
+  const showAlert = useAlert();
   const reduxEntry = useSelector((state) => notesAnswerSelector(state, dataEntry?.date))
 
   const reduxDispatch = useDispatch()
@@ -28,15 +30,9 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
 
     }
 
-    if(!title && !notes){
-      if(Platform.OS == 'web'){
-        window.alert("Please fill data")
-      }
-      else{
-        Alert.alert("Please fill data");
-      }
-
-    }
+    if(!title || !notes){
+      showAlert('request_error')
+    }    
 
     reduxDispatch(
       answerNotesCard({

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Modal, ModalProps } from '../../components/Modal'
 import { Hr } from '../../components/Hr'
 import { Text } from '../../components/Text'
@@ -14,11 +14,10 @@ import { formatPassword } from '../../services/auth'
 import { WheelPickerModal } from '../../components/WheelPickerModal'
 import { questionOptions } from '../../config/options'
 import { WheelPickerOption } from '../../components/WheelPicker'
-import { useTranslate } from '../../hooks/useTranslate'
 import { useColor } from '../../hooks/useColor'
+import useAlert from '../../hooks/useAlert'
 
 export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
-  const translate = useTranslate()
   const currentUser = useSelector(currentUserSelector) as User
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
@@ -41,32 +40,7 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
   const { isValid, errors } = validate(previousFormatted, nextFormatted, secretQuestion)
 
   const initialSecretOption = questionOptions.find((item) => item.value === secretQuestion)
-
-  const successAlert = () => {
-    Alert.alert(
-      translate('success'),
-      translate('secret_change_success_description'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
-
-  const failAlert = () => {
-    Alert.alert(
-      translate('unsuccessful'),
-      translate('could_not_change_secret'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
+  const { successAlert, failAlert } = useAlert()
 
   const sendRequest = async (previousSecretAnswer: string, nextSecretAnswer: string) => {
     await httpClient.editUserSecretAnswer({
@@ -91,11 +65,11 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
       await sendRequest(previousFormatted, nextFormatted)
       updateReduxState(nextFormatted)
       toggleVisible()
-      successAlert()
+      successAlert('success', 'secret_change_success_description')
     } catch (error) {
       setPreviousSecret('')
       setNextSecret('')
-      failAlert()
+      failAlert('unsuccessful', 'could_not_change_secret')
     }
   }
 

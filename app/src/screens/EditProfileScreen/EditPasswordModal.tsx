@@ -1,5 +1,5 @@
 import React from 'react'
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Modal, ModalProps } from '../../components/Modal'
 import { Hr } from '../../components/Hr'
 import { Text } from '../../components/Text'
@@ -11,11 +11,10 @@ import { httpClient } from '../../services/HttpClient'
 import { useDispatch } from 'react-redux'
 import { editUser } from '../../redux/actions'
 import { formatPassword } from '../../services/auth'
-import { useTranslate } from '../../hooks/useTranslate'
 import { useColor } from '../../hooks/useColor'
+import useAlert from '../../hooks/useAlert'
 
 export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
-  const translate = useTranslate()
   const currentUser = useSelector(currentUserSelector) as User
   const name = currentUser.name
   const reduxDispatch = useDispatch()
@@ -29,32 +28,7 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   const formattedSecret = formatPassword(secret)
 
   const { isValid, errors } = validate(formattedPassword)
-
-  const successAlert = () => {
-    Alert.alert(
-      translate('success'),
-      translate('forgot_password_completed'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
-
-  const failAlert = () => {
-    Alert.alert(
-      translate('unsuccessful'),
-      translate('password_change_fail_description'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
+  const { successAlert, failAlert } = useAlert()
 
   const sendRequest = async (password: string, secretAnswer: string) => {
     await httpClient.resetPassword({
@@ -79,9 +53,9 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
       await sendRequest(formattedPassword, formattedSecret)
       updateReduxState(formattedPassword)
       toggleVisible()
-      successAlert()
+      successAlert('success', 'forgot_password_completed')
     } catch (error) {
-      failAlert()
+      failAlert('unsuccessful', 'password_change_fail_description')
     }
   }
 

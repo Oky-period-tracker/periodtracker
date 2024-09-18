@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, Alert, ScrollView } from 'react-native'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import { Button } from '../../components/Button'
 import { Hr } from '../../components/Hr'
 import { ScreenComponent } from '../../navigation/RootNavigator'
@@ -11,17 +11,17 @@ import { deleteAccountRequest, logoutRequest } from '../../redux/actions'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
-import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
+import useAlert from '../../hooks/useAlert'
 
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
   const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
-  const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
+  const { successAlert } = useAlert()
 
   const logOut = () => {
     dispatch(logoutRequest())
@@ -42,39 +42,16 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   }
 
   const logOutAlert = () => {
-    Alert.alert(
-      translate('are_you_sure'),
-      currentUser?.isGuest || !appToken ? translate('logout_account_description') : '',
-      [
-        {
-          text: translate('cancel'),
-          style: 'cancel',
-        },
-        {
-          text: translate('yes'),
-          onPress: logOut,
-        },
-      ],
-      { cancelable: false },
-    )
+    const dynamicMessageKey = currentUser?.isGuest || !appToken ? 'logout_account_description' : ''
+    successAlert('are_you_sure', dynamicMessageKey, () => {
+      logOut()
+    })
   }
 
   const deleteAccountAlert = () => {
-    Alert.alert(
-      translate('are_you_sure'),
-      translate('delete_account_description'),
-      [
-        {
-          text: translate('cancel'),
-          style: 'cancel',
-        },
-        {
-          text: translate('yes'),
-          onPress: deleteAccount,
-        },
-      ],
-      { cancelable: false },
-    )
+    successAlert('are_you_sure', 'delete_account_description', () => {
+      deleteAccount()
+    })
   }
 
   const rows: TouchableRowProps[] = [

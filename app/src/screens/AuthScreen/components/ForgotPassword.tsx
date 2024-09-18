@@ -9,6 +9,7 @@ import { formatPassword } from '../../../services/auth'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
+import useAlert from '../../../hooks/useAlert.ts'
 
 export const ForgotPassword = () => {
   const translate = useTranslate()
@@ -27,35 +28,7 @@ export const ForgotPassword = () => {
     passwordConfirm,
   })
 
-  const successAlert = () => {
-    Alert.alert(
-      translate('success'),
-      translate('forgot_password_completed'),
-      [
-        {
-          text: translate('continue'),
-          onPress: () => {
-            // TODO: log in the user instead?
-            setAuthMode('start')
-          },
-        },
-      ],
-      { cancelable: false },
-    )
-  }
-
-  const failAlert = () => {
-    Alert.alert(
-      translate('password_change_fail'),
-      translate('password_change_fail_description'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
+  const { successAlert , failAlert } = useAlert();
 
   const onConfirm = async () => {
     if (errors.length) {
@@ -74,9 +47,12 @@ export const ForgotPassword = () => {
         password: formatPassword(password),
       })
 
-      successAlert()
+      successAlert('success','forgot_password_completed',()=>{
+      // TODO: log in the user instead?
+        setAuthMode('start');
+      })
     } catch (e) {
-      failAlert()
+      failAlert('password_change_fail','password_change_fail_description')
     }
 
     // Reset

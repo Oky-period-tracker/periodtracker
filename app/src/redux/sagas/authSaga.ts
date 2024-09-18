@@ -1,5 +1,5 @@
 import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
-import { Alert } from 'react-native'
+//import { Alert } from 'react-native'
 import { v4 as uuidv4 } from 'uuid'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
@@ -13,6 +13,7 @@ import { fetchNetworkConnectionStatus } from '../../services/network'
 import { PartialStateSnapshot } from '../types/partialStore'
 import { ReduxState } from '../reducers'
 import { analytics } from '../../services/firebase'
+import useAlert from "../../hooks/useAlert.ts"
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -174,6 +175,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
   const state: ReduxState = yield select()
 
   const user = selectors.currentUserSelector(state)
+  const { failAlert } = useAlert()
 
   // setLoading(true);
   // TODO: if guest & no app token, just log out to delete local redux state, no DB account to delete so dont send request
@@ -194,7 +196,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     }
   } catch (err) {
     // setLoading(false);
-    Alert.alert('error', 'delete_account_fail')
+      failAlert('error','delete_account_fail')
   }
 }
 

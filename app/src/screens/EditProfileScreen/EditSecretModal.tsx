@@ -15,6 +15,7 @@ import { WheelPickerModal } from '../../components/WheelPickerModal'
 import { questionOptions } from '../../config/options'
 import { WheelPickerOption } from '../../components/WheelPicker'
 import { useTranslate } from '../../hooks/useTranslate'
+import useAlert from "../../hooks/useAlert.ts"
 
 export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
   const translate = useTranslate()
@@ -39,32 +40,7 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
   const { isValid, errors } = validate(previousFormatted, nextFormatted, secretQuestion)
 
   const initialSecretOption = questionOptions.find((item) => item.value === secretQuestion)
-
-  const successAlert = () => {
-    Alert.alert(
-      translate('success'),
-      translate('secret_change_success_description'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
-
-  const failAlert = () => {
-    Alert.alert(
-      translate('unsuccessful'),
-      translate('could_not_change_secret'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
+  const { successAlert , failAlert } = useAlert();
 
   const sendRequest = async (previousSecretAnswer: string, nextSecretAnswer: string) => {
     await httpClient.editUserSecretAnswer({
@@ -89,11 +65,11 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
       await sendRequest(previousFormatted, nextFormatted)
       updateReduxState(nextFormatted)
       toggleVisible()
-      successAlert()
+      successAlert('success','secret_change_success_description')
     } catch (error) {
       setPreviousSecret('')
       setNextSecret('')
-      failAlert()
+      failAlert('unsuccessful','could_not_change_secret')
     }
   }
 

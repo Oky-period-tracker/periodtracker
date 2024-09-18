@@ -15,13 +15,13 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
   const translate = useTranslate()
   const userID = useSelector(currentUserSelector)?.id
 
-  const showAlert = useAlert();
   const reduxEntry = useSelector((state) => notesAnswerSelector(state, dataEntry?.date))
 
   const reduxDispatch = useDispatch()
 
   const [title, setTitle] = React.useState(reduxEntry.title)
   const [notes, setNotes] = React.useState(reduxEntry.notes)
+  const { successAlert } = useAlert();
 
   const onPress = () => {
     
@@ -29,10 +29,6 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
       return
 
     }
-
-    if(!title || !notes){
-      showAlert('request_error')
-    }    
 
     reduxDispatch(
       answerNotesCard({
@@ -43,12 +39,9 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
       }),
     )
 
-    Alert.alert(translate('note_saved'), translate('note_saved_caption'), [
-      {
-        text: translate('continue'),
-        onPress: goBack,
-      },
-    ])
+    successAlert('note_saved','note_saved_caption',()=>{
+      goBack()
+    });
   }
 
   return (

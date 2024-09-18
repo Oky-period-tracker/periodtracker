@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux'
 import { editUser } from '../../redux/actions'
 import { formatPassword } from '../../services/auth'
 import { useTranslate } from '../../hooks/useTranslate'
+import useAlert from "../../hooks/useAlert"
 
 export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   const translate = useTranslate()
@@ -27,32 +28,7 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   const formattedSecret = formatPassword(secret)
 
   const { isValid, errors } = validate(formattedPassword)
-
-  const successAlert = () => {
-    Alert.alert(
-      translate('success'),
-      translate('forgot_password_completed'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
-
-  const failAlert = () => {
-    Alert.alert(
-      translate('unsuccessful'),
-      translate('password_change_fail_description'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
-      { cancelable: false },
-    )
-  }
+  const { successAlert, failAlert } = useAlert();
 
   const sendRequest = async (password: string, secretAnswer: string) => {
     await httpClient.resetPassword({
@@ -77,9 +53,9 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
       await sendRequest(formattedPassword, formattedSecret)
       updateReduxState(formattedPassword)
       toggleVisible()
-      successAlert()
+      successAlert('success','forgot_password_completed')
     } catch (error) {
-      failAlert()
+      failAlert('unsuccessful','password_change_fail_description')
     }
   }
 

@@ -14,6 +14,7 @@ import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
+import useAlert from "../../hooks/useAlert.ts"
 
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
@@ -21,6 +22,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
+  const { successAlert } = useAlert()
 
   const logOut = () => {
     dispatch(logoutRequest())
@@ -41,39 +43,16 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   }
 
   const logOutAlert = () => {
-    Alert.alert(
-      translate('are_you_sure'),
-      currentUser?.isGuest || !appToken ? translate('logout_account_description') : '',
-      [
-        {
-          text: translate('cancel'),
-          style: 'cancel',
-        },
-        {
-          text: translate('yes'),
-          onPress: logOut,
-        },
-      ],
-      { cancelable: false },
-    )
+    const dynamicMessageKey = currentUser?.isGuest || !appToken ? 'logout_account_description' : '';     
+    successAlert('are_you_sure',dynamicMessageKey,()=> {
+      logOut()
+    })
   }
 
   const deleteAccountAlert = () => {
-    Alert.alert(
-      translate('are_you_sure'),
-      translate('delete_account_description'),
-      [
-        {
-          text: translate('cancel'),
-          style: 'cancel',
-        },
-        {
-          text: translate('yes'),
-          onPress: deleteAccount,
-        },
-      ],
-      { cancelable: false },
-    )
+    successAlert('are_you_sure','delete_account_description',()=>{
+      deleteAccount()
+    })
   }
 
   const rows: TouchableRowProps[] = [

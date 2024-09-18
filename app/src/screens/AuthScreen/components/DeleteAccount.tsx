@@ -10,6 +10,7 @@ import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
 import { analytics } from '../../../services/firebase'
+import useAlert from "../../../hooks/useAlert.ts" 
 
 export const DeleteAccount = () => {
   const { setAuthMode } = useAuthMode()
@@ -20,6 +21,7 @@ export const DeleteAccount = () => {
 
   const [errorsVisible, setErrorsVisible] = React.useState(false)
   const { errors } = validateCredentials(name, password)
+  const { successAlert , failAlert } = useAlert()
 
   const goBack = () => {
     setAuthMode('start')
@@ -41,16 +43,13 @@ export const DeleteAccount = () => {
         password: formatPassword(password),
       })
 
-      Alert.alert('success', 'delete_account_completed', [
-        {
-          text: translate('continue'),
-          onPress: goBack,
-        },
-      ])
+      successAlert('success','delete_account_completed',()=>{
+        goBack()
+      })
 
       analytics?.().logEvent('deleteAccount')
     } catch (e) {
-      Alert.alert('error', 'delete_account_fail')
+      failAlert('error','delete_account_fail')
       setName('')
       setPassword('')
     }

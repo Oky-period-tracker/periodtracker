@@ -13,6 +13,7 @@ import { OrientationLock, lockAsync, unlockAsync } from 'expo-screen-orientation
 import { IS_TABLET, IS_WEB } from '../../../services/device'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAccessibilityLabel } from '../../../hooks/useAccessibilityLabel'
+import useAlert from '../../../hooks/useAlert.ts'
 
 export const VideoPlayerModal = () => {
   const { width: screenWidth, height: screenHeight } = useScreenDimensions()
@@ -52,24 +53,11 @@ export const VideoPlayerModal = () => {
 
   const hasYoutubeVideo = videoData?.youtubeId && videoData?.youtubeId.length > 0
   const canPlayYoutubeVideo = hasYoutubeVideo && canUseInternet
+  const { twoBtAlert } = useAlert();
 
   const ConfirmAlert = () => {
-    Alert.alert(
-      translate('internet_required_title'),
-      translate('internet_required_text'),
-      [
-        {
-          text: translate('cancel'),
-          onPress: close,
-          style: 'cancel',
-        },
-        {
-          text: translate('yes'),
-          onPress: onConfirm,
-        },
-      ],
-      { cancelable: false },
-    )
+  
+    twoBtAlert('internet_required_title','internet_required_text',close,onConfirm)
   }
 
   React.useEffect(() => {

@@ -51,7 +51,10 @@ createConnection(ormconfig)
         secret: env.app.secret,
         resave: false,
         saveUninitialized: false,
-        cookie: { sameSite: 'strict' },
+        cookie: {
+          sameSite: 'strict',
+          secure: process.env.NODE_ENV === 'production',
+        },
       }),
     )
     app.use(passport.initialize())

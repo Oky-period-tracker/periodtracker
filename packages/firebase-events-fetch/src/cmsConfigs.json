@@ -1,0 +1,10 @@
+[
+    {
+      "name": "cms1",
+      "loginUrl": "https://cms.en.oky.greychaindesign.com/login",
+      "username": "admin",
+      "password": "admin",
+      "endpoint": "https://cms.en.oky.greychaindesign.com/analytics-management"
+    }
+  ]
+  

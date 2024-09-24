@@ -12,10 +12,12 @@
     "googleapis": "^144.0.0",
     "mysql2": "^3.11.3",
     "node-cron": "^3.0.3",
+    "pg": "^8.13.0",
     "typescript": "^5.5.4"
   },
   "devDependencies": {
     "@types/node-cron": "^3.0.11",
+    "@types/pg": "^8.11.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
   },

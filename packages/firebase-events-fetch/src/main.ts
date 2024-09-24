@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { google } from 'googleapis';
 import path from 'path';
-import mysql from 'mysql2/promise';
+import { Pool } from 'pg';
 import qs from 'qs';
 import cron from 'node-cron';
 import fs from 'fs';
@@ -17,11 +17,11 @@ interface EventData {
 }
 
 /**
- * Formats a JavaScript Date object into a MySQL-compatible DATETIME string.
+ * Formats a JavaScript Date object into a PostgreSQL-compatible TIMESTAMP string.
  * @param date - The JavaScript Date object to format.
  * @returns A formatted string in the 'YYYY-MM-DD HH:MM:SS' format.
  */
-function formatDateForMySQL(date: Date): string {
+function formatDateForPostgres(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
@@ -50,16 +50,17 @@ async function authenticate() {
   }
 }
 
-// Create a connection pool to the MySQL database using environment variables
-const pool = mysql.createPool({
-  host: process.env.MYSQL_HOST,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
+// Create a connection pool to the PostgreSQL database using environment variables
+const pool = new Pool({
+  host: process.env.PG_HOST,
+  user: process.env.PG_USER,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE,
+  port: Number(process.env.PG_PORT),
 });
 
 /**
- * Creates necessary tables in the MySQL database if they do not exist for the given Firebase project.
+ * Creates necessary tables in the PostgreSQL database if they do not exist for the given Firebase project.
  * @param tableNamePrefix - The prefix used to create the tables specific to each Firebase property ID.
  */
 async function createTablesIfNotExist(tableNamePrefix: string) {
@@ -70,33 +71,33 @@ async function createTablesIfNotExist(tableNamePrefix: string) {
       user_id VARCHAR(255) DEFAULT 'unknown_user',
       country VARCHAR(255) DEFAULT 'unknown_country',
       event_count INT DEFAULT 0,
-      UNIQUE KEY unique_event (event_type, event_timestamp, user_id, country)
+      UNIQUE (event_type, event_timestamp, user_id, country)
     )`,
     `CREATE TABLE IF NOT EXISTS ${tableNamePrefix}_daily_active_users (
-      id INT AUTO_INCREMENT PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       date DATE NOT NULL,
       country VARCHAR(255) DEFAULT 'unknown_country',
       active_users INT DEFAULT 0,
-      UNIQUE KEY unique_daily_active (date, country)
+      UNIQUE (date, country)
     )`,
     `CREATE TABLE IF NOT EXISTS ${tableNamePrefix}_monthly_active_users (
-      id INT AUTO_INCREMENT PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       month_year VARCHAR(7) NOT NULL,
       country VARCHAR(255) DEFAULT 'unknown_country',
       active_users INT DEFAULT 0,
-      UNIQUE KEY unique_monthly_active (month_year, country)
+      UNIQUE (month_year, country)
     )`,
     `CREATE TABLE IF NOT EXISTS ${tableNamePrefix}_total_users (
-      id INT AUTO_INCREMENT PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       country VARCHAR(255) DEFAULT 'unknown_country',
       total_users INT DEFAULT 0,
-      UNIQUE KEY unique_total_users (country)
+      UNIQUE (country)
     )`
   ];
 
   try {
     for (const query of createQueries) {
-      await pool.execute(query);
+      await pool.query(query);
     }
     console.log(`Tables created or verified for prefix: ${tableNamePrefix}`);
   } catch (error) {
@@ -105,30 +106,40 @@ async function createTablesIfNotExist(tableNamePrefix: string) {
 }
 
 /**
- * Inserts or updates event data fetched from Firebase Analytics into the MySQL table.
+ * Inserts or updates event data fetched from Firebase Analytics into the PostgreSQL table.
  * @param eventsData - Array of event data to be inserted or updated.
  * @param tableNamePrefix - The prefix used to identify the specific table.
  */
 async function insertEventData(eventsData: EventData[] | undefined, tableNamePrefix: string) {
   if (eventsData && eventsData.length > 0) {
-    const values = eventsData.map(event => [
-      event.eventName,
-      new Date().toISOString().slice(0, 10), // Only the date part
-      'unknown_user',
-      'unknown_country',
-      parseInt(event.eventCount, 10)
-    ]);
+    const values: any[] = [];
+    
+    // Create the VALUES string with positional parameter placeholders
+    const valuePlaceholders = eventsData
+      .map((_, index) => {
+        const baseIndex = index * 5;
+        values.push(
+          eventsData[index].eventName,
+          new Date().toISOString().slice(0, 10), // Only the date part
+          'unknown_user',
+          'unknown_country',
+          parseInt(eventsData[index].eventCount, 10)
+        );
+        return `($${baseIndex + 1}, $${baseIndex + 2}, $${baseIndex + 3}, $${baseIndex + 4}, $${baseIndex + 5})`;
+      })
+      .join(', ');
 
     const query = `
       INSERT INTO ${tableNamePrefix}_events_data (event_type, event_timestamp, user_id, country, event_count)
-      VALUES ${values.map(() => '(?, ?, ?, ?, ?)').join(', ')}
-      ON DUPLICATE KEY UPDATE
-        event_count = VALUES(event_count),  -- Replace the old count with the new count
-        event_timestamp = VALUES(event_timestamp);  -- Update the timestamp if necessary
+      VALUES ${valuePlaceholders}
+      ON CONFLICT (event_type, event_timestamp, user_id, country)
+      DO UPDATE SET
+        event_count = EXCLUDED.event_count,
+        event_timestamp = EXCLUDED.event_timestamp;
     `;
 
     try {
-      await pool.execute(query, values.flat());
+      await pool.query(query, values);
       console.log('Bulk event data inserted/replaced.');
     } catch (error) {
       console.error('Error inserting/replacing bulk event data:', error);
@@ -136,8 +147,9 @@ async function insertEventData(eventsData: EventData[] | undefined, tableNamePre
   }
 }
 
+
 /**
- * Inserts or updates daily active users, monthly active users, and total users metrics into MySQL.
+ * Inserts or updates daily active users, monthly active users, and total users metrics into PostgreSQL.
  * @param userMetrics - Array of user metrics data to be inserted or updated.
  * @param tableNamePrefix - The prefix used to identify the specific table.
  */
@@ -161,27 +173,33 @@ async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tab
 
   const dailyQuery = `
     INSERT INTO ${tableNamePrefix}_daily_active_users (date, country, active_users)
-    VALUES ${dailyValues.map(() => '(?, ?, ?)').join(', ')}
-    ON DUPLICATE KEY UPDATE
-      active_users = VALUES(active_users);
+    VALUES ($1, $2, $3)
+    ON CONFLICT (date, country) 
+    DO UPDATE SET active_users = EXCLUDED.active_users;
   `;
   const monthlyQuery = `
     INSERT INTO ${tableNamePrefix}_monthly_active_users (month_year, country, active_users)
-    VALUES ${monthlyValues.map(() => '(?, ?, ?)').join(', ')}
-    ON DUPLICATE KEY UPDATE
-      active_users = VALUES(active_users);
+    VALUES ($1, $2, $3)
+    ON CONFLICT (month_year, country) 
+    DO UPDATE SET active_users = EXCLUDED.active_users;
   `;
   const totalQuery = `
     INSERT INTO ${tableNamePrefix}_total_users (country, total_users)
-    VALUES ${totalValues.map(() => '(?, ?)').join(', ')}
-    ON DUPLICATE KEY UPDATE
-      total_users = VALUES(total_users);
+    VALUES ($1, $2)
+    ON CONFLICT (country) 
+    DO UPDATE SET total_users = EXCLUDED.total_users;
   `;
 
   try {
-    await pool.execute(dailyQuery, dailyValues.flat());
-    await pool.execute(monthlyQuery, monthlyValues.flat());
-    await pool.execute(totalQuery, totalValues.flat());
+    for (const values of dailyValues) {
+      await pool.query(dailyQuery, values);
+    }
+    for (const values of monthlyValues) {
+      await pool.query(monthlyQuery, values);
+    }
+    for (const values of totalValues) {
+      await pool.query(totalQuery, values);
+    }
     console.log(`User metrics data inserted for prefix ${tableNamePrefix}`);
   } catch (error) {
     console.error(`Error inserting user metrics data for prefix ${tableNamePrefix}:`, error);
@@ -249,39 +267,40 @@ async function fetchAnalyticsDataForCMS(endpoint: string, cookies: string[]): Pr
 }
 
 /**
- * Saves the fetched CMS data into the MySQL database, replacing any existing data.
+ * Saves the fetched CMS data into the PostgreSQL database, replacing any existing data.
  * @param cmsName - The CMS name used as the table prefix.
  * @param data - The CMS data to save.
  */
-async function saveCMSToMySQL(cmsName: string, data: object[]) {
+async function saveCMSToPostgreSQL(cmsName: string, data: object[]) {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS ${cmsName}_analytics_data (
-        id INT PRIMARY KEY AUTO_INCREMENT,
-        timestamp DATETIME NOT NULL,
+        id SERIAL PRIMARY KEY,
+        timestamp TIMESTAMP NOT NULL,
         data JSON NOT NULL
       )
     `);
 
     const insertQuery = `
       INSERT INTO ${cmsName}_analytics_data (id, timestamp, data)
-      VALUES (1, ?, ?)
-      ON DUPLICATE KEY UPDATE
-        timestamp = VALUES(timestamp),
-        data = VALUES(data);
+      VALUES (1, $1, $2)
+      ON CONFLICT (id)
+      DO UPDATE SET
+        timestamp = EXCLUDED.timestamp,
+        data = EXCLUDED.data;
     `;
 
     const timestamp = new Date();
-    await pool.execute(insertQuery, [timestamp, JSON.stringify(data)]);
+    await pool.query(insertQuery, [timestamp, JSON.stringify(data)]);
 
-    console.log(`Data successfully saved to MySQL for CMS: ${cmsName}`);
+    console.log(`Data successfully saved to PostgreSQL for CMS: ${cmsName}`);
   } catch (err) {
-    console.error(`Error saving data to MySQL for CMS: ${cmsName}`, err);
+    console.error(`Error saving data to PostgreSQL for CMS: ${cmsName}`, err);
   }
 }
 
 /**
- * Fetches analytics data for a CMS, logs in, retrieves data, and saves it into MySQL.
+ * Fetches analytics data for a CMS, logs in, retrieves data, and saves it into PostgreSQL.
  * If the CMS is down, it shows the most recent data with a message.
  * @param cmsConfig - The CMS configuration object containing login details and endpoint.
  */
@@ -295,33 +314,34 @@ async function fetchAndSaveForCMS(cmsConfig: any) {
     const responseData = await fetchAnalyticsDataForCMS(endpoint, cookies);
 
     const dataArray = Array.isArray(responseData) ? responseData : [responseData];
-    await saveCMSToMySQL(cmsName, dataArray);
+    await saveCMSToPostgreSQL(cmsName, dataArray);
     console.log(`Fetched and saved analytics data for CMS: ${cmsName}`);
   } catch (error) {
     console.error(`Error fetching data from CMS: ${cmsName}`, error);
 
     // Fetch the most recent data from the database
     try {
-      const [rows] = await pool.query<any[]>(
+      const result = await pool.query<{ timestamp: string; data: any }>(
         `SELECT timestamp, data FROM ${cmsName}_analytics_data WHERE id = 1`
       );
-
-      if (rows.length > 0) {
-        const recentData = rows[0];
+    
+      if (result.rows.length > 0) {
+        const recentData = result.rows[0];
         console.log(`CMS ${cmsName} is down. Showing the most recently fetched data on '${recentData.timestamp}':`);
         console.log(JSON.stringify(recentData.data, null, 2));
       } else {
         console.log(`CMS ${cmsName} is down, and no recent data is available.`);
       }
     } catch (fetchError) {
-      console.error(`Error fetching recent data from MySQL for CMS: ${cmsName}`, fetchError);
+      console.error(`Error fetching recent data from PostgreSQL for CMS: ${cmsName}`, fetchError);
     }
+    
   }
 }
 
 /**
  * Main function that fetches analytics data from both Firebase and CMS sources.
- * It handles data fetching, processing, and saving to the MySQL database.
+ * It handles data fetching, processing, and saving to the PostgreSQL database.
  */
 export async function fetchAnalyticsDataForAllSources() {
   try {

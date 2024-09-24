@@ -16,6 +16,11 @@ interface EventData {
   eventCount: string;
 }
 
+/**
+ * Formats a JavaScript Date object into a MySQL-compatible DATETIME string.
+ * @param date - The JavaScript Date object to format.
+ * @returns A formatted string in the 'YYYY-MM-DD HH:MM:SS' format.
+ */
 function formatDateForMySQL(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -27,6 +32,10 @@ function formatDateForMySQL(date: Date): string {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
+/**
+ * Authenticates the application to access the Firebase Analytics API using Google OAuth.
+ * @returns The authenticated Google client instance.
+ */
 async function authenticate() {
   try {
     const auth = new google.auth.GoogleAuth({
@@ -41,6 +50,7 @@ async function authenticate() {
   }
 }
 
+// Create a connection pool to the MySQL database using environment variables
 const pool = mysql.createPool({
   host: process.env.MYSQL_HOST,
   user: process.env.MYSQL_USER,
@@ -48,6 +58,10 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE,
 });
 
+/**
+ * Creates necessary tables in the MySQL database if they do not exist for the given Firebase project.
+ * @param tableNamePrefix - The prefix used to create the tables specific to each Firebase property ID.
+ */
 async function createTablesIfNotExist(tableNamePrefix: string) {
   const createQueries = [
     `CREATE TABLE IF NOT EXISTS ${tableNamePrefix}_events_data (
@@ -90,6 +104,11 @@ async function createTablesIfNotExist(tableNamePrefix: string) {
   }
 }
 
+/**
+ * Inserts or updates event data fetched from Firebase Analytics into the MySQL table.
+ * @param eventsData - Array of event data to be inserted or updated.
+ * @param tableNamePrefix - The prefix used to identify the specific table.
+ */
 async function insertEventData(eventsData: EventData[] | undefined, tableNamePrefix: string) {
   if (eventsData && eventsData.length > 0) {
     const values = eventsData.map(event => [
@@ -117,7 +136,11 @@ async function insertEventData(eventsData: EventData[] | undefined, tableNamePre
   }
 }
 
-
+/**
+ * Inserts or updates daily active users, monthly active users, and total users metrics into MySQL.
+ * @param userMetrics - Array of user metrics data to be inserted or updated.
+ * @param tableNamePrefix - The prefix used to identify the specific table.
+ */
 async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tableNamePrefix: string) {
   if (!userMetrics || userMetrics.length === 0) return;
 
@@ -165,8 +188,10 @@ async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tab
   }
 }
 
-// Utility functions for CMS data fetching
-
+/**
+ * Loads CMS configurations from a JSON file.
+ * @returns An array of CMS configuration objects.
+ */
 async function loadCMSConfigs(): Promise<any[]> {
   const cmsConfigsPath = path.join(__dirname, 'cmsConfigs.json');
   if (!fs.existsSync(cmsConfigsPath)) {
@@ -176,6 +201,13 @@ async function loadCMSConfigs(): Promise<any[]> {
   return JSON.parse(rawData);
 }
 
+/**
+ * Logs in to the CMS and retrieves session cookies.
+ * @param loginUrl - The URL for CMS login.
+ * @param username - CMS login username.
+ * @param password - CMS login password.
+ * @returns An array of cookies for the CMS session.
+ */
 async function loginToCMS(loginUrl: string, username: string, password: string): Promise<string[]> {
   try {
     const payload = qs.stringify({ username, password });
@@ -195,6 +227,12 @@ async function loginToCMS(loginUrl: string, username: string, password: string):
   }
 }
 
+/**
+ * Fetches analytics data from a CMS endpoint using authenticated cookies.
+ * @param endpoint - The CMS analytics endpoint URL.
+ * @param cookies - An array of cookies for the CMS session.
+ * @returns The fetched analytics data.
+ */
 async function fetchAnalyticsDataForCMS(endpoint: string, cookies: string[]): Promise<any> {
   try {
     const response: AxiosResponse = await axios.get(endpoint, {
@@ -210,9 +248,13 @@ async function fetchAnalyticsDataForCMS(endpoint: string, cookies: string[]): Pr
   }
 }
 
+/**
+ * Saves the fetched CMS data into the MySQL database, replacing any existing data.
+ * @param cmsName - The CMS name used as the table prefix.
+ * @param data - The CMS data to save.
+ */
 async function saveCMSToMySQL(cmsName: string, data: object[]) {
   try {
-    // Create table if it doesn't exist
     await pool.query(`
       CREATE TABLE IF NOT EXISTS ${cmsName}_analytics_data (
         id INT PRIMARY KEY AUTO_INCREMENT,
@@ -221,7 +263,6 @@ async function saveCMSToMySQL(cmsName: string, data: object[]) {
       )
     `);
 
-    // Instead of deleting all rows, use a REPLACE or INSERT ... ON DUPLICATE KEY UPDATE query to ensure id remains 1
     const insertQuery = `
       INSERT INTO ${cmsName}_analytics_data (id, timestamp, data)
       VALUES (1, ?, ?)
@@ -231,8 +272,6 @@ async function saveCMSToMySQL(cmsName: string, data: object[]) {
     `;
 
     const timestamp = new Date();
-
-    // Insert or update the data for id = 1
     await pool.execute(insertQuery, [timestamp, JSON.stringify(data)]);
 
     console.log(`Data successfully saved to MySQL for CMS: ${cmsName}`);
@@ -241,7 +280,11 @@ async function saveCMSToMySQL(cmsName: string, data: object[]) {
   }
 }
 
-
+/**
+ * Fetches analytics data for a CMS, logs in, retrieves data, and saves it into MySQL.
+ * If the CMS is down, it shows the most recent data with a message.
+ * @param cmsConfig - The CMS configuration object containing login details and endpoint.
+ */
 async function fetchAndSaveForCMS(cmsConfig: any) {
   const { name, loginUrl, username, password, endpoint } = cmsConfig;
   const cmsName = name || loginUrl.replace(/^https?:\/\//, '').split('.')[0];
@@ -257,31 +300,32 @@ async function fetchAndSaveForCMS(cmsConfig: any) {
   } catch (error) {
     console.error(`Error fetching data from CMS: ${cmsName}`, error);
 
-   // Fetch the most recent data from the database
-try {
-  const [rows] = await pool.query<any[]>( // Explicitly specify any[] as the expected row data type
-    `SELECT timestamp, data FROM ${cmsName}_analytics_data WHERE id = 1`
-  );
+    // Fetch the most recent data from the database
+    try {
+      const [rows] = await pool.query<any[]>(
+        `SELECT timestamp, data FROM ${cmsName}_analytics_data WHERE id = 1`
+      );
 
-  if (rows.length > 0) {
-    const recentData = rows[0];
-    console.log(`CMS ${cmsName} is down. Showing the most recently fetched data on '${recentData.timestamp}':`);
-    console.log(JSON.stringify(recentData.data, null, 2));
-  } else {
-    console.log(`CMS ${cmsName} is down, and no recent data is available.`);
+      if (rows.length > 0) {
+        const recentData = rows[0];
+        console.log(`CMS ${cmsName} is down. Showing the most recently fetched data on '${recentData.timestamp}':`);
+        console.log(JSON.stringify(recentData.data, null, 2));
+      } else {
+        console.log(`CMS ${cmsName} is down, and no recent data is available.`);
+      }
+    } catch (fetchError) {
+      console.error(`Error fetching recent data from MySQL for CMS: ${cmsName}`, fetchError);
+    }
   }
-} catch (fetchError) {
-  console.error(`Error fetching recent data from MySQL for CMS: ${cmsName}`, fetchError);
 }
 
-  }
-}
-
-
-
-// Main function to fetch analytics data for both Firebase and CMS
+/**
+ * Main function that fetches analytics data from both Firebase and CMS sources.
+ * It handles data fetching, processing, and saving to the MySQL database.
+ */
 export async function fetchAnalyticsDataForAllSources() {
   try {
+    // Fetch Firebase analytics
     const propertyIds = process.env.FIREBASE_PROPERTY_IDS?.split(',');
     const authClient = await authenticate();
 
@@ -300,6 +344,7 @@ export async function fetchAnalyticsDataForAllSources() {
       }));
     }
 
+    // Fetch CMS analytics data
     const cmsConfigs = await loadCMSConfigs();
     await Promise.all(cmsConfigs.map(fetchAndSaveForCMS));
 
@@ -309,9 +354,11 @@ export async function fetchAnalyticsDataForAllSources() {
   }
 }
 
+// Schedule the function to run at midnight every day
 cron.schedule('0 0 * * *', () => {
   console.log('Running scheduled analytics fetch...');
   fetchAnalyticsDataForAllSources().catch((error) => console.error('Scheduled task failed:', error));
 });
 
+// Run the fetch process initially when the script starts
 fetchAnalyticsDataForAllSources().catch((error) => console.error('Initial run failed:', error));

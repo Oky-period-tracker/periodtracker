@@ -51,13 +51,12 @@ const pool = mysql.createPool({
 async function createTablesIfNotExist(tableNamePrefix: string) {
   const createQueries = [
     `CREATE TABLE IF NOT EXISTS ${tableNamePrefix}_events_data (
-      id INT AUTO_INCREMENT PRIMARY KEY,
       event_type VARCHAR(255) NOT NULL,
-      event_timestamp DATE NOT NULL,  -- Changed to DATE to ensure one entry per day
+      event_timestamp DATE NOT NULL,
       user_id VARCHAR(255) DEFAULT 'unknown_user',
       country VARCHAR(255) DEFAULT 'unknown_country',
       event_count INT DEFAULT 0,
-      UNIQUE KEY unique_event (event_type, event_timestamp, user_id, country) -- Composite unique key
+      UNIQUE KEY unique_event (event_type, event_timestamp, user_id, country)
     )`,
     `CREATE TABLE IF NOT EXISTS ${tableNamePrefix}_daily_active_users (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -95,7 +94,7 @@ async function insertEventData(eventsData: EventData[] | undefined, tableNamePre
   if (eventsData && eventsData.length > 0) {
     const values = eventsData.map(event => [
       event.eventName,
-      formatDateForMySQL(new Date()).slice(0, 10), // Extract only the date part
+      new Date().toISOString().slice(0, 10), // Only the date part
       'unknown_user',
       'unknown_country',
       parseInt(event.eventCount, 10)
@@ -117,7 +116,6 @@ async function insertEventData(eventsData: EventData[] | undefined, tableNamePre
     }
   }
 }
-
 
 
 async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tableNamePrefix: string) {
@@ -245,10 +243,11 @@ async function saveCMSToMySQL(cmsName: string, data: object[]) {
 
 
 async function fetchAndSaveForCMS(cmsConfig: any) {
-  const { name, loginUrl, username, password, endpoint } = cmsConfig; // Access the custom name field
-  const cmsName = name || loginUrl.replace(/^https?:\/\//, '').split('.')[0]; // Fallback to using the loginUrl-derived name if `name` is not provided
+  const { name, loginUrl, username, password, endpoint } = cmsConfig;
+  const cmsName = name || loginUrl.replace(/^https?:\/\//, '').split('.')[0];
 
   try {
+    console.log(`Fetching data for CMS: ${cmsName}`);
     const cookies = await loginToCMS(loginUrl, username, password);
     const responseData = await fetchAnalyticsDataForCMS(endpoint, cookies);
 
@@ -257,8 +256,27 @@ async function fetchAndSaveForCMS(cmsConfig: any) {
     console.log(`Fetched and saved analytics data for CMS: ${cmsName}`);
   } catch (error) {
     console.error(`Error fetching data from CMS: ${cmsName}`, error);
+
+   // Fetch the most recent data from the database
+try {
+  const [rows] = await pool.query<any[]>( // Explicitly specify any[] as the expected row data type
+    `SELECT timestamp, data FROM ${cmsName}_analytics_data WHERE id = 1`
+  );
+
+  if (rows.length > 0) {
+    const recentData = rows[0];
+    console.log(`CMS ${cmsName} is down. Showing the most recently fetched data on '${recentData.timestamp}':`);
+    console.log(JSON.stringify(recentData.data, null, 2));
+  } else {
+    console.log(`CMS ${cmsName} is down, and no recent data is available.`);
+  }
+} catch (fetchError) {
+  console.error(`Error fetching recent data from MySQL for CMS: ${cmsName}`, fetchError);
+}
+
   }
 }
+
 
 
 // Main function to fetch analytics data for both Firebase and CMS

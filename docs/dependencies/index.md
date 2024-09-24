@@ -52,10 +52,10 @@ brew install nvm
 
 ### Node
 
-The recommended version is `v16.13.1`
+The recommended version is `v20.16.0`
 
 ```bash
-nvm install 16.13.1
+nvm install 20.16.0
 ```
 
 ---

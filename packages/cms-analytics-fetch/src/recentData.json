@@ -1,26 +1,26 @@
 {
-  "timestamp": "2024-08-31T19:43:40.945Z",
+  "timestamp": "2024-09-24T07:55:33.894Z",
   "data": [
     {
       "query": {},
       "usersLocations": [
         {
-          "total_urban": "20050",
+          "total_urban": "20059",
           "total_rural": "9391"
         }
       ],
       "usersGenders": [
         {
-          "total_female": "28735",
+          "total_female": "28744",
           "total_male": "266",
           "total_other": "440"
         }
       ],
       "usersAgeGroups": [
         {
-          "under_10": "219",
-          "between_10_11": "635",
-          "between_12_13": "1714",
+          "under_10": "226",
+          "between_10_11": "636",
+          "between_12_13": "1715",
           "between_14_15": "10637",
           "between_16_17": "10363",
           "between_18_19": "2291",
@@ -40,7 +40,7 @@
         "El Salvador": "9",
         "Senegal": "9",
         "Slovenia": "8",
-        "Czech Republic": "22",
+        "Czech Republic": "23",
         "South Korea": "13",
         "Japan": "32",
         "Venezuela": "9",
@@ -229,10 +229,10 @@
         "Armenia": "49",
         "Panama": "6",
         "Lebanon": "33",
-        "Afghanistan": "189",
+        "Afghanistan": "196",
         "Moldova": "8",
         "Haiti": "13",
-        "Andorra": "51",
+        "Andorra": "52",
         "South Africa": "989",
         "Guinea": "1",
         "Portugal": "23",
@@ -956,7 +956,7 @@
           "Budapest": "2"
         },
         "Afghanistan": {
-          "Ghazni": "64",
+          "Ghazni": "71",
           "Balkh": "1",
           "Bamyan": "1",
           "Other": "3",
@@ -1096,7 +1096,7 @@
           "Ordino": "4",
           "Sant Julia de Loria": "1",
           "Vaupes": "1",
-          "Encamp": "13",
+          "Encamp": "14",
           "La Massana": "12",
           "Escaldes-Engordany": "2",
           "Andorra la Vella": "1"
@@ -1978,6 +1978,7 @@
           "Moravskoslezsky kraj": "2",
           "Plzensky kraj": "1",
           "Ustecky  kraj": "1",
+          "Jihocesky kraj": "1",
           "Kr love hradeck kraj": "1"
         },
         "Peru": {

@@ -11,11 +11,5 @@
     "typeRoots": ["./node_modules/@types", "./typings"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts", "dist"],
-  "scripts": {
-  "clean": "rimraf dist", // or any directory you want to clean
-  "build": "tsc", // for TypeScript compilation
-  "start": "ts-node src/main.ts" // your existing start command
-}
-
+  "exclude": ["node_modules", "**/*.spec.ts", "dist"]
 }

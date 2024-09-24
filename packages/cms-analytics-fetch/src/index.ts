@@ -4,7 +4,7 @@ import qs from 'qs'; // Import qs to stringify query parameters.
 import cron from 'node-cron'; // Import node-cron to schedule tasks.
 import fs from 'fs'; // Import fs to interact with the file system.
 import path from 'path'; // Import path to work with file and directory paths.
-import { createObjectCsvWriter as createCsvWriter } from 'csv-writer'; // Import csv-writer for writing data to CSV files.
+import mysql from 'mysql2/promise'; // Import MySQL promise-based package.
 
 // Load environment variables from the .env file.
 dotenv.config();
@@ -33,7 +33,6 @@ const endpoint = 'https://cms.en.oky.greychaindesign.com/analytics-management';
 
 // Paths to save the most recent data fetched.
 const dataFilePath = path.join(__dirname, 'recentData.json');
-const csvFilePath = path.join(__dirname, 'analyticsData.csv');
 
 /**
  * Logs in to the CMS and retrieves the session cookies.
@@ -60,6 +59,9 @@ async function login(): Promise<string[]> {
     // Check if the login was successful (302 redirect indicates a successful login).
     if (response.status === 302) {
       console.log('Login successful, redirected to:', response.headers['location']);
+    } else {
+      console.log('Login response status:', response.status);
+      console.log('Login response data:', response.data);
     }
 
     // Extract cookies from the response headers.
@@ -99,6 +101,10 @@ async function fetchAnalytics(cookies: string[]): Promise<any> {
       },
       maxRedirects: 0, // Prevent following redirects automatically.
     });
+    
+    // Debugging: Log the raw response data.
+    console.log('Fetch analytics response:', response.data);
+    
     return response.data; // Return the analytics data.
   } catch (error) {
     // Handle errors during data fetching.
@@ -122,44 +128,47 @@ function saveData(data: object) {
 }
 
 /**
- * Converts all object fields to JSON strings in the data array.
- * @param data The data array to stringify.
- * @returns The modified data array with stringified object fields.
+ * Connects to MySQL database.
+ * @returns A promise that resolves with the MySQL connection object.
  */
-function stringifyObjects(data: any[]): any[] {
-  return data.map((item) => {
-    const newItem: any = {};
-    for (const [key, value] of Object.entries(item)) {
-      newItem[key] = typeof value === 'object' ? JSON.stringify(value) : value;
-    }
-    return newItem;
+async function getMySQLConnection() {
+  return mysql.createConnection({
+    host: getEnvVariable('MYSQL_HOST'),
+    user: getEnvVariable('MYSQL_USER'),
+    password: getEnvVariable('MYSQL_PASSWORD'),
+    database: getEnvVariable('MYSQL_DATABASE'),
   });
 }
 
 /**
- * Saves the fetched data to a CSV file.
+ * Saves the fetched data to MySQL database.
  * @param data The data to save.
  */
-function saveDataToCsv(data: object[]) {
-  if (data.length === 0) {
-    console.warn('No data to write to CSV');
-    return; // If there is no data, skip writing to the file.
+async function saveDataToMySQL(data: object[]) {
+  const connection = await getMySQLConnection();
+  try {
+    // Ensure the table exists or create it if necessary.
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS analytics_data (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        timestamp DATETIME,
+        data JSON
+      )
+    `);
+
+    // Insert the data into the table.
+    const timestamp = new Date();
+    await connection.query('INSERT INTO analytics_data (timestamp, data) VALUES (?, ?)', [
+      timestamp,
+      JSON.stringify(data),
+    ]);
+
+    console.log('Data successfully saved to MySQL');
+  } catch (err) {
+    console.error('Error saving data to MySQL:', err);
+  } finally {
+    connection.end(); // Close the connection.
   }
-
-  // Stringify any object fields to ensure proper CSV format.
-  const stringifiedData = stringifyObjects(data);
-
-  // Create a CSV writer instance with header columns.
-  const csvWriter = createCsvWriter({
-    path: csvFilePath,
-    header: Object.keys(stringifiedData[0]).map((key) => ({ id: key, title: key })), // Create headers dynamically based on keys
-  });
-
-  // Write the data to the CSV file.
-  csvWriter
-    .writeRecords(stringifiedData)
-    .then(() => console.log('Data successfully saved to CSV file:', csvFilePath))
-    .catch((err) => console.error('Error saving data to CSV:', err));
 }
 
 /**
@@ -181,9 +190,21 @@ async function main() {
   try {
     const timestamp = new Date().toISOString(); // Get the current timestamp.
     const cookies = await login(); // Log in to get the session cookies.
-    const data = await fetchAnalytics(cookies); // Fetch the analytics data.
+    
+    // Debugging: Log cookies after login.
+    console.log('Cookies:', cookies);
 
-    // Ensure the data is in an array format suitable for CSV.
+    const data = await fetchAnalytics(cookies); // Fetch the analytics data.
+    
+    // Debugging: Log the data fetched from CMS.
+    console.log('Fetched Data:', data);
+
+    if (!data || data.length === 0) {
+      console.error('No data fetched from the CMS.');
+      return;
+    }
+
+    // Ensure the data is in an array format suitable for saving to MySQL.
     const dataArray = Array.isArray(data) ? data : [data];
 
     // Prepare the result with the fetched data and timestamp.
@@ -192,8 +213,8 @@ async function main() {
       data: dataArray,
     };
 
-    saveData(result); // Save the fetched data with the timestamp.
-    saveDataToCsv(dataArray); // Save the fetched data to a CSV file.
+    saveData(result); // Save the fetched data with the timestamp (optional).
+    await saveDataToMySQL(dataArray); // Save the fetched data to MySQL.
     console.log('Fetched and saved analytics data:', JSON.stringify(result, null, 2));
   } catch (error) {
     // Handle errors during the main execution.

@@ -6,8 +6,11 @@
   "dependencies": {
     "@types/firebase": "^3.2.1",
     "@types/node": "^22.1.0",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.4.5",
     "firebase": "^10.12.4",
-    "googleapis": "^140.0.1",
+    "googleapis": "^144.0.0",
+    "mysql2": "^3.11.3",
     "node-cron": "^3.0.3",
     "typescript": "^5.5.4"
   },

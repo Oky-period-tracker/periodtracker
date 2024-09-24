@@ -71,7 +71,7 @@ export async function getUserMetricsByCountry(authClient: any, propertyId: strin
       country,
       totalUsers,
       dau,
-      mau,
+      mau, 
     };
   });
 }

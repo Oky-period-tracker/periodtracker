@@ -17,12 +17,19 @@ interface EventData {
 }
 
 /**
- * Formats a JavaScript Date object into a PostgreSQL-compatible TIMESTAMP string.
+ * Formats a JavaScript Date object into a PostgreSQL-compatible DATETIME string.
  * @param date - The JavaScript Date object to format.
  * @returns A formatted string in the 'YYYY-MM-DD HH:MM:SS' format.
  */
-function formatDateForPostgres(date: Date): string {
-  return date.toISOString().replace('T', ' ').substring(0, 19);
+function formatDateForPostgreSQL(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 /**
@@ -49,7 +56,7 @@ const pool = new Pool({
   user: process.env.PG_USER,
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
-  port: Number(process.env.PG_PORT),
+  port: parseInt(process.env.PG_PORT || '5432', 10),
 });
 
 /**
@@ -105,42 +112,31 @@ async function createTablesIfNotExist(tableNamePrefix: string) {
  */
 async function insertEventData(eventsData: EventData[] | undefined, tableNamePrefix: string) {
   if (eventsData && eventsData.length > 0) {
-    const uniqueEventsData = eventsData.reduce((acc, current) => {
-      const existing = acc.find(event => 
-        event.eventName === current.eventName && 
-        event.eventCount === current.eventCount
-      );
-      if (!existing) acc.push(current);
-      return acc;
-    }, [] as EventData[]);
+    const values = eventsData.map(event => [
+      event.eventName,
+      new Date().toISOString().slice(0, 10), // Only the date part
+      'unknown_user',
+      'unknown_country',
+      parseInt(event.eventCount, 10)
+    ]);
 
     const query = `
       INSERT INTO ${tableNamePrefix}_events_data (event_type, event_timestamp, user_id, country, event_count)
-      VALUES ($1, $2, $3, $4, $5)
+      VALUES ${values.map((_, i) => `($${i * 5 + 1}, $${i * 5 + 2}, $${i * 5 + 3}, $${i * 5 + 4}, $${i * 5 + 5})`).join(', ')}
       ON CONFLICT (event_type, event_timestamp, user_id, country)
       DO UPDATE SET
-        event_count = EXCLUDED.event_count,
-        event_timestamp = EXCLUDED.event_timestamp;
+        event_count = EXCLUDED.event_count,  -- Replace the old count with the new count
+        event_timestamp = EXCLUDED.event_timestamp;  -- Update the timestamp if necessary
     `;
 
     try {
-      for (const event of uniqueEventsData) {
-        const values = [
-          event.eventName,
-          new Date().toISOString().slice(0, 10), // Only the date part
-          'unknown_user',
-          'unknown_country',
-          parseInt(event.eventCount, 10),
-        ];
-        await pool.query(query, values);
-      }
-      console.log('Event data inserted/replaced successfully.');
+      await pool.query(query, values.flat());
+      console.log('Bulk event data inserted/replaced.');
     } catch (error) {
-      console.error('Error inserting/replacing event data:', error);
+      console.error('Error inserting/replacing bulk event data:', error);
     }
   }
 }
-
 
 /**
  * Inserts or updates daily active users, monthly active users, and total users metrics into PostgreSQL.
@@ -167,33 +163,27 @@ async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tab
 
   const dailyQuery = `
     INSERT INTO ${tableNamePrefix}_daily_active_users (date, country, active_users)
-    VALUES ($1, $2, $3)
-    ON CONFLICT (date, country)
-    DO UPDATE SET active_users = EXCLUDED.active_users;
+    VALUES ${dailyValues.map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3})`).join(', ')}
+    ON CONFLICT (date, country) DO UPDATE SET
+      active_users = EXCLUDED.active_users;
   `;
   const monthlyQuery = `
     INSERT INTO ${tableNamePrefix}_monthly_active_users (month_year, country, active_users)
-    VALUES ($1, $2, $3)
-    ON CONFLICT (month_year, country)
-    DO UPDATE SET active_users = EXCLUDED.active_users;
+    VALUES ${monthlyValues.map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3})`).join(', ')}
+    ON CONFLICT (month_year, country) DO UPDATE SET
+      active_users = EXCLUDED.active_users;
   `;
   const totalQuery = `
     INSERT INTO ${tableNamePrefix}_total_users (country, total_users)
-    VALUES ($1, $2)
-    ON CONFLICT (country)
-    DO UPDATE SET total_users = EXCLUDED.total_users;
+    VALUES ${totalValues.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(', ')}
+    ON CONFLICT (country) DO UPDATE SET
+      total_users = EXCLUDED.total_users;
   `;
 
   try {
-    for (const value of dailyValues) {
-      await pool.query(dailyQuery, value);
-    }
-    for (const value of monthlyValues) {
-      await pool.query(monthlyQuery, value);
-    }
-    for (const value of totalValues) {
-      await pool.query(totalQuery, value);
-    }
+    await pool.query(dailyQuery, dailyValues.flat());
+    await pool.query(monthlyQuery, monthlyValues.flat());
+    await pool.query(totalQuery, totalValues.flat());
     console.log(`User metrics data inserted for prefix ${tableNamePrefix}`);
   } catch (error) {
     console.error(`Error inserting user metrics data for prefix ${tableNamePrefix}:`, error);
@@ -267,23 +257,34 @@ async function fetchAnalyticsDataForCMS(endpoint: string, cookies: string[]): Pr
  */
 async function saveCMSToPostgreSQL(cmsName: string, data: object[]) {
   try {
-    // Create the table if it doesn't exist
+    // Ensure the table exists
     await pool.query(`
       CREATE TABLE IF NOT EXISTS ${cmsName}_analytics_data (
         id SERIAL PRIMARY KEY,
-        timestamp TIMESTAMPTZ NOT NULL,
+        timestamp TIMESTAMP NOT NULL,
         data JSONB NOT NULL
       )
     `);
 
-    // Use an insertion query
+    // Log the data being saved for debugging
+    console.log(`Data to be saved for ${cmsName}:`, JSON.stringify(data, null, 2));
+
+    if (data.length === 0) {
+      console.log(`No data to save for CMS: ${cmsName}`);
+      return;
+    }
+
     const insertQuery = `
       INSERT INTO ${cmsName}_analytics_data (timestamp, data)
       VALUES ($1, $2)
+      ON CONFLICT (id)
+      DO UPDATE SET
+        timestamp = EXCLUDED.timestamp,
+        data = EXCLUDED.data;
     `;
 
-    const timestamp = new Date(); // Current timestamp
-    const result = await pool.query(insertQuery, [timestamp, JSON.stringify(data)]);
+    const timestamp = new Date();
+    await pool.query(insertQuery, [timestamp, JSON.stringify(data)]);
 
     console.log(`Data successfully saved to PostgreSQL for CMS: ${cmsName}`);
   } catch (err) {
@@ -304,15 +305,9 @@ async function fetchAndSaveForCMS(cmsConfig: any) {
   try {
     console.log(`Fetching data for CMS: ${cmsName}`);
     const cookies = await loginToCMS(loginUrl, username, password);
-    console.log(`Successfully logged in to CMS: ${cmsName}`);
-    
     const responseData = await fetchAnalyticsDataForCMS(endpoint, cookies);
-    console.log(`Fetched data from CMS (${cmsName}): ${JSON.stringify(responseData, null, 2)}`);
 
-    if (!responseData || Object.keys(responseData).length === 0) {
-      console.warn(`No data fetched for CMS: ${cmsName}`);
-      return;
-    }
+    console.log('Fetched CMS data:', JSON.stringify(responseData, null, 2));
 
     const dataArray = Array.isArray(responseData) ? responseData : [responseData];
     await saveCMSToPostgreSQL(cmsName, dataArray);
@@ -322,10 +317,12 @@ async function fetchAndSaveForCMS(cmsConfig: any) {
 
     // Fetch the most recent data from the database
     try {
-      const result = await pool.query(`SELECT timestamp, data FROM ${cmsName}_analytics_data WHERE id = 1`);
-      
-      if (result.rows.length > 0) {
-        const recentData = result.rows[0];
+      const { rows } = await pool.query(
+        `SELECT timestamp, data FROM ${cmsName}_analytics_data WHERE id = 1`
+      );
+
+      if (rows.length > 0) {
+        const recentData = rows[0];
         console.log(`CMS ${cmsName} is down. Showing the most recently fetched data on '${recentData.timestamp}':`);
         console.log(JSON.stringify(recentData.data, null, 2));
       } else {

@@ -6,13 +6,18 @@
   "dependencies": {
     "@types/firebase": "^3.2.1",
     "@types/node": "^22.1.0",
+    "axios": "^1.7.7",
+    "cron": "^3.1.7",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.4",
+    "fs": "^0.0.1-security",
     "googleapis": "^144.0.0",
     "mysql2": "^3.11.3",
     "node-cron": "^3.0.3",
+    "path": "^0.12.7",
     "pg": "^8.13.0",
+    "qs": "^6.13.0",
     "typescript": "^5.5.4"
   },
   "devDependencies": {

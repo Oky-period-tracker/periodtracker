@@ -1,2 +1,3 @@
 /credentials/client_secrets.json
 src/cmsConfigs.json
+cache/analyticsCache.json

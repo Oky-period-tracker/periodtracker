@@ -155,8 +155,12 @@ export const WheelPicker = ({
 export const useInitialWheelOption = (
   value: string | undefined,
   options: WheelPickerOption[],
+  ifOneUseFirst: boolean = false,
 ): WheelPickerOption | undefined => {
   return React.useMemo(() => {
+    if (ifOneUseFirst && options.length === 1) {
+      return options[0]
+    }
     return options.find((item) => item?.value === value)
   }, [options, value])
 }

@@ -1,3 +1,6 @@
+/**
+ * Import necessary modules and packages for the application.
+ */
 import axios, { AxiosResponse } from 'axios';
 import { google } from 'googleapis';
 import path from 'path';
@@ -7,11 +10,15 @@ import cron from 'node-cron';
 import fs from 'fs';
 import * as dotenv from 'dotenv';
 
+// Load environment variables from the .env file
 dotenv.config();
 
-
+// Import custom service functions to handle analytics data processing
 import { getEventsData, getUserMetricsByCountry, UserMetrics } from './services/analyticsService';
 
+/**
+ * Initialize PostgreSQL connection pool using environment variables
+ */
 const pool = new Pool({
   host: process.env.PG_HOST,
   user: process.env.PG_USER,
@@ -20,11 +27,21 @@ const pool = new Pool({
   port: parseInt(process.env.PG_PORT || '5432', 10),
 });
 
+/**
+ * Interface representing the structure of event data fetched from CMS analytics
+ */
 interface EventData {
   eventName: string;
   eventCount: string;
 }
 
+/**
+ * Ensures that a PostgreSQL table with the specified name and columns exists.
+ * If it doesn't exist, it creates a new table with the specified schema.
+ *
+ * @param {string} tableName - The name of the table to check/create.
+ * @param {string} columns - A string defining the columns and their data types.
+ */
 async function createTableIfNotExists(tableName: string, columns: string) {
   try {
     const createTableQuery = `
@@ -40,6 +57,13 @@ async function createTableIfNotExists(tableName: string, columns: string) {
   }
 }
 
+/**
+ * Saves analytics data into individual tables based on different data categories.
+ * Each data type (e.g., usersLocations, usersCountries) is saved into its respective table.
+ *
+ * @param {string} cmsName - The prefix to be used for the table names based on CMS source.
+ * @param {any} data - The analytics data to be saved, categorized by data type.
+ */
 async function saveDataToSeparateTables(cmsName: string, data: any) {
   const tablesData = {
     usersLocations: data.usersLocations,
@@ -95,9 +119,13 @@ async function saveDataToSeparateTables(cmsName: string, data: any) {
   }
 }
 
-
-
-
+/**
+ * Loads the CMS configurations from the 'cmsConfigs.json' file.
+ * This function reads the file and parses the JSON data to return the CMS configurations.
+ *
+ * @returns {Promise<any[]>} A promise that resolves to an array of CMS configuration objects.
+ * @throws Will throw an error if the configuration file is not found or cannot be read.
+ */
 async function loadCMSConfigs(): Promise<any[]> {
   const cmsConfigsPath = path.join(__dirname, 'cmsConfigs.json');
   if (!fs.existsSync(cmsConfigsPath)) {
@@ -107,6 +135,16 @@ async function loadCMSConfigs(): Promise<any[]> {
   return JSON.parse(rawData);
 }
 
+/**
+ * Performs a login operation to a CMS using the provided credentials.
+ * The function handles the login request, validates the response, and returns the session cookies.
+ *
+ * @param {string} loginUrl - The URL endpoint for the CMS login.
+ * @param {string} username - The username for CMS authentication.
+ * @param {string} password - The password for CMS authentication.
+ * @returns {Promise<string[]>} A promise that resolves to an array of cookies for the authenticated session.
+ * @throws Will throw an error if the login attempt fails or no cookies are set.
+ */
 async function loginToCMS(loginUrl: string, username: string, password: string): Promise<string[]> {
   try {
     const payload = qs.stringify({ username, password });
@@ -126,6 +164,16 @@ async function loginToCMS(loginUrl: string, username: string, password: string):
   }
 }
 
+
+
+/**
+ * Fetches analytics data from a specified CMS endpoint using provided session cookies.
+ *
+ * @param {string} endpoint - The API endpoint for retrieving CMS analytics data.
+ * @param {string[]} cookies - An array of session cookies required for authentication.
+ * @returns {Promise<any>} A promise that resolves to the fetched analytics data.
+ * @throws Will throw an error if the data fetch operation fails.
+ */
 async function fetchAnalyticsDataForCMS(endpoint: string, cookies: string[]): Promise<any> {
   try {
     const response: AxiosResponse = await axios.get(endpoint, {
@@ -141,14 +189,18 @@ async function fetchAnalyticsDataForCMS(endpoint: string, cookies: string[]): Pr
   }
 }
 
-
-
-
+/**
+ * Inserts data into a specified PostgreSQL table.
+ * If the table already contains data, it will be cleared before inserting new data.
+ *
+ * @param {string} tableName - The name of the table into which data should be inserted.
+ * @param {any[]} data - An array of data objects to be inserted into the table.
+ */
 async function insertDataIntoTable(tableName: string, data: any[]) {
   if (data.length === 0) return;
 
   try {
-    // Clear the table before inserting new data
+    // Clear existing data before inserting new data
     await pool.query(`DELETE FROM ${tableName}`);
 
     const keys = Object.keys(data[0]);
@@ -171,8 +223,12 @@ async function insertDataIntoTable(tableName: string, data: any[]) {
   }
 }
 
-
-// This function definition was missing in the original code
+/**
+ * Fetches analytics data for a specific CMS and saves it to separate tables.
+ * This function logs into the CMS, retrieves the data, filters it, and saves it.
+ *
+ * @param {any} cmsConfig - Configuration object containing CMS details such as name, login URL, username, password, and data endpoint.
+ */
 async function fetchAndSaveForCMS(cmsConfig: any) {
   const { name, loginUrl, username, password, endpoint } = cmsConfig;
   const cmsName = name || loginUrl.replace(/^https?:\/\//, '').split('.')[0];
@@ -199,6 +255,10 @@ async function fetchAndSaveForCMS(cmsConfig: any) {
   }
 }
 
+/**
+ * Main function to fetch analytics data from all configured CMS sources.
+ * This function loads CMS configurations, initiates the data fetch process for each CMS, and handles any errors.
+ */
 export async function fetchAnalyticsDataForCMSMain() {
   try {
     const cmsConfigs = await loadCMSConfigs();
@@ -210,21 +270,26 @@ export async function fetchAnalyticsDataForCMSMain() {
   }
 }
 
-// Schedule the function to run at midnight every day
+/**
+ * Schedules a cron job to run the CMS analytics data fetch function at midnight every day.
+ * This ensures that the analytics data remains up-to-date without manual intervention.
+ */
 cron.schedule('0 0 * * *', () => {
   console.log('Running scheduled CMS analytics fetch...');
   fetchAnalyticsDataForCMSMain().catch((error) => console.error('Scheduled task failed:', error));
 });
 
-// Schedule the function to run at midnight every day
+/**
+ * Schedules a separate cron job to fetch analytics data for Firebase at midnight every day.
+ * Note: Ensure `fetchAnalyticsDataForFirebase` is implemented elsewhere in the project.
+ */
 cron.schedule('0 0 * * *', () => {
   console.log('Running scheduled analytics fetch for Firebase...');
   fetchAnalyticsDataForFirebase().catch((error) => console.error('Scheduled task failed:', error));
 });
 
-// Run the fetch process initially when the script starts
+// Run the CMS data fetch process immediately when the script starts
 fetchAnalyticsDataForCMSMain().catch((error) => console.error('Initial run failed:', error));
-
 
 
 
@@ -233,8 +298,11 @@ fetchAnalyticsDataForCMSMain().catch((error) => console.error('Initial run faile
 
 /**
  * Formats a JavaScript Date object into a PostgreSQL-compatible DATETIME string.
- * @param date - The JavaScript Date object to format.
- * @returns A formatted string in the 'YYYY-MM-DD HH:MM:SS' format.
+ * This function ensures that the date and time values are properly formatted to fit the 'YYYY-MM-DD HH:MM:SS' standard,
+ * which is crucial for seamless database operations.
+ *
+ * @param {Date} date - The JavaScript Date object to format.
+ * @returns {string} A formatted string in the 'YYYY-MM-DD HH:MM:SS' format.
  */
 function formatDateForPostgreSQL(date: Date): string {
   const year = date.getFullYear();
@@ -249,7 +317,11 @@ function formatDateForPostgreSQL(date: Date): string {
 
 /**
  * Authenticates the application to access the Firebase Analytics API using Google OAuth.
- * @returns The authenticated Google client instance.
+ * This method retrieves an authorized Google client instance, allowing secure access to Firebase data.
+ * Make sure the 'client_secrets.json' file is correctly configured with your Google service account credentials.
+ *
+ * @returns {Promise<any>} The authenticated Google client instance.
+ * @throws Will throw an error if the authentication process fails.
  */
 async function authenticate() {
   try {
@@ -265,11 +337,12 @@ async function authenticate() {
   }
 }
 
-
-
 /**
- * Creates necessary tables in the PostgreSQL database if they do not exist for the given Firebase project.
- * @param tableNamePrefix - The prefix used to create the tables specific to each Firebase property ID.
+ * Creates the necessary tables in the PostgreSQL database if they do not exist for the given Firebase project.
+ * This function is designed to handle table creation for event data, daily active users, monthly active users,
+ * and total users, ensuring that your database schema is prepared for analytics data storage.
+ *
+ * @param {string} tableNamePrefix - The prefix used to create the tables specific to each Firebase property ID.
  */
 async function createFirebaseTablesIfNotExist(tableNamePrefix: string) {
   const createQueries = [
@@ -313,16 +386,14 @@ async function createFirebaseTablesIfNotExist(tableNamePrefix: string) {
   }
 }
 
-
-
-
 /**
  * Main function that fetches analytics data from Firebase.
- * It handles data fetching, processing, and saving to the PostgreSQL database.
+ * This function handles data fetching for multiple Firebase properties as specified in environment variables.
+ * It authenticates the application, retrieves event data and user metrics, processes them, and saves them to the PostgreSQL database.
  */
 export async function fetchAnalyticsDataForFirebase() {
   try {
-    // Fetch Firebase analytics
+    // Retrieve Firebase property IDs from environment variables
     const propertyIds = process.env.FIREBASE_PROPERTY_IDS?.split(',');
     const authClient = await authenticate();
 
@@ -331,9 +402,11 @@ export async function fetchAnalyticsDataForFirebase() {
         const tableNamePrefix = `firebase_${propertyId}`;
         await createFirebaseTablesIfNotExist(tableNamePrefix);
 
+        // Fetch event data and insert into PostgreSQL
         const eventsData = await getEventsData(authClient, propertyId);
         await insertEventData(eventsData, tableNamePrefix);
 
+        // Fetch user metrics data and insert into PostgreSQL
         const userMetricsByCountry = await getUserMetricsByCountry(authClient, propertyId);
         await insertUserMetricsData(userMetricsByCountry, tableNamePrefix);
 
@@ -347,16 +420,16 @@ export async function fetchAnalyticsDataForFirebase() {
   }
 }
 
-
-
-// Run the fetch process initially when the script starts
+// Run the fetch process immediately when the script starts
 fetchAnalyticsDataForFirebase().catch((error) => console.error('Initial run failed:', error));
-
 
 /**
  * Sanitizes a string by removing non-UTF8 characters.
- * @param input - The string to sanitize.
- * @returns A sanitized UTF8-compatible string.
+ * This function ensures that the data is cleaned and remains UTF8-compatible before being inserted into the database,
+ * preventing potential issues with non-standard characters.
+ *
+ * @param {string} input - The string to sanitize.
+ * @returns {string} A sanitized UTF8-compatible string.
  */
 function sanitizeString(input: string): string {
   if (typeof input === 'string') {
@@ -365,14 +438,24 @@ function sanitizeString(input: string): string {
   return input;
 }
 
+
+
+
+
+
+
 /**
  * Inserts or updates daily active users, monthly active users, and total users metrics into PostgreSQL.
- * @param userMetrics - Array of user metrics data to be inserted or updated.
- * @param tableNamePrefix - The prefix used to identify the specific table.
+ * This function handles the upsert (insert or update) operation, ensuring that metrics data is always up-to-date.
+ *
+ * @param {UserMetrics[]} userMetrics - Array of user metrics data to be inserted or updated.
+ * @param {string} tableNamePrefix - The prefix used to identify the specific table.
+ * @throws Will throw an error if the data insertion fails.
  */
 async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tableNamePrefix: string) {
   if (!userMetrics || userMetrics.length === 0) return;
 
+  // Prepare values for daily, monthly, and total user metrics
   const dailyValues = userMetrics.map(metric => [
     new Date().toISOString().slice(0, 10),
     sanitizeString(metric.country),
@@ -388,6 +471,7 @@ async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tab
     parseInt(metric.totalUsers, 10)
   ]);
 
+  // SQL Queries for inserting/updating metrics data
   const dailyQuery = `
     INSERT INTO ${tableNamePrefix}_daily_active_users (date, country, active_users)
     VALUES ${dailyValues.map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3})`).join(', ')}
@@ -408,6 +492,7 @@ async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tab
   `;
 
   try {
+    // Execute insertion/upsert queries
     await pool.query(dailyQuery, dailyValues.flat());
     await pool.query(monthlyQuery, monthlyValues.flat());
     await pool.query(totalQuery, totalValues.flat());
@@ -419,8 +504,10 @@ async function insertUserMetricsData(userMetrics: UserMetrics[] | undefined, tab
 
 /**
  * Inserts or updates event data fetched from Firebase Analytics into the PostgreSQL table.
- * @param eventsData - Array of event data to be inserted or updated.
- * @param tableNamePrefix - The prefix used to identify the specific table.
+ * Handles bulk insertion of event data and ensures data consistency using the upsert mechanism.
+ *
+ * @param {EventData[] | undefined} eventsData - Array of event data to be inserted or updated.
+ * @param {string} tableNamePrefix - The prefix used to identify the specific table.
  */
 async function insertEventData(eventsData: EventData[] | undefined, tableNamePrefix: string) {
   if (eventsData && eventsData.length > 0) {
@@ -452,14 +539,16 @@ async function insertEventData(eventsData: EventData[] | undefined, tableNamePre
 
 /**
  * Inserts key-value data into the specified PostgreSQL table after sanitizing it.
- * @param tableName - The name of the table to insert the data into.
- * @param data - Array of data objects to insert.
+ * This function is useful for simple key-value pair data and clears the existing data before inserting new data.
+ *
+ * @param {string} tableName - The name of the table to insert the data into.
+ * @param {any[]} data - Array of data objects to insert, containing 'location_name' and 'count'.
  */
 async function insertKeyValueDataIntoTable(tableName: string, data: any[]) {
   if (data.length === 0) return;
 
   try {
-    // Clear the table before inserting new data
+    // Clear existing data before inserting new data
     await pool.query(`DELETE FROM ${tableName}`);
 
     const insertQuery = `
@@ -479,15 +568,17 @@ async function insertKeyValueDataIntoTable(tableName: string, data: any[]) {
 
 /**
  * Inserts dynamic data into the specified PostgreSQL table with sanitized column names.
- * @param tableName - The name of the table to insert the data into.
- * @param data - Array of data objects to insert.
- * @param allColumns - Set of all column names for the table.
+ * The function handles cases where the data structure may vary, dynamically creating columns and inserting the data.
+ *
+ * @param {string} tableName - The name of the table to insert the data into.
+ * @param {any[]} data - Array of data objects to insert, where keys represent column names.
+ * @param {Set<string>} allColumns - Set of all column names for the table, ensuring consistent column mapping.
  */
 async function insertDynamicDataIntoTable(tableName: string, data: any[], allColumns: Set<string>) {
   if (data.length === 0) return;
 
   try {
-    // Clear the table before inserting new data
+    // Clear existing data before inserting new data
     await pool.query(`TRUNCATE TABLE ${tableName}`);
 
     for (const row of data) {
@@ -507,4 +598,3 @@ async function insertDynamicDataIntoTable(tableName: string, data: any[], allCol
     console.error(`Error inserting data into table ${tableName}:`, error);
   }
 }
-

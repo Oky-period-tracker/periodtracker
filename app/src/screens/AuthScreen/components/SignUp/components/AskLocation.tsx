@@ -30,8 +30,16 @@ export const AskLocation = () => {
   const countryOptions = useCountryOptions()
   const provinceOptions = useProvinceOptions(state.country)
 
-  const initialCountry = useInitialWheelOption(state.country, countryOptions)
+  const initialCountry = useInitialWheelOption(state.country, countryOptions, true)
   const initialProvince = useInitialWheelOption(state.province, provinceOptions)
+
+  const onlyOneCountry = countryOptions.length === 1
+
+  React.useEffect(() => {
+    if (onlyOneCountry && !state.country) {
+      onChangeCountry(initialCountry)
+    }
+  }, [onlyOneCountry, state.country, initialCountry])
 
   return (
     <AuthCardBody>
@@ -41,6 +49,7 @@ export const AskLocation = () => {
         onSelect={onChangeCountry}
         placeholder={'country'}
         accessibilityLabel={label}
+        disabled={onlyOneCountry}
         searchEnabled
       />
       <WheelPickerModal

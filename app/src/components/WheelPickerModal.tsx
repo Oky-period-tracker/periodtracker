@@ -18,6 +18,7 @@ export const WheelPickerModal = ({
   ToggleComponent,
   inputWrapperStyle,
   enableTranslate = false,
+  disabled = false,
   ...props
 }: {
   initialOption: WheelPickerOption | undefined
@@ -28,6 +29,7 @@ export const WheelPickerModal = ({
   ToggleComponent?: React.FC<{ onPress: () => void }>
   inputWrapperStyle?: ViewStyle
   enableTranslate?: boolean
+  disabled?: boolean
 } & InputProps) => {
   const translate = useTranslate()
   const { query, setQuery, results } = useSearch<WheelPickerOption>({
@@ -59,7 +61,7 @@ export const WheelPickerModal = ({
       {ToggleComponent ? (
         <ToggleComponent onPress={toggleVisible} />
       ) : (
-        <TouchableOpacity onPress={toggleVisible} style={inputWrapperStyle}>
+        <TouchableOpacity onPress={toggleVisible} style={inputWrapperStyle} disabled={disabled}>
           <Input
             {...props}
             value={displayValue}

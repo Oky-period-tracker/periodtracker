@@ -16,6 +16,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { AvatarMessage } from './AvatarMessage'
+import { avatarException } from '../../config/theme'
 
 interface AnimationConfig {
   start: number
@@ -145,7 +146,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 
   // - Top half of lottie is empty space, +72 height of CircleProgress
   let marginTop = -lottieHeight / 1.75 + 72
-  if (avatar === 'oky') {
+  if (avatar === avatarException) {
     // TODO: Oky lottie different size to the rest
     marginTop = -lottieHeight / 2.25 + 72
   }

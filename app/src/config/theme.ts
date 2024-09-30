@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native'
+import { AvatarName } from '../resources/translations'
 
 export type PaletteStatus =
   | 'primary'
@@ -88,3 +89,5 @@ export const globalStyles = StyleSheet.create({
     elevation: 4,
   },
 })
+
+export const avatarException = 'oky' as AvatarName

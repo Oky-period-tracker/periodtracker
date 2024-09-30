@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native'
 import { Text } from '../Text'
 import { useAvatarMessage } from '../../contexts/AvatarMessageContext'
 import { useTutorial } from '../../screens/MainScreen/TutorialContext'
-import { globalStyles } from '../../config/theme'
+import { avatarException, globalStyles } from '../../config/theme'
 import { useSelector } from 'react-redux'
 import { currentAvatarSelector } from '../../redux/selectors'
 
@@ -18,7 +18,7 @@ export const AvatarMessage = () => {
 
   let top = 80
   const backgroundColor = '#fff'
-  if (avatar === 'oky') {
+  if (avatar === avatarException) {
     // TODO: Oky lottie different size to the rest
     top = 0
     'transparent'

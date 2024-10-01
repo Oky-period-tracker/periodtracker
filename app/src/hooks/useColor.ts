@@ -67,7 +67,7 @@ const schemes: ColorScheme = {
     inputBackgroundColor: '#323237',
     videoTabBackgroundColor: '#4a0c2e',
     modalBackdropColor: 'rgba(50,50,50,0.8)',
-    backgroundOverlayColor: 'rgba(0,0,0,0.2)',
+    backgroundOverlayColor: 'rgba(0,0,0,0.5)',
   },
 }
 

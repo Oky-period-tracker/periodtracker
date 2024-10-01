@@ -153,10 +153,10 @@ const palettes: Record<ColorSchemeName, Palette> = {
       text: '#91d9e2',
     },
     basic: {
-      base: '#B7B6B6',
-      highlight: '#D1D0D2',
-      shadow: '#82807f',
-      dark: '#595755',
+      base: '#82807f',
+      highlight: '#B7B6B6',
+      shadow: '#454342',
+      dark: '#292827',
       text: '#000',
     },
     danger: {

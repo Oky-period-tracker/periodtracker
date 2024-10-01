@@ -1,8 +1,9 @@
 import React from 'react'
 import { StyleProp, StyleSheet, TextStyle, TouchableOpacity, View, ViewProps } from 'react-native'
-import { PaletteStatus, globalStyles, palette } from '../config/theme'
+import { globalStyles } from '../config/theme'
 import { Appearance } from './IconButton'
 import { Text } from './Text'
+import { useColor, PaletteStatus } from '../hooks/useColor'
 
 export type ButtonProps = ViewProps & {
   onPress?: () => void
@@ -21,6 +22,7 @@ export const Button = ({
   enableTranslate = true,
   ...props
 }: ButtonProps) => {
+  const { palette } = useColor()
   const colors = palette[status]
 
   return (
@@ -40,6 +42,7 @@ export const Button = ({
 }
 
 export const DisplayButton = ({ style, status = 'primary', ...props }: ButtonProps) => {
+  const { palette } = useColor()
   const colors = palette[status]
 
   return (
@@ -59,6 +62,7 @@ const ButtonInner = ({
   enableTranslate = true,
   ...props
 }: ButtonProps) => {
+  const { palette } = useColor()
   const colors = palette[status]
 
   const children = props.children ? (

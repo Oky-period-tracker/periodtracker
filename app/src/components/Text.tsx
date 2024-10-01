@@ -1,8 +1,7 @@
 import React from 'react'
 import { Text as RNText, TextProps as RNTextProps, StyleSheet } from 'react-native'
-import { PaletteStatus, palette } from '../config/theme'
 import { useTranslate } from '../hooks/useTranslate'
-import { useColor } from '../hooks/useColor'
+import { PaletteStatus, useColor } from '../hooks/useColor'
 
 export type CustomTextProps = RNTextProps & {
   status?: PaletteStatus
@@ -16,11 +15,12 @@ export const Text: React.FC<CustomTextProps> = ({
   enableTranslate = true,
   ...props
 }) => {
-  let { color } = useColor()
   const translate = useTranslate()
+  const { color, palette } = useColor()
+  let textColor = color
 
   if (status && status !== 'basic') {
-    color = palette[status].text
+    textColor = palette[status].text
   }
 
   const getContent = () => {
@@ -31,7 +31,7 @@ export const Text: React.FC<CustomTextProps> = ({
   }
 
   return (
-    <RNText style={[styles.default, { color }, style]} {...props}>
+    <RNText style={[styles.default, { color: textColor }, style]} {...props}>
       {getContent()}
     </RNText>
   )

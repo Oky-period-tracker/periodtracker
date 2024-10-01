@@ -3,7 +3,6 @@ import { View, Image, StyleSheet } from 'react-native'
 import { DisplayButton } from '../../../components/Button'
 import { Text } from '../../../components/Text'
 import { assets } from '../../../resources/assets'
-import { palette } from '../../../config/theme'
 import { useColor } from '../../../hooks/useColor'
 
 interface WelcomeCardProps {
@@ -13,13 +12,13 @@ interface WelcomeCardProps {
 }
 
 export const WelcomeCard = ({ icon, subtitle, description }: WelcomeCardProps) => {
-  const { backgroundColor } = useColor()
+  const { palette, backgroundColor } = useColor()
 
   return (
     <View style={[styles.page, { backgroundColor }]}>
       <View style={styles.welcomeContainer}>
         <Image source={assets.static.launch_icon} style={styles.logo} resizeMode={'contain'} />
-        <Text style={styles.title}>auth_welcome</Text>
+        <Text style={[styles.title, { color: palette.danger.base }]}>auth_welcome</Text>
       </View>
 
       <DisplayButton status={'primary'} style={styles.button}>
@@ -57,7 +56,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     textAlign: 'center',
     fontWeight: 'bold',
-    color: palette['danger'].base,
     marginBottom: 16,
   },
   button: {

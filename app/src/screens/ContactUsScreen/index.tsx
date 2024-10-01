@@ -7,7 +7,7 @@ import { useToggle } from '../../hooks/useToggle'
 import { httpClient } from '../../services/HttpClient'
 import { Modal } from '../../components/Modal'
 import { Text } from '../../components/Text'
-import { globalStyles, palette } from '../../config/theme'
+import { globalStyles } from '../../config/theme'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { currentLocaleSelector, currentUserSelector } from '../../redux/selectors'
@@ -21,7 +21,7 @@ import { useColor } from '../../hooks/useColor'
 const ContactUsScreen: ScreenComponent<'Contact'> = () => {
   const user = useSelector(currentUserSelector)
   const locale = useSelector(currentLocaleSelector)
-  const { backgroundColor } = useColor()
+  const { palette, backgroundColor } = useColor()
 
   const [reason, setReason] = React.useState<WheelPickerOption | undefined>(undefined)
 
@@ -77,7 +77,7 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
       </KeyboardAvoidingView>
 
       <Modal style={styles.modal} visible={visible} toggleVisible={toggleVisible}>
-        <Text style={styles.modalTitle}>thank_you</Text>
+        <Text style={[styles.modalTitle, { color: palette.primary.base }]}>thank_you</Text>
         <Text>thank_you_content</Text>
       </Modal>
     </Screen>
@@ -112,6 +112,5 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 20,
     fontWeight: 'bold',
-    color: palette['primary'].base,
   },
 })

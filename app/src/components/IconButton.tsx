@@ -5,8 +5,8 @@ import { SvgIconProps } from './icons/types'
 import Cloud from './icons/Cloud'
 import { useSelector } from 'react-redux'
 import { currentThemeSelector } from '../redux/selectors'
-import { palette } from '../config/theme'
 import { IconForTheme } from '../resources/translations'
+import { useColor } from '../hooks/useColor'
 
 export type Appearance = 'fill' | 'outline'
 
@@ -30,6 +30,7 @@ export const IconButton = ({
   disabled,
   accessibilityLabel,
 }: IconButtonProps) => {
+  const { palette } = useColor()
   const theme = useSelector(currentThemeSelector)
   const Icon = IconForTheme?.[theme]?.[appearance] ?? Cloud
 

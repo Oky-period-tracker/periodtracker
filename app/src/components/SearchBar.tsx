@@ -4,7 +4,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import { Input } from './Input'
 import { Button } from './Button'
 import { useAccessibilityLabel } from '../hooks/useAccessibilityLabel'
-import { palette } from '../config/theme'
+import { useColor } from '../hooks/useColor'
 
 interface SearchBarProps {
   query: string
@@ -15,6 +15,7 @@ interface SearchBarProps {
 export const SearchBar = ({ query, setQuery, style }: SearchBarProps) => {
   const getAccessibilityLabel = useAccessibilityLabel()
   const label = getAccessibilityLabel('clear_search')
+  const { palette } = useColor()
 
   const reset = () => {
     setQuery('')

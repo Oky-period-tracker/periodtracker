@@ -8,13 +8,12 @@ import { Text } from '../../../../../components/Text'
 import { useSelector } from '../../../../../redux/useSelector'
 import { currentAvatarSelector } from '../../../../../redux/selectors'
 import { getAsset } from '../../../../../services/asset'
-import { palette } from '../../../../../config/theme'
 import { useColor } from '../../../../../hooks/useColor'
 
 type Status = 'unknown' | 'no' | 'yes'
 
 export const JourneyCard = ({ step }: { step: JourneyStep }) => {
-  const { backgroundColor, borderColor } = useColor()
+  const { backgroundColor, borderColor, palette } = useColor()
 
   const { state, dispatch } = useJourney()
   const [status, setStatus] = React.useState<Status>('unknown')
@@ -70,13 +69,13 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
                 style={styles.image}
               />
             </View>
-            <Text style={styles.question}>{questionText}</Text>
+            <Text style={[styles.question, { color: palette.secondary.base }]}>{questionText}</Text>
             <Text style={styles.disclaimer}>survey_description</Text>
           </>
         )}
         {status === 'yes' && (
           <>
-            <Text style={styles.yesTitle}>{yesText}</Text>
+            <Text style={[styles.yesTitle, { color: palette.secondary.base }]}>{yesText}</Text>
             <JourneyCollect step={step} />
           </>
         )}
@@ -143,11 +142,9 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 48,
-    color: palette['secondary'].base,
   },
   yesTitle: {
     textAlign: 'center',
-    color: palette['secondary'].base,
     fontWeight: 'bold',
     fontSize: 20,
     marginBottom: 24,

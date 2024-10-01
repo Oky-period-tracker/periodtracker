@@ -1,5 +1,5 @@
 import { StyleProp, ViewStyle } from 'react-native'
-import { PaletteStatus } from '../../config/theme'
+import { PaletteStatus } from '../../hooks/useColor'
 
 export interface SvgIconProps {
   style?: StyleProp<ViewStyle>

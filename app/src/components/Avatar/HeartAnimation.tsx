@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Animated, StyleSheet, LayoutChangeEvent, StyleProp, ViewStyle } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { palette } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 // TODO: Rewrite using reanimated ?
 
@@ -63,6 +63,7 @@ function AnimatedShape({
 
   const [position] = React.useState(new Animated.Value(0))
   const [animationsReady, setAnimationsReady] = React.useState(false)
+  const { palette } = useColor()
 
   const xAnimation = React.useRef<Animated.AnimatedInterpolation<number | string>>()
   const yAnimation = React.useRef<Animated.AnimatedInterpolation<number | string>>()

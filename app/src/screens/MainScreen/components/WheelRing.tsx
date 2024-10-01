@@ -3,14 +3,15 @@ import { ReduxState } from '../../../redux/reducers'
 import { useSelector } from '../../../redux/useSelector'
 import { useDayScroll } from '../DayScrollContext'
 import { getDayStatus } from '../../../hooks/useDayStatus'
-import { palette, PaletteStatus } from '../../../config/theme'
 import PieChart from 'react-native-pie-chart'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from '../../../components/Text'
 import { Appearance, IconButtonProps } from '../../../components/IconButton'
+import { Palette, PaletteStatus, useColor } from '../../../hooks/useColor'
 
 export const WheelRing = () => {
   const { data, diameter, constants } = useDayScroll()
+  const { palette } = useColor()
 
   const reduxState = useSelector((s) => s) as ReduxState
 
@@ -35,7 +36,7 @@ export const WheelRing = () => {
         (acc, curr) => {
           const { status, appearance } = getDayStatus(reduxState, curr)
 
-          const { border, fill } = getSegmentColors(status, appearance)
+          const { border, fill } = getSegmentColors(palette, status, appearance)
 
           const newSeries = [BORDER_PERCENTAGE, segmentBodyPercentage, BORDER_PERCENTAGE]
           const newSliceColor = [border, fill, border]
@@ -84,6 +85,8 @@ export const WheelRingButton = ({
   size,
   ...props
 }: IconButtonProps) => {
+  const { palette } = useColor()
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -106,7 +109,7 @@ export const WheelRingButton = ({
   )
 }
 
-const getSegmentColors = (status: PaletteStatus, appearance: Appearance) => {
+const getSegmentColors = (palette: Palette, status: PaletteStatus, appearance: Appearance) => {
   if (status === 'danger' && appearance === 'outline') {
     return {
       border: palette.danger.base,

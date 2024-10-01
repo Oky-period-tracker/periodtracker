@@ -15,13 +15,35 @@ export type ColorSchemeBase = {
 
 export type ColorScheme = Record<ColorSchemeName, ColorSchemeBase>
 
+export type PaletteStatus =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'neutral'
+  | 'basic'
+  | 'danger'
+  | 'danger_light'
+
+export type Palette = Record<
+  PaletteStatus,
+  {
+    base: string
+    highlight: string
+    shadow: string
+    dark: string
+    text: string
+  }
+>
+
 export const useColor = (): {
   colorSchemeName: ColorSchemeName
+  palette: Palette
 } & ColorSchemeBase => {
   const colorSchemeName = useColorScheme() ?? 'light'
 
   return {
     colorSchemeName,
+    palette: palettes[colorSchemeName],
     ...schemes[colorSchemeName],
   }
 }
@@ -45,6 +67,111 @@ const schemes: ColorScheme = {
     inputBackgroundColor: '#323237',
     videoTabBackgroundColor: '#4a0c2e',
     modalBackdropColor: 'rgba(50,50,50,0.8)',
-    backgroundOverlayColor: 'rgba(0,0,0,0.25)',
+    backgroundOverlayColor: 'rgba(0,0,0,0.2)',
+  },
+}
+
+const palettes: Record<ColorSchemeName, Palette> = {
+  light: {
+    primary: {
+      base: '#97C800',
+      highlight: '#fff',
+      shadow: '#00A65A',
+      dark: '#028045',
+      text: '#97C800',
+    },
+    secondary: {
+      base: '#FF8C00',
+      highlight: '#FFC26A',
+      shadow: '#BD6600',
+      dark: '#944f00',
+      text: '#FF8C00',
+    },
+    tertiary: {
+      base: '#3DA4DD',
+      highlight: '#fff',
+      shadow: '#1169BF',
+      dark: '#0344A5',
+      text: '#3DA4DD',
+    },
+    neutral: {
+      base: '#91d9e2',
+      highlight: '#fff',
+      shadow: '#53b8c8',
+      dark: '#2f9cb1',
+      text: '#91d9e2',
+    },
+    basic: {
+      base: '#D1D0D2',
+      highlight: '#fff',
+      shadow: '#B7B6B6',
+      dark: '#82807f',
+      text: '#000',
+    },
+    danger: {
+      base: '#E3629B',
+      highlight: '#F9C7C1',
+      shadow: '#971B63',
+      dark: '#6b1244',
+      text: '#E3629B',
+    },
+    danger_light: {
+      base: '#F9C7C1',
+      highlight: '#FFF',
+      shadow: '#E3629B',
+      dark: '#971B63',
+      text: '#F9C7C1',
+    },
+  },
+  dark: {
+    primary: {
+      base: '#00A65A',
+      highlight: '#97C800',
+      shadow: '#028045',
+      dark: '#015930',
+      text: '#97C800',
+    },
+    secondary: {
+      base: '#BD6600',
+      highlight: '#FF8C00',
+      shadow: '#592f00',
+      dark: '#402200',
+      text: '#FF8C00',
+    },
+    tertiary: {
+      base: '#3DA4DD',
+      highlight: '#fff',
+      shadow: '#1169BF',
+      dark: '#0344A5',
+      text: '#3DA4DD',
+    },
+    neutral: {
+      base: '#53b8c8',
+      highlight: '#91d9e2',
+      shadow: '#2f9cb1',
+      dark: '#1b5863',
+      text: '#91d9e2',
+    },
+    basic: {
+      base: '#B7B6B6',
+      highlight: '#D1D0D2',
+      shadow: '#82807f',
+      dark: '#595755',
+      text: '#000',
+    },
+    danger: {
+      base: '#971B63',
+      highlight: '#E3629B',
+      shadow: '#6b1244',
+      dark: '#470b2c',
+      text: '#F9C7C1',
+    },
+    danger_light: {
+      base: '#E3629B',
+      highlight: '#F9C7C1',
+      shadow: '#971B63',
+      dark: '#6b1244',
+      text: '#E3629B',
+    },
   },
 }

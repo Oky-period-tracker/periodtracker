@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity } from 'react-native'
 import { DisplayButton } from './Button'
 import { Text } from './Text'
-import { PaletteStatus } from '../config/theme'
+import { PaletteStatus } from '../hooks/useColor'
 
 type CheckBoxSize = 'small' | 'medium'
 

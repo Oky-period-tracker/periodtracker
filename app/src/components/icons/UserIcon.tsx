@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Svg, G, Path } from 'react-native-svg'
 import { SvgIconProps } from './types'
-import { palette } from '../../config/theme'
 import { View } from 'react-native'
+import { useColor } from '../../hooks/useColor'
 
 export const UserIcon = ({ style, size = 80, status = 'neutral' }: SvgIconProps) => {
+  const { palette } = useColor()
   const colors = palette[status]
 
   return (

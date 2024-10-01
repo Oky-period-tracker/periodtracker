@@ -16,10 +16,12 @@ import { Input } from '../../components/Input'
 import { WheelPickerModal } from '../../components/WheelPickerModal'
 import { reasonOptions } from '../../config/options'
 import { WheelPickerOption } from '../../components/WheelPicker'
+import { useColor } from '../../hooks/useColor'
 
 const ContactUsScreen: ScreenComponent<'Contact'> = () => {
   const user = useSelector(currentUserSelector)
   const locale = useSelector(currentLocaleSelector)
+  const { backgroundColor } = useColor()
 
   const [reason, setReason] = React.useState<WheelPickerOption | undefined>(undefined)
 
@@ -58,8 +60,8 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
   }
 
   return (
-    <Screen>
-      <KeyboardAvoidingView style={[styles.container, globalStyles.shadow]}>
+    <Screen style={styles.screen}>
+      <KeyboardAvoidingView style={[styles.container, globalStyles.shadow, { backgroundColor }]}>
         <WheelPickerModal
           initialOption={reason}
           placeholder={'reason'}
@@ -85,8 +87,10 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
 export default ContactUsScreen
 
 const styles = StyleSheet.create({
+  screen: {
+    padding: 24,
+  },
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
     padding: 24,
@@ -100,7 +104,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   modal: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     paddingVertical: 24,
     paddingHorizontal: 48,

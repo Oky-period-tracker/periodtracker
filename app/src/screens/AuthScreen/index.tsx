@@ -18,6 +18,7 @@ import { LanguageSelector } from '../../components/LanguageSelector'
 import { useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AuthScreenHeader } from './components/AuthScreenHeader'
 import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 const AuthScreen = (props: ScreenProps<'Auth'>) => {
   useStopLoadingEffect()
@@ -30,6 +31,7 @@ const AuthScreen = (props: ScreenProps<'Auth'>) => {
 }
 
 const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
+  const { backgroundColor } = useColor()
   const { authMode, setAuthMode } = useAuthMode()
   const goToInfo = () => navigation.navigate('Info')
 
@@ -51,7 +53,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
       {authMode === 'start' && <AuthScreenHeader />}
 
       <View style={[styles.wrapper, globalStyles.shadow]}>
-        <AnimatedContainer style={[styles.container, globalStyles.elevation]}>
+        <AnimatedContainer style={[styles.container, { backgroundColor }, globalStyles.elevation]}>
           {authMode === 'start' && <AuthToggle />}
           {authMode === 'log_in' && <LogIn />}
           {authMode === 'sign_up' && <SignUp />}
@@ -85,7 +87,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
     overflow: 'hidden',

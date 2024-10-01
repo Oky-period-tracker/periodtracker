@@ -15,12 +15,14 @@ import { WheelPickerModal } from '../../components/WheelPickerModal'
 import { questionOptions } from '../../config/options'
 import { WheelPickerOption } from '../../components/WheelPicker'
 import { useTranslate } from '../../hooks/useTranslate'
+import { useColor } from '../../hooks/useColor'
 
 export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
   const translate = useTranslate()
   const currentUser = useSelector(currentUserSelector) as User
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
+  const { backgroundColor } = useColor()
 
   const [errorsVisible, setErrorsVisible] = React.useState(false)
   const [previousSecret, setPreviousSecret] = React.useState('')
@@ -106,7 +108,11 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
   }, [currentUser])
 
   return (
-    <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
+    <Modal
+      visible={visible}
+      toggleVisible={toggleVisible}
+      style={[styles.modal, { backgroundColor }]}
+    >
       <View style={styles.modalBody}>
         <Input
           value={previousSecret}
@@ -164,7 +170,6 @@ const validate = (previous: string, next: string, question: string) => {
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: '#fff',
     borderRadius: 20,
   },
   modalBody: {

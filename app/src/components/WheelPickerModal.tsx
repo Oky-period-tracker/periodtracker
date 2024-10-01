@@ -8,6 +8,7 @@ import { useSearch } from '../hooks/useSearch'
 import { SearchBar } from './SearchBar'
 import { Text } from './Text'
 import { useTranslate } from '../hooks/useTranslate'
+import { useColor } from '../hooks/useColor'
 
 export const WheelPickerModal = ({
   initialOption,
@@ -31,6 +32,7 @@ export const WheelPickerModal = ({
   enableTranslate?: boolean
   disabled?: boolean
 } & InputProps) => {
+  const { backgroundColor } = useColor()
   const translate = useTranslate()
   const { query, setQuery, results } = useSearch<WheelPickerOption>({
     options,
@@ -72,7 +74,11 @@ export const WheelPickerModal = ({
         </TouchableOpacity>
       )}
 
-      <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
+      <Modal
+        visible={visible}
+        toggleVisible={toggleVisible}
+        style={[styles.modal, { backgroundColor }]}
+      >
         <View style={styles.modalBody}>
           {searchEnabled && <SearchBar query={query} setQuery={setQuery} />}
 
@@ -99,7 +105,6 @@ const searchKeys = ['label' as const]
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: '#fff',
     borderRadius: 20,
   },
   modalBody: {

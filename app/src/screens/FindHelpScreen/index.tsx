@@ -168,30 +168,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
   },
-  helpCenterCard: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    width: '100%',
-    marginVertical: 4,
-    padding: 24,
-  },
-  text: {
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontWeight: 'bold',
-  },
-  caption: {
-    marginBottom: 8,
-  },
-  website: {
-    marginBottom: 8,
-  },
   spacer: {
     height: 200,
   },

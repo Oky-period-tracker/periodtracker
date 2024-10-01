@@ -4,6 +4,7 @@ import { DisplayButton } from '../../../components/Button'
 import { Text } from '../../../components/Text'
 import { assets } from '../../../resources/assets'
 import { palette } from '../../../config/theme'
+import { useColor } from '../../../hooks/useColor'
 
 interface WelcomeCardProps {
   icon: React.ReactNode
@@ -12,8 +13,10 @@ interface WelcomeCardProps {
 }
 
 export const WelcomeCard = ({ icon, subtitle, description }: WelcomeCardProps) => {
+  const { backgroundColor } = useColor()
+
   return (
-    <View style={styles.page}>
+    <View style={[styles.page, { backgroundColor }]}>
       <View style={styles.welcomeContainer}>
         <Image source={assets.static.launch_icon} style={styles.logo} resizeMode={'contain'} />
         <Text style={styles.title}>auth_welcome</Text>
@@ -32,7 +35,6 @@ export const WelcomeCard = ({ icon, subtitle, description }: WelcomeCardProps) =
 const styles = StyleSheet.create({
   page: {
     maxWidth: 800,
-    backgroundColor: '#FFF',
     borderRadius: 20,
     flex: 1,
     width: '100%',

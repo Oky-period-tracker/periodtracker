@@ -11,6 +11,7 @@ import { TabIcon } from './components/TabIcon'
 import { UserIcon } from '../components/icons/UserIcon'
 import { IS_IOS } from '../services/device'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useColor } from '../hooks/useColor'
 
 export type MainStackParamList = {
   profile: NavigatorScreenParams<ProfileStackParamList>
@@ -19,28 +20,30 @@ export type MainStackParamList = {
   settings: NavigatorScreenParams<SettingsStackParamList>
 }
 
-const options: BottomTabNavigationOptions = {
-  tabBarShowLabel: false,
-  headerShown: false,
-  tabBarItemStyle: {
-    backgroundColor: '#F1F1F1',
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-    borderColor: '#F5F5F5',
-  },
-}
-
 const Tab = createBottomTabNavigator()
 
 function MainNavigator() {
+  const { navColor, borderColor } = useColor()
+
   const insets = useSafeAreaInsets()
 
   const screenOptions: BottomTabNavigationOptions = {
     tabBarStyle: {
       minHeight: 60,
       padding: IS_IOS ? 8 : 0,
-      backgroundColor: '#F1F1F1',
+      backgroundColor: navColor,
       paddingBottom: insets.bottom,
+    },
+  }
+
+  const options: BottomTabNavigationOptions = {
+    tabBarShowLabel: false,
+    headerShown: false,
+    tabBarItemStyle: {
+      backgroundColor: navColor,
+      borderRightWidth: 1,
+      borderLeftWidth: 1,
+      borderColor,
     },
   }
 

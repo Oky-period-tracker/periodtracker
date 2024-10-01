@@ -12,12 +12,14 @@ import { useDispatch } from 'react-redux'
 import { editUser } from '../../redux/actions'
 import { formatPassword } from '../../services/auth'
 import { useTranslate } from '../../hooks/useTranslate'
+import { useColor } from '../../hooks/useColor'
 
 export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   const translate = useTranslate()
   const currentUser = useSelector(currentUserSelector) as User
   const name = currentUser.name
   const reduxDispatch = useDispatch()
+  const { backgroundColor } = useColor()
 
   const [secret, setSecret] = React.useState('')
   const [newPassword, setNewPassword] = React.useState('')
@@ -91,7 +93,11 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   }, [currentUser])
 
   return (
-    <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
+    <Modal
+      visible={visible}
+      toggleVisible={toggleVisible}
+      style={[styles.modal, { backgroundColor }]}
+    >
       <View style={styles.modalBody}>
         <Input
           value={secret}
@@ -131,7 +137,6 @@ const validate = (password: string) => {
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: '#fff',
     borderRadius: 20,
   },
   modalBody: {

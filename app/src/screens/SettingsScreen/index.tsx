@@ -13,6 +13,7 @@ import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
@@ -20,6 +21,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
+  const { backgroundColor } = useColor()
 
   const logOut = () => {
     dispatch(logoutRequest())
@@ -110,7 +112,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>
-      <View style={[styles.container, globalStyles.shadow]}>
+      <View style={[styles.container, globalStyles.shadow, { backgroundColor }]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1
           return (
@@ -158,7 +160,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
   },

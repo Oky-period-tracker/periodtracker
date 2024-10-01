@@ -19,6 +19,7 @@ import { useTranslate } from '../../../hooks/useTranslate'
 import { useFormatDate } from '../../../hooks/useFormatDate'
 import { globalStyles } from '../../../config/theme'
 import { InfoButton } from '../../../components/InfoButton'
+import { useColor } from '../../../hooks/useColor'
 
 export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const currentUser = useSelector(currentUserSelector)
@@ -27,6 +28,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const todayInfo = useTodayPrediction()
   const translate = useTranslate()
   const { formatMonthYear } = useFormatDate()
+  const { backgroundColor } = useColor()
 
   const goToEdit = () => {
     navigation.navigate('EditProfile')
@@ -42,7 +44,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const periodLength = todayInfo.periodLength === 0 ? '-' : `${todayInfo.periodLength} ${days}`
 
   return (
-    <View style={[styles.container, globalStyles.shadow]}>
+    <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
       {currentUser?.isGuest && (
         <>
           <View style={styles.column}>
@@ -142,7 +144,6 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
     marginVertical: 4,

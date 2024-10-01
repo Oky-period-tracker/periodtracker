@@ -6,6 +6,7 @@ import { useTodayPrediction } from '../../../contexts/PredictionProvider'
 import { useDayStatus } from '../../../hooks/useDayStatus'
 import { globalStyles } from '../../../config/theme'
 import { useResponsive } from '../../../contexts/ResponsiveContext'
+import { useColor } from '../../../hooks/useColor'
 
 export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { width: screenWidth } = useScreenDimensions()
@@ -13,6 +14,7 @@ export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { status } = useDayStatus(todaysInfo)
   const { UIConfig } = useResponsive()
   const { width, numberFontSize, textFontSize } = UIConfig.centerCard
+  const { backgroundColor } = useColor()
 
   return (
     <View
@@ -22,6 +24,7 @@ export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         {
           width,
           left: screenWidth / 2 - width - MARGIN_RIGHT,
+          backgroundColor,
         },
         style,
       ]}
@@ -45,7 +48,6 @@ const MARGIN_RIGHT = 8
 const styles = StyleSheet.create({
   container: {
     height: 80,
-    backgroundColor: '#FFF',
     position: 'absolute',
     borderRadius: 12,
     flexDirection: 'row',

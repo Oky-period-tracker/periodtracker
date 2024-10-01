@@ -12,6 +12,7 @@ import { setAvatar, setTheme } from '../../redux/actions'
 import { PaletteStatus, globalStyles, palette } from '../../config/theme'
 import { Text } from '../../components/Text'
 import { analytics } from '../../services/firebase'
+import { useColor } from '../../hooks/useColor'
 
 const AvatarAndThemeScreen = () => {
   return <AvatarAndThemeSelect />
@@ -27,6 +28,7 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
   const currentAvatar = useSelector(currentAvatarSelector)
   const currentTheme = useSelector(currentThemeSelector)
   const dispatch = useDispatch()
+  const { backgroundColor } = useColor()
 
   const [selectedAvatar, setSelectedAvatar] = React.useState(currentAvatar)
   const [selectedTheme, setSelectedTheme] = React.useState(currentTheme)
@@ -78,7 +80,13 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
               onPress={onPress}
               style={[styles.avatar, globalStyles.shadow]}
             >
-              <View style={[styles.avatarBody, globalStyles.elevation]}>
+              <View
+                style={[
+                  styles.avatarBody,
+                  { backgroundColor, borderColor: backgroundColor },
+                  globalStyles.elevation,
+                ]}
+              >
                 <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
                 <Text style={styles.name} enableTranslate={false}>
                   {avatar}
@@ -110,7 +118,10 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
               style={[styles.theme, globalStyles.shadow]}
             >
               <View style={[styles.themeBody, globalStyles.elevation]}>
-                <Image source={getAsset(`backgrounds.${theme}.icon`)} style={styles.themeImage} />
+                <Image
+                  source={getAsset(`backgrounds.${theme}.icon`)}
+                  style={[styles.themeImage, { backgroundColor, borderColor: backgroundColor }]}
+                />
                 <Text style={styles.name} enableTranslate={false}>
                   {theme}
                 </Text>
@@ -199,8 +210,6 @@ const styles = StyleSheet.create({
     margin: 8,
   },
   avatarBody: {
-    backgroundColor: '#fff',
-    borderColor: '#fff',
     borderWidth: 4,
     overflow: 'hidden',
     width: '100%',
@@ -229,8 +238,6 @@ const styles = StyleSheet.create({
     height: '100%',
     alignSelf: 'center',
     resizeMode: 'cover',
-    backgroundColor: '#fff',
-    borderColor: '#fff',
     borderWidth: 4,
     borderRadius: 20,
   },

@@ -17,6 +17,7 @@ import { helpCenterAttributesSelector } from '../../../redux/selectors'
 import { useSelector } from '../../../redux/useSelector'
 import { useSearch } from '../../../hooks/useSearch'
 import { SearchBar } from '../../../components/SearchBar'
+import { useColor } from '../../../hooks/useColor'
 
 interface HelpFiltersModalProps {
   visible: boolean
@@ -37,6 +38,8 @@ export const HelpFiltersModal = ({
   onConfirm,
   filters,
 }: HelpFiltersModalProps) => {
+  const { backgroundColor, borderColor } = useColor()
+
   const [section, setSection] = React.useState<FilterSection>('region')
 
   const countryOptions = useCountryOptions()
@@ -101,7 +104,11 @@ export const HelpFiltersModal = ({
   const title = tabs.find((tab) => tab.section === section)?.title || ''
 
   return (
-    <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
+    <Modal
+      visible={visible}
+      toggleVisible={toggleVisible}
+      style={[styles.modal, { backgroundColor }]}
+    >
       <View style={styles.tabs}>
         {tabs.map((tab, i) => {
           const isSelected = tab.section === section
@@ -114,7 +121,7 @@ export const HelpFiltersModal = ({
             <React.Fragment key={tab.section}>
               <TouchableOpacity
                 onPress={onPress}
-                style={[styles.tab, isSelected && styles.selectedTab]}
+                style={[styles.tab, isSelected && { backgroundColor: borderColor }]}
               >
                 <FontAwesome
                   size={24}
@@ -228,7 +235,6 @@ const tabs: FilterTab[] = [
 
 const styles = StyleSheet.create({
   modal: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     overflow: 'hidden',
   },
@@ -252,9 +258,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 18,
     fontWeight: 'bold',
-  },
-  selectedTab: {
-    backgroundColor: '#f0f0f0',
   },
   buttons: {
     flexDirection: 'row',

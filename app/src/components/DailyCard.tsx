@@ -28,6 +28,7 @@ import { useTranslate } from '../hooks/useTranslate'
 import { useFormatDate } from '../hooks/useFormatDate'
 import { analytics } from '../services/firebase'
 import { updateLastPressedCardDate } from '../redux/actions'
+import { useColor } from '../hooks/useColor'
 
 interface DailyCardProps {
   dataEntry: DayData
@@ -50,6 +51,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const { dispatch: tutorialDispatch } = useTutorial()
   const { isDragging, constants } = useDayScroll()
   const { CARD_WIDTH, CARD_MARGIN } = constants
+  const { backgroundColor } = useColor()
 
   const { status, appearance } = useDayStatus(dataEntry)
 
@@ -105,6 +107,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
         {
           width: CARD_WIDTH,
           marginHorizontal: CARD_MARGIN / 2,
+          backgroundColor,
         },
       ]}
     >
@@ -176,7 +179,6 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
 const styles = StyleSheet.create({
   card: {
     borderRadius: 20,
-    backgroundColor: '#fff',
     aspectRatio: 1.5,
     flexDirection: 'column',
     padding: 12,

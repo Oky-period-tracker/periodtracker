@@ -21,6 +21,7 @@ import {
 import { Hr } from '../../components/Hr'
 import { calendarTranslations } from '../../resources/translations'
 import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 // TODO: dynamic start & end dates?
 const startDate = moment().startOf('day').subtract(24, 'months')
@@ -38,6 +39,8 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const [selected, setSelected] = useState('')
   const date = moment(selected)
   const dataEntry = usePredictDay(date)
+
+  const { backgroundColor } = useColor()
 
   const [choiceModalVisible, toggleChoiceModalVisible] = useToggle()
   const [dayModalVisible, toggleDayModal] = useToggle()
@@ -94,13 +97,20 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
   const messageOpacity = message ? 1 : 0
 
+  const theme: CalendarProps['theme'] = {
+    monthTextColor: '#f49200',
+    textMonthFontSize: 26,
+    textMonthFontWeight: 'bold',
+    calendarBackground: backgroundColor,
+  }
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.screen}>
         <View
           style={[styles.messageBoxContainer, globalStyles.shadow, { opacity: messageOpacity }]}
         >
-          <View style={[styles.messageBox, globalStyles.elevation]}>
+          <View style={[styles.messageBox, globalStyles.elevation, { backgroundColor }]}>
             <Text>{message}</Text>
           </View>
         </View>
@@ -108,7 +118,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
         <View style={[styles.container, globalStyles.shadow]}>
           <Calendar
             onDayPress={onDayPress}
-            style={[styles.calendar, globalStyles.elevation]}
+            style={[styles.calendar, globalStyles.elevation, { backgroundColor }]}
             theme={theme}
             enableSwipeMonths
             hideExtraDays
@@ -124,7 +134,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
         </View>
 
         <Modal visible={choiceModalVisible} toggleVisible={toggleChoiceModalVisible}>
-          <View style={styles.modalBody}>
+          <View style={[styles.modalBody, { backgroundColor }]}>
             <TouchableOpacity onPress={toDailyCard} style={styles.confirm}>
               <Text style={styles.confirmText}>to_daily_card</Text>
             </TouchableOpacity>
@@ -144,12 +154,6 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 export default CalendarScreen
 
 const MESSAGE_DURATION = 5000
-
-const theme: CalendarProps['theme'] = {
-  monthTextColor: '#f49200',
-  textMonthFontSize: 26,
-  textMonthFontWeight: 'bold',
-}
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -186,7 +190,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   messageBox: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: 160,
     minHeight: 60,
@@ -194,7 +197,6 @@ const styles = StyleSheet.create({
   },
   modalBody: {
     flexDirection: 'column',
-    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,

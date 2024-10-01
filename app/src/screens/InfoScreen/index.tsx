@@ -6,8 +6,11 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Hr } from '../../components/Hr'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 const InfoScreen: ScreenComponent<'Info'> = ({ navigation }) => {
+  const { backgroundColor } = useColor()
+
   const rows: TouchableRowProps[] = [
     {
       title: 'about',
@@ -37,7 +40,7 @@ const InfoScreen: ScreenComponent<'Info'> = ({ navigation }) => {
 
   return (
     <Screen style={styles.screen}>
-      <View style={[styles.container, globalStyles.shadow]}>
+      <View style={[styles.container, globalStyles.shadow, { backgroundColor }]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1
           return (
@@ -61,7 +64,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
   },

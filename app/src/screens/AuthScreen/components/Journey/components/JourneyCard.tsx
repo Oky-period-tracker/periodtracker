@@ -9,10 +9,13 @@ import { useSelector } from '../../../../../redux/useSelector'
 import { currentAvatarSelector } from '../../../../../redux/selectors'
 import { getAsset } from '../../../../../services/asset'
 import { palette } from '../../../../../config/theme'
+import { useColor } from '../../../../../hooks/useColor'
 
 type Status = 'unknown' | 'no' | 'yes'
 
 export const JourneyCard = ({ step }: { step: JourneyStep }) => {
+  const { backgroundColor, borderColor } = useColor()
+
   const { state, dispatch } = useJourney()
   const [status, setStatus] = React.useState<Status>('unknown')
 
@@ -56,7 +59,7 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
   const yes = state.stepIndex === 0 ? 'Yes' : 'remember'
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <View style={styles.body}>
         {status === 'unknown' && (
           <>
@@ -89,7 +92,7 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
         )}
       </View>
 
-      <View style={styles.buttons}>
+      <View style={[styles.buttons, { borderColor }]}>
         {status === 'unknown' ? (
           <>
             <TouchableOpacity onPress={onNo} style={styles.button}>
@@ -115,7 +118,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     maxWidth: 800,
-    backgroundColor: '#FFF',
     borderRadius: 20,
   },
   body: {
@@ -158,7 +160,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     borderTopWidth: 1,
-    borderColor: '#f0f0f0',
   },
   button: {
     flex: 1,

@@ -11,6 +11,7 @@ import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector, helpCenterAttributesSelector } from '../../../redux/selectors'
 import { analytics } from '../../../services/firebase'
 import { useAuth } from '../../../contexts/AuthContext'
+import { useColor } from '../../../hooks/useColor'
 
 export const HelpCenterCard = ({
   helpCenter,
@@ -27,12 +28,10 @@ export const HelpCenterCard = ({
   const user = useSelector(currentUserSelector)
   const { isLoggedIn } = useAuth()
   const hasAccess = user && isLoggedIn
-  console.log('*** HelpCenterCard')
+  const { backgroundColor } = useColor()
 
   const onPress = () => {
     toggleExpanded()
-
-    console.log('*** onPress')
 
     if (expanded) {
       return
@@ -62,7 +61,10 @@ export const HelpCenterCard = ({
   }, [helpCenter])
 
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.helpCenterCard, globalStyles.shadow]}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.helpCenterCard, globalStyles.shadow, { backgroundColor }]}
+    >
       <View style={styles.topRow}>
         <View style={styles.topRowText}>
           <Text style={styles.title} enableTranslate={false}>
@@ -121,12 +123,7 @@ export const HelpCenterCard = ({
 const defaultEmoji = '😊'
 
 const styles = StyleSheet.create({
-  scrollView: {
-    width: '100%',
-    height: '100%',
-  },
   helpCenterCard: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
     marginVertical: 4,

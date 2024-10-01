@@ -7,7 +7,7 @@ export const UserIcon = ({
   style,
   size = 80,
   color = '#fff',
-}: SvgIconProps & { color: string }) => {
+}: SvgIconProps & { color?: string }) => {
   return (
     <View style={[{ width: size, height: size }, style]}>
       <Svg width="100%" height="100%" viewBox="0 0 200 200">

@@ -9,9 +9,11 @@ import { Text } from '../../components/Text'
 import { Article } from '../../core/types'
 import { useSelector } from '../../redux/useSelector'
 import { articlesSelector, subCategoryByIDSelector } from '../../redux/selectors'
-import { globalStyles, palette } from '../../config/theme'
+import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
+  const { backgroundColor, palette } = useColor()
   const { query, setQuery, articleIds } = useEncyclopedia()
 
   const subcategoryId = route.params.subcategoryId
@@ -45,13 +47,19 @@ const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
         <SearchBar query={query} setQuery={setQuery} style={globalStyles.shadow} />
         {articles?.map((article) => {
           return (
-            <View style={[styles.card, globalStyles.shadow]} key={article.id}>
+            <View style={[styles.card, { backgroundColor }, globalStyles.shadow]} key={article.id}>
               {article.title && (
-                <Text style={styles.title} enableTranslate={false}>
+                <Text
+                  style={[styles.title, { color: palette.danger.text }]}
+                  enableTranslate={false}
+                >
                   {article.title}
                 </Text>
               )}
-              <Text style={styles.subCategory} enableTranslate={false}>
+              <Text
+                style={[styles.subCategory, { color: palette.danger.text }]}
+                enableTranslate={false}
+              >
                 {subcategory.name}
               </Text>
               <ArticleContent articleId={article.id} text={article.content} />
@@ -69,13 +77,11 @@ const styles = StyleSheet.create({
   scrollView: {
     width: '100%',
     height: '100%',
-    // paddingHorizontal: 12,
   },
   contentContainer: {
     paddingHorizontal: 12,
   },
   card: {
-    backgroundColor: '#fff',
     width: '100%',
     minHeight: 120,
     marginVertical: 4,
@@ -86,11 +92,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 24,
-    color: palette['danger'].base,
   },
   subCategory: {
     fontWeight: 'bold',
     marginBottom: 24,
-    color: palette['danger'].base,
   },
 })

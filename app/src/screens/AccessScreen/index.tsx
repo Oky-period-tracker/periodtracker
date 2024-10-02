@@ -12,8 +12,10 @@ import { WEBSITE_URL } from '../../config/env'
 import { useLoading } from '../../contexts/LoadingProvider'
 import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 const AccessScreen: ScreenComponent<'Access'> = ({ navigation }) => {
+  const { backgroundColor } = useColor()
   const { setLoading } = useLoading()
 
   const launchTutorial = () => {
@@ -42,7 +44,7 @@ const AccessScreen: ScreenComponent<'Access'> = ({ navigation }) => {
 
   return (
     <Screen style={styles.screen}>
-      <View style={[styles.container, globalStyles.shadow]}>
+      <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1
           return (
@@ -88,7 +90,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
   },

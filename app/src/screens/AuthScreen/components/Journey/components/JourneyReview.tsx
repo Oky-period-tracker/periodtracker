@@ -10,8 +10,11 @@ import moment from 'moment'
 import { journeyCompletion } from '../../../../../redux/actions'
 import { useAuth } from '../../../../../contexts/AuthContext'
 import { Text } from '../../../../../components/Text'
+import { useColor } from '../../../../../hooks/useColor'
 
 export const JourneyReview = () => {
+  const { backgroundColor, borderColor } = useColor()
+
   const { state, dispatch, getAnswerForStep } = useJourney()
 
   const goToStep = (value: number) => {
@@ -44,7 +47,7 @@ export const JourneyReview = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <View style={styles.body}>
         {journeySteps.map((step, i) => {
           const isLast = i === journeySteps.length - 1
@@ -80,7 +83,7 @@ export const JourneyReview = () => {
         })}
       </View>
 
-      <View style={styles.buttons}>
+      <View style={[styles.buttons, { borderColor }]}>
         <TouchableOpacity onPress={onConfirm} style={styles.button}>
           <Text style={styles.buttonText}>confirm</Text>
         </TouchableOpacity>
@@ -94,7 +97,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     maxWidth: 800,
-    backgroundColor: '#FFF',
     borderRadius: 20,
   },
   body: {
@@ -132,7 +134,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     borderTopWidth: 1,
-    borderColor: '#f0f0f0',
   },
   button: {
     flex: 1,

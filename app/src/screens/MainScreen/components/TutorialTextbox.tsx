@@ -4,8 +4,10 @@ import { Text } from '../../../components/Text'
 import { useTutorial } from '../TutorialContext'
 import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 import { globalStyles } from '../../../config/theme'
+import { useColor } from '../../../hooks/useColor'
 
 export const TutorialTextbox = () => {
+  const { backgroundColor } = useColor()
   const { state, stepConfig } = useTutorial()
   const { width } = useScreenDimensions()
 
@@ -17,7 +19,12 @@ export const TutorialTextbox = () => {
 
   return (
     <View
-      style={[styles.box, globalStyles.shadow, { width: width - 48 }, textBoxTop && styles.top]}
+      style={[
+        styles.box,
+        globalStyles.shadow,
+        { width: width - 48, backgroundColor },
+        textBoxTop && styles.top,
+      ]}
     >
       <Text style={styles.title} status={'primary'}>
         {title}
@@ -33,7 +40,6 @@ const styles = StyleSheet.create({
     bottom: 12,
     borderRadius: 20,
     padding: 12,
-    backgroundColor: '#fff',
     justifyContent: 'center',
   },
   top: {

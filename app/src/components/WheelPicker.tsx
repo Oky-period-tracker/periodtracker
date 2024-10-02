@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import { Text } from './Text'
+import { useColor } from '../hooks/useColor'
 
 const ITEM_HEIGHT = 60
 const VISIBLE_ITEMS = 3
@@ -35,6 +36,8 @@ export const WheelPicker = ({
   allowUndefined = true,
   enableTranslate = false,
 }: WheelPickerProps) => {
+  const { borderColor } = useColor()
+
   const allOptions = React.useMemo(() => {
     if (allowUndefined) {
       return [undefined, ...options]
@@ -111,7 +114,7 @@ export const WheelPicker = ({
         <TouchableOpacity
           key={`wheel-option-${index}`}
           onPress={onPress}
-          style={[styles.item, isSelected && styles.selectedItem]}
+          style={[styles.item, isSelected && styles.selectedItem, isSelected && { borderColor }]}
         >
           {item ? (
             <Text
@@ -196,7 +199,6 @@ const styles = StyleSheet.create({
   selectedItem: {
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#f0f0f0',
   },
   text: {
     textAlign: 'center',
@@ -209,5 +211,3 @@ const styles = StyleSheet.create({
     height: height - ITEM_HEIGHT,
   },
 })
-
-// const e =

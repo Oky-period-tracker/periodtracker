@@ -10,11 +10,13 @@ import { useDispatch } from 'react-redux'
 import { answerNotesCard } from '../../../../redux/actions'
 import { useTranslate } from '../../../../hooks/useTranslate'
 import { useLoading } from '../../../../contexts/LoadingProvider'
+import { useColor } from '../../../../hooks/useColor'
 
 export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?: () => void }) => {
   const translate = useTranslate()
   const userID = useSelector(currentUserSelector)?.id
   const { setLoading } = useLoading()
+  const { backgroundColor } = useColor()
 
   const reduxEntry = useSelector((state) => notesAnswerSelector(state, dataEntry?.date))
 
@@ -51,7 +53,7 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView style={[styles.container, { backgroundColor }]}>
       <View style={styles.page}>
         <Input value={title} onChangeText={setTitle} placeholder="title" />
         <Input
@@ -74,7 +76,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     maxWidth: 800,
-    backgroundColor: '#FFF',
     borderRadius: 20,
   },
   page: {

@@ -20,6 +20,7 @@ import { EditPasswordModal } from './EditPasswordModal'
 import { EditSecretModal } from './EditSecretModal'
 import { useMonths } from '../../hooks/useMonths'
 import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 type EditProfileState = {
   name: User['name']
@@ -139,6 +140,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector) as User
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
+  const { backgroundColor } = useColor()
 
   const [passwordModalVisible, togglePasswordModal] = useToggle()
   const [secretModalVisible, toggleSecretModal] = useToggle()
@@ -231,7 +233,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.screen}>
       {/* =============== Profile =============== */}
-      <View style={[styles.container, globalStyles.shadow]}>
+      <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
         {/* ===== Name ===== */}
         <View style={styles.segment}>
           <Input
@@ -292,7 +294,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
       </View>
 
       {/* =============== Security =============== */}
-      <View style={[styles.securityContainer, globalStyles.shadow]}>
+      <View style={[styles.securityContainer, globalStyles.shadow, { backgroundColor }]}>
         <View style={styles.segment}>
           <TouchableOpacity onPress={togglePasswordModal} style={styles.securityButton}>
             <Text style={styles.securityButtonText}>change_password</Text>
@@ -320,7 +322,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   container: {
-    backgroundColor: '#fff',
     width: '100%',
     borderRadius: 20,
     padding: 24,
@@ -340,7 +341,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   securityContainer: {
-    backgroundColor: '#fff',
     width: '100%',
     borderRadius: 20,
   },

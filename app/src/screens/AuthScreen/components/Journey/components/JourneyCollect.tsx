@@ -6,11 +6,12 @@ import { DateData } from 'react-native-calendars'
 import { DatePicker } from '../../../../../components/DatePicker'
 import moment from 'moment'
 import { WheelPickerModal } from '../../../../../components/WheelPickerModal'
-import { palette } from '../../../../../config/theme'
 import { asLocal } from '../../../../../services/dateUtils'
+import { useColor } from '../../../../../hooks/useColor'
 
 export const JourneyCollect = ({ step }: { step: JourneyStep }) => {
   const { state, dispatch, dayOptions, weekOptions } = useJourney()
+  const { palette } = useColor()
 
   const day = dayOptions.find((item) => item.value === state.periodLength)
   const week = weekOptions.find((item) => item.value === state.cycleLength)

@@ -7,7 +7,7 @@ import { useToggle } from '../../hooks/useToggle'
 import { httpClient } from '../../services/HttpClient'
 import { Modal } from '../../components/Modal'
 import { Text } from '../../components/Text'
-import { globalStyles, palette } from '../../config/theme'
+import { globalStyles } from '../../config/theme'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
 import { currentLocaleSelector, currentUserSelector } from '../../redux/selectors'
@@ -16,10 +16,12 @@ import { Input } from '../../components/Input'
 import { WheelPickerModal } from '../../components/WheelPickerModal'
 import { reasonOptions } from '../../config/options'
 import { WheelPickerOption } from '../../components/WheelPicker'
+import { useColor } from '../../hooks/useColor'
 
 const ContactUsScreen: ScreenComponent<'Contact'> = () => {
   const user = useSelector(currentUserSelector)
   const locale = useSelector(currentLocaleSelector)
+  const { palette, backgroundColor } = useColor()
 
   const [reason, setReason] = React.useState<WheelPickerOption | undefined>(undefined)
 
@@ -51,6 +53,7 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
       })
 
       setMessage('')
+      setReason(undefined)
       toggleVisible()
     } catch (err) {
       setError(true)
@@ -58,8 +61,8 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
   }
 
   return (
-    <Screen>
-      <KeyboardAvoidingView style={[styles.container, globalStyles.shadow]}>
+    <Screen style={styles.screen}>
+      <KeyboardAvoidingView style={[styles.container, globalStyles.shadow, { backgroundColor }]}>
         <WheelPickerModal
           initialOption={reason}
           placeholder={'reason'}
@@ -74,8 +77,12 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
         </Button>
       </KeyboardAvoidingView>
 
-      <Modal style={styles.modal} visible={visible} toggleVisible={toggleVisible}>
-        <Text style={styles.modalTitle}>thank_you</Text>
+      <Modal
+        style={[styles.modal, { backgroundColor }]}
+        visible={visible}
+        toggleVisible={toggleVisible}
+      >
+        <Text style={[styles.modalTitle, { color: palette.primary.text }]}>thank_you</Text>
         <Text>thank_you_content</Text>
       </Modal>
     </Screen>
@@ -85,8 +92,10 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
 export default ContactUsScreen
 
 const styles = StyleSheet.create({
+  screen: {
+    padding: 24,
+  },
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
     padding: 24,
@@ -100,7 +109,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   modal: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     paddingVertical: 24,
     paddingHorizontal: 48,
@@ -109,6 +117,5 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 20,
     fontWeight: 'bold',
-    color: palette['primary'].base,
   },
 })

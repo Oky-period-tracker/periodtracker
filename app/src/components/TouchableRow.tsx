@@ -38,12 +38,6 @@ export const TouchableRow = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    width: '100%',
-    overflow: 'hidden',
-  },
   row: {
     height: 100,
     width: '100%',

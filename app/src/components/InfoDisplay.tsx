@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Text } from './Text'
 import { globalStyles } from '../config/theme'
+import { useColor } from '../hooks/useColor'
 
 export const InfoDisplay = ({
   content,
@@ -11,8 +12,10 @@ export const InfoDisplay = ({
     content: string
   }>
 }) => {
+  const { backgroundColor } = useColor()
+
   return (
-    <View style={[styles.container, globalStyles.shadow]}>
+    <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
       {content.map((item, i) => (
         <Text
           key={`info-${i}`}
@@ -29,7 +32,6 @@ export const InfoDisplay = ({
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 12,
-    backgroundColor: '#fff',
     borderRadius: 20,
     marginTop: 4,
     marginBottom: 80,

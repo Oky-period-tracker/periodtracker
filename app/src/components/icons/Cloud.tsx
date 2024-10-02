@@ -2,9 +2,10 @@ import * as React from 'react'
 import { View } from 'react-native'
 import { Svg, Rect, G, Path } from 'react-native-svg'
 import { SvgIconProps } from './types'
-import { palette } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 export const Cloud = ({ style, size = 80, status = 'neutral' }: SvgIconProps) => {
+  const { palette } = useColor()
   const colors = palette[status]
 
   return (

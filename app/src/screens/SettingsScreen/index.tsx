@@ -13,6 +13,7 @@ import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
@@ -20,6 +21,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
+  const { palette, backgroundColor } = useColor()
 
   const logOut = () => {
     dispatch(logoutRequest())
@@ -80,25 +82,25 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       title: 'about',
       description: 'about_info',
       onPress: () => navigation.navigate('About'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={palette.basic.base} />,
     },
     {
       title: 't_and_c',
       description: 't_and_c_info',
       onPress: () => navigation.navigate('Terms'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={palette.basic.base} />,
     },
     {
       title: 'privacy_policy',
       description: 'privacy_info',
       onPress: () => navigation.navigate('Privacy'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={palette.basic.base} />,
     },
     {
       title: 'access_setting',
       description: 'settings_info',
       onPress: () => navigation.navigate('Access'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={palette.basic.base} />,
     },
     {
       title: 'future_prediciton',
@@ -110,7 +112,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>
-      <View style={[styles.container, globalStyles.shadow]}>
+      <View style={[styles.container, globalStyles.shadow, { backgroundColor }]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1
           return (
@@ -147,7 +149,9 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
 
 export default SettingsScreen
 
-const ArrowRight = () => <FontAwesome size={12} name={'arrow-right'} color={'#D1D0D2'} />
+const ArrowRight = ({ color }: { color: string }) => (
+  <FontAwesome size={12} name={'arrow-right'} color={color} />
+)
 
 const PredictionControls = () => {
   return <Switch />
@@ -158,7 +162,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
   },

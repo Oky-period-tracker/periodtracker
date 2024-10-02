@@ -6,18 +6,20 @@ import { useTutorial } from '../../screens/MainScreen/TutorialContext'
 import { avatarException, globalStyles } from '../../config/theme'
 import { useSelector } from 'react-redux'
 import { currentAvatarSelector } from '../../redux/selectors'
+import { useColor } from '../../hooks/useColor'
 
 export const AvatarMessage = () => {
   const avatar = useSelector(currentAvatarSelector)
   const { message } = useAvatarMessage()
   const { state } = useTutorial()
+  const { backgroundColor } = useColor()
 
   if (!message || state.isPlaying) {
     return null
   }
 
   let top = 80
-  const backgroundColor = '#fff'
+
   if (avatar === avatarException) {
     // TODO: Oky lottie different size to the rest
     top = 0
@@ -29,7 +31,7 @@ export const AvatarMessage = () => {
       <Text enableTranslate={false} accessibilityLabel={message}>
         {message}
       </Text>
-      <View style={[styles.triangle]} />
+      <View style={[styles.triangle, { borderTopColor: backgroundColor }]} />
     </View>
   )
 }
@@ -39,7 +41,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 80,
     left: 120,
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: 160,
     minHeight: 60,
@@ -49,7 +50,6 @@ const styles = StyleSheet.create({
   triangle: {
     borderTopWidth: 20,
     borderRightWidth: 16,
-    borderTopColor: '#fff',
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',
     borderLeftColor: 'transparent',

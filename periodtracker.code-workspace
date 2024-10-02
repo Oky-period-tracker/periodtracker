@@ -16,10 +16,6 @@
       "path": "app/src/resources"
     },
     {
-      "name": "apk/release",
-      "path": "app/android/app/build/outputs/apk/release"
-    },
-    {
       "path": "./"
     }
   ],

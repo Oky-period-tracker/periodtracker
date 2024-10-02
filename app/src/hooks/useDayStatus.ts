@@ -1,9 +1,9 @@
 import { useSelector } from '../redux/useSelector'
 import { verifyPeriodDaySelectorWithDate } from '../redux/selectors'
 import { PredictionDayInfo } from '../prediction'
-import { PaletteStatus } from '../config/theme'
 import { Appearance } from '../components/IconButton'
 import { ReduxState } from '../redux/reducers'
+import { PaletteStatus } from './useColor'
 
 export type PeriodStatus = 'period' | 'notVerifiedDay' | 'fertile' | 'nonPeriod'
 

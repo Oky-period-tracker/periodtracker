@@ -6,6 +6,7 @@ import { useToggle } from '../hooks/useToggle'
 import { Modal } from './Modal'
 import { Text } from './Text'
 import { useAccessibilityLabel } from '../hooks/useAccessibilityLabel'
+import { useColor } from '../hooks/useColor'
 
 type InfoButtonProps = ButtonProps & {
   title: string
@@ -15,6 +16,7 @@ type InfoButtonProps = ButtonProps & {
 
 export const InfoButton = ({ title, content, accessibilityLabel, ...props }: InfoButtonProps) => {
   const [visible, toggleVisible] = useToggle()
+  const { backgroundColor } = useColor()
 
   const getAccessibilityLabel = useAccessibilityLabel()
   const label = getAccessibilityLabel(accessibilityLabel ?? 'info_button')
@@ -32,7 +34,7 @@ export const InfoButton = ({ title, content, accessibilityLabel, ...props }: Inf
       </Button>
 
       <Modal visible={visible} toggleVisible={toggleVisible}>
-        <View style={styles.modal}>
+        <View style={[styles.modal, { backgroundColor }]}>
           <Text style={styles.title} status={'primary'}>
             {title}
           </Text>
@@ -51,7 +53,6 @@ const styles = StyleSheet.create({
   modal: {
     borderRadius: 20,
     padding: 24,
-    backgroundColor: '#fff',
     justifyContent: 'center',
   },
   title: {

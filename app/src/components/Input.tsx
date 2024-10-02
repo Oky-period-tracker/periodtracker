@@ -12,6 +12,7 @@ import { Text } from './Text'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { ErrorText } from './ErrorText'
 import { useTranslate } from '../hooks/useTranslate'
+import { useColor } from '../hooks/useColor'
 
 export type InputProps = TextInputProps & {
   style?: StyleProp<ViewStyle>
@@ -32,13 +33,13 @@ export const Input = ({
   errors,
   errorKeys,
   errorsVisible,
-  placeholderTextColor = '#28b9cb',
   displayOnly = false,
   actionLeft,
   actionRight,
   ...props
 }: InputProps) => {
   const translate = useTranslate()
+  const { palette, inputBackgroundColor, color, placeholderTextColor } = useColor()
   const placeholderText = translate(placeholder || '')
 
   const ref = React.useRef<TextInput>(null)
@@ -66,7 +67,12 @@ export const Input = ({
         onPress={onPress}
         disabled={displayOnly || !props.multiline}
         activeOpacity={1}
-        style={[styles.container, props.multiline && styles.multiline, style]}
+        style={[
+          styles.container,
+          { backgroundColor: inputBackgroundColor },
+          props.multiline && styles.multiline,
+          style,
+        ]}
       >
         <View style={styles.wrapper}>
           <View style={styles.sideComponent}>{actionLeft}</View>
@@ -92,14 +98,14 @@ export const Input = ({
                 {...props}
                 ref={ref}
                 value={value}
-                style={[styles.input, inputStyle]}
+                style={[styles.input, { color }, inputStyle]}
                 autoCorrect={false}
               />
             </>
           )}
           <View style={styles.sideComponent}>
             {actionRight}
-            {hasError && <FontAwesome size={16} name={'close'} color={'#E3629B'} />}
+            {hasError && <FontAwesome size={16} name={'close'} color={palette.danger.text} />}
           </View>
         </View>
       </TouchableOpacity>
@@ -110,7 +116,6 @@ export const Input = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    backgroundColor: '#f1f1f1',
     borderRadius: 20,
     padding: 12,
     marginBottom: 12,

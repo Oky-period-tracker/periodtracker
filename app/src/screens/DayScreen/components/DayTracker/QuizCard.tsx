@@ -13,9 +13,11 @@ import _ from 'lodash'
 import { DayData } from '../../../MainScreen/DayScrollContext'
 import { answerQuiz } from '../../../../redux/actions'
 import { useSelector } from '../../../../redux/useSelector'
+import { useColor } from '../../../../hooks/useColor'
 
 export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
   const userID = useSelector(currentUserSelector)?.id
+  const { palette, backgroundColor } = useColor()
 
   const selectedQuestion = useQuiz()
   const answeredQuestion = useSelector((state) => quizAnswerByDate(state, dataEntry.date)) as {
@@ -37,11 +39,11 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
   }
 
   return (
-    <View style={styles.page}>
-      <Text style={styles.title}>quiz</Text>
+    <View style={[styles.page, { backgroundColor }]}>
+      <Text style={[styles.title, { color: palette.secondary.text }]}>quiz</Text>
       <Text>daily_quiz_content</Text>
       <View style={styles.body}>
-        <Text style={styles.question} enableTranslate={false}>
+        <Text style={[styles.question, { color: palette.secondary.text }]} enableTranslate={false}>
           {question}
         </Text>
         {answeredQuestion && (
@@ -124,7 +126,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 24,
     maxWidth: 800,
-    backgroundColor: '#FFF',
     borderRadius: 20,
   },
   button: {
@@ -133,7 +134,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#F49200',
     marginBottom: 24,
   },
   body: {
@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
   question: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#F49200',
     marginTop: 24,
     marginBottom: 24,
   },

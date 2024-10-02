@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Svg, Ellipse } from 'react-native-svg'
 import { SvgIconProps } from './types'
-import { palette } from '../../config/theme'
 import { View } from 'react-native'
+import { useColor } from '../../hooks/useColor'
 
 export const CircleOutline = ({ style, size = 80, status = 'neutral' }: SvgIconProps) => {
+  const { palette } = useColor()
   const colors = palette[status]
 
   return (

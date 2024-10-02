@@ -4,6 +4,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Button } from './Button'
 import { ErrorText } from './ErrorText'
 import { Text } from './Text'
+import { useColor } from '../hooks/useColor'
 
 interface SegmentControlOption {
   value: string
@@ -30,11 +31,13 @@ export const SegmentControl = ({
   errorKey,
   errorsVisible,
 }: SegmentControlProps) => {
+  const { placeholderTextColor } = useColor()
+
   const hasError = errorsVisible && errorKey && errors && errors.includes(errorKey)
 
   return (
     <View style={styles.wrapper}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={{ color: placeholderTextColor }}>{label}</Text>}
       <View style={styles.container}>
         {hasError && <ErrorText>{errorKey}</ErrorText>}
 
@@ -77,9 +80,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     padding: 4,
-  },
-  label: {
-    color: '#28b9cb',
   },
   option: {
     flexDirection: 'column',

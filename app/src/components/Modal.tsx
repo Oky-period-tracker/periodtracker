@@ -1,19 +1,28 @@
 import React from 'react'
-import { Modal as RNModal, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
+import {
+  Modal as RNModal,
+  StyleProp,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { useAccessibilityLabel } from '../hooks/useAccessibilityLabel'
 import { Button, ButtonProps } from './Button'
+import { useColor } from '../hooks/useColor'
 
 export interface ModalProps {
   visible: boolean
   toggleVisible: () => void
   children?: React.ReactNode
-  style?: ViewStyle
+  style?: StyleProp<ViewStyle>
 }
 
 export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) => {
+  const { modalBackdropColor } = useColor()
   const { width, height } = useScreenDimensions()
   const maxWidth = Math.min(width, 800)
   const maxHeight = height * 0.6
@@ -28,7 +37,10 @@ export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) =
       supportedOrientations={['portrait', 'landscape']}
     >
       <View style={styles.container}>
-        <TouchableOpacity style={styles.backDrop} onPress={toggleVisible} />
+        <TouchableOpacity
+          style={[styles.backDrop, { backgroundColor: modalBackdropColor }]}
+          onPress={toggleVisible}
+        />
         <ModalCloseButton onPress={toggleVisible} />
         <SafeAreaView
           style={[styles.children, { maxWidth, maxHeight }, style]}
@@ -55,7 +67,6 @@ export const ModalCloseButton = (props: ButtonProps) => {
 const styles = StyleSheet.create({
   backDrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.8)',
   },
   container: {
     flex: 1,

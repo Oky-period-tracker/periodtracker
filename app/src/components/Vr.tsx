@@ -1,14 +1,15 @@
 import React from 'react'
 import { StyleSheet, View, ViewProps } from 'react-native'
+import { useColor } from '../hooks/useColor'
 
 export const Vr = ({ style, ...props }: ViewProps) => {
-  return <View style={[styles.vr, style]} {...props} />
+  const { borderColor } = useColor()
+  return <View style={[styles.vr, { backgroundColor: borderColor }, style]} {...props} />
 }
 
 const styles = StyleSheet.create({
   vr: {
     height: '100%',
     width: 1,
-    backgroundColor: '#f0f0f0',
   },
 })

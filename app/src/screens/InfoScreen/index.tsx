@@ -6,38 +6,41 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Hr } from '../../components/Hr'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { globalStyles } from '../../config/theme'
+import { useColor } from '../../hooks/useColor'
 
 const InfoScreen: ScreenComponent<'Info'> = ({ navigation }) => {
+  const { backgroundColor, borderColor } = useColor()
+
   const rows: TouchableRowProps[] = [
     {
       title: 'about',
       description: 'about_info',
       onPress: () => navigation.navigate('About'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={borderColor} />,
     },
     {
       title: 't_and_c',
       description: 't_and_c_info',
       onPress: () => navigation.navigate('Terms'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={borderColor} />,
     },
     {
       title: 'privacy_policy',
       description: 'privacy_info',
       onPress: () => navigation.navigate('Privacy'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={borderColor} />,
     },
     {
       title: 'encyclopedia',
       description: '',
       onPress: () => navigation.navigate('Encyclopedia'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={borderColor} />,
     },
   ]
 
   return (
     <Screen style={styles.screen}>
-      <View style={[styles.container, globalStyles.shadow]}>
+      <View style={[styles.container, globalStyles.shadow, { backgroundColor }]}>
         {rows.map((props, i) => {
           const isLast = i === rows.length - 1
           return (
@@ -54,14 +57,15 @@ const InfoScreen: ScreenComponent<'Info'> = ({ navigation }) => {
 
 export default InfoScreen
 
-const ArrowRight = () => <FontAwesome size={12} name={'arrow-right'} color={'#D1D0D2'} />
+const ArrowRight = ({ color }: { color: string }) => (
+  <FontAwesome size={12} name={'arrow-right'} color={color} />
+)
 
 const styles = StyleSheet.create({
   screen: {
     paddingHorizontal: 12,
   },
   container: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
   },

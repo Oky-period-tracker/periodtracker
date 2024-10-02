@@ -9,9 +9,11 @@ import Animated, {
 } from 'react-native-reanimated'
 import { assets } from '../resources/assets'
 import { Text } from './Text'
-import { palette } from '../config/theme'
+import { useColor } from '../hooks/useColor'
 
 export const Spinner = ({ text }: { text?: string }) => {
+  const { palette } = useColor()
+
   const rotation = useSharedValue(0)
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -33,7 +35,7 @@ export const Spinner = ({ text }: { text?: string }) => {
 
   return (
     <View style={styles.screen}>
-      {text && <Text style={styles.text}>{text}</Text>}
+      {text && <Text style={[styles.text, { color: palette.secondary.text }]}>{text}</Text>}
       <View style={styles.container}>
         <View style={styles.inner}>
           <Image resizeMode="contain" source={assets.static.spin_load_face} style={styles.image} />
@@ -79,6 +81,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-    color: palette.secondary.text,
   },
 })

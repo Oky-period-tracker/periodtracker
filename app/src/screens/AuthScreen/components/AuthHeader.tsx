@@ -8,11 +8,13 @@ import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector } from '../../../redux/selectors'
 import { logoutRequest } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
+import { useColor } from '../../../hooks/useColor'
 
 export const AuthHeader = ({ title }: { title: string }) => {
   const user = useSelector(currentUserSelector)
   const dispatch = useDispatch()
   const { setAuthMode } = useAuthMode()
+  const { palette } = useColor()
 
   const onClose = () => {
     if (user) {
@@ -23,7 +25,7 @@ export const AuthHeader = ({ title }: { title: string }) => {
   }
 
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, { backgroundColor: palette.danger.base }]}>
       <View style={styles.closeButton}>{/* Spacer */}</View>
       <Text style={styles.title}>{title}</Text>
       <Button onPress={onClose} style={styles.closeButton} status="danger_light">
@@ -39,7 +41,6 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#E3629B',
     flexDirection: 'row',
   },
   title: {

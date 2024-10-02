@@ -13,6 +13,7 @@ import { globalStyles } from '../../../config/theme'
 import { currentUserSelector } from '../../../redux/selectors'
 import { useAuth } from '../../../contexts/AuthContext'
 import { analytics } from '../../../services/firebase'
+import { useColor } from '../../../hooks/useColor'
 
 export const Accordion = () => {
   const { filteredCategoryIds } = useEncyclopedia()
@@ -33,6 +34,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
   const [expanded, toggleExpanded] = useToggle()
   const user = useSelector(currentUserSelector)
   const { isLoggedIn } = useAuth()
+  const { backgroundColor } = useColor()
 
   const hasAccess = user && isLoggedIn
 
@@ -99,7 +101,10 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
   return (
     <>
-      <TouchableOpacity style={[styles.category, globalStyles.shadow]} onPress={onCategoryPress}>
+      <TouchableOpacity
+        style={[styles.category, globalStyles.shadow, { backgroundColor }]}
+        onPress={onCategoryPress}
+      >
         <Text
           status={expanded ? 'danger' : 'secondary'}
           style={styles.categoryName}
@@ -117,7 +122,7 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
         subCategories.map((subcategory) => (
           <TouchableOpacity
             key={subcategory.id}
-            style={[styles.subcategory, globalStyles.shadow]}
+            style={[styles.subcategory, globalStyles.shadow, { backgroundColor }]}
             onPress={onSubCategoryPress(subcategory.id, subcategory.name)}
           >
             <Text enableTranslate={false}>{subcategory.name}</Text>
@@ -131,6 +136,7 @@ const AccordionVideosItem = () => {
   const { videos, selectedCategoryIds, setSelectedVideoId } = useEncyclopedia()
 
   const [expanded, toggleExpanded] = useToggle()
+  const { backgroundColor, videoTabBackgroundColor } = useColor()
 
   const videosCategoryNotSelected =
     selectedCategoryIds.length > 0 && !selectedCategoryIds.includes('videos')
@@ -142,7 +148,12 @@ const AccordionVideosItem = () => {
   return (
     <>
       <TouchableOpacity
-        style={[styles.category, styles.videos, globalStyles.shadow]}
+        style={[
+          styles.category,
+          styles.videos,
+          globalStyles.shadow,
+          { backgroundColor: videoTabBackgroundColor },
+        ]}
         onPress={toggleExpanded}
       >
         <Text status={expanded ? 'danger' : 'secondary'} style={styles.videosTitle}>
@@ -156,7 +167,7 @@ const AccordionVideosItem = () => {
         videos.map((video) => (
           <TouchableOpacity
             key={video.id}
-            style={[styles.subcategory, globalStyles.shadow]}
+            style={[styles.subcategory, globalStyles.shadow, { backgroundColor }]}
             onPress={() => {
               setSelectedVideoId(video.id)
             }}
@@ -180,14 +191,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     minHeight: 80,
-    backgroundColor: '#fff',
     borderRadius: 20,
     marginVertical: 4,
     paddingHorizontal: 24,
   },
   videos: {
     height: 120,
-    backgroundColor: '#ffe6e3',
   },
   videosTitle: {
     fontSize: 26,
@@ -209,7 +218,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     width: '90%',
     minHeight: 60,
-    backgroundColor: '#fff',
     borderRadius: 20,
     marginVertical: 4,
     paddingHorizontal: 24,

@@ -1,6 +1,6 @@
 import fs from 'fs'
-import { content as staleContent } from './packages/core/src/modules/translations/content'
-import { Quiz, StaticContent } from './packages/components/src/types' // TODO_ALEX use core types
+import { Quiz, StaticContent } from './app/src/core/types'
+import { content as staleContent } from './app/src/resources/translations'
 
 const columnNames = {
   category: ['id', 'title', 'primary_emoji', 'primary_emoji_name', 'lang'],

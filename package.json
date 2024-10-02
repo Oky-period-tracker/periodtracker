@@ -9,6 +9,7 @@
     "generate-sql": "ts-node generateSQL.ts",
     "provinces": "ts-node --transpile-only merge-provinces.ts",
     "countries": "ts-node --transpile-only merge-countries.ts",
+    "fetch-content": "ts-node --transpile-only fetchContent.ts",
     "database-sync:enable": "ts-node setDatabaseSync.ts --enable",
     "database-sync:disable": "ts-node setDatabaseSync.ts --disable",
     "rm": "yarn workspaces run rm && yarn rm:app && yarn cache clean && rm -rf node_modules",

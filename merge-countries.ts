@@ -1,6 +1,6 @@
 import fs from 'fs'
-import { countries } from './packages/core/src/modules/translations/countries'
 import { logger } from './logger'
+import { countries } from '@oky/core'
 
 // Temporarily add locales to this array, to chose which locales to merge
 const localesToMerge = ['fr']
@@ -18,7 +18,7 @@ const localesToMerge = ['fr']
 // Temporarily add countries to this array then execute this script to merge them into your /translations submodule
 const itemsArray = []
 
-const outputFilepath = './packages/core/src/modules/translations/countries.ts'
+const outputFilepath = './app/src/resources/translations/countries.ts'
 
 // ========================= Merge ========================= //
 const mergeArray = () => {

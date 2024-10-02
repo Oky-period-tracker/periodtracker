@@ -7,7 +7,7 @@ import * as path from 'path'
 // @ts-ignore
 import sharp from 'sharp'
 
-const assetsFolder = './packages/components/src/assets'
+const assetsFolder = './app/src/resources/assets'
 
 const logger = (...values) => {
   console.log(...values) // tslint:disable-line

@@ -1,7 +1,8 @@
 import * as fs from 'fs-extra'
 import * as path from 'path'
 
-const assetsFolder = './packages/components/src/assets'
+const assetsFolder = './app/src/resources/assets'
+
 const foldersToIgnore = ['mobile']
 
 async function getRequiredPaths() {
@@ -19,9 +20,7 @@ async function getRequiredPaths() {
     match = requireRegex.exec(content)
   }
 
-  const absolutePaths = paths.map((p) =>
-    path.join(assetsFolder, p.substring(1)),
-  )
+  const absolutePaths = paths.map((p) => path.join(assetsFolder, p.substring(1)))
 
   return absolutePaths
 }

@@ -1,11 +1,11 @@
 import fs from 'fs'
-import { content } from '@oky/core'
 import { v4 as uuid } from 'uuid'
 import { logger } from './logger'
+import { content } from './app/src/resources/translations'
 
 const localeToUpdate = ''
 
-const outputFilepath = `./packages/core/src/modules/translations/content/${localeToUpdate}.ts`
+const outputFilepath = `./app/src/resources/translations/content/${localeToUpdate}.ts`
 
 const replaceContentIds = () => {
   const updatedContent = { ...content[localeToUpdate] }

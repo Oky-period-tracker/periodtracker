@@ -2,7 +2,7 @@ import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as lottie from 'lottie-parser'
 
-const folderPath = './packages/components/src/assets/lottie'
+const folderPath = './app/src/resources/assets/lottie'
 
 const maxLottieSize = 2000 // KB
 const expectedAspectRatio = 0.5
@@ -35,9 +35,7 @@ async function validateAssets() {
         logger(`\nWARNING: Lottie file is larger than ${maxLottieSize} KB`)
       }
       if (size > maxLottieSize) {
-        logger(
-          `WARNING: Incorrect aspect ratio, expected ${expectedAspectRatio}`,
-        )
+        logger(`WARNING: Incorrect aspect ratio, expected ${expectedAspectRatio}`)
       }
     }
   }

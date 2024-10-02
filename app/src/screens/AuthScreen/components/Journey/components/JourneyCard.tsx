@@ -69,13 +69,13 @@ export const JourneyCard = ({ step }: { step: JourneyStep }) => {
                 style={styles.image}
               />
             </View>
-            <Text style={[styles.question, { color: palette.secondary.base }]}>{questionText}</Text>
+            <Text style={[styles.question, { color: palette.secondary.text }]}>{questionText}</Text>
             <Text style={styles.disclaimer}>survey_description</Text>
           </>
         )}
         {status === 'yes' && (
           <>
-            <Text style={[styles.yesTitle, { color: palette.secondary.base }]}>{yesText}</Text>
+            <Text style={[styles.yesTitle, { color: palette.secondary.text }]}>{yesText}</Text>
             <JourneyCollect step={step} />
           </>
         )}

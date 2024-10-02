@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
     left: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFF',
     borderRadius: 20,
     overflow: 'hidden',
     width: '100%',

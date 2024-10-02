@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { currentLocaleSelector } from '../redux/selectors'
 import { Moment } from 'moment'
 import { asLocal } from '../services/dateUtils'
+import { useColor } from '../hooks/useColor'
 
 LocaleConfig.locales = {
   ...LocaleConfig.locales,
@@ -27,12 +28,22 @@ export const DatePicker = ({
 
   const dateString = asLocal(selectedDate).format('YYYY-MM-DD')
 
+  const { palette, backgroundColor, color } = useColor()
+
   const markedDates: MarkedDates = {
     [dateString]: {
       selected: true,
-      selectedColor: '#E3629B',
+      selectedColor: palette.danger.base,
       selectedTextColor: '#fff',
     },
+  }
+
+  const theme: CalendarProps['theme'] = {
+    monthTextColor: palette.secondary.text,
+    textMonthFontSize: 20,
+    textMonthFontWeight: 'bold',
+    calendarBackground: backgroundColor,
+    dayTextColor: color,
   }
 
   return (
@@ -54,12 +65,6 @@ export const DatePicker = ({
       />
     </View>
   )
-}
-
-const theme: CalendarProps['theme'] = {
-  monthTextColor: '#f49200',
-  textMonthFontSize: 20,
-  textMonthFontWeight: 'bold',
 }
 
 const styles = StyleSheet.create({

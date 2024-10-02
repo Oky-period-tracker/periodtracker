@@ -7,9 +7,11 @@ import { useSurvey } from './SurveyContext'
 import { SurveyCollect } from './SurveyCollect'
 import { InfoButton } from '../../../../components/InfoButton'
 import { Vr } from '../../../../components/Vr'
+import { useColor } from '../../../../hooks/useColor'
 
 export const Survey = () => {
   const { state, dispatch } = useSurvey()
+  const { palette, backgroundColor } = useColor()
 
   const onConfirm = () => {
     dispatch({ type: 'continue' })
@@ -33,10 +35,10 @@ export const Survey = () => {
     state.questionIndex === state.survey.questions.length - 1 && !state.hasAnsweredAll
 
   return (
-    <View style={styles.page}>
+    <View style={[styles.page, { backgroundColor }]}>
       <View style={styles.body}>
         <View style={styles.header}>
-          <Text style={styles.title}>survey</Text>
+          <Text style={[styles.title, { color: palette.secondary.text }]}>survey</Text>
           <InfoButton title={'survey'} content={'info_button_survey'} />
         </View>
         <Text>anonymous_answer</Text>
@@ -48,14 +50,19 @@ export const Survey = () => {
           </Text>
         ) : state.consented ? (
           <>
-            <Text style={styles.question} enableTranslate={false}>
+            <Text
+              style={[styles.question, { color: palette.secondary.text }]}
+              enableTranslate={false}
+            >
               {question}
             </Text>
             <SurveyCollect />
           </>
         ) : (
           <>
-            <Text style={styles.question}>{consentQuestion}</Text>
+            <Text style={[styles.question, { color: palette.secondary.text }]}>
+              {consentQuestion}
+            </Text>
             <SurveyConsent />
           </>
         )}
@@ -81,7 +88,6 @@ export const Survey = () => {
 
 const styles = StyleSheet.create({
   page: {
-    backgroundColor: '#FFF',
     borderRadius: 20,
     width: '100%',
     flex: 1,
@@ -101,20 +107,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#F49200',
     marginRight: 12,
   },
   question: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#F49200',
     marginTop: 24,
     marginBottom: 12,
   },
   thanks: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#',
     marginTop: 24,
     marginBottom: 12,
   },

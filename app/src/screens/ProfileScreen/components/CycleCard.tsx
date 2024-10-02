@@ -10,6 +10,7 @@ import { Text } from '../../../components/Text'
 import { useMonths } from '../../../hooks/useMonths'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { globalStyles } from '../../../config/theme'
+import { useColor } from '../../../hooks/useColor'
 
 export const CycleCard = ({
   item,
@@ -23,6 +24,7 @@ export const CycleCard = ({
   }
   cycleNumber: number
 }) => {
+  const { palette, backgroundColor } = useColor()
   const { months } = useMonths()
   const translate = useTranslate()
   const cardAnswersValues = useSelector((state) =>
@@ -45,9 +47,9 @@ export const CycleCard = ({
 
   return (
     <View style={[styles.container, globalStyles.shadow]}>
-      <View style={styles.cycleCard}>
+      <View style={[styles.cycleCard, { backgroundColor }]}>
         {/* ===== Header ===== */}
-        <View style={styles.cycleCardHeader}>
+        <View style={[styles.cycleCardHeader, { backgroundColor: palette.danger.base }]}>
           <View style={styles.row}>
             <Text style={styles.headerText}>cycle</Text>
             <Text
@@ -146,7 +148,6 @@ const styles = StyleSheet.create({
     marginVertical: 4,
   },
   cycleCard: {
-    backgroundColor: '#fff',
     borderRadius: 20,
     width: '100%',
     height: 140,
@@ -157,7 +158,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#e3629b',
     width: '100%',
     height: ' 33%',
     paddingHorizontal: 16,

@@ -38,7 +38,7 @@ export const HelpFiltersModal = ({
   onConfirm,
   filters,
 }: HelpFiltersModalProps) => {
-  const { backgroundColor, borderColor } = useColor()
+  const { palette, backgroundColor, borderColor, color } = useColor()
 
   const [section, setSection] = React.useState<FilterSection>('region')
 
@@ -127,7 +127,7 @@ export const HelpFiltersModal = ({
                   size={24}
                   // @ts-expect-error TODO: create type for FA icon name
                   name={tab.icon}
-                  color={isSelected ? '#000' : '#B7B6B6'}
+                  color={isSelected ? color : palette.basic.shadow}
                 />
               </TouchableOpacity>
               {!isLast && <Vr />}

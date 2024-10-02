@@ -6,14 +6,14 @@ export const ProgressBar = ({
   borderRadius = 20,
   height = 8,
   width = 60,
-  color = '#F49200',
+  color,
   emptyFill = 'transparent',
 }: {
   value?: number // % fill
   borderRadius?: number
   height?: number
   width?: number
-  color?: string
+  color: string
   emptyFill?: string
 }) => {
   const fill = value !== 100

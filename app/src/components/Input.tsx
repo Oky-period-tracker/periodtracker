@@ -33,14 +33,13 @@ export const Input = ({
   errors,
   errorKeys,
   errorsVisible,
-  placeholderTextColor = '#28b9cb',
   displayOnly = false,
   actionLeft,
   actionRight,
   ...props
 }: InputProps) => {
   const translate = useTranslate()
-  const { inputBackgroundColor, color } = useColor()
+  const { palette, inputBackgroundColor, color, placeholderTextColor } = useColor()
   const placeholderText = translate(placeholder || '')
 
   const ref = React.useRef<TextInput>(null)
@@ -106,7 +105,7 @@ export const Input = ({
           )}
           <View style={styles.sideComponent}>
             {actionRight}
-            {hasError && <FontAwesome size={16} name={'close'} color={'#E3629B'} />}
+            {hasError && <FontAwesome size={16} name={'close'} color={palette.danger.text} />}
           </View>
         </View>
       </TouchableOpacity>

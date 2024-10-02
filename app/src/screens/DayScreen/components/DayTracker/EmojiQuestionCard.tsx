@@ -19,6 +19,7 @@ import { useTranslate } from '../../../../hooks/useTranslate'
 import moment from 'moment'
 import { analytics } from '../../../../services/firebase'
 import { useResponsive } from '../../../../contexts/ResponsiveContext'
+import { useColor } from '../../../../hooks/useColor'
 
 export const EmojiQuestionCard = ({
   topic,
@@ -35,6 +36,7 @@ export const EmojiQuestionCard = ({
 }) => {
   const translate = useTranslate()
   const { UIConfig } = useResponsive()
+  const { palette, backgroundColor } = useColor()
 
   // Tutorial styles
   const {
@@ -99,10 +101,11 @@ export const EmojiQuestionCard = ({
   const { title, description, question } = EmojiCardText[topic]
 
   return (
-    <View style={styles.page}>
+    <View style={[styles.page, { backgroundColor }]}>
       <Text
         style={[
           styles.title,
+          { color: palette.secondary.text },
           tutorial && {
             fontSize: titleFontSize,
             marginBottom: titleMargin,
@@ -123,6 +126,7 @@ export const EmojiQuestionCard = ({
       <Text
         style={[
           styles.question,
+          { color: palette.secondary.text },
           tutorial && {
             marginTop: questionMargin,
             marginBottom: questionMargin,
@@ -172,7 +176,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 24,
     maxWidth: 800,
-    backgroundColor: '#FFF',
     borderRadius: 20,
   },
   button: {
@@ -181,13 +184,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#F49200',
     marginBottom: 24,
   },
   question: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#F49200',
     marginTop: 24,
     marginBottom: 12,
   },

@@ -17,7 +17,7 @@ export const HelpCard = ({ ...props }: TouchableOpacityProps) => {
         source={getAsset(`avatars.${selectedAvatar}.stationary_colour`)}
         style={styles.image}
       />
-      <Text style={[styles.text, { color: palette.secondary.base }]}>find help</Text>
+      <Text style={[styles.text, { color: palette.secondary.text }]}>find help</Text>
     </TouchableOpacity>
   )
 }

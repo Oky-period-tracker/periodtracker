@@ -50,14 +50,14 @@ const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
             <View style={[styles.card, { backgroundColor }, globalStyles.shadow]} key={article.id}>
               {article.title && (
                 <Text
-                  style={[styles.title, { color: palette.danger.base }]}
+                  style={[styles.title, { color: palette.danger.text }]}
                   enableTranslate={false}
                 >
                   {article.title}
                 </Text>
               )}
               <Text
-                style={[styles.subCategory, { color: palette.danger.base }]}
+                style={[styles.subCategory, { color: palette.danger.text }]}
                 enableTranslate={false}
               >
                 {subcategory.name}

@@ -11,8 +11,8 @@ export const AuthScreenHeader = () => {
     <View style={styles.container}>
       <Image source={assets.static.launch_icon} style={styles.logo} resizeMode={'contain'} />
       <View style={styles.textColumn}>
-        <Text style={[styles.title, { color: palette.secondary.base }]}>auth_welcome</Text>
-        <Text style={[styles.subtitle, { color: palette.secondary.base }]}>auth_catchphrase</Text>
+        <Text style={[styles.title, { color: palette.secondary.text }]}>auth_welcome</Text>
+        <Text style={[styles.subtitle, { color: palette.secondary.text }]}>auth_catchphrase</Text>
       </View>
     </View>
   )

@@ -4,6 +4,7 @@ import { allDidYouKnowsSelectors } from '../../../../redux/selectors'
 import _ from 'lodash'
 import { StyleSheet, View } from 'react-native'
 import { Text } from '../../../../components/Text'
+import { useColor } from '../../../../hooks/useColor'
 
 export const DidYouKnowCard = () => {
   const allDidYouKnows = useSelector(allDidYouKnowsSelectors)
@@ -11,12 +12,14 @@ export const DidYouKnowCard = () => {
     return _.sample(allDidYouKnows)
   }, [])
 
+  const { palette, backgroundColor } = useColor()
+
   return (
-    <View style={styles.page}>
-      <Text style={styles.title}>didYouKnow</Text>
+    <View style={[styles.page, { backgroundColor }]}>
+      <Text style={[styles.title, { color: palette.secondary.text }]}>didYouKnow</Text>
       <Text>daily_didYouKnow_content</Text>
       <View style={styles.body}>
-        <Text enableTranslate={false} style={styles.content}>
+        <Text enableTranslate={false} style={[styles.content, { color: palette.danger.text }]}>
           {randomDidYouKnow?.content}
         </Text>
       </View>
@@ -31,7 +34,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     padding: 24,
     maxWidth: 800,
-    backgroundColor: '#FFF',
     borderRadius: 20,
   },
   button: {
@@ -40,7 +42,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#F49200',
     marginBottom: 24,
   },
   body: {
@@ -50,7 +51,6 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#E3629B',
     marginBottom: 24,
     textAlign: 'center',
   },

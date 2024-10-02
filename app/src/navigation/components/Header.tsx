@@ -10,6 +10,7 @@ import { Text } from '../../components/Text'
 import { DateBadge } from '../../components/DateBadge'
 import { useAccessibilityLabel } from '../../hooks/useAccessibilityLabel'
 import { useResponsive } from '../../contexts/ResponsiveContext'
+import { useColor } from '../../hooks/useColor'
 
 export type HeaderProps = NativeStackHeaderProps & {
   options: CustomStackNavigationOptions
@@ -25,6 +26,7 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
   const label = getAccessibilityLabel('arrow_button')
 
   const { size } = useResponsive()
+  const { palette } = useColor()
 
   const onBackPress = () => {
     navigation.goBack()
@@ -45,7 +47,10 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
         {date ? (
           <DateBadge date={date} style={styles.dateBadge} />
         ) : (
-          <Text enableTranslate={enableTranslate} style={styles.title}>
+          <Text
+            enableTranslate={enableTranslate}
+            style={[styles.title, { color: palette.secondary.text }]}
+          >
             {title}
           </Text>
         )}
@@ -79,7 +84,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     fontWeight: 'bold',
     marginLeft: 'auto',
-    color: '#F49200',
   },
   dateBadge: {
     marginLeft: 'auto',

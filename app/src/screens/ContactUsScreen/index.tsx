@@ -53,6 +53,7 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
       })
 
       setMessage('')
+      setReason(undefined)
       toggleVisible()
     } catch (err) {
       setError(true)
@@ -76,8 +77,12 @@ const ContactUsScreen: ScreenComponent<'Contact'> = () => {
         </Button>
       </KeyboardAvoidingView>
 
-      <Modal style={styles.modal} visible={visible} toggleVisible={toggleVisible}>
-        <Text style={[styles.modalTitle, { color: palette.primary.base }]}>thank_you</Text>
+      <Modal
+        style={[styles.modal, { backgroundColor }]}
+        visible={visible}
+        toggleVisible={toggleVisible}
+      >
+        <Text style={[styles.modalTitle, { color: palette.primary.text }]}>thank_you</Text>
         <Text>thank_you_content</Text>
       </Modal>
     </Screen>

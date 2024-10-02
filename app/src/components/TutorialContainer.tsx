@@ -5,6 +5,7 @@ import { useThrottledFunction } from '../hooks/useThrottledFunction'
 import { TutorialSkip } from '../screens/MainScreen/components/TutorialSkip'
 import { useLoading } from '../contexts/LoadingProvider'
 import { useResponsive } from '../contexts/ResponsiveContext'
+import { useColor } from '../hooks/useColor'
 
 export interface TutorialContainerProps {
   children?: React.ReactNode
@@ -14,6 +15,7 @@ export const TutorialContainer = ({ children }: TutorialContainerProps) => {
   const { dispatch } = useTutorial()
   const { loading } = useLoading()
   const { UIConfig } = useResponsive()
+  const { modalBackdropColor } = useColor()
 
   const onContinue = () => {
     dispatch({ type: 'continue' })
@@ -40,7 +42,7 @@ export const TutorialContainer = ({ children }: TutorialContainerProps) => {
         ]}
       >
         <TutorialSkip />
-        <View style={styles.backDrop} />
+        <View style={[styles.backDrop, { backgroundColor: modalBackdropColor }]} />
         <TouchableOpacity style={styles.touchableOverlay} onPress={continueThrottled} />
         {children}
       </View>
@@ -51,7 +53,6 @@ export const TutorialContainer = ({ children }: TutorialContainerProps) => {
 const styles = StyleSheet.create({
   backDrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.75)',
     zIndex: -1,
   },
   touchableOverlay: {

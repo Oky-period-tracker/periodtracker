@@ -11,6 +11,10 @@ export type ColorSchemeBase = {
   videoTabBackgroundColor: string
   modalBackdropColor: string
   backgroundOverlayColor: string
+  errorColor: string
+  placeholderTextColor: string
+  linkColor: string
+  starColor: string
 }
 
 export type ColorScheme = Record<ColorSchemeName, ColorSchemeBase>
@@ -36,13 +40,11 @@ export type Palette = Record<
 >
 
 export const useColor = (): {
-  colorSchemeName: ColorSchemeName
   palette: Palette
 } & ColorSchemeBase => {
   const colorSchemeName = useColorScheme() ?? 'light'
 
   return {
-    colorSchemeName,
     palette: palettes[colorSchemeName],
     ...schemes[colorSchemeName],
   }
@@ -58,6 +60,10 @@ const schemes: ColorScheme = {
     videoTabBackgroundColor: '#ffe6e3',
     modalBackdropColor: 'rgba(0,0,0,0.8)',
     backgroundOverlayColor: 'transparent',
+    errorColor: '#ff0000',
+    placeholderTextColor: '#28b9cb',
+    linkColor: '#28b9cb',
+    starColor: '#F6AC3F',
   },
   dark: {
     backgroundColor: '#1B1B1F',
@@ -68,6 +74,10 @@ const schemes: ColorScheme = {
     videoTabBackgroundColor: '#4a0c2e',
     modalBackdropColor: 'rgba(50,50,50,0.8)',
     backgroundOverlayColor: 'rgba(0,0,0,0.5)',
+    errorColor: '#ff0000',
+    placeholderTextColor: '#28b9cb',
+    linkColor: '#28b9cb',
+    starColor: '#F6AC3F',
   },
 }
 
@@ -164,7 +174,7 @@ const palettes: Record<ColorSchemeName, Palette> = {
       highlight: '#E3629B',
       shadow: '#6b1244',
       dark: '#470b2c',
-      text: '#F9C7C1',
+      text: '#E3629B',
     },
     danger_light: {
       base: '#E3629B',

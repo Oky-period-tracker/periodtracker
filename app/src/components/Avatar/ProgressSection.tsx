@@ -6,7 +6,7 @@ import { cardAnswerSelector, currentAvatarSelector } from '../../redux/selectors
 import moment from 'moment'
 import { useSelector } from '../../redux/useSelector'
 import { ProgressBar } from './ProgressBar'
-import { avatarException, starColor } from '../../config/theme'
+import { avatarException } from '../../config/theme'
 import { SharedValue, runOnJS, useAnimatedReaction } from 'react-native-reanimated'
 import { HeartAnimation } from './HeartAnimation'
 import { useResponsive } from '../../contexts/ResponsiveContext'
@@ -22,7 +22,7 @@ export const ProgressSection = ({
   const avatar = useSelector(currentAvatarSelector)
   const [progress, setProgress] = React.useState(0)
   const { UIConfig } = useResponsive()
-  const { palette } = useColor()
+  const { palette, starColor } = useColor()
 
   useAnimatedReaction(
     () => heartProgress.value,

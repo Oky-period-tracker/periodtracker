@@ -21,7 +21,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
-  const { backgroundColor } = useColor()
+  const { palette, backgroundColor } = useColor()
 
   const logOut = () => {
     dispatch(logoutRequest())
@@ -82,25 +82,25 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       title: 'about',
       description: 'about_info',
       onPress: () => navigation.navigate('About'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={palette.basic.base} />,
     },
     {
       title: 't_and_c',
       description: 't_and_c_info',
       onPress: () => navigation.navigate('Terms'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={palette.basic.base} />,
     },
     {
       title: 'privacy_policy',
       description: 'privacy_info',
       onPress: () => navigation.navigate('Privacy'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={palette.basic.base} />,
     },
     {
       title: 'access_setting',
       description: 'settings_info',
       onPress: () => navigation.navigate('Access'),
-      component: <ArrowRight />,
+      component: <ArrowRight color={palette.basic.base} />,
     },
     {
       title: 'future_prediciton',
@@ -149,7 +149,9 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
 
 export default SettingsScreen
 
-const ArrowRight = () => <FontAwesome size={12} name={'arrow-right'} color={'#D1D0D2'} />
+const ArrowRight = ({ color }: { color: string }) => (
+  <FontAwesome size={12} name={'arrow-right'} color={color} />
+)
 
 const PredictionControls = () => {
   return <Switch />

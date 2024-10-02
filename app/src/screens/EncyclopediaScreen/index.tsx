@@ -41,26 +41,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
   },
-  screen: {
-    flex: 1,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 8,
-    marginBottom: 8,
-    borderWidth: 1,
-    height: 50,
-    borderColor: '#ccc',
-    borderRadius: 12,
-    backgroundColor: '#fff',
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#fff',
-    color: 'black',
-  },
   spacer: {
     height: 200,
   },

@@ -11,6 +11,5 @@ const styles = StyleSheet.create({
   vr: {
     height: '100%',
     width: 1,
-    backgroundColor: '#f0f0f0',
   },
 })

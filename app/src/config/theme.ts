@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native'
 import { AvatarName } from '../resources/translations'
 
-export const starColor = '#F6AC3F'
-
 export const globalStyles = StyleSheet.create({
   shadow: {
     shadowColor: '#000',

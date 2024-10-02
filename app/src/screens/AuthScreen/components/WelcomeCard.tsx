@@ -18,7 +18,7 @@ export const WelcomeCard = ({ icon, subtitle, description }: WelcomeCardProps) =
     <View style={[styles.page, { backgroundColor }]}>
       <View style={styles.welcomeContainer}>
         <Image source={assets.static.launch_icon} style={styles.logo} resizeMode={'contain'} />
-        <Text style={[styles.title, { color: palette.danger.base }]}>auth_welcome</Text>
+        <Text style={[styles.title, { color: palette.danger.text }]}>auth_welcome</Text>
       </View>
 
       <DisplayButton status={'primary'} style={styles.button}>

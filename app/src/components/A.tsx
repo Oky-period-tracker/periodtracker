@@ -1,7 +1,8 @@
 import React from 'react'
-import { Platform, StyleProp, StyleSheet, TextProps, TextStyle } from 'react-native'
+import { Platform, StyleProp, TextProps, TextStyle } from 'react-native'
 import * as Linking from 'expo-linking'
 import { Text } from './Text'
+import { useColor } from '../hooks/useColor'
 
 export const A = ({
   href,
@@ -15,6 +16,8 @@ export const A = ({
   textStyle?: StyleProp<TextStyle>
   enableTranslate?: boolean
 }) => {
+  const { linkColor } = useColor()
+
   const onPressLink = () => {
     if (href) {
       openURL(href)
@@ -30,7 +33,7 @@ export const A = ({
   return (
     <Text
       onPress={onPressLink}
-      style={[styles.text, style]}
+      style={[{ color: linkColor }, style]}
       enableTranslate={enableTranslate}
       {...props}
     />
@@ -50,9 +53,3 @@ const openURL = (href: string, target = '_blank') => {
 
   Linking.openURL(url)
 }
-
-const styles = StyleSheet.create({
-  text: {
-    color: '#28b9cb',
-  },
-})

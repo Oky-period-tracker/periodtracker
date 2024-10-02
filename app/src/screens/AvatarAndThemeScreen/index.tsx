@@ -61,7 +61,7 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
   return (
     <Screen style={styles.screen}>
       {isInitialSelection && (
-        <Text style={[styles.title, { color: palette.secondary.base }]}>
+        <Text style={[styles.title, { color: palette.secondary.text }]}>
           avatar_amp_themes_login
         </Text>
       )}
@@ -93,7 +93,7 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
               >
                 <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
                 <Text
-                  style={[styles.name, { color: palette.secondary.base }]}
+                  style={[styles.name, { color: palette.secondary.text }]}
                   enableTranslate={false}
                 >
                   {avatar}
@@ -130,7 +130,7 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
                   style={[styles.themeImage, { backgroundColor, borderColor: backgroundColor }]}
                 />
                 <Text
-                  style={[styles.name, { color: palette.secondary.base }]}
+                  style={[styles.name, { color: palette.secondary.text }]}
                   enableTranslate={false}
                 >
                   {theme}

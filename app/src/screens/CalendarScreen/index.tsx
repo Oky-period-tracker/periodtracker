@@ -40,7 +40,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const date = moment(selected)
   const dataEntry = usePredictDay(date)
 
-  const { backgroundColor } = useColor()
+  const { palette, backgroundColor } = useColor()
 
   const [choiceModalVisible, toggleChoiceModalVisible] = useToggle()
   const [dayModalVisible, toggleDayModal] = useToggle()
@@ -98,7 +98,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const messageOpacity = message ? 1 : 0
 
   const theme: CalendarProps['theme'] = {
-    monthTextColor: '#f49200',
+    monthTextColor: palette.secondary.text,
     textMonthFontSize: 26,
     textMonthFontWeight: 'bold',
     calendarBackground: backgroundColor,

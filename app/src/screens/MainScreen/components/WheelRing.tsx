@@ -113,7 +113,7 @@ const getSegmentColors = (palette: Palette, status: PaletteStatus, appearance: A
   if (status === 'danger' && appearance === 'outline') {
     return {
       border: palette.danger.base,
-      fill: palette.basic.highlight,
+      fill: '#fff',
     }
   }
   if (status === 'danger') {

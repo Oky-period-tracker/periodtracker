@@ -32,6 +32,7 @@ function MainNavigator() {
       minHeight: 60,
       padding: IS_IOS ? 8 : 0,
       backgroundColor: navColor,
+      borderTopColor: borderColor,
       paddingBottom: insets.bottom,
     },
   }

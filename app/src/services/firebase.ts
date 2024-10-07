@@ -10,6 +10,7 @@ import { Platform } from 'react-native'
 const isExpoGo = Constants?.executionEnvironment === 'storeClient'
 const isWeb = Platform.OS === 'web'
 
+const shouldImportRNF = !isExpoGo && !isWeb
 
 let analytics:
   | ReactNativeFirebase.FirebaseModuleWithStatics<
@@ -19,8 +20,7 @@ let analytics:
   | undefined
 
 try {
-  if (!isExpoGo || isWeb) {
-    console.log("analytics init")
+  if (shouldImportRNF) {
     analytics = require('@react-native-firebase/analytics').default
   }
 } catch (e) {
@@ -35,11 +35,11 @@ let crashlytics:
   | undefined
 
 try {
-  if (!isExpoGo || isWeb) {
-    console.log('crash init')
+  if (shouldImportRNF) {
     crashlytics = require('@react-native-firebase/crashlytics').default
+
     // Enable this to check crashlytics is working or not
-    // crashlytics?.().crash();
+    crashlytics?.().crash()
   }
 } catch (e) {
   //
@@ -53,7 +53,7 @@ let messaging:
   | undefined
 
 try {
-  if (!isExpoGo || isWeb) {
+  if (shouldImportRNF) {
     messaging = require('@react-native-firebase/messaging').default
   }
 } catch (e) {
@@ -61,4 +61,3 @@ try {
 }
 
 export { analytics, crashlytics, messaging }
-

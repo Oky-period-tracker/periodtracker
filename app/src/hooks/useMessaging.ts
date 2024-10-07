@@ -1,9 +1,20 @@
 import React from 'react'
-import { PermissionsAndroid } from 'react-native'
+import { PermissionsAndroidStatic } from 'react-native'
 import { useSelector } from '../redux/useSelector'
 import { currentLocaleSelector } from '../redux/selectors'
 import { IS_ANDROID } from '../services/device'
 import { messaging } from '../services/firebase'
+
+let PermissionsAndroid: PermissionsAndroidStatic | undefined
+
+try {
+  if (IS_ANDROID) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    PermissionsAndroid = require('react-native').PermissionsAndroid
+  }
+} catch (e) {
+  //
+}
 
 export const useMessaging = () => {
   const locale = useSelector(currentLocaleSelector)
@@ -34,7 +45,7 @@ const requestPermission = async () => {
     return false
   }
 
-  if (IS_ANDROID) {
+  if (IS_ANDROID && PermissionsAndroid) {
     const alreadyGranted = await PermissionsAndroid.check(
       PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
     )

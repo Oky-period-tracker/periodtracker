@@ -88,11 +88,11 @@ export const aboutContent = (state: ReduxState) => {
 }
 
 export const allSurveysSelector = (state: ReduxState) => {
-  return s(state)?.allSurveys
+  return s(state)?.allSurveys ?? []
 }
 
 export const completedSurveysSelector = (state: ReduxState) => {
-  return s(state)?.completedSurveys
+  return s(state)?.completedSurveys ?? []
 }
 
 export const aboutBannerSelector = (state: ReduxState) => {

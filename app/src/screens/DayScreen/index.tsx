@@ -8,10 +8,10 @@ import { useSelector } from '../../redux/useSelector'
 import { allSurveysSelector, completedSurveysSelector } from '../../redux/selectors'
 
 const DayScreen: ScreenComponent<'Day'> = (props) => {
-  const allSurveys = useSelector(allSurveysSelector)
+  const allSurveys = useSelector(allSurveysSelector) ?? []
   const allSurveysIds = allSurveys.map((item) => item.id)
 
-  const completedSurveys = useSelector(completedSurveysSelector)
+  const completedSurveys = useSelector(completedSurveysSelector) ?? []
   const completedSurveyIds = completedSurveys.map((item) => item.id)
 
   const incompleteSurveyIds = allSurveysIds.filter((item) => !completedSurveyIds.includes(item))

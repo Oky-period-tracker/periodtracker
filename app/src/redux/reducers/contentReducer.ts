@@ -112,19 +112,25 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
     case 'UPDATE_ALL_SURVEYS_CONTENT':
       return {
         ...state,
-        allSurveys: action.payload.allSurveys,
+        allSurveys: Array.isArray(action.payload.allSurveys) ? action.payload.allSurveys : [],
       }
 
     case 'UPDATE_COMPLETED_SURVEYS':
       return {
         ...state,
-        completedSurveys: action.payload.completedSurveys,
+        completedSurveys: Array.isArray(action.payload.completedSurveys)
+          ? action.payload.completedSurveys
+          : [],
       }
 
     case 'ANSWER_SURVEY': {
-      const allSurveys = state.allSurveys.filter((item) => item.id !== action.payload.id)
+      const allSurveys = Array.isArray(state.allSurveys)
+        ? state.allSurveys.filter((item) => item.id !== action.payload.id)
+        : []
 
-      const completedSurveys = [...state.completedSurveys, { id: action.payload.id }]
+      const completedSurveys = Array.isArray(state.completedSurveys)
+        ? [...state.completedSurveys, { id: action.payload.id }]
+        : [{ id: action.payload.id }]
 
       return {
         ...state,

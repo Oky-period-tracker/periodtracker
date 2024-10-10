@@ -21,7 +21,7 @@ index fcd4a8a..de6e554 100644
    jsi::Runtime &rnRuntime = *rnRuntime_;
    WorkletRuntimeCollector::install(rnRuntime);
 -  auto isReducedMotion = getIsReducedMotion();
-+  auto isReducedMotion = false getIsReducedMotion();
++  auto isReducedMotion = false; // getIsReducedMotion();
    RNRuntimeDecorator::decorate(
        rnRuntime, nativeReanimatedModule_, isReducedMotion);
  #ifndef NDEBUG
@@ -33,7 +33,7 @@ index fcd4a8a..de6e554 100644
 -  return method(javaPart_.get());
 +  // static const auto method = getJniMethod<jboolean()>("getIsReducedMotion");
 +  // return method(javaPart_.get());
-+  return false
++  return false;
  }
  
  void NativeProxy::registerNatives() {
@@ -55,7 +55,7 @@ index 427b6c8..03ee7e2 100644
 +    //     Settings.Global.getString(mContentResolver, Settings.Global.TRANSITION_ANIMATION_SCALE);
 +    // float parsedValue = rawValue != null ? Float.parseFloat(rawValue) : 1f;
 +    // return parsedValue == 0f;
-+    return false
++    return false;
    }
  
    @DoNotStrip
@@ -68,10 +68,10 @@ index 4148ea5..e7db97d 100644
  {
  #if __has_include(<UIKit/UIAccessibility.h>)
 -  auto isReducedMotion = UIAccessibilityIsReduceMotionEnabled();
-+  auto isReducedMotion = false // UIAccessibilityIsReduceMotionEnabled();
++  auto isReducedMotion = false; // UIAccessibilityIsReduceMotionEnabled();
  #else
 -  auto isReducedMotion = NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
-+  auto isReducedMotion = false // NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
++  auto isReducedMotion = false; // NSWorkspace.sharedWorkspace.accessibilityDisplayShouldReduceMotion;
  #endif
    WorkletRuntimeCollector::install(rnRuntime);
    RNRuntimeDecorator::decorate(rnRuntime, nativeReanimatedModule, isReducedMotion);
@@ -89,7 +89,7 @@ index 812f2e8..36d5419 100644
 +  // return isWeb() ? isWindowAvailable() ?
 +  // // @ts-ignore Fallback if `window` is undefined.
 +  // !window.matchMedia('(prefers-reduced-motion: no-preference)').matches : false : !!global._REANIMATED_IS_REDUCED_MOTION;
-+  return false
++  return false;
  }
  //# sourceMappingURL=PlatformChecker.js.map
 \ No newline at end of file
@@ -103,7 +103,7 @@ index 92c571e..701f8ed 100644
  export function useReducedMotion() {
 -  return IS_REDUCED_MOTION;
 +  // return IS_REDUCED_MOTION;
-+  return false
++  return false;
  }
  //# sourceMappingURL=useReducedMotion.js.map
 \ No newline at end of file
@@ -127,7 +127,7 @@ index bc22b42..b747e80 100644
 +  //       !window.matchMedia('(prefers-reduced-motion: no-preference)').matches
 +  //     : false
 +  //   : !!(global as localGlobal)._REANIMATED_IS_REDUCED_MOTION;
-+  return false
++  return false;
  }
 diff --git a/node_modules/react-native-reanimated/src/reanimated2/hook/useReducedMotion.ts b/node_modules/react-native-reanimated/src/reanimated2/hook/useReducedMotion.ts
 index 076de31..018fa79 100644
@@ -139,5 +139,5 @@ index 076de31..018fa79 100644
  export function useReducedMotion() {
 -  return IS_REDUCED_MOTION;
 +  // return IS_REDUCED_MOTION;
-+  return false
++  return false;
  }

@@ -13,7 +13,8 @@
     "podinstall": "cd ios; pod install; cd ..",
     "reverse-ports": "adb reverse tcp:3000 tcp:3000 && adb reverse tcp:5000 tcp:5000 && adb reverse tcp:8000 tcp:8000 && adb reverse tcp:8080 tcp:8080 && adb reverse tcp:8081 tcp:8081",
     "remove-unused-assets": "ts-node --transpile-only removeUnusedAssets.ts",
-    "rm": "shx rm -rf node_modules"
+    "rm": "shx rm -rf node_modules",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
@@ -74,6 +75,8 @@
     "eslint-plugin-react": "^7.34.2",
     "fs-extra": "^11.2.0",
     "globals": "^15.6.0",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "shx": "^0.3.3",
     "ts-node": "10.9.2",
     "typescript-eslint": "^7.13.0"

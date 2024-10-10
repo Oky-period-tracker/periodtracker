@@ -10,7 +10,6 @@ import {
   runOnJS,
   SharedValue,
   withSpring,
-  ReduceMotion,
 } from 'react-native-reanimated'
 import _ from 'lodash'
 import { useToggle } from '../../hooks/useToggle'
@@ -63,11 +62,6 @@ export interface DayScrollContext {
   toggleDayModal: () => void
 }
 
-// Override device reduce motion setting
-const reanimatedConfig = {
-  reduceMotion: ReduceMotion.Never,
-}
-
 const RESET_DURATION = 8000
 const SCROLL_SPEED_MULTIPLIER = 2
 const SETTLE_DURATION = 350
@@ -75,7 +69,6 @@ const SELECTED_SCALE = 1.2
 const SPRING_CONFIG = {
   damping: 5,
   stiffness: 300,
-  ...reanimatedConfig,
 }
 
 const getInitialState = (index: number) => {
@@ -250,11 +243,11 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
       totalOffset.value = 0
       disabled.value = false
 
-      translationX.value = withTiming(INITIAL_X, reanimatedConfig)
-      totalTranslationX.value = withTiming(INITIAL_X, reanimatedConfig)
+      translationX.value = withTiming(INITIAL_X)
+      totalTranslationX.value = withTiming(INITIAL_X)
 
-      rotationAngle.value = withTiming(0, reanimatedConfig)
-      totalRotation.value = withTiming(0, reanimatedConfig)
+      rotationAngle.value = withTiming(0)
+      totalRotation.value = withTiming(0)
 
       setState(getInitialState(INITIAL_INDEX))
       isActive.value = false
@@ -344,32 +337,28 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     // === Settle Carousel === //
     const endX = totalTranslationX.value + displacement
     const endPosition = calculateClosestCardPosition(endX)
-    translationX.value = withTiming(endPosition, { duration: SETTLE_DURATION, ...reanimatedConfig })
+    translationX.value = withTiming(endPosition, { duration: SETTLE_DURATION })
     totalTranslationX.value = endPosition
 
     // === Settle Wheel === //
     const angle = calculateRotationAngle(displacement)
     const endAngle = calculateClosestSegmentAngle(totalRotation.value + angle)
     totalRotation.value = endAngle
-    rotationAngle.value = withTiming(
-      endAngle,
-      { duration: SETTLE_DURATION, ...reanimatedConfig },
-      () => {
-        // === Spring Scale === //
-        selectedScale.value = withSpring(
-          SELECTED_SCALE,
-          SPRING_CONFIG,
-          // === Finished - Update state === //
-          (finished) => {
-            if (finished) {
-              disabled.value = false
-              runOnJS(handleInfiniteData)(change)
-              runOnJS(setIsDragging)(false)
-            }
-          },
-        )
-      },
-    )
+    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION }, () => {
+      // === Spring Scale === //
+      selectedScale.value = withSpring(
+        SELECTED_SCALE,
+        SPRING_CONFIG,
+        // === Finished - Update state === //
+        (finished) => {
+          if (finished) {
+            disabled.value = false
+            runOnJS(handleInfiniteData)(change)
+            runOnJS(setIsDragging)(false)
+          }
+        },
+      )
+    })
   }
 
   const carouselPanGesture = Gesture.Pan()

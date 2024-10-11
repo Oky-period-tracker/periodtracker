@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     marginBottom: 16,
+    flex: 1,
   },
   button: {
     height: 80,

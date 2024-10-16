@@ -1,36 +1,47 @@
-import _ from 'lodash'
 import { combineReducers } from 'redux'
 import { Actions } from '../types'
 
-import { analyticsReducer } from './analyticsReducer'
-import { answerReducer } from './answerReducer'
-import { appReducer } from './appReducer'
-import { authReducer } from './authReducer'
-import { contentReducer } from './contentReducer'
-import { predictionReducer } from './predictionReducer'
-import { helpCenterReducer } from './helpCenterReducer'
+import { analyticsReducer, AnalyticsState } from './analyticsReducer'
+import { answerReducer, AnswerState } from './answerReducer'
+import { appReducer, AppState } from './appReducer'
+import { authReducer, AuthState } from './authReducer'
+import { contentReducer, ContentState } from './contentReducer'
+import { predictionReducer, PredictionState } from './predictionReducer'
+import { helpCenterReducer, HelpCenterState } from './helpCenterReducer'
+import { userReducer as defaultUserReducer, UserState } from './userReducer'
+import { RehydrateAction } from 'redux-persist'
+import { PersistPartial } from 'redux-persist/es/persistReducer'
 
-const reducer = combineReducers({
-  analytics: analyticsReducer,
-  answer: answerReducer,
-  app: appReducer,
-  auth: authReducer,
-  content: contentReducer,
-  prediction: predictionReducer,
-  helpCenters: helpCenterReducer,
-  // Optional Modules
-  // flower: flowerReducer, TODO: Flower state should be saved per user
-})
-
-// @ts-expect-error TODO:
-export function rootReducer(state, action: Actions) {
-  switch (action.type) {
-    case 'LOGOUT':
-      return reducer(_.pick(state, 'app', 'content', 'answer'), action)
-
-    default:
-      return reducer(state, action)
-  }
+export type ReduxState = {
+  analytics: AnalyticsState
+  answer: AnswerState
+  app: AppState
+  auth: AuthState
+  content: ContentState
+  prediction: PredictionState
+  helpCenters: HelpCenterState
+  user: UserState
 }
 
-export type ReduxState = ReturnType<typeof rootReducer>
+export type RootReducerType = (state: ReduxState | undefined, action: Actions) => ReduxState
+
+export const createRootReducer = ({
+  userReducer,
+}: {
+  userReducer: (
+    state: UserState & PersistPartial,
+    action: Actions | RehydrateAction,
+  ) => ReturnType<typeof defaultUserReducer>
+}): RootReducerType => {
+  return combineReducers({
+    analytics: analyticsReducer,
+    answer: answerReducer,
+    app: appReducer,
+    auth: authReducer,
+    content: contentReducer,
+    prediction: predictionReducer,
+    helpCenters: helpCenterReducer,
+    // Private & secure user data
+    user: userReducer,
+  })
+}

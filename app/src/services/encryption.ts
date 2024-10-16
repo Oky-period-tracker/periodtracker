@@ -7,6 +7,32 @@ import CryptoJS from 'crypto-js'
   IV = Initialization vector
 */
 
+// ========== Secure store ========== //
+export const setSecureValue = async (key: string, value: string) => {
+  let success = false
+
+  try {
+    await SecureStore.setItemAsync(key, value)
+    success = true
+  } catch (e) {
+    success = false
+  }
+
+  return success
+}
+
+export const getSecureValue = async (key: string) => {
+  let returnValue = null
+
+  try {
+    returnValue = await SecureStore.getItemAsync(key)
+  } catch (e) {
+    //
+  }
+
+  return returnValue
+}
+
 // ========== Encrypt ========== //
 export const encrypt = (value: string, secret: string): string => {
   const iv = CryptoJS.lib.WordArray.random(16) // 16 bytes
@@ -32,16 +58,16 @@ export const generateSalt = () => {
 }
 
 export const setSalt = async (userId: string, salt: string) => {
-  await SecureStore.setItemAsync(`${userId}_salt`, salt)
+  await setSecureValue(`${userId}_salt`, salt)
 }
 
 export const getSalt = async (userId: string) => {
-  return await SecureStore.getItemAsync(`${userId}_salt`)
+  return await getSecureValue(`${userId}_salt`)
 }
 
 // ========== KEK ========== //
 export const deriveKEK = (password: string, salt: string) => {
-  const iterations = 100000
+  const iterations = 5000
   const keySize = 256 / 32
   const KEK = CryptoJS.PBKDF2(password, salt, {
     iterations,
@@ -58,16 +84,39 @@ export const generateDEK = () => {
 
 export const setDEK = async (userId: string, DEK: string, KEK: string) => {
   const encryptedDEK = encrypt(DEK, KEK)
-  return await SecureStore.setItemAsync(`${userId}_encrypted_dek`, encryptedDEK)
+  return await setSecureValue(`${userId}_encrypted_dek`, encryptedDEK)
 }
 
 export const getDEK = async (userId: string, KEK: string) => {
-  const encryptedDEK = await SecureStore.getItemAsync(`${userId}_encrypted_dek`)
+  const encryptedDEK = await getSecureValue(`${userId}_encrypted_dek`)
 
   if (!encryptedDEK) {
-    throw new Error('Encrypted DEK not found')
+    return undefined
   }
 
   const DEK = decrypt(encryptedDEK, KEK)
+  return DEK
+}
+
+// ========== Auth ========== //
+export const handleEncryptionKeys = async (userId: string, password: string) => {
+  let isNewSalt = false
+  let salt = await getSalt(userId)
+
+  if (!salt) {
+    salt = generateSalt()
+    await setSalt(userId, salt)
+    isNewSalt = true
+  }
+
+  const KEK = deriveKEK(password, salt)
+
+  let DEK = await getDEK(userId, KEK)
+
+  if (isNewSalt || !DEK) {
+    DEK = generateDEK()
+    await setDEK(userId, DEK, KEK)
+  }
+
   return DEK
 }

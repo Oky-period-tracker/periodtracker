@@ -3,18 +3,18 @@ import { Actions } from '../types'
 import { HelpCenterActions } from '../actions'
 // import { HelpCenters } from "../../types";
 
-interface IHelpCenter {
+export interface HelpCenterState {
   savedHelpCenterIds: number[]
 }
 
-const initialState = {
+const initialState: HelpCenterState = {
   savedHelpCenterIds: [],
 }
 
 export function helpCenterReducer(
   state = initialState,
   action: HelpCenterActions | Actions,
-): IHelpCenter {
+): HelpCenterState {
   switch (action.type) {
     case 'REFRESH_STORE': {
       if (!action?.payload?.helpCenters) {
@@ -28,6 +28,10 @@ export function helpCenterReducer(
         ...state,
         ...action.payload.helpCenters,
       }
+    }
+
+    case 'LOGOUT': {
+      return initialState
     }
 
     case 'SET_SAVED_HELP_CENTERS':

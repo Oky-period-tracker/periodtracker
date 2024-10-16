@@ -21,6 +21,10 @@ export function predictionReducer(state = initialState, action: Actions): Predic
       }
     }
 
+    case 'LOGOUT': {
+      return initialState
+    }
+
     case 'SET_PREDICTION_ENGINE_STATE':
       return action.payload.predictionState.toJSON()
 

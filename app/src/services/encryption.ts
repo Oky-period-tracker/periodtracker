@@ -25,6 +25,10 @@ export const decrypt = (encrypted: string, secret: string): string => {
   return decrypted.toString(CryptoJS.enc.Utf8)
 }
 
+export const hash = (value: string) => {
+  return CryptoJS.SHA256(value).toString()
+}
+
 // ========== Salt ========== //
 export const generateSalt = () => {
   const salt = CryptoJS.lib.WordArray.random(128 / 8)
@@ -57,8 +61,17 @@ export const generateDEK = () => {
 }
 
 export const setDEK = async (userId: string, DEK: string, KEK: string) => {
-  const encryptedDEK = encrypt(DEK, KEK)
-  return await setSecureValue(`${userId}_encrypted_dek`, encryptedDEK)
+  try {
+    const hashedDEK = hash(DEK)
+    const encryptedDEK = encrypt(DEK, KEK)
+
+    await setSecureValue(`${userId}_hashed_dek`, hashedDEK)
+    await setSecureValue(`${userId}_encrypted_dek`, encryptedDEK)
+
+    return true
+  } catch (e) {
+    return false
+  }
 }
 
 export const getDEK = async (userId: string, KEK: string) => {
@@ -70,6 +83,12 @@ export const getDEK = async (userId: string, KEK: string) => {
 
   const DEK = decrypt(encryptedDEK, KEK)
   return DEK
+}
+
+export const validateDEK = async (userId: string, DEK: string) => {
+  const hashedDEK = hash(DEK)
+  const storedHash = await getSecureValue(`${userId}_hashed_dek`)
+  return storedHash && hashedDEK === storedHash
 }
 
 // ========== Auth ========== //
@@ -90,6 +109,12 @@ export const handleEncryptionKeys = async (userId: string, password: string) => 
   if (isNewSalt || !DEK) {
     DEK = generateDEK()
     await setDEK(userId, DEK, KEK)
+  }
+
+  const isValid = await validateDEK(userId, DEK)
+
+  if (!isValid) {
+    return null
   }
 
   return DEK

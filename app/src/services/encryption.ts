@@ -1,5 +1,5 @@
 import CryptoJS from 'crypto-js'
-import { getSecureValue, setSecureValue } from './storage'
+import { deleteSecureValue, getSecureValue, setSecureValue } from './storage'
 
 /* 
   DEK = Data encryption key
@@ -89,6 +89,25 @@ export const validateDEK = async (userId: string, DEK: string) => {
   const hashedDEK = hash(DEK)
   const storedHash = await getSecureValue(`${userId}_hashed_dek`)
   return storedHash && hashedDEK === storedHash
+}
+
+// ========== Username to Id mapping ========== //
+export const setUserIdForName = async (username: string, userId: string, oldUsername?: string) => {
+  try {
+    const hashedUsername = hash(username)
+    await setSecureValue(`username_${hashedUsername}`, userId)
+    if (oldUsername) {
+      const hashedOldUsername = hash(oldUsername)
+      await deleteSecureValue(`username_${hashedOldUsername}`)
+    }
+  } catch (e) {
+    return false
+  }
+}
+
+export const getUserIdFromName = async (username: string) => {
+  const hashedUsername = hash(username)
+  return await getSecureValue(`username_${hashedUsername}`)
 }
 
 // ========== Auth ========== //

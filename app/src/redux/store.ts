@@ -39,6 +39,10 @@ export { store, persistor }
 export const replacePersistUserRedux = async (userId: string, password: string) => {
   const secretKey = await handleEncryptionKeys(userId, password)
 
+  if (!secretKey) {
+    return false
+  }
+
   const userPersistConfig = {
     key: userId,
     storage,
@@ -58,6 +62,7 @@ export const replacePersistUserRedux = async (userId: string, password: string) 
 
   store.replaceReducer(persistedRootReducer)
   persistor.persist()
+  return true
 }
 
 export const logOutUserRedux = () => {

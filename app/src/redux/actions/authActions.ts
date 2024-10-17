@@ -19,10 +19,6 @@ export function loginFailure({ error }) {
   return createAction('LOGIN_FAILURE', { error })
 }
 
-export function logoutRequest() {
-  return createAction('LOGOUT_REQUEST')
-}
-
 export function logout() {
   return createAction('LOGOUT')
 }

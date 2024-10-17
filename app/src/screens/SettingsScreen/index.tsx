@@ -7,7 +7,7 @@ import { TouchableRow, TouchableRowProps } from '../../components/TouchableRow'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Switch } from '../../components/Switch'
 import { useDispatch } from 'react-redux'
-import { deleteAccountRequest, logoutRequest } from '../../redux/actions'
+import { deleteAccountRequest, logout } from '../../redux/actions'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
@@ -24,7 +24,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const { palette, backgroundColor } = useColor()
 
   const logOut = () => {
-    dispatch(logoutRequest())
+    dispatch(logout())
     setIsLoggedIn(false)
   }
 

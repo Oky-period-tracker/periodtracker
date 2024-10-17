@@ -83,6 +83,13 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
         ...action.payload,
       }
 
+    case 'LOGOUT':
+      return {
+        ...state,
+        allSurveys: [],
+        completedSurveys: [],
+      }
+
     case 'FETCH_CONTENT_SUCCESS': {
       const shouldUpdateBanner = action.payload.aboutBanner !== undefined
 

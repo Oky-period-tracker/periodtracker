@@ -186,9 +186,6 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
 
     analytics?.().logEvent('deleteAccount')
 
-    yield put(actions.updateAllSurveyContent([])) // TODO: ?
-    yield put(actions.updateCompletedSurveys([])) // TODO: ?
-
     if (user) {
       yield put(actions.logout())
     }
@@ -196,12 +193,6 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     // setLoading(false);
     Alert.alert('error', 'delete_account_fail')
   }
-}
-
-function* onLogoutRequest() {
-  yield put(actions.updateAllSurveyContent([]))
-  yield put(actions.updateCompletedSurveys([]))
-  yield put(actions.logout())
 }
 
 function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPLETION'>) {
@@ -251,7 +242,6 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
 export function* authSaga() {
   yield all([
     fork(periodicallyAttemptConvertGuestAccount),
-    takeLatest('LOGOUT_REQUEST', onLogoutRequest),
     takeLatest('LOGIN_REQUEST', onLoginRequest),
     takeLatest('DELETE_ACCOUNT_REQUEST', onDeleteAccountRequest),
     takeLatest('CREATE_ACCOUNT_REQUEST', onCreateAccountRequest),

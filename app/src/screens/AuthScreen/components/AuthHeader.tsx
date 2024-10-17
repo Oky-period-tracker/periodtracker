@@ -6,7 +6,7 @@ import { useAuthMode } from '../AuthModeContext'
 import { useDispatch } from 'react-redux'
 import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector } from '../../../redux/selectors'
-import { logoutRequest } from '../../../redux/actions'
+import { logout } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
 
@@ -18,7 +18,7 @@ export const AuthHeader = ({ title }: { title: string }) => {
 
   const onClose = () => {
     if (user) {
-      dispatch(logoutRequest())
+      dispatch(logout())
     }
 
     setAuthMode('start')

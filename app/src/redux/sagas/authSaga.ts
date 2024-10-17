@@ -13,6 +13,7 @@ import { fetchNetworkConnectionStatus } from '../../services/network'
 import { PartialStateSnapshot } from '../types/partialStore'
 import { ReduxState } from '../reducers'
 import { analytics } from '../../services/firebase'
+import { deleteUserRedux } from '../store'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -177,6 +178,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
 
   // setLoading(true);
   // TODO: if guest & no app token, just log out to delete local redux state, no DB account to delete so dont send request
+
   try {
     const { name, password } = action.payload
     yield httpClient.deleteUserFromPassword({
@@ -186,8 +188,8 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
 
     analytics?.().logEvent('deleteAccount')
 
-    if (user) {
-      yield put(actions.logout())
+    if (user?.id) {
+      deleteUserRedux(user.id)
     }
   } catch (err) {
     // setLoading(false);

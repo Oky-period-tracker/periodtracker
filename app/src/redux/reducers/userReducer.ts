@@ -25,7 +25,7 @@ export function userReducer(state: UserState = null, action: Actions | Rehydrate
       }
     }
 
-    case 'LOGOUT': {
+    case 'LOGOUT_CLEANUP': {
       return null
     }
 

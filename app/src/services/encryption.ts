@@ -1,37 +1,11 @@
-import * as SecureStore from 'expo-secure-store'
 import CryptoJS from 'crypto-js'
+import { getSecureValue, setSecureValue } from './storage'
 
 /* 
   DEK = Data encryption key
   KEK = Key encryption key
   IV = Initialization vector
 */
-
-// ========== Secure store ========== //
-export const setSecureValue = async (key: string, value: string) => {
-  let success = false
-
-  try {
-    await SecureStore.setItemAsync(key, value)
-    success = true
-  } catch (e) {
-    success = false
-  }
-
-  return success
-}
-
-export const getSecureValue = async (key: string) => {
-  let returnValue = null
-
-  try {
-    returnValue = await SecureStore.getItemAsync(key)
-  } catch (e) {
-    //
-  }
-
-  return returnValue
-}
 
 // ========== Encrypt ========== //
 export const encrypt = (value: string, secret: string): string => {

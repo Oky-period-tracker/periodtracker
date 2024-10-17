@@ -30,7 +30,7 @@ export function helpCenterReducer(
       }
     }
 
-    case 'LOGOUT': {
+    case 'LOGOUT_CLEANUP': {
       return initialState
     }
 

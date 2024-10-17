@@ -21,7 +21,7 @@ export function predictionReducer(state = initialState, action: Actions): Predic
       }
     }
 
-    case 'LOGOUT': {
+    case 'LOGOUT_CLEANUP': {
       return initialState
     }
 

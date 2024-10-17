@@ -9,7 +9,8 @@ import { createRootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import { userReducer } from './reducers/userReducer'
 import { handleEncryptionKeys } from '../services/encryption'
-import { logout } from './actions'
+import { logoutCleanup } from './actions'
+import { deleteSecureValue, removeAsyncStorageItem } from '../services/storage'
 
 const primaryPersistConfig = {
   version,
@@ -67,6 +68,12 @@ export const logOutUserRedux = () => {
 
   store.replaceReducer(persistedRootReducer)
   persistor.persist()
+  store.dispatch(logoutCleanup())
+}
 
-  store.dispatch(logout())
+export const deleteUserRedux = (userId: string) => {
+  logOutUserRedux()
+  removeAsyncStorageItem(`persist:${userId}`)
+  deleteSecureValue(`${userId}_salt`)
+  deleteSecureValue(`${userId}_encrypted_dek`)
 }

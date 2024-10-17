@@ -102,7 +102,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         user: null,
       }
 
-    case 'LOGOUT':
+    case 'LOGOUT_CLEANUP':
       return {
         ...state,
         appToken: null,

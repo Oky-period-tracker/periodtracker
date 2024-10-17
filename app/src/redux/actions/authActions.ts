@@ -23,6 +23,10 @@ export function logout() {
   return createAction('LOGOUT')
 }
 
+export function logoutCleanup() {
+  return createAction('LOGOUT_CLEANUP')
+}
+
 export function createAccountRequest(payload: User) {
   return createAction('CREATE_ACCOUNT_REQUEST', payload)
 }

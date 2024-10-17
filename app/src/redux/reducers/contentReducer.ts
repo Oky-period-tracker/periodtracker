@@ -83,7 +83,7 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
         ...action.payload,
       }
 
-    case 'LOGOUT':
+    case 'LOGOUT_CLEANUP':
       return {
         ...state,
         allSurveys: [],

@@ -1,39 +1,18 @@
-// import { allSurveysSelectors, allQuizzesSelectors } from './contentSelectors'
-import { allQuizzesSelectors } from './contentSelectors'
+import { allQuizzesSelectors } from '../contentSelectors'
 
 import { Moment } from 'moment'
-import { toShortISO } from '../../services/dateUtils'
+import { toShortISO } from '../../../services/dateUtils'
 import _ from 'lodash'
-import { ReduxState } from '../reducers'
+import { ReduxState } from '../../reducers'
 
-const s = (state: ReduxState) => state.answer
-
-export const surveyHasAnswerSelector = (state: ReduxState, id: string) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return false
-  // @ts-expect-error TODO:
-  return id in s(state)[state.auth.user.id].surveys
-}
-
-// export const surveysWithoutAnswersSelector = (state: ReduxState) => {
-//   return allSurveysSelectors(state).filter(({ id }) => !surveyHasAnswerSelector(state, id))
-// }
+const s = (state: ReduxState) => state.private.answer
 
 export const quizHasAnswerSelector = (state: ReduxState, id: string) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return false
-  // @ts-expect-error TODO:
-  return id in s(state)[state.auth.user.id].quizzes
+  return id in s(state).quizzes
 }
 
-// Had a type error here had to add any to avoid
-// TODO:
-// eslint-disable-next-line
-export const quizAnswerByDate: any = (state: ReduxState, date: Moment) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return null
-  // @ts-expect-error TODO:
-  return Object.values(s(state)[state.auth.user.id].quizzes).filter(
+export const quizAnswerByDate = (state: ReduxState, date: Moment) => {
+  return Object.values(s(state).quizzes).filter(
     ({ utcDateTime }) => utcDateTime === date.toISOString(),
   )[0]
 }
@@ -43,22 +22,15 @@ export const quizzesWithoutAnswersSelector = (state: ReduxState) => {
 }
 
 export const cardAnswerSelector = (state: ReduxState, date: Moment) => {
-  if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
-  if (!s(state)[state.auth.user.id]) return {}
-  return s(state)[state.auth.user.id]?.cards[toShortISO(date)] || {}
+  return s(state)?.cards[toShortISO(date)] || {}
 }
 export const verifyPeriodDaySelectorWithDate = (state: ReduxState, date: Moment) => {
-  if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
-  if (!s(state)[state.auth.user.id]) return {}
-  if (s(state)[state.auth.user.id]?.verifiedDates) {
-    return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)]
+  if (s(state)?.verifiedDates) {
+    return s(state)?.verifiedDates[toShortISO(date)]
   } else return {}
-  // return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)] || {}
 }
 export const allCardAnswersSelector = (state: ReduxState) => {
-  if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
-  if (!s(state)[state.auth.user.id]) return {}
-  return s(state)[state.auth.user.id]?.verifiedDates || {}
+  return s(state)?.verifiedDates || {}
 }
 
 export const notesAnswerSelector = (
@@ -70,16 +42,12 @@ export const notesAnswerSelector = (
     notes: '',
   }
   if (!date) return emptyNotes
-  if (!state?.auth?.user?.id) return emptyNotes
-  if (!s(state)[state.auth.user.id]) return emptyNotes
-  return s(state)[state.auth.user.id].notes[toShortISO(date)] || emptyNotes
+  if (!s(state)) return emptyNotes
+  return s(state)?.notes?.[toShortISO(date)] || emptyNotes
 }
 
 export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDate: Moment) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return {}
-  // @ts-expect-error TODO:
-  const dates = Object.keys(s(state)[state.auth.user.id].cards)
+  const dates = Object.keys(s(state).cards)
   const filteredDates = dates.filter((item) => {
     return (
       parseInt(item, 10) > parseInt(startDate.format('YYYYMMDD'), 10) &&
@@ -90,7 +58,7 @@ export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDa
   // This creates an array of all the selected moods (now that there are multiple)
   const moodsInDateRange = filteredDates.reduce((acc, filteredDate) => {
     // @ts-expect-error TODO:
-    return acc.concat(s(state)[state.auth.user.id].cards[filteredDate].mood)
+    return acc.concat(s(state)?.cards?.[filteredDate]?.mood)
   }, [])
 
   // This counts occurrences of each item
@@ -98,7 +66,7 @@ export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDa
 
   const bodyInDateRange = filteredDates.reduce((acc, filteredDate) => {
     // @ts-expect-error TODO:
-    return acc.concat(s(state)[state.auth.user.id].cards[filteredDate].body)
+    return acc.concat(s(state)?.cards?.[filteredDate]?.body)
   }, [])
 
   const bodyCountedObject = _.countBy(bodyInDateRange, (body) => body)
@@ -106,7 +74,7 @@ export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDa
   const activityInDateRange = filteredDates.reduce((acc, filteredDate) => {
     return acc.concat(
       // @ts-expect-error TODO:
-      s(state)[state.auth.user.id].cards[filteredDate].activity,
+      s(state)?.cards?.[filteredDate]?.activity,
     )
   }, [])
 
@@ -114,7 +82,7 @@ export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDa
 
   const flowInDateRange = filteredDates.reduce((acc, filteredDate) => {
     // @ts-expect-error TODO:
-    return acc.concat(s(state)[state.auth.user.id].cards[filteredDate].flow)
+    return acc.concat(s(state)?.cards?.[filteredDate]?.flow)
   }, [])
 
   const flowCountedObject = _.countBy(flowInDateRange, (flow) => flow)

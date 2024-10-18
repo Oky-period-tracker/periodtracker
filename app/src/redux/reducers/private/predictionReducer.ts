@@ -1,9 +1,6 @@
-// TODO:
-// eslint-disable-next-line
-// @ts-nocheck
-import { PredictionSerializableState } from '../../prediction'
+import { PredictionSerializableState } from '../../../prediction'
 
-import { Actions } from '../types/index'
+import { Actions } from '../../types/index'
 
 export type PredictionState = PredictionSerializableState | null
 
@@ -29,12 +26,14 @@ export function predictionReducer(state = initialState, action: Actions): Predic
       return action.payload.predictionState.toJSON()
 
     case 'SMART_PREDICTION_FAILURE':
+      // @ts-expect-error TODO:
       return {
         ...state,
       }
 
     case 'USER_SET_FUTURE_PREDICTION_STATE_ACTIVE':
     case 'SET_FUTURE_PREDICTION_STATE_ACTIVE':
+      // @ts-expect-error TODO:
       return {
         ...state,
         futurePredictionStatus: action.payload.isFuturePredictionActive,
@@ -44,6 +43,7 @@ export function predictionReducer(state = initialState, action: Actions): Predic
       }
 
     case 'SET_ACTUAL_STARTDATE':
+      // @ts-expect-error TODO:
       return {
         ...state,
         actualCurrentStartDate: null,

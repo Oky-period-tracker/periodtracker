@@ -1,5 +1,5 @@
 import { createAction } from '../helpers'
-import { User } from '../reducers/authReducer'
+import { User } from '../reducers/private/userReducer'
 
 // @ts-expect-error TODO:
 export function loginRequest({ name, password }) {

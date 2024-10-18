@@ -1,5 +1,5 @@
 import { ReduxState } from '../reducers'
-import { VerifiedDates } from '../reducers/answerReducer'
+import { LegacyVerifiedDates } from '../reducers/legacy/legacyAnswerReducer'
 
 /*  
     Please note: 
@@ -9,7 +9,7 @@ import { VerifiedDates } from '../reducers/answerReducer'
 export interface PartialStateSnapshot {
   app?: ReduxState['app']
   prediction?: ReduxState['prediction']
-  verifiedDates?: VerifiedDates // Not stored top level in redux
+  verifiedDates?: LegacyVerifiedDates // Not stored top level in redux
   // Optional
   helpCenters?: ReduxState['helpCenters']
 }

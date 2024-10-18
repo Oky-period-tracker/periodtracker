@@ -1,9 +1,7 @@
-import { createAction } from '../helpers'
+import { createAction } from '../../helpers'
 import { Moment } from 'moment'
-import { CardName, DailyCard } from '../../types'
-import { AnswerForUserState } from '../reducers/answerReducer'
-import { User } from '../reducers/authReducer'
-import { SurveyQuestionAnswer } from '../../core/types'
+import { CardName, DailyCard } from '../../../types'
+import { SurveyQuestionAnswer } from '../../../core/types'
 
 export function answerSurvey(payload: {
   id: string
@@ -60,12 +58,4 @@ export function answerNotesCard(payload: {
 
 export function shareApp() {
   return createAction('SHARE_APP')
-}
-
-export function migrateAnswerData(payload: {
-  userId: User['id']
-  key: string
-  data: AnswerForUserState
-}) {
-  return createAction('MIGRATE_ANSWER_DATA', payload)
 }

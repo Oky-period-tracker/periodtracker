@@ -1,5 +1,5 @@
-import { createAction } from '../helpers'
-import { PredictionState } from '../../prediction'
+import { createAction } from '../../helpers'
+import { PredictionState } from '../../../prediction'
 
 export function setPredictionEngineState(predictionState: PredictionState) {
   return createAction('SET_PREDICTION_ENGINE_STATE', { predictionState })

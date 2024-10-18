@@ -7,7 +7,7 @@ import { version } from './version'
 import { config } from '../resources/redux'
 import { createRootReducer } from './reducers'
 import { rootSaga } from './sagas'
-import { userReducer } from './reducers/userReducer'
+import { privateReducer } from './reducers/privateReducer'
 import { handleEncryptionKeys } from '../services/encryption'
 import { logoutCleanup } from './actions'
 import { deleteSecureValue, removeAsyncStorageItem } from '../services/storage'
@@ -21,10 +21,10 @@ const primaryPersistConfig = {
       secretKey: config.REDUX_ENCRYPT_KEY,
     }),
   ],
-  blacklist: ['user'],
+  blacklist: ['private'],
 }
 
-const persistedReducer = persistReducer(primaryPersistConfig, createRootReducer({ userReducer }))
+const persistedReducer = persistReducer(primaryPersistConfig, createRootReducer({ privateReducer }))
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -36,14 +36,14 @@ sagaMiddleware.run(rootSaga)
 
 export { store, persistor }
 
-export const replacePersistUserRedux = async (userId: string, password: string) => {
+export const replacePersistPrivateRedux = async (userId: string, password: string) => {
   const secretKey = await handleEncryptionKeys(userId, password)
 
   if (!secretKey) {
     return false
   }
 
-  const userPersistConfig = {
+  const privatePersistConfig = {
     key: userId,
     storage,
     transforms: [
@@ -53,11 +53,11 @@ export const replacePersistUserRedux = async (userId: string, password: string) 
     ],
   }
 
-  const persistedUserReducer = persistReducer(userPersistConfig, userReducer)
+  const persistedUserReducer = persistReducer(privatePersistConfig, privateReducer)
 
   const persistedRootReducer = persistReducer(
     primaryPersistConfig,
-    createRootReducer({ userReducer: persistedUserReducer }),
+    createRootReducer({ privateReducer: persistedUserReducer }),
   )
 
   store.replaceReducer(persistedRootReducer)
@@ -68,7 +68,7 @@ export const replacePersistUserRedux = async (userId: string, password: string) 
 export const logOutUserRedux = () => {
   const persistedRootReducer = persistReducer(
     primaryPersistConfig,
-    createRootReducer({ userReducer }),
+    createRootReducer({ privateReducer }),
   )
 
   store.replaceReducer(persistedRootReducer)

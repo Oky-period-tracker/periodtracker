@@ -1,7 +1,5 @@
-// import { HelpCenters } from "@oky/core";
-import { Actions } from '../types'
-import { HelpCenterActions } from '../actions'
-// import { HelpCenters } from "../../types";
+import { Actions } from '../../types'
+import { HelpCenterActions } from '../../actions'
 
 export interface HelpCenterState {
   savedHelpCenterIds: number[]

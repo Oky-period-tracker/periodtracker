@@ -2,7 +2,7 @@ import { REHYDRATE, RehydrateAction } from 'redux-persist'
 import _ from 'lodash'
 import { Actions } from '../types/index'
 
-export interface User {
+export interface LegacyUser {
   id: string
   name: string
   dateOfBirth: string
@@ -29,23 +29,25 @@ export interface UserMetadata {
 }
 
 export interface AuthState {
-  appToken: string | null
   error: string | number | null
   isCreatingAccount: boolean
   isLoggingIn: boolean
   loginFailedCount: number
   connectAccountAttempts: number
-  user: User | null
+  // Legacy
+  user: LegacyUser | null
+  appToken: string | null
 }
 
 const initialState: AuthState = {
-  appToken: null,
   error: null,
   isCreatingAccount: false,
   isLoggingIn: false,
   loginFailedCount: 0,
   connectAccountAttempts: 0,
+  // Legacy
   user: null,
+  appToken: null,
 }
 
 export function authReducer(state = initialState, action: Actions | RehydrateAction): AuthState {
@@ -68,38 +70,25 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
     case 'LOGIN_SUCCESS':
       return {
         ...state,
-        // @ts-expect-error TODO:
-        appToken: action.payload.appToken,
         error: null,
         isLoggingIn: false,
         loginFailedCount: 0,
         connectAccountAttempts: 0,
-        user: {
-          ...action.payload.user,
-          isGuest: false,
-        },
       }
 
     case 'LOGIN_SUCCESS_AS_GUEST_ACCOUNT':
       return {
         ...state,
-        appToken: null,
         isLoggingIn: false,
         loginFailedCount: 0,
-        user: {
-          ...action.payload,
-          isGuest: true,
-        },
       }
 
     case 'LOGIN_FAILURE':
       return {
         ...state,
-        appToken: null,
         loginFailedCount: state.loginFailedCount + 1,
         error: action.payload.error,
         isLoggingIn: false,
-        user: null,
       }
 
     case 'LOGOUT_CLEANUP':
@@ -134,13 +123,6 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         ...state,
         connectAccountAttempts: state.connectAccountAttempts + 1,
         isCreatingAccount: false,
-      }
-
-    case 'EDIT_USER':
-      return {
-        ...state,
-        // @ts-expect-error TODO:
-        user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
       }
 
     default:

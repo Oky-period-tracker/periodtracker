@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { all, delay, fork, select, takeLatest } from 'redux-saga/effects'
+import { all, delay, fork, select } from 'redux-saga/effects'
 import { httpClient } from '../../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import { version as storeVersion } from '../version'
@@ -59,22 +59,6 @@ function* syncAppState() {
   }
 }
 
-function* onRequestStoreFirebaseKey() {
-  // TODO:
-  // try {
-  //   if (yield fetchNetworkConnectionStatus()) {
-  //     // no internet connection
-  //     const firebaseToken = yield messaging().getToken();
-  //     yield put(actions.storeFirebaseKey(firebaseToken));
-  //   }
-  // } catch (e) {
-  //   console.error(e);
-  // }
-}
-
 export function* appSaga() {
-  yield all([
-    fork(syncAppState),
-    takeLatest('REQUEST_STORE_FIREBASE_KEY', onRequestStoreFirebaseKey),
-  ])
+  yield all([fork(syncAppState)])
 }

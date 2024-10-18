@@ -1,5 +1,5 @@
-import { createAction } from '../helpers'
-import { ActionsUnion } from '../types/types'
+import { createAction } from '../../helpers'
+import { ActionsUnion } from '../../types/types'
 
 export function setSavedHelpCenters(helpCenterIds: number[]) {
   return createAction('SET_SAVED_HELP_CENTERS', helpCenterIds)

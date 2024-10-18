@@ -8,7 +8,7 @@ import { authReducer, AuthState } from './authReducer'
 import { contentReducer, ContentState } from './contentReducer'
 import { predictionReducer, PredictionState } from './predictionReducer'
 import { helpCenterReducer, HelpCenterState } from './helpCenterReducer'
-import { userReducer as defaultUserReducer, UserState } from './userReducer'
+import { privateReducer as defaultPrivateReducer, PrivateState } from './privateReducer'
 import { RehydrateAction } from 'redux-persist'
 import { PersistPartial } from 'redux-persist/es/persistReducer'
 
@@ -20,18 +20,18 @@ export type ReduxState = {
   content: ContentState
   prediction: PredictionState
   helpCenters: HelpCenterState
-  user: UserState
+  private: PrivateState
 }
 
 export type RootReducerType = (state: ReduxState | undefined, action: Actions) => ReduxState
 
 export const createRootReducer = ({
-  userReducer,
+  privateReducer,
 }: {
-  userReducer: (
-    state: UserState & PersistPartial,
+  privateReducer: (
+    state: PrivateState & PersistPartial,
     action: Actions | RehydrateAction,
-  ) => ReturnType<typeof defaultUserReducer>
+  ) => ReturnType<typeof defaultPrivateReducer>
 }): RootReducerType => {
   return combineReducers({
     analytics: analyticsReducer,
@@ -41,7 +41,6 @@ export const createRootReducer = ({
     content: contentReducer,
     prediction: predictionReducer,
     helpCenters: helpCenterReducer,
-    // Private & secure user data
-    user: userReducer,
+    private: privateReducer,
   })
 }

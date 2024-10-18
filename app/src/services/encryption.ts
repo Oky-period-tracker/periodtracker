@@ -103,45 +103,22 @@ export const checkNameAvailableLocally = async (username: string, isGuest: boole
   }
 }
 
-export const setUserIdForName = async ({
-  username,
-  userId,
-  isGuest,
-  oldUsername,
-}: {
-  username: string
-  userId: string
-  isGuest: boolean
-  oldUsername?: string
-}) => {
-  const suffix = isGuest ? '_guest' : ''
-
+export const setUserIdForName = async (username: string, userId: string, oldUsername?: string) => {
   try {
     const hashedUsername = hash(username)
-    await setSecureValue(`username_${hashedUsername}${suffix}`, userId)
+    await setSecureValue(`username_${hashedUsername}`, userId)
     if (oldUsername) {
       const hashedOldUsername = hash(oldUsername)
-      await deleteSecureValue(`username_${hashedOldUsername}${suffix}`)
+      await deleteSecureValue(`username_${hashedOldUsername}`)
     }
   } catch (e) {
     return false
   }
 }
 
-export const getUserIdFromName = async (username: string, isGuest: boolean) => {
-  const suffix = isGuest ? '_guest' : ''
+export const getUserIdFromName = async (username: string) => {
   const hashedUsername = hash(username)
-  return await getSecureValue(`username_${hashedUsername}${suffix}`)
-}
-
-export const convertGuestNameIdMapping = async (username: string, userId: string) => {
-  try {
-    const hashedUsername = hash(username)
-    await deleteSecureValue(`username_${hashedUsername}_guest`)
-    return await setUserIdForName({ username, userId, isGuest: false })
-  } catch (e) {
-    return false
-  }
+  return await getSecureValue(`username_${hashedUsername}`)
 }
 
 // ========== Auth ========== //

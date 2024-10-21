@@ -8,7 +8,7 @@ import { config } from '../resources/redux'
 import { createRootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import { privateReducer } from './reducers/private/privateReducer'
-import { handleEncryptionKeys } from '../services/encryption'
+import { hash } from '../services/encryption'
 import { logoutCleanup } from './actions'
 import { deleteSecureValue, removeAsyncStorageItem } from '../services/storage'
 
@@ -36,9 +36,7 @@ sagaMiddleware.run(rootSaga)
 
 export { store, persistor }
 
-export const replacePersistPrivateRedux = async (userId: string, password: string) => {
-  const secretKey = await handleEncryptionKeys(userId, password)
-
+export const replacePersistPrivateRedux = async (userId: string, secretKey: string) => {
   if (!secretKey) {
     return false
   }
@@ -76,9 +74,10 @@ export const logOutUserRedux = () => {
   store.dispatch(logoutCleanup())
 }
 
-export const deleteUserRedux = (userId: string) => {
+export const deleteUserRedux = (userId: string, username: string) => {
   logOutUserRedux()
   removeAsyncStorageItem(`persist:${userId}`)
-  deleteSecureValue(`${userId}_salt`)
+  deleteSecureValue(`username_${hash(username)}`)
   deleteSecureValue(`${userId}_encrypted_dek`)
+  deleteSecureValue(`${userId}_salt`)
 }

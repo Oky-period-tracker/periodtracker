@@ -1,14 +1,9 @@
 import CryptoJS from 'crypto-js'
 import { deleteSecureValue, getSecureValue, setSecureValue } from './storage'
 
-/* 
-  DEK = Data encryption key
-  KEK = Key encryption key
-  IV = Initialization vector
-*/
-
 // ========== Encrypt ========== //
 export const encrypt = (value: string, secret: string): string => {
+  // Initialization vector
   const iv = CryptoJS.lib.WordArray.random(16) // 16 bytes
   const encryptedValue = CryptoJS.AES.encrypt(value, secret, { iv }).toString()
   const ivHex = iv.toString(CryptoJS.enc.Hex)
@@ -35,15 +30,15 @@ export const generateSalt = () => {
   return salt.toString(CryptoJS.enc.Hex)
 }
 
-export const setSalt = async (userId: string, salt: string) => {
-  return await setSecureValue(`${userId}_salt`, salt)
+export const setSalt = async (userId: string, salt: string, suffix = '') => {
+  return await setSecureValue(`${userId}_salt${suffix}`, salt)
 }
 
-export const getSalt = async (userId: string) => {
-  return await getSecureValue(`${userId}_salt`)
+export const getSalt = async (userId: string, suffix = '') => {
+  return await getSecureValue(`${userId}_salt${suffix}`)
 }
 
-// ========== KEK ========== //
+// ========== KEK - Key Encryption Key ========== //
 export const deriveKEK = (password: string, salt: string) => {
   const iterations = 5000
   const keySize = 256 / 32
@@ -54,19 +49,19 @@ export const deriveKEK = (password: string, salt: string) => {
   return KEK
 }
 
-// ========== DEK ========== //
+// ========== DEK - Data Encryption Key ========== //
 export const generateDEK = () => {
   const DEK = CryptoJS.lib.WordArray.random(256 / 8) // 256-bit DEK
   return DEK.toString(CryptoJS.enc.Hex)
 }
 
-export const setDEK = async (userId: string, DEK: string, KEK: string) => {
+export const setDEK = async (userId: string, DEK: string, KEK: string, suffix = '') => {
   try {
     const hashedDEK = hash(DEK)
     const encryptedDEK = encrypt(DEK, KEK)
 
     await setSecureValue(`${userId}_hashed_dek`, hashedDEK)
-    await setSecureValue(`${userId}_encrypted_dek`, encryptedDEK)
+    await setSecureValue(`${userId}_encrypted_dek${suffix}`, encryptedDEK)
 
     return true
   } catch (e) {
@@ -74,8 +69,8 @@ export const setDEK = async (userId: string, DEK: string, KEK: string) => {
   }
 }
 
-export const getDEK = async (userId: string, KEK: string) => {
-  const encryptedDEK = await getSecureValue(`${userId}_encrypted_dek`)
+export const getDEK = async (userId: string, KEK: string, suffix = '') => {
+  const encryptedDEK = await getSecureValue(`${userId}_encrypted_dek${suffix}`)
 
   if (!encryptedDEK) {
     return undefined
@@ -85,10 +80,13 @@ export const getDEK = async (userId: string, KEK: string) => {
   return DEK
 }
 
-export const validateDEK = async (userId: string, DEK: string) => {
+export const validateDEK = async (userId: string, DEK: string | undefined) => {
+  if (!DEK) {
+    return false
+  }
   const hashedDEK = hash(DEK)
   const storedHash = await getSecureValue(`${userId}_hashed_dek`)
-  return storedHash && hashedDEK === storedHash
+  return !!storedHash && hashedDEK === storedHash
 }
 
 // ========== Username to Id mapping ========== //
@@ -104,11 +102,13 @@ export const checkNameAvailableLocally = async (username: string) => {
 export const setUserIdForName = async (username: string, userId: string, oldUsername?: string) => {
   try {
     const hashedUsername = hash(username)
-    await setSecureValue(`username_${hashedUsername}`, userId)
+    const saved = await setSecureValue(`username_${hashedUsername}`, userId)
+    let complete = true
     if (oldUsername) {
       const hashedOldUsername = hash(oldUsername)
-      await deleteSecureValue(`username_${hashedOldUsername}`)
+      complete = await deleteSecureValue(`username_${hashedOldUsername}`)
     }
+    return saved && complete
   } catch (e) {
     return false
   }
@@ -117,33 +117,4 @@ export const setUserIdForName = async (username: string, userId: string, oldUser
 export const getUserIdFromName = async (username: string) => {
   const hashedUsername = hash(username)
   return await getSecureValue(`username_${hashedUsername}`)
-}
-
-// ========== Auth ========== //
-export const handleEncryptionKeys = async (userId: string, password: string) => {
-  let isNewSalt = false
-  let salt = await getSalt(userId)
-
-  if (!salt) {
-    salt = generateSalt()
-    await setSalt(userId, salt)
-    isNewSalt = true
-  }
-
-  const KEK = deriveKEK(password, salt)
-
-  let DEK = await getDEK(userId, KEK)
-
-  if (isNewSalt || !DEK) {
-    DEK = generateDEK()
-    await setDEK(userId, DEK, KEK)
-  }
-
-  const isValid = await validateDEK(userId, DEK)
-
-  if (!isValid) {
-    return null
-  }
-
-  return DEK
 }

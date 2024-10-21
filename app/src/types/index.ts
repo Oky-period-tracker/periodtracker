@@ -1,5 +1,7 @@
 export * from './dailyCards'
 
+export type Await<T> = T extends Promise<infer U> ? U : T
+
 export interface User {
   id: string
   name: string

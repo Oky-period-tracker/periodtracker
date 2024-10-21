@@ -36,7 +36,7 @@ export const generateSalt = () => {
 }
 
 export const setSalt = async (userId: string, salt: string) => {
-  await setSecureValue(`${userId}_salt`, salt)
+  return await setSecureValue(`${userId}_salt`, salt)
 }
 
 export const getSalt = async (userId: string) => {
@@ -92,12 +92,10 @@ export const validateDEK = async (userId: string, DEK: string) => {
 }
 
 // ========== Username to Id mapping ========== //
-export const checkNameAvailableLocally = async (username: string, isGuest: boolean) => {
-  const suffix = isGuest ? '_guest' : ''
-
+export const checkNameAvailableLocally = async (username: string) => {
   try {
     const hashedUsername = hash(username)
-    return await getSecureValue(`username_${hashedUsername}${suffix}`)
+    return await getSecureValue(`username_${hashedUsername}`)
   } catch (e) {
     return false
   }

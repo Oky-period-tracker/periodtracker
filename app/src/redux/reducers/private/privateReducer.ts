@@ -7,8 +7,10 @@ import { RehydrateAction } from 'redux-persist'
 import { helpCenterReducer, HelpCenterState } from './helpCenterReducer'
 import { predictionReducer, PredictionState } from './predictionReducer'
 import { answerReducer, AnswerState } from './answerReducer'
+import { lastModifiedReducer } from './lastModifiedReducer'
 
 export type PrivateState = {
+  lastModified: number
   user: UserState
   answer: AnswerState
   prediction: PredictionState
@@ -20,6 +22,7 @@ export const privateReducer: (
   state: PrivateState | undefined,
   action: Actions | RehydrateAction,
 ) => PrivateState = combineReducers({
+  lastModified: lastModifiedReducer,
   user: userReducer,
   answer: answerReducer,
   prediction: predictionReducer,

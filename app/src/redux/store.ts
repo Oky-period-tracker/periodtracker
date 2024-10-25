@@ -74,10 +74,41 @@ export const logOutUserRedux = () => {
   store.dispatch(logoutCleanup())
 }
 
-export const deleteUserRedux = (userId: string, username: string) => {
+export const deleteUserRedux = async (
+  userId: string,
+  username: string, //password: string
+) => {
   logOutUserRedux()
+
+  /* 
+  const { localUserId, DEK } = await localLogin(username, password)
+
+  if (!DEK || !localUserId || localUserId !== userId) {
+    return // TODO: Local validation failed
+  }
+
+  const appToken = ''
+  const onlineSuccess = false
+
+  if (appToken) {
+    try {
+      await httpClient.deleteUserFromPassword({
+        name,
+        password,
+      })
+    } catch (e) {
+      //
+    }
+  }
+
+  if (appToken && !onlineSuccess) {
+    return // ERROR, failed to delete online
+  } */
+
   removeAsyncStorageItem(`persist:${userId}`)
   deleteSecureValue(`username_${hash(username)}`)
   deleteSecureValue(`${userId}_encrypted_dek`)
   deleteSecureValue(`${userId}_salt`)
+
+  // analytics?.().logEvent('deleteAccount')
 }

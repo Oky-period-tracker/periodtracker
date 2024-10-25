@@ -35,16 +35,13 @@ export function settingsReducer(
   action: Actions | RehydrateAction,
 ): SettingsState {
   switch (action.type) {
-    // TODO:
-    // case 'REFRESH_STORE': {
-    //   if (!action?.payload?.private.settings) {
-    //     return state
-    //   }
-    //   return {
-    //     ...state,
-    //     ...action.payload.private.settings,
-    //   }
-    // }
+    case 'SYNC_STORES': {
+      return {
+        ...state,
+        ...(action.payload.oldStore.settings ?? initialState),
+        ...(action.payload.newStore.settings ?? initialState),
+      }
+    }
     case 'SET_THEME':
       return {
         ...state,

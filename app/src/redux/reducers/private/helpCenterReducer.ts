@@ -14,17 +14,11 @@ export function helpCenterReducer(
   action: HelpCenterActions | Actions,
 ): HelpCenterState {
   switch (action.type) {
-    case 'REFRESH_STORE': {
-      if (!action?.payload?.helpCenters) {
-        return {
-          ...initialState,
-          ...state,
-        }
-      }
+    case 'SYNC_STORES': {
       return {
-        ...initialState,
         ...state,
-        ...action.payload.helpCenters,
+        ...(action.payload.oldStore.helpCenters ?? initialState),
+        ...(action.payload.newStore.helpCenters ?? initialState),
       }
     }
 

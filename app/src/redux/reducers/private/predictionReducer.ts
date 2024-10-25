@@ -8,13 +8,12 @@ const initialState: PredictionState = null
 
 export function predictionReducer(state = initialState, action: Actions): PredictionState {
   switch (action.type) {
-    case 'REFRESH_STORE': {
-      if (!action?.payload?.prediction) {
-        return state
-      }
+    case 'SYNC_STORES': {
+      // @ts-expect-error TODO:
       return {
-        ...state,
-        ...action.payload.prediction,
+        ...(state ?? {}),
+        ...(action.payload.oldStore.prediction ?? {}),
+        ...(action.payload.newStore.prediction ?? {}),
       }
     }
 

@@ -27,6 +27,7 @@ function* syncAppState() {
 
     const state: ReduxState = yield select()
     const appState: PartialStateSnapshot = {
+      private: state.private,
       app: state.app,
       prediction: state.prediction,
       verifiedDates: state.answer[currentUser?.id]?.verifiedDates,

@@ -14,64 +14,102 @@ import {
   validateDEK,
 } from './encryption'
 import { replacePersistPrivateRedux } from '../redux/store'
+import { useDispatch } from 'react-redux'
+import { useSelector } from '../redux/useSelector'
+import { LoginResponse } from '../core/api'
+import { privateStoreSelector } from '../redux/selectors/private/privateSelectors'
+import { syncPrivateStores } from '../redux/actions'
 
-export const login = async (name: string, password: string) => {
-  const [localLoginResult, onlineLoginResponse] = await Promise.all([
-    localLogin(name, password),
-    onlineLogin(name, password),
-  ])
+const useSyncPrivateStores = () => {
+  const dispatch = useDispatch()
 
-  const { localUserId, DEK } = localLoginResult
-  const localLoginSuccess = Boolean(localUserId && DEK)
+  return (onlineLoginResponse: LoginResponse | null) => {
+    const localPrivateStore = useSelector(privateStoreSelector)
+    const localLastModified = localPrivateStore.lastModified
 
-  const onlineLoginSuccess = Boolean(onlineLoginResponse)
-  const onlineUserId = onlineLoginResponse?.user.id
+    const onlinePrivateStore = onlineLoginResponse?.store?.appState?.private
 
-  const loginCase = loginCaseReducer({
-    onlineLoginSuccess,
-    onlineUserId,
-    localLoginSuccess,
-    localUserId,
-  })
-
-  if (loginCase === 'success' && localUserId && DEK) {
-    replacePersistPrivateRedux(localUserId, DEK)
-    // TODO: Sync data
-    return
-  }
-
-  if (loginCase === 'success-local' && localUserId && DEK) {
-    replacePersistPrivateRedux(localUserId, DEK)
-    return
-  }
-
-  if (loginCase === 'success-update_local' && onlineUserId) {
-    const postUpdateDEK = await initialiseLocalAccount(name, password, onlineUserId)
-    if (!postUpdateDEK) {
-      // TODO: ?
+    if (!onlinePrivateStore) {
       return
     }
-    replacePersistPrivateRedux(onlineUserId, postUpdateDEK)
-    // TODO: Sync data
-    return
-  }
 
-  if (loginCase === 'success-initialise_local' && onlineUserId) {
-    const initializedDEK = await initialiseLocalAccount(name, password, onlineUserId)
-    if (!initializedDEK) {
-      // TODO: ?
+    const onlineLastModified = onlinePrivateStore?.lastModified
+
+    let stores = {
+      oldStore: onlinePrivateStore,
+      newStore: localPrivateStore,
+    }
+
+    if (onlineLastModified > localLastModified) {
+      stores = {
+        oldStore: localPrivateStore,
+        newStore: onlinePrivateStore,
+      }
+    }
+
+    dispatch(syncPrivateStores(stores))
+  }
+}
+
+export const useLogin = () => {
+  const syncPrivateStores = useSyncPrivateStores()
+
+  return async (name: string, password: string) => {
+    const [localLoginResult, onlineLoginResponse] = await Promise.all([
+      localLogin(name, password),
+      onlineLogin(name, password),
+    ])
+
+    const { localUserId, DEK } = localLoginResult
+    const localLoginSuccess = Boolean(localUserId && DEK)
+
+    const onlineLoginSuccess = Boolean(onlineLoginResponse)
+    const onlineUserId = onlineLoginResponse?.user.id
+
+    const loginCase = loginCaseReducer({
+      onlineLoginSuccess,
+      onlineUserId,
+      localLoginSuccess,
+      localUserId,
+    })
+
+    if (loginCase === 'success' && localUserId && DEK) {
+      replacePersistPrivateRedux(localUserId, DEK)
+      syncPrivateStores(onlineLoginResponse)
       return
     }
-    replacePersistPrivateRedux(onlineUserId, initializedDEK)
-    // TODO: Sync (migrate) data
-    return
-  }
 
-  if (loginCase === 'fail') {
-    return // TODO: Error incorrect username or password
-  }
+    if (loginCase === 'success-local' && localUserId && DEK) {
+      replacePersistPrivateRedux(localUserId, DEK)
+      return
+    }
 
-  // replacePersistPrivateRedux() ?
+    if (loginCase === 'success-update_local' && onlineUserId) {
+      const postUpdateDEK = await initialiseLocalAccount(name, password, onlineUserId)
+      if (!postUpdateDEK) {
+        return // ERROR
+      }
+      replacePersistPrivateRedux(onlineUserId, postUpdateDEK)
+      syncPrivateStores(onlineLoginResponse)
+      return
+    }
+
+    if (loginCase === 'success-initialise_local' && onlineUserId) {
+      const initializedDEK = await initialiseLocalAccount(name, password, onlineUserId)
+      if (!initializedDEK) {
+        return // ERROR
+      }
+      replacePersistPrivateRedux(onlineUserId, initializedDEK)
+      syncPrivateStores(onlineLoginResponse)
+      return
+    }
+
+    if (loginCase === 'fail') {
+      return // ERROR
+    }
+
+    // replacePersistPrivateRedux() ?
+  }
 }
 
 type LoginCase =
@@ -236,7 +274,7 @@ export const localLogin = async (
   }
 }
 
-const onlineLogin = async (name: string, password: string) => {
+export const onlineLogin = async (name: string, password: string) => {
   try {
     const response: Await<ReturnType<typeof httpClient.login>> = await httpClient.login({
       name,

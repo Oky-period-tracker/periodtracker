@@ -1,3 +1,4 @@
+import { PartialStateSnapshot } from '../../redux/types/partialStore'
 import { StaticContent } from '../types'
 
 export interface UserMetadata {
@@ -113,9 +114,7 @@ export interface LoginResponse {
   }
   store: {
     storeVersion: number
-    // TODO:
-    // eslint-disable-next-line
-    appState: any
+    appState: PartialStateSnapshot
   } | null
 }
 

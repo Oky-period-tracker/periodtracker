@@ -42,9 +42,11 @@ const initialState: AnswerState = {
 
 export function answerReducer(state: AnswerState = initialState, action: Actions): AnswerState {
   switch (action.type) {
-    case 'REFRESH_STORE': {
+    case 'SYNC_STORES': {
       return {
         ...state,
+        ...(action.payload.oldStore.answer ?? initialState),
+        ...(action.payload.newStore.answer ?? initialState),
       }
     }
 

@@ -60,29 +60,6 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         ..._.pick(initialState, ['error', 'isLoggingIn', 'loginFailedCount', 'isCreatingAccount']),
       }
 
-    case 'LOGIN_REQUEST':
-      return {
-        ...state,
-        error: null,
-        isLoggingIn: true,
-      }
-
-    case 'LOGIN_SUCCESS':
-      return {
-        ...state,
-        error: null,
-        isLoggingIn: false,
-        loginFailedCount: 0,
-        connectAccountAttempts: 0,
-      }
-
-    case 'LOGIN_SUCCESS_AS_GUEST_ACCOUNT':
-      return {
-        ...state,
-        isLoggingIn: false,
-        loginFailedCount: 0,
-      }
-
     case 'LOGIN_FAILURE':
       return {
         ...state,
@@ -103,26 +80,6 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
       return {
         ...state,
         error: action.payload.error,
-      }
-
-    case 'CREATE_ACCOUNT_REQUEST':
-      return {
-        ...state,
-        isCreatingAccount: true,
-        error: null,
-      }
-
-    case 'CREATE_ACCOUNT_SUCCESS':
-      return {
-        ...state,
-        isCreatingAccount: false,
-      }
-
-    case 'CREATE_ACCOUNT_FAILURE':
-      return {
-        ...state,
-        connectAccountAttempts: state.connectAccountAttempts + 1,
-        isCreatingAccount: false,
       }
 
     default:

@@ -10,7 +10,12 @@ import { User } from '../../redux/reducers/private/userReducer'
 import { httpClient } from '../../services/HttpClient'
 import { useDispatch } from 'react-redux'
 import { editUser } from '../../redux/actions'
-import { formatPassword } from '../../services/auth'
+import {
+  changeLocalAnswer,
+  commitAltAnswer,
+  deleteAltAnswer,
+  formatPassword,
+} from '../../services/auth'
 import { WheelPickerModal } from '../../components/WheelPickerModal'
 import { questionOptions } from '../../config/options'
 import { WheelPickerOption } from '../../components/WheelPicker'
@@ -87,12 +92,31 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
       return
     }
 
+    //  if no appToken and isGuest, just change locally, no http request
+    const onlyChangeLocally = !appToken && currentUser.isGuest
+
+    // Temporarily save new password locally as _alt, and preserve old password
+    const altAnswerSaved = await changeLocalAnswer(
+      currentUser.id,
+      previousSecret,
+      nextSecret,
+      onlyChangeLocally,
+    )
+
+    if (!altAnswerSaved || onlyChangeLocally) {
+      return
+    }
+
     try {
       await sendRequest(previousFormatted, nextFormatted)
+      // Commit to new password locally, overwrite old password, remove _alt
+      await commitAltAnswer(currentUser.id)
       updateReduxState(nextFormatted)
       toggleVisible()
       successAlert()
     } catch (error) {
+      // Revert back to old answer
+      deleteAltAnswer(currentUser.id)
       setPreviousSecret('')
       setNextSecret('')
       failAlert()

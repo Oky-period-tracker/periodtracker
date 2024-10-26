@@ -205,10 +205,10 @@ export const deleteAccount = async (
   removeAsyncStorageItem(`persist:${userId}`)
   deleteSecureValue(`username_${hash(username)}`)
   deleteSecureValue(`${userId}_encrypted_dek`)
-  deleteSecureValue(`${userId}_answer_encrypted_dek`)
+  deleteSecureValue(`${userId}answer__encrypted_dek`)
   deleteSecureValue(`${userId}_hashed_dek`)
   deleteSecureValue(`${userId}_salt`)
-  deleteSecureValue(`${userId}_answer_salt`)
+  deleteSecureValue(`${userId}answer__salt`)
 
   // analytics
   analytics?.().logEvent('deleteAccount')
@@ -405,14 +405,14 @@ export const changeLocalPassword = async (
   newPassword: string,
   preserveOldPassword: boolean,
 ) => {
-  const salt = await getSalt(userId, undefined, '_answer')
+  const salt = await getSalt(userId, undefined, 'answer_')
 
   if (!salt) {
     return false
   }
 
   const KEK = deriveKEK(answer, salt)
-  const DEK = await getDEK(userId, KEK, undefined, '_answer')
+  const DEK = await getDEK(userId, KEK, undefined, 'answer_')
 
   if (!DEK) {
     return false
@@ -453,6 +453,63 @@ export const deleteAltPassword = async (userId: string, alt = 1) => {
   await Promise.all([
     deleteSecureValue(`${userId}_encrypted_dek${suffix}`),
     deleteSecureValue(`${userId}_salt${suffix}`),
+  ])
+}
+
+export const changeLocalAnswer = async (
+  userId: string,
+  oldAnswer: string,
+  newAnswer: string,
+  preserveOldAnswer: boolean,
+) => {
+  const salt = await getSalt(userId, undefined, 'answer_')
+
+  if (!salt) {
+    return false
+  }
+
+  const KEK = deriveKEK(oldAnswer, salt)
+  const DEK = await getDEK(userId, KEK, undefined, 'answer_')
+
+  if (!DEK) {
+    return false
+  }
+
+  // If no suffix, old eDEK is overwritten, old password invalidated
+  const suffix = preserveOldAnswer ? `_1` : ''
+  const newSalt = generateSalt()
+  const savedSalt = await setSalt(userId, newSalt, suffix)
+  const newKEK = deriveKEK(newAnswer, salt)
+  const savedDEK = await setDEK(userId, DEK, newKEK, suffix)
+
+  return savedSalt && savedDEK
+}
+
+export const commitAltAnswer = async (userId: string, alt = 1) => {
+  const suffix = `_${alt}`
+  const altSalt = await getSalt(userId, suffix, 'answer_')
+  const altEncryptedDEK = await getSecureValue(`${userId}_answer_encrypted_dek${suffix}`)
+
+  if (!altSalt || !altEncryptedDEK) {
+    return false
+  }
+
+  const savedSalt = await setSalt(userId, altSalt, 'answer_')
+  const savedEncryptedDEK = await setSecureValue(`${userId}_answer_encrypted_dek`, altEncryptedDEK)
+
+  if (!savedSalt || !savedEncryptedDEK) {
+    return false
+  }
+
+  await deleteAltAnswer(userId, alt)
+  return true
+}
+
+export const deleteAltAnswer = async (userId: string, alt = 1) => {
+  const suffix = `_${alt}`
+  await Promise.all([
+    deleteSecureValue(`${userId}_answer_encrypted_dek${suffix}`),
+    deleteSecureValue(`${userId}_answer_salt${suffix}`),
   ])
 }
 

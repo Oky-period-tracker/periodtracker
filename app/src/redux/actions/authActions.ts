@@ -14,9 +14,8 @@ export function loginSuccessAsGuestAccount(payload: User) {
   return createAction('LOGIN_SUCCESS_AS_GUEST_ACCOUNT', payload)
 }
 
-// @ts-expect-error TODO:
-export function loginFailure({ error }) {
-  return createAction('LOGIN_FAILURE', { error })
+export function loginFailure(payload: { error: string | number | null }) {
+  return createAction('LOGIN_FAILURE', payload)
 }
 
 export function logout() {

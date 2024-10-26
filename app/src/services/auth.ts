@@ -18,7 +18,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from '../redux/useSelector'
 import { LoginResponse } from '../core/api'
 import { privateStoreSelector } from '../redux/selectors/private/privateSelectors'
-import { syncPrivateStores } from '../redux/actions'
+import { loginFailure, syncPrivateStores } from '../redux/actions'
 
 const useSyncPrivateStores = () => {
   const dispatch = useDispatch()
@@ -52,6 +52,7 @@ const useSyncPrivateStores = () => {
 }
 
 export const useLogin = () => {
+  const dispatch = useDispatch()
   const syncPrivateStores = useSyncPrivateStores()
 
   return async (name: string, password: string) => {
@@ -84,17 +85,7 @@ export const useLogin = () => {
       return
     }
 
-    if (loginCase === 'success-update_local' && onlineUserId) {
-      const postUpdateDEK = await initialiseLocalAccount(name, password, onlineUserId)
-      if (!postUpdateDEK) {
-        return // ERROR
-      }
-      replacePersistPrivateRedux(onlineUserId, postUpdateDEK)
-      syncPrivateStores(onlineLoginResponse)
-      return
-    }
-
-    if (loginCase === 'success-initialise_local' && onlineUserId) {
+    if (['success-initialise_local', 'success-update_local'].includes(loginCase) && onlineUserId) {
       const initializedDEK = await initialiseLocalAccount(name, password, onlineUserId)
       if (!initializedDEK) {
         return // ERROR
@@ -104,11 +95,8 @@ export const useLogin = () => {
       return
     }
 
-    if (loginCase === 'fail') {
-      return // ERROR
-    }
-
-    // replacePersistPrivateRedux() ?
+    // Fail
+    dispatch(loginFailure({ error: 'login_fail' }))
   }
 }
 
@@ -145,7 +133,10 @@ export const loginCaseReducer = ({
   // ========== Online ========== //
   if (onlineLoginSuccess && !localLoginSuccess) {
     if (userIdsMatch) {
-      // Local account exists and matches online account, but local validation failed, update local password to match valid online password
+      // Local account exists and matches online account, but local validation failed
+      // Possible if online password was updated but local was not
+      // Cannot decrypt DEK without local password, local data unrecoverable unless secret is valid
+      // TODO: Prompt user to enter secret answer?
       return 'success-update_local'
     }
 

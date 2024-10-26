@@ -36,7 +36,7 @@ sagaMiddleware.run(rootSaga)
 
 export { store, persistor }
 
-export const replacePersistPrivateRedux = async (userId: string, secretKey: string) => {
+export const replacePersistPrivateRedux = (userId: string, secretKey: string) => {
   if (!secretKey) {
     return false
   }

@@ -18,7 +18,63 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from '../redux/useSelector'
 import { LoginResponse } from '../core/api'
 import { privateStoreSelector } from '../redux/selectors/private/privateSelectors'
-import { loginFailure, syncPrivateStores } from '../redux/actions'
+import { initUser, loginFailure, setAuthError, syncPrivateStores } from '../redux/actions'
+import moment from 'moment'
+import { User } from '../redux/reducers/private/userReducer'
+
+export const useCreateAccount = () => {
+  const dispatch = useDispatch()
+
+  return async (payload: User) => {
+    const dateSignedUp = moment.utc().toISOString()
+
+    const DEK = await initialiseLocalAccount(payload.name, payload.password, payload.id)
+
+    if (!DEK) {
+      dispatch(setAuthError({ error: 'auth_fail' }))
+      return
+    }
+
+    replacePersistPrivateRedux(payload.id, DEK)
+
+    let isGuest = true
+    let token = null
+
+    try {
+      const {
+        appToken,
+        user,
+      }: Await<ReturnType<typeof httpClient.signup>> = await httpClient.signup({
+        ...payload,
+        preferredId: payload.id || null,
+        dateSignedUp,
+      })
+
+      if (!appToken || !user || !user.id) {
+        throw new Error(`Invalid data`)
+      }
+
+      isGuest = false
+      token = appToken
+    } catch (e) {
+      /*       
+        Account save failed, but can proceed as local offline user
+        Saga will periodically attempt to save account online, 
+        or they can press button in the profile screen 
+      */
+    }
+
+    dispatch(
+      initUser({
+        user: {
+          ...payload,
+          isGuest,
+        },
+        appToken: token,
+      }),
+    )
+  }
+}
 
 const useSyncPrivateStores = () => {
   const dispatch = useDispatch()

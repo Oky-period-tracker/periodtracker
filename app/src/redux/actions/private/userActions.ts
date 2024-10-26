@@ -1,5 +1,6 @@
+import { User } from '../../../types'
 import { createAction } from '../../helpers'
 
-export const editUserName = (name: string) => {
-  return createAction('EDIT_USER_NAME', name)
+export const initUser = (payload: { user: User; appToken: string | null }) => {
+  return createAction('INIT_USER', payload)
 }

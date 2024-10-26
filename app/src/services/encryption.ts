@@ -93,7 +93,8 @@ export const validateDEK = async (userId: string, DEK: string | undefined) => {
 export const checkNameAvailableLocally = async (username: string) => {
   try {
     const hashedUsername = hash(username)
-    return await getSecureValue(`username_${hashedUsername}`)
+    const value = await getSecureValue(`username_${hashedUsername}`)
+    return Boolean(value)
   } catch (e) {
     return false
   }

@@ -9,6 +9,7 @@ import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { httpClient } from '../../../../services/HttpClient'
 import { useDebounce } from '../../../../hooks/useDebounce'
+import { checkNameAvailableLocally } from '../../../../services/encryption'
 
 export type SignUpStep = 'confirmation' | 'information' | 'secret' | 'age' | 'location'
 
@@ -287,6 +288,17 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
 
     let cleanup = false
     const checkUserNameAvailability = async () => {
+      const availableLocally = await checkNameAvailableLocally(debouncedName)
+
+      if (!availableLocally) {
+        if (cleanup) {
+          return
+        }
+        // user exists locally
+        dispatch({ type: 'nameAvailable', value: false })
+        return
+      }
+
       try {
         await httpClient.getUserInfo(debouncedName)
         if (cleanup) {
@@ -333,7 +345,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       dateOfBirth: state.dateOfBirth,
       metadata: state.metadata,
       dateSignedUp: moment.utc().toISOString(),
-      isGuest: false,
+      isGuest: true,
     }
 
     reduxDispatch(createAccountRequest(user))

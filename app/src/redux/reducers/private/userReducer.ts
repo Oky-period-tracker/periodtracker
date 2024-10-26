@@ -40,26 +40,11 @@ const initialState: UserState = {
 
 export function userReducer(state = initialState, action: Actions | RehydrateAction): UserState {
   switch (action.type) {
-    // case 'LOGIN_SUCCESS':
-    //   return {
-    //     ...state,
-    //     // @ts-expect-error TODO:
-    //     appToken: action.payload.appToken,
-    //     user: {
-    //       ...action.payload.user,
-    //       isGuest: false,
-    //     },
-    //   }
-
-    // case 'LOGIN_SUCCESS_AS_GUEST_ACCOUNT':
-    //   return {
-    //     ...state,
-    //     appToken: null,
-    //     user: {
-    //       ...action.payload,
-    //       isGuest: true,
-    //     },
-    //   }
+    case 'INIT_USER':
+      return {
+        user: action.payload.user,
+        appToken: action.payload.appToken,
+      }
 
     case 'EDIT_USER':
       return {

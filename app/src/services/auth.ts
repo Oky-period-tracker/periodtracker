@@ -9,6 +9,7 @@ import {
   getSalt,
   getUserIdFromName,
   hash,
+  setAnswerDEK,
   setDEK,
   setSalt,
   setUserIdForName,
@@ -22,23 +23,29 @@ import { privateStoreSelector } from '../redux/selectors/private/privateSelector
 import { initUser, loginFailure, setAuthError, syncPrivateStores } from '../redux/actions'
 import moment from 'moment'
 import { User } from '../redux/reducers/private/userReducer'
-import { deleteSecureValue, removeAsyncStorageItem } from './storage'
+import {
+  deleteSecureValue,
+  getSecureValue,
+  removeAsyncStorageItem,
+  setSecureValue,
+} from './storage'
 import { analytics } from './firebase'
 
 export const useCreateAccount = () => {
   const dispatch = useDispatch()
 
   return async (payload: User) => {
+    const { name, password, secretAnswer, id } = payload
     const dateSignedUp = moment.utc().toISOString()
 
-    const DEK = await initialiseLocalAccount(payload.name, payload.password, payload.id)
+    const DEK = await initialiseLocalAccount(name, password, secretAnswer, id)
 
     if (!DEK) {
       dispatch(setAuthError({ error: 'auth_fail' }))
       return
     }
 
-    replacePersistPrivateRedux(payload.id, DEK)
+    replacePersistPrivateRedux(id, DEK)
 
     let isGuest = true
     let token = null
@@ -49,7 +56,7 @@ export const useCreateAccount = () => {
         user,
       }: Await<ReturnType<typeof httpClient.signup>> = await httpClient.signup({
         ...payload,
-        preferredId: payload.id || null,
+        preferredId: id || null,
         dateSignedUp,
       })
 
@@ -114,7 +121,7 @@ export const useLogin = () => {
   const dispatch = useDispatch()
   const syncPrivateStores = useSyncPrivateStores()
 
-  return async (name: string, password: string) => {
+  return async (name: string, password: string, answer: string) => {
     const [localLoginResult, onlineLoginResponse] = await Promise.all([
       localLogin(name, password),
       onlineLogin(name, password),
@@ -145,7 +152,7 @@ export const useLogin = () => {
     }
 
     if (['success-initialise_local', 'success-update_local'].includes(loginCase) && onlineUserId) {
-      const initializedDEK = await initialiseLocalAccount(name, password, onlineUserId)
+      const initializedDEK = await initialiseLocalAccount(name, password, answer, onlineUserId)
       if (!initializedDEK) {
         return // ERROR
       }
@@ -198,7 +205,11 @@ export const deleteAccount = async (
   removeAsyncStorageItem(`persist:${userId}`)
   deleteSecureValue(`username_${hash(username)}`)
   deleteSecureValue(`${userId}_encrypted_dek`)
+  deleteSecureValue(`${userId}_answer_encrypted_dek`)
+  deleteSecureValue(`${userId}_hashed_dek`)
   deleteSecureValue(`${userId}_salt`)
+  deleteSecureValue(`${userId}_answer_salt`)
+
   // analytics
   analytics?.().logEvent('deleteAccount')
 
@@ -270,6 +281,7 @@ export const loginCaseReducer = ({
 export const initialiseLocalAccount = async (
   name: string,
   password: string,
+  answer: string,
   userId: string,
   alt = 0,
 ) => {
@@ -279,9 +291,14 @@ export const initialiseLocalAccount = async (
   const savedSalt = await setSalt(userId, salt, suffix)
   const DEK = generateDEK()
   const KEK = deriveKEK(password, salt)
-  const savedDEK = await setDEK(userId, DEK, KEK, suffix)
+  const savedDEK = await setDEK(userId, DEK, KEK)
 
-  if (!savedNameIdMapping && savedSalt && savedDEK) {
+  const answerSalt = generateSalt()
+  const savedAnswerSalt = await setSalt(userId, answerSalt, suffix, 'answer_')
+  const answerKEK = deriveKEK(answer, answerSalt)
+  const savedAnswerDEK = await setAnswerDEK(userId, DEK, answerKEK)
+
+  if (!savedNameIdMapping && savedSalt && savedAnswerSalt && savedDEK && savedAnswerDEK) {
     return undefined
   }
 
@@ -380,6 +397,63 @@ export const onlineLogin = async (name: string, password: string) => {
   } catch (e) {
     return null
   }
+}
+
+export const changeLocalPassword = async (
+  userId: string,
+  answer: string,
+  newPassword: string,
+  preserveOldPassword: boolean,
+) => {
+  const salt = await getSalt(userId, undefined, '_answer')
+
+  if (!salt) {
+    return false
+  }
+
+  const KEK = deriveKEK(answer, salt)
+  const DEK = await getDEK(userId, KEK, undefined, '_answer')
+
+  if (!DEK) {
+    return false
+  }
+
+  // If no suffix, old eDEK is overwritten, old password invalidated
+  const suffix = preserveOldPassword ? `_1` : ''
+  const newSalt = generateSalt()
+  const savedSalt = await setSalt(userId, newSalt, suffix)
+  const newKEK = deriveKEK(newPassword, salt)
+  const savedDEK = await setDEK(userId, DEK, newKEK, suffix)
+
+  return savedSalt && savedDEK
+}
+
+export const commitAltPassword = async (userId: string, alt = 1) => {
+  const suffix = `_${alt}`
+  const altSalt = await getSalt(userId, suffix)
+  const altEncryptedDEK = await getSecureValue(`${userId}_encrypted_dek${suffix}`)
+
+  if (!altSalt || !altEncryptedDEK) {
+    return false
+  }
+
+  const savedSalt = await setSalt(userId, altSalt)
+  const savedEncryptedDEK = await setSecureValue(`${userId}_encrypted_dek`, altEncryptedDEK)
+
+  if (!savedSalt || !savedEncryptedDEK) {
+    return false
+  }
+
+  await deleteAltPassword(userId, alt)
+  return true
+}
+
+export const deleteAltPassword = async (userId: string, alt = 1) => {
+  const suffix = `_${alt}`
+  await Promise.all([
+    deleteSecureValue(`${userId}_encrypted_dek${suffix}`),
+    deleteSecureValue(`${userId}_salt${suffix}`),
+  ])
 }
 
 export const formatPassword = (password: string) => {

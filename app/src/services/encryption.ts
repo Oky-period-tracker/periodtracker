@@ -30,12 +30,12 @@ export const generateSalt = () => {
   return salt.toString(CryptoJS.enc.Hex)
 }
 
-export const setSalt = async (userId: string, salt: string, suffix = '') => {
-  return await setSecureValue(`${userId}_salt${suffix}`, salt)
+export const setSalt = async (userId: string, salt: string, suffix = '', prefix = '') => {
+  return await setSecureValue(`${userId}_${prefix}salt${suffix}`, salt)
 }
 
-export const getSalt = async (userId: string, suffix = '') => {
-  return await getSecureValue(`${userId}_salt${suffix}`)
+export const getSalt = async (userId: string, suffix = '', prefix = '') => {
+  return await getSecureValue(`${userId}_${prefix}salt${suffix}`)
 }
 
 // ========== KEK - Key Encryption Key ========== //
@@ -60,17 +60,28 @@ export const setDEK = async (userId: string, DEK: string, KEK: string, suffix = 
     const hashedDEK = hash(DEK)
     const encryptedDEK = encrypt(DEK, KEK)
 
-    await setSecureValue(`${userId}_hashed_dek`, hashedDEK)
-    await setSecureValue(`${userId}_encrypted_dek${suffix}`, encryptedDEK)
+    const [hashSuccess, dekSuccess] = await Promise.all([
+      setSecureValue(`${userId}_hashed_dek`, hashedDEK),
+      setSecureValue(`${userId}_encrypted_dek${suffix}`, encryptedDEK),
+    ])
 
-    return true
+    return hashSuccess && dekSuccess
   } catch (e) {
     return false
   }
 }
 
-export const getDEK = async (userId: string, KEK: string, suffix = '') => {
-  const encryptedDEK = await getSecureValue(`${userId}_encrypted_dek${suffix}`)
+export const setAnswerDEK = async (userId: string, DEK: string, KEK: string, suffix = '') => {
+  try {
+    const encryptedDEK = encrypt(DEK, KEK)
+    return setSecureValue(`${userId}_answer_encrypted_dek${suffix}`, encryptedDEK)
+  } catch (e) {
+    return false
+  }
+}
+
+export const getDEK = async (userId: string, KEK: string, suffix = '', prefix = '') => {
+  const encryptedDEK = await getSecureValue(`${userId}_${prefix}encrypted_dek${suffix}`)
 
   if (!encryptedDEK) {
     return undefined

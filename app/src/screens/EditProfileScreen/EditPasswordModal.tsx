@@ -5,17 +5,23 @@ import { Hr } from '../../components/Hr'
 import { Text } from '../../components/Text'
 import { Input } from '../../components/Input'
 import { useSelector } from '../../redux/useSelector'
-import { currentUserSelector } from '../../redux/selectors'
+import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { User } from '../../redux/reducers/private/userReducer'
 import { httpClient } from '../../services/HttpClient'
 import { useDispatch } from 'react-redux'
 import { editUser } from '../../redux/actions'
-import { formatPassword } from '../../services/auth'
+import {
+  changeLocalPassword,
+  commitAltPassword,
+  deleteAltPassword,
+  formatPassword,
+} from '../../services/auth'
 import { useTranslate } from '../../hooks/useTranslate'
 import { useColor } from '../../hooks/useColor'
 
 export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   const translate = useTranslate()
+  const appToken = useSelector(appTokenSelector)
   const currentUser = useSelector(currentUserSelector) as User
   const name = currentUser.name
   const reduxDispatch = useDispatch()
@@ -75,12 +81,31 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
       return
     }
 
+    //  if no appToken and isGuest, just change locally, no http request
+    const onlyChangeLocally = !appToken && currentUser.isGuest
+
+    // Temporarily save new password locally as _alt, and preserve old password
+    const altPasswordSaved = await changeLocalPassword(
+      currentUser.id,
+      formattedSecret,
+      formattedPassword,
+      onlyChangeLocally,
+    )
+
+    if (!altPasswordSaved || onlyChangeLocally) {
+      return
+    }
+
     try {
       await sendRequest(formattedPassword, formattedSecret)
+      // Commit to new password locally, overwrite old password, remove _alt
+      await commitAltPassword(currentUser.id)
       updateReduxState(formattedPassword)
       toggleVisible()
       successAlert()
     } catch (error) {
+      // Revert back to old password
+      deleteAltPassword(currentUser.id)
       failAlert()
     }
   }

@@ -8,9 +8,7 @@ import { config } from '../resources/redux'
 import { createRootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import { privateReducer } from './reducers/private/privateReducer'
-import { hash } from '../services/encryption'
 import { logoutCleanup } from './actions'
-import { deleteSecureValue, removeAsyncStorageItem } from '../services/storage'
 
 const primaryPersistConfig = {
   version,
@@ -72,43 +70,4 @@ export const logOutUserRedux = () => {
   store.replaceReducer(persistedRootReducer)
   persistor.persist()
   store.dispatch(logoutCleanup())
-}
-
-export const deleteUserRedux = async (
-  userId: string,
-  username: string, //password: string
-) => {
-  logOutUserRedux()
-
-  /* 
-  const { localUserId, DEK } = await localLogin(username, password)
-
-  if (!DEK || !localUserId || localUserId !== userId) {
-    return // TODO: Local validation failed
-  }
-
-  const appToken = ''
-  const onlineSuccess = false
-
-  if (appToken) {
-    try {
-      await httpClient.deleteUserFromPassword({
-        name,
-        password,
-      })
-    } catch (e) {
-      //
-    }
-  }
-
-  if (appToken && !onlineSuccess) {
-    return // ERROR, failed to delete online
-  } */
-
-  removeAsyncStorageItem(`persist:${userId}`)
-  deleteSecureValue(`username_${hash(username)}`)
-  deleteSecureValue(`${userId}_encrypted_dek`)
-  deleteSecureValue(`${userId}_salt`)
-
-  // analytics?.().logEvent('deleteAccount')
 }

@@ -8,12 +8,13 @@ import {
   getDEK,
   getSalt,
   getUserIdFromName,
+  hash,
   setDEK,
   setSalt,
   setUserIdForName,
   validateDEK,
 } from './encryption'
-import { replacePersistPrivateRedux } from '../redux/store'
+import { logOutUserRedux, replacePersistPrivateRedux } from '../redux/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from '../redux/useSelector'
 import { LoginResponse } from '../core/api'
@@ -21,6 +22,8 @@ import { privateStoreSelector } from '../redux/selectors/private/privateSelector
 import { initUser, loginFailure, setAuthError, syncPrivateStores } from '../redux/actions'
 import moment from 'moment'
 import { User } from '../redux/reducers/private/userReducer'
+import { deleteSecureValue, removeAsyncStorageItem } from './storage'
+import { analytics } from './firebase'
 
 export const useCreateAccount = () => {
   const dispatch = useDispatch()
@@ -154,6 +157,52 @@ export const useLogin = () => {
     // Fail
     dispatch(loginFailure({ error: 'login_fail' }))
   }
+}
+
+export const deleteAccount = async (
+  username: string,
+  password: string,
+  appToken?: string,
+  isGuest?: boolean,
+  userId?: string,
+) => {
+  logOutUserRedux()
+
+  const { localUserId, DEK } = await localLogin(username, password)
+
+  if (!DEK || !localUserId || localUserId !== userId) {
+    return false
+  }
+
+  const onlineSuccess = false
+
+  if (appToken) {
+    try {
+      await httpClient.deleteUserFromPassword({
+        name,
+        password,
+      })
+    } catch (e) {
+      return false
+    }
+  }
+
+  if (appToken && !isGuest && !onlineSuccess) {
+    return false
+  }
+
+  // Log out
+  logOutUserRedux()
+
+  // Delete local storage
+  removeAsyncStorageItem(`persist:${userId}`)
+  deleteSecureValue(`username_${hash(username)}`)
+  deleteSecureValue(`${userId}_encrypted_dek`)
+  deleteSecureValue(`${userId}_salt`)
+  // analytics
+  analytics?.().logEvent('deleteAccount')
+
+  return true
 }
 
 type LoginCase =

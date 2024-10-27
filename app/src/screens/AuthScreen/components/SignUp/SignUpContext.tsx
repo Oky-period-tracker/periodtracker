@@ -4,12 +4,10 @@ import { FAST_SIGN_UP } from '../../../../config/env'
 import { useAuthMode } from '../../AuthModeContext'
 import { useDispatch } from 'react-redux'
 import { createAccountRequest } from '../../../../redux/actions'
-import { formatPassword } from '../../../../services/auth'
+import { checkUserNameAvailability, formatPassword } from '../../../../services/auth'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
-import { httpClient } from '../../../../services/HttpClient'
 import { useDebounce } from '../../../../hooks/useDebounce'
-import { checkNameAvailableLocally } from '../../../../services/encryption'
 
 export type SignUpStep = 'confirmation' | 'information' | 'secret' | 'age' | 'location'
 
@@ -287,35 +285,14 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
     }
 
     let cleanup = false
-    const checkUserNameAvailability = async () => {
-      const availableLocally = await checkNameAvailableLocally(debouncedName)
-
-      if (!availableLocally) {
-        if (cleanup) {
-          return
-        }
-        // user exists locally
-        dispatch({ type: 'nameAvailable', value: false })
+    const checkName = async () => {
+      const isAvailable = await checkUserNameAvailability(debouncedName)
+      if (cleanup) {
         return
       }
-
-      try {
-        await httpClient.getUserInfo(debouncedName)
-        if (cleanup) {
-          return
-        }
-        // user does exist
-        dispatch({ type: 'nameAvailable', value: false })
-      } catch (err) {
-        if (cleanup) {
-          return
-        }
-
-        // user does not exist
-        dispatch({ type: 'nameAvailable', value: true })
-      }
+      dispatch({ type: 'nameAvailable', value: isAvailable })
     }
-    checkUserNameAvailability()
+    checkName()
 
     return () => {
       cleanup = true

@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { Await } from '../types'
 import { httpClient } from './HttpClient'
 import {
+  checkNameAvailableLocally,
   deriveKEK,
   generateDEK,
   generateSalt,
@@ -515,4 +516,19 @@ export const deleteAltAnswer = async (userId: string, alt = 1) => {
 
 export const formatPassword = (password: string) => {
   return _.toLower(password).trim()
+}
+
+export const checkUserNameAvailability = async (name: string) => {
+  const availableLocally = await checkNameAvailableLocally(name)
+
+  if (!availableLocally) {
+    return false
+  }
+
+  try {
+    await httpClient.getUserInfo(name)
+    return false
+  } catch (err) {
+    return true
+  }
 }

@@ -21,6 +21,7 @@ import { EditSecretModal } from './EditSecretModal'
 import { useMonths } from '../../hooks/useMonths'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
+import { checkNameAvailableLocally } from '../../services/encryption'
 
 type EditProfileState = {
   name: User['name']
@@ -104,7 +105,6 @@ const validateState = (state: EditProfileState): { isValid: boolean; errors: str
   let isValid = true
 
   if (state.name.length < 3) {
-    // TODO: check availability
     isValid = false
     errors.push('username_too_short')
   }
@@ -203,6 +203,18 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
       location: state.location,
     }
 
+    const nameHasChanged = state.name !== currentUser.name
+    let nameAvailable = true
+
+    if (nameHasChanged) {
+      nameAvailable = await checkNameAvailableLocally(state.name)
+    }
+
+    if (!nameAvailable) {
+      errors.push('name_taken_error')
+      return
+    }
+
     if (!appToken) {
       editUserReduxState(changes)
       goToProfile()
@@ -241,7 +253,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
             onChangeText={onChangeName}
             placeholder="name"
             errors={errors}
-            errorKeys={['username_too_short']}
+            errorKeys={['username_too_short', 'name_taken_error']}
             errorsVisible={true}
           />
         </View>

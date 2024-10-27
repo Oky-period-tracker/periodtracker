@@ -30,6 +30,7 @@ import {
   setSecureValue,
 } from './storage'
 import { analytics } from './firebase'
+import { useAuth } from '../contexts/AuthContext'
 
 export const useCreateAccount = () => {
   const dispatch = useDispatch()
@@ -39,7 +40,7 @@ export const useCreateAccount = () => {
     const { name, id } = baseUser
     const dateSignedUp = moment.utc().toISOString()
 
-    const DEK = await initialiseLocalAccount(name, password, secretAnswer, id)
+    const DEK = await initialiseLocalAccount(name, password, id, secretAnswer)
 
     if (!DEK) {
       dispatch(setAuthError({ error: 'auth_fail' }))
@@ -121,8 +122,9 @@ const useSyncPrivateStores = () => {
 export const useLogin = () => {
   const dispatch = useDispatch()
   const syncPrivateStores = useSyncPrivateStores()
+  const { setIsLoggedIn } = useAuth()
 
-  return async (name: string, password: string, answer: string) => {
+  return async (name: string, password: string) => {
     const [localLoginResult, onlineLoginResponse] = await Promise.all([
       localLogin(name, password),
       onlineLogin(name, password),
@@ -144,26 +146,30 @@ export const useLogin = () => {
     if (loginCase === 'success' && localUserId && DEK) {
       replacePersistPrivateRedux(localUserId, DEK)
       syncPrivateStores(onlineLoginResponse)
-      return
+      setIsLoggedIn(true)
+      return true
     }
 
     if (loginCase === 'success-local' && localUserId && DEK) {
       replacePersistPrivateRedux(localUserId, DEK)
-      return
+      setIsLoggedIn(true)
+      return true
     }
 
     if (['success-initialise_local', 'success-update_local'].includes(loginCase) && onlineUserId) {
-      const initializedDEK = await initialiseLocalAccount(name, password, answer, onlineUserId)
+      const initializedDEK = await initialiseLocalAccount(name, password, onlineUserId)
       if (!initializedDEK) {
-        return // ERROR
+        return false // ERROR
       }
       replacePersistPrivateRedux(onlineUserId, initializedDEK)
       syncPrivateStores(onlineLoginResponse)
-      return
+      setIsLoggedIn(true)
+      return true
     }
 
     // Fail
     dispatch(loginFailure({ error: 'login_fail' }))
+    return false
   }
 }
 
@@ -282,8 +288,8 @@ export const loginCaseReducer = ({
 export const initialiseLocalAccount = async (
   name: string,
   password: string,
-  answer: string,
   userId: string,
+  answer?: string,
   alt = 0,
 ) => {
   const suffix = alt ? `_${alt}` : ''
@@ -294,12 +300,18 @@ export const initialiseLocalAccount = async (
   const KEK = deriveKEK(password, salt)
   const savedDEK = await setDEK(userId, DEK, KEK)
 
-  const answerSalt = generateSalt()
-  const savedAnswerSalt = await setSalt(userId, answerSalt, suffix, 'answer_')
-  const answerKEK = deriveKEK(answer, answerSalt)
-  const savedAnswerDEK = await setAnswerDEK(userId, DEK, answerKEK)
+  if (answer) {
+    const answerSalt = generateSalt()
+    const savedAnswerSalt = await setSalt(userId, answerSalt, suffix, 'answer_')
+    const answerKEK = deriveKEK(answer, answerSalt)
+    const savedAnswerDEK = await setAnswerDEK(userId, DEK, answerKEK)
 
-  if (!savedNameIdMapping && savedSalt && savedAnswerSalt && savedDEK && savedAnswerDEK) {
+    if (!savedSalt || !savedAnswerSalt || !savedAnswerDEK) {
+      return undefined
+    }
+  }
+
+  if (!savedNameIdMapping || !savedSalt || !savedDEK) {
     return undefined
   }
 

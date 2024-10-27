@@ -7,17 +7,16 @@ import { ErrorText } from '../../../components/ErrorText'
 import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector } from '../../../redux/selectors'
 import { useAuth } from '../../../contexts/AuthContext'
-import { formatPassword } from '../../../services/auth'
-import { useDispatch } from 'react-redux'
-import { loginRequest } from '../../../redux/actions'
+import { formatPassword, useLogin } from '../../../services/auth'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
   const [wasPreLoggedIn] = React.useState(!!user)
-  const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
+
+  const login = useLogin()
 
   const [name, setName] = React.useState(user ? user.name : '')
   const [password, setPassword] = React.useState('')
@@ -27,27 +26,14 @@ export const LogIn = () => {
 
   const [success, setSuccess] = React.useState<boolean | null>(null)
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     if (errors.length) {
       setErrorsVisible(true)
       return
     }
 
-    if (user) {
-      // TODO: MUST DO
-      // const formattedPassword = formatPassword(password)
-      // const success = user.password === formattedPassword
-
-      if (success) {
-        setIsLoggedIn(true)
-        return
-      }
-
-      setSuccess(false)
-      return
-    }
-
-    dispatch(loginRequest({ name, password: formatPassword(password) }))
+    const loginSuccess = await login(name, formatPassword(password))
+    setSuccess(loginSuccess)
   }
 
   React.useEffect(() => {

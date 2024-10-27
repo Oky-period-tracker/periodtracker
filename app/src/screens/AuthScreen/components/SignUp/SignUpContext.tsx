@@ -2,9 +2,11 @@ import React from 'react'
 import { User, UserCredentials } from '../../../../types'
 import { FAST_SIGN_UP } from '../../../../config/env'
 import { useAuthMode } from '../../AuthModeContext'
-import { useDispatch } from 'react-redux'
-import { createAccountRequest } from '../../../../redux/actions'
-import { checkUserNameAvailability, formatPassword } from '../../../../services/auth'
+import {
+  checkUserNameAvailability,
+  formatPassword,
+  useCreateAccount,
+} from '../../../../services/auth'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { useDebounce } from '../../../../hooks/useDebounce'
@@ -277,7 +279,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
 
   const { setAuthMode } = useAuthMode()
 
-  const reduxDispatch = useDispatch()
+  const createAccount = useCreateAccount()
 
   const [debouncedName] = useDebounce(state.name, 500)
   React.useEffect(() => {
@@ -326,7 +328,8 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       isGuest: true,
     }
 
-    reduxDispatch(createAccountRequest(user))
+    createAccount(user)
+
     // TODO: wait for success
     setAuthMode('avatar_and_theme')
   }, [step])

@@ -6,10 +6,7 @@ import { Text } from '../../components/Text'
 import { Input } from '../../components/Input'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
-import { User } from '../../redux/reducers/private/userReducer'
 import { httpClient } from '../../services/HttpClient'
-import { useDispatch } from 'react-redux'
-import { editUser } from '../../redux/actions'
 import {
   changeLocalPassword,
   commitAltPassword,
@@ -18,13 +15,13 @@ import {
 } from '../../services/auth'
 import { useTranslate } from '../../hooks/useTranslate'
 import { useColor } from '../../hooks/useColor'
+import { User } from '../../types'
 
 export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
   const translate = useTranslate()
   const appToken = useSelector(appTokenSelector)
   const currentUser = useSelector(currentUserSelector) as User
   const name = currentUser.name
-  const reduxDispatch = useDispatch()
   const { backgroundColor } = useColor()
 
   const [secret, setSecret] = React.useState('')
@@ -70,10 +67,6 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
     })
   }
 
-  const updateReduxState = (password: string) => {
-    reduxDispatch(editUser({ password }))
-  }
-
   const onConfirm = async () => {
     setErrorsVisible(true)
 
@@ -100,7 +93,6 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
       await sendRequest(formattedPassword, formattedSecret)
       // Commit to new password locally, overwrite old password, remove _alt
       await commitAltPassword(currentUser.id)
-      updateReduxState(formattedPassword)
       toggleVisible()
       successAlert()
     } catch (error) {

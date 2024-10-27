@@ -27,7 +27,14 @@ export const SaveAccountButton = () => {
       return
     }
 
-    dispatch(convertGuestAccount(currentUser))
+    // TODO: MUST DO
+    dispatch(
+      convertGuestAccount({
+        ...currentUser,
+        password: '',
+        secretAnswer: '',
+      }),
+    )
   }
 
   // Display error

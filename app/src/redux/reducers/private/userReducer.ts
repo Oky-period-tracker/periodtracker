@@ -1,32 +1,7 @@
 import _ from 'lodash'
 import { Actions } from '../../types/index'
 import { RehydrateAction } from 'redux-persist'
-
-export interface User {
-  id: string
-  name: string
-  dateOfBirth: string
-  gender: string
-  location: string
-  country: string
-  province: string
-  password: string
-  secretQuestion: string
-  secretAnswer: string
-  dateSignedUp: string
-  isGuest: boolean
-  metadata: UserMetadata
-}
-
-export interface UserMetadata {
-  // PH
-  genderIdentity?: string
-  accommodationRequirement?: string
-  religion?: string
-  contentSelection?: number
-  city?: string
-  isProfileUpdateSkipped?: boolean
-}
+import { User } from '../../../types'
 
 export interface UserState {
   appToken: string | null

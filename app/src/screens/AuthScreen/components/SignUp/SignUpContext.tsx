@@ -1,5 +1,5 @@
 import React from 'react'
-import { User } from '../../../../types'
+import { User, UserCredentials } from '../../../../types'
 import { FAST_SIGN_UP } from '../../../../config/env'
 import { useAuthMode } from '../../AuthModeContext'
 import { useDispatch } from 'react-redux'
@@ -13,18 +13,19 @@ export type SignUpStep = 'confirmation' | 'information' | 'secret' | 'age' | 'lo
 
 const steps: SignUpStep[] = ['confirmation', 'information', 'secret', 'age', 'location']
 
-type SignUpState = Omit<User, 'id' | 'dateSignedUp' | 'isGuest' | 'country' | 'province'> & {
-  stepIndex: number
-  agree: boolean
-  nameAvailable: boolean
-  passwordConfirm: string
-  month?: number
-  year?: number
-  errorsVisible: boolean
-  // Make required User properties optional for state
-  country?: User['country']
-  province?: User['province']
-}
+type SignUpState = Omit<User, 'id' | 'dateSignedUp' | 'isGuest' | 'country' | 'province'> &
+  UserCredentials & {
+    stepIndex: number
+    agree: boolean
+    nameAvailable: boolean
+    passwordConfirm: string
+    month?: number
+    year?: number
+    errorsVisible: boolean
+    // Make required User properties optional for state
+    country?: User['country']
+    province?: User['province']
+  }
 
 type Action<T extends keyof SignUpState = keyof SignUpState> =
   | {

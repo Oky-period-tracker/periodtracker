@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Await } from '../types'
+import { Await, User, UserCredentials } from '../types'
 import { httpClient } from './HttpClient'
 import {
   checkNameAvailableLocally,
@@ -23,7 +23,6 @@ import { LoginResponse } from '../core/api'
 import { privateStoreSelector } from '../redux/selectors/private/privateSelectors'
 import { initUser, loginFailure, setAuthError, syncPrivateStores } from '../redux/actions'
 import moment from 'moment'
-import { User } from '../redux/reducers/private/userReducer'
 import {
   deleteSecureValue,
   getSecureValue,
@@ -35,8 +34,9 @@ import { analytics } from './firebase'
 export const useCreateAccount = () => {
   const dispatch = useDispatch()
 
-  return async (payload: User) => {
-    const { name, password, secretAnswer, id } = payload
+  return async (payload: User & UserCredentials) => {
+    const { password, secretAnswer, ...baseUser } = payload
+    const { name, id } = baseUser
     const dateSignedUp = moment.utc().toISOString()
 
     const DEK = await initialiseLocalAccount(name, password, secretAnswer, id)
@@ -78,7 +78,7 @@ export const useCreateAccount = () => {
     dispatch(
       initUser({
         user: {
-          ...payload,
+          ...baseUser,
           isGuest,
         },
         appToken: token,

@@ -1,4 +1,4 @@
-import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
+import { all, put, select, takeLatest } from 'redux-saga/effects'
 import { ExtractActionFromActionType } from '../types'
 import { httpClient } from '../../services/HttpClient'
 import * as actions from '../actions'
@@ -6,34 +6,6 @@ import * as selectors from '../selectors'
 import { PredictionState } from '../../prediction'
 import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
-
-function* periodicallyAttemptConvertGuestAccount() {
-  let userSaved = false
-  let attempts = 0
-  const maxAttempts = 10
-
-  while (!userSaved && attempts <= maxAttempts) {
-    const duration = 1000 * 60 // 1 minute
-    yield delay(duration)
-
-    // @ts-expect-error TODO:
-    const appToken = yield select(selectors.appTokenSelector)
-    // @ts-expect-error TODO:
-    const user = yield select(selectors.currentUserSelector)
-
-    if (!user) {
-      return
-    }
-
-    if (appToken && !user.isGuest) {
-      userSaved = true
-      return
-    }
-
-    yield put(actions.convertGuestAccount(user))
-    attempts++
-  }
-}
 
 function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUEST_ACCOUNT'>) {
   yield put(actions.createAccountRequest(action.payload))
@@ -79,7 +51,6 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
 
 export function* authSaga() {
   yield all([
-    fork(periodicallyAttemptConvertGuestAccount),
     takeLatest('CONVERT_GUEST_ACCOUNT', onConvertGuestAccount),
     takeLatest('JOURNEY_COMPLETION', onJourneyCompletion),
   ])

@@ -10,12 +10,15 @@ export interface User {
   location: string
   country: string
   province: string
-  password: string
   secretQuestion: string
-  secretAnswer: string
   dateSignedUp: string
   isGuest: boolean
   metadata: UserMetadata
+}
+
+export interface UserCredentials {
+  password: string
+  secretAnswer: string
 }
 
 export interface UserMetadata {

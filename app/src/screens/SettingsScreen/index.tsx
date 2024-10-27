@@ -6,8 +6,7 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { TouchableRow, TouchableRowProps } from '../../components/TouchableRow'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Switch } from '../../components/Switch'
-import { useDispatch } from 'react-redux'
-import { deleteAccountRequest } from '../../redux/actions'
+// import { useDispatch } from 'react-redux'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
@@ -19,7 +18,7 @@ import { logOutUserRedux } from '../../redux/store'
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
@@ -33,13 +32,17 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
     if (!currentUser) {
       return
     }
-    dispatch(
-      deleteAccountRequest({
-        name: currentUser.name,
-        password: currentUser.password,
-        // setLoading, TODO: ?
-      }),
-    )
+    // TODO: MUST DO
+
+    // TODO: Modal to enter password
+
+    // dispatch(
+    //   deleteAccountRequest({
+    //     name: currentUser.name,
+    //     password: currentUser.password,
+    //     // setLoading, TODO: ?
+    //   }),
+    // )
   }
 
   const logOutAlert = () => {

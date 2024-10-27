@@ -1,5 +1,5 @@
+import { User, UserCredentials } from '../../types'
 import { createAction } from '../helpers'
-import { User } from '../reducers/private/userReducer'
 
 // @ts-expect-error TODO:
 export function loginRequest({ name, password }) {
@@ -47,7 +47,7 @@ export function createAccountFailure() {
   return createAction('CREATE_ACCOUNT_FAILURE')
 }
 
-export function convertGuestAccount(payload: User) {
+export function convertGuestAccount(payload: User & UserCredentials) {
   return createAction('CONVERT_GUEST_ACCOUNT', payload)
 }
 

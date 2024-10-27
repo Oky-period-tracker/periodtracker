@@ -34,8 +34,9 @@ export const LogIn = () => {
     }
 
     if (user) {
-      const formattedPassword = formatPassword(password)
-      const success = user.password === formattedPassword
+      // TODO: MUST DO
+      // const formattedPassword = formatPassword(password)
+      // const success = user.password === formattedPassword
 
       if (success) {
         setIsLoggedIn(true)

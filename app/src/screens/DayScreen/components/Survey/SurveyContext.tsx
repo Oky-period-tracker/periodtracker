@@ -2,10 +2,10 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { useSelector } from '../../../../redux/useSelector'
 import { currentUserSelector } from '../../../../redux/selectors'
-import { User } from '../../../../redux/reducers/private/userReducer'
 import { answerSurvey } from '../../../../redux/actions'
 import moment from 'moment'
 import { Survey, SurveyQuestion, SurveyQuestionAnswer } from '../../../../core/types'
+import { User } from '../../../../types'
 
 type SurveyState = {
   survey: Survey | undefined

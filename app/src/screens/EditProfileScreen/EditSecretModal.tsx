@@ -6,10 +6,7 @@ import { Text } from '../../components/Text'
 import { Input } from '../../components/Input'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
-import { User } from '../../redux/reducers/private/userReducer'
 import { httpClient } from '../../services/HttpClient'
-import { useDispatch } from 'react-redux'
-import { editUser } from '../../redux/actions'
 import {
   changeLocalAnswer,
   commitAltAnswer,
@@ -21,12 +18,12 @@ import { questionOptions } from '../../config/options'
 import { WheelPickerOption } from '../../components/WheelPicker'
 import { useTranslate } from '../../hooks/useTranslate'
 import { useColor } from '../../hooks/useColor'
+import { User } from '../../types'
 
 export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
   const translate = useTranslate()
   const currentUser = useSelector(currentUserSelector) as User
   const appToken = useSelector(appTokenSelector)
-  const reduxDispatch = useDispatch()
   const { backgroundColor } = useColor()
 
   const [errorsVisible, setErrorsVisible] = React.useState(false)
@@ -81,10 +78,6 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
     })
   }
 
-  const updateReduxState = (secretAnswer: string) => {
-    reduxDispatch(editUser({ secretAnswer, secretQuestion }))
-  }
-
   const onConfirm = async () => {
     setErrorsVisible(true)
 
@@ -111,7 +104,6 @@ export const EditSecretModal = ({ visible, toggleVisible }: ModalProps) => {
       await sendRequest(previousFormatted, nextFormatted)
       // Commit to new password locally, overwrite old password, remove _alt
       await commitAltAnswer(currentUser.id)
-      updateReduxState(nextFormatted)
       toggleVisible()
       successAlert()
     } catch (error) {

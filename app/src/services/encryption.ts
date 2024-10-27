@@ -111,16 +111,10 @@ export const checkNameAvailableLocally = async (username: string) => {
   }
 }
 
-export const setUserIdForName = async (username: string, userId: string, oldUsername?: string) => {
+export const setUserIdForName = async (username: string, userId: string) => {
   try {
     const hashedUsername = hash(username)
-    const saved = await setSecureValue(`username_${hashedUsername}`, userId)
-    let complete = true
-    if (oldUsername) {
-      const hashedOldUsername = hash(oldUsername)
-      complete = await deleteSecureValue(`username_${hashedOldUsername}`)
-    }
-    return saved && complete
+    return await setSecureValue(`username_${hashedUsername}`, userId)
   } catch (e) {
     return false
   }
@@ -129,4 +123,13 @@ export const setUserIdForName = async (username: string, userId: string, oldUser
 export const getUserIdFromName = async (username: string) => {
   const hashedUsername = hash(username)
   return await getSecureValue(`username_${hashedUsername}`)
+}
+
+export const deleteUserIdForName = async (username: string) => {
+  try {
+    const hashedUsername = hash(username)
+    return await deleteSecureValue(`username_${hashedUsername}`)
+  } catch (e) {
+    return false
+  }
 }

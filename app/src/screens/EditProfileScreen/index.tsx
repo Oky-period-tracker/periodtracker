@@ -21,7 +21,11 @@ import { EditSecretModal } from './EditSecretModal'
 import { useMonths } from '../../hooks/useMonths'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
-import { checkNameAvailableLocally } from '../../services/encryption'
+import {
+  checkNameAvailableLocally,
+  deleteUserIdForName,
+  setUserIdForName,
+} from '../../services/encryption'
 
 type EditProfileState = {
   name: User['name']
@@ -215,6 +219,8 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
       return
     }
 
+    await setUserIdForName(state.name, currentUser.id)
+
     if (!appToken) {
       editUserReduxState(changes)
       goToProfile()
@@ -223,10 +229,14 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
 
     try {
       await sendEditUserRequest(changes)
+      // Remove old local name mapping
+      await deleteUserIdForName(currentUser.name)
       editUserReduxState(changes)
       goToProfile()
     } catch (error) {
       // TODO: show alert
+      // Revert local name mapping
+      await deleteUserIdForName(state.name)
     }
   }
 

@@ -120,3 +120,11 @@ export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDa
     flow: highestFlow,
   }
 }
+
+export const allSurveysSelector = (state: ReduxState) => {
+  return s(state)?.allSurveys ?? []
+}
+
+export const completedSurveysSelector = (state: ReduxState) => {
+  return s(state)?.completedSurveys ?? []
+}

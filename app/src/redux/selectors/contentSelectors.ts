@@ -87,14 +87,6 @@ export const aboutContent = (state: ReduxState) => {
   return s(state)?.about
 }
 
-export const allSurveysSelector = (state: ReduxState) => {
-  return s(state)?.allSurveys ?? []
-}
-
-export const completedSurveysSelector = (state: ReduxState) => {
-  return s(state)?.completedSurveys ?? []
-}
-
 export const aboutBannerSelector = (state: ReduxState) => {
   return s(state)?.aboutBanner
 }

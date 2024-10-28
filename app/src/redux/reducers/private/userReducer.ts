@@ -15,6 +15,10 @@ const initialState: UserState = {
 
 export function userReducer(state = initialState, action: Actions | RehydrateAction): UserState {
   switch (action.type) {
+    case 'LOGOUT_CLEANUP': {
+      return initialState
+    }
+
     case 'INIT_USER':
       return {
         user: action.payload.user,

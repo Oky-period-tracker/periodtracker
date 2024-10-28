@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from '../../redux/useSelector'
-import { currentUserSelector, hasOpenedSelector } from '../../redux/selectors'
+import { hasOpenedSelector, lastLoggedInUsernameSelector } from '../../redux/selectors'
 
 export type AuthMode =
   | 'welcome'
@@ -27,10 +27,10 @@ const defaultValue: AuthModeContext = {
 const AuthContext = React.createContext<AuthModeContext>(defaultValue)
 
 export const AuthModeProvider = ({ children }: React.PropsWithChildren) => {
-  const user = useSelector(currentUserSelector)
+  const lastLoggedInUsername = useSelector(lastLoggedInUsernameSelector)
   const hasOpened = useSelector(hasOpenedSelector)
 
-  const initialState = !hasOpened ? 'welcome' : user ? 'log_in' : 'start'
+  const initialState = !hasOpened ? 'welcome' : lastLoggedInUsername ? 'log_in' : 'start'
   const [authMode, setAuthMode] = React.useState<AuthMode>(initialState)
 
   return <AuthContext.Provider value={{ authMode, setAuthMode }}>{children}</AuthContext.Provider>

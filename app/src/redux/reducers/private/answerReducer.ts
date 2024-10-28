@@ -48,6 +48,10 @@ const initialState: AnswerState = {
 
 export function answerReducer(state: AnswerState = initialState, action: Actions): AnswerState {
   switch (action.type) {
+    case 'LOGOUT_CLEANUP': {
+      return initialState
+    }
+
     case 'SYNC_STORES': {
       return {
         ...state,

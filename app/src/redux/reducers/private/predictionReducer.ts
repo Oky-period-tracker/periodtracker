@@ -8,6 +8,10 @@ const initialState: PredictionState = null
 
 export function predictionReducer(state = initialState, action: Actions): PredictionState {
   switch (action.type) {
+    case 'LOGOUT_CLEANUP': {
+      return initialState
+    }
+
     case 'SYNC_STORES': {
       // @ts-expect-error TODO:
       return {
@@ -15,10 +19,6 @@ export function predictionReducer(state = initialState, action: Actions): Predic
         ...(action.payload.oldStore.prediction ?? {}),
         ...(action.payload.newStore.prediction ?? {}),
       }
-    }
-
-    case 'LOGOUT_CLEANUP': {
-      return initialState
     }
 
     case 'SET_PREDICTION_ENGINE_STATE':

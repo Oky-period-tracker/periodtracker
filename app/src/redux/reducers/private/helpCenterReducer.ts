@@ -14,16 +14,16 @@ export function helpCenterReducer(
   action: HelpCenterActions | Actions,
 ): HelpCenterState {
   switch (action.type) {
+    case 'LOGOUT_CLEANUP': {
+      return initialState
+    }
+
     case 'SYNC_STORES': {
       return {
         ...state,
         ...(action.payload.oldStore.helpCenters ?? initialState),
         ...(action.payload.newStore.helpCenters ?? initialState),
       }
-    }
-
-    case 'LOGOUT_CLEANUP': {
-      return initialState
     }
 
     case 'SET_SAVED_HELP_CENTERS':

@@ -35,6 +35,9 @@ export function settingsReducer(
   action: Actions | RehydrateAction,
 ): SettingsState {
   switch (action.type) {
+    case 'LOGOUT_CLEANUP': {
+      return initialState
+    }
     case 'SYNC_STORES': {
       return {
         ...state,

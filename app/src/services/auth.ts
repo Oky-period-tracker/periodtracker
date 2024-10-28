@@ -41,11 +41,16 @@ export const useCreateAccount = () => {
     const { name, id } = baseUser
     const dateSignedUp = moment.utc().toISOString()
 
+    const nameAvailable = await checkUserNameAvailability(name)
+    if (!nameAvailable) {
+      return false
+    }
+
     const DEK = await initialiseLocalAccount(name, password, id, secretAnswer)
 
     if (!DEK) {
       dispatch(setAuthError({ error: 'auth_fail' }))
-      return
+      return false
     }
 
     replacePersistPrivateRedux(id, DEK)
@@ -91,9 +96,9 @@ export const useCreateAccount = () => {
 
 const useSyncPrivateStores = () => {
   const dispatch = useDispatch()
+  const localPrivateStore = useSelector(privateStoreSelector)
 
   return (onlineLoginResponse: LoginResponse | null) => {
-    const localPrivateStore = useSelector(privateStoreSelector)
     const localLastModified = localPrivateStore.lastModified
 
     const onlinePrivateStore = onlineLoginResponse?.store?.appState?.private

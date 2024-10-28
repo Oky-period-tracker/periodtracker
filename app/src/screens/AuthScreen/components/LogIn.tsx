@@ -5,20 +5,28 @@ import { Hr } from '../../../components/Hr'
 import { Input } from '../../../components/Input'
 import { ErrorText } from '../../../components/ErrorText'
 import { useSelector } from '../../../redux/useSelector'
-import { currentUserSelector } from '../../../redux/selectors'
+import {
+  lastLoggedInUsernameSelector,
+  legacyAppTokenSelector,
+  legacyUserSelector,
+} from '../../../redux/selectors'
 import { useAuth } from '../../../contexts/AuthContext'
-import { formatPassword, useLogin } from '../../../services/auth'
+import { formatPassword, initialiseLocalAccount, useLogin } from '../../../services/auth'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
+import { useDispatch } from 'react-redux'
+import { initUser, setLastLoggedInUsername } from '../../../redux/actions'
 
 export const LogIn = () => {
-  const user = useSelector(currentUserSelector)
-  const [wasPreLoggedIn] = React.useState(!!user)
-  const { setIsLoggedIn } = useAuth()
+  const legacyUser = useSelector(legacyUserSelector)
+  const legacyAppToken = useSelector(legacyAppTokenSelector)
+  const lastLoggedInUsername = useSelector(lastLoggedInUsernameSelector)
+  const dispatch = useDispatch()
 
+  const { setIsLoggedIn } = useAuth()
   const login = useLogin()
 
-  const [name, setName] = React.useState(user ? user.name : '')
+  const [name, setName] = React.useState(lastLoggedInUsername ?? '')
   const [password, setPassword] = React.useState('')
 
   const [errorsVisible, setErrorsVisible] = React.useState(false)
@@ -32,18 +40,63 @@ export const LogIn = () => {
       return
     }
 
+    if (legacyUser && !legacyUser?.metadata?.hasMigrated) {
+      loginLegacyUser()
+      return
+    }
+
     const loginSuccess = await login(name, formatPassword(password))
     setSuccess(loginSuccess)
   }
 
-  React.useEffect(() => {
-    if (wasPreLoggedIn || !user) {
+  const loginLegacyUser = async () => {
+    if (!legacyUser) {
       return
     }
-    setIsLoggedIn(true)
-  }, [user])
 
-  const title = wasPreLoggedIn ? 'password_request' : 'log_in'
+    const formattedPassword = formatPassword(password)
+    const success = legacyUser.password === formattedPassword
+
+    if (!success) {
+      setSuccess(false)
+      return
+    }
+
+    const initialized = await initialiseLocalAccount(
+      legacyUser.name,
+      legacyUser.password,
+      legacyUser.id,
+      legacyUser.secretAnswer,
+    )
+
+    const loginSuccess = await login(name, formatPassword(password))
+
+    if (!initialized || !loginSuccess) {
+      return // ERROR
+    }
+
+    dispatch(
+      initUser({
+        user: {
+          ...legacyUser,
+        },
+        appToken: legacyAppToken,
+        isMigration: true,
+      }),
+    )
+
+    setIsLoggedIn(true)
+  }
+
+  React.useEffect(() => {
+    if (!legacyUser || lastLoggedInUsername) {
+      return
+    }
+
+    dispatch(setLastLoggedInUsername(legacyUser.name))
+  }, [legacyUser, lastLoggedInUsername])
+
+  const title = lastLoggedInUsername ? 'password_request' : 'log_in'
 
   return (
     <>
@@ -56,7 +109,7 @@ export const LogIn = () => {
           errors={errors}
           errorKeys={['username_too_short']}
           errorsVisible={errorsVisible}
-          editable={!user}
+          editable={!lastLoggedInUsername}
         />
         <Input
           value={password}

@@ -20,3 +20,7 @@ export function refreshStore(
 ) {
   return createAction('REFRESH_STORE', payload)
 }
+
+export function setLastLoggedInUsername(payload: string) {
+  return createAction('SET_LAST_LOGGED_IN_NAME', payload)
+}

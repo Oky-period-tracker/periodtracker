@@ -1,6 +1,10 @@
 import { User } from '../../../types'
 import { createAction } from '../../helpers'
 
-export const initUser = (payload: { user: User; appToken: string | null }) => {
+export const initUser = (payload: {
+  user: User
+  appToken: string | null
+  isMigration: boolean
+}) => {
   return createAction('INIT_USER', payload)
 }

@@ -19,6 +19,7 @@ export interface LegacyUser {
 }
 
 export interface UserMetadata {
+  hasMigrated: boolean
   // PH
   genderIdentity?: string
   accommodationRequirement?: string
@@ -81,6 +82,23 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         ...state,
         error: action.payload.error,
       }
+
+    case 'INIT_USER': {
+      if (!action.payload.isMigration || !state.user) {
+        return state
+      }
+
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          metadata: {
+            ...state.user.metadata,
+            hasMigrated: true,
+          },
+        },
+      }
+    }
 
     default:
       return state

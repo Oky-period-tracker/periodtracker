@@ -9,3 +9,5 @@ export const isLoginPasswordActiveSelector = (state: ReduxState) => s(state).isL
 export const currentAppVersion = (state: ReduxState) => s(state).appVersionName
 
 export const currentDeviceId = (state: ReduxState) => s(state)?.deviceId
+
+export const lastLoggedInUsernameSelector = (state: ReduxState) => s(state)?.lastLoggedInUsername

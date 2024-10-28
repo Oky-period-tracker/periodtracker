@@ -37,6 +37,7 @@ export interface AppState {
   isSoundActive?: boolean
   lastPressedCardDate: null | string
   lastPressedEmojiDate: null | string
+  lastLoggedInUsername?: string
 }
 
 const initialState: AppState = {
@@ -59,6 +60,7 @@ const initialState: AppState = {
   isSoundActive: true,
   lastPressedCardDate: null,
   lastPressedEmojiDate: null,
+  lastLoggedInUsername: '',
 }
 
 export function appReducer(state = initialState, action: Actions | RehydrateAction): AppState {
@@ -156,6 +158,16 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
       return {
         ...state,
         lastPressedEmojiDate: action.payload,
+      }
+    case 'SET_LAST_LOGGED_IN_NAME':
+      return {
+        ...state,
+        lastLoggedInUsername: action.payload,
+      }
+    case 'LOGOUT_CLEANUP':
+      return {
+        ...state,
+        lastLoggedInUsername: '',
       }
 
     default:

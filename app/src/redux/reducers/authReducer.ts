@@ -83,8 +83,8 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         error: action.payload.error,
       }
 
-    case 'INIT_USER': {
-      if (!action.payload.isMigration || !state.user) {
+    case 'MIGRATE_STORE': {
+      if (!state.user) {
         return state
       }
 

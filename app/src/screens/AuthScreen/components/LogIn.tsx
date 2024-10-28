@@ -7,7 +7,7 @@ import { ErrorText } from '../../../components/ErrorText'
 import { useSelector } from '../../../redux/useSelector'
 import {
   lastLoggedInUsernameSelector,
-  legacyAppTokenSelector,
+  legacyPrivateStateSelector,
   legacyUserSelector,
 } from '../../../redux/selectors'
 import { useAuth } from '../../../contexts/AuthContext'
@@ -15,11 +15,11 @@ import { formatPassword, initialiseLocalAccount, useLogin } from '../../../servi
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { useDispatch } from 'react-redux'
-import { initUser, setLastLoggedInUsername } from '../../../redux/actions'
+import { migratePrivateStore, setLastLoggedInUsername } from '../../../redux/actions'
 
 export const LogIn = () => {
   const legacyUser = useSelector(legacyUserSelector)
-  const legacyAppToken = useSelector(legacyAppTokenSelector)
+  const legacyPrivateState = useSelector(legacyPrivateStateSelector)
   const lastLoggedInUsername = useSelector(lastLoggedInUsernameSelector)
   const dispatch = useDispatch()
 
@@ -75,15 +75,10 @@ export const LogIn = () => {
       return // ERROR
     }
 
-    dispatch(
-      initUser({
-        user: {
-          ...legacyUser,
-        },
-        appToken: legacyAppToken,
-        isMigration: true,
-      }),
-    )
+    // TODO: What if something goes wrong here and theres no user data carried across, should initialise user ?
+    if (legacyPrivateState) {
+      dispatch(migratePrivateStore(legacyPrivateState))
+    }
 
     setIsLoggedIn(true)
   }

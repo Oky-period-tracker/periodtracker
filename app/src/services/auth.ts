@@ -31,6 +31,7 @@ import {
 } from './storage'
 import { analytics } from './firebase'
 import { useAuth } from '../contexts/AuthContext'
+import { appTokenSelector, currentUserSelector } from '../redux/selectors'
 
 export const useCreateAccount = () => {
   const dispatch = useDispatch()
@@ -173,54 +174,63 @@ export const useLogin = () => {
   }
 }
 
-export const deleteAccount = async (
-  username: string,
-  password: string,
-  appToken?: string,
-  isGuest?: boolean,
-  userId?: string,
-) => {
-  logOutUserRedux()
+export const useDeleteAccount = () => {
+  const userId = useSelector(currentUserSelector)?.id
+  const appToken = useSelector(appTokenSelector)
 
-  const { localUserId, DEK } = await localLogin(username, password)
+  return async (name: string, password: string) => {
+    const isLoggedIn = !!userId
+    const { localUserId, DEK } = await localLogin(name, password)
 
-  if (!DEK || !localUserId || localUserId !== userId) {
-    return false
-  }
-
-  const onlineSuccess = false
-
-  if (appToken) {
-    try {
-      await httpClient.deleteUserFromPassword({
-        name,
-        password,
-      })
-    } catch (e) {
+    if (isLoggedIn && (!DEK || !localUserId)) {
+      // Logged in & Incorrect local password - Dont delete
       return false
     }
+
+    // Logged out & local login fail || Logged in & local login success
+
+    let onlineSuccess = false
+
+    if (appToken) {
+      try {
+        // Check user exists
+        await httpClient.getUserInfo(name)
+
+        // Delete
+        await httpClient.deleteUserFromPassword({
+          name,
+          password,
+        })
+
+        onlineSuccess = true
+      } catch (e) {
+        //
+      }
+    }
+
+    if (appToken && !onlineSuccess) {
+      // Account is saved online & online deletion failed - Dont delete locally
+      return false
+    }
+
+    // Online deletion success
+    // Log out and delete all storage related to this user
+
+    // Log out
+    logOutUserRedux()
+    // Delete local storage
+    removeAsyncStorageItem(`persist:${userId}`)
+    deleteSecureValue(`username_${hash(name)}`)
+    deleteSecureValue(`${userId}_encrypted_dek`)
+    deleteSecureValue(`${userId}answer__encrypted_dek`)
+    deleteSecureValue(`${userId}_hashed_dek`)
+    deleteSecureValue(`${userId}_salt`)
+    deleteSecureValue(`${userId}answer__salt`)
+    // analytics
+    analytics?.().logEvent('deleteAccount')
+
+    return true
   }
-
-  if (appToken && !isGuest && !onlineSuccess) {
-    return false
-  }
-
-  // Log out
-  logOutUserRedux()
-
-  // Delete local storage
-  removeAsyncStorageItem(`persist:${userId}`)
-  deleteSecureValue(`username_${hash(username)}`)
-  deleteSecureValue(`${userId}_encrypted_dek`)
-  deleteSecureValue(`${userId}answer__encrypted_dek`)
-  deleteSecureValue(`${userId}_hashed_dek`)
-  deleteSecureValue(`${userId}_salt`)
-  deleteSecureValue(`${userId}answer__salt`)
-
-  // analytics
-  analytics?.().logEvent('deleteAccount')
-
-  return true
 }
 
 type LoginCase =

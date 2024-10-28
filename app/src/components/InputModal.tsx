@@ -6,13 +6,12 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text } from './Text'
 import { Hr } from './Hr'
 
-type Props = {
+type InputModalProps = {
   title: string
   onConfirm: () => void
 } & ModalProps &
   InputProps
 
-// TODO: MUST DO
 export const InputModal = ({
   title,
   visible,
@@ -21,7 +20,7 @@ export const InputModal = ({
   value,
   onConfirm,
   ...props
-}: Props) => {
+}: InputModalProps) => {
   const { backgroundColor } = useColor()
 
   return (

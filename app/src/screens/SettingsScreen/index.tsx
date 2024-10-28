@@ -6,7 +6,6 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { TouchableRow, TouchableRowProps } from '../../components/TouchableRow'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Switch } from '../../components/Switch'
-// import { useDispatch } from 'react-redux'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
@@ -14,35 +13,39 @@ import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
 import { logOutUserRedux } from '../../redux/store'
+import { InputModal } from '../../components/InputModal'
+import { useToggle } from '../../hooks/useToggle'
+import { formatPassword, useDeleteAccount } from '../../services/auth'
 
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
-  // const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
+
+  const [visible, toggleVisible] = useToggle()
+  const [password, setPassword] = React.useState('')
+
+  const deleteAccount = useDeleteAccount()
 
   const logOut = () => {
     logOutUserRedux()
     setIsLoggedIn(false)
   }
 
-  const deleteAccount = () => {
+  const onDeletePress = async () => {
     if (!currentUser) {
       return
     }
-    // TODO: MUST DO
 
-    // TODO: Modal to enter password
+    const success = await deleteAccount(currentUser.name, formatPassword(password))
 
-    // dispatch(
-    //   deleteAccountRequest({
-    //     name: currentUser.name,
-    //     password: currentUser.password,
-    //     // setLoading, TODO: ?
-    //   }),
-    // )
+    if (!success) {
+      Alert.alert('error', 'delete_account_fail')
+      setPassword('')
+      toggleVisible()
+    }
   }
 
   const logOutAlert = () => {
@@ -57,24 +60,6 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
         {
           text: translate('yes'),
           onPress: logOut,
-        },
-      ],
-      { cancelable: false },
-    )
-  }
-
-  const deleteAccountAlert = () => {
-    Alert.alert(
-      translate('are_you_sure'),
-      translate('delete_account_description'),
-      [
-        {
-          text: translate('cancel'),
-          style: 'cancel',
-        },
-        {
-          text: translate('yes'),
-          onPress: deleteAccount,
         },
       ],
       { cancelable: false },
@@ -133,7 +118,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
           logout
         </Button>
         <Button
-          onPress={deleteAccountAlert}
+          onPress={toggleVisible}
           status={'basic'}
           style={[styles.button, styles.deleteButton]}
         >
@@ -147,6 +132,16 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
           contact_us
         </Button>
       </View>
+
+      <InputModal
+        title={'password'}
+        onConfirm={onDeletePress}
+        visible={visible}
+        toggleVisible={toggleVisible}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry={true}
+      />
     </ScrollView>
   )
 }

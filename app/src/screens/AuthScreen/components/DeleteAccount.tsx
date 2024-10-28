@@ -4,12 +4,10 @@ import { AuthHeader } from './AuthHeader'
 import { Hr } from '../../../components/Hr'
 import { Input } from '../../../components/Input'
 import { Text } from '../../../components/Text'
-import { httpClient } from '../../../services/HttpClient'
-import { formatPassword } from '../../../services/auth'
+import { formatPassword, useDeleteAccount } from '../../../services/auth'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
-import { analytics } from '../../../services/firebase'
 
 export const DeleteAccount = () => {
   const { setAuthMode } = useAuthMode()
@@ -21,6 +19,8 @@ export const DeleteAccount = () => {
   const [errorsVisible, setErrorsVisible] = React.useState(false)
   const { errors } = validateCredentials(name, password)
 
+  const deleteAccount = useDeleteAccount()
+
   const goBack = () => {
     setAuthMode('start')
   }
@@ -31,29 +31,21 @@ export const DeleteAccount = () => {
       return
     }
 
-    try {
-      // Check user exists
-      await httpClient.getUserInfo(name)
+    const success = await deleteAccount(name, formatPassword(password))
 
-      // Delete
-      await httpClient.deleteUserFromPassword({
-        name,
-        password: formatPassword(password),
-      })
-
+    if (success) {
       Alert.alert('success', 'delete_account_completed', [
         {
           text: translate('continue'),
           onPress: goBack,
         },
       ])
-
-      analytics?.().logEvent('deleteAccount')
-    } catch (e) {
-      Alert.alert('error', 'delete_account_fail')
-      setName('')
-      setPassword('')
+      return
     }
+
+    Alert.alert('error', 'delete_account_fail')
+    setName('')
+    setPassword('')
   }
 
   return (

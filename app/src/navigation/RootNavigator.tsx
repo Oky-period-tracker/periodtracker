@@ -5,6 +5,7 @@ import {
   DefaultTheme,
   Theme,
   useNavigationContainerRef,
+  CommonActions,
 } from '@react-navigation/native'
 
 import { ProfileStackParamList } from './stacks/ProfileStack'
@@ -127,6 +128,19 @@ function RootNavigator() {
 
   const navigationRef = useNavigationContainerRef()
   const routeNameRef = React.useRef<string | null>(null)
+
+  React.useEffect(() => {
+    if (!navigationRef || !hasAccess) {
+      return
+    }
+
+    navigationRef.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'home' }],
+      }),
+    )
+  }, [navigationRef, hasAccess])
 
   return (
     <NavigationContainer

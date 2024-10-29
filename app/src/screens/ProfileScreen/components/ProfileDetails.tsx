@@ -129,12 +129,8 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={[styles.text, styles.bold]} enableTranslate={false}>
-              {avatar}
-            </Text>
-            <Text style={[styles.text, styles.bold]} enableTranslate={false}>
-              {theme}
-            </Text>
+            <Text style={[styles.text, styles.bold]}>{avatar}</Text>
+            <Text style={[styles.text, styles.bold]}>{theme}</Text>
           </View>
         </View>
       </TouchableOpacity>

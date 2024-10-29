@@ -92,12 +92,7 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
                 ]}
               >
                 <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
-                <Text
-                  style={[styles.name, { color: palette.secondary.text }]}
-                  enableTranslate={false}
-                >
-                  {avatar}
-                </Text>
+                <Text style={[styles.name, { color: palette.secondary.text }]}>{avatar}</Text>
                 {showCheck && <CheckButton style={styles.check} status={checkStatus} />}
               </View>
             </TouchableOpacity>
@@ -129,12 +124,7 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
                   source={getAsset(`backgrounds.${theme}.icon`)}
                   style={[styles.themeImage, { backgroundColor, borderColor: backgroundColor }]}
                 />
-                <Text
-                  style={[styles.name, { color: palette.secondary.text }]}
-                  enableTranslate={false}
-                >
-                  {theme}
-                </Text>
+                <Text style={[styles.name, { color: palette.secondary.text }]}>{theme}</Text>
                 {showCheck && <CheckButton style={styles.check} status={checkStatus} />}
               </View>
             </TouchableOpacity>

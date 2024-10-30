@@ -19,6 +19,12 @@ export function userReducer(state = initialState, action: Actions | RehydrateAct
       return initialState
     }
 
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        ...action.payload.user,
+      }
+
     case 'INIT_USER':
       return {
         user: action.payload.user,

@@ -19,7 +19,7 @@ export interface LegacyUser {
 }
 
 export interface UserMetadata {
-  hasMigrated: boolean
+  hasMigrated?: boolean
   // PH
   genderIdentity?: string
   accommodationRequirement?: string
@@ -55,6 +55,7 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
   switch (action.type) {
     case REHYDRATE:
       return {
+        ...state,
         // @ts-expect-error TODO:
         ...(action.payload && action.payload.auth),
         // reset state when store is re-hydrated

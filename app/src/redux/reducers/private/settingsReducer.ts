@@ -38,6 +38,11 @@ export function settingsReducer(
     case 'LOGOUT_CLEANUP': {
       return initialState
     }
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        ...action.payload.settings,
+      }
     case 'SYNC_STORES': {
       return {
         ...state,

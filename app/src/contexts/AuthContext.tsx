@@ -2,7 +2,11 @@ import React from 'react'
 import { useLoading } from './LoadingProvider'
 import { useDispatch } from 'react-redux'
 import { useSelector } from '../redux/useSelector'
-import { currentUserSelector } from '../redux/selectors'
+import {
+  currentUserSelector,
+  lastLoggedInUsernameSelector,
+  legacyUserSelector,
+} from '../redux/selectors'
 import { setLastLoggedInUsername } from '../redux/actions'
 
 export type AuthContext = {
@@ -19,6 +23,9 @@ const AuthContext = React.createContext<AuthContext>(defaultValue)
 
 export const AuthProvider = ({ children }: React.PropsWithChildren) => {
   const user = useSelector(currentUserSelector)
+  const legacyUser = useSelector(legacyUserSelector)
+  const lastLoggedInUsername = useSelector(lastLoggedInUsernameSelector)
+
   const [isLoggedIn, setIsLoggedInState] = React.useState(false)
   const { setLoading } = useLoading()
 
@@ -36,6 +43,14 @@ export const AuthProvider = ({ children }: React.PropsWithChildren) => {
 
     dispatch(setLastLoggedInUsername(user?.name))
   }, [isLoggedIn, user?.name])
+
+  React.useEffect(() => {
+    if (!legacyUser || lastLoggedInUsername) {
+      return
+    }
+
+    dispatch(setLastLoggedInUsername(legacyUser.name))
+  }, [legacyUser, lastLoggedInUsername])
 
   return (
     <AuthContext.Provider

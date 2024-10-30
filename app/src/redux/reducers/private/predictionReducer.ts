@@ -12,6 +12,16 @@ export function predictionReducer(state = initialState, action: Actions): Predic
       return initialState
     }
 
+    case 'MIGRATE_STORE': {
+      if (action.payload.prediction) {
+        return {
+          ...state,
+          ...action.payload.prediction,
+        }
+      }
+      return state
+    }
+
     case 'SYNC_STORES': {
       // @ts-expect-error TODO:
       return {

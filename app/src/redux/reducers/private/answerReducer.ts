@@ -52,6 +52,12 @@ export function answerReducer(state: AnswerState = initialState, action: Actions
       return initialState
     }
 
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        ...action.payload.answer,
+      }
+
     case 'SYNC_STORES': {
       return {
         ...state,

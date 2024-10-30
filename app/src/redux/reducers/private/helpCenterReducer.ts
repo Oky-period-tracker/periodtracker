@@ -18,6 +18,12 @@ export function helpCenterReducer(
       return initialState
     }
 
+    case 'MIGRATE_STORE':
+      return {
+        ...state,
+        ...action.payload.helpCenters,
+      }
+
     case 'SYNC_STORES': {
       return {
         ...state,

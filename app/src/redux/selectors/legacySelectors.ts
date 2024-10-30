@@ -26,10 +26,10 @@ export const legacyPrivateStateSelector = (state: ReduxState): PrivateState | un
     answer: {
       allSurveys: [],
       completedSurveys: [],
-      quizzes: state.answer?.[userId]?.quizzes,
-      cards: state.answer?.[userId]?.cards,
-      verifiedDates: state.answer?.[userId]?.verifiedDates,
-      notes: state.answer?.[userId]?.notes,
+      quizzes: state.answer?.[userId]?.quizzes ?? {},
+      cards: state.answer?.[userId]?.cards ?? {},
+      verifiedDates: state.answer?.[userId]?.verifiedDates ?? {},
+      notes: state.answer?.[userId]?.notes ?? {},
     },
     prediction: state.prediction,
     settings: {

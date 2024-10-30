@@ -86,6 +86,9 @@ export const EditPasswordModal = ({ visible, toggleVisible }: ModalProps) => {
     )
 
     if (!altPasswordSaved || onlyChangeLocally) {
+      await commitAltPassword(currentUser.id)
+      toggleVisible()
+      successAlert()
       return
     }
 

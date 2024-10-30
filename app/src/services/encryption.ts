@@ -13,11 +13,15 @@ export const encrypt = (value: string, secret: string): string => {
 
 export const decrypt = (encrypted: string, secret: string): string => {
   // Extract IV (first 32 hex characters = 16 bytes)
-  const ivHex = encrypted.slice(0, 32)
-  const iv = CryptoJS.enc.Hex.parse(ivHex)
-  const encryptedHex = encrypted.slice(32)
-  const decrypted = CryptoJS.AES.decrypt(encryptedHex, secret, { iv })
-  return decrypted.toString(CryptoJS.enc.Utf8)
+  try {
+    const ivHex = encrypted.slice(0, 32)
+    const iv = CryptoJS.enc.Hex.parse(ivHex)
+    const encryptedHex = encrypted.slice(32)
+    const decrypted = CryptoJS.AES.decrypt(encryptedHex, secret, { iv })
+    return decrypted.toString(CryptoJS.enc.Utf8)
+  } catch (e) {
+    return ''
+  }
 }
 
 export const hash = (value: string) => {
@@ -81,13 +85,18 @@ export const setAnswerDEK = async (userId: string, DEK: string, KEK: string, suf
 }
 
 export const getDEK = async (userId: string, KEK: string, suffix = '', prefix = '') => {
+  console.log('*** getDEK 1')
   const encryptedDEK = await getSecureValue(`${userId}_${prefix}encrypted_dek${suffix}`)
+  console.log('*** getDEK 2')
 
   if (!encryptedDEK) {
     return undefined
   }
+  console.log('*** getDEK 3')
 
   const DEK = decrypt(encryptedDEK, KEK)
+  console.log('*** getDEK 4')
+
   return DEK
 }
 

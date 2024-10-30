@@ -450,7 +450,7 @@ export const changeLocalPassword = async (
   const suffix = preserveOldPassword ? `_1` : ''
   const newSalt = generateSalt()
   const savedSalt = await setSalt(userId, newSalt, suffix)
-  const newKEK = deriveKEK(newPassword, salt)
+  const newKEK = deriveKEK(newPassword, newSalt)
   const savedDEK = await setDEK(userId, DEK, newKEK, suffix)
 
   return savedSalt && savedDEK

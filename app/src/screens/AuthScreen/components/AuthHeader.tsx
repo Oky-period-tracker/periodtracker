@@ -4,23 +4,17 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Button } from '../../../components/Button'
 import { useAuthMode } from '../AuthModeContext'
 import { useDispatch } from 'react-redux'
-import { useSelector } from '../../../redux/useSelector'
-import { currentUserSelector } from '../../../redux/selectors'
-import { logout } from '../../../redux/actions'
+import { setLastLoggedInUsername } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
 
 export const AuthHeader = ({ title }: { title: string }) => {
-  const user = useSelector(currentUserSelector)
   const dispatch = useDispatch()
   const { setAuthMode } = useAuthMode()
   const { palette } = useColor()
 
   const onClose = () => {
-    if (user) {
-      dispatch(logout())
-    }
-
+    dispatch(setLastLoggedInUsername(''))
     setAuthMode('start')
   }
 

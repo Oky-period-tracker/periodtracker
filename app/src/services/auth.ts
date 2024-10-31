@@ -132,7 +132,7 @@ export const useLogin = () => {
 
   return async (name: string, password: string) => {
     const [localLoginResult, onlineLoginResponse] = await Promise.all([
-      localLogin(name, password),
+      localLogin({ name, password }),
       onlineLogin(name, password),
     ])
 
@@ -185,7 +185,7 @@ export const useDeleteAccount = () => {
 
   return async (name: string, password: string) => {
     const isLoggedIn = !!userId
-    const { localUserId, DEK } = await localLogin(name, password)
+    const { localUserId, DEK } = await localLogin({ name, password })
 
     if (isLoggedIn && (!DEK || !localUserId)) {
       // Logged in & Incorrect local password - Dont delete
@@ -333,34 +333,17 @@ export const initialiseLocalAccount = async (
   return DEK
 }
 
-export const saveAltCredentials = async (
-  password: string,
-  userId: string,
-  DEK: string,
-  alt: number,
-) => {
-  if (alt <= 0) {
-    throw new Error('alt must be greater than 0')
-  }
-
-  const suffix = `_${alt}`
-  const salt = generateSalt()
-  const savedSalt = await setSalt(userId, salt, suffix)
-  const KEK = deriveKEK(password, salt)
-  const savedDEK = await setDEK(userId, DEK, KEK, suffix)
-
-  if (savedSalt && savedDEK) {
-    return undefined
-  }
-
-  return DEK
-}
-
-export const localLogin = async (
-  name: string,
-  password: string,
+export const localLogin = async ({
+  name,
+  password,
+  isAnswer = false,
   alt = 0,
-): Promise<{
+}: {
+  name: string
+  password: string
+  isAnswer?: boolean
+  alt?: number
+}): Promise<{
   localUserId: string | undefined
   DEK: string | undefined
 }> => {
@@ -375,9 +358,9 @@ export const localLogin = async (
     // Local account doesn't exist
     return fail
   }
-
+  const prefix = isAnswer ? 'answer_' : ''
   const suffix = alt ? `_${alt}` : ''
-  const salt = await getSalt(localUserId, suffix)
+  const salt = await getSalt(localUserId, suffix, prefix)
 
   if (!salt) {
     // No salt - Account unrecoverable
@@ -385,7 +368,7 @@ export const localLogin = async (
   }
 
   const KEK = deriveKEK(password, salt)
-  const DEK = await getDEK(localUserId, KEK, suffix)
+  const DEK = await getDEK(localUserId, KEK, suffix, prefix)
 
   if (DEK === undefined) {
     // No DEK - Account unrecoverable
@@ -397,7 +380,7 @@ export const localLogin = async (
   const maxAlts = 1
   if (!isValid && alt < maxAlts) {
     // Validation failed, check same password with alternate salt & DEK
-    return localLogin(name, password, alt + 1)
+    return localLogin({ name, password, alt: alt + 1 })
   }
 
   if (!isValid) {
@@ -507,7 +490,7 @@ export const changeLocalAnswer = async (
   const suffix = preserveOldAnswer ? `_1` : ''
   const newSalt = generateSalt()
   const savedSalt = await setSalt(userId, newSalt, suffix)
-  const newKEK = deriveKEK(newAnswer, salt)
+  const newKEK = deriveKEK(newAnswer, newSalt)
   const savedDEK = await setDEK(userId, DEK, newKEK, suffix)
 
   return savedSalt && savedDEK

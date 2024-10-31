@@ -5,9 +5,16 @@ import { Hr } from '../../../components/Hr'
 import { Input } from '../../../components/Input'
 import { Text } from '../../../components/Text'
 import { httpClient } from '../../../services/HttpClient'
-import { formatPassword } from '../../../services/auth'
+import {
+  changeLocalPassword,
+  commitAltPassword,
+  deleteAltPassword,
+  formatPassword,
+  localLogin,
+} from '../../../services/auth'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
+import { getUserIdFromName } from '../../../services/encryption'
 import { AuthCardBody } from './AuthCardBody'
 
 export const ForgotPassword = () => {
@@ -46,7 +53,7 @@ export const ForgotPassword = () => {
 
   const failAlert = () => {
     Alert.alert(
-      translate('password_change_fail'),
+      translate('unsuccessful'),
       translate('password_change_fail_description'),
       [
         {
@@ -63,19 +70,62 @@ export const ForgotPassword = () => {
       return
     }
 
+    const existsLocally = await getUserIdFromName(name)
+
+    const { localUserId, DEK } = await localLogin({
+      name,
+      password: formatPassword(answer),
+      isAnswer: true,
+    })
+
+    if (existsLocally && (!DEK || !localUserId)) {
+      // Exists locally but authentication failed
+      return false
+    }
+
+    const formattedAnswer = formatPassword(answer)
+    const formattedPassword = formatPassword(password)
+
+    if (localUserId && DEK) {
+      const altPasswordSaved = await changeLocalPassword(
+        localUserId,
+        formattedAnswer,
+        formattedPassword,
+        true,
+      )
+
+      if (!altPasswordSaved) {
+        return false
+      }
+    }
+
     try {
-      // Check exists
-      await httpClient.getUserInfo(name)
+      // Check exists, and compare ids
+      const getUserInfoResponse = await httpClient.getUserInfo(name)
+      const onlineId = getUserInfoResponse?.id
+      const idsMatch = localUserId && onlineId && onlineId === localUserId
+      const existsOnline = Boolean(onlineId)
+      const shouldChangeOnline = existsOnline && (idsMatch || !existsLocally)
 
-      // Reset
-      await httpClient.resetPassword({
-        name,
-        secretAnswer: formatPassword(answer),
-        password: formatPassword(password),
-      })
+      if (shouldChangeOnline) {
+        // Reset online
+        await httpClient.resetPassword({
+          name,
+          secretAnswer: formattedAnswer,
+          password: formattedPassword,
+        })
+      }
 
+      // Online success (or skipped), commit change locally
+      if (localUserId) {
+        await commitAltPassword(localUserId)
+      }
       successAlert()
     } catch (e) {
+      if (localUserId) {
+        // Revert back to old password
+        deleteAltPassword(localUserId)
+      }
       failAlert()
     }
 

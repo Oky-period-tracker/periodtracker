@@ -52,7 +52,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
     <SafeScreen style={styles.screen}>
       {authMode === 'start' && <AuthScreenHeader />}
 
-      <View style={[styles.wrapper, globalStyles.shadow]}>
+      <View style={[styles.wrapper, { backgroundColor }, globalStyles.shadow]}>
         <AnimatedContainer style={[styles.container, { backgroundColor }, globalStyles.elevation]}>
           {authMode === 'start' && <AuthToggle />}
           {authMode === 'log_in' && <LogIn />}
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     width: '100%',
+    borderRadius: 20,
   },
   container: {
     borderRadius: 20,

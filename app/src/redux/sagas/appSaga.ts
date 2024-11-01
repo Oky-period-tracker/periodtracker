@@ -7,6 +7,7 @@ import * as selectors from '../selectors'
 // import messaging from "@react-native-firebase/messaging"; TODO:
 import { PartialStateSnapshot } from '../types/partialStore'
 import { ReduxState } from '../reducers'
+import { privateSnapshotSelector } from '../selectors/private/privateSelectors'
 
 function* syncAppState() {
   let lastAppState
@@ -27,7 +28,7 @@ function* syncAppState() {
 
     const state: ReduxState = yield select()
     const appState: PartialStateSnapshot = {
-      private: state.private,
+      private: privateSnapshotSelector(state),
       app: state.app,
       prediction: state.prediction,
       verifiedDates: state.answer[currentUser?.id]?.verifiedDates,

@@ -34,7 +34,11 @@ sagaMiddleware.run(rootSaga)
 
 export { store, persistor }
 
-export const replacePersistPrivateRedux = (userId: string, secretKey: string) => {
+export const replacePersistPrivateRedux = (
+  userId: string,
+  secretKey: string,
+  onRehydrateComplete?: () => void,
+) => {
   if (!secretKey) {
     return false
   }
@@ -58,6 +62,15 @@ export const replacePersistPrivateRedux = (userId: string, secretKey: string) =>
 
   store.replaceReducer(persistedRootReducer)
   persistor.persist()
+
+  // AFTER REHYDRATE
+  const unsubscribe = store.subscribe(() => {
+    const lastAction = store.getState()._persist?.rehydrated
+    if (lastAction) {
+      unsubscribe() // Ensure we only call this once
+      onRehydrateComplete?.()
+    }
+  })
   return true
 }
 

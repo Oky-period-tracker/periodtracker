@@ -19,9 +19,7 @@ import {
 import { logOutUserRedux, replacePersistPrivateRedux } from '../redux/store'
 import { useDispatch } from 'react-redux'
 import { useSelector } from '../redux/useSelector'
-import { LoginResponse } from '../core/api'
-import { privateStoreSelector } from '../redux/selectors/private/privateSelectors'
-import { initUser, loginFailure, setAuthError, syncPrivateStores } from '../redux/actions'
+import { initUser, loginFailure, setAuthError, syncPrivateStoresRequest } from '../redux/actions'
 import moment from 'moment'
 import {
   deleteSecureValue,
@@ -94,40 +92,8 @@ export const useCreateAccount = () => {
   }
 }
 
-const useSyncPrivateStores = () => {
-  const dispatch = useDispatch()
-  const localPrivateStore = useSelector(privateStoreSelector)
-
-  return (onlineLoginResponse: LoginResponse | null) => {
-    const localLastModified = localPrivateStore.lastModified
-
-    const onlinePrivateStore = onlineLoginResponse?.store?.appState?.private
-
-    if (!onlinePrivateStore) {
-      return
-    }
-
-    const onlineLastModified = onlinePrivateStore?.lastModified
-
-    let stores = {
-      oldStore: onlinePrivateStore,
-      newStore: localPrivateStore,
-    }
-
-    if (onlineLastModified > localLastModified) {
-      stores = {
-        oldStore: localPrivateStore,
-        newStore: onlinePrivateStore,
-      }
-    }
-
-    dispatch(syncPrivateStores(stores))
-  }
-}
-
 export const useLogin = () => {
   const dispatch = useDispatch()
-  const syncPrivateStores = useSyncPrivateStores()
   const { setIsLoggedIn } = useAuth()
 
   return async (name: string, password: string) => {
@@ -149,10 +115,15 @@ export const useLogin = () => {
       localUserId,
     })
 
+    const onlinePrivateStore = onlineLoginResponse?.store?.appState?.private
+
     if (loginCase === 'success' && localUserId && DEK) {
-      replacePersistPrivateRedux(localUserId, DEK)
-      syncPrivateStores(onlineLoginResponse)
-      setIsLoggedIn(true)
+      replacePersistPrivateRedux(localUserId, DEK, () => {
+        if (onlinePrivateStore) {
+          dispatch(syncPrivateStoresRequest(onlinePrivateStore))
+        }
+        setIsLoggedIn(true)
+      })
       return true
     }
 
@@ -167,8 +138,13 @@ export const useLogin = () => {
       if (!initializedDEK) {
         return false // ERROR
       }
-      replacePersistPrivateRedux(onlineUserId, initializedDEK)
-      syncPrivateStores(onlineLoginResponse)
+
+      replacePersistPrivateRedux(onlineUserId, initializedDEK, () => {
+        if (onlinePrivateStore) {
+          dispatch(syncPrivateStoresRequest(onlinePrivateStore))
+        }
+        setIsLoggedIn(true)
+      })
       setIsLoggedIn(true)
       return true
     }

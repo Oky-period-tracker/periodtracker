@@ -49,9 +49,27 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield put(actions.setPredictionEngineState(stateToSet))
 }
 
+function* onSyncStoresRequest(action: ExtractActionFromActionType<'SYNC_STORES_REQUEST'>) {
+  if (!action.payload) {
+    return
+  }
+
+  const lastModifiedOnline = action.payload?.lastModified
+  // @ts-expect-error TODO:
+  const lastModifiedLocal = yield select((s) => s.private.lastModified)
+
+  yield put(
+    actions.syncPrivateStores({
+      onlinePrivateStore: action.payload,
+      isNewer: lastModifiedOnline > lastModifiedLocal,
+    }),
+  )
+}
+
 export function* authSaga() {
   yield all([
     takeLatest('CONVERT_GUEST_ACCOUNT', onConvertGuestAccount),
     takeLatest('JOURNEY_COMPLETION', onJourneyCompletion),
+    takeLatest('SYNC_STORES_REQUEST', onSyncStoresRequest),
   ])
 }

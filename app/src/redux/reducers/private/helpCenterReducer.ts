@@ -25,10 +25,16 @@ export function helpCenterReducer(
       }
 
     case 'SYNC_STORES': {
+      if (action.payload.isNewer) {
+        return {
+          ...state,
+          ...action.payload.onlinePrivateStore.helpCenters,
+        }
+      }
+
       return {
+        ...action.payload.onlinePrivateStore.helpCenters,
         ...state,
-        ...(action.payload.oldStore.helpCenters ?? initialState),
-        ...(action.payload.newStore.helpCenters ?? initialState),
       }
     }
 

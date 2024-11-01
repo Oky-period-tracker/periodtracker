@@ -43,13 +43,21 @@ export function settingsReducer(
         ...state,
         ...action.payload.settings,
       }
+
     case 'SYNC_STORES': {
+      if (action.payload.isNewer) {
+        return {
+          ...state,
+          ...action.payload.onlinePrivateStore.settings,
+        }
+      }
+
       return {
+        ...action.payload.onlinePrivateStore.settings,
         ...state,
-        ...(action.payload.oldStore.settings ?? initialState),
-        ...(action.payload.newStore.settings ?? initialState),
       }
     }
+
     case 'SET_THEME':
       return {
         ...state,

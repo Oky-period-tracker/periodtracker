@@ -59,10 +59,16 @@ export function answerReducer(state: AnswerState = initialState, action: Actions
       }
 
     case 'SYNC_STORES': {
+      if (action.payload.isNewer) {
+        return {
+          ...state,
+          ...action.payload.onlinePrivateStore.answer,
+        }
+      }
+
       return {
+        ...action.payload.onlinePrivateStore.answer,
         ...state,
-        ...(action.payload.oldStore.answer ?? initialState),
-        ...(action.payload.newStore.answer ?? initialState),
       }
     }
 

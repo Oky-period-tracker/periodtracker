@@ -1,7 +1,11 @@
 import { createAction } from '../../helpers'
 import { PrivateState } from '../../reducers/private/privateReducer'
 
-export function syncPrivateStores(payload: { oldStore: PrivateState; newStore: PrivateState }) {
+export function syncPrivateStoresRequest(payload: PrivateState) {
+  return createAction('SYNC_STORES_REQUEST', payload)
+}
+
+export function syncPrivateStores(payload: { onlinePrivateStore: PrivateState; isNewer: boolean }) {
   return createAction('SYNC_STORES', payload)
 }
 

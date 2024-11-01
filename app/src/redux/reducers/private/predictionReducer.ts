@@ -23,11 +23,33 @@ export function predictionReducer(state = initialState, action: Actions): Predic
     }
 
     case 'SYNC_STORES': {
-      // @ts-expect-error TODO:
+      const onlineState = action.payload.onlinePrivateStore.prediction
+      if (onlineState && !state) {
+        return {
+          ...onlineState,
+        }
+      }
+
+      if (!onlineState && state) {
+        return {
+          ...state,
+        }
+      }
+
+      if (!onlineState || !state) {
+        return state
+      }
+
+      if (action.payload.isNewer) {
+        return {
+          ...state,
+          ...action.payload.onlinePrivateStore.prediction,
+        }
+      }
+
       return {
-        ...(state ?? {}),
-        ...(action.payload.oldStore.prediction ?? {}),
-        ...(action.payload.newStore.prediction ?? {}),
+        ...action.payload.onlinePrivateStore.prediction,
+        ...state,
       }
     }
 

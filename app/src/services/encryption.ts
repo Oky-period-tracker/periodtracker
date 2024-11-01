@@ -85,18 +85,12 @@ export const setAnswerDEK = async (userId: string, DEK: string, KEK: string, suf
 }
 
 export const getDEK = async (userId: string, KEK: string, suffix = '', prefix = '') => {
-  console.log('*** getDEK 1')
   const encryptedDEK = await getSecureValue(`${userId}_${prefix}encrypted_dek${suffix}`)
-  console.log('*** getDEK 2')
-
   if (!encryptedDEK) {
     return undefined
   }
-  console.log('*** getDEK 3')
 
   const DEK = decrypt(encryptedDEK, KEK)
-  console.log('*** getDEK 4')
-
   return DEK
 }
 

@@ -29,6 +29,11 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
 
   const deleteAccount = useDeleteAccount()
 
+  const name = currentUser?.name ?? ''
+
+  const [errorsVisible, setErrorsVisible] = React.useState(false)
+  const { errors } = validateCredentials(name, formatPassword(password))
+
   const logOut = () => {
     logOutUserRedux()
     setIsLoggedIn(false)
@@ -39,13 +44,21 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       return
     }
 
-    const success = await deleteAccount(currentUser.name, formatPassword(password))
-
-    if (!success) {
-      Alert.alert('error', 'delete_account_fail')
-      setPassword('')
-      toggleVisible()
+    if (errors.length) {
+      setErrorsVisible(true)
+      return
     }
+
+    const success = await deleteAccount(name, formatPassword(password))
+
+    if (success) {
+      Alert.alert(translate('success'), translate('delete_account_completed'))
+      return
+    }
+
+    Alert.alert(translate('error'), translate('delete_account_fail'))
+    setPassword('')
+    toggleVisible()
   }
 
   const logOutAlert = () => {
@@ -141,6 +154,9 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
+        errors={errors}
+        errorKeys={['username_too_short']}
+        errorsVisible={errorsVisible}
       />
     </ScrollView>
   )
@@ -154,6 +170,21 @@ const ArrowRight = ({ color }: { color: string }) => (
 
 const PredictionControls = () => {
   return <Switch />
+}
+
+const validateCredentials = (name: string, password: string) => {
+  const errors: string[] = []
+  let isValid = true
+
+  if (!name.length) {
+    isValid = false
+  }
+
+  if (!password.length) {
+    isValid = false
+  }
+
+  return { isValid, errors }
 }
 
 const styles = StyleSheet.create({

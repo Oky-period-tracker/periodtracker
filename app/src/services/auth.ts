@@ -185,17 +185,18 @@ export const useDeleteAccount = () => {
 
   return async (name: string, password: string) => {
     const isLoggedIn = !!userId
+    const existsLocally = await getUserIdFromName(name)
     const { localUserId, DEK } = await localLogin({ name, password })
 
-    if (isLoggedIn && (!DEK || !localUserId)) {
-      // Logged in & Incorrect local password - Dont delete
+    if ((isLoggedIn || existsLocally) && (!DEK || !localUserId)) {
+      // Exists locally but validation failed, do not delete
       return false
     }
 
-    // Logged out & local login fail || Logged in & local login success
+    // Local validation success OR doesn't exist locally
+    // Attempt online change
 
     let onlineSuccess = false
-
     if (appToken) {
       try {
         // Check user exists
@@ -213,6 +214,11 @@ export const useDeleteAccount = () => {
       }
     }
 
+    if (!existsLocally && !onlineSuccess) {
+      // Account not found
+      return false
+    }
+
     if (appToken && !onlineSuccess) {
       // Account is saved online & online deletion failed - Dont delete locally
       return false
@@ -224,16 +230,17 @@ export const useDeleteAccount = () => {
     // Log out
     logOutUserRedux()
     // Delete local storage
-    removeAsyncStorageItem(`persist:${userId}`)
-    deleteSecureValue(`username_${hash(name)}`)
-    deleteSecureValue(`${userId}_encrypted_dek`)
-    deleteSecureValue(`${userId}answer__encrypted_dek`)
-    deleteSecureValue(`${userId}_hashed_dek`)
-    deleteSecureValue(`${userId}_salt`)
-    deleteSecureValue(`${userId}answer__salt`)
+    await Promise.all([
+      removeAsyncStorageItem(`persist:${userId}`),
+      deleteSecureValue(`username_${hash(name)}`),
+      deleteSecureValue(`${userId}_encrypted_dek`),
+      deleteSecureValue(`${userId}answer__encrypted_dek`),
+      deleteSecureValue(`${userId}_hashed_dek`),
+      deleteSecureValue(`${userId}_salt`),
+      deleteSecureValue(`${userId}answer__salt`),
+    ])
     // analytics
     analytics?.().logEvent('deleteAccount')
-
     return true
   }
 }

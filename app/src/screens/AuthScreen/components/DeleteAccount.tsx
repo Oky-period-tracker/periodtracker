@@ -34,7 +34,7 @@ export const DeleteAccount = () => {
     const success = await deleteAccount(name, formatPassword(password))
 
     if (success) {
-      Alert.alert('success', 'delete_account_completed', [
+      Alert.alert(translate('success'), translate('delete_account_completed'), [
         {
           text: translate('continue'),
           onPress: goBack,
@@ -43,7 +43,7 @@ export const DeleteAccount = () => {
       return
     }
 
-    Alert.alert('error', 'delete_account_fail')
+    Alert.alert(translate('error'), translate('delete_account_fail'))
     setName('')
     setPassword('')
   }

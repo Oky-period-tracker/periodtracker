@@ -66,10 +66,19 @@ function* onSyncStoresRequest(action: ExtractActionFromActionType<'SYNC_STORES_R
   )
 }
 
+// Carry across the app locale to the user who just created their account
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function* onInitUser(action: ExtractActionFromActionType<'INIT_USER'>) {
+  // @ts-expect-error TODO:
+  const appLocale = yield select(selectors.appLocaleSelector)
+  yield put(actions.setLocale(appLocale))
+}
+
 export function* authSaga() {
   yield all([
     takeLatest('CONVERT_GUEST_ACCOUNT', onConvertGuestAccount),
     takeLatest('JOURNEY_COMPLETION', onJourneyCompletion),
     takeLatest('SYNC_STORES_REQUEST', onSyncStoresRequest),
+    takeLatest('INIT_USER', onInitUser),
   ])
 }

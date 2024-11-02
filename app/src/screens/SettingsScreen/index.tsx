@@ -40,12 +40,16 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   }
 
   const onDeletePress = async () => {
+    toggleVisible()
+
     if (!currentUser) {
+      setPassword('')
       return
     }
 
     if (errors.length) {
       setErrorsVisible(true)
+      setPassword('')
       return
     }
 
@@ -53,6 +57,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
 
     if (success) {
       Alert.alert(translate('success'), translate('delete_account_completed'))
+      setPassword('')
       return
     }
 

@@ -182,8 +182,17 @@ export const useDeleteAccount = () => {
     // Local validation success OR doesn't exist locally
     // Attempt online change
 
+    const accountIsOnline = isLoggedIn && appToken
+    const shouldAttemptOnlineDelete = accountIsOnline || !existsLocally
+
+    if (!shouldAttemptOnlineDelete && !existsLocally) {
+      // Account not found
+      setLoading(false)
+      return false
+    }
+
     let onlineSuccess = false
-    if (appToken) {
+    if (shouldAttemptOnlineDelete) {
       try {
         // Check user exists
         await httpClient.getUserInfo(name)
@@ -200,13 +209,13 @@ export const useDeleteAccount = () => {
       }
     }
 
-    if (!existsLocally && !onlineSuccess) {
+    if (shouldAttemptOnlineDelete && !onlineSuccess) {
       // Account not found
       setLoading(false)
       return false
     }
 
-    if (appToken && !onlineSuccess) {
+    if (accountIsOnline && !onlineSuccess) {
       // Account is saved online & online deletion failed - Dont delete locally
       setLoading(false)
       return false

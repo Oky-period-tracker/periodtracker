@@ -8,8 +8,7 @@ import {
   themeTranslations,
 } from '../resources/translations'
 import { ENV } from '../config/env'
-import { currentLocaleSelector } from '../redux/selectors'
-import { useSelector } from '../redux/useSelector'
+import { useLocale } from './useLocale'
 
 let initLocale = defaultLocale
 
@@ -65,7 +64,9 @@ const capitalizeFirstLetter = (text: string): string => {
 }
 
 export const useTranslate = () => {
-  const locale = useSelector(currentLocaleSelector)
+  const locale = useLocale()
+
+  // Also remember when creating account, assign them whatever the app locale is when they create the account
 
   return (key: string): string => {
     if (!key) {

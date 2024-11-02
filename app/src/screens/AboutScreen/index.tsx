@@ -3,19 +3,17 @@ import { StyleSheet, ScrollView, Image } from 'react-native'
 import { InfoDisplay } from '../../components/InfoDisplay'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { useSelector } from '../../redux/useSelector'
-import { aboutBannerSelector, aboutContent, currentLocaleSelector } from '../../redux/selectors'
+import { aboutBannerSelector, aboutContent } from '../../redux/selectors'
 import { assets } from '../../resources/assets'
 import { Screen } from '../../components/Screen'
+import { useLocale } from '../../hooks/useLocale'
 
 const AboutScreen: ScreenComponent<'About'> = () => {
   const content = useSelector(aboutContent)
-  const locale = useSelector(currentLocaleSelector)
   const aboutBanner = useSelector(aboutBannerSelector)
+  const locale = useLocale()
 
-  const source = aboutBanner
-    ? { uri: aboutBanner }
-    : // @ts-expect-error TODO:
-      assets?.general?.aboutBanner[locale]
+  const source = aboutBanner ? { uri: aboutBanner } : assets?.general?.aboutBanner?.[locale]
 
   return (
     <Screen>

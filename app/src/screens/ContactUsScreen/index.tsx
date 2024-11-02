@@ -10,17 +10,18 @@ import { Text } from '../../components/Text'
 import { globalStyles } from '../../config/theme'
 import moment from 'moment'
 import { useSelector } from 'react-redux'
-import { currentLocaleSelector, currentUserSelector } from '../../redux/selectors'
+import { currentUserSelector } from '../../redux/selectors'
 import { ErrorText } from '../../components/ErrorText'
 import { Input } from '../../components/Input'
 import { WheelPickerModal } from '../../components/WheelPickerModal'
 import { reasonOptions } from '../../config/options'
 import { WheelPickerOption } from '../../components/WheelPicker'
 import { useColor } from '../../hooks/useColor'
+import { useLocale } from '../../hooks/useLocale'
 
 const ContactUsScreen: ScreenComponent<'Contact'> = () => {
   const user = useSelector(currentUserSelector)
-  const locale = useSelector(currentLocaleSelector)
+  const locale = useLocale()
   const { palette, backgroundColor } = useColor()
 
   const [reason, setReason] = React.useState<WheelPickerOption | undefined>(undefined)

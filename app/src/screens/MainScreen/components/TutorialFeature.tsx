@@ -10,12 +10,11 @@ import { useScreenDimensions } from '../../../hooks/useScreenDimensions'
 import { EmojiQuestionCard } from '../../DayScreen/components/DayTracker/EmojiQuestionCard'
 import { LocaleConfig } from 'react-native-calendars'
 import { calendarTranslations } from '../../../resources/translations'
-import { useSelector } from '../../../redux/useSelector'
-import { currentLocaleSelector } from '../../../redux/selectors'
 import { CloudOutline } from '../../../components/icons/CloudOutline'
 import moment from 'moment'
 import { globalStyles } from '../../../config/theme'
 import { useResponsive } from '../../../contexts/ResponsiveContext'
+import { useLocale } from '../../../hooks/useLocale'
 
 export const TutorialFeature = () => {
   const { state, stepConfig } = useTutorial()
@@ -77,7 +76,7 @@ LocaleConfig.locales = {
 }
 
 export const CalendarFeature = () => {
-  const locale = useSelector(currentLocaleSelector)
+  const locale = useLocale()
   LocaleConfig.defaultLocale = locale
 
   return (

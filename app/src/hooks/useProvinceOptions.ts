@@ -1,11 +1,10 @@
 import React from 'react'
 import { WheelPickerOption } from '../components/WheelPicker'
-import { useSelector } from '../redux/useSelector'
-import { currentLocaleSelector } from '../redux/selectors'
-import { Locale, provinces } from '../resources/translations'
+import { provinces } from '../resources/translations'
+import { useLocale } from './useLocale'
 
 export const useProvinceOptions = (country: string | undefined): WheelPickerOption[] => {
-  const locale = useSelector(currentLocaleSelector) as Locale
+  const locale = useLocale()
 
   const provinceOptions = React.useMemo(() => {
     const countryCode = country ? country : null

@@ -1,9 +1,8 @@
-import { useSelector } from '../redux/useSelector'
-import { currentLocaleSelector } from '../redux/selectors'
-import { Locale, calendarTranslations, defaultLocale } from '../resources/translations'
+import { calendarTranslations, defaultLocale } from '../resources/translations'
+import { useLocale } from './useLocale'
 
 export const useMonths = () => {
-  const locale = useSelector(currentLocaleSelector) as Locale
+  const locale = useLocale()
   const defaultMonths = calendarTranslations[defaultLocale]?.monthNames
   const months = calendarTranslations[locale]?.monthNames ?? defaultMonths
 

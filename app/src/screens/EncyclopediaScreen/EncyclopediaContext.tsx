@@ -6,9 +6,9 @@ import {
   allCategoriesSelector,
   allSubCategoriesSelector,
   allVideosSelector,
-  currentLocaleSelector,
 } from '../../redux/selectors'
 import { Article, Category, SubCategory, VideoData } from '../../core/types'
+import { useLocale } from '../../hooks/useLocale'
 
 export type EncyclopediaContext = {
   query: string
@@ -50,7 +50,7 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
   const subCategories = useSelector(allSubCategoriesSelector)
   const articles = useSelector(allArticlesSelector)
   const allVideos = useSelector(allVideosSelector)
-  const locale = useSelector(currentLocaleSelector)
+  const locale = useLocale()
 
   const liveArticles: Article[] = React.useMemo(() => {
     return articles.filter((item) => item?.live !== false)

@@ -1,10 +1,9 @@
 import moment, { Moment } from 'moment'
-import { Locale, calendarTranslations } from '../resources/translations'
-import { currentLocaleSelector } from '../redux/selectors'
-import { useSelector } from '../redux/useSelector'
+import { calendarTranslations } from '../resources/translations'
+import { useLocale } from './useLocale'
 
 export const useFormatDate = () => {
-  const locale = useSelector(currentLocaleSelector) as Locale
+  const locale = useLocale()
   const translations = calendarTranslations[locale]
 
   const formatMomentDayMonth = (date?: Moment) => {

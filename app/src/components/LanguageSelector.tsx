@@ -1,16 +1,15 @@
 import React from 'react'
 import { Button, ButtonProps } from './Button'
 import { WheelPickerModal } from './WheelPickerModal'
-import { useSelector } from '../redux/useSelector'
-import { currentLocaleSelector } from '../redux/selectors'
 import { availableAppLocales } from '../resources/translations'
 import { useDispatch } from 'react-redux'
 import { setLocale } from '../redux/actions'
 import { WheelPickerOption } from './WheelPicker'
 import { analytics } from '../services/firebase'
+import { useLocale } from '../hooks/useLocale'
 
 export const LanguageSelector = (props: ButtonProps) => {
-  const locale = useSelector(currentLocaleSelector)
+  const locale = useLocale()
   const dispatch = useDispatch()
 
   const onSelect = (option?: WheelPickerOption) => {

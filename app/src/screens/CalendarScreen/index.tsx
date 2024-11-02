@@ -13,15 +13,12 @@ import moment from 'moment'
 import { asLocal, isFutureDate } from '../../services/dateUtils'
 import { DayModal } from '../../components/DayModal'
 import { useSelector } from 'react-redux'
-import {
-  allCardAnswersSelector,
-  currentLocaleSelector,
-  isFuturePredictionSelector,
-} from '../../redux/selectors'
+import { allCardAnswersSelector, isFuturePredictionSelector } from '../../redux/selectors'
 import { Hr } from '../../components/Hr'
 import { calendarTranslations } from '../../resources/translations'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
+import { useLocale } from '../../hooks/useLocale'
 
 // TODO: dynamic start & end dates?
 const startDate = moment().startOf('day').subtract(24, 'months')
@@ -33,7 +30,7 @@ LocaleConfig.locales = {
 }
 
 const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
-  const locale = useSelector(currentLocaleSelector)
+  const locale = useLocale()
   LocaleConfig.defaultLocale = locale
 
   const [selected, setSelected] = useState('')

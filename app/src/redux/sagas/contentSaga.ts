@@ -16,7 +16,12 @@ import {
 
 function* onRehydrate(action: RehydrateAction) {
   // @ts-expect-error TODO:
-  const locale = yield select(selectors.currentLocaleSelector)
+  const userLocale = yield select(selectors.currentLocaleSelector)
+  // @ts-expect-error TODO:
+  const appLocale = yield select(selectors.appLocaleSelector)
+  // @ts-expect-error TODO:
+  const currentUser = yield select(selectors.currentUserSelector)
+  const locale = currentUser ? userLocale : appLocale
 
   const hasPreviousContentFromStorage =
     // @ts-expect-error TODO:
@@ -41,7 +46,13 @@ function* onRehydrate(action: RehydrateAction) {
 
 function* onFetchSurveyContent() {
   // @ts-expect-error TODO:
-  const locale = yield select(selectors.currentLocaleSelector)
+  const userLocale = yield select(selectors.currentLocaleSelector)
+  // @ts-expect-error TODO:
+  const appLocale = yield select(selectors.appLocaleSelector)
+  // @ts-expect-error TODO:
+  const currentUser = yield select(selectors.currentUserSelector)
+  const locale = currentUser ? userLocale : appLocale
+
   // @ts-expect-error TODO:
   const userID = yield select(selectors.currentUserSelector)
   try {
@@ -218,8 +229,14 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     // @ts-expect-error TODO:
     const aboutContent = yield select(selectors.aboutContent)
     if (!aboutContent) {
-      const localeInit = (yield select(selectors.currentLocaleSelector)) as Locale
-      yield put(actions.initStaleContent(staleContent[localeInit]))
+      // @ts-expect-error TODO:
+      const userLocale = yield select(selectors.currentLocaleSelector)
+      // @ts-expect-error TODO:
+      const appLocale = yield select(selectors.appLocaleSelector)
+      // @ts-expect-error TODO:
+      const currentUser = yield select(selectors.currentUserSelector)
+      const locale = (currentUser ? userLocale : appLocale) as Locale
+      yield put(actions.initStaleContent(staleContent[locale]))
     }
   }
 }

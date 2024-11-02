@@ -5,11 +5,10 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { DisplayButton } from './Button'
 import { MarkedDates } from 'react-native-calendars/src/types'
 import { calendarTranslations } from '../resources/translations'
-import { useSelector } from 'react-redux'
-import { currentLocaleSelector } from '../redux/selectors'
 import { Moment } from 'moment'
 import { asLocal } from '../services/dateUtils'
 import { useColor } from '../hooks/useColor'
+import { useLocale } from '../hooks/useLocale'
 
 LocaleConfig.locales = {
   ...LocaleConfig.locales,
@@ -23,7 +22,7 @@ export const DatePicker = ({
   selectedDate: Moment
   onDayPress: (day: DateData) => void
 }) => {
-  const locale = useSelector(currentLocaleSelector)
+  const locale = useLocale()
   LocaleConfig.defaultLocale = locale
 
   const dateString = asLocal(selectedDate).format('YYYY-MM-DD')

@@ -1,12 +1,11 @@
 import React from 'react'
 import { PermissionsAndroid } from 'react-native'
-import { useSelector } from '../redux/useSelector'
-import { currentLocaleSelector } from '../redux/selectors'
 import { IS_ANDROID } from '../services/device'
 import { messaging } from '../services/firebase'
+import { useLocale } from './useLocale'
 
 export const useMessaging = () => {
-  const locale = useSelector(currentLocaleSelector)
+  const locale = useLocale()
 
   React.useEffect(() => {
     const topicName = `oky_${locale}_notifications`

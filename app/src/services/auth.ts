@@ -30,17 +30,21 @@ import {
 import { analytics } from './firebase'
 import { useAuth } from '../contexts/AuthContext'
 import { appTokenSelector, currentUserSelector } from '../redux/selectors'
+import { useLoading } from '../contexts/LoadingProvider'
 
 export const useCreateAccount = () => {
   const dispatch = useDispatch()
+  const { setLoading } = useLoading()
 
   return async (payload: User & UserCredentials) => {
+    setLoading(true)
     const { password, secretAnswer, ...baseUser } = payload
     const { name, id } = baseUser
     const dateSignedUp = moment.utc().toISOString()
 
     const nameAvailable = await checkUserNameAvailability(name)
     if (!nameAvailable) {
+      setLoading(false)
       return false
     }
 
@@ -48,6 +52,7 @@ export const useCreateAccount = () => {
 
     if (!DEK) {
       dispatch(setAuthError({ error: 'auth_fail' }))
+      setLoading(false)
       return false
     }
 
@@ -73,11 +78,7 @@ export const useCreateAccount = () => {
       isGuest = false
       token = appToken
     } catch (e) {
-      /*       
-        Account save failed, but can proceed as local offline user
-        Saga will periodically attempt to save account online, 
-        or they can press button in the profile screen 
-      */
+      // Online account save failed, but can proceed as local offline user
     }
 
     dispatch(
@@ -89,14 +90,18 @@ export const useCreateAccount = () => {
         appToken: token,
       }),
     )
+
+    setLoading(false)
   }
 }
 
 export const useLogin = () => {
   const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
+  const { setLoading } = useLoading()
 
   return async (name: string, password: string) => {
+    setLoading(true)
     const [localLoginResult, onlineLoginResponse] = await Promise.all([
       localLogin({ name, password }),
       onlineLogin(name, password),
@@ -124,6 +129,7 @@ export const useLogin = () => {
         }
         setIsLoggedIn(true)
       })
+
       return true
     }
 
@@ -151,6 +157,7 @@ export const useLogin = () => {
 
     // Fail
     dispatch(loginFailure({ error: 'login_fail' }))
+    setLoading(false)
     return false
   }
 }
@@ -158,14 +165,17 @@ export const useLogin = () => {
 export const useDeleteAccount = () => {
   const userId = useSelector(currentUserSelector)?.id
   const appToken = useSelector(appTokenSelector)
+  const { setLoading } = useLoading()
 
   return async (name: string, password: string) => {
+    setLoading(true)
     const isLoggedIn = !!userId
     const existsLocally = await getUserIdFromName(name)
     const { localUserId, DEK } = await localLogin({ name, password })
 
     if ((isLoggedIn || existsLocally) && (!DEK || !localUserId)) {
       // Exists locally but validation failed, do not delete
+      setLoading(false)
       return false
     }
 
@@ -192,11 +202,13 @@ export const useDeleteAccount = () => {
 
     if (!existsLocally && !onlineSuccess) {
       // Account not found
+      setLoading(false)
       return false
     }
 
     if (appToken && !onlineSuccess) {
       // Account is saved online & online deletion failed - Dont delete locally
+      setLoading(false)
       return false
     }
 
@@ -217,6 +229,7 @@ export const useDeleteAccount = () => {
     ])
     // analytics
     analytics?.().logEvent('deleteAccount')
+    setLoading(false)
     return true
   }
 }

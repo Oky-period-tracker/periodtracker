@@ -6,7 +6,7 @@
     "validate:lotties": "ts-node validateLotties.ts",
     "validate:images": "yarn add sharp@0.28.3 && ts-node validateImages.ts",
     "remove-unused-assets": "ts-node removeUnusedAssets.ts",
-    "generate-sql": "ts-node generateSQL.ts",
+    "generate-sql": "ts-node --transpile-only generateSQL.ts",
     "provinces": "ts-node --transpile-only merge-provinces.ts",
     "countries": "ts-node --transpile-only merge-countries.ts",
     "fetch-content": "ts-node --transpile-only fetchContent.ts",

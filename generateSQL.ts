@@ -1,6 +1,6 @@
-import fs from 'fs'
+import * as fs from 'fs'
 import { Quiz, StaticContent } from './app/src/core/types'
-import { content as staleContent } from './app/src/resources/translations'
+import { content as staleContent } from './app/src/resources/translations/content'
 
 const columnNames = {
   category: ['id', 'title', 'primary_emoji', 'primary_emoji_name', 'lang'],
@@ -23,6 +23,7 @@ const columnNames = {
   ],
   did_you_know: ['id', 'title', 'content', 'isAgeRestricted', 'live', 'lang'],
   help_center: ['id', 'title', 'caption', 'contactOne', 'contactTwo', 'address', 'website', 'lang'],
+  help_center_attribute: ['id', 'name', 'emoji', 'isActive', 'lang'],
   avatar_messages: ['id', 'content', 'live', 'lang'],
   privacy_policy: ['json_dump', 'timestamp', 'lang'],
   terms_and_conditions: ['json_dump', 'timestamp', 'lang'],
@@ -47,7 +48,7 @@ const toValuesString = (values: Array<Array<string | number | null>>) => {
 }
 
 const escapeSingleQuotes = (str: string) => {
-  if (!str) return str
+  if (!str || typeof str !== 'string') return str
   return str.replace(/(?<!')'(?!')/g, "''")
 }
 
@@ -216,6 +217,12 @@ const getHelpCenters = (content: StaticContent) => {
   })
 }
 
+const getHelpCenterAttributes = (content: StaticContent) => {
+  return content.helpCenterAttributes.map((entry) => {
+    return [entry.id, entry.name, entry.emoji, entry.isActive, content.locale]
+  })
+}
+
 const getAvatarMessages = (content: StaticContent) => {
   return content.avatarMessages.map((entry) => {
     return [entry.id, entry.content, entry.live ? '1' : '0', content.locale]
@@ -268,6 +275,7 @@ locales.forEach((locale) => {
     quiz: getQuiz(contentData),
     did_you_know: getDidYouKnows(contentData),
     help_center: getHelpCenters(contentData),
+    help_center_attribute: getHelpCenterAttributes(contentData),
     avatar_messages: getAvatarMessages(contentData),
     privacy_policy: getPrivacyPolicy(contentData),
     terms_and_conditions: getTermsAndConditions(contentData),
@@ -288,7 +296,7 @@ locales.forEach((locale) => {
     return acc + generateSql(table)
   }, '')
 
-  const outputFilepath = `./packages/core/src/modules/translations/content/insert-content-${locale}.sql`
+  const outputFilepath = `./app/src/resources/translations/content/insert-content-${locale}.sql`
 
   fs.writeFileSync(outputFilepath, sql)
 })

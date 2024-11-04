@@ -21,12 +21,6 @@ export function setTutorialTwoActive(isTutorialActive: boolean) {
   return createAction('SET_TUTORIAL_TWO_ACTIVE', { isTutorialActive })
 }
 
-export function setFuturePredictionActive(isFuturePredictionActive: boolean) {
-  return createAction('SET_FUTURE_PREDICTION_ACTIVE', {
-    isFuturePredictionActive,
-  })
-}
-
 export function toggleHaptic(isHapticActive: boolean) {
   return createAction('TOGGLE_HAPTIC', { isHapticActive })
 }

@@ -83,11 +83,6 @@ export function settingsReducer(
         ...state,
         isTutorialTwoActive: action.payload.isTutorialActive,
       }
-    case 'SET_FUTURE_PREDICTION_ACTIVE':
-      return {
-        ...state,
-        isFuturePredictionActive: action.payload.isFuturePredictionActive,
-      }
     case 'DAILY_CARD_USED':
       return {
         ...state,

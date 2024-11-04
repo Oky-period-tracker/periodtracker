@@ -127,11 +127,6 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
         ...state,
         isLoginPasswordActive: action.payload.isLoginPasswordActive,
       }
-    case 'SET_FUTURE_PREDICTION_ACTIVE':
-      return {
-        ...state,
-        isFuturePredictionActive: action.payload.isFuturePredictionActive,
-      }
 
     case 'DAILY_CARD_USED': {
       return {

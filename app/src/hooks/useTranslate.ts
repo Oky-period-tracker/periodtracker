@@ -8,10 +8,7 @@ import {
   themeTranslations,
 } from '../resources/translations'
 import { ENV } from '../config/env'
-import { useDispatch } from 'react-redux'
 import { currentLocaleSelector } from '../redux/selectors'
-import React from 'react'
-import { setLocale } from '../redux/actions'
 import { useSelector } from '../redux/useSelector'
 
 let initLocale = defaultLocale
@@ -87,17 +84,4 @@ export const useTranslate = () => {
 
     return capitalizeFirstLetter(translation || key)
   }
-}
-
-export const useAvailableLocaleEffect = () => {
-  // Dont use currentLocaleSelector because that also has a safety mechanism
-  const currentLocale = useSelector((s) => s.app.locale)
-  const dispatch = useDispatch()
-
-  React.useEffect(() => {
-    const locales = Object.keys(appTranslations)
-    if (!locales.includes(currentLocale)) {
-      dispatch(setLocale(initialLocale))
-    }
-  }, [currentLocale])
 }

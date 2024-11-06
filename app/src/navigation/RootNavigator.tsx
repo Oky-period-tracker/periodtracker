@@ -20,7 +20,7 @@ import { currentUserSelector } from '../redux/selectors'
 import { useAuth } from '../contexts/AuthContext'
 import { analytics } from '../services/firebase'
 import { useMessaging } from '../hooks/useMessaging'
-import { useAvailableLocaleEffect } from '../hooks/useTranslate'
+import { useValidSettingsEffect } from '../hooks/useValidSettingsEffect'
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList
 
@@ -115,7 +115,7 @@ const routesToTrack = ['Encyclopedia', 'Help']
 
 function RootNavigator() {
   useMessaging()
-  useAvailableLocaleEffect()
+  useValidSettingsEffect()
 
   const user = useSelector(currentUserSelector)
   const { isLoggedIn } = useAuth()

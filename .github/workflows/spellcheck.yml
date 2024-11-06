@@ -1,0 +1,20 @@
+name: Spell Check Documentation
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'  # Check only markdown files in pull requests
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run spell checker
+        uses: rojopolis/spellcheck-github-actions@0.20.0
+        with:
+          file-path: "**/*.md"
+

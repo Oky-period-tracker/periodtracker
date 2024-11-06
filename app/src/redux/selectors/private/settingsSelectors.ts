@@ -1,4 +1,10 @@
-import { appTranslations, defaultLocale } from '../../../resources/translations'
+import { assets } from '../../../resources/assets'
+import {
+  appTranslations,
+  defaultAvatar,
+  defaultLocale,
+  defaultTheme,
+} from '../../../resources/translations'
 import { ReduxState } from '../../reducers'
 
 const s = (state: ReduxState) => state.private.settings
@@ -12,9 +18,23 @@ export const currentLocaleSelector = (state: ReduxState) => {
   return stateLocale
 }
 
-export const currentThemeSelector = (state: ReduxState) => s(state).theme
+export const currentThemeSelector = (state: ReduxState) => {
+  const stateTheme = s(state)?.theme
+  const themes = Object.keys(assets.backgrounds)
+  if (!stateTheme || !themes.includes(stateTheme)) {
+    return defaultTheme
+  }
+  return stateTheme
+}
 
-export const currentAvatarSelector = (state: ReduxState) => s(state).avatar
+export const currentAvatarSelector = (state: ReduxState) => {
+  const stateAvatar = s(state)?.avatar
+  const avatars = Object.keys(assets.avatars)
+  if (!stateAvatar || !avatars.includes(stateAvatar)) {
+    return defaultAvatar
+  }
+  return stateAvatar
+}
 
 export const isTutorialOneActiveSelector = (state: ReduxState) => s(state).isTutorialOneActive
 

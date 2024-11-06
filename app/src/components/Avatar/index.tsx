@@ -145,7 +145,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const lottieHeight = lottieWidth / lottieAspectRatio
 
   // - Top half of lottie is empty space, +72 height of CircleProgress
-  let marginTop = -lottieHeight / 1.75 + 72
+  let marginTop = 0
   if (avatar === avatarException) {
     // TODO: Oky lottie different size to the rest
     marginTop = -lottieHeight / 2.25 + 72

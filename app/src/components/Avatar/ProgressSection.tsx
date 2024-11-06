@@ -38,7 +38,7 @@ export const ProgressSection = ({
 
   const starPercent = Math.min(Object.keys(cardAnswersToday).length * 25, 100)
 
-  let bottom = lottieHeight / 10
+  let bottom = 2
   let backgroundColor = '#fff'
   if (avatar === avatarException) {
     // TODO: Oky lottie different size to the rest

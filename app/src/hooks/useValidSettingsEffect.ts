@@ -11,16 +11,20 @@ export const useValidSettingsEffect = () => {
   const dispatch = useDispatch()
 
   // Dont use currentXyzSelector because they also have a safety mechanism
-  const locale = useSelector((s) => s.app.locale)
-  const avatar = useSelector((s) => s.app.avatar)
-  const theme = useSelector((s) => s.app.theme)
+  const appLocale = useSelector((s) => s.app.locale)
+  const userLocale = useSelector((s) => s.private.settings.locale)
+  const avatar = useSelector((s) => s.private.settings.avatar)
+  const theme = useSelector((s) => s.private.settings.theme)
 
   const locales = Object.keys(appTranslations)
   const avatars = Object.keys(assets.avatars)
   const themes = Object.keys(assets.backgrounds)
 
   React.useEffect(() => {
-    if (!locales.includes(locale)) {
+    if (!locales.includes(appLocale)) {
+      dispatch(setLocale(initialLocale))
+    }
+    if (!locales.includes(userLocale)) {
       dispatch(setLocale(initialLocale))
     }
     if (!avatars.includes(avatar)) {
@@ -29,5 +33,5 @@ export const useValidSettingsEffect = () => {
     if (!themes.includes(theme)) {
       dispatch(setTheme(defaultTheme))
     }
-  }, [locale, locales, avatar, avatars, theme, themes])
+  }, [appLocale, userLocale, locales, avatar, avatars, theme, themes])
 }

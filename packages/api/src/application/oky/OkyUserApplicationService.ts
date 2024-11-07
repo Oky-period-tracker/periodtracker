@@ -130,6 +130,13 @@ export class OkyUserApplicationService {
       throw new Error(`Cannot edit info for missing ${userId} user`)
     }
 
+    // Check name unique
+    const existingUser = await this.okyUserRepository.byName(name)
+    const nameTakenByDifferentUser = existingUser && existingUser?.getId() !== userId
+    if (nameTakenByDifferentUser) {
+      throw new HttpError(409, `User with this name already exists`)
+    }
+
     await user.editInfo({
       name,
       dateOfBirth,

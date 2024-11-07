@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native'
 import { Button } from '../../components/Button'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { useDispatch, useSelector } from 'react-redux'
@@ -26,9 +26,11 @@ import {
   deleteUserIdForName,
   setUserIdForName,
 } from '../../services/encryption'
+import { useTranslate } from '../../hooks/useTranslate'
 
 type EditProfileState = {
   name: User['name']
+  nameAvailable: boolean
   gender: User['gender']
   month: number
   year: number
@@ -46,6 +48,7 @@ const getInitialState = (user: User): EditProfileState => {
 
   return {
     name: user.name,
+    nameAvailable: true,
     gender: user.gender,
     month: date.getMonth(),
     year: date.getFullYear(),
@@ -113,6 +116,11 @@ const validateState = (state: EditProfileState): { isValid: boolean; errors: str
     errors.push('username_too_short')
   }
 
+  if (!state.nameAvailable) {
+    isValid = false
+    errors.push('name_taken_error')
+  }
+
   if (!state.gender) {
     isValid = false
     errors.push('no_gender')
@@ -145,6 +153,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
   const { backgroundColor } = useColor()
+  const translate = useTranslate()
 
   const [passwordModalVisible, togglePasswordModal] = useToggle()
   const [secretModalVisible, toggleSecretModal] = useToggle()
@@ -154,6 +163,8 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   }, [currentUser])
 
   const [state, dispatch] = React.useReducer(reducer, initialState)
+
+  const [{ isValid, errors }, setErrorState] = React.useState(validateState(state))
 
   const onChangeName = (value: string) => {
     dispatch({ type: 'name', value })
@@ -215,7 +226,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
     }
 
     if (!nameAvailable) {
-      errors.push('name_taken_error')
+      dispatch({ type: 'nameAvailable', value: false })
       return
     }
 
@@ -234,9 +245,10 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
       editUserReduxState(changes)
       goToProfile()
     } catch (error) {
-      // TODO: show alert
       // Revert local name mapping
+      Alert.alert(translate('error'))
       await deleteUserIdForName(state.name)
+      goToProfile()
     }
   }
 
@@ -246,11 +258,19 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   const initialMonth = monthOptions.find((item) => item.value === month)
   const initialYear = yearOptions.find((item) => item.value === year)
 
-  const { isValid, errors } = validateState(state)
   const hasChanged = !_.isEqual(state, initialState)
 
   const canConfirm = hasChanged && isValid
   const confirmStatus = canConfirm ? 'primary' : 'basic'
+
+  React.useEffect(() => {
+    setErrorState(validateState(state))
+  }, [state])
+
+  React.useEffect(() => {
+    // True until proven false on confirm
+    dispatch({ type: 'nameAvailable', value: true })
+  }, [state.name])
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>

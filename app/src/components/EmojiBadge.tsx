@@ -78,8 +78,8 @@ const sizes: Record<
     container: 48,
     circle: 28,
     emoji: 14,
-    text: 10,
-    margin: 2,
+    text: 8,
+    margin: 4,
   },
   medium: {
     container: 52,

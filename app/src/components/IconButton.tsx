@@ -5,7 +5,7 @@ import { SvgIconProps } from './icons/types'
 import Cloud from './icons/Cloud'
 import { useSelector } from 'react-redux'
 import { currentThemeSelector } from '../redux/selectors'
-import { IconForTheme } from '../resources/translations'
+import { IconForTheme, IconStyleForTheme } from '../resources/translations'
 import { useColor } from '../hooks/useColor'
 
 export type Appearance = 'fill' | 'outline'
@@ -33,6 +33,7 @@ export const IconButton = ({
   const { palette } = useColor()
   const theme = useSelector(currentThemeSelector)
   const Icon = IconForTheme?.[theme]?.[appearance] ?? Cloud
+  const marginRight = IconStyleForTheme?.[theme].textMarginRight ?? 0
 
   return (
     <TouchableOpacity
@@ -46,6 +47,7 @@ export const IconButton = ({
         style={[
           styles.text,
           textStyle,
+          { marginRight },
           appearance === 'outline' && { color: palette[status].base },
         ]}
         enableTranslate={false}
@@ -70,7 +72,6 @@ const styles = StyleSheet.create({
     width: '60%',
     textAlign: 'center',
     fontWeight: 'bold',
-    marginRight: 8,
     color: '#fff',
   },
 })

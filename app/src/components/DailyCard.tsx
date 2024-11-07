@@ -23,24 +23,17 @@ import { useLoading } from '../contexts/LoadingProvider'
 import { useAvatarMessage } from '../contexts/AvatarMessageContext'
 import { isFutureDate } from '../services/dateUtils'
 import { useDayStatus } from '../hooks/useDayStatus'
-import { ThemeName } from '../resources/translations'
+import { IconStyleForTheme } from '../resources/translations'
 import { useTranslate } from '../hooks/useTranslate'
 import { useFormatDate } from '../hooks/useFormatDate'
 import { analytics } from '../services/firebase'
 import { updateLastPressedCardDate } from '../redux/actions'
 import { useColor } from '../hooks/useColor'
+import { useResponsive } from '../contexts/ResponsiveContext'
 
 interface DailyCardProps {
   dataEntry: DayData
   disabled?: boolean
-}
-
-// TODO: Move
-const IconSizeForTheme: Record<ThemeName, number> = {
-  hills: 80,
-  mosaic: 60,
-  village: 80,
-  desert: 60,
 }
 
 export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
@@ -52,11 +45,14 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const { isDragging, constants } = useDayScroll()
   const { CARD_WIDTH, CARD_MARGIN } = constants
   const { backgroundColor, starColor } = useColor()
+  const { UIConfig } = useResponsive()
 
   const { status, appearance } = useDayStatus(dataEntry)
 
   const theme = useSelector(currentThemeSelector)
-  const IconSize = IconSizeForTheme[theme] ?? 80
+  const IconInitialSize = IconStyleForTheme[theme].size ?? 80
+  const sizeModifier = UIConfig.carousel.iconSizeModifier ?? 0
+  const IconSize = IconInitialSize + sizeModifier
 
   const isTutorialTwoActive = useSelector(isTutorialTwoActiveSelector)
 
@@ -115,7 +111,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
         <DisplayButton
           status={status}
           appearance={appearance}
-          textStyle={styles.dayText}
+          textStyle={[styles.dayText, { fontSize: UIConfig.carousel.iconFontSize }]}
           style={{ width: CARD_WIDTH / 3 }}
           enableTranslate={false}
         >
@@ -125,6 +121,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
           status={status}
           appearance={appearance}
           text={formatMomentDayMonth(dataEntry.date)}
+          textStyle={{ fontSize: UIConfig.carousel.iconFontSize }}
           size={IconSize}
           disabled
         />
@@ -167,6 +164,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
               emoji={emoji}
               text={text}
               status={isEmojiActive ? status : 'basic'}
+              size={UIConfig.carousel.badgeSize}
               disabled
             />
           )

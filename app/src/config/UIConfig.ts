@@ -6,6 +6,9 @@ export interface UIConfig {
   carousel: {
     cardWidth: number
     cardMargin: number
+    iconSizeModifier: number
+    iconFontSize: number
+    badgeSize: BadgeSize
   }
   centerCard: {
     width: number
@@ -46,6 +49,9 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     carousel: {
       cardWidth: 180,
       cardMargin: 24,
+      iconSizeModifier: -8,
+      iconFontSize: 10,
+      badgeSize: 'small',
     },
     centerCard: {
       width: 100,
@@ -79,6 +85,9 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     carousel: {
       cardWidth: 220,
       cardMargin: 32,
+      iconSizeModifier: 0,
+      iconFontSize: 14,
+      badgeSize: 'medium',
     },
     centerCard: {
       width: 120,

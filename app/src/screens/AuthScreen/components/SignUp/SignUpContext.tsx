@@ -9,7 +9,6 @@ import {
 } from '../../../../services/auth'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
-import { useDebounce } from '../../../../hooks/useDebounce'
 
 export type SignUpStep = 'confirmation' | 'information' | 'secret' | 'age' | 'location'
 
@@ -257,6 +256,7 @@ type SignUpContext = {
   step: SignUpStep
   isValid: boolean
   errors: string[]
+  onConfirm: () => void
 }
 
 const defaultValue: SignUpContext = {
@@ -267,6 +267,9 @@ const defaultValue: SignUpContext = {
   step: steps[0],
   isValid: false,
   errors: [],
+  onConfirm: () => {
+    //
+  },
 }
 
 const SignUpContext = React.createContext<SignUpContext>(defaultValue)
@@ -281,26 +284,19 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
 
   const createAccount = useCreateAccount()
 
-  const [debouncedName] = useDebounce(state.name, 500)
-  React.useEffect(() => {
-    if (!debouncedName || debouncedName.length < MINIMUM_NAME_LENGTH) {
-      return
-    }
-
-    let cleanup = false
-    const checkName = async () => {
-      const isAvailable = await checkUserNameAvailability(debouncedName)
-      if (cleanup) {
-        return
-      }
+  const onConfirm = async () => {
+    if (step === 'information') {
+      const isAvailable = await checkUserNameAvailability(state.name)
       dispatch({ type: 'nameAvailable', value: isAvailable })
     }
-    checkName()
 
-    return () => {
-      cleanup = true
-    }
-  }, [debouncedName])
+    dispatch({ type: 'continue' })
+  }
+
+  React.useEffect(() => {
+    // True until proven false on confirm
+    dispatch({ type: 'nameAvailable', value: true })
+  }, [state.name])
 
   // Finish
   React.useEffect(() => {
@@ -342,6 +338,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
         step,
         isValid,
         errors,
+        onConfirm,
       }}
     >
       {children}

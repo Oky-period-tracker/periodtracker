@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity, TouchableOpacityProps } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, TouchableOpacityProps, View } from 'react-native'
 import { Text } from '../../../components/Text'
 import { getAsset } from '../../../services/asset'
 import { useSelector } from 'react-redux'
@@ -8,7 +8,7 @@ import { useColor } from '../../../hooks/useColor'
 
 export const HelpCard = ({ ...props }: TouchableOpacityProps) => {
   const selectedAvatar = useSelector(currentAvatarSelector)
-  const { palette } = useColor()
+  const { palette, helpCardBackgroundColor } = useColor()
 
   return (
     <TouchableOpacity style={styles.helpCard} {...props}>
@@ -17,7 +17,9 @@ export const HelpCard = ({ ...props }: TouchableOpacityProps) => {
         source={getAsset(`avatars.${selectedAvatar}.stationary_colour`)}
         style={styles.image}
       />
-      <Text style={[styles.text, { color: palette.secondary.text }]}>find help</Text>
+      <View style={[styles.textContainer, { backgroundColor: helpCardBackgroundColor }]}>
+        <Text style={[styles.text, { color: palette.secondary.text }]}>find help</Text>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -31,14 +33,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  textContainer: {
+    borderRadius: 12,
+    width: 100,
+    marginTop: -40,
+    padding: 4,
+  },
   text: {
     fontWeight: 'bold',
-    fontSize: 20,
-    position: 'absolute',
+    fontSize: 16,
     textAlign: 'center',
-    bottom: 12,
   },
   image: {
-    height: 140,
+    width: 140,
   },
 })

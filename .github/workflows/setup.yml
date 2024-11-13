@@ -34,7 +34,6 @@ jobs:
 
       - name: " 📦 confirm installations"
         run: |
-          nvm --version
           node --version
           yarn --version
           eas --version

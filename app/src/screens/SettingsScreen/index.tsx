@@ -13,9 +13,7 @@ import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
 import { logOutUserRedux } from '../../redux/store'
-import { InputModal } from '../../components/InputModal'
-import { useToggle } from '../../hooks/useToggle'
-import { formatPassword, useDeleteAccount } from '../../services/auth'
+import { useDeleteAccount } from '../../services/auth'
 
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
@@ -23,16 +21,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
-
-  const [visible, toggleVisible] = useToggle()
-  const [password, setPassword] = React.useState('')
-
   const deleteAccount = useDeleteAccount()
-
-  const name = currentUser?.name ?? ''
-
-  const [errorsVisible, setErrorsVisible] = React.useState(false)
-  const { errors } = validateCredentials(name, formatPassword(password))
 
   const logOut = () => {
     logOutUserRedux()
@@ -40,30 +29,18 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   }
 
   const onDeletePress = async () => {
-    toggleVisible()
-
     if (!currentUser) {
-      setPassword('')
       return
     }
 
-    if (errors.length) {
-      setErrorsVisible(true)
-      setPassword('')
-      return
-    }
-
-    const success = await deleteAccount(name, formatPassword(password))
+    const success = await deleteAccount(currentUser.name, currentUser.password)
 
     if (success) {
       Alert.alert(translate('success'), translate('delete_account_completed'))
-      setPassword('')
       return
     }
 
     Alert.alert(translate('error'), translate('delete_account_fail'))
-    setPassword('')
-    toggleVisible()
   }
 
   const logOutAlert = () => {
@@ -78,6 +55,24 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
         {
           text: translate('yes'),
           onPress: logOut,
+        },
+      ],
+      { cancelable: false },
+    )
+  }
+
+  const deleteAccountAlert = () => {
+    Alert.alert(
+      translate('are_you_sure'),
+      translate('delete_account_description'),
+      [
+        {
+          text: translate('cancel'),
+          style: 'cancel',
+        },
+        {
+          text: translate('yes'),
+          onPress: onDeletePress,
         },
       ],
       { cancelable: false },
@@ -136,7 +131,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
           logout
         </Button>
         <Button
-          onPress={toggleVisible}
+          onPress={deleteAccountAlert}
           status={'basic'}
           style={[styles.button, styles.deleteButton]}
         >
@@ -150,19 +145,6 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
           contact_us
         </Button>
       </View>
-
-      <InputModal
-        title={'password'}
-        onConfirm={onDeletePress}
-        visible={visible}
-        toggleVisible={toggleVisible}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
-        errors={errors}
-        errorKeys={['username_too_short']}
-        errorsVisible={errorsVisible}
-      />
     </ScrollView>
   )
 }
@@ -175,21 +157,6 @@ const ArrowRight = ({ color }: { color: string }) => (
 
 const PredictionControls = () => {
   return <Switch />
-}
-
-const validateCredentials = (name: string, password: string) => {
-  const errors: string[] = []
-  let isValid = true
-
-  if (!name.length) {
-    isValid = false
-  }
-
-  if (!password.length) {
-    isValid = false
-  }
-
-  return { isValid, errors }
 }
 
 const styles = StyleSheet.create({

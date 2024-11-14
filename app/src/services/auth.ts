@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Await, User, UserCredentials } from '../types'
+import { Await } from '../types'
 import { httpClient } from './HttpClient'
 import {
   checkNameAvailableLocally,
@@ -21,6 +21,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from '../redux/useSelector'
 import { initUser, loginFailure, setAuthError, syncPrivateStoresRequest } from '../redux/actions'
 import moment from 'moment'
+import { User } from '../redux/reducers/private/userReducer'
 import {
   deleteSecureValue,
   getSecureValue,
@@ -36,10 +37,9 @@ export const useCreateAccount = () => {
   const dispatch = useDispatch()
   const { setLoading } = useLoading()
 
-  return async (payload: User & UserCredentials) => {
+  return async (payload: User) => {
     setLoading(true)
-    const { password, secretAnswer, ...baseUser } = payload
-    const { name, id } = baseUser
+    const { name, password, secretAnswer, id } = payload
     const dateSignedUp = moment.utc().toISOString()
 
     const nameAvailable = await checkUserNameAvailability(name)
@@ -84,7 +84,7 @@ export const useCreateAccount = () => {
     dispatch(
       initUser({
         user: {
-          ...baseUser,
+          ...payload,
           isGuest,
         },
         appToken: token,

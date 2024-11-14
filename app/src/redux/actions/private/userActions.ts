@@ -4,3 +4,7 @@ import { createAction } from '../../helpers'
 export const initUser = (payload: { user: User; appToken: string | null }) => {
   return createAction('INIT_USER', payload)
 }
+
+export const setAppToken = (payload: string) => {
+  return createAction('SET_APP_TOKEN', payload)
+}

@@ -22,6 +22,8 @@ import {
   defaultLocale,
   countries,
   provinces,
+  EncyclopediaResponseItem,
+  EncyclopediaResponse,
   // cmsTranslations,
 } from '@oky/core'
 // import { EncyclopediaResponse, EncyclopediaResponseItem } from '@oky/core/src/api/types'
@@ -149,7 +151,7 @@ export class DataController {
     response.setHeader('Content-type', 'text/plain')
     response.send(fileContent) // Send the file data as a response
   }
-  /*
+
   async generateContentSheet(request: Request, response: Response, next: NextFunction) {
     const shouldFilter = request.query?.filter === 'new'
 
@@ -171,11 +173,11 @@ export class DataController {
       INNER JOIN ${env.db.schema}.subcategory sc  
       ON ar.subcategory = sc.id::varchar
       WHERE ar.lang = $1
-      // AND ar.live = true 
       ORDER BY ca.title, sc.title ASC
       `,
       [request.user.lang],
     )) as EncyclopediaResponse
+    // AND ar.live = true
 
     const encyclopediaRawExtraCols = encyclopediaRaw.map((item) => {
       return {
@@ -197,10 +199,10 @@ export class DataController {
     })
 
     const encyclopediaFiltered = encyclopediaRawExtraCols.filter((item) => {
-      if (shouldFilter) {
-        const existsInTs = content[request.user.lang].articles.allIds.includes(item.id)
-        return !existsInTs
-      }
+      // if (shouldFilter) {
+      //   const existsInTs = content[request.user.lang].articles.allIds.includes(item.id)
+      //   return !existsInTs
+      // }
       return true
     })
 
@@ -255,10 +257,10 @@ export class DataController {
     })
 
     const quizzesFiltered = quizzesRawExtraCols.filter((item) => {
-      if (shouldFilter) {
-        const existsInTs = content[request.user.lang].quizzes.allIds.includes(item.id)
-        return !existsInTs
-      }
+      // if (shouldFilter) {
+      //   const existsInTs = content[request.user.lang].quizzes.allIds.includes(item.id)
+      //   return !existsInTs
+      // }
       return true
     })
 
@@ -279,10 +281,10 @@ export class DataController {
     })
 
     const didYouKnowsFiltered = didYouKnowsRawExtraCols.filter((item) => {
-      if (shouldFilter) {
-        const existsInTs = content[request.user.lang].didYouKnows.allIds.includes(item.id)
-        return !existsInTs
-      }
+      // if (shouldFilter) {
+      //   const existsInTs = content[request.user.lang].didYouKnows.allIds.includes(item.id)
+      //   return !existsInTs
+      // }
       return true
     })
 
@@ -305,12 +307,12 @@ export class DataController {
     })
 
     const avatarMessagesFiltered = avatarMessagesExtraCols.filter((item) => {
-      if (shouldFilter) {
-        const existsInTs = content[request.user.lang].avatarMessages
-          .map((message) => message.id)
-          .includes(item.id)
-        return !existsInTs
-      }
+      // if (shouldFilter) {
+      //   const existsInTs = content[request.user.lang].avatarMessages
+      //     .map((message) => message.id)
+      //     .includes(item.id)
+      //   return !existsInTs
+      // }
       return true
     })
 
@@ -430,7 +432,6 @@ export class DataController {
     )
     response.send(buffer) // Send the file data as a response
   }
-*/
 
   async uploadContentSheet(request: Request, response: Response, next: NextFunction) {
     // Ensure a file was uploaded

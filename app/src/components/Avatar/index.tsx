@@ -16,7 +16,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { AvatarMessage } from './AvatarMessage'
-import { avatarException } from '../../config/theme'
+import { getCustomAvatarStyles } from '../../optional/styles'
 
 interface AnimationConfig {
   start: number
@@ -145,11 +145,10 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const lottieHeight = lottieWidth / lottieAspectRatio
 
   // - Top half of lottie is empty space, +72 height of CircleProgress
-  let marginTop = -lottieHeight / 1.75 + 72
-  if (avatar === avatarException) {
-    // TODO: Oky lottie different size to the rest
-    marginTop = -lottieHeight / 2.25 + 72
-  }
+  const marginTop = -lottieHeight / 1.75 + 72
+
+  // Optional submodule style customisation
+  const customStyle = getCustomAvatarStyles?.({ lottieHeight })?.[avatar]
 
   return (
     <TouchableOpacity
@@ -162,10 +161,11 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
           height: lottieHeight,
           marginTop,
         },
+        customStyle?.avatar,
       ]}
       activeOpacity={1}
     >
-      <AvatarMessage />
+      <AvatarMessage style={customStyle?.avatarMessage} />
       <AnimatedLottieView
         resizeMode="contain"
         style={{ width: lottieWidth, height: lottieHeight }}
@@ -174,7 +174,11 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         autoPlay={false}
         loop={false}
       />
-      <ProgressSection heartProgress={animatedHearts} lottieHeight={lottieHeight} />
+      <ProgressSection
+        heartProgress={animatedHearts}
+        lottieHeight={lottieHeight}
+        style={customStyle?.progressSection}
+      />
     </TouchableOpacity>
   )
 }

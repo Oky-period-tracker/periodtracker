@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native'
-import { AvatarName } from '../resources/translations'
 
 export const globalStyles = StyleSheet.create({
   shadow: {
@@ -17,5 +16,3 @@ export const globalStyles = StyleSheet.create({
     elevation: 4,
   },
 })
-
-export const avatarException = 'oky' as AvatarName

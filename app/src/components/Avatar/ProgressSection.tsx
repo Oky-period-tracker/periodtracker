@@ -1,12 +1,11 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { cardAnswerSelector, currentAvatarSelector } from '../../redux/selectors'
+import { cardAnswerSelector } from '../../redux/selectors'
 import moment from 'moment'
 import { useSelector } from '../../redux/useSelector'
 import { ProgressBar } from './ProgressBar'
-import { avatarException } from '../../config/theme'
 import { SharedValue, runOnJS, useAnimatedReaction } from 'react-native-reanimated'
 import { HeartAnimation } from './HeartAnimation'
 import { useResponsive } from '../../contexts/ResponsiveContext'
@@ -15,11 +14,12 @@ import { useColor } from '../../hooks/useColor'
 export const ProgressSection = ({
   heartProgress,
   lottieHeight,
+  style,
 }: {
   heartProgress: SharedValue<number>
   lottieHeight: number
+  style?: StyleProp<ViewStyle>
 }) => {
-  const avatar = useSelector(currentAvatarSelector)
   const [progress, setProgress] = React.useState(0)
   const { UIConfig } = useResponsive()
   const { palette, starColor } = useColor()
@@ -38,13 +38,8 @@ export const ProgressSection = ({
 
   const starPercent = Math.min(Object.keys(cardAnswersToday).length * 25, 100)
 
-  let bottom = lottieHeight / 10
-  let backgroundColor = '#fff'
-  if (avatar === avatarException) {
-    // TODO: Oky lottie different size to the rest
-    bottom = -lottieHeight / 20
-    backgroundColor = 'transparent'
-  }
+  const bottom = lottieHeight / 10
+  const backgroundColor = '#fff'
 
   return (
     <View
@@ -54,6 +49,7 @@ export const ProgressSection = ({
           backgroundColor,
           bottom,
         },
+        style,
       ]}
       pointerEvents={'none'}
     >

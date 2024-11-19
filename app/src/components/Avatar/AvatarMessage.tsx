@@ -1,15 +1,12 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
 import { Text } from '../Text'
 import { useAvatarMessage } from '../../contexts/AvatarMessageContext'
 import { useTutorial } from '../../screens/MainScreen/TutorialContext'
-import { avatarException, globalStyles } from '../../config/theme'
-import { useSelector } from 'react-redux'
-import { currentAvatarSelector } from '../../redux/selectors'
+import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
 
-export const AvatarMessage = () => {
-  const avatar = useSelector(currentAvatarSelector)
+export const AvatarMessage = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const { message } = useAvatarMessage()
   const { state } = useTutorial()
   const { backgroundColor } = useColor()
@@ -18,16 +15,8 @@ export const AvatarMessage = () => {
     return null
   }
 
-  let top = 80
-
-  if (avatar === avatarException) {
-    // TODO: Oky lottie different size to the rest
-    top = 0
-    'transparent'
-  }
-
   return (
-    <View style={[styles.container, { top, backgroundColor }, globalStyles.shadow]}>
+    <View style={[styles.container, { backgroundColor }, globalStyles.shadow, style]}>
       <Text enableTranslate={false} accessibilityLabel={message}>
         {message}
       </Text>

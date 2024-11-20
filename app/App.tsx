@@ -15,6 +15,7 @@ import { AuthProvider } from './src/contexts/AuthContext'
 import { LoadingProvider } from './src/contexts/LoadingProvider'
 import { StatusBar } from 'react-native'
 import { analytics } from './src/services/firebase'
+import { ReducedMotionConfig, ReduceMotion } from 'react-native-reanimated'
 
 function App() {
   useOrientationLock()
@@ -25,6 +26,7 @@ function App() {
 
   return (
     <SafeAreaProvider>
+      <ReducedMotionConfig mode={ReduceMotion.Never} />
       <GestureHandlerRootView>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>

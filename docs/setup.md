@@ -1,24 +1,44 @@
-## Setup
+## Setting up the project
 
-[Generate an ssh key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+In setting up this project you are required to follow this steps and implement them one after the other in the following sequence regardless of your local machine.
 
-[Add the ssh key to your GitHub account](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+- Generate and add ssh key to your GitHub Account
 
-Clone the repository:
+> To effectively run the "Oky Period Tracker" project, setting up and adding an SSH key to your GitHub account is essential for secure and seamless communication between your local machine and GitHub. SSH keys allow you to clone the repository, push code changes, and pull updates without repeatedly entering your GitHub credentials, ensuring a smoother development workflow and enhanced security for your project interactions.
+> Use this to [Generate an ssh key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) and [Add the ssh key to your GitHub account](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+
+- Clone the repository:
+
+> Navigate to your terminal and run the code below to clone the project to your local machine.
 
 ```bash
-git clone REPO_SSH_URL
+git clone https://github.com/Oky-period-tracker/periodtracker.git
 ```
 
-<strong>Note:</strong> Replace `REPO_SSH_URL` with the url for this repository. On github, click on the green _Code_ button, select SSH and copy paste the url
-
-Go to the root directory of the project:
+> In your terminal, after successfully cloning the project to your local machine, go to the root directory of the project by running the code below:
 
 ```bash
 cd periodtracker
 ```
 
-Install the dependencies:
+- Install the dependencies:
+
+> These dependencies are must-have to run the project efficiently, but if you do not have node.Js installed on your local machine, you can get it here. [Node.js](https://nodejs.org/en) afterwards, install yarn globally on your local machine. And proceed with the next step.
+
+on the root directory
+example:
+
+> _C:\Users\lucky\periodtracker_
+
+Run this
+
+```bash
+yarn
+```
+
+Navigate to the /app directory and install the node_modules using yarn
+
+> _cd app_
 
 ```bash
 yarn
@@ -28,7 +48,7 @@ yarn
 
 There are several untracked files which need to be created for the project to run, such as .env files. These can all be created from their templates with this one command
 
-> If your .env files already exist, re-running this command will not overwrite them
+> Make sure you are at the root directory before running these commands
 
 ```bash
 yarn copy-config
@@ -90,5 +110,3 @@ Ensure that your `app.json` file includes this:
 For Apple you will need to make sure you have added the [Apple Push Notifications](https://learn.buildfire.com/en/articles/5760994-how-to-set-up-your-apple-push-notification-key-for-your-ios-firebase-certificate).
 
 Read more [here](https://rnfirebase.io/messaging/usage), bear in mind that this is an expo managed project, so changes within the native `/android` and `/ios` folders are not required
-
-Notifications can also be customised eg the colour, via the `app.json`

@@ -33,6 +33,7 @@
     "modules:checkout": "./bin/modules/checkout.sh",
     "copy-config": "./bin/setup/config.sh",
     "copy-eas": "./bin/setup/eas.sh",
+    "clean-countries": "ts-node remove_entries.ts",
     "postinstall": "if [ -z \"$DOCKER_ENV\" ]; then cd app && yarn; fi"
   },
   "workspaces": {

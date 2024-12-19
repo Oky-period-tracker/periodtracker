@@ -22,6 +22,26 @@ Note: It should create a URL that looks like the following -> https://github.com
 
 For example -> https://github.com/octocat/periodtracker.
 
+## 4. Create a new branch
+
+Create a branch for your changes to keep your work organized and separate from the main codebase:
+
+```
+git checkout -b feature/your-feature-name
+```
+
+After forking the repo, you can proceed with the guide on [contributing.md](./CONTRIBUTING.md) on how to setup the project in your local machine.
+
+### 5. Install local codebase spell checker
+
+You must use VS Code as your local text editor to install the VS Code extension for spell checking your codebase, Code Spell Checker.
+
+The recommended installation method is to install Code Spell Checker directly from the VS Code text editor, and those instructions can be found [here.](https://code.visualstudio.com/docs/editor/extension-marketplace) The extension can also be installed via the VS Code Marketplace website [here.](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
+
+For developers who do not use VS Code, use the corresponding npm package, cspell, and those instructions can be found [here.](https://www.npmjs.com/package/cspell)
+
+### 6. How the team works with GitHub Issues
+
 We follow the Gitflow workflow to ensure our project's development process is organized and efficient. Here’s how you can contribute:
 
 Switch to the `develop` branch and get the latest changes

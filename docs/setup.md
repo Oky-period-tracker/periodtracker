@@ -1,4 +1,4 @@
-## Setting up the project
+Setting up the project
 
 In setting up this project you are required to follow this steps and implement them one after the other in the following sequence regardless of your local machine.
 

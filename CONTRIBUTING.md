@@ -1,10 +1,26 @@
 # Contributing
 
-Thank you for considering contributing to this project! Your efforts make a significant difference in the quality and success of this project.
+👍🥳 First off, thank you for considering contributing to this project! Your efforts make a significant difference in the quality and success of this project.🥳👍
 
-Before contributing, please familiarize yourself with the README and documentation to get setup.
+The guide assumes that you have read and understood the readme file, able to [Setup](./setup.md) the project on your local machine and familiar with JavaScript, React and Typescript.
 
 ## How to Contribute
+
+## 1. Join the slack channel
+
+In the channel, send an introductory message with your GitHub handle/username asking to be added to the GitHub repository (this repository).
+
+## 2. Installing Git
+
+Before cloning your forked repository to your local machine, you must have Git installed. You can find instructions for installing Git for your operating system [here](https://git-scm.com/downloads). Please note that if you have a Mac the page offers several options.
+
+## 3. Fork the repository
+
+You can fork the PeriodTracker repository by clicking 🍴 [Fork](https://github.com/Oky-period-tracker/periodtracker/fork) . A fork is a copy of the repository that will be placed on your GitHub account.
+
+Note: It should create a URL that looks like the following -> https://github.com/<your_GitHub_user_name>/periodtracker
+
+For example -> https://github.com/octocat/periodtracker.
 
 We follow the Gitflow workflow to ensure our project's development process is organized and efficient. Here’s how you can contribute:
 

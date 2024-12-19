@@ -1,43 +1,68 @@
+![Oky Logo](https://cdn-jeekn.nitrocdn.com/YMylMApFOdicfeUXuODDpSFiUbWeZeKg/assets/images/optimized/rev-3ff2ed2/oky.nyc3.cdn.digitaloceanspaces.com/2020/12/oky-primary-logo-rgb.png)
+
 # Period tracker
 
-This is a period tracker application monorepo, consisting of a React Native app, a CMS and an API.
+Oky is the world’s first period tracker app that was made with girls' input.
 
-[Install Software Dependencies](./docs/dependencies/index.md)
+It provides important information about menstruation in fun, creative, and positive ways. And it brings it straight into girls’ hands through the tool they use most often every day – mobile phones.
 
-[Set Up the Project](./docs/setup.md)
+Oky lets girls feel in control and more confident by tracking their periods, and getting information that all girls should have access to.
 
-[Start the Project](./docs/start_project.md)
+# Oky's Features
+- :calendar:  Calendar
+>Oky’s calendar predicts your period with daily or monthly views, becoming more accurate the more you use the tracking. However, irregular periods may cause occasional inaccuracies.
 
-[Run the project locally](./docs/run_project.md)
+- :girl: Personalise Oky
+>Customize your Oky experience by selecting a guiding friend and theme, with the option to change them anytime.
 
-[Test the Project](./docs/tests.md)
+- :two_women_holding_hands: Buddies
+>Personalize your Oky app by choosing a guiding friend and theme, and switch them whenever you like!
+<!-- is the above friend another human using the app? -->
+- :notebook_with_decorative_cover: Encyclopedia
+>Oky’s encyclopedia provides expert-reviewed information on periods and the body, with content tailored for girls with and without disabilities.
 
-[Overview of deployment and architecture](./docs/deployment/deployment_overview.md)
+- :ledger: Daily Diaries
+>Track your feelings daily to understand yourself better, with health tips and fun quizzes to help you learn more!
 
-[Deploy the Project](./docs/deployment/deployment.md)
+# Oky's Principles
 
-[Common Commands, Testing, Tips, and Tools](./docs/misc.md)
+- :girl: Girl-led design
+>Oky was designed with input from girls in Mongolia and Indonesia, ensuring it stays relevant by letting those who would benefit most shape its design, features, and name.
 
----
+- :video_game: Gamified Approach
+>Oky is a girl-centered app that combines gamification for fun learning and discreet period tracking. Users can personalize avatars, unlock features, play quizzes, and enjoy positive, stigma-free content.
 
-### Localisation
+- :girl:Design for girls digital realities
+>Oky is lightweight, offline-friendly, supports shared phones, and has secure passcode protection, all tailored to girls' contexts and languages.
 
-[Translations](./docs/localisation/translations.md)
+- :heavy_check_mark:Evidence-based content
+>Oky provides expert-vetted, girl-friendly information on menstruation, puberty, and reproductive health, along with referrals to support services.
 
-[Updating content](./docs/localisation/updating_content.md)
+- :open_hands:Open source
+>Oky’s open-source code and content are free to access, fostering co-creation and a global community. The code is available on GitHub under the AGPL-3.0 License, and content can be requested.
 
-[Lottie & image validation](./docs/localisation/asset_validation.md)
+- :free:Accessible and inclusive
+>Oky is designed with input from girls with disabilities and follows accessibility guidelines to ensure wide reach. Partners also receive expert guidance on inclusion and best practices. <!-- what accesibility guidelines were/are followed?-->
 
----
+- :lock:Private and secure
+>Oky prioritizes privacy by not collecting personal information. It’s password-protected, stores data locally, works offline, and only saves non-identifiable data and historic cycle dates online for cross-device access.
 
-### Code
+# Oky's Users
+- :girl:Oky for girls
+>Oky is designed for girls aged 10 to 19 but is helpful for anyone learning about menstruation. It provides engaging, accessible content to manage periods and supports girls with disabilities through accessibility features.
 
-[Contributing](./CONTRIBUTING.md)
+- :boy:Oky for boys
+>Boys can also benefit from Oky by exploring the encyclopedia to learn about puberty and other relevant topics for adolescent boys.
 
-[Submodules](./docs/modules.md)
+- :family:Oky for parents
+>Oky provides parents and caregivers with information to support adolescent daughters, including those with disabilities, in managing periods and puberty.
 
-[Importing optional submodules](./docs/code/optional_submodules.md)
+- :school:Oky for teachers
+>Oky offers teachers, health workers, and community members evidence-based information on menstruation, puberty, and reproductive health. It can be used in classrooms to complement lessons and engage students in a fun, educational manner.
 
-[Understanding the CMS & API routes](./docs/code/routes.md)
+# Contribution Guidelines:
+Hey there!
+We require all Code Contributors to
 
-[Recommended reading for developers](./docs/code/recommended_reading.md)
+- Join our organization by going through our Slack/Discord channel. It's free to join! <!-- maybe link it here?-->
+- Read our [CONTRIBUTING](./CONTRIBUTING.md) document and follow the steps.

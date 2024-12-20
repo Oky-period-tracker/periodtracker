@@ -2,7 +2,7 @@
 
 👍🥳 First off, thank you for considering contributing to this project! Your efforts make a significant difference in the quality and success of this project.🥳👍
 
-The guide assumes that you have read and understood the readme file, able to [Setup](./setup.md) the project on your local machine and familiar with JavaScript, React and Typescript.
+The guide assumes that you have read and understood the readme file, able to [Setup](./docs/setup.md) the project on your local machine and familiar with JavaScript, React and Typescript.
 
 ## How to Contribute
 

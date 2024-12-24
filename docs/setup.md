@@ -4,11 +4,11 @@ In setting up this project you are required to follow this steps and implement t
 
 ### Generate and add ssh key to your GitHub Account
 
-> To effectively run the "Oky Period Tracker" project, setting up and adding an SSH key to your GitHub account is essential for secure and seamless communication between your local machine and GitHub. SSH keys allow you to clone the repository, push code changes, and pull updates without repeatedly entering your GitHub credentials, ensuring a smoother development workflow and enhanced security for your project interactions.
+To effectively run the "Oky Period Tracker" project, setting up and adding an SSH key to your GitHub account is essential for secure and seamless communication between your local machine and GitHub. SSH keys allow you to clone the repository, push code changes, and pull updates without repeatedly entering your GitHub credentials, ensuring a smoother development workflow and enhanced security for your project interactions.
 
-1. Use the [Guide to generate an ssh key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+- Use the [Guide to generate an ssh key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
-2. Follow the steps to [Add the ssh key to your GitHub account](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
+- Follow the steps to [Add the ssh key to your GitHub account](https://docs.github.com/en/enterprise-cloud@latest/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)
 
 ### Clone the repository:
 

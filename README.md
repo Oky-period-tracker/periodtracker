@@ -78,7 +78,7 @@ Oky lets girls feel in control and more confident by tracking their periods, and
 
 We require all Code Contributors to do the following:
 
-- Setup the project by follow this quick guide: [Project Setup](./docs/setup.md)
+- Setup the project by following this quick guide: [Project Setup](./docs/setup.md)
 
 - Join our organization by going through our Slack/Discord channel. It's free to join! <!-- maybe link it here?-->
 - Read our [CONTRIBUTING](./CONTRIBUTING.md) document and follow the steps.

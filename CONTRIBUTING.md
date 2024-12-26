@@ -44,11 +44,11 @@ For developers who do not use VS Code, use the corresponding npm package, cspell
 
 We follow the Gitflow workflow to ensure our project's development process is organized and efficient. Here’s how you can contribute:
 
-Switch to the `develop` branch and get the latest changes
+Switch to the `master` branch and get the latest changes
 
 ```bash
-git checkout develop
-git pull origin develop # Ensure you're up to date
+git checkout master
+git pull origin master # Ensure you're up to date
 ```
 
 1. Create a New Branch.

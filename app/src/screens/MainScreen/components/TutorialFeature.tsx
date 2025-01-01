@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   notesCard: {
     position: 'absolute',
-    top: 80,
+    top: 150,
     left: 24,
     justifyContent: 'center',
     alignItems: 'center',

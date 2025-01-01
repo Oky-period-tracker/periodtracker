@@ -99,7 +99,9 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
         <TutorialFeature />
       </View>
       {selectedItem && (
-        <DayModal visible={dayModalVisible} toggleVisible={toggleDayModal} data={selectedItem} />
+        <View>
+          <DayModal visible={dayModalVisible} toggleVisible={toggleDayModal} data={selectedItem} />
+        </View>
       )}
     </>
   )

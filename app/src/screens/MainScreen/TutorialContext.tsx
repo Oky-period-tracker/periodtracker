@@ -136,7 +136,7 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
 
   const { setLoading } = useLoading()
 
-  const { width: screenWidth, height: screenHeight } = useScreenDimensions()
+  const { width: screenWidth } = useScreenDimensions()
   const [topLeftLayout, onTopLeftLayout] = useLayout()
   const [wheelLayout, onWheelLayout] = useLayout()
 
@@ -156,7 +156,6 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
           topLeftLayout,
           wheelLayout,
           screenWidth,
-          screenHeight,
           config: UIConfig,
         })
 

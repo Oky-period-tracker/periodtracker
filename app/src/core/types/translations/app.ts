@@ -66,6 +66,10 @@ export interface AppTranslations {
   flow: string
   activity: string
   happy: string
+  loved: string
+  confused: string
+  swings: string
+  proud: string
   blah: string
   sad: string
   stressed: string
@@ -78,16 +82,23 @@ export interface AppTranslations {
   tired: string
   "couldn't sleep": string
   'unhealthy food': string
+  reading: string
+  social_media: string
+  jog: string
   cramps: string
   bloating: string
-  spots: string
+  pimples: string
   headache: string
   sore_breasts: string
+  energetic: string
+  hungry: string
+  backpain: string
   none: string
   light: string
   medium: string
   heavy: string
   spotting: string
+  super_heavy: string
 
   // ------------------------- Avatar ----------------------------
 

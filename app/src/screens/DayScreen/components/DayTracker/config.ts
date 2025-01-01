@@ -5,27 +5,36 @@ export const quizSteps: QuizStep[] = ['question ', 'mood', 'body', 'activity', '
 export const emojiOptions: EmojiQuestionOptions = {
   mood: {
     happy: '😊',
-    blah: '😑',
+    proud: '😎',
+    loved: '🥰',
     sad: '😔',
     stressed: '😤',
     worried: '😟',
-    fabulous: '😎',
+    fabulous: '🤩',
+    swings: '😕',
+    confused: '🤔',
   },
   body: {
     tired: '💤',
     cramps: '💥',
-    bloating: '🎈',
-    spots: '💢',
-    headache: '⚡',
-    sore_breasts: '🍒',
+    bloating: '💨',
+    pimples: '🍊',
+    headache: '🤯',
+    sore_breasts: '👙',
+    energetic: '🔋',
+    hungry: '🍳',
+    backpain: '🌡️',
   },
   activity: {
     exercise: '🏃',
-    'healthy food': '🍏',
+    'healthy food': '🥗',
     'good sleep': '🛏️',
     socialising: '👋',
     "couldn't sleep": '😴',
     'unhealthy food': '🍰',
+    reading: '📖',
+    social_media: '📱',
+    jog: '🚶‍♀️',
   },
   flow: {
     none: '🌂',
@@ -33,11 +42,12 @@ export const emojiOptions: EmojiQuestionOptions = {
     light: '💧',
     medium: '💦',
     heavy: '☔',
+    super_heavy: '🌊',
   },
 }
 
 export const offPeriodOptions = ['none', 'spotting']
-export const onPeriodOptions = ['light', 'medium', 'heavy']
+export const onPeriodOptions = ['light', 'medium', 'heavy', 'super_heavy']
 
 export const EmojiCardText: EmojiTopicTexts = {
   mood: {

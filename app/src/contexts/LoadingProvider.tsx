@@ -35,17 +35,19 @@ export const LoadingProvider = ({ children }: React.PropsWithChildren) => {
       }}
     >
       {children}
-      <Modal
-        visible={loading}
-        animationType={'fade'}
-        transparent={true}
-        statusBarTranslucent={true}
-        supportedOrientations={['portrait', 'landscape']}
-      >
-        <View style={styles.backDrop} />
+      <View>
+        <Modal
+          visible={loading}
+          animationType={'fade'}
+          transparent={true}
+          statusBarTranslucent={true}
+          supportedOrientations={['portrait', 'landscape']}
+        >
+          <View style={styles.backDrop} />
 
-        <Spinner text={text} />
-      </Modal>
+          <Spinner text={text} />
+        </Modal>
+      </View>
     </LoadingContext.Provider>
   )
 }

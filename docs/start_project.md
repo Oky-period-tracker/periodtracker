@@ -46,13 +46,13 @@ Running services include
 - API: [http://localhost:3000](http://localhost:3000)
 - CMS: [http://localhost:5000](http://localhost:5000)
 
-- Development Adminer DB credentials:
+### Development Adminer DB credentials:
 
-  - System: PostgresSQL
-  - Server: postgres
-  - DB Name: periodtracker
-  - User Name: periodtracker
-  - password: periodtracker
+- System: PostgresSQL
+- Server: postgres
+- DB Name: periodtracker
+- User Name: periodtracker
+- password: periodtracker
 
 ### Run a manual migration
 

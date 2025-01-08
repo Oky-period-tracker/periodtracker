@@ -14,7 +14,7 @@ Oky lets girls feel in control and more confident by tracking their periods, and
 
   > Oky’s calendar predicts your period with daily or monthly views, becoming more accurate the more you use the tracking. However, irregular periods may cause occasional inaccuracies.
 
-- :girl: Personalize Oky
+- :girl: Personalise Oky
 
   > Customize your Oky experience by selecting a guiding friend and theme, with the option to change them anytime.
 

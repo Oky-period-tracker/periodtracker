@@ -21,13 +21,23 @@ To test the app's API-CMS interaction, you will need to build the Docker images 
 docker-compose build
 ```
 
+This command will build the required images for development.
+
 ## Start the backend/website/cms/api
 
-To run the backend/cms and api simply run the command (ensure the images are built):
+Once the images are built, you can start the backend, CMS, and API using the following steps:
+
+- Run the Development Environment by executing the command below to start the backend, CMS, and API:
 
 ```bash
 yarn dev
 ```
+
+**Notes**
+
+- Ensure that the images are successfully built before running the development command.
+
+- If you encounter any issues, verify that Docker is installed, you are logged in, and the `docker-compose.yml` file is correctly configured.
 
 If the database was not created successfully the cms container will exit but the api/database should still be running.
 Running services include

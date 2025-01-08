@@ -14,7 +14,7 @@ Oky lets girls feel in control and more confident by tracking their periods, and
 
   > Oky’s calendar predicts your period with daily or monthly views, becoming more accurate the more you use the tracking. However, irregular periods may cause occasional inaccuracies.
 
-- :girl: Personalise Oky
+- :girl: Personalize Oky
 
   > Customize your Oky experience by selecting a guiding friend and theme, with the option to change them anytime.
 
@@ -76,9 +76,13 @@ Oky lets girls feel in control and more confident by tracking their periods, and
 
 # Contribution Guidelines:
 
-We require all Code Contributors to do the following:
+We welcome code and on-code contributions to this project! Please follow these steps to get started:
 
-- Setup the project by following this quick guide: [Project Setup](./docs/setup.md)
+- Setup the project by following the instruction in the [Project Setup Guide](./docs/setup.md) to prepare the environment
+- Start the project using the provided [Steps.](./docs/start_project.md) to start the backend, CMS, and API for development.
 
-- Join our organization by going through our Slack/Discord channel. It's free to join! <!-- maybe link it here?-->
-- Read our [CONTRIBUTING](./CONTRIBUTING.md) guidelines and follow the steps to contribute.
+- Connect with us on our Slack/Discord channel to stay updated, connected and collaborate! <!-- maybe link it here?-->
+
+- Read our [CONTRIBUTING](./CONTRIBUTING.md) guidelines for detailed steps on contributing code, reporting issues or suggesting features.
+
+By following these steps, you’ll be ready to make meaningful contributions to the project. Thank you for your support!

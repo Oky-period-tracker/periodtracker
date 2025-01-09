@@ -74,7 +74,7 @@ Oky lets girls feel in control and more confident by tracking their periods, and
 - :school:Oky for teachers
   > Oky offers teachers, health workers, and community members evidence-based information on menstruation, puberty, and reproductive health. It can be used in classrooms to complement lessons and engage students in a fun, educational manner.
 
-# Contribution Guidelines:
+# How to get started:
 
 We welcome code and on-code contributions to this project! Please follow these steps to get started:
 

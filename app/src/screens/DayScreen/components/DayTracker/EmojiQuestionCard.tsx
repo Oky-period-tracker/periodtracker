@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { BadgeSize, EmojiBadge } from '../../../../components/EmojiBadge'
 import { EmojiCardText, emojiOptions, offPeriodOptions, onPeriodOptions } from './config'
@@ -61,6 +61,9 @@ export const EmojiQuestionCard = ({
   const dispatch = useDispatch()
   const lastClickedDate = useSelector(lastPressedEmojiSelector)
 
+  useEffect(() => {
+    console.log('selected emojis ', selectedEmojis)
+  }, [selectedEmojis])
   const onEmojiPress = (answer: string) => {
     if (!userID || !dataEntry) {
       return
@@ -163,7 +166,12 @@ export const EmojiQuestionCard = ({
         </View>
       </View>
       {includeDayModal && dataEntry && (
-        <DayModal visible={dayModalVisible} toggleVisible={toggleDayModal} data={dataEntry} />
+        <DayModal
+          visible={dayModalVisible}
+          toggleVisible={toggleDayModal}
+          data={dataEntry}
+          hideLaunchButton={false}
+        />
       )}
     </View>
   )

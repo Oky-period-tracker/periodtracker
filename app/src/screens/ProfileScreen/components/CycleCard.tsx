@@ -46,7 +46,7 @@ export const CycleCard = ({
   const periodEndMonth = months[periodEndMonthIndex]
 
   return (
-    <View style={[styles.container, globalStyles.shadow]}>
+    <View style={[styles.container, globalStyles.shadow]} testID="cycle">
       <View style={[styles.cycleCard, { backgroundColor }]}>
         {/* ===== Header ===== */}
         <View style={[styles.cycleCardHeader, { backgroundColor: palette.danger.base }]}>

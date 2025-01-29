@@ -56,7 +56,12 @@ export const DateBadge = ({ date, style }: { date: Moment; style: StyleProp<View
       >
         {dayText}
       </Button>
-      <DayModal visible={visible} toggleVisible={toggleVisible} data={dataEntry} />
+      <DayModal
+        visible={visible}
+        toggleVisible={toggleVisible}
+        data={dataEntry}
+        hideLaunchButton={false}
+      />
     </View>
   )
 }

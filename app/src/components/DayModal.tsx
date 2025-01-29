@@ -30,7 +30,12 @@ import { useLoading } from '../contexts/LoadingProvider'
 import { analytics } from '../services/firebase'
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
-export const DayModal = ({ data, visible, toggleVisible }: { data: DayData } & ModalProps) => {
+export const DayModal = ({
+  data,
+  visible,
+  toggleVisible,
+  hideLaunchButton,
+}: { data: DayData } & ModalProps) => {
   const selectedDayInfo = data
   const inputDay = data.date
   const { setAvatarMessage } = useAvatarMessage()
@@ -281,10 +286,16 @@ export const DayModal = ({ data, visible, toggleVisible }: { data: DayData } & M
     }
     toggleVisible()
   }
+  console.log('hideLaunchButton', hideLaunchButton)
 
   return (
-    <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
-      <LaunchTutorialButton toggleVisible={toggleVisible} />
+    <Modal
+      visible={visible}
+      toggleVisible={toggleVisible}
+      style={styles.modal}
+      hideLaunchButton={false}
+    >
+      {!hideLaunchButton && <LaunchTutorialButton toggleVisible={toggleVisible} />}
       <Text style={styles.title}>user_input_instructions</Text>
       <Text style={styles.description}>share_period_details_heading</Text>
 

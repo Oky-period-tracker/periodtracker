@@ -19,6 +19,7 @@ export interface ModalProps {
   toggleVisible: () => void
   children?: React.ReactNode
   style?: StyleProp<ViewStyle>
+  hideLaunchButton: boolean
 }
 
 export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) => {

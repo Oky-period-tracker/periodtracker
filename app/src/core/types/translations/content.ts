@@ -5,6 +5,7 @@ export interface Article {
   category: string
   subCategory: string
   live?: boolean
+  voiceOverKey?: string
 }
 
 export interface Articles {

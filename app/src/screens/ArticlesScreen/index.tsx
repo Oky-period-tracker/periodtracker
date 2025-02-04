@@ -48,7 +48,7 @@ const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <SearchBar query={query} setQuery={setQuery} style={globalStyles.shadow} />
         {articles?.map((article) => {
-          const audioAssetUri = `${AUDIO_BASE_URL}/${article?.voiceOverKey}`
+          const audioAssetUri = `${AUDIO_BASE_URL}/${article?.voiceOverKey}?alt=media`
 
           return (
             <View style={[styles.card, { backgroundColor }, globalStyles.shadow]} key={article.id}>

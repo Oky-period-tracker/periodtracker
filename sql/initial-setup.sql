@@ -346,3 +346,11 @@ CREATE TABLE "periodtracker"."help_center_attribute" (
 
 
 ---
+
+ALTER TABLE "periodtracker".article
+ADD "voiceOverKey" text DEFAULT NULL;
+
+
+
+
+

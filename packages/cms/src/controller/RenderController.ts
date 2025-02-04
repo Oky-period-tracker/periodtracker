@@ -24,6 +24,8 @@ import { Question } from '../entity/Question'
 import { env } from '../env'
 import { Video } from '../entity/Video'
 import { HelpCenterAttribute } from '../entity/HelpCenterAttribute'
+// import { helpCenterData, contentFilterOptions, ageRestrictionOptions } from '../optional'
+import { getStorage } from 'firebase-admin/storage'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -261,7 +263,13 @@ export class RenderController {
     const subcategories = await this.subcategoryRepository.find({
       where: { lang: request.user.lang },
     })
-    this.render(response, 'Encyclopedia', { articles, categories, subcategories })
+    this.render(response, 'Encyclopedia', {
+      articles,
+      categories,
+      subcategories,
+      // contentFilterOptions,
+      VOICE_OVER_BASE_URL: env.storage.baseUrl,
+    })
   }
 
   async renderCategoriesManagement(request: Request, response: Response, next: NextFunction) {
@@ -317,7 +325,13 @@ export class RenderController {
       [request.user.lang, request.params.id],
     )
 
-    this.render(response, 'Subcategory', { categories, subcategories, articles })
+    this.render(response, 'Subcategory', {
+      categories,
+      subcategories,
+      articles,
+      // contentFilterOptions,
+      VOICE_OVER_BASE_URL: env.storage.baseUrl,
+    })
   }
 
   async renderVideoManagement(request: Request, response: Response, next: NextFunction) {

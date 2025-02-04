@@ -19,6 +19,7 @@ import { PrivacyPolicyController } from './controller/PrivacyPolicyController'
 import { DataController } from './controller/DataController'
 import { VideoController } from './controller/VideoController'
 import { HelpCenterAttributeController } from './controller/HelpCenterAttributeController'
+import { ArticleVoiceOverController } from './controller/ArticleVoiceOverController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -207,6 +208,19 @@ export const Routes = [
     route: '/articles',
     controller: ArticleController,
     action: 'reorderRows',
+  },
+  // ------------ Voice Over ----------------
+  {
+    method: 'get',
+    route: '/api/voice-over/article',
+    controller: ArticleVoiceOverController,
+    action: 'get',
+  },
+  {
+    method: 'post',
+    route: '/api/voice-over/article/remove',
+    controller: ArticleVoiceOverController,
+    action: 'remove',
   },
   // ------------ Videos Api ----------------
   {

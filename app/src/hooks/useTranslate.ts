@@ -13,6 +13,7 @@ import { currentLocaleSelector } from '../redux/selectors'
 import React from 'react'
 import { setLocale } from '../redux/actions'
 import { useSelector } from '../redux/useSelector'
+import { customSignUpTranslations } from '../optional/customSignUp'
 
 let initLocale = defaultLocale
 
@@ -58,8 +59,9 @@ export const allTranslations = combineTranslations([
   (appTranslations as unknown) as TranslationObject,
   (localeTranslations as unknown) as TranslationObject,
   (themeTranslations as unknown) as TranslationObject,
-  // flowerTranslations,
-  // customComponentsTranslations,
+  // (chatTranslations as unknown) as TranslationObject,
+  // (flowerTranslations as unknown) as TranslationObject,
+  (customSignUpTranslations as unknown) as TranslationObject,
 ])
 
 const capitalizeFirstLetter = (text: string): string => {

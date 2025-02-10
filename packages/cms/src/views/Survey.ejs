@@ -80,7 +80,9 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
             <th style="width: 1%"><%= __('Edit')%></th>
             <th style="width: 1%"><%= __('Delete')%></th>
             <th style="width: 1%"><%= __('Live')%></th>
-            <th style="width: 2.5%"><%= __('Age Restricted')%></th>
+            <% ageRestrictionOptions.forEach((option) =>{ %>
+              <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= option.description %></th>
+            <% }) %>
           </tr>
         </thead>
         <tbody id="surveyContainer" style="overflow-y: scroll">

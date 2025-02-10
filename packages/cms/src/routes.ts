@@ -20,6 +20,8 @@ import { DataController } from './controller/DataController'
 import { VideoController } from './controller/VideoController'
 import { HelpCenterAttributeController } from './controller/HelpCenterAttributeController'
 import { ArticleVoiceOverController } from './controller/ArticleVoiceOverController'
+import { AgeRestrictionController } from './controller/AgeRestrictionController'
+import { ContentFilterController } from './controller/ContentFilterController'
 
 export const Routes = [
   // ------------ Render ----------------
@@ -208,6 +210,20 @@ export const Routes = [
     route: '/articles',
     controller: ArticleController,
     action: 'reorderRows',
+  },
+  // ------------ Age Restriction ----------------
+  {
+    method: 'post',
+    route: '/api/age-restriction',
+    controller: AgeRestrictionController,
+    action: 'update',
+  },
+  // ------------ Content Filter ----------------
+  {
+    method: 'post',
+    route: '/api/content-filter',
+    controller: ContentFilterController,
+    action: 'update',
   },
   // ------------ Voice Over ----------------
   {

@@ -76,6 +76,7 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
             <th style="width: 2%"><%= __('Data')%></th>
             <th style="width: 2.5%"><%= __('Response')%></th>
             <th style="width: 1%"><%= __('View')%></th>
+            <th style="width: 2.5%" class="pointer contentFilter"><%= __('Filter')%></th>
             <th style="width: 1%"><%= __('Edit')%></th>
             <th style="width: 1%"><%= __('Delete')%></th>
             <th style="width: 1%"><%= __('Live')%></th>
@@ -110,6 +111,14 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
               </button>
             </td>
             <td>
+              <select 
+                class="content-filter-dropdown"
+                data-source="survey"
+                data-id="<%= item.id %>"
+                data-level="<%= item.contentFilter %>"
+                data></select>
+            </td>
+            <td>
               <button
                 type="button"
                 class="btn"
@@ -135,16 +144,17 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
                 <span class="slider round"></span>
               </label>
             </td>
-            <td>
-              <label class="switch">
-                <input data-value="<%= item.id %>" data-name="isAgeRestricted" class='ageRestrictionCheckbox' type="checkbox" 
-                <%if(item.isAgeRestricted) {%>
-                  checked
-                <% }%>
-                />
-                <span class="slider round"></span>
-              </label>
-            </td>
+            <% ageRestrictionOptions.forEach((option) =>{ %>
+              <td>
+                <input 
+                  class="age-restriction-level-radio"
+                  data-source="survey"
+                  data-id="<%= item.id %>"
+                  data-level="<%-option.value%>"
+                  type="radio" 
+                  name="age-<%= item.id %>" <%if(item.ageRestrictionLevel == option.value){%>checked<%}%>/>
+              </td>
+              <% }) %>
             <td hidden><%= item.date_created %></td>
           </tr>
           <tr>

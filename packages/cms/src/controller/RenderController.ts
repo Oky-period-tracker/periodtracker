@@ -24,8 +24,8 @@ import { Question } from '../entity/Question'
 import { env } from '../env'
 import { Video } from '../entity/Video'
 import { HelpCenterAttribute } from '../entity/HelpCenterAttribute'
-// import { helpCenterData, contentFilterOptions, ageRestrictionOptions } from '../optional'
-import { getStorage } from 'firebase-admin/storage'
+import { contentFilterOptions, ageRestrictionOptions } from '../optional'
+// import { getStorage } from 'firebase-admin/storage'
 
 export class RenderController {
   private articleRepository = getRepository(Article)
@@ -49,6 +49,8 @@ export class RenderController {
   // Apply global render options to all views here
   globalRenderOptions = {
     cmsLanguages,
+    ageRestrictionOptions,
+    contentFilterOptions,
   }
 
   async render(
@@ -267,7 +269,7 @@ export class RenderController {
       articles,
       categories,
       subcategories,
-      // contentFilterOptions,
+      contentFilterOptions,
       VOICE_OVER_BASE_URL: env.storage.baseUrl,
     })
   }
@@ -329,7 +331,7 @@ export class RenderController {
       categories,
       subcategories,
       articles,
-      // contentFilterOptions,
+      contentFilterOptions,
       VOICE_OVER_BASE_URL: env.storage.baseUrl,
     })
   }

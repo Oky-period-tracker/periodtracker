@@ -12,4 +12,22 @@ try {
   //
 }
 
-export { helpCenterData }
+let contentFilterOptions = []
+
+try {
+  contentFilterOptions = require('@oky/core/src/modules/translations/restrictions')
+    .contentFilterOptions
+} catch (e) {
+  //
+}
+
+let ageRestrictionOptions = []
+
+try {
+  ageRestrictionOptions = require('@oky/core/src/modules/translations/restrictions')
+    .ageRestrictionOptions
+} catch (e) {
+  //
+}
+
+export { helpCenterData, contentFilterOptions, ageRestrictionOptions }

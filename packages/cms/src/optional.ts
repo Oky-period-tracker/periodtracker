@@ -1,4 +1,5 @@
 // tslint:disable:no-var-requires
+
 let helpCenterData = {
   locations: [],
   attributes: [],
@@ -15,8 +16,7 @@ try {
 let contentFilterOptions = []
 
 try {
-  contentFilterOptions = require('@oky/core/src/modules/translations/restrictions')
-    .contentFilterOptions
+  contentFilterOptions = require('@oky/core')?.contentFilterOptions ?? []
 } catch (e) {
   //
 }
@@ -24,8 +24,7 @@ try {
 let ageRestrictionOptions = []
 
 try {
-  ageRestrictionOptions = require('@oky/core/src/modules/translations/restrictions')
-    .ageRestrictionOptions
+  ageRestrictionOptions = require('@oky/core')?.ageRestrictionOptions ?? []
 } catch (e) {
   //
 }

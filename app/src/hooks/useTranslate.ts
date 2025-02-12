@@ -15,6 +15,7 @@ import { setLocale } from '../redux/actions'
 import { useSelector } from '../redux/useSelector'
 import { customSignUpTranslations } from '../optional/customSignUp'
 import { customHelpTranslations } from '../optional/customHelpCard'
+import { miscTranslations } from '../optional/misc'
 
 let initLocale = defaultLocale
 
@@ -60,6 +61,7 @@ export const allTranslations = combineTranslations([
   (appTranslations as unknown) as TranslationObject,
   (localeTranslations as unknown) as TranslationObject,
   (themeTranslations as unknown) as TranslationObject,
+  (miscTranslations as unknown) as TranslationObject,
   // (chatTranslations as unknown) as TranslationObject,
   // (flowerTranslations as unknown) as TranslationObject,
   (customSignUpTranslations as unknown) as TranslationObject,
@@ -72,7 +74,6 @@ const capitalizeFirstLetter = (text: string): string => {
 }
 
 export const useTranslate = () => {
-  console.log('*** customHelpTranslations', customHelpTranslations)
   const locale = useSelector(currentLocaleSelector)
 
   return (key: string): string => {

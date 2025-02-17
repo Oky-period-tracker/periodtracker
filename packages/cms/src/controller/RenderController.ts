@@ -271,6 +271,7 @@ export class RenderController {
       subcategories,
       contentFilterOptions,
       VOICE_OVER_BASE_URL: env.storage.baseUrl,
+      ageRestrictionOptions,
     })
   }
 
@@ -333,6 +334,7 @@ export class RenderController {
       articles,
       contentFilterOptions,
       VOICE_OVER_BASE_URL: env.storage.baseUrl,
+      ageRestrictionOptions,
     })
   }
 

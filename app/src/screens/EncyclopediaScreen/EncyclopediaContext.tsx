@@ -7,8 +7,10 @@ import {
   allSubCategoriesSelector,
   allVideosSelector,
   currentLocaleSelector,
+  currentUserSelector,
 } from '../../redux/selectors'
 import { Article, Category, SubCategory, VideoData } from '../../core/types'
+import { canAccessContent } from '../../services/restriction'
 
 export type EncyclopediaContext = {
   query: string
@@ -46,6 +48,7 @@ const defaultValue: EncyclopediaContext = {
 const EncyclopediaContext = React.createContext<EncyclopediaContext>(defaultValue)
 
 export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
+  const currentUser = useSelector(currentUserSelector)
   const categories = useSelector(allCategoriesSelector)
   const subCategories = useSelector(allSubCategoriesSelector)
   const articles = useSelector(allArticlesSelector)
@@ -60,8 +63,12 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
     return getArticlesWithParentIds(liveArticles, categories, subCategories)
   }, [liveArticles, categories, subCategories])
 
+  const moderatedArticles: ArticleWithParentIds[] = React.useMemo(() => {
+    return articlesWithParentIds.filter((item) => canAccessContent(item, currentUser))
+  }, [liveArticles, categories, subCategories])
+
   const { query, setQuery, results } = useSearch<ArticleWithParentIds>({
-    options: articlesWithParentIds,
+    options: moderatedArticles,
     keys: searchKeys,
   })
 

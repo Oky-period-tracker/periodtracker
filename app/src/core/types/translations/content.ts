@@ -4,8 +4,11 @@ export interface Article {
   content: string
   category: string
   subCategory: string
-  live?: boolean
+  isAgeRestricted: boolean
+  ageRestrictionLevel: number
+  contentFilter: number
   voiceOverKey?: string
+  live?: boolean
 }
 
 export interface Articles {

@@ -13,7 +13,12 @@ try {
   //
 }
 
-let contentFilterOptions = []
+let contentFilterOptions = [
+  {
+    value: 0,
+    description: 'All',
+  },
+]
 
 try {
   contentFilterOptions = require('@oky/core')?.contentFilterOptions ?? []

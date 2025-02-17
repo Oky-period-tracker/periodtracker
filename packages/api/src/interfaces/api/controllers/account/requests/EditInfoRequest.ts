@@ -1,4 +1,5 @@
 import { IsNotEmpty, MinLength, IsIn, IsDateString } from 'class-validator'
+import { UserMetadata } from 'domain/oky/OkyUser'
 
 export class EditInfoRequest {
   @IsNotEmpty()
@@ -19,4 +20,6 @@ export class EditInfoRequest {
 
   @IsNotEmpty()
   public readonly secretQuestion: string
+
+  public readonly metadata?: UserMetadata
 }

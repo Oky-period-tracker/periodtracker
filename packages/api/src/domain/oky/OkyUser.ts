@@ -17,6 +17,14 @@ interface OkyUserProps {
   memorable: MemorableQuestion
   dateSignedUp: string
   dateAccountSaved: string
+  metadata: UserMetadata
+}
+
+export interface UserMetadata {
+  genderIdentity?: string
+  accommodationRequirement?: string
+  religion?: string
+  contentSelection?: number
 }
 
 @Entity()
@@ -60,6 +68,9 @@ export class OkyUser {
   @Column({ name: 'date_account_saved' })
   private dateAccountSaved: string
 
+  @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })
+  private metadata: UserMetadata
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -73,6 +84,7 @@ export class OkyUser {
         password,
         memorable,
         dateSignedUp,
+        metadata,
       } = props
 
       this.id = id
@@ -86,6 +98,7 @@ export class OkyUser {
       this.memorable = memorable
       this.store = null
       this.dateSignedUp = dateSignedUp
+      this.metadata = metadata
     }
   }
 
@@ -102,6 +115,7 @@ export class OkyUser {
     secretAnswer,
     dateSignedUp,
     dateAccountSaved,
+    metadata,
   }: {
     id: string
     name: string
@@ -115,6 +129,7 @@ export class OkyUser {
     secretAnswer: string
     dateSignedUp: string
     dateAccountSaved: string
+    metadata: UserMetadata
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -140,6 +155,7 @@ export class OkyUser {
       memorable,
       dateSignedUp,
       dateAccountSaved,
+      metadata,
     })
   }
 
@@ -156,12 +172,14 @@ export class OkyUser {
     gender,
     location,
     secretQuestion,
+    metadata,
   }: {
     name: string
     dateOfBirth: Date
     gender: 'Male' | 'Female' | 'Other'
     location: string
     secretQuestion: string
+    metadata: UserMetadata
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -173,6 +191,7 @@ export class OkyUser {
     this.gender = gender
     this.location = location
     this.memorable = await this.memorable.changeQuestion(secretQuestion)
+    this.metadata = metadata
   }
 
   public async editSecretAnswer(previousSecretAnswer: string, nextSecretAnswer: string) {
@@ -237,5 +256,9 @@ export class OkyUser {
 
   public getDateSignedUp() {
     return this.dateSignedUp
+  }
+
+  public getMetadata() {
+    return this.metadata
   }
 }

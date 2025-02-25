@@ -4,9 +4,12 @@ import moment from 'moment'
 import { Article } from '../core/types'
 
 const handleAgeRestriction = (article: Article, user: User | null) => {
-  const defaultAgeRestriction = 15
-  const isAgeRestricted = article.isAgeRestricted || article?.ageRestrictionLevel !== 0
-  const ageRestrictionLevel = article?.ageRestrictionLevel ?? defaultAgeRestriction
+  const isAgeRestricted =
+    article.ageRestrictionLevel !== undefined &&
+    article.ageRestrictionLevel !== null &&
+    article?.ageRestrictionLevel !== 0
+
+  const ageRestrictionLevel = article?.ageRestrictionLevel
 
   if (!isAgeRestricted) {
     // No restriction
@@ -20,7 +23,7 @@ const handleAgeRestriction = (article: Article, user: User | null) => {
 
   const age = moment().diff(moment(user.dateOfBirth), 'years')
 
-  if (isAgeRestricted && age < ageRestrictionLevel) {
+  if (age < ageRestrictionLevel) {
     // Too young
     return false
   }
@@ -31,16 +34,19 @@ const handleAgeRestriction = (article: Article, user: User | null) => {
 const handleVersionRestriction = (article: Article, user: User | null) => {
   const { contentFilter = 0 } = article
 
-  if (contentFilter === 0) {
+  const notRestricted = contentFilter === null || contentFilter === undefined || contentFilter === 0
+
+  if (notRestricted) {
     // Available to all
     return true
   }
 
   if (isEmpty(user) || !user?.metadata?.contentSelection) {
-    // Cannot verify - Restricted
+    // Cannot verify users selection
     return false
   }
 
+  // Article is visible if user's contentSelection matches the article's contentFilter
   return user?.metadata?.contentSelection === article.contentFilter
 }
 
@@ -48,8 +54,10 @@ export const canAccessContent = (article: Article, user: User | null) => {
   if (!article) {
     return false
   }
+
   const passesAgeRestriction = handleAgeRestriction(article, user)
   const passesVersionRestriction = handleVersionRestriction(article, user)
+
   return passesAgeRestriction && passesVersionRestriction
 }
 

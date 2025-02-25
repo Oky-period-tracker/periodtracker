@@ -6,7 +6,7 @@ export interface Article {
   subCategory: string
   isAgeRestricted: boolean
   ageRestrictionLevel: number
-  contentFilter: number
+  contentFilter?: number
   voiceOverKey?: string
   live?: boolean
 }

@@ -66,8 +66,12 @@
             <th style="width: 15%"><%= __('Article Heading') %></th>
             <th style="width: 50%"><%= __('Article Text') %></th>
             <th style="width: 2.5%"><%= __('Voice Over') %></th>
+            <th style="width: 2.5%"><%= __('Content filter') %></th>
             <th style="width: 2.5%"><%= __('Edit') %></th>
             <th style="width: 2.5%"><%= __('Delete') %></th>
+            <% ageRestrictionOptions.forEach((option) =>{ %>
+              <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= option.description %></th>
+            <% }) %>
             <th style="width: 2.5%"><%= __('Live') %></th>
           </tr>
         </thead>
@@ -88,6 +92,14 @@
               <input type="file" id="upload-<%= article.id %>"/>
             </td>
             <td>
+              <select 
+                class="content-filter-dropdown"
+                data-source="article"
+                data-id="<%= article.id %>"
+                data-level="<%= article.contentFilter %>"
+                data></select>
+            </td>
+            <td>
               <button
                 type="button"
                 class="btn"
@@ -103,6 +115,17 @@
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
             </td>
+            <% ageRestrictionOptions.forEach((option) =>{ %>
+              <td>
+                <input 
+                  class="age-restriction-level-radio"
+                  data-source="article"
+                  data-id="<%= article.id %>"
+                  data-level="<%-option.value%>"
+                  type="radio" 
+                  name="age-<%= article.id %>" <%if(article.ageRestrictionLevel == option.value){%>checked<%}%>/>
+              </td>
+              <% }) %>
             <td>
               <label class="switch">
                 <input data-value="<%= article.id %>" class='liveCheckbox' type="checkbox" 
@@ -123,6 +146,8 @@
   <span id="articlesJSON" hidden><%= JSON.stringify(articles); %> </span>
   <span id="categoriesJSON" hidden><%= JSON.stringify(categories); %> </span>
   <span id="subcategoriesJSON" hidden><%= JSON.stringify(subcategories); %> </span>
+  <span id="contentFilterOptionsJSON" hidden><%= JSON.stringify(contentFilterOptions); %> </span>
+
   <script type="application/javascript" src="/scripts/voiceOvers.js"></script>
     <!-- VOICE OVER SETUP -->
     <script>

@@ -350,7 +350,22 @@ CREATE TABLE "periodtracker"."help_center_attribute" (
 ALTER TABLE "periodtracker".article
 ADD "voiceOverKey" text DEFAULT NULL;
 
+ALTER TABLE "periodtracker".article
+ADD "isAgeRestricted" boolean DEFAULT NULL,
+ADD "ageRestrictionLevel" integer DEFAULT NULL,
+ADD "contentFilter" integer DEFAULT NULL;
 
+ALTER TABLE oky_user
+ADD COLUMN metadata json DEFAULT '{}';
 
+ALTER TABLE "periodtracker".quiz
+ADD "ageRestrictionLevel" integer DEFAULT NULL,
+ADD "contentFilter" integer DEFAULT NULL;
 
+ALTER TABLE "periodtracker".survey
+ADD "ageRestrictionLevel" integer DEFAULT NULL,
+ADD "contentFilter" integer DEFAULT NULL;
 
+ALTER TABLE "periodtracker"."did_you_know"
+ADD "ageRestrictionLevel" integer DEFAULT NULL,
+ADD "contentFilter" integer DEFAULT NULL;

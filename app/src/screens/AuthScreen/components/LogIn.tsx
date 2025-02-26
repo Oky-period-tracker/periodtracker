@@ -27,6 +27,8 @@ export const LogIn = () => {
 
   const [success, setSuccess] = React.useState<boolean | null>(null)
 
+  const [margin, setMargin] = React.useState(0)
+
   const onConfirm = () => {
     if (errors.length) {
       setErrorsVisible(true)
@@ -56,6 +58,13 @@ export const LogIn = () => {
     setIsLoggedIn(true)
   }, [user])
 
+  React.useEffect(() => {
+    // This is a hack to prevent the confirm button from being hidden
+    setTimeout(() => {
+      setMargin(1)
+    }, 500)
+  }, [])
+
   const title = wasPreLoggedIn ? 'password_request' : 'log_in'
 
   return (
@@ -83,7 +92,7 @@ export const LogIn = () => {
         {success === false && <ErrorText>password_incorrect</ErrorText>}
       </AuthCardBody>
       <Hr />
-      <TouchableOpacity onPress={onConfirm} style={styles.confirm}>
+      <TouchableOpacity onPress={onConfirm} style={[styles.confirm, { marginBottom: margin }]}>
         <Text style={styles.confirmText}>confirm</Text>
       </TouchableOpacity>
     </>

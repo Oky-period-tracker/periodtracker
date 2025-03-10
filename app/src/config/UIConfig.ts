@@ -44,8 +44,8 @@ export const breakPoints: Record<BreakPointSize, number> = {
 export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
   s: {
     carousel: {
-      cardWidth: 180,
-      cardMargin: 24,
+      cardWidth: 215,
+      cardMargin: 32,
     },
     centerCard: {
       width: 100,

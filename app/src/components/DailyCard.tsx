@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     aspectRatio: 1.5,
     flexDirection: 'column',
-    padding: 12,
+    padding: 8,
     margin: 24,
   },
   top: {

@@ -13,6 +13,8 @@ $('#articleModal').on('show.bs.modal', (event) => {
     $('#col1TableModal').val('')
     $('#col2TableModal').val('')
     $('#col3TableModal').val('')
+    $('#contentFilterDropdownForm').val('0')
+    $('#ageRestrictionLevelForm').val('0')
     $('#col4TableModal').prop('checked', false)
     $('#itemID').text(0)
     $('#countdown2').text(70 + ' characters remaining.')
@@ -29,6 +31,8 @@ $('#articleModal').on('show.bs.modal', (event) => {
   $('#col1TableModal').val(articleInfo.subcategory_id)
   $('#col2TableModal').val(articleInfo.article_heading)
   $('#col3TableModal').val(articleInfo.article_text)
+  $('#contentFilterDropdownForm').val(articleInfo.contentFilter)
+  $('#ageRestrictionLevelForm').val(articleInfo.ageRestrictionLevel)
   $('#col4TableModal').prop('checked', articleInfo.live)
   $('#itemID').text(articleId)
   $('#countdown2').text(70 - articleInfo.article_heading.length + ' characters remaining.')
@@ -93,6 +97,8 @@ $('#btnArticleEditConfirm').on('click', () => {
     article_heading: $('#col2TableModal').val(),
     article_text: $('#col3TableModal').val(),
     live: $('#col4TableModal').prop('checked'),
+    contentFilter: $('#contentFilterDropdownForm').val(),
+    ageRestrictionLevel: $('#ageRestrictionLevelForm').val(),
   }
   if (
     data.category === '' ||
@@ -375,3 +381,6 @@ const handleSubCategorySelect = (catId) => {
       else $(child).css('display', 'none')
     })
 }
+
+var articlesJSON = $('#articlesJSON').text()
+initializeVoiceOver(articlesJSON)

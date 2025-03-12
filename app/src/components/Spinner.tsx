@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Image } from 'react-native'
+import { ViewProps } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -7,13 +7,8 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated'
-import { assets } from '../resources/assets'
-import { Text } from './Text'
-import { useColor } from '../hooks/useColor'
 
-export const Spinner = ({ text }: { text?: string }) => {
-  const { palette } = useColor()
-
+export const Spinner = ({ children }: ViewProps) => {
   const rotation = useSharedValue(0)
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -33,53 +28,5 @@ export const Spinner = ({ text }: { text?: string }) => {
     )
   }, [])
 
-  return (
-    <View style={styles.screen}>
-      {text && <Text style={[styles.text, { color: palette.secondary.text }]}>{text}</Text>}
-      <View style={styles.container}>
-        <View style={styles.inner}>
-          <Image resizeMode="contain" source={assets.static.spin_load_face} style={styles.image} />
-        </View>
-
-        <Animated.View style={[animatedStyle]}>
-          <Image
-            resizeMode="contain"
-            source={assets.static.spin_load_circle}
-            style={styles.image}
-          />
-        </Animated.View>
-      </View>
-    </View>
-  )
+  return <Animated.View style={[animatedStyle]}>{children}</Animated.View>
 }
-
-const size = 120
-
-const styles = StyleSheet.create({
-  image: {
-    width: size,
-    height: size,
-  },
-  screen: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  container: {
-    width: size,
-    height: size,
-  },
-  inner: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  text: {
-    width: '100%',
-    paddingHorizontal: 24,
-    marginBottom: 24,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-})

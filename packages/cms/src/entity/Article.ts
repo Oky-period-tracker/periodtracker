@@ -26,6 +26,18 @@ export class Article {
   @Column()
   lang: string
 
+  @Column({ default: 0 })
+  contentFilter: number
+
+  @Column({ default: false, nullable: true })
+  isAgeRestricted: boolean
+
+  @Column({ default: 0 })
+  ageRestrictionLevel: number
+
+  @Column({ nullable: true })
+  voiceOverKey: string
+
   @Column({ generated: 'increment' })
   sortingKey: number
 }

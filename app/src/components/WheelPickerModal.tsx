@@ -22,7 +22,7 @@ export const WheelPickerModal = ({
   disabled = false,
   ...props
 }: {
-  initialOption: WheelPickerOption | undefined
+  initialOption?: WheelPickerOption | undefined
   options: WheelPickerOption[]
   onSelect: (value: WheelPickerOption | undefined) => void
   allowUndefined?: boolean

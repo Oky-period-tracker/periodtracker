@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native'
 import { EmojiBadge } from '../../../components/EmojiBadge'
 import { useSelector } from '../../../redux/useSelector'
 import { mostAnsweredSelector } from '../../../redux/selectors'
-import { emojiOptions } from '../../DayScreen/components/DayTracker/config'
 import { defaultEmoji } from '../../../config/options'
 import { Moment } from 'moment'
 import { Text } from '../../../components/Text'
@@ -11,6 +10,7 @@ import { useMonths } from '../../../hooks/useMonths'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { globalStyles } from '../../../config/theme'
 import { useColor } from '../../../hooks/useColor'
+import { emojiOptions } from '../../../optional/emojis'
 
 export const CycleCard = ({
   item,

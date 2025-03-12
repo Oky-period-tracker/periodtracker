@@ -42,10 +42,10 @@ export default [
       'react/prop-types': 'off',
       'react/jsx-key': 'off',
       'react/no-unescaped-entities': 'off',
+      'no-console': 'error',
       /* 
         TODO: 
         no semi colons
-        no console log
         no export default
         no unused styles
         functions must have { }, no single line funcs without brackets

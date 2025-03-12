@@ -10,6 +10,7 @@ interface SegmentControlOption {
   value: string
   label: string
   iconName: string
+  emoji?: string
 }
 
 interface SegmentControlProps {
@@ -52,12 +53,18 @@ export const SegmentControl = ({
                 style={styles.iconContainer}
                 onPress={onPress}
               >
-                <FontAwesome
-                  size={20}
-                  // @ts-expect-error TODO:
-                  name={option.iconName}
-                  color={'#fff'}
-                />
+                {option.emoji ? (
+                  <Text enableTranslate={false} style={styles.emoji}>
+                    {option.emoji}
+                  </Text>
+                ) : (
+                  <FontAwesome
+                    size={20}
+                    // @ts-expect-error TODO:
+                    name={option.iconName}
+                    color={'#fff'}
+                  />
+                )}
               </Button>
               <Text enableTranslate={true} style={styles.optionText}>
                 {option.label}
@@ -95,5 +102,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     margin: 4,
+  },
+  emoji: {
+    fontSize: 20,
   },
 })

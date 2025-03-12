@@ -11,6 +11,8 @@ import { useSelector } from '../../redux/useSelector'
 import { articlesSelector, subCategoryByIDSelector } from '../../redux/selectors'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
+import { AudioPlayer } from '../../components/AudioPlayer'
+import { AUDIO_BASE_URL } from '../../config/env'
 
 const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
   const { backgroundColor, palette } = useColor()
@@ -46,6 +48,8 @@ const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <SearchBar query={query} setQuery={setQuery} style={globalStyles.shadow} />
         {articles?.map((article) => {
+          const audioAssetUri = `${AUDIO_BASE_URL}/${article?.voiceOverKey}?alt=media`
+
           return (
             <View style={[styles.card, { backgroundColor }, globalStyles.shadow]} key={article.id}>
               {article.title && (
@@ -62,6 +66,8 @@ const ArticlesScreen: ScreenComponent<'Articles'> = ({ navigation, route }) => {
               >
                 {subcategory.name}
               </Text>
+
+              {article?.voiceOverKey ? <AudioPlayer audioAssetUri={audioAssetUri} /> : null}
               <ArticleContent articleId={article.id} text={article.content} />
             </View>
           )

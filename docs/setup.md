@@ -92,3 +92,57 @@ For Apple you will need to make sure you have added the [Apple Push Notification
 Read more [here](https://rnfirebase.io/messaging/usage), bear in mind that this is an expo managed project, so changes within the native `/android` and `/ios` folders are not required
 
 Notifications can also be customised eg the colour, via the `app.json`
+
+### Voice Over (optional)
+
+Add audio recordings for encyclopedia articles
+
+In the firebase console, set up cloud storage
+
+Update your cms .env file with the following
+
+Copy paste your bucket name, eg `gs://periodtracker-example.appspot.com` from the firebase console and use that as your STORAGE_BUCKET
+
+The STORAGE_BASE_URL is used to fetch your files from storage, this url includes your bucket name but without the `gs://` prefix, for example
+
+```
+https://firebasestorage.googleapis.com/v0/b/YOUR_BUCKET_NAME
+
+https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com
+```
+
+```env
+STORAGE_BUCKET=gs://periodtracker-example.appspot.com
+STORAGE_BASE_URL=https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com
+```
+
+Similarly in the /mobile .env file, you need to add the STORAGE_BASE_URL, with the same value
+
+```env
+STORAGE_BASE_URL=https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com
+```
+
+Set your firebase rules in the firebase console
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read: if true; // Anyone can read the files
+      allow write: if false; // Only the CMS can write files via firebase-admin which uses the keys in the json config to bypass this rule
+    }
+  }
+}
+```
+
+To deploy this, you need to update your cms.yaml file
+
+For example:
+
+```yaml
+- name: STORAGE_BUCKET
+    value: 'gs://periodtracker-example.appspot.com'
+- name: STORAGE_BASE_URL
+    value: 'https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com'
+```

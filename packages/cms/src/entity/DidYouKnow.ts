@@ -14,6 +14,12 @@ export class DidYouKnow {
   @Column({ default: false, nullable: true })
   isAgeRestricted: boolean
 
+  @Column({ default: 0 })
+  ageRestrictionLevel: number
+
+  @Column({ default: 0 })
+  contentFilter: number
+
   @Column()
   live: boolean
 

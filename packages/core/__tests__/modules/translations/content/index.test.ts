@@ -1,4 +1,4 @@
-import { content } from '../../../../src/modules/translations/content'
+import { content } from '../../../../../../app/src/resources/translations/content'
 
 describe('Static Content Integrity', () => {
   let locales: string[] = []

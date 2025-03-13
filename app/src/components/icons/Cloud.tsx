@@ -9,7 +9,7 @@ export const Cloud = ({ style, size = 80, status = 'neutral' }: SvgIconProps) =>
   const colors = palette[status]
 
   return (
-    <View style={[{ width: size, height: size }, style]}>
+    <View style={[{ width: size, height: size }, style]} testID="cloud">
       <Svg width="100%" height="100%" viewBox="0 0 200 200">
         <G transform="matrix(1.00952 0 0 1.00952 226.8 317.367)">
           <Rect

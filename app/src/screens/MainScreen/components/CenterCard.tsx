@@ -8,7 +8,13 @@ import { globalStyles } from '../../../config/theme'
 import { useResponsive } from '../../../contexts/ResponsiveContext'
 import { useColor } from '../../../hooks/useColor'
 
-export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
+export const CenterCard = ({
+  style,
+  testID,
+}: {
+  style?: StyleProp<ViewStyle>
+  testID?: string
+}) => {
   const { width: screenWidth } = useScreenDimensions()
   const todaysInfo = useTodayPrediction()
   const { status } = useDayStatus(todaysInfo)
@@ -18,6 +24,7 @@ export const CenterCard = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 
   return (
     <View
+      testID={testID}
       style={[
         styles.container,
         globalStyles.shadow,

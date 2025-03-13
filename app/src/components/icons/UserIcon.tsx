@@ -9,7 +9,7 @@ export const UserIcon = ({
   color = '#fff',
 }: SvgIconProps & { color?: string }) => {
   return (
-    <View style={[{ width: size, height: size }, style]}>
+    <View style={[{ width: size, height: size }, style]} testID="user">
       <Svg width="100%" height="100%" viewBox="0 0 200 200">
         <G strokeWidth={0.99996019} strokeDasharray={'none'}>
           <Path

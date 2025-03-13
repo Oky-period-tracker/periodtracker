@@ -38,7 +38,7 @@ export interface AuthState {
   user: User | null
 }
 
-const initialState: AuthState = {
+export const initialState: AuthState = {
   appToken: null,
   error: null,
   isCreatingAccount: false,

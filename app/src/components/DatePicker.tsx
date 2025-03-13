@@ -47,7 +47,7 @@ export const DatePicker = ({
   }
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} testID="date-picker">
       <Calendar
         onDayPress={onDayPress}
         style={styles.calendar}

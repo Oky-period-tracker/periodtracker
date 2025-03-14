@@ -5,6 +5,13 @@ import { MemorableQuestion } from './MemorableQuestion'
 import { OkyUserRepository } from './OkyUserRepository'
 import { BadRequestError } from 'routing-controllers'
 
+export interface OkyUserMetadata {
+  periodDates:{
+  date: string
+  mlGenerated: boolean
+  userVerified: boolean},
+  isProfileUpdateSkipped: boolean
+}
 interface OkyUserProps {
   id: string
   name: HashedName
@@ -17,6 +24,7 @@ interface OkyUserProps {
   memorable: MemorableQuestion
   dateSignedUp: string
   dateAccountSaved: string
+  metadata: OkyUserMetadata | null
 }
 
 @Entity()
@@ -60,6 +68,11 @@ export class OkyUser {
   @Column({ name: 'date_account_saved' })
   private dateAccountSaved: string
 
+  @Column({ name: 'metadata', type: 'json', nullable: true })
+  private metadata:
+    | null
+    | OkyUserMetadata
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -73,6 +86,7 @@ export class OkyUser {
         password,
         memorable,
         dateSignedUp,
+        metadata,
       } = props
 
       this.id = id
@@ -86,6 +100,7 @@ export class OkyUser {
       this.memorable = memorable
       this.store = null
       this.dateSignedUp = dateSignedUp
+      this.metadata = metadata
     }
   }
 
@@ -102,6 +117,7 @@ export class OkyUser {
     secretAnswer,
     dateSignedUp,
     dateAccountSaved,
+    metadata,
   }: {
     id: string
     name: string
@@ -115,6 +131,7 @@ export class OkyUser {
     secretAnswer: string
     dateSignedUp: string
     dateAccountSaved: string
+    metadata: OkyUserMetadata | null
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -140,6 +157,7 @@ export class OkyUser {
       memorable,
       dateSignedUp,
       dateAccountSaved,
+      metadata,
     })
   }
 
@@ -200,6 +218,10 @@ export class OkyUser {
     return repository.delete(this)
   }
 
+  public async updateUserVerifiedPeriodDays({ metadata }: { metadata: OkyUserMetadata }) {
+    this.metadata = metadata
+  }
+
   public getId() {
     return this.id
   }
@@ -237,5 +259,9 @@ export class OkyUser {
 
   public getDateSignedUp() {
     return this.dateSignedUp
+  }
+
+  public getMetadata() {
+    return this.metadata
   }
 }

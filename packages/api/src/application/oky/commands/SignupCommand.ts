@@ -1,3 +1,5 @@
+import { OkyUserMetadata } from "domain/oky/OkyUser"
+
 export interface SignupCommand {
   preferredId: string
   name: string
@@ -11,4 +13,5 @@ export interface SignupCommand {
   secretAnswer: string
   dateSignedUp: string
   dateAccountSaved: string
+  metadata: OkyUserMetadata| null
 }

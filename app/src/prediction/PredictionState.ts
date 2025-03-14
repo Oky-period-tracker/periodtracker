@@ -9,6 +9,12 @@ interface CurrentCycle {
   periodLength: number
   cycleLength: number
 }
+// fpr  user verified period dtaes
+interface UserVerified {
+  periodDate: Moment
+  mlGenerated: boolean
+  userVerified: boolean | null
+}
 
 interface SmartPrediction {
   circularPeriodLength: any // CircularBuffer number[] array of number of days
@@ -31,7 +37,8 @@ export class PredictionState {
   public history: History
   public futurePredictionStatus: boolean
   public actualCurrentStartDate: any
-
+ // ----- for verified dates
+ public userVerifiedDates: UserVerified[]
   private constructor() {}
 
   public static fromData({

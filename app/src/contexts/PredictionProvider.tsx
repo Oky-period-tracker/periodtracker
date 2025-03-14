@@ -123,14 +123,80 @@ export function useCalculateStatusForDateRange(
   const predictionEngine = usePredictionEngine()
 
   return React.useMemo(() => {
+    // console.log('prediction engine ======== ', predictionEngine);
+
     return predictionEngine.calculateStatusForDateRange(
       startDate,
       endDate,
       verifiedPeriodsData,
       hasFuturePredictionActive,
     )
+    
   }, [predictionEngine, startDate, endDate, verifiedPeriodsData, hasFuturePredictionActive])
 }
+////////////-----------------
+
+
+export function useCalculatePeriodDates() {
+  const predictionEngine = usePredictionEngine();
+
+  return React.useMemo(() => {
+    const periodDates: PeriodDate[] = [];
+
+    // Helper function to add multiple period days
+    const addPeriodDays = (startDate: string, days: number) => {
+      for (let i = 0; i < days; i++) {
+        periodDates.push({
+          date: moment(startDate).add(i, 'days').format('DD-MM-YYYY'),
+          'ML-generated': true,
+          'user-verified': null,
+        });
+      }
+    };
+
+    // Ensure history is available and add its dates
+    if (predictionEngine.state.history?.length) {
+      predictionEngine.state.history.forEach((cycle) => {
+        addPeriodDays(cycle.cycleStartDate._i, cycle.periodLength);
+      });
+    }
+
+    // Sort history dates in ascending order
+    periodDates.sort((a, b) => moment(a.date, 'DD-MM-YYYY').diff(moment(b.date, 'DD-MM-YYYY')));
+
+    // Add current cycle period days
+    if (predictionEngine.state.currentCycle?.startDate) {
+      addPeriodDays(
+        predictionEngine.state.currentCycle.startDate._i,
+        predictionEngine.state.currentCycle.periodLength
+      );
+    }
+
+    // Predict future period cycles for the next 12 months
+    if (predictionEngine.state.currentCycle?.startDate) {
+      let lastDate = moment(predictionEngine.state.currentCycle.startDate._i);
+      const cycleLength = predictionEngine.state.smartPrediction.smaCycleLength || 28; // Default cycle length
+      const periodDays = predictionEngine.state.smartPrediction.smaPeriodLength || 5; // Default period days
+
+      for (let i = 0; i < 12; i++) {
+        lastDate = lastDate.add(cycleLength, 'days'); // Predict next cycle
+        addPeriodDays(lastDate.format('YYYY-MM-DD'), periodDays);
+      }
+    }
+
+    // Sort final array to ensure chronological order
+    periodDates.sort((a, b) => moment(a.date, 'DD-MM-YYYY').diff(moment(b.date, 'DD-MM-YYYY')));
+
+    // console.log("Final periodDates:", periodDates); // Debugging log
+
+    return periodDates;
+  }, [predictionEngine]);
+}
+
+
+
+
+///////////////----------------
 
 export function useTodayPrediction() {
   const predictionEngine = usePredictionEngine()

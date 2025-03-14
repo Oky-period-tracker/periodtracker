@@ -81,6 +81,7 @@ describe('OkyUserApplicationService', () => {
         dateOfBirth: new Date(),
         dateSignedUp: new Date().toISOString(),
         dateAccountSaved: new Date().toISOString(),
+        metadata: null
       }
 
       const result = await okyUserApplicationService.signup(command)
@@ -104,6 +105,7 @@ describe('OkyUserApplicationService', () => {
         dateOfBirth: new Date(),
         dateSignedUp: new Date().toISOString(),
         dateAccountSaved: new Date().toISOString(),
+        metadata: null
       }
 
       await expect(okyUserApplicationService.signup(command)).rejects.toThrow(
@@ -156,6 +158,7 @@ describe('OkyUserApplicationService', () => {
         dateOfBirth: new Date(),
         dateSignedUp: new Date().toISOString(),
         dateAccountSaved: new Date().toISOString(),
+        metadata: null
       }
 
       const okyUser = await okyUserApplicationService.signup(command)

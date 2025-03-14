@@ -18,6 +18,8 @@ export function createHttpClient(
     predictionEndpoint: string
   },
 ) {
+  // console.log('base url ------ ', endpoint);
+
   return {
     // TODO:
     // eslint-disable-next-line
@@ -89,10 +91,12 @@ export function createHttpClient(
     // TODO:
     // eslint-disable-next-line
     deleteUserFromPassword: async ({ name, password }: any) => {
-      await axios.post(`${endpoint}/account/delete-from-password`, {
+     const data = await axios.post(`${endpoint}/account/delete-from-password`, {
         name,
         password,
       })
+      console.log('hey ---- ', data);
+      
     },
     getUserInfo: async (userName: string) => {
       const response: AxiosResponse<types.UserInfoResponse> = await axios.get(
@@ -307,6 +311,8 @@ export function createHttpClient(
           },
         },
       )
+      console.log('http client repiosne ------ ', response);
+      
       return response.data
     },
     // TODO:

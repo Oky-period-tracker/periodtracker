@@ -13,6 +13,7 @@ import { ResetPasswordCommand } from './commands/ResetPasswordCommand'
 import { EditInfoCommand } from './commands/EditInfoCommand'
 import { EditSecretAnswerCommand } from './commands/EditSecretAnswerCommand'
 import { DeleteUserFromPasswordCommand } from './commands/DeleteUserFromPasswordCommand'
+import { UserVerifiedPeriodDaysCommand } from './commands/UserVerifiedPeriodDaysCommand'
 
 @Service()
 export class OkyUserApplicationService {
@@ -47,6 +48,7 @@ export class OkyUserApplicationService {
     secretAnswer,
     dateSignedUp,
     dateAccountSaved,
+    metadata
   }: SignupCommand) {
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
     if (await this.okyUserRepository.byId(id)) {
@@ -71,6 +73,7 @@ export class OkyUserApplicationService {
       secretAnswer,
       dateSignedUp,
       dateAccountSaved,
+      metadata
     })
     return this.okyUserRepository.save(user)
   }
@@ -160,5 +163,22 @@ export class OkyUserApplicationService {
 
   public setAuthenticationService(service: AuthenticationService): void {
     this.authenticationService = service
+  }
+
+
+  public async updateUserVerifiedPeriodDays({
+    userId,
+    metadata
+  }: UserVerifiedPeriodDaysCommand) {
+    const user = await this.okyUserRepository.byId(userId)
+    if (!user) {
+      throw new Error(`Cannot edit info for missing ${userId} user`)
+    }
+
+    await user.updateUserVerifiedPeriodDays({
+      metadata
+    })
+
+    return this.okyUserRepository.save(user)
   }
 }

@@ -42,4 +42,5 @@ export class SignupRequest {
   public readonly secretAnswer: string
 
   public readonly dateSignedUp: string
+  public readonly metadata: null
 }

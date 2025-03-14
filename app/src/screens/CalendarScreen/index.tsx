@@ -32,6 +32,11 @@ LocaleConfig.locales = {
   ...calendarTranslations,
 }
 
+export type PeriodDate = {
+  date: string;
+  'ML-generated': boolean;
+  'user-verified': boolean | null;
+};
 const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const locale = useSelector(currentLocaleSelector)
   LocaleConfig.defaultLocale = locale
@@ -96,6 +101,12 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   )
 
   const messageOpacity = message ? 1 : 0
+
+  // console.log('dates ---------- ', verifiedPeriodsData, markedDates);
+  // console.log('new dates array ---------- ', useCalculatePeriodDates());
+
+
+// Usage
 
   const theme: CalendarProps['theme'] = {
     monthTextColor: palette.secondary.text,

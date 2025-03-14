@@ -22,6 +22,7 @@ import { ResetPasswordRequest } from './requests/ResetPasswordRequest'
 import { EditInfoRequest } from './requests/EditInfoRequest'
 import { EditSecretAnswerRequest } from './requests/EditSecretAnswerRequest'
 import { DeleteUserFromPasswordRequest } from './requests/DeleteUserFromPasswordRequest'
+import { UpdateMetadataRequest } from './requests/UpdateMetadata'
 
 @JsonController('/account')
 export class AccountController {
@@ -51,6 +52,7 @@ export class AccountController {
       secretQuestion,
       secretAnswer,
       dateSignedUp,
+      metadata
     }: SignupRequest,
   ) {
     if (country === null || country === '00') {
@@ -71,6 +73,7 @@ export class AccountController {
       secretAnswer,
       dateSignedUp,
       dateAccountSaved: new Date().toISOString(),
+      metadata
     })
 
     return this.signTokenResponse(user)
@@ -193,6 +196,7 @@ export class AccountController {
       secretQuestion: user.getMemorableQuestion(),
       secretAnswer: user.getHashedMemorableAnswer(),
       dateSignedUp: user.getDateSignedUp(),
+      metadata: user.getMetadata()
     }
 
     const appToken = jwt.sign(userDescriptor, env.app.secret, {
@@ -205,4 +209,22 @@ export class AccountController {
       store: user.getStore(),
     }
   }
+
+  @Post('/update-verified-dates')
+  public async updateUserVerifiedPeriodDays(
+    @CurrentUser({ required: true }) userId: string,
+    @Body() request: UpdateMetadataRequest,
+  ) {
+    // console.log('request ===== ', request);
+    
+    const metadata = request.getMetadata()
+
+    await this.okyUserApplicationService.updateUserVerifiedPeriodDays({
+      userId,
+      metadata,
+    })
+
+    return { userId,metadata }
+  }
+
 }

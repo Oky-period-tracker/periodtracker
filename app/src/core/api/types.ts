@@ -151,6 +151,9 @@ export interface PermanentAlertResponse {
   message: string
   isPermanent: boolean
 }
+export interface NotificationResponse {
+  isActive: boolean
+}
 interface ContentItem {
   type: 'HEADING' | 'CONTENT'
   content: string

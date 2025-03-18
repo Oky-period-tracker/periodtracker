@@ -18,6 +18,8 @@ export function createHttpClient(
     predictionEndpoint: string
   },
 ) {
+  console.log('base url -------- ', endpoint);
+  
   return {
     // TODO:
     // eslint-disable-next-line
@@ -308,6 +310,30 @@ export function createHttpClient(
         },
       )
       return response.data
+    },
+ // TODO:
+    // eslint-disable-next-line
+    getNotificationsStatus: async ({ user_id }: any) => {
+      const response: AxiosResponse<types.NotificationResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/notificationsetting?user_id=${user_id}`,
+      )
+      return response.data
+    },
+     // TODO:
+    // eslint-disable-next-line
+    updateNotificationsStatus: async ({ user_id, isActive }: any) => {
+      console.log('params ----- ', user_id,isActive,`${cmsEndpoint}/mobile/notificationsetting`);
+      
+      await axios.post(
+        `${cmsEndpoint}/mobile/notificationsetting`,
+        {
+          user_id,
+          isActive,
+        },
+      )
+      // console.log('response data ----- ', response);
+      
+      // return response.data
     },
     // TODO:
     // fetchContent: async ({ locale, timestamp = 0 }) => {

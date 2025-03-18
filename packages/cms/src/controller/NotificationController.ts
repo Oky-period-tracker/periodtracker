@@ -4,10 +4,25 @@ import { Notification } from '../entity/Notification'
 import { PermanentNotification } from '../entity/PermanentNotification'
 import * as admin from 'firebase-admin'
 import { env } from '../env'
+// import { NotificationSetting } from 'entity/NotificationSetting'
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+
+@Entity()
+ class NotificationSetting {
+  @PrimaryGeneratedColumn()
+  id: number
+
+  @Column()
+  isActive: boolean
+
+  @Column()
+  userId: string
+}
 
 export class NotificationController {
   private notificationRepository = getRepository(Notification)
   private permanentNotificationRepository = getRepository(PermanentNotification)
+  private NotificationSettingRepository = getRepository(NotificationSetting) // for oky- india
 
   async mobileNotificationsByLanguage(request: Request, response: Response, next: NextFunction) {
     return this.notificationRepository.findOne({
@@ -105,5 +120,32 @@ export class NotificationController {
       .catch((error) => {
         console.log('Error sending message:', error)
       })
+  }
+
+  /// -----------------   \\\
+
+  async periodNotificationsSetting(request: Request, response: Response, next: NextFunction) {
+    const notificationSetting = await this.NotificationSettingRepository.findOne({
+      where: {
+        userId: request.body.user_id,
+      },
+    })
+    notificationSetting.isActive = request.body.isActive ? true : false
+    await this.NotificationSettingRepository.save(notificationSetting)
+    return notificationSetting
+  }
+
+  async getPeriodNotificationsSetting(request: Request, response: Response, next: NextFunction) {
+    let notificationSetting = await this.NotificationSettingRepository.findOne({
+      where: {
+        userId: request.query.user_id,
+      },
+    })
+    if (!notificationSetting || !notificationSetting.id)
+      notificationSetting = await this.NotificationSettingRepository.save({
+        userId: `${request.query.user_id}`,
+        isActive: true,
+      })
+    return notificationSetting
   }
 }

@@ -161,7 +161,8 @@ export interface AppTranslations {
   launch: string
   to_daily_card: string
   change_period: string
-
+  reminder_status: string
+  reminder_status_subtitle: string
   share_period_details_heading: string
   // ------------------------------------------------------------------
   period: string
@@ -200,7 +201,7 @@ export interface AppTranslations {
   'find help': string
   card_address: string
   card_phone_number: string
-  card_website: string
+  website: string
 
   left: string
   to_go: string

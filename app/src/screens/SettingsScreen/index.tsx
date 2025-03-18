@@ -14,6 +14,7 @@ import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
+import { NotificaitonSwitch } from '../../components/NotificationSwitch'
 
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
@@ -108,6 +109,12 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       component: <PredictionControls />,
       disabled: true,
     },
+    {
+      title: 'reminder_status',
+      description: 'reminder_status_subtitle',
+      component: <NotificationStatus />,
+      disabled: false,
+    },
   ]
 
   return (
@@ -157,6 +164,9 @@ const PredictionControls = () => {
   return <Switch />
 }
 
+const NotificationStatus = () => {
+  return <NotificaitonSwitch />
+}
 const styles = StyleSheet.create({
   screen: {
     paddingHorizontal: 12,

@@ -248,6 +248,43 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   // yield call(navigateAndReset, "MainStack", null);
 }
 
+function* onfetchNotificationsStatusRequest(
+  action: ExtractActionFromActionType<'FETCH_NOTIFICATIONS_STATUS_REQUEST'>,
+) {
+  try {
+    const { user_id } = action.payload
+    // const result
+    const {
+      isActive
+    }: Await<ReturnType<typeof httpClient.getNotificationsStatus>>= yield httpClient.getNotificationsStatus({
+      user_id,
+    })
+    yield put(actions.setNotificationStatusActive(isActive))
+  } catch (err) {
+    yield put(actions.setNotificationStatusActive(false))
+    // Alert.alert('Error', 'Unable to fetch periood reminder status')
+  }
+}
+
+function* onUpdateNotificationsStatusRequest(
+  action: ExtractActionFromActionType<'UPDATE_NOTIFICATIONS_STATUS_REQUEST'>,
+) {
+  // const state: ReduxState = yield select()
+  // const user = selectors.currentUserSelector(state)
+  try {
+    const { user_id, isActive } = action.payload
+    yield httpClient.updateNotificationsStatus({
+      user_id,
+      isActive,
+    })
+  } catch (err) {
+
+    console.log('error ------ ',err);
+    
+    yield put(actions.setNotificationStatusActive(false))
+    Alert.alert('Error', 'Unable to update period reminder status')
+  }
+}
 export function* authSaga() {
   yield all([
     fork(periodicallyAttemptConvertGuestAccount),
@@ -258,5 +295,7 @@ export function* authSaga() {
     takeLatest('CREATE_ACCOUNT_SUCCESS', onCreateAccountSuccess),
     takeLatest('CONVERT_GUEST_ACCOUNT', onConvertGuestAccount),
     takeLatest('JOURNEY_COMPLETION', onJourneyCompletion),
+    takeLatest('FETCH_NOTIFICATIONS_STATUS_REQUEST', onfetchNotificationsStatusRequest),
+    takeLatest('UPDATE_NOTIFICATIONS_STATUS_REQUEST', onUpdateNotificationsStatusRequest),
   ])
 }

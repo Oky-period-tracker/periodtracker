@@ -76,3 +76,7 @@ export const updateLastPressedEmojiDate = (
 ) => {
   return createAction('UPDATE_LAST_PRESSED_EMOJI_DATE', date)
 }
+
+export function setNotificationStatusActive(isNotificationStatusActive: boolean) {
+  return createAction('SET_NOTIFICATION_STATUS_ACTIVE', { isNotificationStatusActive })
+}

@@ -433,10 +433,15 @@ export class DataController {
     response.send(buffer) // Send the file data as a response
   }
 
-  async uploadContentSheet(request: Request, response: Response, next: NextFunction) {
+  async uploadContentSheet(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> {
     // Ensure a file was uploaded
     if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+      response.status(400).send('No file was uploaded.')
+      return
     }
 
     const locale = request.body.locale?.length ? request.body.locale : request.user.lang
@@ -569,10 +574,15 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
   //   response.send(buffer) // Send the file data as a response
   // }
 
-  async uploadAppTranslationsSheet(request: Request, response: Response, next: NextFunction) {
+  async uploadAppTranslationsSheet(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> {
     // Ensure a file was uploaded
     if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+      response.status(400).send('No file was uploaded.')
+      return
     }
 
     const locale = request.body.locale?.length ? request.body.locale : request.user.lang
@@ -597,10 +607,15 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
     response.send(fileContent) // Send the file data as a response
   }
 
-  async uploadCmsTranslationsSheet(request: Request, response: Response, next: NextFunction) {
+  async uploadCmsTranslationsSheet(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> {
     // Ensure a file was uploaded
     if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+      response.status(400).send('No file was uploaded.')
+      return
     }
 
     const locale = request.body.locale?.length ? request.body.locale : request.user.lang
@@ -667,10 +682,15 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
     response.send(buffer) // Send the file data as a response
   }
 
-  async uploadCountriesSheet(request: Request, response: Response, next: NextFunction) {
+  async uploadCountriesSheet(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> {
     // Ensure a file was uploaded
     if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+      response.status(400).send('No file was uploaded.')
+      return
     }
 
     const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
@@ -725,10 +745,15 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
     response.send(fileContent) // Send the file data as a response
   }
 
-  async uploadProvincesSheet(request: Request, response: Response, next: NextFunction) {
+  async uploadProvincesSheet(
+    request: Request,
+    response: Response,
+    next: NextFunction,
+  ): Promise<void> {
     // Ensure a file was uploaded
     if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+      response.status(400).send('No file was uploaded.')
+      return
     }
 
     const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })

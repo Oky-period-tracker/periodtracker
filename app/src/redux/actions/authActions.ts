@@ -69,3 +69,16 @@ export function journeyCompletion(payload: {
 export function setAuthError({ error }) {
   return createAction('SET_AUTH_ERROR', { error })
 }
+
+export function fetchNotificationsStatusRequest(payload:{ user_id:string }) {
+  return createAction('FETCH_NOTIFICATIONS_STATUS_REQUEST', {
+    user_id: payload.user_id,
+  })
+}
+
+export function updateNotificationsStatusRequest(payload:{ user_id:string, isActive:boolean }) {
+  return createAction('UPDATE_NOTIFICATIONS_STATUS_REQUEST', {
+    user_id:payload.user_id,
+    isActive:payload.isActive,
+  })
+}

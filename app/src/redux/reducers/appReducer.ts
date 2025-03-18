@@ -37,6 +37,7 @@ export interface AppState {
   isSoundActive?: boolean
   lastPressedCardDate: null | string
   lastPressedEmojiDate: null | string
+  isNotificationStatusActive: boolean
 }
 
 const initialState: AppState = {
@@ -59,6 +60,7 @@ const initialState: AppState = {
   isSoundActive: true,
   lastPressedCardDate: null,
   lastPressedEmojiDate: null,
+  isNotificationStatusActive: true,
 }
 
 export function appReducer(state = initialState, action: Actions | RehydrateAction): AppState {
@@ -158,6 +160,11 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
         lastPressedEmojiDate: action.payload,
       }
 
+    case 'SET_NOTIFICATION_STATUS_ACTIVE':
+      return {
+        ...state,
+        isNotificationStatusActive: action.payload.isNotificationStatusActive,
+      }
     default:
       return state
   }

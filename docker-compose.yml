@@ -17,7 +17,7 @@ services:
     build:
       context: packages/cms/.
     ports:
-      - 5000:5000
+      - 5001:5000
     env_file: packages/cms/.env
     depends_on:
       - base
@@ -26,7 +26,7 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data:rw
     ports:
-      - '5432:5432'
+      - '5433:5432'
     environment:
       - POSTGRES_DB=periodtracker
       - POSTGRES_USER=periodtracker

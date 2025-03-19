@@ -1,3 +1,10 @@
+export interface UserMetadata {
+  accommodationRequirement?: string
+  religion?: string
+  contentSelection?: number
+  city?: string
+}
+
 export interface EncyclopediaResponseItem {
   id: string
   cat_id: string
@@ -8,6 +15,10 @@ export interface EncyclopediaResponseItem {
   article_text: string
   primary_emoji: string
   primary_emoji_name: string
+  contentFilter?: number
+  isAgeRestricted?: boolean
+  ageRestrictionLevel?: number
+  voiceOverKey?: string | null
   lang: string
   live: boolean
 }
@@ -96,6 +107,7 @@ export interface LoginResponse {
     secretQuestion: string
     secretAnswer: string
     dateSignedUp: string
+    metadata: UserMetadata
   }
   store: {
     storeVersion: number
@@ -115,6 +127,7 @@ export interface SignupResponse {
     province: string
     secretQuestion: string
     secretAnswer: string
+    metadata: UserMetadata
   }
 }
 

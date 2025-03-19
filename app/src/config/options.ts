@@ -1,11 +1,5 @@
 import { generateRange } from '../services/utils'
 
-export const genders = [
-  { value: 'Male', label: 'Male', iconName: 'male' },
-  { value: 'Female', label: 'Female', iconName: 'female' },
-  { value: 'Other', label: 'Other', iconName: 'genderless' },
-]
-
 export const locations = [
   { value: 'Urban', label: 'Urban', iconName: 'building' },
   { value: 'Rural', label: 'Rural', iconName: 'leaf' },

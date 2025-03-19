@@ -8,6 +8,7 @@ import { useEncyclopedia } from './EncyclopediaContext'
 import { SearchBar } from '../../components/SearchBar'
 import { globalStyles } from '../../config/theme'
 import { Screen } from '../../components/Screen'
+import { CUSTOM_HELP_CARD_ENABLED, CustomHelpCard } from '../../optional/customHelpCard'
 
 const EncyclopediaScreen: ScreenComponent<'Encyclopedia'> = ({ navigation }) => {
   const { query, setQuery } = useEncyclopedia()
@@ -15,7 +16,7 @@ const EncyclopediaScreen: ScreenComponent<'Encyclopedia'> = ({ navigation }) => 
 
   return (
     <Screen>
-      <HelpCard onPress={goToHelpScreen} />
+      {!CUSTOM_HELP_CARD_ENABLED && <HelpCard onPress={goToHelpScreen} />}
 
       <ScrollView
         style={styles.scrollView}
@@ -24,6 +25,7 @@ const EncyclopediaScreen: ScreenComponent<'Encyclopedia'> = ({ navigation }) => 
       >
         <SearchBar query={query} setQuery={setQuery} style={globalStyles.shadow} />
         <CategoryPicker />
+        {CUSTOM_HELP_CARD_ENABLED && <CustomHelpCard onPress={goToHelpScreen} />}
         <Accordion />
         <View style={styles.spacer} />
       </ScrollView>

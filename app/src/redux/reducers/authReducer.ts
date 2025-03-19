@@ -20,7 +20,6 @@ export interface User {
 
 export interface UserMetadata {
   // PH
-  genderIdentity?: string
   accommodationRequirement?: string
   religion?: string
   contentSelection?: number

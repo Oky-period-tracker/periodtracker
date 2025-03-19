@@ -2,10 +2,10 @@ import React from 'react'
 import { useSignUp } from '../SignUpContext'
 import { Input } from '../../../../../components/Input'
 import { SegmentControl } from '../../../../../components/SegmentControl'
-import { genders } from '../../../../../config/options'
 import { InfoButton } from '../../../../../components/InfoButton'
 import { AuthCardBody } from '../../AuthCardBody'
 import { useAccessibilityLabel } from '../../../../../hooks/useAccessibilityLabel'
+import { genders } from '../../../../../optional/misc'
 
 export const AskUserInfo = () => {
   const { state, dispatch, errors } = useSignUp()

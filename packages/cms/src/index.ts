@@ -18,6 +18,7 @@ import { DataController } from './controller/DataController'
 import multer from 'multer'
 import path from 'path'
 import { cmsLocales, defaultLocale } from '@oky/core'
+import { ArticleVoiceOverController } from './controller/ArticleVoiceOverController'
 
 createConnection(ormconfig)
   .then(() => {
@@ -84,6 +85,8 @@ createConnection(ormconfig)
     app.use('/mobile/suggestions', cors())
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
+      storageBucket: env.storage.bucket,
+      // databaseURL: 'https://oky-app.firebaseio.com', // @TODO:PH
     })
     // ============================ Upload  =======================================
 
@@ -114,6 +117,11 @@ createConnection(ormconfig)
       upload.single('spreadsheet'),
       dataController.uploadProvincesSheet,
     )
+
+    const voiceOverController = new ArticleVoiceOverController()
+
+    // Audio
+    app.post('/api/voice-over/article/upload', upload.single('file'), voiceOverController.upload)
 
     // ============================ Routes  =======================================
     Routes.forEach((route) => {

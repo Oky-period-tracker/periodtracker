@@ -21,6 +21,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { analytics } from '../services/firebase'
 import { useMessaging } from '../hooks/useMessaging'
 import { useAvailableLocaleEffect } from '../hooks/useTranslate'
+import { useSound } from '../contexts/SoundProvider'
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList
 
@@ -116,6 +117,7 @@ const routesToTrack = ['Encyclopedia', 'Help']
 function RootNavigator() {
   useMessaging()
   useAvailableLocaleEffect()
+  const { stopSound } = useSound()
 
   const user = useSelector(currentUserSelector)
   const { isLoggedIn } = useAuth()
@@ -140,6 +142,9 @@ function RootNavigator() {
       onStateChange={() => {
         const previousRouteName = routeNameRef.current
         const currentRouteName = navigationRef.getCurrentRoute()?.name || null
+
+        // Stop playing sound on navigation change
+        stopSound()
 
         if (previousRouteName === currentRouteName) {
           return

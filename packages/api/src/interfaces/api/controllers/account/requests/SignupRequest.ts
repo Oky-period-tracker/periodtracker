@@ -1,4 +1,5 @@
 import { IsNotEmpty, MinLength, IsIn, IsDateString } from 'class-validator'
+import { UserMetadata } from 'domain/oky/OkyUser'
 const minNameLength = 3
 const minPasswordLength = 1
 export class SignupRequest {
@@ -42,4 +43,6 @@ export class SignupRequest {
   public readonly secretAnswer: string
 
   public readonly dateSignedUp: string
+
+  public readonly metadata?: UserMetadata
 }

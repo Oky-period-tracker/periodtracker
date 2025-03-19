@@ -1,18 +1,43 @@
 ### Build the docker images for development
 
-In order to test the app -api-cms interaction you will have to build the docker images for development by simply running the command in the root:
+### Prerequisites
+
+Before proceeding, ensure the following:
+
+- Docker is installed on your machine. Download and install Docker from the [official website.](https://docs.docker.com/compose/install/)
+
+- You are signed in to Docker. Use the `docker login` command in your terminal or sign in through the Docker Desktop application.
+
+### Steps to Build the Docker Images
+
+To test the app's API-CMS interaction, you will need to build the Docker images for development. Follow these steps:
+
+- Navigate to the Root Directory:
+  Open a terminal and navigate to the root directory of the project where the docker-compose.yml file is located.
+
+- Build the Docker Images by running the following command:
 
 ```bash
 docker-compose build
 ```
 
+This command will build the required images for development.
+
 ## Start the backend/website/cms/api
 
-To run the backend/cms and api simply run the command (ensure the images are built):
+Once the images are built, you can start the backend, CMS, and API using the following steps:
+
+- Run the Development Environment by executing the command below to start the backend, CMS, and API:
 
 ```bash
 yarn dev
 ```
+
+**Notes**
+
+- Ensure that the images are successfully built before running the development command.
+
+- If you encounter any issues, verify that Docker is installed, you are logged in, and the `docker-compose.yml` file is correctly configured.
 
 If the database was not created successfully the cms container will exit but the api/database should still be running.
 Running services include
@@ -21,13 +46,13 @@ Running services include
 - API: [http://localhost:3000](http://localhost:3000)
 - CMS: [http://localhost:5000](http://localhost:5000)
 
-- Development Adminer DB credentials:
+### Development Adminer DB credentials:
 
-  - System: PostgresSQL
-  - Server: postgres
-  - DB Name: periodtracker
-  - User Name: periodtracker
-  - password: periodtracker
+- System: PostgresSQL
+- Server: postgres
+- DB Name: periodtracker
+- User Name: periodtracker
+- password: periodtracker
 
 ### Run a manual migration
 

@@ -18,8 +18,6 @@ export function createHttpClient(
     predictionEndpoint: string
   },
 ) {
-  // console.log('base url ------ ', endpoint);
-
   return {
     // TODO:
     // eslint-disable-next-line
@@ -91,12 +89,11 @@ export function createHttpClient(
     // TODO:
     // eslint-disable-next-line
     deleteUserFromPassword: async ({ name, password }: any) => {
-     const data = await axios.post(`${endpoint}/account/delete-from-password`, {
+      await axios.post(`${endpoint}/account/delete-from-password`, {
         name,
         password,
       })
-      console.log('hey ---- ', data);
-      
+      // console.log('hey ---- ', data)
     },
     getUserInfo: async (userName: string) => {
       const response: AxiosResponse<types.UserInfoResponse> = await axios.get(
@@ -311,8 +308,30 @@ export function createHttpClient(
           },
         },
       )
-      console.log('http client repiosne ------ ', response);
-      
+
+      return response.data
+    },
+    updateUserVerifiedDays: async ({
+      appToken,
+      metadata,
+    }: // TODO:
+    // eslint-disable-next-line
+    any) => {
+      // console.log('metadata body ------ ', metadata);
+
+      // TODO:
+      // eslint-disable-next-line
+      const response: AxiosResponse<{}> = await axios.post(
+        `${endpoint}/account/update-verified-dates`,
+        {
+          metadata,
+        },
+        {
+          headers: { Authorization: `Bearer ${appToken}` },
+        },
+      )
+      // console.log('meta data response ------ ', response);
+
       return response.data
     },
     // TODO:

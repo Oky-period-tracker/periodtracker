@@ -19,6 +19,14 @@ import { useFetchSurvey } from '../../hooks/useFetchSurvey'
 import { useLoading, useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AvatarMessageProvider } from '../../contexts/AvatarMessageContext'
 import { IS_ANDROID } from '../../services/device'
+import { httpClient } from '../../services/HttpClient'
+import { User } from '../../types'
+import { editUser } from '../../redux/actions'
+import { useDispatch, useSelector } from 'react-redux'
+import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
+import { generatePeriodDates } from '../../prediction/predictionLogic'
+import { usePredictionEngineState } from '../../contexts/PredictionProvider'
+import { PeriodDate } from '../CalendarScreen'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -48,6 +56,12 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   const { state, step, onTopLeftLayout, onWheelLayout, dispatch: tutorialDispatch } = useTutorial()
 
+  const currentUser = useSelector(currentUserSelector) as User
+  const appToken = useSelector(appTokenSelector)
+  const reduxDispatch = useDispatch()
+  const predictionFullState = usePredictionEngineState()
+
+  // console.log('currentUser', currentUser);
   // Auto start tutorial due to route params
   useFocusEffect(
     React.useCallback(() => {
@@ -61,6 +75,26 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     }, [route.params?.tutorial]),
   )
 
+  React.useEffect(() => {
+    if (!currentUser?.metadata?.periodDates?.length) {
+      const data = generatePeriodDates(predictionFullState)
+      udpateUserVerifiedDates({ metadata: { periodDates: data } })
+      editUserReduxState({ metadata: { periodDates: data } })
+    }
+  }, [])
+
+  const udpateUserVerifiedDates = (changes: Partial<User>) => {
+    httpClient.updateUserVerifiedDays({
+      appToken,
+      ...changes,
+    })
+  }
+  // console.log('currentUser', currentUser)
+
+  const editUserReduxState = (changes: Partial<User>) => {
+    reduxDispatch(editUser(changes))
+  }
+
   const avatarHidden = state.isPlaying && step !== 'avatar'
   const circleProgressHidden = state.isPlaying && step !== 'calendar'
   const wheelHidden = state.isPlaying && step !== 'wheel' && step !== 'wheel_button'
@@ -68,7 +102,69 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const carouselHidden = state.isPlaying && !['track', 'summary', 'stars'].includes(step ?? '')
 
   const goToCalendar = () => navigation.navigate('Calendar')
-
+  const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
+    console.log(predictionFullState, `Date: ${periodDate}, Is Period Day: ${isPeriodDay}`, predictionFullState);
+  
+    // Generate the latest prediction-based period dates array
+    const predictedPeriodDates = generatePeriodDates(predictionFullState);
+  
+    // Get the existing periodDates array from the user metadata
+    let updatedPeriodDates = currentUser.metadata?.periodDates ? [...currentUser.metadata.periodDates] : [];
+  
+    // Merge both arrays: Use existing user data but update ML-generated entries
+    updatedPeriodDates = predictedPeriodDates.map(predictedDate => {
+      const existingEntry = updatedPeriodDates.find(entry => entry.date === predictedDate.date);
+      return existingEntry || predictedDate; // Keep user-entered data, else use predicted
+    });
+  
+    try {
+      // Find the index of the selected date in the updated array
+      const existingDateIndex = updatedPeriodDates.findIndex(entry => entry.date === periodDate);
+  
+      if (existingDateIndex !== -1) {
+        // If the date exists
+        if (updatedPeriodDates[existingDateIndex].mlGenerated && !isPeriodDay) {
+          // Remove only if it was ML-generated and user marks it as non-period
+          updatedPeriodDates = updatedPeriodDates.filter(entry => entry.date !== periodDate);
+        } else {
+          // Otherwise, just update `userVerified`
+          updatedPeriodDates[existingDateIndex] = {
+            ...updatedPeriodDates[existingDateIndex],
+            userVerified: isPeriodDay,
+          };
+        }
+      } else if (isPeriodDay) {
+        // If the date is not in the array and user marks it as a period day, add it
+        const newPeriodDate: PeriodDate = {
+          date: periodDate,
+          mlGenerated: false,
+          userVerified: true, // Since the user is marking it as a period day
+        };
+  
+        updatedPeriodDates.push(newPeriodDate);
+      }
+  
+      // Sort by date to keep the order correct
+      updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  
+      console.log('Updated Period Dates:', predictionFullState, updatedPeriodDates);
+  
+      if (updatedPeriodDates) {
+        await udpateUserVerifiedDates({
+          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+        });
+  
+        editUserReduxState({
+          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+        });
+  
+        // setPeriodDatesArray(updatedPeriodDates);
+      }
+    } catch (error) {
+      console.error('Error updating period dates:', error);
+    }
+  };
+  
   return (
     <>
       <View style={styles.screen}>
@@ -105,6 +201,8 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
             toggleVisible={toggleDayModal}
             data={selectedItem}
             hideLaunchButton={false}
+            onHandleResponse={handleDayModalResponse} // Pass the method as a prop
+
           />
         </View>
       )}

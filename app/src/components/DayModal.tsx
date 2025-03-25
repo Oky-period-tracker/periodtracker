@@ -37,6 +37,7 @@ export const DayModal = ({
   visible,
   toggleVisible,
   hideLaunchButton,
+  onHandleResponse,
 }: { data: DayData } & ModalProps) => {
   const selectedDayInfo = data
   const inputDay = data.date
@@ -135,6 +136,7 @@ export const DayModal = ({
             tempPeriodsLength.unshift(0)
           }
         }
+
         reduxDispatch(
           smartPredictionRequest({
             cycle_lengths: tempPeriodsCycles,
@@ -254,6 +256,9 @@ export const DayModal = ({
         )
         // incFlowerProgress();
       }
+      if (onHandleResponse) {
+        onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
+      }
     } else {
       if (selectedDayInfo.onPeriod) {
         reduxDispatch(
@@ -265,6 +270,10 @@ export const DayModal = ({
         )
         getUpdatedData()
         // incFlowerProgress();
+        toggleVisible()
+        if (onHandleResponse) {
+          onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
+        }
       } else {
         checkForDay()
       }
@@ -273,16 +282,12 @@ export const DayModal = ({
     toggleVisible()
   }
   const getUpdatedData = () => {
-    // const tempArray = useCalculatePeriodDates()
-    // handleUserVerification(moment().format('DD-MM-YYYY'), true, tempArray)
-
     const updatedPeriodDates = updateUserVerifiedStatus(
       periodDates,
       inputDay.format('YYYY-MM-DD'),
       true,
     )
     setPeriodDates(updatedPeriodDates)
-    // console.log('Updated periodDates (Yes):', updatedPeriodDates);
   }
   const onNoPress = () => {
     analytics?.().logEvent('noPeriodDayCloudTap', { userId: currentUser.id })
@@ -309,10 +314,13 @@ export const DayModal = ({
           }),
         )
       }
+
+      if (onHandleResponse) {
+        onHandleResponse(false, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
+      }
     }
     toggleVisible()
   }
-  console.log('hideLaunchButton', hideLaunchButton)
 
   return (
     <Modal

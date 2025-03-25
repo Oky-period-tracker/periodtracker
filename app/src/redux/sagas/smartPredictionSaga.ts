@@ -24,7 +24,6 @@ function* onFetchUpdatedPredictedCycles(
       period_lengths,
       cycle_lengths,
     })
-    // console.log('log ---->>> update predictions ----- ', predictionResult);
     
     const stateToSet = PredictionState.fromData({
       isActive: predictionFullState.isActive,

@@ -8,20 +8,31 @@ import { Text } from '../../components/Text'
 import { Modal } from '../../components/Modal'
 import { useToggle } from '../../hooks/useToggle'
 
-import { useCalculateStatusForDateRange, usePredictDay } from '../../contexts/PredictionProvider'
+import {
+  useCalculateStatusForDateRange,
+  usePredictDay,
+  usePredictionEngineState,
+} from '../../contexts/PredictionProvider'
 import moment from 'moment'
 import { asLocal, isFutureDate } from '../../services/dateUtils'
 import { DayModal } from '../../components/DayModal'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   allCardAnswersSelector,
+  appTokenSelector,
   currentLocaleSelector,
+  currentUserSelector,
   isFuturePredictionSelector,
 } from '../../redux/selectors'
 import { Hr } from '../../components/Hr'
 import { calendarTranslations } from '../../resources/translations'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
+// import { PredictionState } from '../../prediction'
+import { User } from '../../types'
+import { httpClient } from '../../services/HttpClient'
+import { editUser } from '../../redux/actions'
+import { generatePeriodDates } from '../../prediction/predictionLogic'
 
 // TODO: dynamic start & end dates?
 const startDate = moment().startOf('day').subtract(24, 'months')
@@ -33,10 +44,10 @@ LocaleConfig.locales = {
 }
 
 export type PeriodDate = {
-  date: string;
-  'ML-generated': boolean;
-  'user-verified': boolean | null;
-};
+  date: string
+  mlGenerated: boolean
+  userVerified: boolean | null
+}
 const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const locale = useSelector(currentLocaleSelector)
   LocaleConfig.defaultLocale = locale
@@ -51,12 +62,15 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const [dayModalVisible, toggleDayModal] = useToggle()
 
   const [message, setMessage] = React.useState('')
+  const predictionFullState = usePredictionEngineState()
+  const currentUser = useSelector(currentUserSelector) as User
+  const appToken = useSelector(appTokenSelector)
+  const reduxDispatch = useDispatch()
 
   React.useEffect(() => {
     if (!message) {
       return
     }
-
     const timeout = setTimeout(() => {
       setMessage('')
     }, MESSAGE_DURATION)
@@ -66,6 +80,14 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
     }
   }, [message])
 
+  React.useEffect(() => {
+    if (!currentUser?.metadata?.periodDates?.length) {
+      const data = generatePeriodDates(predictionFullState)
+
+      udpateUserVerifiedDates({ metadata: { periodDates: data } })
+      editUserReduxState({ metadata: { periodDates: data } })
+    }
+  }, [])
   const toDailyCard = () => {
     toggleChoiceModalVisible()
     navigation.navigate('Day', { date: dataEntry.date })
@@ -102,11 +124,84 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
   const messageOpacity = message ? 1 : 0
 
-  // console.log('dates ---------- ', verifiedPeriodsData, markedDates);
-  // console.log('new dates array ---------- ', useCalculatePeriodDates());
+  const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
+    // Generate latest ML-based predictions
+    const predictedPeriodDates = generatePeriodDates(predictionFullState)
 
+    // Get the existing periodDates from user metadata
+    let updatedPeriodDates = currentUser.metadata?.periodDates
+      ? [...currentUser.metadata.periodDates]
+      : []
 
-// Usage
+    // Step 1: Ensure all ML-generated dates are included
+    const mlDatesToAdd = predictedPeriodDates
+      .filter((entry) => !updatedPeriodDates.some((u) => u.date === entry.date))
+      .map((entry) => ({
+        ...entry,
+        mlGenerated: false,
+        userVerified: entry.userVerified || false,
+      }))
+    updatedPeriodDates = [...updatedPeriodDates, ...mlDatesToAdd]
+
+    // Step 2: Check if the selected date is ML-predicted
+    const isMlPredicted = predictedPeriodDates.some((entry) => entry.date === periodDate)
+
+    // Step 3: Find if the selected date exists in the array
+    const existingDateIndex = updatedPeriodDates.findIndex((entry) => entry.date === periodDate)
+
+    if (existingDateIndex !== -1) {
+      // Step 4: Date exists in array
+      const existingEntry = updatedPeriodDates[existingDateIndex]
+
+      if (!existingEntry.mlGenerated && !isPeriodDay) {
+        // Remove user-added dates if marked as non-period and not ML-generated
+        updatedPeriodDates.splice(existingDateIndex, 1)
+      } else {
+        // Update userVerified value
+        updatedPeriodDates[existingDateIndex] = {
+          ...existingEntry,
+          userVerified: isPeriodDay,
+        }
+      }
+    } else if (isPeriodDay && !isMlPredicted) {
+      // Step 5: Date doesn't exist and isn't ML-predicted, but user marks it as period day
+      updatedPeriodDates.push({
+        date: periodDate,
+        mlGenerated: false,
+        userVerified: true,
+      })
+    }
+
+    // Step 6: Sort by date for consistency
+    updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+    try {
+      if (updatedPeriodDates) {
+        await udpateUserVerifiedDates({
+          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+        })
+
+        editUserReduxState({
+          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+        })
+      }
+    } catch (error) {
+      console.error('Error updating period dates:', error)
+    }
+  }
+
+  const udpateUserVerifiedDates = async (changes: Partial<User>) => {
+    await httpClient.updateUserVerifiedDays({
+      appToken,
+      ...changes,
+    })
+  }
+
+  const editUserReduxState = (changes: Partial<User>) => {
+    reduxDispatch(editUser(changes))
+  }
+
+  // Usage
 
   const theme: CalendarProps['theme'] = {
     monthTextColor: palette.secondary.text,
@@ -165,6 +260,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           visible={dayModalVisible}
           toggleVisible={toggleDayModal}
           hideLaunchButton={true}
+          onHandleResponse={handleDayModalResponse} // Pass the method as a prop
         />
       </View>
     </View>

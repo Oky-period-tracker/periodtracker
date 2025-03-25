@@ -23,4 +23,5 @@ export interface UserMetadata {
   contentSelection?: number
   city?: string
   isProfileUpdateSkipped?: boolean
+  periodDates?: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]
 }

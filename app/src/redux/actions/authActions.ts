@@ -56,6 +56,10 @@ export function editUser(payload: Partial<User>) {
   return createAction('EDIT_USER', payload)
 }
 
+// export const updateUserMetadata = (payload: User['metadata']) => {
+//   return createAction('UPDATE_USER_VERIFIED_PERIOD_DAYS', payload)
+
+// };
 export function journeyCompletion(payload: {
   isActive: boolean
   startDate: moment.Moment

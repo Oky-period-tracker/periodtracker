@@ -317,8 +317,6 @@ export function createHttpClient(
     }: // TODO:
     // eslint-disable-next-line
     any) => {
-      // console.log('metadata body ------ ', metadata);
-
       // TODO:
       // eslint-disable-next-line
       const response: AxiosResponse<{}> = await axios.post(
@@ -330,7 +328,6 @@ export function createHttpClient(
           headers: { Authorization: `Bearer ${appToken}` },
         },
       )
-      // console.log('meta data response ------ ', response);
 
       return response.data
     },

@@ -104,7 +104,6 @@ import { PeriodDate } from '../screens/CalendarScreen'
 import { PredictionState } from './PredictionState'
 
 export function generatePeriodDates(predictionFullStateInfo: PredictionState) {
-  console.log('predictionFullStateInfo', predictionFullStateInfo)
 
   const periodDates: Array<PeriodDate> = []
 

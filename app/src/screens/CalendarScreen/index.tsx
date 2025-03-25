@@ -84,7 +84,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
     if (!currentUser?.metadata?.periodDates?.length) {
       const data = generatePeriodDates(predictionFullState)
 
-      udpateUserVerifiedDates({ metadata: { periodDates: data } })
+      updateUserVerifiedDates({ metadata: { periodDates: data } })
       editUserReduxState({ metadata: { periodDates: data } })
     }
   }, [])
@@ -177,7 +177,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
     try {
       if (updatedPeriodDates) {
-        await udpateUserVerifiedDates({
+        await updateUserVerifiedDates({
           metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
         })
 
@@ -190,7 +190,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
     }
   }
 
-  const udpateUserVerifiedDates = async (changes: Partial<User>) => {
+  const updateUserVerifiedDates = async (changes: Partial<User>) => {
     await httpClient.updateUserVerifiedDays({
       appToken,
       ...changes,

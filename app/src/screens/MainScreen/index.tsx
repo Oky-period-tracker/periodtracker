@@ -26,7 +26,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
-import { PeriodDate } from '../CalendarScreen'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -78,18 +77,17 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
       const data = generatePeriodDates(predictionFullState)
-      udpateUserVerifiedDates({ metadata: { periodDates: data } })
+      updateUserVerifiedDates({ metadata: { periodDates: data } })
       editUserReduxState({ metadata: { periodDates: data } })
     }
   }, [])
 
-  const udpateUserVerifiedDates = (changes: Partial<User>) => {
+  const updateUserVerifiedDates = (changes: Partial<User>) => {
     httpClient.updateUserVerifiedDays({
       appToken,
       ...changes,
     })
   }
-  // console.log('currentUser', currentUser)
 
   const editUserReduxState = (changes: Partial<User>) => {
     reduxDispatch(editUser(changes))
@@ -103,67 +101,70 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   const goToCalendar = () => navigation.navigate('Calendar')
   const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
-    console.log(predictionFullState, `Date: ${periodDate}, Is Period Day: ${isPeriodDay}`, predictionFullState);
-  
-    // Generate the latest prediction-based period dates array
-    const predictedPeriodDates = generatePeriodDates(predictionFullState);
-  
-    // Get the existing periodDates array from the user metadata
-    let updatedPeriodDates = currentUser.metadata?.periodDates ? [...currentUser.metadata.periodDates] : [];
-  
-    // Merge both arrays: Use existing user data but update ML-generated entries
-    updatedPeriodDates = predictedPeriodDates.map(predictedDate => {
-      const existingEntry = updatedPeriodDates.find(entry => entry.date === predictedDate.date);
-      return existingEntry || predictedDate; // Keep user-entered data, else use predicted
-    });
-  
-    try {
-      // Find the index of the selected date in the updated array
-      const existingDateIndex = updatedPeriodDates.findIndex(entry => entry.date === periodDate);
-  
-      if (existingDateIndex !== -1) {
-        // If the date exists
-        if (updatedPeriodDates[existingDateIndex].mlGenerated && !isPeriodDay) {
-          // Remove only if it was ML-generated and user marks it as non-period
-          updatedPeriodDates = updatedPeriodDates.filter(entry => entry.date !== periodDate);
-        } else {
-          // Otherwise, just update `userVerified`
-          updatedPeriodDates[existingDateIndex] = {
-            ...updatedPeriodDates[existingDateIndex],
-            userVerified: isPeriodDay,
-          };
+    // Generate latest ML-based predictions
+    const predictedPeriodDates = generatePeriodDates(predictionFullState)
+
+    // Get the existing periodDates from user metadata
+    let updatedPeriodDates = currentUser.metadata?.periodDates
+      ? [...currentUser.metadata.periodDates]
+      : []
+
+    // Step 1: Ensure all ML-generated dates are included
+    const mlDatesToAdd = predictedPeriodDates
+      .filter((entry) => !updatedPeriodDates.some((u) => u.date === entry.date))
+      .map((entry) => ({
+        ...entry,
+        mlGenerated: false,
+        userVerified: entry.userVerified || false,
+      }))
+    updatedPeriodDates = [...updatedPeriodDates, ...mlDatesToAdd]
+
+    // Step 2: Check if the selected date is ML-predicted
+    const isMlPredicted = predictedPeriodDates.some((entry) => entry.date === periodDate)
+
+    // Step 3: Find if the selected date exists in the array
+    const existingDateIndex = updatedPeriodDates.findIndex((entry) => entry.date === periodDate)
+
+    if (existingDateIndex !== -1) {
+      // Step 4: Date exists in array
+      const existingEntry = updatedPeriodDates[existingDateIndex]
+
+      if (!existingEntry.mlGenerated && !isPeriodDay) {
+        // Remove user-added dates if marked as non-period and not ML-generated
+        updatedPeriodDates.splice(existingDateIndex, 1)
+      } else {
+        // Update userVerified value
+        updatedPeriodDates[existingDateIndex] = {
+          ...existingEntry,
+          userVerified: isPeriodDay,
         }
-      } else if (isPeriodDay) {
-        // If the date is not in the array and user marks it as a period day, add it
-        const newPeriodDate: PeriodDate = {
-          date: periodDate,
-          mlGenerated: false,
-          userVerified: true, // Since the user is marking it as a period day
-        };
-  
-        updatedPeriodDates.push(newPeriodDate);
       }
-  
-      // Sort by date to keep the order correct
-      updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  
-      console.log('Updated Period Dates:', predictionFullState, updatedPeriodDates);
-  
+    } else if (isPeriodDay && !isMlPredicted) {
+      // Step 5: Date doesn't exist and isn't ML-predicted, but user marks it as period day
+      updatedPeriodDates.push({
+        date: periodDate,
+        mlGenerated: false,
+        userVerified: true,
+      })
+    }
+
+    // Step 6: Sort by date for consistency
+    updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+    try {
       if (updatedPeriodDates) {
-        await udpateUserVerifiedDates({
+        await updateUserVerifiedDates({
           metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-        });
-  
+        })
+
         editUserReduxState({
           metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-        });
-  
-        // setPeriodDatesArray(updatedPeriodDates);
+        })
       }
     } catch (error) {
-      console.error('Error updating period dates:', error);
+      console.error('Error updating period dates:', error)
     }
-  };
+  }
   
   return (
     <>

@@ -778,6 +778,18 @@ export const Routes = [
     action: 'save',
   },
   {
+    method: 'get',
+    route: '/mobile/notificationsetting',
+    controller: NotificationController,
+    action: 'getPeriodNotificationsSetting',
+  },
+  {
+    method: 'post',
+    route: '/mobile/notificationsetting',
+    controller: NotificationController,
+    action: 'periodNotificationsSetting',
+  },
+  {
     method: 'post',
     route: '/permanent-alert',
     controller: NotificationController,

@@ -286,7 +286,6 @@ export const DayModal = ({
     }
     toggleVisible()
   }
-  console.log('hideLaunchButton', hideLaunchButton)
 
   return (
     <Modal

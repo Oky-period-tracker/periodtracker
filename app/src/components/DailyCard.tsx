@@ -5,7 +5,6 @@ import { DisplayButton } from './Button'
 import { EmojiBadge } from './EmojiBadge'
 import { IconButton } from './IconButton'
 import { DayData, useDayScroll } from '../screens/MainScreen/DayScrollContext'
-import { emojiOptions } from '../screens/DayScreen/components/DayTracker/config'
 import { useSelector } from '../redux/useSelector'
 import { useDispatch } from 'react-redux'
 import moment from 'moment'
@@ -29,6 +28,7 @@ import { useFormatDate } from '../hooks/useFormatDate'
 import { analytics } from '../services/firebase'
 import { updateLastPressedCardDate } from '../redux/actions'
 import { useColor } from '../hooks/useColor'
+import { emojiOptions } from '../optional/emojis'
 
 interface DailyCardProps {
   dataEntry: DayData
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     aspectRatio: 1.5,
     flexDirection: 'column',
-    padding: 12,
+    padding: 8,
     margin: 24,
   },
   top: {

@@ -1,4 +1,5 @@
 // tslint:disable:no-var-requires
+
 let helpCenterData = {
   locations: [],
   attributes: [],
@@ -12,4 +13,25 @@ try {
   //
 }
 
-export { helpCenterData }
+let contentFilterOptions = [
+  {
+    value: 0,
+    description: 'All',
+  },
+]
+
+try {
+  contentFilterOptions = require('@oky/core')?.contentFilterOptions ?? []
+} catch (e) {
+  //
+}
+
+let ageRestrictionOptions = []
+
+try {
+  ageRestrictionOptions = require('@oky/core')?.ageRestrictionOptions ?? []
+} catch (e) {
+  //
+}
+
+export { helpCenterData, contentFilterOptions, ageRestrictionOptions }

@@ -9,7 +9,7 @@ export const CircleOutline = ({ style, size = 80, status = 'neutral' }: SvgIconP
   const colors = palette[status]
 
   return (
-    <View style={[{ width: size, height: size }, style]}>
+    <View style={[{ width: size, height: size }, style]} testID="circle-o">
       <Svg width="100%" height="100%" viewBox="0 0 200 200">
         <Ellipse
           cx={102.5}

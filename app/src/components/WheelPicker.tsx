@@ -17,6 +17,7 @@ const height = ITEM_HEIGHT * VISIBLE_ITEMS
 export interface WheelPickerOption {
   label: string
   value: string
+  emoji?: string
 }
 
 export interface WheelPickerProps {
@@ -116,7 +117,22 @@ export const WheelPicker = ({
           onPress={onPress}
           style={[styles.item, isSelected && styles.selectedItem, isSelected && { borderColor }]}
         >
-          {item ? (
+          {item?.emoji ? (
+            <View style={styles.emojiTextWrapper}>
+              <Text
+                enableTranslate={false}
+                style={[styles.emojiText, isSelected && styles.selectedItemText]}
+              >
+                {item.emoji}
+              </Text>
+              <Text
+                enableTranslate={enableTranslate}
+                style={[styles.emojiTextLabel, isSelected && styles.selectedItemText]}
+              >
+                {item.label}
+              </Text>
+            </View>
+          ) : item ? (
             <Text
               enableTranslate={enableTranslate}
               style={[styles.text, isSelected && styles.selectedItemText]}
@@ -201,6 +217,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   text: {
+    textAlign: 'center',
+  },
+  emojiTextWrapper: {
+    flexDirection: 'row',
+    maxWidth: '100%',
+  },
+  emojiText: {
+    fontSize: 20,
+    marginRight: 8,
+  },
+  emojiTextLabel: {
+    flex: 1,
+  },
+  textWithEmoji: {
     textAlign: 'center',
   },
   selectedItemText: {

@@ -1,6 +1,11 @@
-![Oky Logo](https://cdn-jeekn.nitrocdn.com/YMylMApFOdicfeUXuODDpSFiUbWeZeKg/assets/images/optimized/rev-3ff2ed2/oky.nyc3.cdn.digitaloceanspaces.com/2020/12/oky-primary-logo-rgb.png)
+<center>
+<a href="https://cdn-jeekn.nitrocdn.com/YMylMApFOdicfeUXuODDpSFiUbWeZeKg/assets/images/optimized/rev-2bbf8b7/oky.nyc3.cdn.digitaloceanspaces.com/2020/12/oky-primary-logo-rgb.png">
+  <img src="https://cdn-jeekn.nitrocdn.com/YMylMApFOdicfeUXuODDpSFiUbWeZeKg/assets/images/optimized/rev-2bbf8b7/oky.nyc3.cdn.digitaloceanspaces.com/2020/12/oky-primary-logo-rgb.png" style="width:400px; height:auto;">
+</a>
+</center>
 
-# Period tracker
+
+# Oky Period tracker
 
 Oky is the world’s first period tracker app that was made with girls' input.
 

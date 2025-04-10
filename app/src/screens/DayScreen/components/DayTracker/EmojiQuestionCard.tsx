@@ -1,7 +1,12 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { ScrollView, StyleSheet, View } from 'react-native'
 import { BadgeSize, EmojiBadge } from '../../../../components/EmojiBadge'
-import { EmojiCardText, emojiOptions, offPeriodOptions, onPeriodOptions } from './config'
+import {
+  EmojiCardText,
+  emojiOptions,
+  offPeriodOptions,
+  onPeriodOptions,
+} from '../../../../optional/emojis'
 import { EmojiQuestionOptions } from './types'
 import { useSelector } from '../../../../redux/useSelector'
 import { Text } from '../../../../components/Text'
@@ -137,7 +142,7 @@ export const EmojiQuestionCard = ({
         {question}
       </Text>
       <View style={styles.body}>
-        <View style={styles.emojiContainer}>
+        <ScrollView contentContainerStyle={styles.emojiContainer}>
           {options.map(([key, emoji]) => {
             // @ts-expect-error TODO:
             const isSelected = selectedEmojis[topic]?.includes?.(key)
@@ -160,10 +165,15 @@ export const EmojiQuestionCard = ({
               />
             )
           })}
-        </View>
+        </ScrollView>
       </View>
       {includeDayModal && dataEntry && (
-        <DayModal visible={dayModalVisible} toggleVisible={toggleDayModal} data={dataEntry} />
+        <DayModal
+          visible={dayModalVisible}
+          toggleVisible={toggleDayModal}
+          data={dataEntry}
+          hideLaunchButton={false}
+        />
       )}
     </View>
   )
@@ -197,13 +207,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   emojiContainer: {
-    flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     alignItems: 'center',
     alignContent: 'center',
   },
+
   emojiBadge: {
     flexBasis: '30%',
     marginVertical: 12,

@@ -23,7 +23,7 @@ export const TutorialTextbox = () => {
         styles.box,
         globalStyles.shadow,
         { width: width - 48, backgroundColor },
-        textBoxTop && styles.top,
+        textBoxTop ? styles.top : styles.bottom,
       ]}
     >
       <Text style={styles.title} status={'primary'}>
@@ -37,14 +37,17 @@ export const TutorialTextbox = () => {
 const styles = StyleSheet.create({
   box: {
     position: 'absolute',
-    bottom: 12,
     borderRadius: 20,
     padding: 12,
     justifyContent: 'center',
   },
   top: {
-    bottom: undefined,
     top: 12,
+    bottom: undefined,
+  },
+  bottom: {
+    bottom: 12,
+    top: undefined,
   },
   title: {
     fontSize: 20,

@@ -45,7 +45,12 @@ export const DayTracker = ({ navigation, route }: ScreenProps<'Day'>) => {
   return (
     <>
       <Swiper index={index} setIndex={setIndex} pages={pages} />
-      <DayModal data={dataEntry} visible={visible} toggleVisible={toggleVisible} />
+      <DayModal
+        data={dataEntry}
+        visible={visible}
+        toggleVisible={toggleVisible}
+        hideLaunchButton={false}
+      />
     </>
   )
 }

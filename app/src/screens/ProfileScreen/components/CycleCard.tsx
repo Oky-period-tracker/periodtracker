@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native'
 import { EmojiBadge } from '../../../components/EmojiBadge'
 import { useSelector } from '../../../redux/useSelector'
 import { mostAnsweredSelector } from '../../../redux/selectors'
-import { emojiOptions } from '../../DayScreen/components/DayTracker/config'
 import { defaultEmoji } from '../../../config/options'
 import { Moment } from 'moment'
 import { Text } from '../../../components/Text'
@@ -11,6 +10,7 @@ import { useMonths } from '../../../hooks/useMonths'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { globalStyles } from '../../../config/theme'
 import { useColor } from '../../../hooks/useColor'
+import { emojiOptions } from '../../../optional/emojis'
 
 export const CycleCard = ({
   item,
@@ -46,7 +46,7 @@ export const CycleCard = ({
   const periodEndMonth = months[periodEndMonthIndex]
 
   return (
-    <View style={[styles.container, globalStyles.shadow]}>
+    <View style={[styles.container, globalStyles.shadow]} testID="cycle">
       <View style={[styles.cycleCard, { backgroundColor }]}>
         {/* ===== Header ===== */}
         <View style={[styles.cycleCardHeader, { backgroundColor: palette.danger.base }]}>
@@ -169,16 +169,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     flex: 1,
-    padding: 16,
+    padding: 10,
   },
   cycleCardBodyLeft: {
     height: '100%',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    flexBasis: '50%',
+    flexBasis: '45%',
   },
   cycleCardBodyRight: {
-    flexBasis: '50%',
+    flexBasis: '55%',
     height: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',

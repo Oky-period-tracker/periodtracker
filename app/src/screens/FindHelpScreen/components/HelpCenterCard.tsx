@@ -105,7 +105,7 @@ export const HelpCenterCard = ({
           {/* TODO: Region and Subregion */}
 
           <Text style={styles.subtitle} enableTranslate={false}>
-            card_website
+            website
           </Text>
           {websites.map((website) => (
             <A key={website} href={website} style={styles.website}>

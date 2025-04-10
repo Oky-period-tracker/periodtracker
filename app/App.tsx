@@ -16,6 +16,7 @@ import { LoadingProvider } from './src/contexts/LoadingProvider'
 import { StatusBar } from 'react-native'
 import { analytics } from './src/services/firebase'
 import { ReducedMotionConfig, ReduceMotion } from 'react-native-reanimated'
+import { SoundProvider } from './src/contexts/SoundProvider'
 
 function App() {
   useOrientationLock()
@@ -33,14 +34,16 @@ function App() {
             <AuthProvider>
               <PredictionProvider>
                 <ResponsiveProvider>
-                  <EncyclopediaProvider>
-                    <Background>
-                      <LoadingProvider>
-                        <StatusBar hidden />
-                        <RootNavigator />
-                      </LoadingProvider>
-                    </Background>
-                  </EncyclopediaProvider>
+                  <SoundProvider>
+                    <EncyclopediaProvider>
+                      <Background>
+                        <LoadingProvider>
+                          <StatusBar hidden />
+                          <RootNavigator />
+                        </LoadingProvider>
+                      </Background>
+                    </EncyclopediaProvider>
+                  </SoundProvider>
                 </ResponsiveProvider>
               </PredictionProvider>
             </AuthProvider>

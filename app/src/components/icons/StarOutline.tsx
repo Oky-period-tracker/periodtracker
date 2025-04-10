@@ -9,7 +9,7 @@ export const StarOutline = ({ style, size = 80, status = 'neutral' }: SvgIconPro
   const colors = palette[status]
 
   return (
-    <View style={[{ width: size, height: size }, style]}>
+    <View style={[{ width: size, height: size }, style]} testID="star-o">
       <Svg width="100%" height="100%" viewBox="0 0 200 200">
         <G transform="translate(-93.612 -13.943)">
           <Rect

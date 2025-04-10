@@ -133,7 +133,11 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           />
         </View>
 
-        <Modal visible={choiceModalVisible} toggleVisible={toggleChoiceModalVisible}>
+        <Modal
+          visible={choiceModalVisible}
+          toggleVisible={toggleChoiceModalVisible}
+          hideLaunchButton={true}
+        >
           <View style={[styles.modalBody, { backgroundColor }]}>
             <TouchableOpacity onPress={toDailyCard} style={styles.confirm}>
               <Text style={styles.confirmText}>to_daily_card</Text>
@@ -145,7 +149,12 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           </View>
         </Modal>
 
-        <DayModal data={dataEntry} visible={dayModalVisible} toggleVisible={toggleDayModal} />
+        <DayModal
+          data={dataEntry}
+          visible={dayModalVisible}
+          toggleVisible={toggleDayModal}
+          hideLaunchButton={true}
+        />
       </View>
     </View>
   )

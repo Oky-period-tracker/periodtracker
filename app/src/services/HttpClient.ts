@@ -93,7 +93,6 @@ export function createHttpClient(
         name,
         password,
       })
-      // console.log('hey ---- ', data)
     },
     getUserInfo: async (userName: string) => {
       const response: AxiosResponse<types.UserInfoResponse> = await axios.get(

@@ -193,10 +193,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     if (user) {
       yield put(actions.logout())
     }
-  } catch (err) {
-    // setLoading(false);
-    console.log('error ----- ', err);
-    
+  } catch (err) {    
     Alert.alert('error', 'delete_account_fail')
   }
 }
@@ -222,7 +219,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
         cycle_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, cycleLength],
       })
     } catch (error) {
-      // console.log( 'log ---->>>  period error ------- >>',error);
+      // console.log(error);
     }
   }
 
@@ -250,52 +247,6 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   // yield delay(5000); // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
   // yield call(navigateAndReset, "MainStack", null);
 }
-// function* updateUserPeriodDays(action: ExtractActionFromActionType<'JOURNEY_COMPLETION'>) {
-//   const { isActive, startDate, periodLength, cycleLength } = action.payload
-//   // @ts-expect-error TODO:
-//   const currentUser = yield select(selectors.currentUserSelector)
-//   const periodResult = null
-//   // @ts-expect-error TODO:
-//   if (yield fetchNetworkConnectionStatus()) {
-//     try {
-//       // @ts-expect-error TODO:
-//       periodResult = yield httpClient.getPeriodCycles({
-//         age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
-//         period_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, periodLength],
-//         cycle_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, cycleLength],
-//       })
-//     } catch (error) {
-//       // console.log( 'log ---->>>  period error ------- >>',error);
-//     }
-//   }
-//   // console.log('log ---->>>  period result ------- >>', periodResult);
-
-//   const stateToSet = PredictionState.fromData({
-//     isActive,
-//     startDate,
-//     periodLength,
-//     cycleLength,
-//     smaCycleLength: periodResult
-//       ? // @ts-expect-error TODO:
-//         periodResult.predicted_cycles[0]
-//       : cycleLength,
-//     smaPeriodLength: periodResult
-//       ? // @ts-expect-error TODO:
-//         periodResult.predicted_periods[0]
-//       : periodLength,
-//     history: [],
-//   })
-
-//   // console.log('log ---->>> perdiction state ------ >>> ', stateToSet,periodResult);
-
-//   yield put(actions.setPredictionEngineState(stateToSet))
-//   yield put(actions.updateFuturePrediction(true, null))
-//   yield put(actions.setTutorialOneActive(true))
-//   yield put(actions.setTutorialTwoActive(true))
-
-//   // yield delay(5000); // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
-//   // yield call(navigateAndReset, "MainStack", null);
-// }
 
 export function* authSaga() {
   yield all([

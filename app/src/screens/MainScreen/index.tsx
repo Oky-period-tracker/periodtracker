@@ -60,7 +60,6 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const reduxDispatch = useDispatch()
   const predictionFullState = usePredictionEngineState()
 
-  // console.log('currentUser', currentUser);
   // Auto start tutorial due to route params
   useFocusEffect(
     React.useCallback(() => {

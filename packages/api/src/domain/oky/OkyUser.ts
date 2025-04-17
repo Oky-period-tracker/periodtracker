@@ -24,7 +24,18 @@ interface OkyUserProps {
   memorable: MemorableQuestion
   dateSignedUp: string
   dateAccountSaved: string
-  metadata: OkyUserMetadata | null
+  metadata: UserMetadata
+}
+
+export interface UserMetadata {
+  periodDates:{
+    date: string
+    mlGenerated: boolean
+    userVerified: boolean},
+    isProfileUpdateSkipped?: boolean
+  accommodationRequirement?: string
+  religion?: string
+  contentSelection?: number
 }
 
 @Entity()
@@ -68,10 +79,8 @@ export class OkyUser {
   @Column({ name: 'date_account_saved' })
   private dateAccountSaved: string
 
-  @Column({ name: 'metadata', type: 'json', nullable: true })
-  private metadata:
-    | null
-    | OkyUserMetadata
+  @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })
+  private metadata: UserMetadata
 
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
@@ -131,7 +140,7 @@ export class OkyUser {
     secretAnswer: string
     dateSignedUp: string
     dateAccountSaved: string
-    metadata: OkyUserMetadata | null
+    metadata: UserMetadata
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -174,12 +183,14 @@ export class OkyUser {
     gender,
     location,
     secretQuestion,
+    metadata,
   }: {
     name: string
     dateOfBirth: Date
     gender: 'Male' | 'Female' | 'Other'
     location: string
     secretQuestion: string
+    metadata: UserMetadata
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -191,6 +202,7 @@ export class OkyUser {
     this.gender = gender
     this.location = location
     this.memorable = await this.memorable.changeQuestion(secretQuestion)
+    this.metadata = metadata
   }
 
   public async editSecretAnswer(previousSecretAnswer: string, nextSecretAnswer: string) {

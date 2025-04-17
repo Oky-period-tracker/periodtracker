@@ -1,7 +1,6 @@
 import { StaticContent } from '../types'
 
 export interface UserMetadata {
-  genderIdentity?: string
   accommodationRequirement?: string
   religion?: string
   contentSelection?: number

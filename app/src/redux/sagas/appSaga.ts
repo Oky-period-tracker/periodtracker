@@ -2,11 +2,11 @@ import _ from 'lodash'
 import { all, delay, fork, select, takeLatest } from 'redux-saga/effects'
 import { httpClient } from '../../services/HttpClient'
 import { fetchNetworkConnectionStatus } from '../../services/network'
-import { version as storeVersion } from '../version'
 import * as selectors from '../selectors'
 // import messaging from "@react-native-firebase/messaging"; TODO:
 import { PartialStateSnapshot } from '../types/partialStore'
 import { ReduxState } from '../reducers'
+import { reduxStoreVersion } from '../../optional/reduxMigrations'
 
 function* syncAppState() {
   let lastAppState
@@ -47,7 +47,7 @@ function* syncAppState() {
 
     try {
       yield httpClient.replaceStore({
-        storeVersion,
+        storeVersion: reduxStoreVersion,
         appState,
         appToken,
       })

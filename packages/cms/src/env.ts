@@ -33,4 +33,8 @@ export const env = {
     port: normalizePort(process.env.CMS_PORT) || 5000,
     // port: 5001,
   },
+  storage: {
+    bucket: process.env.STORAGE_BUCKET,
+    baseUrl: process.env.STORAGE_BASE_URL,
+  },
 }

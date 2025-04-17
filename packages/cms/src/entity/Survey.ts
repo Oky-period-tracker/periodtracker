@@ -42,4 +42,10 @@ export class Survey {
 
   @Column()
   isAgeRestricted: boolean
+
+  @Column({ default: 0 })
+  ageRestrictionLevel: number
+
+  @Column({ default: 0 })
+  contentFilter: number
 }

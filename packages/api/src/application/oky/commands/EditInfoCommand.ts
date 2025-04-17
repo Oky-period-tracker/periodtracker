@@ -1,3 +1,5 @@
+import { UserMetadata } from 'domain/oky/OkyUser'
+
 export interface EditInfoCommand {
   userId: string
   name: string
@@ -5,4 +7,5 @@ export interface EditInfoCommand {
   gender: 'Male' | 'Female' | 'Other'
   location: string
   secretQuestion: string
+  metadata: UserMetadata
 }

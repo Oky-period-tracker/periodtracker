@@ -20,7 +20,6 @@ export interface User {
 
 export interface UserMetadata {
   // PH
-  genderIdentity?: string
   accommodationRequirement?: string
   religion?: string
   contentSelection?: number
@@ -39,7 +38,7 @@ export interface AuthState {
   user: User | null
 }
 
-const initialState: AuthState = {
+export const initialState: AuthState = {
   appToken: null,
   error: null,
   isCreatingAccount: false,

@@ -48,7 +48,7 @@ export class OkyUserApplicationService {
     secretAnswer,
     dateSignedUp,
     dateAccountSaved,
-    metadata
+    metadata,
   }: SignupCommand) {
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
     if (await this.okyUserRepository.byId(id)) {
@@ -73,7 +73,7 @@ export class OkyUserApplicationService {
       secretAnswer,
       dateSignedUp,
       dateAccountSaved,
-      metadata
+      metadata,
     })
     return this.okyUserRepository.save(user)
   }
@@ -127,6 +127,7 @@ export class OkyUserApplicationService {
     location,
     gender,
     secretQuestion,
+    metadata,
   }: EditInfoCommand) {
     const user = await this.okyUserRepository.byId(userId)
     if (!user) {
@@ -139,6 +140,7 @@ export class OkyUserApplicationService {
       location,
       gender,
       secretQuestion,
+      metadata,
     })
 
     return this.okyUserRepository.save(user)
@@ -165,18 +167,14 @@ export class OkyUserApplicationService {
     this.authenticationService = service
   }
 
-
-  public async updateUserVerifiedPeriodDays({
-    userId,
-    metadata
-  }: UserVerifiedPeriodDaysCommand) {
+  public async updateUserVerifiedPeriodDays({ userId, metadata }: UserVerifiedPeriodDaysCommand) {
     const user = await this.okyUserRepository.byId(userId)
     if (!user) {
       throw new Error(`Cannot edit info for missing ${userId} user`)
     }
 
     await user.updateUserVerifiedPeriodDays({
-      metadata
+      metadata,
     })
 
     return this.okyUserRepository.save(user)

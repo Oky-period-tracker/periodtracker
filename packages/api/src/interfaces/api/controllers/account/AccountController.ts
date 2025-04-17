@@ -22,6 +22,7 @@ import { ResetPasswordRequest } from './requests/ResetPasswordRequest'
 import { EditInfoRequest } from './requests/EditInfoRequest'
 import { EditSecretAnswerRequest } from './requests/EditSecretAnswerRequest'
 import { DeleteUserFromPasswordRequest } from './requests/DeleteUserFromPasswordRequest'
+import { UpdateMetadataRequest } from './requests/UpdateMetadata'
 
 @JsonController('/account')
 export class AccountController {
@@ -213,5 +214,22 @@ export class AccountController {
       user: userDescriptor,
       store: user.getStore(),
     }
+  }
+
+  @Post('/update-verified-dates')
+  public async updateUserVerifiedPeriodDays(
+    @CurrentUser({ required: true }) userId: string,
+    @Body() request: UpdateMetadataRequest,
+  ) {
+    // console.log('request ===== ', request);
+
+    const metadata = request.getMetadata()
+
+    await this.okyUserApplicationService.updateUserVerifiedPeriodDays({
+      userId,
+      metadata,
+    })
+
+    return { userId, metadata }
   }
 }

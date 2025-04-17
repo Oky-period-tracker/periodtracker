@@ -24,6 +24,7 @@ function* onFetchUpdatedPredictedCycles(
       period_lengths,
       cycle_lengths,
     })
+    
     const stateToSet = PredictionState.fromData({
       isActive: predictionFullState.isActive,
       startDate: predictionFullState.currentCycle.startDate,

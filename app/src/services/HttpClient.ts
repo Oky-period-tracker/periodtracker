@@ -307,6 +307,27 @@ export function createHttpClient(
           },
         },
       )
+
+      return response.data
+    },
+    updateUserVerifiedDays: async ({
+      appToken,
+      metadata,
+    }: // TODO:
+    // eslint-disable-next-line
+    any) => {
+      // TODO:
+      // eslint-disable-next-line
+      const response: AxiosResponse<{}> = await axios.post(
+        `${endpoint}/account/update-verified-dates`,
+        {
+          metadata,
+        },
+        {
+          headers: { Authorization: `Bearer ${appToken}` },
+        },
+      )
+
       return response.data
     },
     // TODO:

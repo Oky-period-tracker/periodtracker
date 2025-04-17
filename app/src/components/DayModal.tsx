@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Text } from './Text'
@@ -12,6 +12,7 @@ import {
   usePredictionDispatch,
   useTodayPrediction,
   usePredictionEngineState,
+  useCalculatePeriodDates,
 } from '../contexts/PredictionProvider'
 import { useSelector } from '../redux/useSelector'
 import { decisionProcessNonPeriod, decisionProcessPeriod } from '../prediction/predictionLogic'
@@ -28,6 +29,7 @@ import { isFutureDate } from '../services/dateUtils'
 import { useFormatDate } from '../hooks/useFormatDate'
 import { useLoading } from '../contexts/LoadingProvider'
 import { analytics } from '../services/firebase'
+import { PeriodDate } from '../screens/CalendarScreen'
 // import { usePredictDay } from "../contexts/PredictionProvider";
 
 export const DayModal = ({
@@ -35,6 +37,7 @@ export const DayModal = ({
   visible,
   toggleVisible,
   hideLaunchButton,
+  onHandleResponse,
 }: { data: DayData } & ModalProps) => {
   const selectedDayInfo = data
   const inputDay = data.date
@@ -66,7 +69,8 @@ export const DayModal = ({
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
   const hasFuturePredictionActive = useSelector(isFuturePredictionSelector)
   const futurePredictionStatus = hasFuturePredictionActive?.futurePredictionStatus
-
+  const calculatePeriodDates = useCalculatePeriodDates()
+  const [periodDates, setPeriodDates] = useState<PeriodDate[]>(calculatePeriodDates)
   React.useEffect(() => {
     if (moment(inputDay).diff(moment(currentCycleInfo.cycleStart), 'days') < 0) {
       setNewCycleHistory(true)
@@ -98,6 +102,17 @@ export const DayModal = ({
     return null
   }
 
+  const updateUserVerifiedStatus = (
+    periodDates: PeriodDate[],
+    selectedDate: string,
+    isVerified: boolean,
+  ) => {
+    const formattedSelectedDate = moment(selectedDate).format('DD-MM-YYYY')
+    return periodDates.map((entry) =>
+      entry.date === formattedSelectedDate ? { ...entry, 'user-verified': isVerified } : entry,
+    )
+  }
+
   // TODO:
   // eslint-disable-next-line
   const getPredictedCycles = (flag: boolean): any => {
@@ -121,6 +136,7 @@ export const DayModal = ({
             tempPeriodsLength.unshift(0)
           }
         }
+
         reduxDispatch(
           smartPredictionRequest({
             cycle_lengths: tempPeriodsCycles,
@@ -240,6 +256,9 @@ export const DayModal = ({
         )
         // incFlowerProgress();
       }
+      if (onHandleResponse) {
+        onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
+      }
     } else {
       if (selectedDayInfo.onPeriod) {
         reduxDispatch(
@@ -249,7 +268,12 @@ export const DayModal = ({
             periodDay: true,
           }),
         )
+        getUpdatedData()
         // incFlowerProgress();
+        toggleVisible()
+        if (onHandleResponse) {
+          onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
+        }
       } else {
         checkForDay()
       }
@@ -257,7 +281,14 @@ export const DayModal = ({
 
     toggleVisible()
   }
-
+  const getUpdatedData = () => {
+    const updatedPeriodDates = updateUserVerifiedStatus(
+      periodDates,
+      inputDay.format('YYYY-MM-DD'),
+      true,
+    )
+    setPeriodDates(updatedPeriodDates)
+  }
   const onNoPress = () => {
     analytics?.().logEvent('noPeriodDayCloudTap', { userId: currentUser.id })
 
@@ -282,6 +313,10 @@ export const DayModal = ({
             periodDay: false,
           }),
         )
+      }
+
+      if (onHandleResponse) {
+        onHandleResponse(false, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
       }
     }
     toggleVisible()

@@ -21,6 +21,12 @@ interface OkyUserProps {
 }
 
 export interface UserMetadata {
+  periodDates: {
+    date: string
+    mlGenerated: boolean
+    userVerified: boolean
+  }
+  isProfileUpdateSkipped?: boolean
   accommodationRequirement?: string
   religion?: string
   contentSelection?: number
@@ -216,6 +222,10 @@ export class OkyUser {
       throw new Error(`Wrong password for deletion`)
     }
     return repository.delete(this)
+  }
+
+  public async updateUserVerifiedPeriodDays({ metadata }: { metadata: UserMetadata }) {
+    this.metadata = metadata
   }
 
   public getId() {

@@ -98,3 +98,71 @@ export function decisionProcessNonPeriod({
     day: inputDay.clone().subtract(1, 'days'),
   }
 }
+
+import moment from 'moment'
+import { PeriodDate } from '../screens/CalendarScreen'
+import { PredictionState } from './PredictionState'
+
+export function generatePeriodDates(predictionFullStateInfo: PredictionState) {
+
+  const periodDates: Array<PeriodDate> = []
+
+  // Helper function to generate period days from start date and period length
+  function getPeriodDays(
+    startDate: Date,
+    periodLength: number,
+    isMLGenerated: boolean,
+    userVerified: null | boolean = null,
+  ) {
+    const dates = []
+    for (let i = 0; i < periodLength; i++) {
+      const date = new Date(startDate)
+      date.setDate(date.getDate() + i)
+      dates.push({
+        date: date.toLocaleDateString('en-GB'), // Format DD/MM/YYYY
+        mlGenerated: isMLGenerated,
+        userVerified: userVerified,
+      });
+    }
+    return dates
+  }
+
+  // Process history periods
+  if (predictionFullStateInfo.history && Array.isArray(predictionFullStateInfo.history)) {
+    predictionFullStateInfo.history.forEach((entry) => {
+      if (entry.cycleStartDate && entry.periodLength) {
+        const startDate = moment(entry.cycleStartDate).toDate() // ✅ FIXED: Convert Moment to Date
+        periodDates.push(...getPeriodDays(startDate, entry.periodLength, true, null))
+      }
+    })
+  }
+
+  // Process current cycle period
+  if (
+    predictionFullStateInfo.currentCycle &&
+    predictionFullStateInfo.currentCycle.startDate &&
+    predictionFullStateInfo.currentCycle.periodLength
+  ) {
+    const startDate = moment(predictionFullStateInfo.currentCycle.startDate).toDate() // ✅ FIXED: Convert Moment to Date
+    periodDates.push(
+      ...getPeriodDays(startDate, predictionFullStateInfo.currentCycle.periodLength, true, null),
+    )
+  }
+
+  // Generate future period dates for the next 12 months
+  if (predictionFullStateInfo.smartPrediction) {
+    const { smaCycleLength, smaPeriodLength } = predictionFullStateInfo.smartPrediction
+    if (smaCycleLength && smaPeriodLength) {
+      let lastCycleStartDate = moment(predictionFullStateInfo.currentCycle.startDate).toDate() // ✅ FIXED
+
+      for (let i = 0; i < 12; i++) {
+        const futureStartDate = new Date(lastCycleStartDate) // ✅ FIXED: Create a new Date to avoid mutation
+        futureStartDate.setDate(futureStartDate.getDate() + smaCycleLength)
+        lastCycleStartDate = new Date(futureStartDate) // Update reference
+        periodDates.push(...getPeriodDays(futureStartDate, smaPeriodLength, true, null))
+      }
+    }
+  }
+
+  return periodDates
+}

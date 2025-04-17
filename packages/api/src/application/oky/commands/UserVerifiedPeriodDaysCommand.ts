@@ -1,7 +1,6 @@
-import { OkyUserMetadata } from "domain/oky/OkyUser"
+import { UserMetadata } from 'domain/oky/OkyUser'
 
 export interface UserVerifiedPeriodDaysCommand {
-    userId: string
-    metadata: OkyUserMetadata | null
-  }
-  
+  userId: string
+  metadata: UserMetadata
+}

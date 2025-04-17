@@ -222,7 +222,7 @@ export class AccountController {
     @Body() request: UpdateMetadataRequest,
   ) {
     // console.log('request ===== ', request);
-    
+
     const metadata = request.getMetadata()
 
     await this.okyUserApplicationService.updateUserVerifiedPeriodDays({
@@ -230,7 +230,6 @@ export class AccountController {
       metadata,
     })
 
-    return { userId,metadata }
+    return { userId, metadata }
   }
-
 }

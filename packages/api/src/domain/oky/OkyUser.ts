@@ -5,13 +5,6 @@ import { MemorableQuestion } from './MemorableQuestion'
 import { OkyUserRepository } from './OkyUserRepository'
 import { BadRequestError } from 'routing-controllers'
 
-export interface OkyUserMetadata {
-  periodDates:{
-  date: string
-  mlGenerated: boolean
-  userVerified: boolean},
-  isProfileUpdateSkipped: boolean
-}
 interface OkyUserProps {
   id: string
   name: HashedName
@@ -28,11 +21,12 @@ interface OkyUserProps {
 }
 
 export interface UserMetadata {
-  periodDates:{
+  periodDates: {
     date: string
     mlGenerated: boolean
-    userVerified: boolean},
-    isProfileUpdateSkipped?: boolean
+    userVerified: boolean
+  }
+  isProfileUpdateSkipped?: boolean
   accommodationRequirement?: string
   religion?: string
   contentSelection?: number
@@ -230,7 +224,7 @@ export class OkyUser {
     return repository.delete(this)
   }
 
-  public async updateUserVerifiedPeriodDays({ metadata }: { metadata: OkyUserMetadata }) {
+  public async updateUserVerifiedPeriodDays({ metadata }: { metadata: UserMetadata }) {
     this.metadata = metadata
   }
 

@@ -34,6 +34,8 @@ This is a period tracker application monorepo, consisting of a React Native app,
 
 [Contributing](./CONTRIBUTING.md)
 
+[Learn about Oky](./AboutOky.md)
+
 [Submodules](./docs/modules.md)
 
 [Importing optional submodules](./docs/code/optional_submodules.md)

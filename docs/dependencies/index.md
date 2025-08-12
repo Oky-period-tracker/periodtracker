@@ -57,6 +57,7 @@ The recommended version is `v20.16.0`
 ```bash
 nvm install 20.16.0
 ```
+If the bash command doesn't work as anticipated to install nvm, you may use these [detailed instructions](https://www.freecodecamp.org/news/node-version-manager-nvm-install-guide/) depending on your Operating System
 
 ---
 
@@ -83,7 +84,7 @@ brew install yarn
 It is not necessary to install typescript globally as it is installed as a dependency. However given that the project is a mono-repository it is crucial that the version of typescript is consistent throughout. This can be checked in the root directory with:
 
 ```bash
-yarn list typescript
+yarn add typescript -W
 ```
 
 If you install a package and adjust the typescript version from an upgrade operation remember that typescript has / will change in the future. Make sure you have a single version across the mono repository by running:

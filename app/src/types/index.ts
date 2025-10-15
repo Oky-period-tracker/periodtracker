@@ -13,6 +13,7 @@ export interface User {
   secretAnswer: string
   dateSignedUp: string
   isGuest: boolean
+  cyclesNumber?: number
   metadata: UserMetadata
 }
 

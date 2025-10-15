@@ -7,3 +7,24 @@ yarn-error.log
 /bin/modules/urls.sh
 *.env
 .expo
+# Compiled TypeScript files
+**/*.js
+**/*.js.map
+**/*.d.ts
+-la packages/delete-account/*/jest.config.js
+-la packages/delete-account/*/babel.config.js
+-la packages/delete-account/*/app.config.js
+-la packages/delete-account/*/cli.js
+-la packages/delete-account/*/convert-base64.js
+-la packages/delete-account/*/__mocks__/**/*.js
+-la packages/delete-account/*/public/scripts/**/*.js
+-la packages/delete-account/*/packages/delete-account/**/*.js
+
+# Build directories
+dist/
+build/
+lib/
+out/
+
+# TypeScript build info
+*.tsbuildinfo

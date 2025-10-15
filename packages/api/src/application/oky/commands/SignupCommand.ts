@@ -13,5 +13,6 @@ export interface SignupCommand {
   secretAnswer: string
   dateSignedUp: string
   dateAccountSaved: string
+  cyclesNumber: number
   metadata: UserMetadata
 }

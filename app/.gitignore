@@ -6,3 +6,6 @@ node_modules
 eas.json
 android
 ios
+# Compiled TypeScript files
+*.js
+*.js.map

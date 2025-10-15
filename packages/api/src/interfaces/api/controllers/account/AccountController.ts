@@ -73,6 +73,7 @@ export class AccountController {
       secretAnswer,
       dateSignedUp,
       dateAccountSaved: new Date().toISOString(),
+      cyclesNumber: 0,
       metadata,
     })
 
@@ -231,5 +232,18 @@ export class AccountController {
     })
 
     return { userId, metadata }
+  }
+
+  @Post('/update-cycles-number')
+  public async updateCyclesNumber(
+    @CurrentUser({ required: true }) userId: string,
+    @Body() request: { cyclesNumber: number },
+  ) {
+    await this.okyUserApplicationService.updateCyclesNumber({
+      userId,
+      cyclesNumber: request.cyclesNumber,
+    })
+
+    return { userId, cyclesNumber: request.cyclesNumber }
   }
 }

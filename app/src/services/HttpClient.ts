@@ -62,6 +62,7 @@ export function createHttpClient(
           dateSignedUp,
           metadata,
           preferredId,
+          date_account_saved: new Date().toISOString(),
         },
       )
       return response.data
@@ -329,6 +330,32 @@ export function createHttpClient(
       )
 
       return response.data
+    },
+    updateCyclesNumber: async ({
+      appToken,
+      cyclesNumber,
+    }: {
+      appToken: string
+      cyclesNumber: number
+    }) => {
+      
+      try {
+        const response: AxiosResponse<{}> = await axios.post(
+          `${endpoint}/account/update-cycles-number`,
+          {
+            cyclesNumber,
+          },
+          {
+            headers: { Authorization: `Bearer ${appToken}` },
+          },
+        )
+        
+        
+        return response.data
+      } catch (error) {
+        console.error('Error in updateCyclesNumber request:', error instanceof Error ? error.message : 'Unknown error')
+        throw error
+      }
     },
     // TODO:
     // fetchContent: async ({ locale, timestamp = 0 }) => {

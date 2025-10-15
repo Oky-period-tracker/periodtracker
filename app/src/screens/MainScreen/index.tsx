@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
+import { calculateCycles } from '../../utils/cycleCalculator'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -100,6 +101,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   const goToCalendar = () => navigation.navigate('Calendar')
   const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
+    
     // Generate latest ML-based predictions
     const predictedPeriodDates = generatePeriodDates(predictionFullState)
 
@@ -124,44 +126,94 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     // Step 3: Find if the selected date exists in the array
     const existingDateIndex = updatedPeriodDates.findIndex((entry) => entry.date === periodDate)
 
-    if (existingDateIndex !== -1) {
-      // Step 4: Date exists in array
-      const existingEntry = updatedPeriodDates[existingDateIndex]
+    let shouldRecalculateCycles = false
 
-      if (!existingEntry.mlGenerated && !isPeriodDay) {
-        // Remove user-added dates if marked as non-period and not ML-generated
-        updatedPeriodDates.splice(existingDateIndex, 1)
-      } else {
-        // Update userVerified value
-        updatedPeriodDates[existingDateIndex] = {
-          ...existingEntry,
-          userVerified: isPeriodDay,
+    if (isPeriodDay) {
+      if (existingDateIndex !== -1) {
+        const existingEntry = updatedPeriodDates[existingDateIndex]
+        
+        if (existingEntry.userVerified === true) {
+          return
+        } else {
+          updatedPeriodDates[existingDateIndex] = {
+            ...existingEntry,
+            userVerified: true,
+            mlGenerated: false, // Set to false when user manually verifies
+          }
+          shouldRecalculateCycles = true
         }
+      } else {
+        updatedPeriodDates.push({
+          date: periodDate,
+          mlGenerated: isMlPredicted,
+          userVerified: true,
+        })
+        shouldRecalculateCycles = true
       }
-    } else if (isPeriodDay && !isMlPredicted) {
-      // Step 5: Date doesn't exist and isn't ML-predicted, but user marks it as period day
-      updatedPeriodDates.push({
-        date: periodDate,
-        mlGenerated: false,
-        userVerified: true,
-      })
+    } else {
+      if (existingDateIndex !== -1) {
+        const existingEntry = updatedPeriodDates[existingDateIndex]
+        
+        if (existingEntry.userVerified === true) {
+          updatedPeriodDates.splice(existingDateIndex, 1)
+          shouldRecalculateCycles = true
+        } else {
+          updatedPeriodDates.splice(existingDateIndex, 1)
+        }
+      } else {
+        return
+      }
     }
 
-    // Step 6: Sort by date for consistency
-    updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
     try {
-      if (updatedPeriodDates) {
-        await updateUserVerifiedDates({
-          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-        })
+      // Update period dates
+      await updateUserVerifiedDates({
+        metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+      })
 
-        editUserReduxState({
-          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-        })
+      editUserReduxState({
+        metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+      })
+
+      // Recalculate cycles if needed
+      if (shouldRecalculateCycles) {
+        await updateCycleCount(updatedPeriodDates)
+      } else {
       }
     } catch (error) {
       console.error('Error updating period dates:', error)
+    }
+  }
+
+  const updateCycleCount = async (updatedPeriodDates: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]) => {
+    
+    try {
+      // Calculate new cycles number
+      const cycleResult = calculateCycles({
+        ...currentUser.metadata,
+        periodDates: updatedPeriodDates
+      })
+
+      // Only update if cycles number changed
+      if (cycleResult.cyclesNumber !== (currentUser.cyclesNumber || 0)) {
+        
+        // Update backend
+        if (appToken) {
+          await httpClient.updateCyclesNumber({
+            appToken,
+            cyclesNumber: cycleResult.cyclesNumber,
+          })
+        }
+
+        // Update local Redux state
+        editUserReduxState({
+          cyclesNumber: cycleResult.cyclesNumber,
+        })
+      } else {
+      }
+    } catch (error) {
+      console.error('Error updating cycle count:', error)
     }
   }
   

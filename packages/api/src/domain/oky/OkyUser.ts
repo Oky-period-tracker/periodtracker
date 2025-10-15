@@ -17,6 +17,7 @@ interface OkyUserProps {
   memorable: MemorableQuestion
   dateSignedUp: string
   dateAccountSaved: string
+  cyclesNumber: number
   metadata: UserMetadata
 }
 
@@ -73,6 +74,9 @@ export class OkyUser {
   @Column({ name: 'date_account_saved' })
   private dateAccountSaved: string
 
+  @Column({ name: 'cycles_number', default: 0 })
+  private cyclesNumber: number
+
   @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })
   private metadata: UserMetadata
 
@@ -89,6 +93,8 @@ export class OkyUser {
         password,
         memorable,
         dateSignedUp,
+        dateAccountSaved,
+        cyclesNumber,
         metadata,
       } = props
 
@@ -103,6 +109,8 @@ export class OkyUser {
       this.memorable = memorable
       this.store = null
       this.dateSignedUp = dateSignedUp
+      this.dateAccountSaved = dateAccountSaved
+      this.cyclesNumber = cyclesNumber
       this.metadata = metadata
     }
   }
@@ -120,6 +128,7 @@ export class OkyUser {
     secretAnswer,
     dateSignedUp,
     dateAccountSaved,
+    cyclesNumber,
     metadata,
   }: {
     id: string
@@ -134,6 +143,7 @@ export class OkyUser {
     secretAnswer: string
     dateSignedUp: string
     dateAccountSaved: string
+    cyclesNumber: number
     metadata: UserMetadata
   }): Promise<OkyUser> {
     if (!id) {
@@ -160,6 +170,7 @@ export class OkyUser {
       memorable,
       dateSignedUp,
       dateAccountSaved,
+      cyclesNumber,
       metadata,
     })
   }
@@ -265,6 +276,14 @@ export class OkyUser {
 
   public getDateSignedUp() {
     return this.dateSignedUp
+  }
+
+  public getCyclesNumber() {
+    return this.cyclesNumber
+  }
+
+  public updateCyclesNumber(cyclesNumber: number) {
+    this.cyclesNumber = cyclesNumber
   }
 
   public getMetadata() {

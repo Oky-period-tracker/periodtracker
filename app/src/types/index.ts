@@ -23,3 +23,10 @@ export interface UserMetadata {
   isProfileUpdateSkipped?: boolean
   periodDates?: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]
 }
+
+/**
+ * Cycle calculation result.
+ */
+export interface CycleCalculationResult {
+  cyclesNumber: number
+}

@@ -87,6 +87,7 @@ export class OkyUser {
         password,
         memorable,
         dateSignedUp,
+        dateAccountSaved,
         metadata,
       } = props
 
@@ -101,6 +102,7 @@ export class OkyUser {
       this.memorable = memorable
       this.store = null
       this.dateSignedUp = dateSignedUp
+      this.dateAccountSaved = dateAccountSaved
       this.metadata = metadata
     }
   }

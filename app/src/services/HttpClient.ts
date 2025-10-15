@@ -137,6 +137,7 @@ export function createHttpClient(
           dateSignedUp,
           metadata,
           preferredId,
+          dateAccountSaved: new Date().toISOString(),
         },
       )
       return response.data
@@ -408,7 +409,7 @@ export function createHttpClient(
     answerSurvey:async({appToken,live,questions}:any)=>{
       const response : AxiosResponse<any> = await axios.post(`${endpoint}/survey`,{live,questions},{headers:{Authorization:`Bearer ${appToken}`}})
       return response.data
-    }
+    },
     // TODO:
     // fetchContent: async ({ locale, timestamp = 0 }) => {
     //   const response: AxiosResponse<types.ContentResponse> = await axios.get(

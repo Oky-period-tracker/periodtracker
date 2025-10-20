@@ -2,12 +2,14 @@ import * as React from 'react'
 import NavigationStack, { StackConfig } from '../components/NavigationStack'
 import EditProfileScreen from '../../screens/EditProfileScreen'
 import ProfileScreen from '../../screens/ProfileScreen'
-import AvatarAndThemeScreen from '../../screens/AvatarAndThemeScreen'
+import SelectAvatarScreen from '../../screens/SelectAvatarScreen'
+import SelectThemeScreen from '../../screens/SelectThemeScreen'
 
 export type ProfileStackParamList = {
   Profile: undefined
   EditProfile: undefined
-  AvatarAndTheme: undefined
+  SelectAvatar: undefined
+  SelectTheme: undefined
 }
 
 const config: StackConfig<keyof ProfileStackParamList> = {
@@ -21,9 +23,13 @@ const config: StackConfig<keyof ProfileStackParamList> = {
       title: 'profile_edit',
       component: EditProfileScreen,
     },
-    AvatarAndTheme: {
-      title: 'avatar_amp_themes',
-      component: AvatarAndThemeScreen,
+    SelectAvatar: {
+      title: 'select_avatar',
+      component: SelectAvatarScreen,
+    },
+    SelectTheme: {
+      title: 'select_theme',
+      component: SelectThemeScreen,
     },
   },
 }

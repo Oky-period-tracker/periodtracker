@@ -5,7 +5,7 @@ import { Locale, calendarTranslations, defaultLocale } from '../resources/transl
 export const useMonths = () => {
   const locale = useSelector(currentLocaleSelector) as Locale
   const defaultMonths = calendarTranslations[defaultLocale]?.monthNames
-  const months = calendarTranslations[locale]?.monthNames ?? defaultMonths
+  const months = calendarTranslations[locale]?.monthNames ?? defaultMonths ?? []
 
   const monthOptions = months.map((item) => ({
     label: item,

@@ -67,7 +67,8 @@ const loggedInLinking: LinkingOptions<GlobalParamList> = {
         screens: {
           Profile: '',
           EditProfile: 'edit',
-          AvatarAndTheme: 'avatar-and-theme',
+          Avatar: 'avatar',
+          Theme: 'theme',
         },
       },
       // ===== Home ===== //

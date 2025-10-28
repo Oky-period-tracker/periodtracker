@@ -42,7 +42,7 @@ export const SegmentControl = ({
       <View style={styles.container}>
         {hasError && <ErrorText>{errorKey}</ErrorText>}
 
-        {options.map((option) => {
+        {(options || []).map((option) => {
           const isSelected = selected === option.value
           const onPress = () => onSelect(option.value)
 

@@ -2,49 +2,41 @@ import * as React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Screen } from '../../components/Screen'
 import { Button } from '../../components/Button'
-import { avatarNames, themeNames } from '../../resources/translations'
+import { avatarNames } from '../../resources/translations'
 import { getAsset } from '../../services/asset'
 import { CheckButton } from '../../components/CheckButton'
 import { useSelector } from '../../redux/useSelector'
-import { currentAvatarSelector, currentThemeSelector } from '../../redux/selectors'
+import { currentAvatarSelector } from '../../redux/selectors'
 import { useDispatch } from 'react-redux'
-import { setAvatar, setTheme } from '../../redux/actions'
+import { setAvatar } from '../../redux/actions'
 import { globalStyles } from '../../config/theme'
 import { Text } from '../../components/Text'
 import { analytics } from '../../services/firebase'
 import { PaletteStatus, useColor } from '../../hooks/useColor'
 
-const AvatarAndThemeScreen = () => {
-  return <AvatarAndThemeSelect />
+const AvatarScreen = () => {
+  return <AvatarSelect />
 }
 
-export default AvatarAndThemeScreen
+export default AvatarScreen
 
-interface AvatarAndThemeSelectProps {
+interface AvatarSelectProps {
   onConfirm?: () => void
 }
 
-export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) => {
+export const AvatarSelect = ({ onConfirm }: AvatarSelectProps) => {
   const currentAvatar = useSelector(currentAvatarSelector)
-  const currentTheme = useSelector(currentThemeSelector)
   const dispatch = useDispatch()
   const { backgroundColor, palette } = useColor()
 
   const [selectedAvatar, setSelectedAvatar] = React.useState(currentAvatar)
-  const [selectedTheme, setSelectedTheme] = React.useState(currentTheme)
 
   const confirm = () => {
     dispatch(setAvatar(selectedAvatar))
-    dispatch(setTheme(selectedTheme))
 
     if (selectedAvatar !== currentAvatar) {
       analytics?.().logEvent('avatarChanged', {
         selectedAvatar,
-      })
-    }
-    if (selectedTheme !== currentTheme) {
-      analytics?.().logEvent('themeChanged', {
-        selectedTheme,
       })
     }
 
@@ -52,8 +44,7 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
   }
 
   const avatarChanged = currentAvatar !== selectedAvatar
-  const themeChanged = currentTheme !== selectedTheme
-  const hasChanged = avatarChanged || themeChanged
+  const hasChanged = avatarChanged
 
   const isInitialSelection = !!onConfirm
   const confirmStatus = hasChanged || isInitialSelection ? 'primary' : 'basic'
@@ -62,7 +53,7 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
     <Screen style={styles.screen}>
       {isInitialSelection && (
         <Text style={[styles.title, { color: palette.secondary.text }]}>
-          avatar_amp_themes_login
+          select_avatar
         </Text>
       )}
       <View style={styles.avatars}>
@@ -93,38 +84,6 @@ export const AvatarAndThemeSelect = ({ onConfirm }: AvatarAndThemeSelectProps) =
               >
                 <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
                 <Text style={[styles.name, { color: palette.secondary.text }]}>{avatar}</Text>
-                {showCheck && <CheckButton style={styles.check} status={checkStatus} />}
-              </View>
-            </TouchableOpacity>
-          )
-        })}
-      </View>
-
-      <View style={styles.themes}>
-        {themeNames.map((theme) => {
-          const { showCheck, checkStatus } = getCheckStatus({
-            isSelected: theme === selectedTheme,
-            isCurrent: theme === currentTheme,
-            changed: themeChanged,
-            isInitialSelection,
-          })
-
-          const onPress = () => {
-            setSelectedTheme(theme)
-          }
-
-          return (
-            <TouchableOpacity
-              key={theme}
-              onPress={onPress}
-              style={[styles.theme, globalStyles.shadow]}
-            >
-              <View style={[styles.themeBody, globalStyles.elevation]}>
-                <Image
-                  source={getAsset(`backgrounds.${theme}.icon`)}
-                  style={[styles.themeImage, { backgroundColor, borderColor: backgroundColor }]}
-                />
-                <Text style={[styles.name, { color: palette.secondary.text }]}>{theme}</Text>
                 {showCheck && <CheckButton style={styles.check} status={checkStatus} />}
               </View>
             </TouchableOpacity>
@@ -194,28 +153,9 @@ const styles = StyleSheet.create({
     height: 80,
     margin: 4,
   },
-  themes: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
-    flexWrap: 'wrap',
-  },
-  theme: {
-    minWidth: 100,
-    maxWidth: 180,
-    height: 100,
-    flexBasis: '40%',
-    margin: 8,
-  },
   avatarBody: {
     borderWidth: 4,
     overflow: 'hidden',
-    width: '100%',
-    height: '100%',
-    borderRadius: 20,
-  },
-  themeBody: {
     width: '100%',
     height: '100%',
     borderRadius: 20,
@@ -231,14 +171,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     aspectRatio: 1,
     resizeMode: 'contain',
-  },
-  themeImage: {
-    width: '100%',
-    height: '100%',
-    alignSelf: 'center',
-    resizeMode: 'cover',
-    borderWidth: 4,
-    borderRadius: 20,
   },
   name: {
     position: 'absolute',

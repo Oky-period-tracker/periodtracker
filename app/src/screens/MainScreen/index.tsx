@@ -10,6 +10,7 @@ import { DayModal } from '../../components/DayModal'
 import { CircleProgress } from './components/CircleProgress'
 import { Text } from '../../components/Text'
 import { Avatar } from '../../components/Avatar'
+import { FriendUnlockModal } from '../../components/FriendUnlockModal'
 import { TutorialProvider, useTutorial } from './TutorialContext'
 import { TutorialTextbox } from './components/TutorialTextbox'
 import { TutorialArrow } from './components/TutorialArrow'
@@ -20,6 +21,8 @@ import { useLoading, useStopLoadingEffect } from '../../contexts/LoadingProvider
 import { AvatarMessageProvider } from '../../contexts/AvatarMessageContext'
 import { IS_ANDROID } from '../../services/device'
 import { usePeriodDateUpdate } from '../../hooks/usePeriodDateUpdate'
+import { useSelector } from 'react-redux'
+import { currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -50,10 +53,27 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const { state, step, onTopLeftLayout, onWheelLayout, dispatch: tutorialDispatch } = useTutorial()
 
   const { handleDayModalResponse, initPeriodDatesIfEmpty } = usePeriodDateUpdate()
+  const currentUser = useSelector(currentUserSelector)
+  const cyclesNumber = useSelector(cyclesNumberSelector)
+  const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
 
-  // Auto start tutorial due to route params
+  // Check if friend unlock modal should be shown
+  const shouldShowFriendUnlockModal = React.useMemo(() => {
+    if (!currentUser) return false
+    const avatar = currentUser.avatar
+    // Show modal if cycles >= 3 and avatar is null or customAvatarUnlocked is false
+    return (
+      cyclesNumber >= 3 &&
+      (avatar === null || avatar === undefined || avatar.customAvatarUnlocked === false)
+    )
+  }, [currentUser, cyclesNumber])
+
+  // Show modal when screen opens or cyclesNumber changes
   useFocusEffect(
     React.useCallback(() => {
+      if (shouldShowFriendUnlockModal) {
+        setFriendUnlockModalVisible(true)
+      }
       if (route.params?.tutorial) {
         setLoading(true, 'please_wait_tutorial', () => {
           tutorialDispatch({ type: 'start', value: route.params?.tutorial })
@@ -61,8 +81,10 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           navigation.setParams({ tutorial: undefined })
         })
       }
-    }, [route.params?.tutorial]),
+    }, [shouldShowFriendUnlockModal, route.params?.tutorial]),
   )
+
+  // Auto start tutorial due to route params
 
   React.useEffect(() => {
     initPeriodDatesIfEmpty()
@@ -117,6 +139,11 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           />
         </View>
       )}
+      {/* Modal that appears when avatar customization is unlocked */}
+      <FriendUnlockModal
+        visible={friendUnlockModalVisible}
+        toggleVisible={() => setFriendUnlockModalVisible(false)}
+      />
     </>
   )
 }

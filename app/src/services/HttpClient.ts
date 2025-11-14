@@ -8,6 +8,7 @@ import { allTranslations, initialLocale } from '../hooks/useTranslate'
 import { ReduxState } from '../redux/reducers'
 import { savePendingSyncData } from './pendingSync'
 import { reduxStoreVersion } from '../optional/reduxMigrations'
+import { AvatarConfig } from '../core/api/types'
 
 type StoreRef = {
   dispatch: (action: { type: string }) => void
@@ -408,6 +409,29 @@ export function createHttpClient(
     },
     answerSurvey:async({appToken,live,questions}:any)=>{
       const response : AxiosResponse<any> = await axios.post(`${endpoint}/survey`,{live,questions},{headers:{Authorization:`Bearer ${appToken}`}})
+      return response.data
+    },
+    /**
+     * Edit avatar configuration
+     * Avatar is stored in user model.
+     */
+    editAvatar: async ({
+      appToken,
+      avatar,
+    }: {
+      appToken: string
+      avatar: AvatarConfig
+    }) => {
+      const response: AxiosResponse<{}> = await axios.post(
+        `${endpoint}/account/edit-avatar`,
+        {
+          avatar,
+        },
+        {
+          headers: { Authorization: `Bearer ${appToken}` },
+        },
+      )
+
       return response.data
     },
     // TODO:

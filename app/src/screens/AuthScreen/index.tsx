@@ -39,12 +39,14 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
 
   if (authMode === 'select_avatar') {
     const onConfirm = () => setAuthMode('select_theme')
-    return <SelectAvatar onConfirm={onConfirm} />
+    const onGoBack = () => setAuthMode('sign_up')
+    return <SelectAvatar onConfirm={onConfirm} onGoBack={onGoBack} />
   }
 
   if (authMode === 'select_theme') {
     const onConfirm = () => setAuthMode('onboard_journey')
-    return <SelectTheme onConfirm={onConfirm} />
+    const onGoBack = () => setAuthMode('select_avatar')
+    return <SelectTheme onConfirm={onConfirm} onGoBack={onGoBack} />
   }
 
   if (authMode === 'welcome') {

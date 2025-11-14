@@ -1,3 +1,4 @@
+import { AvatarConfig } from '../core/api/types'
 export * from './dailyCards'
 
 export interface User {
@@ -14,6 +15,7 @@ export interface User {
   dateSignedUp: string
   isGuest: boolean
   metadata: UserMetadata
+  avatar?: AvatarConfig | null
 }
 
 export interface UserMetadata {

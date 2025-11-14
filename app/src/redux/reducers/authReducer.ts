@@ -1,6 +1,7 @@
 import { REHYDRATE, RehydrateAction } from 'redux-persist'
 import _ from 'lodash'
 import { Actions } from '../types/index'
+import { AvatarConfig } from '../../core/api/types'
 
 export interface User {
   id: string
@@ -16,6 +17,7 @@ export interface User {
   dateSignedUp: string
   isGuest: boolean
   metadata: UserMetadata
+  avatar?: AvatarConfig | null
 }
 
 export interface UserMetadata {

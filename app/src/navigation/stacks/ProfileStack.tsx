@@ -4,12 +4,14 @@ import EditProfileScreen from '../../screens/EditProfileScreen'
 import ProfileScreen from '../../screens/ProfileScreen'
 import SelectAvatarScreen from '../../screens/SelectAvatarScreen'
 import SelectThemeScreen from '../../screens/SelectThemeScreen'
+import EditAvatarScreen from '../../screens/EditAvatarScreen'
 
 export type ProfileStackParamList = {
   Profile: undefined
   EditProfile: undefined
   SelectAvatar: undefined
   SelectTheme: undefined
+  EditAvatar: undefined
 }
 
 const config: StackConfig<keyof ProfileStackParamList> = {
@@ -26,6 +28,10 @@ const config: StackConfig<keyof ProfileStackParamList> = {
     SelectAvatar: {
       title: 'select_avatar',
       component: SelectAvatarScreen,
+    },
+    EditAvatar: {
+      title: 'create_friend',
+      component: EditAvatarScreen,
     },
     SelectTheme: {
       title: 'select_theme',

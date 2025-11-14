@@ -68,6 +68,7 @@ const loggedInLinking: LinkingOptions<GlobalParamList> = {
           Profile: '',
           EditProfile: 'edit',
           Avatar: 'avatar',
+          CustomAvatar: 'custom-avatar',
           Theme: 'theme',
         },
       },

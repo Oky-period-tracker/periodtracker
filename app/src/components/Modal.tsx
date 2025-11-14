@@ -27,7 +27,7 @@ export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) =
   const { modalBackdropColor } = useColor()
   const { width, height } = useScreenDimensions()
   const maxWidth = Math.min(width, 800)
-  const maxHeight = height * 0.6
+  const maxHeight = height * 0.85 // Increased to 85% to allow more content
 
   return (
     <RNModal
@@ -43,11 +43,11 @@ export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) =
           style={[styles.backDrop, { backgroundColor: modalBackdropColor }]}
           onPress={toggleVisible}
         />
-        <ModalCloseButton onPress={toggleVisible} />
         <SafeAreaView
           style={[styles.children, { maxWidth, maxHeight }, style]}
           pointerEvents="box-none"
         >
+          <ModalCloseButton onPress={toggleVisible} />
           {children}
         </SafeAreaView>
       </View>
@@ -78,13 +78,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   children: {
-    flex: 1,
     margin: 24,
+    position: 'relative',
+    alignSelf: 'center',
   },
   closeButton: {
     position: 'absolute',
-    top: 60,
-    right: 24,
+    top: 16,
+    right: 16,
     width: 32,
     height: 32,
     zIndex: 9999,

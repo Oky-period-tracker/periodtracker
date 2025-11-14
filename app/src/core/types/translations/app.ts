@@ -93,6 +93,14 @@ export interface AppTranslations {
 
   avatar_amp_themes: string
   avatar_amp_themes_login: string
+  select_avatar_title: string
+  select_avatar_subtitle: string
+  select_avatar_reminder_locked: string
+  select_avatar_reminder_unlocked_not_created: string
+  select_avatar_reminder_unlocked_created: string
+  select_theme_title: string
+  select_theme_subtitle: string
+  go_back: string
 
   // ------------------------- Onboard ----------------------------
   calendar_onboard: string

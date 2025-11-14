@@ -25,6 +25,11 @@ export const ResponsiveProvider = ({ children }: React.PropsWithChildren) => {
 
   const UIConfig = responsiveConfig[size]
 
+  // Debug: Log breakpoint detection (remove after testing)
+  React.useEffect(() => {
+    console.log(`[Responsive] Screen: ${width}x${height}, Breakpoint: ${size}, iconOffsetInside: ${UIConfig.avatarSelection?.iconOffsetInside}, iconOffsetOutside: ${UIConfig.themeSelection?.iconOffsetOutside}`)
+  }, [width, height, size, UIConfig])
+
   return (
     <ResponsiveContext.Provider
       value={{

@@ -6,7 +6,6 @@ export interface AppAssets {
   avatars: Record<
     AvatarName,
     {
-      default: ImageSourcePropType
       stationary_colour: ImageSourcePropType
       bubbles: ImageSourcePropType
       theme: ImageSourcePropType
@@ -17,13 +16,19 @@ export interface AppAssets {
     {
       onPeriod: ImageSourcePropType
       default: ImageSourcePropType
-      icon: ImageSourcePropType
     }
   >
   static: {
     launch_icon: ImageSourcePropType
     spin_load_face: ImageSourcePropType
     spin_load_circle: ImageSourcePropType
+  }
+  icons: {
+    locked: ImageSourcePropType
+    unlocked: ImageSourcePropType
+  }
+  gifs: {
+    friendUnlock: ImageSourcePropType
   }
   general: {
     aboutBanner: Record<Locale, ImageSourcePropType>
@@ -34,4 +39,11 @@ export interface AppAssets {
   // TODO:
   // eslint-disable-next-line
   videos?: Record<string, any> // TODO: VideoSourcePropType ?
+  tutorialSteps: {
+    step1: ImageSourcePropType
+    step2: ImageSourcePropType
+    step3: ImageSourcePropType
+    step4: ImageSourcePropType
+    step5: ImageSourcePropType
+  }
 }

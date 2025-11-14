@@ -5,7 +5,7 @@ import { useDayScroll } from '../../screens/MainScreen/DayScrollContext'
 import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native'
 import { ProgressSection } from './ProgressSection'
 import { useSelector } from 'react-redux'
-import { currentAvatarSelector } from '../../redux/selectors'
+import { currentAvatarSelector, currentUserSelector } from '../../redux/selectors'
 import Animated, {
   runOnJS,
   useAnimatedProps,
@@ -17,6 +17,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { AvatarMessage } from './AvatarMessage'
 import { getCustomAvatarStyles } from '../../optional/styles'
+import { AvatarLock } from '../AvatarLock'
 
 interface AnimationConfig {
   start: number
@@ -46,6 +47,7 @@ const defaultDance = animationSequences.danceFour
 
 export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const avatar = useSelector(currentAvatarSelector)
+  const currentUser = useSelector(currentUserSelector)
   const { diameter } = useDayScroll()
 
   const isJumpingToggled = useSharedValue(false)
@@ -144,11 +146,15 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const lottieWidth = diameter * 0.33 - 12
   const lottieHeight = lottieWidth / lottieAspectRatio
 
-  // - Top half of lottie is empty space, +72 height of CircleProgress
-  const marginTop = -lottieHeight / 1.75 + 72
+  // - Top half of lottie is empty space, +72 height of CircleProgress, -20 to overlap with progress bars
+  const marginTop = -lottieHeight / 1.75 + 72 - 20
 
   // Optional submodule style customisation
   const customStyle = getCustomAvatarStyles?.({ lottieHeight })?.[avatar]
+
+  // Check if friend avatar is locked
+  const isFriendAvatar = avatar === 'friend'
+  const isFriendLocked = isFriendAvatar && (currentUser?.cyclesNumber || 0) < 3
 
   return (
     <TouchableOpacity
@@ -191,5 +197,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  lockOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 20,
   },
 })

@@ -2,6 +2,17 @@ import { REHYDRATE, RehydrateAction } from 'redux-persist'
 import _ from 'lodash'
 import { Actions } from '../types/index'
 
+export interface AvatarConfig {
+  body?: string | null
+  hair?: string | null
+  eyes?: string | null
+  smile?: string | null
+  clothing?: string | null
+  devices?: string | null
+  customAvatarUnlocked: boolean
+  name?: string
+}
+
 export interface User {
   id: string
   name: string
@@ -17,6 +28,7 @@ export interface User {
   isGuest: boolean
   cyclesNumber?: number
   metadata: UserMetadata
+  avatar?: AvatarConfig | null
 }
 
 export interface UserMetadata {

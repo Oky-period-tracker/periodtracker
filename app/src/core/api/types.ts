@@ -7,6 +7,17 @@ export interface UserMetadata {
   city?: string
 }
 
+export interface AvatarConfig {
+  body?: string | null
+  hair?: string | null
+  eyes?: string | null
+  smile?: string | null
+  clothing?: string | null
+  devices?: string | null
+  customAvatarUnlocked: boolean
+  name?: string
+}
+
 export interface EncyclopediaResponseItem {
   id: string
   cat_id: string
@@ -109,6 +120,7 @@ export interface LoginResponse {
     secretAnswer: string
     dateSignedUp: string
     metadata: UserMetadata
+    avatar?: AvatarConfig | null
   }
   store: {
     storeVersion: number
@@ -131,6 +143,7 @@ export interface SignupResponse {
     secretQuestion: string
     secretAnswer: string
     metadata: UserMetadata
+    avatar?: AvatarConfig | null
   }
 }
 

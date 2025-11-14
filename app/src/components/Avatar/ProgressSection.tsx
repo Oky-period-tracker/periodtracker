@@ -1,8 +1,8 @@
 import React from 'react'
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native'
+import { StyleProp, StyleSheet, View, ViewStyle, Image } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { cardAnswerSelector } from '../../redux/selectors'
+import { cardAnswerSelector, currentAvatarSelector, currentUserSelector } from '../../redux/selectors'
 import moment from 'moment'
 import { useSelector } from '../../redux/useSelector'
 import { ProgressBar } from './ProgressBar'
@@ -10,6 +10,8 @@ import { SharedValue, runOnJS, useAnimatedReaction } from 'react-native-reanimat
 import { HeartAnimation } from './HeartAnimation'
 import { useResponsive } from '../../contexts/ResponsiveContext'
 import { useColor } from '../../hooks/useColor'
+import { AvatarLock } from '../AvatarLock'
+import { getAsset } from '../../services/asset'
 
 export const ProgressSection = ({
   heartProgress,
@@ -23,6 +25,8 @@ export const ProgressSection = ({
   const [progress, setProgress] = React.useState(0)
   const { UIConfig } = useResponsive()
   const { palette, starColor } = useColor()
+  const currentAvatar = useSelector(currentAvatarSelector)
+  const currentUser = useSelector(currentUserSelector)
 
   useAnimatedReaction(
     () => heartProgress.value,
@@ -99,6 +103,12 @@ export const ProgressSection = ({
 
       {/* ===== Animated hearts ===== */}
       <HeartAnimation count={progress} />
+
+      {/* ===== Avatar Locks ===== */}
+      <AvatarLock 
+        cyclesNumber={currentUser?.cyclesNumber || 0} 
+        style={styles.locksContainer}
+      />
     </View>
   )
 }
@@ -136,5 +146,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 4,
+  },
+  locksContainer: {
+    marginTop: 4,
   },
 })

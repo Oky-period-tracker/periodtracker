@@ -9,3 +9,4 @@ ios
 # Compiled TypeScript files
 *.js
 *.js.map
+*.apk

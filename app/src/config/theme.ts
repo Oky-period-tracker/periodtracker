@@ -15,4 +15,25 @@ export const globalStyles = StyleSheet.create({
   elevation: {
     elevation: 4,
   },
+  // Shared title box style for avatar and theme selection screens
+  selectionTitleBox: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 0,
+    padding: 8,
+    paddingLeft: 10,
+    paddingRight: 12,
+    minWidth: 0,
+  },
+  // Unified message box style for top and bottom messages
+  messageBox: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 8,
+    paddingLeft: 10,
+    paddingRight: 12,
+  },
 })

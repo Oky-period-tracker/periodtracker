@@ -10,6 +10,7 @@ import { DayModal } from '../../components/DayModal'
 import { CircleProgress } from './components/CircleProgress'
 import { Text } from '../../components/Text'
 import { Avatar } from '../../components/Avatar'
+import { FriendUnlockModal } from '../../components/FriendUnlockModal'
 import { TutorialProvider, useTutorial } from './TutorialContext'
 import { TutorialTextbox } from './components/TutorialTextbox'
 import { TutorialArrow } from './components/TutorialArrow'
@@ -60,10 +61,26 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
   const predictionFullState = usePredictionEngineState()
+  const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
 
-  // Auto start tutorial due to route params
+  // Check if friend unlock modal should be shown
+  const shouldShowFriendUnlockModal = React.useMemo(() => {
+    if (!currentUser) return false
+    const cyclesNumber = currentUser.cyclesNumber || 0
+    const avatar = currentUser.avatar
+    // Show modal if cycles >= 3 and avatar is null or customAvatarUnlocked is false
+    return (
+      cyclesNumber >= 3 &&
+      (avatar === null || avatar === undefined || avatar.customAvatarUnlocked === false)
+    )
+  }, [currentUser?.cyclesNumber, currentUser?.avatar])
+
+  // Show modal when screen opens or cyclesNumber changes
   useFocusEffect(
     React.useCallback(() => {
+      if (shouldShowFriendUnlockModal) {
+        setFriendUnlockModalVisible(true)
+      }
       if (route.params?.tutorial) {
         setLoading(true, 'please_wait_tutorial', () => {
           tutorialDispatch({ type: 'start', value: route.params?.tutorial })
@@ -71,8 +88,17 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           navigation.setParams({ tutorial: undefined })
         })
       }
-    }, [route.params?.tutorial]),
+    }, [shouldShowFriendUnlockModal, route.params?.tutorial]),
   )
+
+  // Also check when cyclesNumber changes
+  React.useEffect(() => {
+    if (shouldShowFriendUnlockModal) {
+      setFriendUnlockModalVisible(true)
+    }
+  }, [shouldShowFriendUnlockModal])
+
+  // Auto start tutorial due to route params
 
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
@@ -216,6 +242,42 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       console.error('Error updating cycle count:', error)
     }
   }
+
+  const handleCreateFriend = async () => {
+    // Navigate to custom avatar screen
+    navigation.navigate('CustomAvatar')
+    
+    // Update avatar to set customAvatarUnlocked to true
+    if (appToken && currentUser) {
+      try {
+        const updatedAvatar = currentUser.avatar
+          ? {
+              ...currentUser.avatar,
+              customAvatarUnlocked: true,
+            }
+          : {
+              body: null,
+              hair: null,
+              eyes: null,
+              clothing: null,
+              devices: null,
+              customAvatarUnlocked: true,
+            }
+        
+        await httpClient.updateAvatar({
+          appToken,
+          avatar: updatedAvatar,
+        })
+        
+        // Update Redux state
+        editUserReduxState({
+          avatar: updatedAvatar,
+        })
+      } catch (error) {
+        console.error('Error updating avatar:', error)
+      }
+    }
+  }
   
   return (
     <>
@@ -258,6 +320,11 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           />
         </View>
       )}
+      <FriendUnlockModal
+        visible={friendUnlockModalVisible}
+        toggleVisible={() => setFriendUnlockModalVisible(false)}
+        onCreateFriend={handleCreateFriend}
+      />
     </>
   )
 }

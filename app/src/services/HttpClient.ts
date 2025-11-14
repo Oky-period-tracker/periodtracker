@@ -357,6 +357,25 @@ export function createHttpClient(
         throw error
       }
     },
+    updateAvatar: async ({
+      appToken,
+      avatar,
+    }: {
+      appToken: string
+      avatar: any
+    }) => {
+      const response: AxiosResponse<{}> = await axios.post(
+        `${endpoint}/account/update-avatar`,
+        {
+          avatar,
+        },
+        {
+          headers: { Authorization: `Bearer ${appToken}` },
+        },
+      )
+
+      return response.data
+    },
     // TODO:
     // fetchContent: async ({ locale, timestamp = 0 }) => {
     //   const response: AxiosResponse<types.ContentResponse> = await axios.get(

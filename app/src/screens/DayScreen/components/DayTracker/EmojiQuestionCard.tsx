@@ -209,13 +209,13 @@ const styles = StyleSheet.create({
   emojiContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     alignContent: 'center',
   },
 
   emojiBadge: {
-    flexBasis: '30%',
-    marginVertical: 12,
+    flexBasis: '25%',
+    marginVertical: 7,
   },
 })

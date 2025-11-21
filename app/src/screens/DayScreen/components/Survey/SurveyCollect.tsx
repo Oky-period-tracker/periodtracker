@@ -8,7 +8,7 @@ export const SurveyCollect = () => {
   const { state, dispatch } = useSurvey()
 
   const onCheckboxPress = (value: number) => {
-    dispatch({ type: 'answerIndex', value })
+    dispatch({ type: 'select_answer', value })
   }
 
   const setAnswerDraft = (value: string) => {

@@ -15,11 +15,13 @@ To test the app's API-CMS interaction, you will need to build the Docker images 
 - Navigate to the Root Directory:
   Open a terminal and navigate to the root directory of the project where the docker-compose.yml file is located.
 
-- Build the Docker Images by running the following command:
+- Build the Docker Images by running the following commands:
 
 ```bash
 docker-compose build base
+```
 
+```bash
 docker-compose build
 ```
 

@@ -18,6 +18,8 @@ To test the app's API-CMS interaction, you will need to build the Docker images 
 - Build the Docker Images by running the following command:
 
 ```bash
+docker-compose build base
+
 docker-compose build
 ```
 

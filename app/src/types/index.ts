@@ -7,6 +7,9 @@ export interface AvatarConfig {
   smile?: string | null
   clothing?: string | null
   devices?: string | null
+  skinColor?: string | null
+  hairColor?: string | null
+  eyeColor?: string | null
   customAvatarUnlocked: boolean
   name?: string
 }

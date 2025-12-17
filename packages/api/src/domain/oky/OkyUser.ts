@@ -19,6 +19,21 @@ interface OkyUserProps {
   dateAccountSaved: string
   cyclesNumber: number
   metadata: UserMetadata
+  avatar: AvatarConfig | null
+}
+
+export interface AvatarConfig {
+  body: string | null
+  hair: string | null
+  eyes: string | null
+  smile: string | null
+  clothing: string | null
+  devices: string | string[] | null // Supports both legacy string format and new array format
+   skinColor?: string | null
+   hairColor?: string | null
+   eyeColor?: string | null
+  customAvatarUnlocked: boolean
+  name?: string
 }
 
 export interface UserMetadata {
@@ -80,6 +95,9 @@ export class OkyUser {
   @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })
   private metadata: UserMetadata
 
+  @Column({ name: 'avatar', type: 'json', nullable: true, default: null })
+  private avatar: AvatarConfig | null
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -96,6 +114,7 @@ export class OkyUser {
         dateAccountSaved,
         cyclesNumber,
         metadata,
+        avatar,
       } = props
 
       this.id = id
@@ -112,6 +131,12 @@ export class OkyUser {
       this.dateAccountSaved = dateAccountSaved
       this.cyclesNumber = cyclesNumber
       this.metadata = metadata
+      // Ensure customAvatarUnlocked is set to false if not provided
+      if (avatar && typeof avatar.customAvatarUnlocked !== 'boolean') {
+        this.avatar = { ...avatar, customAvatarUnlocked: false }
+      } else {
+        this.avatar = avatar
+      }
     }
   }
 
@@ -130,6 +155,7 @@ export class OkyUser {
     dateAccountSaved,
     cyclesNumber,
     metadata,
+    avatar = null,
   }: {
     id: string
     name: string
@@ -145,6 +171,7 @@ export class OkyUser {
     dateAccountSaved: string
     cyclesNumber: number
     metadata: UserMetadata
+    avatar?: AvatarConfig | null
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -172,6 +199,7 @@ export class OkyUser {
       dateAccountSaved,
       cyclesNumber,
       metadata,
+      avatar,
     })
   }
 
@@ -288,5 +316,41 @@ export class OkyUser {
 
   public getMetadata() {
     return this.metadata
+  }
+
+  public getAvatar() {
+    return this.avatar
+  }
+
+  public updateAvatar(avatar: AvatarConfig | null) {
+    if (avatar) {
+      // Normalize devices: convert string to array for consistency, or keep array as-is
+      let normalizedDevices: string | string[] | null = avatar.devices
+      if (typeof avatar.devices === 'string' && avatar.devices.trim() !== '') {
+        // Keep as string for backward compatibility, but also support arrays
+        normalizedDevices = avatar.devices
+      } else if (Array.isArray(avatar.devices)) {
+        // Filter out empty strings and null values from array
+        normalizedDevices = avatar.devices.filter((d): d is string => typeof d === 'string' && d.trim() !== '')
+        // If array is empty after filtering, set to null
+        if (normalizedDevices.length === 0) {
+          normalizedDevices = null
+        }
+      } else if (avatar.devices === '' || avatar.devices === null || avatar.devices === undefined) {
+        normalizedDevices = null
+      }
+
+      const normalizedAvatar: AvatarConfig = {
+        ...avatar,
+        devices: normalizedDevices,
+        customAvatarUnlocked:
+          typeof avatar.customAvatarUnlocked === 'boolean' ? avatar.customAvatarUnlocked : false,
+        smile: avatar.smile ?? 'smile',
+      }
+      this.avatar = normalizedAvatar
+      return
+    }
+
+    this.avatar = avatar
   }
 }

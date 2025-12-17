@@ -2,6 +2,17 @@ import { BadgeSize } from '../components/EmojiBadge'
 
 export type BreakPointSize = 's' | 'm' | 'l' // | 'xl'
 
+// Width-based breakpoints for responsive layouts
+export type WidthBreakpointSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+
+export const widthBreakpoints: Record<WidthBreakpointSize, number> = {
+  xs: 0,      // < 360dp (very small phones)
+  sm: 360,    // 360-480dp (small phones)
+  md: 480,    // 480-840dp (large phones/small tablets)
+  lg: 840,    // 840-1200dp (tablets)
+  xl: 1200,   // > 1200dp (large tablets)
+}
+
 export interface UIConfig {
   carousel: {
     cardWidth: number
@@ -83,6 +94,8 @@ export interface UIConfig {
     screenPaddingHorizontal: number
     titlePaddingHorizontal: number
     itemsContainerPaddingHorizontal: number
+    contentContainerWidthPercent: number
+    avatarsContainerWidthPercent: number
     titleFontSize: number
     titleLineHeight: number
     subtitleFontSize: number
@@ -90,6 +103,8 @@ export interface UIConfig {
     reminderFontSize: number
     reminderLineHeight: number
     reminderIconSize: number
+    reminderLeftMargin: number
+    reminderRightMargin: number
     buttonPaddingTop: number
     buttonPaddingBottom: number
     buttonPaddingHorizontal: number
@@ -160,41 +175,42 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       touchableRowHeight: 80,
     },
     avatarCustomization: {
+      // Original small-screen setup, with tighter gaps between color circles
       colorsPerRow: 5,
-      colorSwatchSize: 36,
-      colorSwatchGap: 14,
+      colorSwatchSize: 40,
+      colorSwatchGap: 10,
       bodyTypeSize: {
-        width: 70,
-        height: 105,
+        width: 78,
+        height: 117,
       },
-      bodyTypeGap: 20,
+      bodyTypeGap: 22,
       optionImageSize: {
-        width: 70,
-        height: 90,
+        width: 78,
+        height: 100,
       },
-      optionImageGap: 10,
-      categoryIconSize: 44,
-      categoryGap: 20,
+      optionImageGap: 12,
+      categoryIconSize: 48,
+      categoryGap: 22,
       avatarPreviewSize: {
-        width: 135,
-        height: 180,
+        width: 150,
+        height: 200,
       },
-      paddingHorizontal: 16,
+      paddingHorizontal: 18,
       spacing: {
-        small: 8,
-        medium: 12,
-        large: 20,
+        small: 10,
+        medium: 14,
+        large: 22,
       },
     },
     avatarSelection: {
       avatarSize: {
-        width: 150,
-        height: 96,
+        width: 130, // Further reduced to ensure 3 avatars fit per row on 480dp
+        height: 55, // Reduced proportionally
       },
       avatarMargin: 4,
-      avatarMarginHorizontal: 4,
-      avatarMarginVertical: 4,
-      avatarBorderRadius: 30, // Less rounded to follow image shape
+      avatarMarginHorizontal: 2, // Further reduced for better fit on 480dp screens
+      avatarMarginVertical: 8,
+      avatarBorderRadius: 40, // More rounded
       borderWidth: 2,
       iconSize: 10,
       iconOffsetOutside: 15,
@@ -208,6 +224,8 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       screenPaddingHorizontal: 16,
       titlePaddingHorizontal: 12,
       itemsContainerPaddingHorizontal: 2,
+      contentContainerWidthPercent: 92, // Increased from 90% for better use of space on 480dp
+      avatarsContainerWidthPercent: 96, // Reduced from 98% for better proportions
       titleFontSize: 20,
       titleLineHeight: 26,
       subtitleFontSize: 14,
@@ -215,6 +233,8 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       reminderFontSize: 14,
       reminderLineHeight: 20,
       reminderIconSize: 24,
+      reminderLeftMargin: 74, // titlePaddingHorizontal (12) + logo width (50) + logo margin (12)
+      reminderRightMargin: 16, // Match screenPaddingHorizontal for consistency
       buttonPaddingTop: 12,
       buttonPaddingBottom: 20,
       buttonPaddingHorizontal: 16,
@@ -227,7 +247,7 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       themeMargin: 12,
       themeMarginHorizontal: 12,
       themeMarginVertical: 12,
-      themeBorderRadius: 25, // Less rounded to follow image shape
+      themeBorderRadius: 55, // More rounded to fit well around image
       iconSize: 10,
       iconOffsetOutside: 15,
       paddingTop: 50,
@@ -277,9 +297,10 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       touchableRowHeight: 100,
     },
     avatarCustomization: {
+      // Keep 6 swatches on medium screens with original size but tighter gaps
       colorsPerRow: 6,
       colorSwatchSize: 40,
-      colorSwatchGap: 16,
+      colorSwatchGap: 8,
       bodyTypeSize: {
         width: 80,
         height: 120,
@@ -305,13 +326,13 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     },
     avatarSelection: {
       avatarSize: {
-        width: 170,
-        height: 109,
+        width: 182, // Decreased from 187
+        height: 80, // Decreased from 86
       },
       avatarMargin: 6,
       avatarMarginHorizontal: 6,
       avatarMarginVertical: 6,
-      avatarBorderRadius: 35, // Less rounded to follow image shape
+      avatarBorderRadius: 45, // More rounded
       borderWidth: 2,
       iconSize: 12,
       iconOffsetOutside: 17,
@@ -325,13 +346,17 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       screenPaddingHorizontal: 16,
       titlePaddingHorizontal: 12,
       itemsContainerPaddingHorizontal: 2,
+      contentContainerWidthPercent: 92, // 92% width for medium screens
+      avatarsContainerWidthPercent: 99, // 99% width for avatars container (larger)
       titleFontSize: 22,
       titleLineHeight: 28,
       subtitleFontSize: 16,
       subtitleLineHeight: 22,
-      reminderFontSize: 14,
-      reminderLineHeight: 20,
+      reminderFontSize: 16,
+      reminderLineHeight: 22,
       reminderIconSize: 20,
+      reminderLeftMargin: 74, // titlePaddingHorizontal (12) + logo width (50) + logo margin (12)
+      reminderRightMargin: 16, // Match screenPaddingHorizontal for consistency
       buttonPaddingTop: 16,
       buttonPaddingBottom: 24,
       buttonPaddingHorizontal: 20,
@@ -344,7 +369,7 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       themeMargin: 16,
       themeMarginHorizontal: 16,
       themeMarginVertical: 16,
-      themeBorderRadius: 30, // Less rounded to follow image shape
+      themeBorderRadius: 60, // More rounded to fit well around image
       iconSize: 12,
       iconOffsetOutside: 17,
       paddingTop: 60,
@@ -394,9 +419,10 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       touchableRowHeight: 100,
     },
     avatarCustomization: {
+      // Keep 6 swatches on large screens with original size but tighter gaps
       colorsPerRow: 6,
       colorSwatchSize: 40,
-      colorSwatchGap: 16,
+      colorSwatchGap: 8,
       bodyTypeSize: {
         width: 80,
         height: 120,
@@ -422,13 +448,13 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
     },
     avatarSelection: {
       avatarSize: {
-        width: 150,
-        height: 96,
+        width: 160, // Decreased from 165
+        height: 68, // Decreased from 74
       },
-      avatarMargin: 0,
-      avatarMarginHorizontal: 0,
+      avatarMargin: 4,
+      avatarMarginHorizontal: 4,
       avatarMarginVertical: 6,
-      avatarBorderRadius: 48,
+      avatarBorderRadius: 50, // More rounded
       borderWidth: 2,
       iconSize: 12,
       iconOffsetOutside: 17,
@@ -442,13 +468,17 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       screenPaddingHorizontal: 0,
       titlePaddingHorizontal: 0,
       itemsContainerPaddingHorizontal: 0,
+      contentContainerWidthPercent: 94, // 94% width for large screens
+      avatarsContainerWidthPercent: 99, // 99% width for avatars container (larger)
       titleFontSize: 22,
       titleLineHeight: 28,
       subtitleFontSize: 16,
       subtitleLineHeight: 22,
-      reminderFontSize: 14,
-      reminderLineHeight: 20,
+      reminderFontSize: 16,
+      reminderLineHeight: 22,
       reminderIconSize: 20,
+      reminderLeftMargin: 74, // titlePaddingHorizontal (0) + logo width (50) + logo margin (12) = 62, but using 74 for consistency
+      reminderRightMargin: 0, // Match screenPaddingHorizontal for consistency
       buttonPaddingTop: 16,
       buttonPaddingBottom: 24,
       buttonPaddingHorizontal: 20,
@@ -461,7 +491,7 @@ export const responsiveConfig: Record<BreakPointSize, UIConfig> = {
       themeMargin: 4,
       themeMarginHorizontal: 0,
       themeMarginVertical: 16,
-      themeBorderRadius: 25, // Less rounded to follow image shape
+      themeBorderRadius: 55, // More rounded to fit well around image
       iconSize: 12,
       iconOffsetOutside: 32,
       paddingTop: 60,

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { View, StyleSheet, ViewStyle } from 'react-native'
 import { getPreviewAsset, BodySize } from '../../resources/assets/friendAssets'
 import { getDarkerSkinColor } from '../../utils/colorUtils'
+import { BodySmall, BodyMedium, BodyLarge } from '../../resources/assets/images/avatars/friend/avatar-parts/bodies/BodyComponents'
 
 export interface AvatarPreviewProps {
   bodyType: 'body-small' | 'body-medium' | 'body-large'
@@ -10,9 +11,9 @@ export interface AvatarPreviewProps {
   hairColor?: string
   eyeShape?: string | null
   eyeColor?: string
-  smile?: string | null
+  smile?: string // Optional in props but will always have a value when used
   clothing?: string | null
-  devices?: string | null
+  devices?: string | string[] | null // Support both string (old format) and array (new format)
   width?: number
   height?: number
   style?: ViewStyle
@@ -30,17 +31,18 @@ type SvgComponent = React.ComponentType<{
  * Reusable AvatarPreview component that stacks SVG layers and applies colors
  * Can be used throughout the app to display custom avatars
  * 
- * Uses react-native-svg-transformer to import SVGs as React components
- * Colors are applied via the `color` prop which maps to `currentColor` in SVG
+ * Body components are JSX components with color props (BodyComponents.tsx)
+ * Other parts use react-native-svg-transformer to import SVGs as React components
+ * Colors are applied via props for body, and `color`/`fill` props for other parts
  */
 export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
   bodyType,
-  skinColor = '#FFDBAC',
+  skinColor,
   hairStyle = null,
-  hairColor = '#000000',
+  hairColor,
   eyeShape = null,
-  eyeColor = '#000000',
-  smile = 'smile',
+  eyeColor,
+  smile,
   clothing = null,
   devices = null,
   width = 150,
@@ -53,158 +55,78 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
     return 'medium'
   }, [bodyType])
 
-  // Calculate darker skin color for shadow parts
-  const darkerSkinColor = React.useMemo(() => {
-    return getDarkerSkinColor(skinColor)
-  }, [skinColor])
 
-  // Load SVG components (these are React components thanks to react-native-svg-transformer)
-  const BodySvg = getPreviewAsset('body', bodyType, bodySize)
-  const HairSvg = getPreviewAsset('hair', hairStyle, bodySize)
+  // Normalize devices to array format (handle both string and array)
+  const devicesArray = React.useMemo(() => {
+    if (!devices) return []
+    if (Array.isArray(devices)) return devices
+    return [devices] // Old format: single string
+  }, [devices])
+
+  // Check if any device is a prosthetic type that needs to render before clothing
+  const isProstheticDevice = React.useMemo(() => {
+    if (!devicesArray || devicesArray.length === 0) return false
+    const prostheticDevices = ['prostetic1', 'prostetic2', 'prostetic2-small', 'prostetic2-medium', 'prostetic2-large', 'prosteticleg2-small', 'prosteticleg2-medium', 'prosteticleg2-large']
+    return devicesArray.some(device => prostheticDevices.includes(device))
+  }, [devicesArray])
+
+  // Load body component based on size (now using JSX components with color props)
+  const BodyComponent = React.useMemo(() => {
+    if (bodySize === 'small') return BodySmall
+    if (bodySize === 'large') return BodyLarge
+    return BodyMedium
+  }, [bodySize])
+
+  // Load other SVG components (these are React components thanks to react-native-svg-transformer)
+  // '00' is bald - don't load any hair SVG
+  const HairSvg = hairStyle === '00' ? null : getPreviewAsset('hair', hairStyle, bodySize)
   const SmileSvg = smile ? getPreviewAsset('smile', smile, bodySize) : null
   const EyeSvg = getPreviewAsset('eyes', eyeShape, bodySize)
   const ClothingSvg = getPreviewAsset('clothing', clothing, bodySize)
-  const DeviceSvg = getPreviewAsset('devices', devices, bodySize)
+  
+  // Load device SVGs for all selected devices, separated by subcategory
+  const DeviceSvgs = React.useMemo(() => {
+    return devicesArray.map(device => ({
+      device,
+      svg: getPreviewAsset('devices', device, bodySize),
+      isAccessory: ['necklace1', 'necklace2', 'necklace3'].includes(device)
+    })).filter(item => item.svg !== null)
+  }, [devicesArray, bodySize])
+  
+  // Separate devices into accessories and non-accessories
+  const AccessorySvgs = React.useMemo(() => {
+    return DeviceSvgs.filter(item => item.isAccessory)
+  }, [DeviceSvgs])
+  
+  const NonAccessoryDeviceSvgs = React.useMemo(() => {
+    return DeviceSvgs.filter(item => !item.isAccessory)
+  }, [DeviceSvgs])
 
   // Helper to check if a value is a valid React component
   const isValidComponent = (component: any): component is SvgComponent => {
     return component && (typeof component === 'function' || React.isValidElement(component))
   }
 
-  // Helper to recursively replace fill colors in SVG children
-  const replaceFillColor = (element: any, oldColor: string, newColor: string): any => {
-    if (!element) return element
-
-    // Handle arrays
-    if (Array.isArray(element)) {
-      return element.map((child) => replaceFillColor(child, oldColor, newColor))
-    }
-
-    if (React.isValidElement(element)) {
-      const props = element.props || {}
-      const newProps: any = { ...props }
-
-      // Normalize color for comparison (handle both #C1C1C1 and C1C1C1)
-      const normalizeColor = (color: string) => {
-        if (!color || typeof color !== 'string') return color
-        return color.startsWith('#') ? color.toUpperCase() : `#${color.toUpperCase()}`
-      }
-
-      // Replace fill color if it matches (case-insensitive)
-      const elementFill = normalizeColor(props.fill)
-      const targetColor = normalizeColor(oldColor)
-      
-      if (elementFill === targetColor) {
-        newProps.fill = newColor
-      }
-
-      // Also check style prop for fill color
-      if (props.style) {
-        const style = Array.isArray(props.style) 
-          ? Object.assign({}, ...props.style) 
-          : props.style
-        
-        if (style.fill) {
-          const styleFill = normalizeColor(style.fill)
-          if (styleFill === targetColor) {
-            newProps.style = {
-              ...style,
-              fill: newColor,
-            }
-          }
-        }
-      }
-
-      // Recursively process children
-      if (props.children) {
-        const children = React.Children.map(props.children, (child) =>
-          replaceFillColor(child, oldColor, newColor)
-        )
-        newProps.children = children
-      }
-
-      return React.cloneElement(element, newProps)
-    }
-
-    return element
-  }
-
-  // Helper to recursively override fill props in SVG children
-  const overrideFillColor = (element: any, targetColor: string, newColor: string): any => {
-    if (!element) return element
-
-    // Handle arrays
-    if (Array.isArray(element)) {
-      return element.map((child) => overrideFillColor(child, targetColor, newColor))
-    }
-
-    if (React.isValidElement(element)) {
-      const props = element.props || {}
-      const newProps: any = { ...props }
-
-      // Normalize color for comparison (but preserve placeholders like SKIN_SHADOW_COLOR)
-      const normalizeColor = (color: string) => {
-        if (!color || typeof color !== 'string') return color
-        // If it's a placeholder (not a hex color), return as-is
-        if (!color.startsWith('#') && !/^[0-9A-Fa-f]{6}$/.test(color)) {
-          return color
-        }
-        return color.startsWith('#') ? color.toUpperCase() : `#${color.toUpperCase()}`
-      }
-
-      // Check if this element has the target fill color
-      const elementFill = props.fill ? normalizeColor(props.fill) : null
-      const normalizedTarget = normalizeColor(targetColor)
-      
-      if (elementFill === normalizedTarget) {
-        newProps.fill = newColor
-      }
-
-      // Also check style prop
-      if (props.style) {
-        const style = Array.isArray(props.style) 
-          ? Object.assign({}, ...props.style) 
-          : props.style
-        
-        if (style.fill) {
-          const styleFill = normalizeColor(style.fill)
-          if (styleFill === normalizedTarget) {
-            newProps.style = {
-              ...style,
-              fill: newColor,
-            }
-          }
-        }
-      }
-
-      // Recursively process children
-      if (props.children) {
-        const children = React.Children.map(props.children, (child) =>
-          overrideFillColor(child, targetColor, newColor)
-        )
-        newProps.children = children
-      }
-
-      return React.cloneElement(element, newProps)
-    }
-
-    return element
-  }
-
-  // Helper to render SVG component safely with color replacement for body
-  const renderBodySvg = (SvgComponent: SvgComponent | null, props: any, darkerColor: string) => {
-    if (!SvgComponent || !isValidComponent(SvgComponent)) {
+  // Helper to render body SVG with colors applied via props
+  const renderBodySvg = React.useCallback((props: any) => {
+    if (!BodyComponent) {
       return null
     }
     
-    // Render the SVG first
-    const svgElement = <SvgComponent {...props} />
+    // Calculate darker color if skin color is provided
+    const darkerColor = skinColor ? getDarkerSkinColor(skinColor) : '#C1C1C1'
+    const mainColor = skinColor || '#EFEFEF'
     
-    // Replace the marker color #C1C1C0 with the darker skin color
-    // We replaced #C1C1C1 with #C1C1C0 in the SVG files as a marker
-    // This marker color will be replaced with the calculated darker skin color
-    return overrideFillColor(svgElement, '#C1C1C0', darkerColor)
-  }
+    // Render body component with color props
+    return (
+      <BodyComponent
+        width={props.width}
+        height={props.height}
+        mainColor={mainColor}
+        darkerColor={darkerColor}
+      />
+    )
+  }, [BodyComponent, skinColor])
 
   // Helper to render SVG component safely
   const renderSvg = (SvgComponent: SvgComponent | null, props: any) => {
@@ -217,52 +139,85 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
   return (
     <View style={[styles.container, { width, height }, style]}>
       {/* Body layer with skin color */}
-      {BodySvg && isValidComponent(BodySvg) && (
+      {BodyComponent && (
         <View style={[styles.layer, styles.bodyLayer]}>
-          {/* Body SVG component - apply skin color as fill, darker color for shadows */}
-          {renderBodySvg(BodySvg, { 
-            width, 
-            height, 
-            color: skinColor,
-            fill: skinColor 
-          }, darkerSkinColor)}
+          {/* Body component with color props */}
+          {renderBodySvg({ width, height })}
         </View>
       )}
 
       {/* Hair layer with color */}
-      {HairSvg && isValidComponent(HairSvg) && (
+      {HairSvg && isValidComponent(HairSvg) && hairColor && (
         <View style={[styles.layer, styles.hairLayer]}>
           {renderSvg(HairSvg, { width, height, color: hairColor, fill: hairColor })}
         </View>
       )}
+      {/* Hair layer without color (if hair selected but no color) */}
+      {HairSvg && isValidComponent(HairSvg) && !hairColor && (
+        <View style={[styles.layer, styles.hairLayer]}>
+          {renderSvg(HairSvg, { width, height })}
+        </View>
+      )}
 
-      {/* Smile layer */}
-      {SmileSvg && isValidComponent(SmileSvg) && (
+      {/* Smile layer - always show if smile is provided (defaults to 'smile') */}
+      {smile && SmileSvg && isValidComponent(SmileSvg) && (
         <View style={[styles.layer, styles.smileLayer]}>
           {renderSvg(SmileSvg, { width, height })}
         </View>
       )}
 
       {/* Eyes layer with color */}
-      {EyeSvg && isValidComponent(EyeSvg) && (
+      {EyeSvg && isValidComponent(EyeSvg) && eyeColor && (
         <View style={[styles.layer, styles.eyeLayer]}>
           {renderSvg(EyeSvg, { width, height, color: eyeColor, fill: eyeColor })}
         </View>
       )}
+      {/* Eyes layer without color (if eyes selected but no color) */}
+      {EyeSvg && isValidComponent(EyeSvg) && !eyeColor && (
+        <View style={[styles.layer, styles.eyeLayer]}>
+          {renderSvg(EyeSvg, { width, height })}
+        </View>
+      )}
 
-      {/* Clothing layer */}
-      {ClothingSvg && isValidComponent(ClothingSvg) && (
+      {/* Clothing layer - render before devices if prosthetic, after if not */}
+      {ClothingSvg && isValidComponent(ClothingSvg) && !isProstheticDevice && (
         <View style={[styles.layer, styles.clothingLayer]}>
           {renderSvg(ClothingSvg, { width, height })}
         </View>
       )}
 
-      {/* Devices layer */}
-      {DeviceSvg && isValidComponent(DeviceSvg) && (
-        <View style={[styles.layer, styles.deviceLayer]}>
-          {renderSvg(DeviceSvg, { width, height })}
+      {/* Non-accessory devices layer - render before clothing if prosthetic, after if not */}
+      {NonAccessoryDeviceSvgs.map(({ device, svg }) => {
+        if (!svg || !isValidComponent(svg)) return null
+        return (
+          <View 
+            key={device} 
+            style={[styles.layer, isProstheticDevice ? styles.deviceLayerProsthetic : styles.deviceLayer]}
+          >
+            {renderSvg(svg, { width, height })}
+          </View>
+        )
+      })}
+
+      {/* Clothing layer - render after devices if prosthetic */}
+      {ClothingSvg && isValidComponent(ClothingSvg) && isProstheticDevice && (
+        <View style={[styles.layer, styles.clothingLayerProsthetic]}>
+          {renderSvg(ClothingSvg, { width, height })}
         </View>
       )}
+
+      {/* Accessories layer - render on top of clothing (highest z-index) */}
+      {AccessorySvgs.map(({ device, svg }) => {
+        if (!svg || !isValidComponent(svg)) return null
+        return (
+          <View 
+            key={device} 
+            style={[styles.layer, styles.accessoryLayer]}
+          >
+            {renderSvg(svg, { width, height })}
+          </View>
+        )
+      })}
     </View>
   )
 }
@@ -301,5 +256,15 @@ const styles = StyleSheet.create({
   },
   deviceLayer: {
     zIndex: 6,
+  },
+  // For prosthetic devices: devices render before clothing
+  deviceLayerProsthetic: {
+    zIndex: 5,
+  },
+  clothingLayerProsthetic: {
+    zIndex: 6,
+  },
+  accessoryLayer: {
+    zIndex: 7, // Highest z-index to render on top of clothing
   },
 })

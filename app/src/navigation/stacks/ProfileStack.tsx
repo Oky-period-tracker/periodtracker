@@ -10,7 +10,7 @@ export type ProfileStackParamList = {
   Profile: undefined
   EditProfile: undefined
   Avatar: undefined
-  CustomAvatar: undefined
+  CustomAvatar: { openNameModal?: boolean } | undefined
   Theme: undefined
 }
 
@@ -26,15 +26,15 @@ const config: StackConfig<keyof ProfileStackParamList> = {
       component: EditProfileScreen,
     },
     Avatar: {
-      title: 'select_avatar',
+      title: 'choose_avatar',
       component: AvatarScreen,
     },
     CustomAvatar: {
-      title: 'create_friend',
+      title: 'customizer_title',
       component: CustomAvatarScreen,
     },
     Theme: {
-      title: 'select_theme',
+      title: 'select_theme_title',
       component: ThemeScreen,
     },
   },

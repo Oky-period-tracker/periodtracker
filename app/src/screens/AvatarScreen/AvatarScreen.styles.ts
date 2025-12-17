@@ -1,12 +1,17 @@
 import { StyleSheet } from 'react-native'
 import { UIConfig } from '../../config/UIConfig'
 import { globalStyles } from '../../config/theme'
+import { scaleHorizontal, scaleVertical } from '../../utils/responsive'
+import { getResponsiveMargin } from '../../utils/layoutCalculations'
 
 export const createAvatarScreenStyles = (
   avatarConfig: UIConfig['avatarSelection'],
   avatarWidth: number,
   hasGoBack: boolean,
-  isInitialSelection: boolean
+  isInitialSelection: boolean,
+  reminderMaxWidth: number,
+  screenWidth: number,
+  hasHeader: boolean = false
 ) =>
   StyleSheet.create({
     screen: {
@@ -20,18 +25,41 @@ export const createAvatarScreenStyles = (
       opacity: 1,
     },
     scrollView: {
-      flex: 1,
     },
     scrollContent: {
-      paddingHorizontal: avatarConfig.screenPaddingHorizontal,
-      paddingTop: avatarConfig.paddingTop,
-      paddingBottom: avatarConfig.buttonPaddingTop + 60, // Extra space to ensure button is visible
+      // Reduce top padding when header is shown (header already provides spacing)
+      paddingTop: hasHeader ? 16 : avatarConfig.paddingTop,
+      paddingBottom: avatarConfig.buttonPaddingTop + avatarConfig.buttonPaddingBottom,
+    },
+    // Three separate containers, each with same width percentage
+    // Max width constraint for large tablets (prevents content from becoming too wide)
+    topMessageContainer: {
+      width: `${avatarConfig.contentContainerWidthPercent}%`,
+      maxWidth: 1200, // Cap at 1200px for large tablets
+      alignSelf: 'center',
+      marginBottom: 20,
+    },
+    avatarsContainer: {
+      width: `${avatarConfig.avatarsContainerWidthPercent}%`,
+      maxWidth: 1200, // Cap at 1200px for large tablets
+      alignSelf: 'center',
+      marginBottom: 20,
+    },
+    reminderContainer: {
+      width: `${avatarConfig.contentContainerWidthPercent}%`,
+      maxWidth: 1200, // Cap at 1200px for large tablets
+      alignSelf: 'center',
+      marginBottom: 20,
     },
     titleContainer: {
       flexDirection: 'row',
       alignItems: 'flex-end',
-      marginBottom: 20,
-      paddingHorizontal: avatarConfig.titlePaddingHorizontal,
+      width: '100%',
+    },
+    titleSpacer: {
+      width: '20%',
+      justifyContent: 'flex-end',
+      alignItems: 'flex-start',
     },
     logo: {
       width: 50,
@@ -41,6 +69,7 @@ export const createAvatarScreenStyles = (
     },
     titleBox: {
       ...globalStyles.selectionTitleBox,
+      width: '80%',
       ...globalStyles.shadow,
       ...globalStyles.elevation,
     },
@@ -63,18 +92,41 @@ export const createAvatarScreenStyles = (
     },
     avatars: {
       flexDirection: 'row',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       alignItems: 'center',
       flexWrap: 'wrap',
-      marginBottom: 20,
-      paddingHorizontal: avatarConfig.itemsContainerPaddingHorizontal,
       width: '100%',
     },
     avatar: {
       height: avatarConfig.avatarSize.height,
-      marginLeft: 0,
-      marginRight: 0,
-      marginVertical: avatarConfig.avatarMarginVertical,
+      marginHorizontal: getResponsiveMargin(screenWidth, {
+        xs: 3,
+        sm: 3,
+        md: 3,
+        lg: avatarConfig.avatarMarginHorizontal || 4,
+        xl: 2,
+      }),
+      marginVertical: (() => {
+        if (screenWidth <= 360) {
+          return scaleVertical(10)
+        } else if (screenWidth > 360 && screenWidth <= 392) {
+          return scaleVertical(10)
+        } else if (screenWidth > 392 && screenWidth <= 411) {
+          return scaleVertical(10)
+        } else if (screenWidth > 411 && screenWidth <= 480) {
+          return scaleVertical(10)
+        } else if (screenWidth > 480 && screenWidth <= 600) {
+          return Math.max(24, avatarConfig.avatarMarginVertical * 1.5)
+        } else if (screenWidth > 600 && screenWidth <= 720) {
+          return Math.max(30, avatarConfig.avatarMarginVertical * 1.6)
+        } else if (screenWidth > 720 && screenWidth <= 840) {
+          return Math.max(32, avatarConfig.avatarMarginVertical * 1.8)
+        } else if (screenWidth > 840 && screenWidth <= 1200) {
+          return Math.max(26, avatarConfig.avatarMarginVertical * 2.0)
+        } else {
+          return Math.max(30, avatarConfig.avatarMarginVertical * 2.2)
+        }
+      })(),
     },
     avatarBody: {
       borderWidth: 0,
@@ -108,9 +160,9 @@ export const createAvatarScreenStyles = (
       height: avatarConfig.iconSize * 2,
       justifyContent: 'center',
       alignItems: 'center',
-      // Position icon half in, half out - offset by half icon size
-      right: avatarConfig.iconSize * 0.5,
-      top: avatarConfig.iconSize * 0.5,
+      // Push icon further out for this layout
+      right: -avatarConfig.iconSize * 0.2,
+      top: -avatarConfig.iconSize * 0.2,
     },
     editIconContainer: {
       position: 'absolute',
@@ -121,16 +173,42 @@ export const createAvatarScreenStyles = (
       justifyContent: 'center',
       alignItems: 'center',
       zIndex: 10,
-      // Position icon half in, half out - offset by half icon size
-      right: avatarConfig.iconSize * 0.5,
-      top: avatarConfig.iconSize * 0.5,
+      // Push icon further out for this layout
+      right: -avatarConfig.iconSize * 0.2,
+      top: -avatarConfig.iconSize * 0.2,
+    },
+    pendingIconContainer: {
+      position: 'absolute',
+      backgroundColor: '#FF8C00',
+      borderRadius: (avatarConfig.iconSize * 2) / 2,
+      width: avatarConfig.iconSize * 2,
+      height: avatarConfig.iconSize * 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 10,
+      // Push icon further out for this layout
+      right: -avatarConfig.iconSize * 0.2,
+      top: -avatarConfig.iconSize * 0.2,
+    },
+    grayIconContainer: {
+      position: 'absolute',
+      backgroundColor: '#D1D0D2',
+      borderRadius: (avatarConfig.iconSize * 2) / 2,
+      width: avatarConfig.iconSize * 2,
+      height: avatarConfig.iconSize * 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 10,
+      // Push icon further out for this layout
+      right: -avatarConfig.iconSize * 0.2,
+      top: -avatarConfig.iconSize * 0.2,
     },
     avatarImage: {
       width: '100%',
-      height: '88%',
+      height: '100%',
       alignSelf: 'center',
-      marginTop: 10,
-      aspectRatio: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
       borderRadius: avatarConfig.avatarBorderRadius,
       overflow: 'visible',
       position: 'relative',
@@ -139,18 +217,11 @@ export const createAvatarScreenStyles = (
       width: '100%',
       height: '100%',
       alignSelf: 'center',
-      marginTop: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
       borderRadius: avatarConfig.avatarBorderRadius,
       overflow: 'visible',
       position: 'relative',
-    },
-    friendAvatarContainer: {
-      width: '100%',
-      height: '100%',
-      position: 'relative',
-      alignItems: 'center',
-      justifyContent: 'center',
-      overflow: 'visible',
     },
     avatarPreviewContainer: {
       position: 'absolute',
@@ -161,58 +232,53 @@ export const createAvatarScreenStyles = (
       overflow: 'hidden',
       alignItems: 'center',
       justifyContent: 'flex-end',
-      paddingBottom: 0,
+      marginTop: screenWidth > 720 ? 6 : screenWidth > 600 && screenWidth <= 720 ? 5 : 0,
     },
     avatarPreview: {
       position: 'absolute',
-      bottom: -(avatarConfig.avatarSize.height * 0.7),
       alignSelf: 'center',
+      transform: [{ translateX: -3 }],
     },
-    // Outer container for green border (when selected/active)
-    avatarOuterContainer: {
-      width: '100%',
-      height: '100%',
-      position: 'relative',
+    // White container (sized to be border around image)
+    avatarWhiteContainer: {
+      backgroundColor: '#FFFFFF',
       borderRadius: avatarConfig.avatarBorderRadius,
-      padding: 2, // Space for green border
-    },
-    // Inner container for white border
-    avatarInnerContainer: {
-      width: '100%',
-      height: '100%',
-      borderRadius: avatarConfig.avatarBorderRadius,
-      borderWidth: 2,
-      borderColor: '#FFFFFF',
-      overflow: 'hidden',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    // Green border wrapper (only when selected/active)
-    avatarGreenBorder: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      borderRadius: avatarConfig.avatarBorderRadius,
+      // Green border when selected/active
       borderWidth: 2,
       borderColor: '#A4D233',
-      pointerEvents: 'none',
+    },
+    // White container without green border (default state)
+    avatarWhiteContainerDefault: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: avatarConfig.avatarBorderRadius,
+      borderWidth: 1,
+      borderColor: '#EFEFEF', // Light gray border
     },
     standardAvatarSvgContainer: {
-      width: '100%',
-      height: '100%',
       justifyContent: 'center',
       alignItems: 'center',
     },
     friendAvatarContainer: {
-      width: '100%',
-      height: '100%',
       position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'visible',
     },
     name: {
       position: 'absolute',
-      top: 20,
+      top: screenWidth <= 360
+        ? -5
+        : screenWidth > 360 && screenWidth <= 392
+        ? 8  // Pushed to bottom more for 392dp
+        : screenWidth > 392 && screenWidth <= 411
+        ? 2
+        : screenWidth > 411 && screenWidth <= 480
+        ? -7
+        : screenWidth > 480 && screenWidth <= 600
+        ? -7
+        : screenWidth > 600 && screenWidth <= 720
+        ? -8
+        : -9,
       left: 0,
       width: '100%',
       fontFamily: 'Roboto',
@@ -222,6 +288,7 @@ export const createAvatarScreenStyles = (
       fontSize: 14,
       lineHeight: 20,
       letterSpacing: 0,
+      zIndex: 20,
     },
     lockedAvatar: {
       opacity: 0.6,
@@ -237,13 +304,19 @@ export const createAvatarScreenStyles = (
       backgroundColor: 'rgba(0, 0, 0, 0.3)',
       borderRadius: avatarConfig.avatarBorderRadius,
     },
+    reminderInnerContainer: {
+      flexDirection: 'row',
+      width: '100%',
+    },
+    reminderSpacer: {
+      width: '20%',
+    },
     reminderBox: {
       flexDirection: 'row',
       ...globalStyles.messageBox,
       borderTopLeftRadius: 0,
-      marginBottom: 20,
-      marginHorizontal: 12,
       alignItems: 'flex-start',
+      width: '80%',
       ...globalStyles.shadow,
       ...globalStyles.elevation,
     },
@@ -274,4 +347,33 @@ export const createAvatarScreenStyles = (
       gap: 12,
     },
   })
+
+export const getAvatarStyle = (avatarWidth: number, screenWidth: number) => ({
+  width: avatarWidth,
+  maxWidth: screenWidth <= 360 ? undefined : (screenWidth <= 480 ? scaleHorizontal(115) : scaleHorizontal(120)),
+})
+
+export const getAvatarBodyStyle = () => ({
+  backgroundColor: 'transparent',
+})
+
+export const getFriendWhiteContainerStyle = (width: number, height: number) => ({
+  width,
+  height,
+  position: 'absolute' as const,
+  alignSelf: 'center' as const,
+})
+
+export const getFriendAvatarContainerStyle = () => ({
+  zIndex: 1,
+})
+
+export const getAvatarPreviewStyle = (imageHeight: number) => ({
+  bottom: -(imageHeight * 0.7),
+})
+
+export const getCheckIconStyle = (borderWidth: number, iconSize: number, iconOffset: number) => ({
+  right: (borderWidth / 2) - iconSize + iconOffset,
+  top: (borderWidth / 2) - iconSize + iconOffset,
+})
 

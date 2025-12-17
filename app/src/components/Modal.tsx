@@ -27,6 +27,7 @@ export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) =
   const { modalBackdropColor } = useColor()
   const { width, height } = useScreenDimensions()
   const maxWidth = Math.min(width, 800)
+  const minWidth = Math.min(width * 0.85, 600) // Ensure modal has reasonable minimum width
   const maxHeight = height * 0.85 // Increased to 85% to allow more content
 
   return (
@@ -44,7 +45,7 @@ export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) =
           onPress={toggleVisible}
         />
         <SafeAreaView
-          style={[styles.children, { maxWidth, maxHeight }, style]}
+          style={[styles.children, { maxWidth, minWidth, maxHeight }, style]}
           pointerEvents="box-none"
         >
           <ModalCloseButton onPress={toggleVisible} />
@@ -60,9 +61,13 @@ export const ModalCloseButton = (props: ButtonProps) => {
   const label = getAccessibilityLabel('close')
 
   return (
-    <Button style={styles.closeButton} status={'basic'} {...props}>
-      <FontAwesome name="close" size={24} color="white" accessibilityLabel={label} />
-    </Button>
+    <TouchableOpacity
+      style={[styles.closeButton, { backgroundColor: '#A4D233' }]}
+      onPress={props.onPress}
+      accessibilityLabel={label}
+    >
+      <FontAwesome name="close" size={18} color="#FFFFFF" />
+    </TouchableOpacity>
   )
 }
 
@@ -88,6 +93,9 @@ const styles = StyleSheet.create({
     right: 16,
     width: 32,
     height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 9999,
   },
 })

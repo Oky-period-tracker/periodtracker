@@ -28,6 +28,7 @@ import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
 import { calculateCycles } from '../../utils/cycleCalculator'
+import { analytics } from '../../services/firebase'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -68,7 +69,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     if (!currentUser) return false
     const cyclesNumber = currentUser.cyclesNumber || 0
     const avatar = currentUser.avatar
-    // Show modal if cycles >= 3 and avatar is null or customAvatarUnlocked is false
+
     return (
       cyclesNumber >= 3 &&
       (avatar === null || avatar === undefined || avatar.customAvatarUnlocked === false)
@@ -127,16 +128,12 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   const goToCalendar = () => navigation.navigate('Calendar')
   const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
-    
-    // Generate latest ML-based predictions
     const predictedPeriodDates = generatePeriodDates(predictionFullState)
 
-    // Get the existing periodDates from user metadata
     let updatedPeriodDates = currentUser.metadata?.periodDates
       ? [...currentUser.metadata.periodDates]
       : []
 
-    // Step 1: Ensure all ML-generated dates are included
     const mlDatesToAdd = predictedPeriodDates
       .filter((entry) => !updatedPeriodDates.some((u) => u.date === entry.date))
       .map((entry) => ({
@@ -146,10 +143,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       }))
     updatedPeriodDates = [...updatedPeriodDates, ...mlDatesToAdd]
 
-    // Step 2: Check if the selected date is ML-predicted
     const isMlPredicted = predictedPeriodDates.some((entry) => entry.date === periodDate)
-
-    // Step 3: Find if the selected date exists in the array
     const existingDateIndex = updatedPeriodDates.findIndex((entry) => entry.date === periodDate)
 
     let shouldRecalculateCycles = false
@@ -164,7 +158,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           updatedPeriodDates[existingDateIndex] = {
             ...existingEntry,
             userVerified: true,
-            mlGenerated: false, // Set to false when user manually verifies
+            mlGenerated: false,
           }
           shouldRecalculateCycles = true
         }
@@ -191,9 +185,9 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       }
     }
 
+    updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
     try {
-      // Update period dates
       await updateUserVerifiedDates({
         metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
       })
@@ -202,29 +196,24 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
         metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
       })
 
-      // Recalculate cycles if needed
       if (shouldRecalculateCycles) {
         await updateCycleCount(updatedPeriodDates)
-      } else {
       }
     } catch (error) {
-      console.error('Error updating period dates:', error)
+      // Error handling
     }
   }
 
   const updateCycleCount = async (updatedPeriodDates: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]) => {
-    
     try {
-      // Calculate new cycles number
-      const cycleResult = calculateCycles({
+      const metadataForCalculation = {
         ...currentUser.metadata,
         periodDates: updatedPeriodDates
-      })
+      }
+      
+      const cycleResult = calculateCycles(metadataForCalculation)
 
-      // Only update if cycles number changed
       if (cycleResult.cyclesNumber !== (currentUser.cyclesNumber || 0)) {
-        
-        // Update backend
         if (appToken) {
           await httpClient.updateCyclesNumber({
             appToken,
@@ -232,50 +221,49 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           })
         }
 
-        // Update local Redux state
         editUserReduxState({
           cyclesNumber: cycleResult.cyclesNumber,
         })
-      } else {
+
+        analytics?.().logEvent('CYCLES_NUMBER_UPDATE', {
+          userId: currentUser?.id || null,
+          previousCyclesNumber: currentUser.cyclesNumber || 0,
+          newCyclesNumber: cycleResult.cyclesNumber,
+        })
       }
     } catch (error) {
-      console.error('Error updating cycle count:', error)
+      // Error handling
     }
   }
 
   const handleCreateFriend = async () => {
-    // Navigate to custom avatar screen
-    navigation.navigate('CustomAvatar')
+    if (!currentUser) return
+
+    // Only update customAvatarUnlocked = true, preserve existing avatar data
+    const updatedAvatar = { customAvatarUnlocked: true };
     
-    // Update avatar to set customAvatarUnlocked to true
-    if (appToken && currentUser) {
-      try {
-        const updatedAvatar = currentUser.avatar
-          ? {
-              ...currentUser.avatar,
-              customAvatarUnlocked: true,
-            }
-          : {
-              body: null,
-              hair: null,
-              eyes: null,
-              clothing: null,
-              devices: null,
-              customAvatarUnlocked: true,
-            }
-        
-        await httpClient.updateAvatar({
-          appToken,
-          avatar: updatedAvatar,
-        })
-        
-        // Update Redux state
-        editUserReduxState({
-          avatar: updatedAvatar,
-        })
-      } catch (error) {
-        console.error('Error updating avatar:', error)
-      }
+    // Save to Redux state immediately (local save)
+    editUserReduxState({
+      avatar: updatedAvatar,
+    })
+
+    // Navigate to custom avatar screen in ProfileStack
+    // Since MainScreen is in HomeStack, we need to navigate to the profile tab first
+    const parentNavigation = navigation.getParent()
+    if (parentNavigation) {
+      parentNavigation.navigate('profile', { screen: 'CustomAvatar' })
+    } else {
+      // Fallback: try direct navigation (shouldn't happen but just in case)
+      navigation.navigate('CustomAvatar' as any)
+    }
+    
+    // Sync with server in the background - ONLY send customAvatarUnlocked
+    if (appToken) {
+      httpClient.updateAvatar({
+        appToken,
+        avatar: { customAvatarUnlocked: true },
+      }).catch((error) => {
+      })
     }
   }
   
@@ -284,10 +272,12 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       <View style={styles.screen}>
         <View style={styles.body} onLayout={onBodyLayout}>
           <View style={styles.topLeft} onLayout={onTopLeftLayout}>
+            <View style={styles.circleProgressContainer}>
             <CircleProgress onPress={goToCalendar} style={circleProgressHidden && styles.hidden} />
             <TouchableOpacity onPress={goToCalendar} style={circleProgressHidden && styles.hidden}>
               <Text>calendar</Text>
             </TouchableOpacity>
+            </View>
             <Avatar style={avatarHidden && styles.hidden} />
           </View>
 
@@ -332,6 +322,9 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 export default MainScreen
 
 const styles = StyleSheet.create({
+  circleProgressContainer: {
+    top: 0,
+  },
   screen: {
     flex: 1,
     justifyContent: 'center',

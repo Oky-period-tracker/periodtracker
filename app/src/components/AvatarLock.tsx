@@ -5,22 +5,26 @@ import { useResponsive } from '../contexts/ResponsiveContext'
 
 interface AvatarLockProps {
   cyclesNumber: number
+  customAvatarUnlocked?: boolean // If true, all locks are permanently unlocked regardless of cyclesNumber
   style?: any
   showSingleLock?: boolean // New prop to show only 1 lock instead of 3
 }
 
-export const AvatarLock = ({ cyclesNumber, style, showSingleLock = false }: AvatarLockProps) => {
+export const AvatarLock = ({ cyclesNumber, customAvatarUnlocked = false, style, showSingleLock = false }: AvatarLockProps) => {
   const locks = showSingleLock ? [1] : [1, 2, 3] // Show 1 lock for avatar selection, 3 for calendar
   const { UIConfig } = useResponsive()
 
   return (
     <View style={[styles.container, style]}>
       {locks.map((lockNumber) => {
-        // For single lock (avatar selection), check if user has 3+ cycles
+        // If customAvatarUnlocked is true, all locks are permanently unlocked
+        // Otherwise, check cyclesNumber: for single lock (avatar selection), check if user has 3+ cycles
         // For 3 locks (calendar), check if user has reached that specific lock number
-        const isUnlocked = showSingleLock 
-          ? cyclesNumber >= 3 
-          : cyclesNumber >= lockNumber
+        const isUnlocked = customAvatarUnlocked 
+          ? true 
+          : showSingleLock 
+            ? cyclesNumber >= 3 
+            : cyclesNumber >= lockNumber
         
         const iconSource = isUnlocked 
           ? getAsset('icons.unlocked') 

@@ -91,6 +91,7 @@ export default AuthScreen
 const styles = StyleSheet.create({
   screen: {
     paddingHorizontal: 12,
+    justifyContent: 'center',
   },
   wrapper: {
     width: '100%',

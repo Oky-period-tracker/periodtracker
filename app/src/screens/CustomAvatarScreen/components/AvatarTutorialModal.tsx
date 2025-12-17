@@ -5,8 +5,10 @@ import { Button } from '../../../components/Button'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useResponsive } from '../../../contexts/ResponsiveContext'
 import { useColor } from '../../../hooks/useColor'
+import { useTranslate } from '../../../hooks/useTranslate'
 import { createAvatarTutorialModalStyles } from './AvatarTutorialModal.styles'
 import { tutorialSteps, assets } from '../../../resources/assets'
+import { useAccessibilityLabel } from '../../../hooks/useAccessibilityLabel'
 
 // Tutorial step PNG images
 const tutorialStepImages: Record<number, any> = {
@@ -26,6 +28,8 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
   const [currentStep, setCurrentStep] = React.useState(1)
   const { UIConfig, width } = useResponsive()
   const { modalBackdropColor } = useColor()
+  const translate = useTranslate()
+  const getAccessibilityLabel = useAccessibilityLabel()
   const styles = createAvatarTutorialModalStyles(UIConfig.avatarCustomization, width)
   const currentStepRef = React.useRef(currentStep)
 
@@ -89,62 +93,37 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
     switch (currentStep) {
       case 1:
         return {
-          title: "Let's start building your friend!",
-          text: [
-            'Tap the buttons (Body, Hair, Eyes, Clothes, and Devices) to start creating your Oky friend.',
-            'You can jump between buttons anytime and see changes right away!',
-          ],
+          titleKey: 'customizer_tutorial_step1_title',
+          textKey: 'customizer_tutorial_step1_text',
         }
       case 2:
         return {
-          title: 'Pick colors.',
-          text: [
-            'Tap the color circles to change your friend\'s skin, hair, or eye color.',
-            'Use the arrows or swipe left or right to see more options and tap to select color circles for changing skin, hair, or eye colors.',
-          ],
+          titleKey: 'customizer_tutorial_step2_title',
+          textKey: 'customizer_tutorial_step2_text',
         }
       case 3:
         return {
-          title: 'Exploring the options',
-          text: [
-            'Swipe the tiles to the right or left or tap the arrows to see more options.',
-            'Tap the tile you want to select and you can see it in your avatar right away!',
-          ],
+          titleKey: 'customizer_tutorial_step3_title',
+          textKey: 'customizer_tutorial_step3_text',
         }
       case 4:
         return {
-          title: 'Devices.',
-          text: [
-            'Add fun extras to make your Oky friend stand out!',
-            'Select all the accessories you would like to add.',
-          ],
+          titleKey: 'customizer_tutorial_step4_title',
+          textKey: 'customizer_tutorial_step4_text',
         }
       case 5:
         return {
-          title: 'All done?',
-          text: [
-            'Tap "Save your friend" to save your Oky friend.',
-            'Tap Exit if you want to leave. Your progress won\'t be saved, but don\'t worry, you can always come back and change your avatar again later.',
-          ],
+          titleKey: 'customizer_tutorial_step5_title',
+          textKey: 'customizer_tutorial_step5_text',
         }
       default:
-        return { title: '', text: [] }
+        return { titleKey: '', textKey: '' }
     }
   }
 
   const stepContent = getStepContent()
   const tutorialStepImage = React.useMemo(() => {
-    const image = tutorialStepImages[currentStep]
-    if (!image) {
-      console.warn(`Tutorial step image not found for step ${currentStep}`, {
-        currentStep,
-        availableSteps: Object.keys(tutorialStepImages),
-        tutorialSteps,
-      })
-    } else {
-      console.log(`Tutorial step image found for step ${currentStep}`, image)
-    }
-    return image
+    return tutorialStepImages[currentStep]
   }, [currentStep])
 
   return (
@@ -164,11 +143,15 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
         <View style={styles.modal} {...panResponder.panHandlers}>
           {/* Header */}
           <View style={styles.header}>
-            <Button onPress={handleBack} style={styles.backButton}>
+            <Button 
+              onPress={handleBack} 
+              style={styles.backButton}
+              accessibilityLabel={getAccessibilityLabel('arrow_button')}
+            >
               <FontAwesome size={12} name={'arrow-left'} color={'#fff'} />
             </Button>
             <View style={styles.headerTitleContainer}>
-              <Text style={styles.headerTitle}>How to build your friend</Text>
+              <Text style={styles.headerTitle} enableTranslate={true}>customizer_tutorial_title</Text>
             </View>
           </View>
 
@@ -183,12 +166,14 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
 
           {/* Instructions */}
           <View style={styles.instructionsContainer}>
-            <Text style={styles.instructionsTitle}>{stepContent.title}</Text>
-            {stepContent.text.map((line, index) => (
-              <Text key={index} style={styles.instructionsText}>
-                {line}
+            <Text style={styles.instructionsTitle} enableTranslate={true}>
+              {stepContent.titleKey}
+            </Text>
+            {stepContent.textKey && (
+              <Text style={styles.instructionsText} enableTranslate={true}>
+                {stepContent.textKey}
               </Text>
-            ))}
+            )}
           </View>
 
           {/* Progress Dots */}
@@ -206,18 +191,35 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
 
           {/* Navigation Buttons */}
           <View style={styles.navigationContainer}>
-            <TouchableOpacity onPress={handleBack} style={[styles.navButton, styles.navButtonBack]}>
-              <Text style={styles.navButtonTextBack}>Back</Text>
+            <TouchableOpacity 
+              onPress={handleBack} 
+              style={[styles.navButton, styles.navButtonBack]}
+              accessibilityLabel={getAccessibilityLabel('customizer_tutorial_back')}
+              accessibilityRole="button"
+            >
+              <Text style={styles.navButtonTextBack} enableTranslate={true}>
+                customizer_tutorial_back
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleNext} style={[styles.navButton, styles.navButtonNext]}>
-              <Text style={styles.navButtonTextNext}>
-                {currentStep === totalSteps ? 'Finish' : 'Next'}
+            <TouchableOpacity 
+              onPress={handleNext} 
+              style={[styles.navButton, styles.navButtonNext]}
+              accessibilityLabel={getAccessibilityLabel(currentStep === totalSteps ? 'customizer_tutorial_finish' : 'customizer_tutorial_next')}
+              accessibilityRole="button"
+            >
+              <Text style={styles.navButtonTextNext} enableTranslate={true}>
+                {currentStep === totalSteps ? 'customizer_tutorial_finish' : 'customizer_tutorial_next'}
               </Text>
             </TouchableOpacity>
           </View>
 
           {/* Skip Tutorial Link */}
-          <TouchableOpacity onPress={handleSkip} style={styles.skipContainer}>
+          <TouchableOpacity 
+            onPress={handleSkip} 
+            style={styles.skipContainer}
+            accessibilityLabel={getAccessibilityLabel('skip_tutorial_button')}
+            accessibilityRole="button"
+          >
             <Text style={styles.skipText}>Skip tutorial</Text>
           </TouchableOpacity>
         </View>
@@ -225,4 +227,3 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
     </RNModal>
   )
 }
-

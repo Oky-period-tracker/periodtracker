@@ -43,6 +43,12 @@ export interface AppTranslations {
   correct: string
   profile: string
   profile_edit: string
+  profile_title: string
+  profile_subtitle: string
+  track_regularly_cycle_updates: string
+  change_oky_friend: string
+  change_the_name: string
+  change_background: string
   password: string
   confirm_password: string
   secret_question: string
@@ -95,12 +101,132 @@ export interface AppTranslations {
   avatar_amp_themes_login: string
   select_avatar_title: string
   select_avatar_subtitle: string
+  choose_avatar: string
+  select_avatar_title_unlocked: string
+  select_avatar_subtitle_unlocked: string
   select_avatar_reminder_locked: string
   select_avatar_reminder_unlocked_not_created: string
   select_avatar_reminder_unlocked_created: string
+  avatar_message_enter_period_days: string
+  avatar_message_keep_entering_period_days: string
+  friend_unlock_modal_title: string
+  friend_unlock_modal_button: string
+  friend_unlock_celebration_image: string
   select_theme_title: string
   select_theme_subtitle: string
+  customizer_title: string
+  customizer_subtitle: string
+  customizer_tutorial: string
+  customizer_first_visit_tooltip: string
+  customizer_skin: string
+  customizer_body: string
+  customizer_hair: string
+  customizer_hair_color: string
+  customizer_hairstyle: string
+  customizer_eyes: string
+  customizer_eye_color: string
+  customizer_eye_shape: string
+  customizer_clothes: string
+  customizer_personal_items: string
+  customizer_exit: string
+  customizer_save_friend: string
+  customizer_tutorial_title: string
+  customizer_tutorial_back: string
+  customizer_tutorial_next: string
+  customizer_tutorial_finish: string
+  customizer_tutorial_step1_title: string
+  customizer_tutorial_step1_text: string
+  customizer_tutorial_step2_title: string
+  customizer_tutorial_step2_text: string
+  customizer_tutorial_step3_title: string
+  customizer_tutorial_step3_text: string
+  customizer_tutorial_step4_title: string
+  customizer_tutorial_step4_text: string
+  customizer_tutorial_step5_title: string
+  customizer_tutorial_step5_text: string
   go_back: string
+  // Clothing item translations
+  customizer_clothing_dress1: string
+  customizer_clothing_dress2: string
+  customizer_clothing_dress3: string
+  customizer_clothing_longdressbelt: string
+  customizer_clothing_shortandshirt1: string
+  customizer_clothing_shortandshirt2: string
+  customizer_clothing_shortandshirt3: string
+  customizer_clothing_skirtandshirt: string
+  customizer_clothing_shirtandpants: string
+  customizer_clothing_blazer1: string
+  customizer_clothing_blazer2: string
+  customizer_clothing_jumper: string
+  customizer_clothing_cape: string
+  customizer_clothing_hijab: string
+  customizer_clothing_longuniform: string
+  customizer_clothing_traditional1: string
+  customizer_clothing_traditional2: string
+  customizer_clothing_traditional3: string
+  customizer_clothing_traditional4: string
+  customizer_clothing_traditional5: string
+  // Personal item (device) translations
+  customizer_device_glasses: string
+  customizer_device_readingglasses2: string
+  customizer_device_darkglasses: string
+  customizer_device_sunglass1: string
+  customizer_device_sunglass2: string
+  customizer_device_crown: string
+  customizer_device_hat: string
+  customizer_device_beanie: string
+  customizer_device_beanie2: string
+  customizer_device_buckethat: string
+  customizer_device_cap: string
+  customizer_device_sunhat: string
+  customizer_device_headband: string
+  customizer_device_head: string
+  customizer_device_flowers: string
+  customizer_device_bandana: string
+  customizer_device_headphones: string
+  customizer_device_necklace1: string
+  customizer_device_necklace2: string
+  customizer_device_necklace3: string
+  customizer_device_earings: string
+  customizer_device_purse: string
+  customizer_device_cane: string
+  customizer_device_prostetic1: string
+  customizer_device_prostetic2: string
+  // Skin color translations
+  customizer_skin_color_light_pink: string
+  customizer_skin_color_peach: string
+  customizer_skin_color_beige: string
+  customizer_skin_color_tan: string
+  customizer_skin_color_dark_brown: string
+  customizer_skin_color_light_tan: string
+  customizer_skin_color_medium_brown: string
+  customizer_skin_color_cream: string
+  customizer_skin_color_bronze: string
+  customizer_skin_color_ivory: string
+  customizer_skin_color_sand: string
+  customizer_skin_color_caramel: string
+  customizer_skin_color_unknown: string
+  // Hair color translations
+  customizer_hair_color_black: string
+  customizer_hair_color_brown: string
+  customizer_hair_color_red: string
+  customizer_hair_color_blonde: string
+  customizer_hair_color_green: string
+  customizer_hair_color_pink: string
+  customizer_hair_color_orange: string
+  customizer_hair_color_purple: string
+  customizer_hair_color_dark_brown: string
+  customizer_hair_color_bright_orange: string
+  customizer_hair_color_blue: string
+  customizer_hair_color_unknown: string
+  // Eye color translations
+  customizer_eye_color_black: string
+  customizer_eye_color_brown: string
+  customizer_eye_color_hazel: string
+  customizer_eye_color_green: string
+  customizer_eye_color_blue: string
+  customizer_eye_color_gray: string
+  customizer_eye_color_unknown: string
 
   // ------------------------- Onboard ----------------------------
   calendar_onboard: string
@@ -328,6 +454,24 @@ export interface AppTranslations {
   arrow_button: string
   // main page text
   avatar: string
+  // Accessibility labels
+  select_avatar_button: string
+  select_theme_button: string
+  select_color_button: string
+  select_option_button: string
+  select_category_button: string
+  previous_page_button: string
+  next_page_button: string
+  close_tooltip_button: string
+  tutorial_button: string
+  skip_tutorial_button: string
+  name_input: string
+  skip_name_button: string
+  save_and_continue_button: string
+  avatar_naming_modal_title: string
+  avatar_naming_modal_placeholder: string
+  avatar_naming_modal_hint: string
+  characters: string
   // prediction change
   videos: string
   internet_required_title: string

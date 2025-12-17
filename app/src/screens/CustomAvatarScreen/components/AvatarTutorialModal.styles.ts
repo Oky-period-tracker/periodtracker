@@ -50,7 +50,7 @@ export const createAvatarTutorialModalStyles = (
       paddingHorizontal: screenWidth >= 840 ? 24 : 20,
     },
     instructionsTitle: {
-      fontSize: screenWidth >= 840 ? 18 : 16,
+      fontSize: screenWidth >= 840 ? 22 : 20,
       fontWeight: '700',
       color: '#000000',
       marginBottom: screenWidth >= 840 ? 12 : 10,
@@ -124,4 +124,3 @@ export const createAvatarTutorialModalStyles = (
       textDecorationLine: 'underline',
     },
   })
-

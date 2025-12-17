@@ -1,12 +1,16 @@
 import { StyleSheet } from 'react-native'
 import { UIConfig } from '../../config/UIConfig'
 import { globalStyles } from '../../config/theme'
+import { getResponsiveMargin } from '../../utils/layoutCalculations'
+import { scaleHorizontal } from '../../utils/responsive'
 
 export const createThemeScreenStyles = (
   themeConfig: UIConfig['themeSelection'],
   themeWidth: number,
   isInitialSelection: boolean,
-  hasGoBack: boolean
+  hasGoBack: boolean,
+  hasHeader: boolean = false,
+  screenWidth?: number
 ) =>
   StyleSheet.create({
     screen: {
@@ -21,17 +25,37 @@ export const createThemeScreenStyles = (
     },
     scrollView: {
       flex: 1,
+      width: '100%',
+      maxWidth: 1200, // Cap at 1200px for large tablets
+      alignSelf: 'center',
     },
     scrollContent: {
       paddingHorizontal: themeConfig.screenPaddingHorizontal,
-      paddingTop: themeConfig.paddingTop,
-      paddingBottom: themeConfig.buttonPaddingTop + 60, // Extra space to ensure button is visible
+      // Reduce top padding when header is shown (header already provides spacing)
+      paddingTop: hasHeader ? 16 : themeConfig.paddingTop,
+      // Reduce bottom padding when header is shown (remove extra 80px)
+      paddingBottom: hasHeader 
+        ? themeConfig.buttonPaddingTop + themeConfig.buttonPaddingBottom 
+        : themeConfig.buttonPaddingTop + themeConfig.buttonPaddingBottom + 80,
+      width: '100%',
+    },
+    // Title container wrapper - matches avatar screen structure
+    // Use same percentage as avatar screen for consistency
+    titleContainerWrapper: {
+      width: '92%', // Matches avatar screen contentContainerWidthPercent for small/medium screens
+      maxWidth: 1200, // Cap at 1200px for large tablets
+      alignSelf: 'center',
+      marginBottom: 20,
     },
     titleContainer: {
       flexDirection: 'row',
       alignItems: 'flex-end',
-      marginBottom: 20,
-      paddingHorizontal: themeConfig.titlePaddingHorizontal,
+      width: '100%',
+    },
+    titleSpacer: {
+      width: '20%',
+      justifyContent: 'flex-end',
+      alignItems: 'flex-start',
     },
     logo: {
       width: 50,
@@ -41,6 +65,7 @@ export const createThemeScreenStyles = (
     },
     titleBox: {
       ...globalStyles.selectionTitleBox,
+      width: '80%', // Matches avatar screen
       ...globalStyles.shadow,
       ...globalStyles.elevation,
     },
@@ -67,14 +92,27 @@ export const createThemeScreenStyles = (
       justifyContent: 'center',
       alignItems: 'flex-start',
       flexWrap: 'wrap',
+      marginTop: 20,
       marginBottom: 20,
-      paddingHorizontal: themeConfig.itemsContainerPaddingHorizontal,
-      width: '100%',
+      paddingHorizontal: (screenWidth && screenWidth <= 480)
+        ? 0
+        : themeConfig.itemsContainerPaddingHorizontal,
+      width: (screenWidth && screenWidth <= 360) ? '98%' : (screenWidth && screenWidth <= 480) ? '92%' : '100%',
+      maxWidth: 1200,
+      alignSelf: 'center',
     },
     theme: {
       height: themeConfig.themeSize.height,
-      marginLeft: 0,
-      marginRight: 0,
+      marginLeft: screenWidth && screenWidth <= 360
+        ? 2
+        : screenWidth && screenWidth <= 480
+        ? getResponsiveMargin(screenWidth, { xs: 6, sm: 6, md: 8 })
+        : themeConfig.themeMarginHorizontal / 2,
+      marginRight: screenWidth && screenWidth <= 360
+        ? 2
+        : screenWidth && screenWidth <= 480
+        ? getResponsiveMargin(screenWidth, { xs: 6, sm: 6, md: 8 })
+        : themeConfig.themeMarginHorizontal / 2,
       marginVertical: themeConfig.themeMarginVertical,
     },
     themeBody: {
@@ -82,9 +120,18 @@ export const createThemeScreenStyles = (
       height: '100%',
       position: 'relative',
     },
+    imageWrapper: {
+      width: '100%',
+      height: '100%',
+      position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+      flexGrow: 0,
+    },
     check: {
       position: 'absolute',
-      zIndex: 100,
+      zIndex: 10,
       backgroundColor: '#A4D233',
       borderRadius: (themeConfig.iconSize * 2) / 2,
       width: themeConfig.iconSize * 2,
@@ -92,13 +139,10 @@ export const createThemeScreenStyles = (
       justifyContent: 'center',
       alignItems: 'center',
       pointerEvents: 'none',
-      // Position icon pushed more inside for theme images
-      right: themeConfig.iconSize * 1.0,
-      top: themeConfig.iconSize * 1.0,
     },
     editIconContainer: {
       position: 'absolute',
-      zIndex: 100,
+      zIndex: 10,
       backgroundColor: '#A4D233',
       borderRadius: (themeConfig.iconSize * 2) / 2,
       width: themeConfig.iconSize * 2,
@@ -106,9 +150,28 @@ export const createThemeScreenStyles = (
       justifyContent: 'center',
       alignItems: 'center',
       pointerEvents: 'none',
-      // Position icon pushed more inside for theme images
-      right: themeConfig.iconSize * 1.0,
-      top: themeConfig.iconSize * 1.0,
+    },
+    pendingIconContainer: {
+      position: 'absolute',
+      zIndex: 10,
+      backgroundColor: '#FF8C00',
+      borderRadius: (themeConfig.iconSize * 2) / 2,
+      width: themeConfig.iconSize * 2,
+      height: themeConfig.iconSize * 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+      pointerEvents: 'none',
+    },
+    grayIconContainer: {
+      position: 'absolute',
+      zIndex: 10,
+      backgroundColor: '#D1D0D2',
+      borderRadius: (themeConfig.iconSize * 2) / 2,
+      width: themeConfig.iconSize * 2,
+      height: themeConfig.iconSize * 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+      pointerEvents: 'none',
     },
     themeImage: {
       width: '100%',
@@ -116,42 +179,15 @@ export const createThemeScreenStyles = (
       alignSelf: 'center',
       borderRadius: themeConfig.themeBorderRadius,
     },
-    // Outer container for green border (when selected/active)
-    themeOuterContainer: {
+    // Touchable area for theme
+    themeTouchable: {
       width: '100%',
-      height: themeConfig.themeSize.height,
-      position: 'relative',
-      borderRadius: themeConfig.themeBorderRadius,
-      padding: 2, // Space for green border
-    },
-    // Inner container for white border
-    themeInnerContainer: {
-      width: '100%',
-      height: '100%',
-      borderRadius: themeConfig.themeBorderRadius,
-      borderWidth: 2,
-      borderColor: '#FFFFFF',
-      overflow: 'hidden',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    // Green border wrapper (only when selected/active)
-    themeGreenBorder: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      borderRadius: themeConfig.themeBorderRadius,
-      borderWidth: 2,
-      borderColor: '#A4D233',
-      pointerEvents: 'none',
     },
     themeSvgContainer: {
-      width: '100%',
-      height: '100%',
-      justifyContent: 'center',
+      position: 'relative',
       alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
     },
     name: {
       position: 'absolute',
@@ -172,8 +208,30 @@ export const createThemeScreenStyles = (
       paddingTop: themeConfig.buttonPaddingTop,
       paddingBottom: themeConfig.buttonPaddingBottom,
       width: '100%',
+      maxWidth: 1200, // Cap at 1200px for large tablets
+      alignSelf: 'center',
       justifyContent: (isInitialSelection && hasGoBack) ? 'space-between' : 'center',
       gap: 12,
     },
   })
+
+export const getThemeStyle = (themeWidth: number, containerHeight: number, screenWidth: number) => ({
+  width: themeWidth,
+  height: containerHeight,
+  maxWidth: screenWidth <= 360 ? 165 : (screenWidth > 360 && screenWidth <= 392) ? 135 : (screenWidth > 392 && screenWidth <= 411) ? 138 : (screenWidth > 411 && screenWidth <= 480) ? scaleHorizontal(140) : undefined,
+})
+
+export const getThemeImageWrapperStyle = () => ({
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
+})
+
+export const getThemeContainerStyle = (containerWidth: number, containerHeight: number, borderRadius: number, backgroundColor: string) => ({
+  width: containerWidth,
+  height: containerHeight,
+  borderRadius,
+  backgroundColor,
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
+})
 

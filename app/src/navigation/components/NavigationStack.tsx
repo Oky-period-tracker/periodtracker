@@ -20,6 +20,7 @@ export type StackConfig<T extends keyof GlobalParamList> = {
     [K in T]: {
       title: string
       component: ScreenComponent<K>
+      headerShown?: boolean
     }
   }
 }
@@ -38,11 +39,12 @@ function NavigationStack<T extends keyof GlobalParamList>({ config }: { config: 
       }}
     >
       {recordToArray<StackConfig<T>['screens']>(config.screens).map(
-        ([name, { title, component }]) => {
+        ([name, { title, component, headerShown }]) => {
           const options: CustomStackNavigationOptions = {
             name,
             title,
             allowGoBack: name !== initialRouteName,
+            headerShown: headerShown !== undefined ? headerShown : true,
           }
 
           return (

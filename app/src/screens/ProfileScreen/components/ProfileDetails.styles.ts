@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 import { UIConfig } from '../../../config/UIConfig'
 import { globalStyles } from '../../../config/theme'
-
+import { scaleHorizontal, scaleVertical, scaleDimension, scaleFont } from '../../../utils/responsive'
 export const createProfileDetailsStyles = (
   avatarConfig: UIConfig['avatarSelection'],
   screenWidth: number
@@ -9,11 +9,11 @@ export const createProfileDetailsStyles = (
   StyleSheet.create({
     wrapper: {
       width: '100%',
-      paddingHorizontal: screenWidth >= 840 ? 16 : 12,
+      paddingHorizontal: scaleHorizontal(14), // Scaled padding
       paddingTop: avatarConfig.paddingTop,
     },
     header: {
-      marginBottom: screenWidth >= 840 ? 20 : 16,
+      marginBottom: scaleVertical(18), // Scaled margin
     },
     title: {
       fontFamily: 'Roboto',
@@ -22,7 +22,7 @@ export const createProfileDetailsStyles = (
       fontSize: avatarConfig.titleFontSize,
       lineHeight: avatarConfig.titleLineHeight,
       letterSpacing: 0,
-      marginBottom: screenWidth >= 840 ? 10 : 8,
+      marginBottom: scaleVertical(9), // Scaled margin
     },
     subtitle: {
       fontFamily: 'Roboto',
@@ -35,16 +35,16 @@ export const createProfileDetailsStyles = (
     container: {
       borderRadius: 20,
       width: '100%',
-      marginVertical: screenWidth >= 840 ? 6 : 4,
-      maxWidth: screenWidth >= 840 ? 700 : 600,
+      marginVertical: scaleVertical(3), // Reduced margin for less spacing
+      maxWidth: scaleHorizontal(650), // Scaled max width
       alignSelf: 'center',
     },
     row: {
       flexDirection: 'row',
       width: '100%',
-      minHeight: screenWidth >= 840 ? 100 : 80,
-      paddingVertical: screenWidth >= 840 ? 12 : 8,
-      paddingHorizontal: screenWidth >= 840 ? 16 : 12,
+      minHeight: scaleVertical(90), // Scaled min height
+      paddingVertical: scaleVertical(6), // Reduced padding for less spacing
+      paddingHorizontal: scaleHorizontal(14), // Scaled padding
       alignItems: 'center',
       justifyContent: 'center',
       position: 'relative',
@@ -54,21 +54,25 @@ export const createProfileDetailsStyles = (
       alignItems: 'flex-start',
       justifyContent: 'center',
     },
+    avatarTextColumn: {
+      paddingRight: scaleHorizontal(47.5), // Scaled padding
+    },
     iconColumn: {
-      flex: 1,
+      width: scaleHorizontal(105), // Scaled width
+      marginRight: scaleHorizontal(14), // Scaled margin
       alignItems: 'center',
       justifyContent: 'center',
     },
     infoLabel: {
-      marginTop: screenWidth >= 840 ? 16 : 12,
+      marginTop: scaleVertical(14), // Scaled margin
     },
     icon: {
-      width: screenWidth >= 840 ? 60 : 52,
-      height: screenWidth >= 840 ? 60 : 52,
+      width: scaleDimension(56), // Scaled icon size
+      height: scaleDimension(56), // Scaled icon size
     },
     text: {
-      marginBottom: screenWidth >= 840 ? 6 : 4,
-      fontSize: screenWidth >= 840 ? 14 : 13,
+      marginBottom: scaleVertical(5), // Scaled margin
+      fontSize: scaleFont(13.5), // Scaled font size
       color: '#333333',
     },
     bold: {
@@ -77,9 +81,9 @@ export const createProfileDetailsStyles = (
     infoTextRow: {
       flexDirection: 'row',
       width: '100%',
-      paddingHorizontal: screenWidth >= 840 ? 16 : 12,
+      paddingHorizontal: scaleHorizontal(14), // Scaled padding
       paddingTop: 0,
-      paddingBottom: screenWidth >= 840 ? 16 : 12,
+      paddingBottom: scaleVertical(14), // Scaled padding
       alignItems: 'flex-start',
     },
     infoTextColumn: {
@@ -87,48 +91,38 @@ export const createProfileDetailsStyles = (
       marginLeft: 0,
     },
     infoText: {
-      marginTop: screenWidth >= 840 ? -18 : -14,
+      marginTop: scaleVertical(-16), // Scaled negative margin
     },
     editIconContainer: {
       position: 'absolute',
-      right: screenWidth >= 840 ? 16 : 12,
+      right: scaleHorizontal(14), // Scaled right position
       top: '50%',
-      transform: [{ translateY: screenWidth >= 840 ? -15 : -13 }],
+      transform: [{ translateY: scaleVertical(-14) }], // Scaled transform
     },
     editIcon: {
-      width: screenWidth >= 840 ? 28 : 26,
-      height: screenWidth >= 840 ? 28 : 26,
+      width: scaleDimension(27), // Scaled icon size
+      height: scaleDimension(27), // Scaled icon size
       backgroundColor: '#4CAF50',
-      borderRadius: screenWidth >= 840 ? 14 : 13,
+      borderRadius: scaleDimension(13.5), // Scaled border radius
       justifyContent: 'center',
       alignItems: 'center',
     },
     avatarSvgContainer: {
-      width: screenWidth >= 840 ? 110 : 100,
-      height: screenWidth >= 840 ? 110 : 100,
       justifyContent: 'center',
       alignItems: 'center',
     },
     imageWrapper: {
-      width: screenWidth >= 840 ? 110 : 100,
-      height: screenWidth >= 840 ? 110 : 100,
+      width: scaleHorizontal(105), // Scaled width
+      height: scaleHorizontal(105), // Scaled height
       position: 'relative',
       alignItems: 'center',
       justifyContent: 'center',
-    },
-    friendAvatarImage: {
-      width: '100%',
-      height: '100%',
-      alignSelf: 'center',
-      marginTop: 0,
-      borderRadius: avatarConfig.avatarBorderRadius,
     },
     friendAvatarContainer: {
-      width: '100%',
-      height: '100%',
       position: 'relative',
       alignItems: 'center',
       justifyContent: 'center',
+      overflow: 'visible',
     },
     avatarPreviewContainer: {
       position: 'absolute',
@@ -143,19 +137,22 @@ export const createProfileDetailsStyles = (
     },
     avatarPreview: {
       position: 'absolute',
-      bottom: -(avatarConfig.avatarSize.height * 0.5),
+      // bottom position is set inline to scale with friendImageHeight
       alignSelf: 'center',
+      left: scaleHorizontal(-12), // Slightly to the left for better centering
     },
     avatarImage: {
-      width: screenWidth >= 840 ? 110 : 100,
-      height: screenWidth >= 840 ? 110 : 100,
+      width: scaleHorizontal(105), // Scaled width
+      height: scaleHorizontal(105), // Scaled height
       alignSelf: 'center',
-      aspectRatio: 1,
-      resizeMode: 'contain',
+    },
+    standardAvatarSvgContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     themeWrapper: {
-      width: screenWidth >= 840 ? 110 : 100,
-      height: screenWidth >= 840 ? 110 : 100,
+      width: scaleHorizontal(105), // Scaled width
+      height: scaleHorizontal(105), // Scaled height
       borderRadius: 20,
       overflow: 'hidden',
     },
@@ -169,6 +166,26 @@ export const createProfileDetailsStyles = (
       width: '100%',
       height: '100%',
       resizeMode: 'cover',
+    },
+    nameChangeRow: {
+      marginTop: scaleVertical(-7), // Scaled negative margin
+      paddingTop: scaleVertical(3), // Scaled padding
+    },
+    nameRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: scaleHorizontal(11), // Scaled gap
+    },
+    updateButton: {
+      width: scaleDimension(27), // Scaled button size
+      height: scaleDimension(27), // Scaled button size
+      backgroundColor: '#4CAF50',
+      borderRadius: scaleDimension(13.5), // Scaled border radius
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    avatarName: {
+      fontSize: scaleFont(13.5), // Scaled font size
     },
   })
 

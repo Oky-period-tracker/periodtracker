@@ -23,7 +23,7 @@ export const ProgressSection = ({
   style?: StyleProp<ViewStyle>
 }) => {
   const [progress, setProgress] = React.useState(0)
-  const { UIConfig } = useResponsive()
+  const { UIConfig, width } = useResponsive()
   const { palette, starColor } = useColor()
   const currentAvatar = useSelector(currentAvatarSelector)
   const currentUser = useSelector(currentUserSelector)
@@ -42,8 +42,37 @@ export const ProgressSection = ({
 
   const starPercent = Math.min(Object.keys(cardAnswersToday).length * 25, 100)
 
-  const bottom = lottieHeight / 10
-  const backgroundColor = '#fff'
+  const backgroundColor = 'transparent'
+  const scaleFactor = 0.85
+  const scaledIconSize = UIConfig.progressSection.iconSize * scaleFactor
+  const scaledBarHeight = UIConfig.progressSection.barHeight * scaleFactor
+  const scaledMarginVertical = UIConfig.progressSection.marginVertical * scaleFactor
+
+  const getProgressSectionBottom = (screenWidth: number, avatar: string): number => {
+    // Special handling for oky avatar - adjust bottom position to keep it on top of clouds
+    // Oky lottie file is smaller (0.85 scale) and has different aspect ratio, so container is shorter
+    // Need to increase bottom value significantly to compensate for smaller container height
+    if (avatar === 'oky') {
+      if (screenWidth <= 360) return 35  // Increased to compensate for smaller container
+      if (screenWidth <= 392) return 35  // Increased to compensate for smaller container
+      if (screenWidth <= 411) return 30  // Increased to compensate for smaller container
+      if (screenWidth <= 480) return 30  // Increased to compensate for smaller container
+      if (screenWidth <= 600) return 30  // Increased to compensate for smaller container
+      if (screenWidth <= 720) return 30  // Increased to compensate for smaller container
+      return 50  // Increased to compensate for smaller container
+    }
+    
+    // Default for other avatars
+    if (screenWidth <= 360) return 35
+    if (screenWidth <= 392) return 35
+    if (screenWidth <= 411) return 35
+    if (screenWidth <= 480) return 20
+    if (screenWidth <= 600) return 25
+    if (screenWidth <= 720) return 25
+    return 35
+  }
+
+  const bottomValue = getProgressSectionBottom(width, currentAvatar)
 
   return (
     <View
@@ -51,9 +80,11 @@ export const ProgressSection = ({
         styles.container,
         {
           backgroundColor,
-          bottom,
         },
         style,
+        {
+          bottom: bottomValue, // Apply bottom after style to ensure it takes precedence
+        },
       ]}
       pointerEvents={'none'}
     >
@@ -62,20 +93,20 @@ export const ProgressSection = ({
         style={[
           styles.section,
           {
-            marginVertical: UIConfig.progressSection.marginVertical,
+            marginVertical: scaledMarginVertical,
           },
         ]}
       >
         <Ionicons
           name={getHeart(heartPercent)}
           color={palette.danger.base}
-          size={UIConfig.progressSection.iconSize}
+          size={scaledIconSize}
           style={styles.icon}
         />
         <ProgressBar
           color={palette.danger.base}
           value={heartPercent}
-          height={UIConfig.progressSection.barHeight}
+          height={scaledBarHeight}
         />
       </View>
 
@@ -84,20 +115,20 @@ export const ProgressSection = ({
         style={[
           styles.section,
           {
-            marginVertical: UIConfig.progressSection.marginVertical,
+            marginVertical: scaledMarginVertical,
           },
         ]}
       >
         <FontAwesome
           name={getStar(Object.keys(cardAnswersToday).length)}
           color={starColor}
-          size={UIConfig.progressSection.iconSize}
+          size={scaledIconSize}
           style={styles.icon}
         />
         <ProgressBar
           color={starColor}
           value={starPercent}
-          height={UIConfig.progressSection.barHeight}
+          height={scaledBarHeight}
         />
       </View>
 
@@ -106,7 +137,8 @@ export const ProgressSection = ({
 
       {/* ===== Avatar Locks ===== */}
       <AvatarLock 
-        cyclesNumber={currentUser?.cyclesNumber || 0} 
+        cyclesNumber={currentUser?.cyclesNumber || 0}
+        customAvatarUnlocked={currentUser?.avatar?.customAvatarUnlocked === true}
         style={styles.locksContainer}
       />
     </View>
@@ -135,9 +167,12 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 2,
-    borderRadius: 5,
+    backgroundColor: 'transparent',
+    padding: 1.5,
+    borderRadius: 4,
+    width: '90%',
+    zIndex: 2,
+    left: 2
   },
   section: {
     flexDirection: 'row',

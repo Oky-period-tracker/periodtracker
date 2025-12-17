@@ -5,6 +5,10 @@ import { Text } from './Text'
 import { Button } from './Button'
 import { getAsset } from '../services/asset'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
+import { useScreenDimensions } from '../hooks/useScreenDimensions'
+import { useAccessibilityLabel } from '../hooks/useAccessibilityLabel'
+import { moderateScale } from 'react-native-size-matters'
+import { useResponsive } from '../contexts/ResponsiveContext'
 
 interface FriendUnlockModalProps extends ModalProps {
   onCreateFriend: () => void
@@ -15,22 +19,33 @@ export const FriendUnlockModal = ({
   toggleVisible,
   onCreateFriend,
 }: FriendUnlockModalProps) => {
+  const { width } = useScreenDimensions()
+  const { width: responsiveWidth } = useResponsive()
+  const getAccessibilityLabel = useAccessibilityLabel()
+
   const handleCreateFriend = () => {
     toggleVisible()
     onCreateFriend()
   }
 
+  const modalWidth = responsiveWidth >= 840 
+    ? Math.min(responsiveWidth * 0.9, 600) 
+    : responsiveWidth * 0.95
+
   return (
-    <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
-      <View style={styles.closeButtonContainer}>
-        <TouchableOpacity onPress={toggleVisible} style={styles.closeButton}>
-          <FontAwesome name="close" size={20} color="#4CAF50" />
-        </TouchableOpacity>
-      </View>
-      
+    <Modal visible={visible} toggleVisible={toggleVisible} style={[styles.modal, { 
+      width: modalWidth,
+      maxWidth: responsiveWidth >= 840 ? 600 : undefined,
+      minWidth: undefined,
+      borderRadius: responsiveWidth >= 840 ? 24 : 20,
+    }]}>
       <View style={styles.content}>
-        <Text style={styles.title}>
-          Hooray! All 3 locks are open – make your very own Oky friend, just the way you like!
+        <Text 
+          style={styles.title} 
+          enableTranslate={true}
+          accessibilityLabel={getAccessibilityLabel('friend_unlock_modal_title')}
+        >
+          friend_unlock_modal_title
         </Text>
         
         <View style={styles.iconContainer}>
@@ -38,14 +53,18 @@ export const FriendUnlockModal = ({
             source={getAsset('gifs.friendUnlock')} 
             style={styles.icon}
             resizeMode="contain"
+            accessibilityLabel={getAccessibilityLabel('friend_unlock_celebration_image')}
+            accessibilityRole="image"
           />
         </View>
         
         <TouchableOpacity 
           onPress={handleCreateFriend} 
           style={[styles.createButton, { backgroundColor: '#FF9800' }]}
+          accessibilityLabel={getAccessibilityLabel('friend_unlock_modal_button')}
+          accessibilityRole="button"
         >
-          <Text style={styles.buttonText} enableTranslate={false}>Create your friend</Text>
+          <Text style={styles.buttonText} enableTranslate={true}>friend_unlock_modal_button</Text>
         </TouchableOpacity>
       </View>
     </Modal>
@@ -55,46 +74,31 @@ export const FriendUnlockModal = ({
 const styles = StyleSheet.create({
   modal: {
     backgroundColor: '#fff',
-    borderRadius: 16,
     padding: 0,
-    maxWidth: 400,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeButtonContainer: {
-    position: 'absolute',
-    top: 60,
-    right: 24,
-    zIndex: 10000,
-  },
-  closeButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#E8F5E9',
     alignItems: 'center',
     justifyContent: 'center',
   },
   content: {
-    padding: 32,
+    padding: moderateScale(24, 0.3),
+    paddingTop: moderateScale(50, 0.3),
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
   },
   title: {
-    fontSize: 18,
+    fontSize: moderateScale(18, 0.3),
     fontWeight: 'bold',
     color: '#E91E63',
     textAlign: 'center',
-    marginBottom: 32,
-    paddingHorizontal: 16,
+    marginBottom: moderateScale(24, 0.3),
+    width: '100%',
   },
   iconContainer: {
-    width: 200,
-    height: 200,
+    width: moderateScale(280, 0.3),
+    height: moderateScale(280, 0.3),
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 32,
+    marginBottom: moderateScale(24, 0.3),
   },
   icon: {
     width: '100%',
@@ -103,17 +107,17 @@ const styles = StyleSheet.create({
   createButton: {
     width: 'auto',
     height: 'auto',
-    minHeight: 50,
-    borderRadius: 8,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    minWidth: 200,
+    minHeight: moderateScale(50, 0.3),
+    borderRadius: moderateScale(8, 0.3),
+    paddingVertical: moderateScale(14, 0.3),
+    paddingHorizontal: moderateScale(28, 0.3),
+    minWidth: moderateScale(180, 0.3),
     justifyContent: 'center',
     alignItems: 'center',
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: moderateScale(16, 0.3),
     fontWeight: 'bold',
   },
 })

@@ -1,12 +1,14 @@
 import React from 'react'
-import { BreakPointSize, UIConfig, breakPoints, responsiveConfig } from '../config/UIConfig'
+import { BreakPointSize, UIConfig, breakPoints, responsiveConfig, WidthBreakpointSize } from '../config/UIConfig'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { recordToArray } from '../services/utils'
+import { getWidthBreakpoint } from '../utils/responsive'
 
 export type ResponsiveContext = {
   width: number
   height: number
   size: BreakPointSize
+  widthBreakpoint: WidthBreakpointSize
   UIConfig: UIConfig
 }
 
@@ -14,6 +16,7 @@ const defaultValue: ResponsiveContext = {
   width: 0,
   height: 0,
   size: 'm',
+  widthBreakpoint: 'md',
   UIConfig: responsiveConfig.s,
 }
 
@@ -21,21 +24,20 @@ const ResponsiveContext = React.createContext<ResponsiveContext>(defaultValue)
 
 export const ResponsiveProvider = ({ children }: React.PropsWithChildren) => {
   const { width, height } = useScreenDimensions()
+  // Round width to remove decimal places (e.g., 392.727273 -> 392)
+  const roundedWidth = Math.floor(width)
   const size = getSize(height)
+  const widthBreakpoint = getWidthBreakpoint(roundedWidth)
 
   const UIConfig = responsiveConfig[size]
-
-  // Debug: Log breakpoint detection (remove after testing)
-  React.useEffect(() => {
-    console.log(`[Responsive] Screen: ${width}x${height}, Breakpoint: ${size}, iconOffsetInside: ${UIConfig.avatarSelection?.iconOffsetInside}, iconOffsetOutside: ${UIConfig.themeSelection?.iconOffsetOutside}`)
-  }, [width, height, size, UIConfig])
 
   return (
     <ResponsiveContext.Provider
       value={{
-        width,
+        width: roundedWidth,
         height,
         size,
+        widthBreakpoint,
         UIConfig,
       }}
     >

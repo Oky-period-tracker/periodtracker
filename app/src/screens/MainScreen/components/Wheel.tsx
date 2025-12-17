@@ -82,7 +82,6 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
     const scale = selected ? selectedScale.value : 1
 
     return {
-      // Buttons counter rotate to stay level
       transform: [{ rotate: `${-rotationAngle.value}rad` }, { scale }],
       width: BUTTON_SIZE,
       height: BUTTON_SIZE,
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10, // Above CenterCard
+    zIndex: 10,
   },
   button: {
     position: 'absolute',

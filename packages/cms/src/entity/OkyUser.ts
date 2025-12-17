@@ -1,34 +1,34 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryColumn, Column } from 'typeorm'
 
-@Entity()
+@Entity({ name: 'oky_user' })
 export class OkyUser {
-  @PrimaryGeneratedColumn()
-  id: number
+  @PrimaryColumn('uuid', { name: 'id' })
+  id: string
 
-  @Column()
+  @Column({ nullable: true })
   nameHash: string
 
-  @Column()
+  @Column({ nullable: true })
   date_of_birth: string
 
-  @Column()
+  @Column({ nullable: true })
   province: string
 
-  @Column()
+  @Column({ nullable: true })
   gender: string
 
-  @Column()
+  @Column({ nullable: true })
   location: string
 
-  @Column()
+  @Column({ nullable: true })
   country: string
 
-  @Column()
+  @Column({ nullable: true, default: 'en' })
   lang: string
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   date_created: string
 
-  @Column()
+  @Column({ nullable: true, default: 'user' })
   type: string
 }

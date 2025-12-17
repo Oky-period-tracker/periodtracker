@@ -13,7 +13,10 @@ export interface AvatarConfig {
   eyes?: string | null
   smile?: string | null
   clothing?: string | null
-  devices?: string | null
+  devices?: string | string[] | null // Supports both legacy string format and new array format
+  skinColor?: string | null
+  hairColor?: string | null
+  eyeColor?: string | null
   customAvatarUnlocked: boolean
   name?: string
 }

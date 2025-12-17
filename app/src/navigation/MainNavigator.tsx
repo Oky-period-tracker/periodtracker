@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { NavigatorScreenParams } from '@react-navigation/native'
+import { NavigatorScreenParams, getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import { BottomTabNavigationOptions, createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 
@@ -60,6 +60,19 @@ function MainNavigator() {
             </TabIcon>
           ),
         }}
+        listeners={({ navigation, route }) => ({
+          tabPress: (e) => {
+            // Reset ProfileStack to initial route (Profile) when tab is pressed
+            // Use React Navigation's built-in utility to get the focused route name
+            const focusedRouteName = getFocusedRouteNameFromRoute(route)
+            
+            // If we're not on Profile screen (the initial route), navigate to it
+            if (focusedRouteName && focusedRouteName !== 'Profile') {
+              e.preventDefault()
+              navigation.navigate('profile', { screen: 'Profile' })
+            }
+          },
+        })}
       />
       <Tab.Screen
         name={'home'}

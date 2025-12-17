@@ -26,6 +26,7 @@ import { getThemeSvg, getStandardAvatarSvg } from '../../../resources/assets/fri
 import { createProfileDetailsStyles } from './ProfileDetails.styles'
 import { AvatarPreview } from '../../../components/AvatarPreview'
 import { useAvatar } from '../../../hooks/useAvatar'
+import { scaleHorizontal, scaleDimension, getResponsiveValue } from '../../../utils/responsive'
 
 export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const currentUser = useSelector(currentUserSelector)
@@ -63,8 +64,8 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
     <View style={styles.wrapper}>
       {/* Title and Subtitle */}
       <View style={styles.header}>
-        <Text style={[styles.title, { color: '#000000' }]}>Your Oky profile</Text>
-        <Text style={[styles.subtitle, { color: '#000000' }]}>Click here to change your settings.</Text>
+        <Text style={[styles.title, { color: '#000000' }]}>profile_title</Text>
+        <Text style={[styles.subtitle, { color: '#000000' }]}>profile_subtitle</Text>
       </View>
 
       <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
@@ -144,7 +145,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
         </View>
       </View>
       <View style={styles.infoTextRow}>
-        <View style={styles.column}>
+        <View style={styles.iconColumn}>
           <View />
         </View>
         <View style={styles.infoTextColumn}>
@@ -157,65 +158,81 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
 
       {/* ===== Avatar Section ===== */}
       <TouchableOpacity style={styles.row} onPress={goToAvatar}>
-        <View style={styles.column}>
+        <View style={styles.iconColumn}>
           {(() => {
+            const avatarWidth = getResponsiveValue(width, {
+              xs: 100,
+              sm: 100,
+              md: 100,
+              lg: 110,
+              xl: 110,
+            }) || 100
+            const isCurrent = true
+            
             if (avatar === 'friend') {
               const BlankSvg = getStandardAvatarSvg('friend')
+              const friendImageAspectRatio = 105 / 74
+              const friendImageWidth = avatarWidth
+              const friendImageHeight = friendImageWidth / friendImageAspectRatio
+              
               return BlankSvg ? (
                 <View style={styles.imageWrapper}>
-                  <View
-                    style={styles.friendAvatarImage}
-                  >
-                    <View style={styles.friendAvatarContainer}>
-                      {React.createElement(BlankSvg, {
-                        width: '100%',
-                        height: '100%',
-                      })}
-                      {avatarData && (
-                        <View style={styles.avatarPreviewContainer}>
-                          <AvatarPreview
-                            bodyType={avatarData.bodyType}
-                            skinColor={avatarData.skinColor}
-                            hairStyle={avatarData.hairStyle}
-                            hairColor={avatarData.hairColor}
-                            eyeShape={avatarData.eyeShape}
-                            eyeColor={avatarData.eyeColor}
-                            smile={avatarData.smile}
-                            clothing={avatarData.clothing}
-                            devices={avatarData.devices}
-                        width={avatarConfig.avatarSize.width * 0.7}
-                        height={avatarConfig.avatarSize.height * 1.4}
-                            style={styles.avatarPreview}
-                          />
-                        </View>
-                      )}
-                    </View>
+                  {/* Friend avatar container */}
+                  <View style={styles.friendAvatarContainer}>
+                    {React.createElement(BlankSvg, {
+                      width: friendImageWidth,
+                      height: friendImageHeight,
+                    })}
+                    {avatarData && (
+                      <View style={styles.avatarPreviewContainer}>
+                        <AvatarPreview
+                          bodyType={avatarData.bodyType}
+                          skinColor={avatarData.skinColor}
+                          hairStyle={avatarData.hairStyle}
+                          hairColor={avatarData.hairColor}
+                          eyeShape={avatarData.eyeShape}
+                          eyeColor={avatarData.eyeColor}
+                          smile={avatarData.smile}
+                          clothing={avatarData.clothing}
+                          devices={avatarData.devices}
+                          width={friendImageWidth * 1.3}
+                          height={friendImageHeight * 1.3}
+                          style={{
+                            ...styles.avatarPreview,
+                            bottom: -(friendImageHeight * 0.6)
+                          }}
+                        />
+                      </View>
+                    )}
                   </View>
                 </View>
-              ) : (
-                <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
-              )
+              ) : null
             } else {
               const StandardAvatarSvg = getStandardAvatarSvg(avatar)
-              return StandardAvatarSvg ? (
-                <View style={styles.avatarSvgContainer}>
-                  {React.createElement(StandardAvatarSvg, {
-                    width: '100%',
-                    height: '100%',
-                  })}
-                </View>
-              ) : (
-                <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
-              )
+              const imageAspectRatio = 105 / 74
+              const imageWidth = avatarWidth
+              const imageHeight = imageWidth / imageAspectRatio
+              
+              if (StandardAvatarSvg) {
+                return (
+                  <View style={styles.imageWrapper}>
+                    <View style={styles.standardAvatarSvgContainer}>
+                      {React.createElement(StandardAvatarSvg, {
+                        width: imageWidth,
+                        height: imageHeight,
+                      })}
+                    </View>
+                  </View>
+                )
+              }
+              
+              return null
             }
           })()}
         </View>
-        <View style={styles.column}>
+        <View style={[styles.column, { paddingRight: scaleHorizontal(40) }]}>
           <View>
             <Text style={styles.text}>change_oky_friend</Text>
-            <Text style={[styles.text, styles.bold]}>
-              {avatar === 'friend' && currentUser?.avatar?.name ? currentUser.avatar.name : avatar}
-            </Text>
           </View>
         </View>
         <View style={styles.editIconContainer}>
@@ -224,16 +241,40 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
           </DisplayButton>
         </View>
       </TouchableOpacity>
+      
+      {/* ===== Avatar Name Section (only for custom avatar) ===== */}
+      {avatar === 'friend' && currentUser?.avatar?.name && (
+        <TouchableOpacity 
+          style={[styles.row, styles.nameChangeRow]} 
+          onPress={() => navigation.navigate('CustomAvatar', { openNameModal: true })}
+        >
+          <View style={styles.iconColumn}>
+            {/* Empty icon column to match layout with other sections */}
+          </View>
+          <View style={styles.column}>
+            <View>
+              <Text style={styles.text} enableTranslate={true}>change_the_name</Text>
+              <Text style={[styles.text, styles.bold]}>
+                {currentUser.avatar.name}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.editIconContainer}>
+            <DisplayButton style={styles.editIcon}>
+              <FontAwesome name="pencil" size={12} color="#FFFFFF" />
+            </DisplayButton>
+          </View>
+        </TouchableOpacity>
+      )}
       <Hr />
 
       {/* ===== Theme Section ===== */}
       <TouchableOpacity style={styles.row} onPress={goToTheme}>
-        <View style={styles.column}>
+        <View style={styles.iconColumn}>
           <View style={styles.themeWrapper}>
             {(() => {
               const ThemeSvg = getThemeSvg(theme)
               if (!ThemeSvg) {
-                console.warn(`Theme SVG not found for: ${theme}`)
                 return (
                   <Image source={getAsset(`backgrounds.${theme}.default`)} style={styles.themeImage} />
                 )

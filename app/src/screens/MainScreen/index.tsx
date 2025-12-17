@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
-import { calculateCycles } from '../../utils/cycleCalculator'
+import { useCycleCalculation } from '../../hooks/useCycleCalculation'
 import { analytics } from '../../services/firebase'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
@@ -63,6 +63,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const reduxDispatch = useDispatch()
   const predictionFullState = usePredictionEngineState()
   const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
+  const { updateCycleCount } = useCycleCalculation()
 
   // Check if friend unlock modal should be shown
   const shouldShowFriendUnlockModal = React.useMemo(() => {
@@ -204,37 +205,6 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     }
   }
 
-  const updateCycleCount = async (updatedPeriodDates: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]) => {
-    try {
-      const metadataForCalculation = {
-        ...currentUser.metadata,
-        periodDates: updatedPeriodDates
-      }
-      
-      const cycleResult = calculateCycles(metadataForCalculation)
-
-      if (cycleResult.cyclesNumber !== (currentUser.cyclesNumber || 0)) {
-        if (appToken) {
-          await httpClient.updateCyclesNumber({
-            appToken,
-            cyclesNumber: cycleResult.cyclesNumber,
-          })
-        }
-
-        editUserReduxState({
-          cyclesNumber: cycleResult.cyclesNumber,
-        })
-
-        analytics?.().logEvent('CYCLES_NUMBER_UPDATE', {
-          userId: currentUser?.id || null,
-          previousCyclesNumber: currentUser.cyclesNumber || 0,
-          newCyclesNumber: cycleResult.cyclesNumber,
-        })
-      }
-    } catch (error) {
-      // Error handling
-    }
-  }
 
   const handleCreateFriend = async () => {
     if (!currentUser) return

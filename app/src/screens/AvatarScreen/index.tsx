@@ -15,12 +15,10 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { assets } from '../../resources/assets'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useResponsive } from '../../contexts/ResponsiveContext'
-import { createAvatarScreenStyles, getAvatarStyle, getAvatarBodyStyle, getFriendWhiteContainerStyle, getFriendAvatarContainerStyle, getAvatarPreviewStyle, getCheckIconStyle } from './AvatarScreen.styles'
+import { createAvatarScreenStyles } from './AvatarScreen.styles'
 import { currentThemeSelector } from '../../redux/selectors'
 import { useTodayPrediction } from '../../contexts/PredictionProvider'
 import { useAuth } from '../../contexts/AuthContext'
-import { getStandardAvatarSvg } from '../../resources/assets/friendAssets'
-import { AvatarPreview } from '../../components/AvatarPreview'
 import { useAvatar } from '../../hooks/useAvatar'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useFocusEffect } from '@react-navigation/native'
@@ -28,6 +26,7 @@ import { useAccessibilityLabel } from '../../hooks/useAccessibilityLabel'
 import { useTranslate } from '../../hooks/useTranslate'
 import { calculateOptimalItemWidth, getResponsiveMargin } from '../../utils/layoutCalculations'
 import { scaleHorizontal, scaleDimension, scaleOriginal } from '../../utils/responsive'
+import { AvatarItem } from './components/AvatarItem'
 
 const AvatarScreen: ScreenComponent<'Avatar'> = ({ navigation }) => {
   return <AvatarSelect navigation={navigation} />
@@ -297,7 +296,7 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
           {/* Avatars Container */}
           <View style={dynamicStyles.avatarsContainer}>
             <View style={dynamicStyles.avatars}>
-            {avatarNames.map((avatar, index) => {
+            {avatarNames.map((avatar) => {
               const isFriendAvatar = avatar === 'friend'
               const isFriendAvatarLocked = isFriendAvatar && isFriendLocked
               const isFriendAvatarUnlocked = isFriendAvatar && isFriendCreated
@@ -327,183 +326,24 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
                 : `${translatedAvatarName}, ${isSelected ? 'selected' : 'tap to select'}`
               
               return (
-                <TouchableOpacity
+                <AvatarItem
                   key={avatar}
+                  avatar={avatar}
+                  isSelected={isSelected}
+                  isCurrent={isCurrent}
+                  isFriendAvatar={isFriendAvatar}
+                  isFriendAvatarLocked={isFriendAvatarLocked}
+                  isFriendCustomized={isFriendCustomized}
+                  avatarData={avatarData}
+                  avatarWidth={avatarWidth}
+                  width={width}
+                  avatarConfig={avatarConfig}
+                  dynamicStyles={dynamicStyles}
                   onPress={onPress}
-                  style={[
-                    dynamicStyles.avatar,
-                    getAvatarStyle(avatarWidth, width),
-                  ]}
-                  accessibilityLabel={getAccessibilityLabel('select_avatar_button') + `: ${avatarLabel}`}
-                  accessibilityRole="button"
-                >
-                  <View
-                    style={[
-                      dynamicStyles.avatarBody,
-                      getAvatarBodyStyle(),
-                    ]}
-                  >
-                    {isFriendAvatar ? (
-                      (() => {
-                        let FriendSvg
-                        if (isFriendAvatarLocked) {
-                          FriendSvg = getStandardAvatarSvg('friend-locked')
-                        } else if (isFriendAvatarUnlocked) {
-                          FriendSvg = getStandardAvatarSvg('friend')
-                        } else {
-                          FriendSvg = getStandardAvatarSvg('friend-unlocked-not-customized')
-                        }
-                        const friendImageAspectRatio = 105 / 74
-                        const friendBorderWidth = (isSelected || isCurrent) ? 2 : 1
-                        const friendBorderPadding = Math.max(4, avatarConfig.iconSize * 0.4)
-                        const friendWhiteContainerWidth = avatarWidth
-                        const friendImageWidth = friendWhiteContainerWidth - (friendBorderWidth * 2) - friendBorderPadding
-                        const friendImageHeight = friendImageWidth / friendImageAspectRatio
-                        const friendWhiteContainerHeight = friendImageHeight + (friendBorderWidth * 2) + friendBorderPadding
-                        const friendIconOffset = width > 720
-                          ? avatarConfig.iconSize * 0.75
-                          : width > 600 && width <= 720
-                          ? avatarConfig.iconSize * 0.8 
-                          : avatarConfig.iconSize * 0.9
-                        const friendBorderColor = (isCurrent && isSelected) ? '#A4D233' : (isCurrent && !isSelected) ? '#D1D0D2' : (isSelected ? '#FF8C00' : '#EFEFEF')
-                        
-                        return FriendSvg ? (
-                          <View style={dynamicStyles.imageWrapper}>
-                                <View 
-                                  style={[
-                                    (isSelected || isCurrent) 
-                                      ? [dynamicStyles.avatarWhiteContainer, { borderColor: friendBorderColor }]
-                                      : dynamicStyles.avatarWhiteContainerDefault,
-                                    getFriendWhiteContainerStyle(friendWhiteContainerWidth, friendWhiteContainerHeight),
-                                  ]}
-                                />
-                                {/* Friend avatar container - positioned on top, centered */}
-                                <View style={[dynamicStyles.friendAvatarContainer, getFriendAvatarContainerStyle()]}>
-                                  {React.createElement(FriendSvg, {
-                                    width: friendImageWidth,
-                                    height: friendImageHeight,
-                                  })}
-                                  {/* Only show custom avatar preview if unlocked, customized, and avatarData exists */}
-                                  {!isFriendAvatarLocked && isFriendCustomized && avatarData && (
-                                    <View style={dynamicStyles.avatarPreviewContainer}>
-                                      <AvatarPreview
-                                        bodyType={avatarData.bodyType}
-                                        skinColor={avatarData.skinColor}
-                                        hairStyle={avatarData.hairStyle}
-                                        hairColor={avatarData.hairColor}
-                                        eyeShape={avatarData.eyeShape}
-                                        eyeColor={avatarData.eyeColor}
-                                        smile={avatarData.smile}
-                                        clothing={avatarData.clothing}
-                                        devices={avatarData.devices}
-                                        width={friendImageWidth * 1.4}
-                                        height={friendImageHeight * 1.4}
-                                        style={[
-                                          dynamicStyles.avatarPreview,
-                                          getAvatarPreviewStyle(friendImageHeight),
-                                        ]}
-                                      />
-                                    </View>
-                                  )}
-                                </View>
-                                {/* Show checkmark icon when avatar is active (current) and still selected - green */}
-                                {isCurrent && isSelected && (
-                                  <View style={[
-                                    dynamicStyles.check,
-                                    getCheckIconStyle(friendBorderWidth, avatarConfig.iconSize, friendIconOffset),
-                                  ]}>
-                                    <FontAwesome name="check" size={avatarConfig.iconSize} color="#FFFFFF" />
-                                  </View>
-                                )}
-                                {/* Show checkmark icon when was current but now something else is selected - gray */}
-                                {isCurrent && !isSelected && (
-                                  <View style={[
-                                    dynamicStyles.grayIconContainer,
-                                    getCheckIconStyle(friendBorderWidth, avatarConfig.iconSize, friendIconOffset),
-                                  ]}>
-                                    <FontAwesome name="check" size={avatarConfig.iconSize} color="#FFFFFF" />
-                                  </View>
-                                )}
-                                {/* Show checkmark icon when selected but not active - orange */}
-                                {isSelected && !isCurrent && (
-                                  <View style={[
-                                    dynamicStyles.pendingIconContainer,
-                                    getCheckIconStyle(friendBorderWidth, avatarConfig.iconSize, friendIconOffset),
-                                  ]}>
-                                    <FontAwesome name="check" size={avatarConfig.iconSize} color="#FFFFFF" />
-                                  </View>
-                                )}
-                              </View>
-                            ) : null
-                          })()
-                    ) : (() => {
-                      const StandardAvatarSvg = getStandardAvatarSvg(avatar)
-                      const imageAspectRatio = 105 / 74
-                      const borderWidth = (isSelected || isCurrent) ? 2 : 1
-                      const borderPadding = Math.max(4, avatarConfig.iconSize * 0.4)
-                      const whiteContainerWidth = avatarWidth
-                      const imageWidth = whiteContainerWidth - (borderWidth * 2) - borderPadding
-                      const imageHeight = imageWidth / imageAspectRatio
-                      const whiteContainerHeight = imageHeight + (borderWidth * 2) + borderPadding
-                      const iconOffset = width > 720
-                        ? avatarConfig.iconSize * 0.75
-                        : width > 600 && width <= 720
-                        ? avatarConfig.iconSize * 0.8 
-                        : avatarConfig.iconSize * 0.9
-                      const borderColor = (isCurrent && isSelected) ? '#A4D233' : (isCurrent && !isSelected) ? '#D1D0D2' : (isSelected ? '#FF8C00' : '#EFEFEF')
-                      
-                      if (StandardAvatarSvg) {
-                        return (
-                          <View style={dynamicStyles.imageWrapper}>
-                            <View 
-                              style={[
-                                (isSelected || isCurrent) 
-                                  ? [dynamicStyles.avatarWhiteContainer, { borderColor }]
-                                  : dynamicStyles.avatarWhiteContainerDefault,
-                                getFriendWhiteContainerStyle(whiteContainerWidth, whiteContainerHeight),
-                              ]}
-                            />
-                            <View style={[dynamicStyles.standardAvatarSvgContainer, getFriendAvatarContainerStyle()]}>
-                              {React.createElement(StandardAvatarSvg, {
-                                width: imageWidth,
-                                height: imageHeight,
-                              })}
-                            </View>
-                            {isCurrent && isSelected && (
-                              <View style={[
-                                dynamicStyles.check,
-                                getCheckIconStyle(borderWidth, avatarConfig.iconSize, iconOffset),
-                              ]}>
-                                <FontAwesome name="check" size={avatarConfig.iconSize} color="#FFFFFF" />
-                              </View>
-                            )}
-                            {isCurrent && !isSelected && (
-                              <View style={[
-                                dynamicStyles.grayIconContainer,
-                                getCheckIconStyle(borderWidth, avatarConfig.iconSize, iconOffset),
-                              ]}>
-                                <FontAwesome name="check" size={avatarConfig.iconSize} color="#FFFFFF" />
-                              </View>
-                            )}
-                            {isSelected && !isCurrent && (
-                              <View style={[
-                                dynamicStyles.pendingIconContainer,
-                                getCheckIconStyle(borderWidth, avatarConfig.iconSize, iconOffset),
-                              ]}>
-                                <FontAwesome name="check" size={avatarConfig.iconSize} color="#FFFFFF" />
-                              </View>
-                            )}
-                          </View>
-                        )
-                      }
-                      
-                      return null
-                    })()}
-                    <Text style={[dynamicStyles.name, { color: '#000000' }]}>
-                      {isFriendAvatar && currentUser?.avatar?.name ? currentUser.avatar.name : avatar}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                  avatarLabel={avatarLabel}
+                  getAccessibilityLabel={getAccessibilityLabel}
+                  currentUser={currentUser}
+                />
               )
             })}
             {/* Add empty placeholder spots to fill last row to 3 items */}

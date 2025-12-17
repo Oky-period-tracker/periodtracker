@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, TouchableOpacity, Image, TextInput, FlatList, ImageSourcePropType, ScrollView } from 'react-native'
+import { View, TouchableOpacity, Image, FlatList, ImageSourcePropType, ScrollView } from 'react-native'
 import { scaleHorizontal, scaleDimension } from '../../utils/responsive'
 import { Screen } from '../../components/Screen'
 import { Text } from '../../components/Text'
@@ -21,6 +21,8 @@ import { useResponsive } from '../../contexts/ResponsiveContext'
 import { responsiveConfig } from '../../config/UIConfig'
 import { AvatarTutorialModal } from './components/AvatarTutorialModal'
 import { CategoryTabs } from './components/CategoryTabs'
+import { AvatarNamingModal } from './components/AvatarNamingModal'
+import { FirstVisitTooltip } from './components/FirstVisitTooltip'
 import { createCustomAvatarStyles } from './CustomAvatarScreen.styles'
 import { assets } from '../../resources/assets'
 import { globalStyles } from '../../config/theme'
@@ -469,24 +471,11 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         </View>
 
         <View style={[styles.whiteCard, { backgroundColor: '#fff' }]}>
-          {firstVisitTooltipVisible && (
-            <View style={styles.firstVisitTooltip}>
-              <View style={styles.tooltipContent}>
-                <Text style={styles.tooltipText} enableTranslate={true}>
-                  customizer_first_visit_tooltip
-                </Text>
-                <TouchableOpacity
-                  style={styles.tooltipCloseButton}
-                  onPress={handleCloseTooltip}
-                  accessibilityLabel={getAccessibilityLabel('close_tooltip_button')}
-                  accessibilityRole="button"
-                >
-                  <FontAwesome name="close" size={14} color="#FFFFFF" />
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.tooltipTriangle, { borderTopColor: '#fff' }]} />
-            </View>
-          )}
+          <FirstVisitTooltip
+            visible={firstVisitTooltipVisible}
+            onClose={handleCloseTooltip}
+            styles={styles}
+          />
           <TouchableOpacity
             style={styles.tutorialButton}
             onPress={() => setTutorialModalVisible(true)}
@@ -534,59 +523,25 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         onClose={() => setTutorialModalVisible(false)}
       />
 
-      {}
-      <Modal
+      <AvatarNamingModal
         visible={nameModalVisible}
-        toggleVisible={() => setNameModalVisible(false)}
-        style={styles.nameModal}
-      >
-        <Text style={styles.modalTitle} enableTranslate={true}>avatar_naming_modal_title</Text>
-        
-        {renderAvatarPreview()}
-        
-        <View style={styles.nameInputContainer}>
-          <TextInput
-            style={styles.nameInput}
-            placeholder={translate('avatar_naming_modal_placeholder')}
-            placeholderTextColor="#999"
-            value={tempName}
-            onChangeText={(text) => setTempName(text.substring(0, 8))}
-            maxLength={8}
-            accessibilityLabel={getAccessibilityLabel('name_input')}
-            accessibilityRole="text"
-          />
-          <Text style={styles.characterCount}>{tempName.length}/08 {translate('characters')}</Text>
-          <Text style={styles.hintText} enableTranslate={true}>avatar_naming_modal_hint</Text>
-        </View>
-
-        <View style={styles.modalButtons}>
-          <TouchableOpacity
-            onPress={() => {
-              setNameModalVisible(false)
-              // Navigate to home tab (which defaults to Home screen / calendar page)
-              const parent = navigation.getParent()
-              if (parent) {
-                parent.navigate('home')
-              } else {
-                navigation.navigate('home' as any)
-              }
-            }}
-            style={[styles.modalButton, styles.orangeButton]}
-            accessibilityLabel={getAccessibilityLabel('skip_name_button')}
-            accessibilityRole="button"
-          >
-            <Text style={styles.buttonText} enableTranslate={true}>skip</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleConfirmSave}
-            style={[styles.modalButton, styles.modalButtonPrimary, styles.orangeButton]}
-            accessibilityLabel={getAccessibilityLabel('save_and_continue_button')}
-            accessibilityRole="button"
-          >
-            <Text style={styles.buttonText} enableTranslate={true}>save_and_continue_button</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+        onClose={() => setNameModalVisible(false)}
+        onConfirm={handleConfirmSave}
+        onSkip={() => {
+          setNameModalVisible(false)
+          const parent = navigation.getParent()
+          if (parent) {
+            parent.navigate('home')
+          } else {
+            navigation.navigate('home' as any)
+          }
+        }}
+        tempName={tempName}
+        onNameChange={setTempName}
+        avatarSelection={avatarSelection}
+        avatarConfig={avatarConfig}
+        styles={styles}
+      />
     </View>
   )
 }

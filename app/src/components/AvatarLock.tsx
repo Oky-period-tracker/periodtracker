@@ -1,7 +1,8 @@
 import React from 'react'
-import { StyleSheet, View, Image } from 'react-native'
+import { View, Image } from 'react-native'
 import { getAsset } from '../services/asset'
 import { useResponsive } from '../contexts/ResponsiveContext'
+import { styles } from './AvatarLock.styles'
 
 interface AvatarLockProps {
   cyclesNumber: number
@@ -46,14 +47,3 @@ export const AvatarLock = ({ cyclesNumber, customAvatarUnlocked = false, style, 
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  lockIcon: {
-    // Size is now set dynamically based on UIConfig.progressSection.iconSize
-  },
-})

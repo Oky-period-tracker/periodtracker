@@ -794,6 +794,21 @@ const EditAvatarScreen: ScreenComponent<'EditAvatar'> = ({ navigation }) => {
     }
   }
 
+  /**
+   * Navigate back to home screen
+   */
+  const onGoBack = () => {
+    const parent = navigation.getParent()
+    if (parent) {
+      parent.navigate('home')
+    } else if (navigation.canGoBack()) {
+      navigation.goBack()
+    } else {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      navigation.navigate('home' as any)
+    }
+  }
+
   return (
     <View style={[styles.screen, { backgroundColor: '#E3F2FD' }]}>
       <View style={styles.header}>
@@ -823,7 +838,7 @@ const EditAvatarScreen: ScreenComponent<'EditAvatar'> = ({ navigation }) => {
         <View style={styles.bottomButtonsShadow} />
         <View style={styles.bottomButtons}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={onGoBack}
             style={[styles.exitButton, styles.orangeButton]}
           >
             <Text style={styles.buttonText} enableTranslate={false}>

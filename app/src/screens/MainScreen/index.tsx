@@ -68,12 +68,9 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     )
   }, [currentUser, cyclesNumber])
 
-  // Show modal when screen opens or cyclesNumber changes
+  // Show loading icon & tutorial when indicated by route
   useFocusEffect(
     React.useCallback(() => {
-      if (shouldShowFriendUnlockModal) {
-        setFriendUnlockModalVisible(true)
-      }
       if (route.params?.tutorial) {
         setLoading(true, 'please_wait_tutorial', () => {
           tutorialDispatch({ type: 'start', value: route.params?.tutorial })
@@ -81,10 +78,15 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           navigation.setParams({ tutorial: undefined })
         })
       }
-    }, [shouldShowFriendUnlockModal, route.params?.tutorial]),
+    }, [route.params?.tutorial]),
   )
 
-  // Auto start tutorial due to route params
+  // Show modal when cyclesNumber changes
+  React.useEffect(() => {
+    if (shouldShowFriendUnlockModal) {
+      setFriendUnlockModalVisible(true)
+    }
+  }, [shouldShowFriendUnlockModal])
 
   React.useEffect(() => {
     initPeriodDatesIfEmpty()
@@ -135,15 +137,17 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
             data={selectedItem}
             hideLaunchButton={false}
             onHandleResponse={handleDayModalResponse} // Pass the method as a prop
-
           />
         </View>
       )}
+
       {/* Modal that appears when avatar customization is unlocked */}
-      <FriendUnlockModal
-        visible={friendUnlockModalVisible}
-        toggleVisible={() => setFriendUnlockModalVisible(false)}
-      />
+      <View>
+        <FriendUnlockModal
+          visible={friendUnlockModalVisible}
+          toggleVisible={() => setFriendUnlockModalVisible(false)}
+        />
+      </View>
     </>
   )
 }

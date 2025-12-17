@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
+import { Image } from 'expo-image'
 import { Modal, ModalProps } from './Modal'
 import { Text } from './Text'
 import { getAsset } from '../services/asset'

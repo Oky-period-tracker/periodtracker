@@ -224,6 +224,17 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
     setFirstVisitTooltipVisible(false)
   }
 
+  const handleExit = () => {
+    const parent = navigation.getParent()
+    if (parent) {
+      parent.navigate('home')
+    } else if (navigation.canGoBack()) {
+      navigation.goBack()
+    } else {
+      navigation.navigate('home' as any)
+    }
+  }
+
   const [selectedCategory, setSelectedCategory] = React.useState<Category>('body')
   
   const [avatarSelection, setAvatarSelection] = React.useState<AvatarSelection>(() => {
@@ -498,7 +509,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         <View style={styles.bottomButtonsContainer}>
           <View style={styles.bottomButtons}>
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={handleExit}
               style={[styles.exitButton, styles.orangeButton]}
               accessibilityLabel={getAccessibilityLabel('customizer_exit')}
               accessibilityRole="button"

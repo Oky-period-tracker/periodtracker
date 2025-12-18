@@ -6,6 +6,7 @@ import {
   DidYouKnows,
   HelpCenters,
   AvatarMessages,
+  Translations,
   PrivacyPolicy,
   TermsAndConditions,
   About,
@@ -27,6 +28,7 @@ export interface ContentState {
   helpCenters: HelpCenters
   helpCenterAttributes: HelpCenterAttributes
   avatarMessages: AvatarMessages
+  translations: Translations
   privacyPolicy: PrivacyPolicy
   termsAndConditions: TermsAndConditions
   about: About
@@ -65,6 +67,7 @@ const initialState: ContentState = {
   helpCenters: [],
   helpCenterAttributes: [],
   avatarMessages: [],
+  translations: {},
   privacyPolicy: [],
   termsAndConditions: [],
   about: [],
@@ -98,6 +101,7 @@ export function contentReducer(state = initialState, action: Actions): ContentSt
         helpCenters: action.payload.helpCenters,
         helpCenterAttributes: action.payload.helpCenterAttributes,
         avatarMessages: action.payload.avatarMessages,
+        translations: action.payload.translations,
         privacyPolicy: action.payload.privacyPolicy,
         termsAndConditions: action.payload.termsAndConditions,
         about: action.payload.about,

@@ -9,13 +9,14 @@ import {
 } from '../resources/translations'
 import { ENV } from '../config/env'
 import { useDispatch } from 'react-redux'
-import { currentLocaleSelector } from '../redux/selectors'
+import { currentLocaleSelector, translationsSelector } from '../redux/selectors'
 import React from 'react'
 import { setLocale } from '../redux/actions'
 import { useSelector } from '../redux/useSelector'
 import { customSignUpTranslations } from '../optional/customSignUp'
 import { customHelpTranslations } from '../optional/customHelpCard'
 import { miscTranslations } from '../optional/misc'
+import type { ReduxState } from '../redux/reducers'
 
 let initLocale = defaultLocale
 
@@ -75,6 +76,10 @@ const capitalizeFirstLetter = (text: string): string => {
 
 export const useTranslate = () => {
   const locale = useSelector(currentLocaleSelector)
+  
+  // Get CMS translations (unified translations from CMS)
+  const selector = translationsSelector || ((state: ReduxState) => state?.content?.translations || {})
+  const cmsTranslations = useSelector(selector) || {}
 
   return (key: string): string => {
     if (!key) {
@@ -83,9 +88,20 @@ export const useTranslate = () => {
 
     const currentLocale: Locale = (locale || initialLocale) as Locale
 
-    const translation =
-      // @ts-expect-error TODO:
-      allTranslations?.[currentLocale]?.[key as keyof AppTranslations]
+    // First try to get from CMS (unified translations)
+    let translation = cmsTranslations[key]
+    
+    // If not found in CMS, fall back to app translations
+    if (!translation) {
+      translation =
+        // @ts-expect-error TODO:
+        allTranslations?.[currentLocale]?.[key as keyof AppTranslations]
+    }
+
+    // Convert literal \n to actual newlines
+    if (translation && typeof translation === 'string') {
+      translation = translation.replace(/\\n/g, '\n')
+    }
 
     if (ENV === 'development') {
       return capitalizeFirstLetter(translation || `[Missing translation: ${key}]`)

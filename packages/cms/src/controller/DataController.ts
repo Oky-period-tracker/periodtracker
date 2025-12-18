@@ -17,6 +17,7 @@ import {
   fromDidYouKnows,
   fromHelpCenters,
   fromAvatarMessages,
+  fromTranslations,
   // appTranslations,
   // content,
   defaultLocale,
@@ -449,6 +450,7 @@ export class DataController {
       'Did you know',
       'Help',
       'Avatars',
+      'Translations',
       'Privacy',
       'Terms',
       'About',
@@ -510,6 +512,14 @@ export class DataController {
 
     const { avatarMessages } = fromAvatarMessages(avatarMessagesJson)
 
+    const translationsJson = replaceIdsInJson(
+      otherJson['Translations'],
+      otherJson['Translations']?.map((item: any) => item.id) || [],
+      isNewLocale,
+    )
+
+    const { translations } = fromTranslations(translationsJson || [])
+
     // ========== File ========== //
     const fileContent = `
       // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
@@ -524,6 +534,7 @@ export class DataController {
         didYouKnows: ${JSON.stringify(didYouKnows)},
         helpCenters: ${JSON.stringify(otherJson['Help'])},
         avatarMessages: ${JSON.stringify(avatarMessages)},
+        translations: ${JSON.stringify(translations)},
         privacyPolicy: ${JSON.stringify(otherJson['Privacy'])},
         termsAndConditions: ${JSON.stringify(otherJson['Terms'])},
         about: ${JSON.stringify(otherJson['About'])},

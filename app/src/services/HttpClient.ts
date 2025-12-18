@@ -181,6 +181,12 @@ export function createHttpClient(
       )
       return response.data
     },
+    fetchTranslations: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.TranslationsResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/translations/${locale}`,
+      )
+      return response.data
+    },
     fetchEncyclopedia: async ({ locale }: { locale: Locale }) => {
       const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
         `${cmsEndpoint}/mobile/articles/${locale}`,

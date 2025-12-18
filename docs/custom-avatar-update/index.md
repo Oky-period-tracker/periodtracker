@@ -1,10 +1,44 @@
-# Custom Avatar System - Update Documentation
+# Custom Avatar System - Documentation Index
 
-This document describes the custom avatar unlock system, including database migrations, unlock conditions, lock mechanics, user flow, and implementation details.
+Welcome to the Custom Avatar System documentation. This index provides links to all documentation sections related to the custom avatar feature.
 
 ---
 
-## Table of Contents
+## 📚 Documentation Sections
+
+### Core System Documentation
+
+1. **[Custom Avatar System Overview](#custom-avatar-system-overview)** (This page)
+   - Database migrations
+   - Unlock conditions and mechanics
+   - User flow and implementation details
+
+### Related Documentation
+
+2. **[Translations Documentation](./translations/TRANSLATIONS_DOCUMENTATION.md)**
+   - Complete guide for CMS-managed translations
+   - Step-by-step update instructions
+   - Complete list of all translation keys (116 keys)
+   - Accessibility labels and UI text translations
+   - CMS management interface
+
+4. **[Adding New Avatar Assets](./avatar-assets/adding-new-assets.md)**
+   - Guide for adding new clothing, devices, hair, eyes, or body types
+   - File structure and naming conventions
+   - Asset requirements and best practices
+
+5. **[Design System Overview](./design-system/overview.md)**
+   - Breakpoint system and responsive design
+   - Scaling functions and patterns
+   - Component categories and best practices
+
+---
+
+## Custom Avatar System Overview
+
+This section describes the custom avatar unlock system, including database migrations, unlock conditions, lock mechanics, user flow, and implementation details.
+
+### Table of Contents
 
 1. [Database Migrations](#database-migrations)
 2. [Unlock Conditions](#unlock-conditions)
@@ -12,6 +46,7 @@ This document describes the custom avatar unlock system, including database migr
 4. [User Flow](#user-flow)
 5. [Implementation Details](#implementation-details)
 6. [General Updates](#general-updates)
+   - [CMS Content Endpoints](#cms-content-endpoints)
 
 ---
 
@@ -21,18 +56,54 @@ This document describes the custom avatar unlock system, including database migr
 
 **IMPORTANT**: Migrations must be run in the following order:
 
-1. **First**: `sql/1750000000000-add-cycles-counter.sql`
-2. **Second**: `sql/custom-avatar-update.sql`
+1. **First**: `sql/custom-avatar-update.sql` (includes cycles counter and avatar fields)
+2. **Second**: `sql/1760000000000-create-translations-table.sql` (for translations system)
 
-### Migration 1: Add Cycles Counter
+### How to Run SQL Migrations
 
-**File**: `sql/1750000000000-add-cycles-counter.sql`
+**Option 1: Using Adminer (Recommended for Development)**
+1. Access your Adminer interface (typically at `http://localhost:8080` or your CMS admin URL)
+2. Select your database (`periodtracker`)
+3. Navigate to the SQL command section
+4. Copy and paste the contents of the SQL migration file
+5. Execute the SQL script
+6. Verify the changes were applied successfully
 
-**Purpose**: Adds the `cyclesNumber` column to track how many menstrual cycles the user has completed.
+**Option 2: Using psql (Command Line)**
+```bash
+# Connect to your PostgreSQL database
+psql -h localhost -U periodtracker -d periodtracker
+
+# Run the migration files
+\i sql/custom-avatar-update.sql
+\i sql/1760000000000-create-translations-table.sql
+```
+
+**Option 3: Using Docker (if running in containers)**
+```bash
+# Copy SQL file into container and execute
+docker cp sql/1760000000000-create-translations-table.sql periodtracker-postgres-1:/tmp/
+docker exec -i periodtracker-postgres-1 psql -U periodtracker -d periodtracker < /tmp/1760000000000-create-translations-table.sql
+```
+
+**Important Notes:**
+- The `uuid-ossp` extension must be enabled for PostgreSQL 10 (it's included in the translations migration)
+- For PostgreSQL 13+, you can use `gen_random_uuid()` instead of `uuid_generate_v4()`
+- All migrations are idempotent (safe to run multiple times)
+
+### Migration 1: Custom Avatar Update (Cycles Counter + Avatar Fields)
+
+**File**: `sql/custom-avatar-update.sql`
+
+**Purpose**: Adds support for custom avatars and cycle counting. This migration includes:
+1. **Cycles Counter**: Adds the `cyclesNumber` column to track how many menstrual cycles the user has completed
+2. **Avatar Field**: Adds the `avatar` JSON column to store custom avatar configuration
 
 **What it does**:
 - Adds `cyclesNumber` column to `oky_user` table with `DEFAULT 0`
 - Initializes all existing users to `cyclesNumber = 0`
+- Adds `avatar` JSON column to `oky_user` table
+- Initializes avatar structure for existing users
 - Ensures no NULL values exist
 
 **SQL**:
@@ -45,49 +116,6 @@ WHERE "cyclesNumber" IS NULL;
 ```
 
 **Why first**: The cycles counter is a prerequisite for the unlock logic. The custom avatar system depends on `cyclesNumber` to determine unlock status.
-
----
-
-### Migration 2: Custom Avatar Update
-
-**File**: `sql/custom-avatar-update.sql`
-
-**Purpose**: Adds the `avatar` JSON column to store custom avatar configuration and unlock status.
-
-**What it does**:
-- Adds `avatar` JSON column to `oky_user` table
-- Initializes `customAvatarUnlocked = false` for all existing users
-- Sets `smile = null` for all existing avatar records
-- Provides default structure for users without avatar data
-
-**SQL**:
-```sql
-ALTER TABLE oky_user 
-ADD COLUMN avatar JSON DEFAULT NULL;
-
--- Initialize customAvatarUnlocked to false for existing avatar JSON records
-UPDATE oky_user
-SET avatar = jsonb_set(
-    jsonb_set(
-        COALESCE(avatar::jsonb, '{}'::jsonb),
-        '{customAvatarUnlocked}',
-        'false'::jsonb,
-        true
-    ),
-    '{smile}',
-    'null'::jsonb,
-    true
-)
-WHERE avatar IS NOT NULL;
-
--- For users without avatar JSON, set default structure
-UPDATE oky_user
-SET avatar = jsonb_build_object(
-    'customAvatarUnlocked', false,
-    'smile', NULL
-)
-WHERE avatar IS NULL;
-```
 
 **Avatar JSON Structure**:
 ```json
@@ -385,6 +413,28 @@ cyclesNumber >= 3 &&
 }
 ```
 
+### CMS Content Endpoints
+
+The following content is fetched from CMS and can be updated without app releases:
+
+1. **Avatar Messages** (`/mobile/avatar-messages/{locale}`)
+   - Random messages displayed on the main screen
+   - Lock messages are static (in app translations)
+
+2. **Translations** (`/mobile/translations/{locale}`)
+   - Unified translations system for both accessibility labels and regular UI text
+   - Format: Array of `{ key: string, label: string, lang: string, live: boolean }`
+   - Includes: accessibility labels, clothing items, devices, colors, tutorial texts
+   - Falls back to app translations if not found in CMS
+   - See `docs/custom-avatar-update/translations/TRANSLATIONS_DOCUMENTATION.md` for complete list
+
+3. **Other CMS Content** (existing):
+   - Articles, Videos, Quizzes, Did You Knows
+   - Help Centers, Privacy Policy, Terms & Conditions
+   - About content
+
+**Note**: The unified translations system now manages both accessibility labels and regular UI text translations (clothing items, devices, colors, tutorial texts) from CMS. Other UI text (buttons, titles, descriptions) may still remain in the codebase for backward compatibility, but new translations should be added to CMS.
+
 ### API Endpoints
 
 #### Update Cycles Number
@@ -474,6 +524,13 @@ if (avatar === 'friend' && customAvatarUnlocked !== true && cyclesNumber < 3) {
    - Random messages from CMS when unlocked
    - Message prioritization system
 
+5. **Translations**:
+   - All translations (accessibility labels + regular UI text) are now managed from CMS in a unified system
+   - Fetched via `/mobile/translations/{locale}` endpoint
+   - Includes: accessibility labels, clothing items, devices, colors, tutorial texts
+   - Falls back to static app translations if not found in CMS
+   - See `docs/custom-avatar-update/translations/TRANSLATIONS_DOCUMENTATION.md` for complete list
+
 ### Code Structure Updates
 
 1. **New Components**:
@@ -509,6 +566,29 @@ if (avatar === 'friend' && customAvatarUnlocked !== true && cyclesNumber < 3) {
 - `select_avatar_subtitle_unlocked`
 - `select_avatar_reminder_unlocked_not_created`
 - `select_avatar_reminder_unlocked_created`
+
+### Translations
+
+**CMS-Managed Translations**:
+- All translations (accessibility labels + regular UI text) for the avatar/theme selection screens, custom avatar page, tutorial modal, naming modal, and celebration modal are now managed from the CMS in a unified system
+- **Endpoint**: `/mobile/translations/{locale}`
+- **Format**: Array of objects with `key`, `label`, `lang`, and `live` properties
+- **Fallback**: If a translation is not found in CMS, the app falls back to static translations in `app/src/resources/translations/app/{locale}.ts`
+- **Implementation**: 
+  - Accessibility labels: See `app/src/hooks/useAccessibilityLabel.ts`
+  - UI text: See `app/src/hooks/useTranslate.ts` (prioritizes CMS translations)
+  - Documentation: See `docs/custom-avatar-update/translations/TRANSLATIONS_DOCUMENTATION.md` for complete list
+
+**Translation Keys** (managed via CMS - 116 total keys):
+- **Accessibility Labels** (34 keys): `select_avatar_button`, `select_theme_button`, `select_color_button`, `select_option_button`, `select_category_button`, `previous_page_button`, `next_page_button`, `close_tooltip_button`, `tutorial_button`, `skip_tutorial_button`, `name_input`, `skip_name_button`, `save_and_continue_button`, `arrow_button`, `continue`, `confirm`, `close`, `customizer_exit`, `customizer_save_friend`, `customizer_tutorial_back`, `customizer_tutorial_next`, `customizer_tutorial_finish`, `friend_unlock_modal_title`, `friend_unlock_celebration_image`, `friend_unlock_modal_button`, and more
+- **Tutorial Texts** (11 keys): `customizer_tutorial_title`, `customizer_tutorial_step1_title`, `customizer_tutorial_step1_text`, etc.
+- **Clothing Items** (17 keys): `customizer_clothing_dress1`, `customizer_clothing_dress2`, etc.
+- **Devices** (25 keys): `customizer_device_glasses`, `customizer_device_hat`, etc.
+- **Skin Colors** (12 keys): `customizer_skin_color_light_pink`, `customizer_skin_color_peach`, etc.
+- **Hair Colors** (11 keys): `customizer_hair_color_black`, `customizer_hair_color_brown`, etc.
+- **Eye Colors** (6 keys): `customizer_eye_color_black`, `customizer_eye_color_brown`, etc.
+
+**Note**: The unified translations system manages both accessibility labels and regular UI text translations from CMS. The app prioritizes CMS translations over static app translations for better flexibility and easier updates without app releases.
 
 ### Analytics Events
 
@@ -562,7 +642,7 @@ if (avatar === 'friend' && customAvatarUnlocked !== true && cyclesNumber < 3) {
 
 ### Migration Testing
 
-- [ ] Run `add-cycles-counter.sql` first
+- [ ] Run `custom-avatar-update.sql` (includes cycles counter and avatar fields)
 - [ ] Verify `cyclesNumber` column exists with default `0`
 - [ ] Run `custom-avatar-update.sql` second
 - [ ] Verify `avatar` column exists
@@ -625,4 +705,14 @@ The custom avatar system provides a gamified unlock mechanism that encourages us
 - Lock messages guide users when locked
 - Unlock modal celebrates achievement and guides to creation
 - Once unlocked, avatar is permanently available
+
+---
+
+## 📖 Related Documentation
+
+For more information on specific topics, see:
+
+- **[Translations Documentation](./translations/TRANSLATIONS_DOCUMENTATION.md)** - Complete translations guide with update instructions and keys reference
+- **[Adding New Avatar Assets](./avatar-assets/adding-new-assets.md)** - Guide for adding new avatar components
+- **[Design System Overview](./design-system/overview.md)** - Responsive design and breakpoint system
 

@@ -235,20 +235,9 @@ export const DayModal = ({
   }
 
   function onYesPress() {
-    console.log('[DayModal] ========== YES BUTTON CLICKED ==========')
-    console.log('[DayModal] Input day:', inputDay.format('YYYY-MM-DD'), '|', inputDay.format('DD/MM/YYYY'))
-    console.log('[DayModal] Selected day info:', {
-      onPeriod: selectedDayInfo.onPeriod,
-      cycleStart: selectedDayInfo.cycleStart?.format('YYYY-MM-DD'),
-      periodLength: selectedDayInfo.periodLength,
-    })
-    console.log('[DayModal] Add new cycle history:', addNewCycleHistory)
-    console.log('[DayModal] Current period dates:', periodDates)
-    
     analytics?.().logEvent('periodDayCloudTap', { userId: currentUser.id })
 
     if (isFutureDate(inputDay)) {
-      console.log('[DayModal] Future date detected, aborting')
       setAvatarMessage('too_far_ahead', true)
       toggleVisible()
       return
@@ -256,13 +245,10 @@ export const DayModal = ({
 
     // Check if already verified - if so, just update prediction engine if needed
     if (isUserVerifiedPeriodDay) {
-      console.log('[DayModal] Day is already user verified as period day')
       // Still dispatch to prediction engine to ensure onPeriod is true
       if (!selectedDayInfo.onPeriod) {
-        console.log('[DayModal] Day is verified but onPeriod is false, updating prediction engine')
         checkForDay()
       } else {
-        console.log('[DayModal] Day is verified and onPeriod is already true, just dispatching answerVerifyDates')
         reduxDispatch(
           answerVerifyDates({
             userID,
@@ -276,9 +262,7 @@ export const DayModal = ({
     }
 
     if (addNewCycleHistory) {
-      console.log('[DayModal] Branch: addNewCycleHistory = true')
       if (selectedDayInfo.onPeriod) {
-        console.log('[DayModal] Already on period (prediction), dispatching answerVerifyDates and updating prediction engine')
         reduxDispatch(
           answerVerifyDates({
             userID,
@@ -296,7 +280,6 @@ export const DayModal = ({
           })
         }
       } else {
-        console.log('[DayModal] Not on period, adding new cycle history')
         dispatch({
           type: 'add-new-cycle-history',
           inputDay,
@@ -313,13 +296,10 @@ export const DayModal = ({
       }
       if (onHandleResponse) {
         const dateStr = inputDay.format('DD/MM/YYYY')
-        console.log('[DayModal] Calling onHandleResponse with:', { isPeriodDay: true, periodDate: dateStr })
         onHandleResponse(true, dateStr) // This will update userVerified = true
       }
     } else {
-      console.log('[DayModal] Branch: addNewCycleHistory = false')
       if (selectedDayInfo.onPeriod) {
-        console.log('[DayModal] Already on period (prediction), updating data and prediction engine')
         reduxDispatch(
           answerVerifyDates({
             userID,
@@ -340,42 +320,27 @@ export const DayModal = ({
         toggleVisible()
         if (onHandleResponse) {
           const dateStr = inputDay.format('DD/MM/YYYY')
-          console.log('[DayModal] Calling onHandleResponse with:', { isPeriodDay: true, periodDate: dateStr })
           onHandleResponse(true, dateStr) // This will update userVerified = true
         }
       } else {
-        console.log('[DayModal] Not on period, checking for day and updating prediction engine')
         checkForDay()
       }
     }
 
     toggleVisible()
-    console.log('[DayModal] ========== YES BUTTON HANDLING COMPLETE ==========')
   }
   const getUpdatedData = () => {
-    console.log('[DayModal] getUpdatedData called')
-    console.log('[DayModal] Current periodDates:', periodDates)
-    console.log('[DayModal] Input day formatted:', inputDay.format('YYYY-MM-DD'))
     const updatedPeriodDates = updateUserVerifiedStatus(
       periodDates,
       inputDay.format('YYYY-MM-DD'),
       true,
     )
-    console.log('[DayModal] Updated periodDates:', updatedPeriodDates)
     setPeriodDates(updatedPeriodDates)
   }
   const onNoPress = () => {
-    console.log('[DayModal] ========== NO BUTTON CLICKED ==========')
-    console.log('[DayModal] Input day:', inputDay.format('YYYY-MM-DD'), '|', inputDay.format('DD/MM/YYYY'))
-    console.log('[DayModal] Selected day info engine:', {
-      onPeriod: selectedDayInfoEngine.onPeriod,
-    })
-    console.log('[DayModal] Is user verified period day:', isUserVerifiedPeriodDay)
-    
     analytics?.().logEvent('noPeriodDayCloudTap', { userId: currentUser.id })
 
     if (moment(inputDay).isAfter(moment())) {
-      console.log('[DayModal] Future date detected, aborting')
       setAvatarMessage('too_far_ahead', true)
       toggleVisible()
       return
@@ -385,11 +350,8 @@ export const DayModal = ({
     const isPeriodDay = isUserVerifiedPeriodDay || selectedDayInfoEngine.onPeriod
 
     if (isPeriodDay) {
-      console.log('[DayModal] Day is period day (verified or predicted), processing NO action')
-      
       // Update prediction engine to remove period day
       if (actionBlue) {
-        console.log('[DayModal] Dispatching actionBlue:', actionBlue.type)
         dispatch({
           type: actionBlue.type,
           inputDay: actionBlue.day,
@@ -408,14 +370,10 @@ export const DayModal = ({
 
       if (onHandleResponse) {
         const dateStr = inputDay.format('DD/MM/YYYY')
-        console.log('[DayModal] Calling onHandleResponse with:', { isPeriodDay: false, periodDate: dateStr })
         onHandleResponse(false, dateStr) // This will remove userVerified or set it to false
       }
-    } else {
-      console.log('[DayModal] Day is not on period, nothing to do')
     }
     toggleVisible()
-    console.log('[DayModal] ========== NO BUTTON HANDLING COMPLETE ==========')
   }
 
   return (

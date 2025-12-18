@@ -87,6 +87,14 @@ interface AvatarMessagesResponseItem {
 }
 export interface AvatarMessagesResponse extends Array<AvatarMessagesResponseItem> {}
 
+interface TranslationsResponseItem {
+  key: string
+  label: string
+  lang: string
+  live: boolean
+}
+export interface TranslationsResponse extends Array<TranslationsResponseItem> {}
+
 interface DidYouKnowResponseItem {
   id: string
   isAgeRestricted: boolean

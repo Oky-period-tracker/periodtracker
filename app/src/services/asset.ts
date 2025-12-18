@@ -13,8 +13,11 @@ export const getAsset = (path: string) => {
     // @ts-expect-error Can be object or asset because of assets structure
     currentLevel = currentLevel[segment] as object
     if (!currentLevel) {
-      // tslint:disable-next-line
-      console.warn(`Asset not found: ${path}`)
+      // Only warn in development, not in tests
+      if (__DEV__ && !process.env.JEST_WORKER_ID) {
+        // tslint:disable-next-line
+        console.warn(`Asset not found: ${path}`)
+      }
       return undefined // or a default asset
     }
   }

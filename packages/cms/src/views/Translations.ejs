@@ -1,0 +1,137 @@
+<%- include('modals/InfoModal') %>
+
+<%- include('partials/Header') %> 
+<!-- Custom Translation Modal -->
+<div
+  class="modal fade bd-example-modal-lg"
+  id="dynamicModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dynamicModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dynamicModalLabel">New Translation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-borderless modal-table">
+          <thead>
+            <tr>
+              <th style="width: 30%"><%= __('Key')%></th>
+              <th style="width: 40%"><%= __('Label')%></th>
+              <th style="width: 30%"><%= __('Type')%></th>
+            </tr>
+          </thead>
+          <tbody style="overflow-y: scroll">
+            <td>
+              <textarea class="form-control" rows="2" id="col0TableModal"></textarea>
+              <p id="error1" style="display: none; color: red;">Key is required</p>
+              <p id="countdown1" style="display: none;">remaining</p>
+            </td>
+            <td>
+              <textarea class="form-control" rows="2" id="col1TableModal"></textarea>
+              <p id="error2" style="display: none; color: red;">Label is required</p>
+              <p id="countdown2" style="display: none;">remaining</p>
+            </td>
+            <td>
+              <select class="custom-select" id="col2TableModal">
+                <option value="ui">UI Text</option>
+                <option value="accessibility">Accessibility Label (Screen Reader)</option>
+              </select>
+            </td>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= __('Close')%></button>
+        <button type="submit" class="btn btn-primary" id="btnEditConfirm"><%= __('Confirm')%></button>
+      </div>
+    </div>
+  </div>
+  <span id="itemID" hidden></span>
+</div>
+
+<div class="homePageContainer">
+  <div class="sideBar">
+    <%- include('partials/SideTab') %> 
+  </div>
+  <div class="mainContentContainer">
+    <div class="homeTopTextContainer">
+      <h2><%= __('Translations')%></h2>
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#dynamicModal"
+        data-value="0"
+      >
+      <%= __('Add Translation')%>
+      </button>
+    </div>
+    <div class="homeButtonContainer"></div>
+    <div class="homeTableContainer">
+      <table class="table table-striped table-borderless tableFixHead table-responsive">
+        <thead>
+          <tr>
+            <th style="width: 25%" class="pointer" id="translationKey"><%= __('Key')%></th>
+            <th style="width: 35%" class="pointer" id="translationLabel"><%= __('Label')%></th>
+            <th style="width: 15%"><%= __('Type')%></th>
+            <th style="width: 5%"><%= __('Edit')%></th>
+            <th style="width: 5%"><%= __('Delete')%></th>
+            <th style="width: 5%"><%= __('Live')%></th>
+          </tr>
+        </thead>
+        <tbody id="translationContainer"  style="overflow-y: scroll">
+          <% translations.forEach((item) =>{ %>
+          <tr>
+            <td><%= item.key %></td>
+            <td><%= item.label %></td>
+            <td>
+              <span class="badge <%= item.type === 'accessibility' ? 'badge-info' : 'badge-secondary' %>">
+                <%= item.type === 'accessibility' ? 'Screen Reader' : 'UI Text' %>
+              </span>
+            </td>
+            <td>
+              <button
+                type="button"
+                class="btn"
+                data-toggle="modal"
+                data-target="#dynamicModal"
+                data-value="<%= item.id %>"
+              >
+              <i class="fas fa-edit" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <button type="button" class="btn deleteTranslation" data-value="<%= item.id %>">
+                <i class="fas fa-trash" aria-hidden="true"></i>
+              </button>
+            </td>
+            <td>
+              <label class="switch">
+                <input data-value="<%= item.id %>" class='liveCheckbox' type="checkbox" 
+                <%if(item.live) {%>
+                  checked
+                <% }%>
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <span id="translationsJSON" hidden>
+    <%= JSON.stringify(translations); %>
+  </span>
+  <script type="application/javascript" src="/scripts/translationsViewScript.js"></script>
+</div>
+<%- include('partials/Footer') %>
+

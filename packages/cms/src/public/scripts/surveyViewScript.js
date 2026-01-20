@@ -210,12 +210,17 @@ $('#btnEditConfirm').on('click', (e) => {
 $('.liveCheckbox, .ageRestrictionCheckbox').on('click', () => {
   var button = $(event.currentTarget) // Button that triggered the modal
   var surveyId = button.data('value') // Extract info from data-* attributes
-  // var surveys = JSON.parse($('#surveysJSON').text())
-  // var surveyInfo = surveys.find(item => {
-  //   return item.id === surveyId
-  // })
+  var surveys = JSON.parse($('#surveysJSON').text())
+  var surveyInfo = surveys.find(item => {
+    return item.id === surveyId
+  })
+  
   const data = {
     [button.data('name')]: button.prop('checked'),
+    contentFilter: surveyInfo?.contentFilter || '0',
+    ageRestrictionLevel: surveyInfo?.ageRestrictionLevel || '0',
+    provinceRestricted: surveyInfo?.provinceRestricted || false,
+    allowedProvinces: surveyInfo?.allowedProvinces || null,
   }
   // if the ID is 0 we are creating a new entry
   $.ajax({
@@ -226,7 +231,10 @@ $('.liveCheckbox, .ageRestrictionCheckbox').on('click', () => {
       // location.reload()
     },
     error: error => {
-      console.log(error)
+      console.error('[Survey Toggle] Error:', error)
+      console.error('[Survey Toggle] Error details:', error.responseText)
+      alert('Failed to update survey. Page will reload.')
+      location.reload()
     },
   })
 })

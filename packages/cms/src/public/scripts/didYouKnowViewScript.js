@@ -24,11 +24,22 @@ $('#dynamicModal').on('show.bs.modal', event => {
 $('#btnEditConfirm').on('click', () => {
   const didyouknowID = $('#itemID').text()
 
+  // Get existing did you know info if editing
+  let didYouKnowInfo = null
+  if (didyouknowID !== '0') {
+    const didYouKnows = JSON.parse($('#didYouKnowsJSON').text())
+    didYouKnowInfo = didYouKnows.find(item => item.id === didyouknowID)
+  }
+
   const data = {
     title: $('#col0TableModal').val(),
     content: $('#col1TableModal').val(),
-    isAgeRestricted: false,
-    live: false,
+    isAgeRestricted: didYouKnowInfo?.isAgeRestricted || false,
+    live: didYouKnowInfo?.live || false,
+    contentFilter: didYouKnowInfo?.contentFilter || '0',
+    ageRestrictionLevel: didYouKnowInfo?.ageRestrictionLevel || '0',
+    provinceRestricted: didYouKnowInfo?.provinceRestricted || false,
+    allowedProvinces: didYouKnowInfo?.allowedProvinces || null,
   }
   if (data.title === '' || data.title >= 40 || data.content === '' || data.content >= 150) {
     $('#error1').show()
@@ -46,7 +57,9 @@ $('#btnEditConfirm').on('click', () => {
       setTimeout(() => location.reload(), 1500)
     },
     error: error => {
-      console.log(error)
+      console.error('[Did You Know] Save error:', error)
+      console.error('[Did You Know] Error details:', error.responseText)
+      alert('Failed to save Did You Know. Check console for details.')
     },
   })
 })
@@ -75,6 +88,10 @@ function changeRelevantDidYouKnow(didyouknowID, key, value) {
     content: didYouKnowInfo.content,
     isAgeRestricted: key === 'age' ? value : didYouKnowInfo.isAgeRestricted,
     live: key === 'live' ? value : didYouKnowInfo.live,
+    contentFilter: didYouKnowInfo.contentFilter || '0',
+    ageRestrictionLevel: didYouKnowInfo.ageRestrictionLevel || '0',
+    provinceRestricted: didYouKnowInfo.provinceRestricted || false,
+    allowedProvinces: didYouKnowInfo.allowedProvinces || null,
   }
   // if the ID is 0 we are creating a new entry
   $.ajax({
@@ -85,7 +102,10 @@ function changeRelevantDidYouKnow(didyouknowID, key, value) {
       location.reload()
     },
     error: error => {
-      console.log(error)
+      console.error('[Did You Know Toggle] Error:', error)
+      console.error('[Did You Know Toggle] Error details:', error.responseText)
+      alert('Failed to update Did You Know. Page will reload.')
+      location.reload()
     },
   })
 }

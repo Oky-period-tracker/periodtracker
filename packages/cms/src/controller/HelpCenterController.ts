@@ -4,6 +4,8 @@ import { HelpCenter } from '../entity/HelpCenter'
 import { getFormContents } from '../helpers/HelpCenterService'
 import { bulkUpdateRowReorder } from '../helpers/common'
 import { helpCenterData } from '../optional'
+import { ProvinceFilterService } from '../helpers/ProvinceFilterService'
+import { OkyUser } from '../entity/OkyUser'
 
 export class HelpCenterController {
   private helpCenterRepository = getRepository(HelpCenter)
@@ -18,17 +20,26 @@ export class HelpCenterController {
   }
 
   async mobileHelpCenterByLanguage(request: Request, response: Response, next: NextFunction) {
-    const helpCenters: HelpCenter[] | any = await this.helpCenterRepository.find({
-      where: {
-        lang: request.params.lang,
-        isActive: true,
-      },
-      order: {
-        sortingKey: 'ASC',
-      },
-    })
+    // Get user province from query parameter or from user ID lookup
+    let userProvince: string | null = null
+    
+    if (request.query.userId) {
+      const okyUserRepository = getRepository(OkyUser)
+      const user = await okyUserRepository.findOne(request.query.userId as string)
+      userProvince = user?.province || null
+    }
 
-    return helpCenters
+    // Build query with province filter
+    const queryBuilder = this.helpCenterRepository
+      .createQueryBuilder('help_center')
+      .where('help_center.lang = :lang', { lang: request.params.lang })
+      .andWhere('help_center.isActive = :isActive', { isActive: true })
+      .orderBy('help_center.sortingKey', 'ASC')
+
+    // Apply province filter
+    ProvinceFilterService.applyProvinceFilter(queryBuilder, userProvince, 'help_center')
+
+    return queryBuilder.getMany()
   }
 
   async one(request: Request, response: Response, next: NextFunction) {

@@ -13,4 +13,10 @@ export class AvatarMessages {
 
   @Column()
   lang: string
+
+  @Column({ default: false })
+  provinceRestricted: boolean
+
+  @Column({ type: 'text', nullable: true })
+  allowedProvinces: string
 }

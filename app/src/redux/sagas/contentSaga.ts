@@ -81,13 +81,18 @@ function* onFetchSurveyContent() {
 
 function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTENT_REQUEST'>) {
   const { locale } = action.payload as { locale: Locale } // TODO:
+  
+  // Get current user ID for province filtering
+  // @ts-expect-error TODO:
+  const currentUser = yield select(selectors.currentUserSelector)
+  const userId = currentUser?.id
 
   function* fetchEncyclopedia() {
     // @ts-expect-error TODO:
-    const encyclopediaResponse = yield httpClient.fetchEncyclopedia({ locale })
+    const encyclopediaResponse = yield httpClient.fetchEncyclopedia({ locale, userId })
     // @ts-expect-error TODO:
 
-    const videosResponse = yield httpClient.fetchVideos({ locale })
+    const videosResponse = yield httpClient.fetchVideos({ locale, userId })
     return fromEncyclopedia({ encyclopediaResponse, videosResponse })
   }
 
@@ -130,6 +135,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     // @ts-expect-error TODO:
     const helpCenterResponse = yield httpClient.fetchHelpCenters({
       locale,
+      userId,
     })
     return fromHelpCenters(helpCenterResponse)
   }
@@ -147,6 +153,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     // @ts-expect-error TODO:
     const quizzesResponse = yield httpClient.fetchQuizzes({
       locale,
+      userId,
     })
     return fromQuizzes(quizzesResponse)
   }
@@ -155,6 +162,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     // @ts-expect-error TODO:
     const didYouKnows = yield httpClient.fetchDidYouKnows({
       locale,
+      userId,
     })
     return fromDidYouKnows(didYouKnows)
   }
@@ -163,6 +171,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     // @ts-expect-error TODO:
     const avatarMessages = yield httpClient.fetchAvatarMessages({
       locale,
+      userId,
     })
     return fromAvatarMessages(avatarMessages)
   }

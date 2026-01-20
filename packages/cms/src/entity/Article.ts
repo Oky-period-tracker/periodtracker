@@ -40,4 +40,10 @@ export class Article {
 
   @Column({ generated: 'increment' })
   sortingKey: number
+
+  @Column({ default: false })
+  provinceRestricted: boolean
+
+  @Column({ type: 'text', nullable: true })
+  allowedProvinces: string
 }

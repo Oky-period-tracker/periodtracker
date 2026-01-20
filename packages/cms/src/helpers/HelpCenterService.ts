@@ -18,6 +18,8 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     isActive,
     region,
     subRegion,
+    provinceRestricted,
+    allowedProvinces,
   } = req.body
 
   if (helpCenterPayload) {
@@ -40,9 +42,25 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     helpCenterPayload.otherAttributes = otherAttributes
     helpCenterPayload.isActive = isActive === 'true' ? true : false
     helpCenterPayload.website = website
+    
+    // Handle province restrictions
+    helpCenterPayload.provinceRestricted = provinceRestricted === 'true' || provinceRestricted === true
+    if (helpCenterPayload.provinceRestricted && allowedProvinces) {
+      helpCenterPayload.allowedProvinces = Array.isArray(allowedProvinces)
+        ? allowedProvinces.join(',')
+        : allowedProvinces
+    } else {
+      helpCenterPayload.allowedProvinces = null
+    }
 
     return helpCenterPayload
   }
+
+  // Handle province restrictions for new help centers
+  const provinceRestrictedBool = provinceRestricted === 'true' || provinceRestricted === true
+  const allowedProvincesStr = provinceRestrictedBool && allowedProvinces
+    ? (Array.isArray(allowedProvinces) ? allowedProvinces.join(',') : allowedProvinces)
+    : null
 
   return {
     title,
@@ -58,6 +76,8 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     lang: req.user.lang,
     region,
     subRegion,
+    provinceRestricted: provinceRestrictedBool,
+    allowedProvinces: allowedProvincesStr,
   }
 }
 

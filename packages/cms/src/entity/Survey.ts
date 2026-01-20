@@ -48,4 +48,10 @@ export class Survey {
 
   @Column({ default: 0 })
   contentFilter: number
+
+  @Column({ default: false })
+  provinceRestricted: boolean
+
+  @Column({ type: 'text', nullable: true })
+  allowedProvinces: string
 }

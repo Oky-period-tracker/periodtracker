@@ -1,5 +1,6 @@
 // =============== Modal Population ========================
 $('#articleModal').on('show.bs.modal', (event) => {
+  console.log('[Modal] Opening article modal')
   $('#error1').hide()
   $('#error2').hide()
   $('#errorTitle2').hide()
@@ -7,7 +8,10 @@ $('#articleModal').on('show.bs.modal', (event) => {
   $('#error4').hide()
   var button = $(event.relatedTarget) // Button that triggered the modal
   var articleId = button.data('value') // Extract info from data-* attributes
+  console.log('[Modal] Article ID:', articleId)
+  
   if (articleId === 0) {
+    console.log('[Modal] Creating new article - resetting fields')
     $('.modal-title').text('Insert New Article')
     $('#col0TableModal').val('')
     $('#col1TableModal').val('')
@@ -15,16 +19,26 @@ $('#articleModal').on('show.bs.modal', (event) => {
     $('#col3TableModal').val('')
     $('#contentFilterDropdownForm').val('0')
     $('#ageRestrictionLevelForm').val('0')
-    $('#col4TableModal').prop('checked', false)
+    $('#col4TableModal').prop('checked', true) // Default to Live = true for new articles
     $('#itemID').text(0)
     $('#countdown2').text(70 + ' characters remaining.')
     $('#col1TableModal').attr('disabled', true)
+    
+    // Reset province fields for new articles
+    $('#provinceRestricted').prop('checked', false)
+    $('#countrySelector').hide()
+    $('#provinceSelector').hide()
+    $('#allowedCountriesSelect').val([])
+    $('#allowedProvincesSelect').val([])
+    console.log('[Modal] Province fields reset for new article - Live defaults to true')
     return
   }
+  
   var articles = JSON.parse($('#articlesJSON').text())
   var articleInfo = articles.find((item) => {
     return item.id === articleId
   })
+  console.log('[Modal] Loading article:', articleInfo)
 
   $('.modal-title').text(articleInfo.article_heading)
   $('#col0TableModal').val(articleInfo.category_id)
@@ -37,6 +51,58 @@ $('#articleModal').on('show.bs.modal', (event) => {
   $('#itemID').text(articleId)
   $('#countdown2').text(70 - articleInfo.article_heading.length + ' characters remaining.')
   handleSubCategorySelect(articleInfo.category_id)
+  
+  // Load province restriction data
+  console.log('[Modal] Province restricted:', articleInfo.provinceRestricted)
+  console.log('[Modal] Allowed provinces:', articleInfo.allowedProvinces)
+  
+  if (articleInfo.provinceRestricted) {
+    // Enable restriction checkbox
+    $('#provinceRestricted').prop('checked', true)
+    $('#countrySelector').show()
+    
+    // Parse allowed provinces (stored as comma-separated string)
+    let allowedProvinces = []
+    if (articleInfo.allowedProvinces) {
+      allowedProvinces = articleInfo.allowedProvinces
+        .split(',')
+        .map(p => p.trim())
+        .filter(p => p.length > 0)
+    }
+    console.log('[Modal] Parsed allowed provinces:', allowedProvinces)
+    
+    if (allowedProvinces.length > 0) {
+      // Determine which countries are needed based on selected provinces
+      const selectedCountries = new Set()
+      $('#allowedProvincesSelect option').each(function() {
+        const uid = $(this).val().toString()
+        if (allowedProvinces.includes(uid)) {
+          selectedCountries.add($(this).data('country'))
+        }
+      })
+      console.log('[Modal] Selected countries:', Array.from(selectedCountries))
+      
+      // Select the countries
+      $('#allowedCountriesSelect').val(Array.from(selectedCountries))
+      
+      // Trigger country change to filter provinces
+      $('#allowedCountriesSelect').trigger('change')
+      
+      // Select the provinces (after filter is applied)
+      setTimeout(() => {
+        $('#allowedProvincesSelect').val(allowedProvinces)
+        console.log('[Modal] Provinces selected:', allowedProvinces)
+      }, 50)
+    }
+  } else {
+    // Reset for non-restricted articles
+    $('#provinceRestricted').prop('checked', false)
+    $('#countrySelector').hide()
+    $('#provinceSelector').hide()
+    $('#allowedCountriesSelect').val([])
+    $('#allowedProvincesSelect').val([])
+    console.log('[Modal] Article not province-restricted - fields reset')
+  }
 })
 
 $('#categoryModal').on('show.bs.modal', (event) => {
@@ -90,44 +156,67 @@ $('#subcategoryModal').on('show.bs.modal', (event) => {
 
 // =============== Modal Confirmation ========================
 $('#btnArticleEditConfirm').on('click', () => {
+  console.log('[Submit] Article confirmation button clicked')
   const articleID = $('#itemID').text()
+  const provinceRestricted = $('#provinceRestricted').is(':checked')
+  const allowedProvincesArray = $('#allowedProvincesSelect').val() || []
   const data = {
-    category: $('#col0TableModal').val(),
-    subcategory: $('#col1TableModal').val(),
-    article_heading: $('#col2TableModal').val(),
-    article_text: $('#col3TableModal').val(),
+    category: $('#col0TableModal').val() || '',
+    subcategory: $('#col1TableModal').val() || '',
+    article_heading: $('#col2TableModal').val() || '',
+    article_text: $('#col3TableModal').val() || '',
     live: $('#col4TableModal').prop('checked'),
-    contentFilter: $('#contentFilterDropdownForm').val(),
-    ageRestrictionLevel: $('#ageRestrictionLevelForm').val(),
+    contentFilter: $('#contentFilterDropdownForm').val() || '0',
+    ageRestrictionLevel: $('#ageRestrictionLevelForm').val() || '0',
+    provinceRestricted: provinceRestricted,
+    allowedProvinces: (provinceRestricted && allowedProvincesArray.length > 0) 
+      ? allowedProvincesArray 
+      : null,
   }
+  console.log('[Submit] Article ID:', articleID)
+  console.log('[Submit] Form data:', data)
+  console.log('[Submit] Province restricted:', data.provinceRestricted)
+  console.log('[Submit] Allowed provinces:', data.allowedProvinces)
+  
   if (
-    data.category === '' ||
-    data.subcategory === '' ||
-    data.article_heading === '' ||
+    !data.category ||
+    !data.subcategory ||
+    !data.article_heading ||
     data.article_heading.length > 70 ||
-    data.article_text === ''
+    !data.article_text
   ) {
+    console.log('[Submit] Validation failed - showing errors')
+    console.log('[Submit] Category:', data.category, 'Subcategory:', data.subcategory)
     $('#error1').show()
     $('#error2').show()
     $('#error3').show()
     $('#error4').show()
     return
   }
+  
+  const url = '/articles' + (articleID === '0' ? '' : '/' + articleID)
+  const method = articleID === '0' ? 'POST' : 'PUT'
+  console.log('[Submit] Submitting to:', url, 'Method:', method)
+  
   $.ajax({
-    url: '/articles' + (articleID === '0' ? '' : '/' + articleID),
-    type: articleID === '0' ? 'POST' : 'PUT',
+    url: url,
+    type: method,
     data: data,
     success: (result) => {
+      console.log('[Submit] Success response:', result)
       if (result.isExist) {
+        console.log('[Submit] Article title already exists')
         $('#errorTitle2').show()
       } else {
+        console.log('[Submit] Article saved successfully, reloading page')
         $('#articleModal').modal('hide')
         $('#infoArticleModal').modal('show')
         setTimeout(() => location.reload(), 1500)
       }
     },
     error: (error) => {
-      console.log(error)
+      console.error('[Submit] Error occurred:', error)
+      console.error('[Submit] Error details:', error.responseText)
     },
   })
 })
@@ -160,7 +249,7 @@ $('#btnCategoryConfirm').on('click', () => {
 })
 
 $('#btnSubcategoryConfirm').on('click', () => {
-  const categoryId = $('#itemID').text()
+  const subcategoryId = $('#itemID').text()
   const data = {
     title: $('#colSubcategory0TableModal').val(),
     parent_category: $('#colSubcategory1TableModal').val(),
@@ -170,12 +259,16 @@ $('#btnSubcategoryConfirm').on('click', () => {
     $('#errorSubcat2').show()
     return
   }
-  // if the article ID is 0 we are creating a new entry
+  // if the subcategory ID is 0 we are creating a new entry
   $.ajax({
-    url: '/subcategories' + (categoryId === '0' ? '' : '/' + categoryId),
-    type: categoryId === '0' ? 'POST' : 'PUT',
+    url: '/subcategories' + (subcategoryId === '0' ? '' : '/' + subcategoryId),
+    type: subcategoryId === '0' ? 'POST' : 'PUT',
     data: data,
     success: (result) => {
+      if (result.duplicate) {
+        $('#errorSubcatUniq1').css('display', 'block')
+        return false
+      }
       location.reload()
     },
     error: (error) => {
@@ -193,11 +286,15 @@ $(document).on('click', '.liveCheckbox', () => {
     return item.id === articleId
   })
   const data = {
-    category: articleInfo.category,
-    subcategory: articleInfo.subcategory,
+    category: articleInfo.category_id || articleInfo.category,
+    subcategory: articleInfo.subcategory_id || articleInfo.subcategory,
     article_heading: articleInfo.article_heading,
     article_text: articleInfo.article_text,
     live: button.prop('checked'),
+    contentFilter: articleInfo.contentFilter || '0',
+    ageRestrictionLevel: articleInfo.ageRestrictionLevel || '0',
+    provinceRestricted: articleInfo.provinceRestricted || false,
+    allowedProvinces: articleInfo.allowedProvinces || null,
   }
   // if the ID is 0 we are creating a new entry
   $.ajax({
@@ -208,7 +305,9 @@ $(document).on('click', '.liveCheckbox', () => {
       location.reload()
     },
     error: (error) => {
-      console.log(error)
+      console.error('[Live Toggle] Error:', error)
+      console.error('[Live Toggle] Error details:', error.responseText)
+      alert('Failed to update article. Check console for details.')
     },
   })
 })
@@ -384,3 +483,54 @@ const handleSubCategorySelect = (catId) => {
 
 var articlesJSON = $('#articlesJSON').text()
 initializeVoiceOver(articlesJSON)
+
+//===================== Province Restriction Logic =========================
+
+// Toggle country and province selectors visibility
+$('#provinceRestricted').on('change', function() {
+  console.log('[Province] Restriction checkbox changed:', $(this).prop('checked'))
+  const isRestricted = $(this).prop('checked')
+  $('#countrySelector').toggle(isRestricted)
+  if (isRestricted) {
+    // Show province selector if countries are already selected
+    const selectedCountries = $('#allowedCountriesSelect').val()
+    $('#provinceSelector').toggle(selectedCountries && selectedCountries.length > 0)
+  } else {
+    $('#provinceSelector').hide()
+  }
+})
+
+// Filter provinces based on selected countries
+$('#allowedCountriesSelect').on('change', function() {
+  const selectedCountries = $(this).val() || []
+  console.log('[Province] Countries selected:', selectedCountries)
+  const provinceSelect = $('#allowedProvincesSelect')
+  
+  if (selectedCountries.length === 0) {
+    // Hide province selector if no countries selected
+    $('#provinceSelector').hide()
+    provinceSelect.val([])
+    console.log('[Province] No countries selected, hiding province selector')
+    return
+  }
+  
+  // Show province selector
+  $('#provinceSelector').show()
+  console.log('[Province] Showing province selector')
+  
+  // Filter province options
+  provinceSelect.find('option').each(function() {
+    const provinceCountry = $(this).data('country')
+    if (selectedCountries.includes(provinceCountry)) {
+      $(this).show()
+    } else {
+      $(this).hide()
+      // Deselect if hidden
+      if ($(this).prop('selected')) {
+        $(this).prop('selected', false)
+      }
+    }
+  })
+  
+  console.log('[Province] Provinces filtered by countries')
+})

@@ -174,21 +174,21 @@ export function createHttpClient(
 
       return response.data
     },
-    fetchAvatarMessages: async ({ locale }: { locale: Locale }) => {
+    fetchAvatarMessages: async ({ locale, userId }: { locale: Locale; userId?: string }) => {
       const response: AxiosResponse<types.AvatarMessagesResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/avatar-messages/${locale}`,
+        `${cmsEndpoint}/mobile/avatar-messages/${locale}${userId ? `?userId=${userId}` : ''}`,
       )
       return response.data
     },
-    fetchEncyclopedia: async ({ locale }: { locale: Locale }) => {
+    fetchEncyclopedia: async ({ locale, userId }: { locale: Locale; userId?: string }) => {
       const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/articles/${locale}`,
+        `${cmsEndpoint}/mobile/articles/${locale}${userId ? `?userId=${userId}` : ''}`,
       )
       return response.data
     },
-    fetchVideos: async ({ locale }: { locale: Locale }) => {
+    fetchVideos: async ({ locale, userId }: { locale: Locale; userId?: string }) => {
       const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/videos/${locale}`,
+        `${cmsEndpoint}/mobile/videos/${locale}${userId ? `?userId=${userId}` : ''}`,
       )
       return response.data
     },
@@ -240,21 +240,21 @@ export function createHttpClient(
 
       return response.data
     },
-    fetchQuizzes: async ({ locale }: { locale: Locale }) => {
+    fetchQuizzes: async ({ locale, userId }: { locale: Locale; userId?: string }) => {
       const response: AxiosResponse<types.QuizzesResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/quizzes/${locale}`,
+        `${cmsEndpoint}/mobile/quizzes/${locale}${userId ? `?userId=${userId}` : ''}`,
       )
       return response.data
     },
-    fetchDidYouKnows: async ({ locale }: { locale: Locale }) => {
+    fetchDidYouKnows: async ({ locale, userId }: { locale: Locale; userId?: string }) => {
       const response: AxiosResponse<types.DidYouKnowsResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/didyouknows/${locale}`,
+        `${cmsEndpoint}/mobile/didyouknows/${locale}${userId ? `?userId=${userId}` : ''}`,
       )
       return response.data
     },
-    fetchHelpCenters: async ({ locale }: { locale: Locale }) => {
+    fetchHelpCenters: async ({ locale, userId }: { locale: Locale; userId?: string }) => {
       const response: AxiosResponse<types.HelpCenterResponse> = await axios.get(
-        `${cmsEndpoint}/mobile/help-center/${locale}`,
+        `${cmsEndpoint}/mobile/help-center/${locale}${userId ? `?userId=${userId}` : ''}`,
       )
       return response.data
     },

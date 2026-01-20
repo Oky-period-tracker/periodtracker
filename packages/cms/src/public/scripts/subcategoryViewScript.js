@@ -87,12 +87,24 @@ $('#subcategoryModal').on('show.bs.modal', (event) => {
 // =============== Modal Confirmation ========================
 $('#btnArticleEditConfirm').on('click', () => {
   const articleID = $('#itemID').text()
+  
+  // Get existing article info if editing
+  let articleInfo = null
+  if (articleID !== '0') {
+    const articles = JSON.parse($('#articlesJSON').text())
+    articleInfo = articles.find((item) => item.id === articleID)
+  }
+  
   const data = {
-    category: $('#col0TableModal').val(),
-    subcategory: $('#col1TableModal').val(),
-    article_heading: $('#col2TableModal').val(),
-    article_text: $('#col3TableModal').val(),
+    category: $('#col0TableModal').val() || '',
+    subcategory: $('#col1TableModal').val() || '',
+    article_heading: $('#col2TableModal').val() || '',
+    article_text: $('#col3TableModal').val() || '',
     live: $('#col4TableModal').prop('checked'),
+    contentFilter: articleInfo?.contentFilter || '0',
+    ageRestrictionLevel: articleInfo?.ageRestrictionLevel || '0',
+    provinceRestricted: articleInfo?.provinceRestricted || false,
+    allowedProvinces: articleInfo?.allowedProvinces || null,
   }
 
   if (
@@ -122,7 +134,9 @@ $('#btnArticleEditConfirm').on('click', () => {
       }
     },
     error: (error) => {
-      console.log(error)
+      console.error('[Article Edit] Error:', error)
+      console.error('[Article Edit] Error details:', error.responseText)
+      alert('Failed to save article. Check console for details.')
     },
   })
 })
@@ -188,11 +202,15 @@ $(document).on('click', '.liveCheckbox', () => {
     return item.id === articleId
   })
   const data = {
-    category: articleInfo.category,
-    subcategory: articleInfo.subcategory,
+    category: articleInfo.category_id || articleInfo.category,
+    subcategory: articleInfo.subcategory_id || articleInfo.subcategory,
     article_heading: articleInfo.article_heading,
     article_text: articleInfo.article_text,
     live: button.prop('checked'),
+    contentFilter: articleInfo.contentFilter || '0',
+    ageRestrictionLevel: articleInfo.ageRestrictionLevel || '0',
+    provinceRestricted: articleInfo.provinceRestricted || false,
+    allowedProvinces: articleInfo.allowedProvinces || null,
   }
   // if the ID is 0 we are creating a new entry
   $.ajax({
@@ -203,7 +221,9 @@ $(document).on('click', '.liveCheckbox', () => {
       location.reload()
     },
     error: (error) => {
-      console.log(error)
+      console.error('[Live Toggle] Error:', error)
+      console.error('[Live Toggle] Error details:', error.responseText)
+      alert('Failed to update article. Check console for details.')
     },
   })
 })

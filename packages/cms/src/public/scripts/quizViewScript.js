@@ -128,6 +128,10 @@ function changeRelevantQuiz(quizId, key, value) {
     right_answer_response: quizInfo.right_answer_response,
     isAgeRestricted: key === 'age' ? value : quizInfo.isAgeRestricted,
     live: key === 'live' ? value : quizInfo.live,
+    contentFilter: quizInfo.contentFilter || '0',
+    ageRestrictionLevel: quizInfo.ageRestrictionLevel || '0',
+    provinceRestricted: quizInfo.provinceRestricted || false,
+    allowedProvinces: quizInfo.allowedProvinces || null,
   }
   // if the ID is 0 we are creating a new entry
   $.ajax({
@@ -138,7 +142,10 @@ function changeRelevantQuiz(quizId, key, value) {
       location.reload()
     },
     error: error => {
-      console.log(error)
+      console.error('[Quiz Toggle] Error:', error)
+      console.error('[Quiz Toggle] Error details:', error.responseText)
+      alert('Failed to update quiz. Page will reload.')
+      location.reload()
     },
   })
 }

@@ -29,12 +29,33 @@ $('#dynamicModal').on('show.bs.modal', event => {
 //  and create confirmation
 $('#btnEditConfirm').on('click', () => {
   const userID = $('#itemID').text()
+  const username = $('#col0TableModal').val()
+  const password = $('#col1TableModal').val()
+  const type = $('#col2TableModal').val()
+  
+  // Validation
+  if (!username || !username.trim()) {
+    alert('Username is required')
+    return
+  }
+  
+  if (userID === '0' && (!password || !password.trim())) {
+    alert('Password is required for new users')
+    return
+  }
+  
+  if (!type) {
+    alert('User type/role is required')
+    return
+  }
+  
   const data = {
-    username: $('#col0TableModal').val(),
-    password: $('#col1TableModal').val(),
-    type: $('#col2TableModal').val(),
+    username: username.trim(),
+    password: password || 'unchanged', // For updates, backend should handle if empty
+    type: type,
     lang: 'en',
   }
+  
   // if the article ID is 0 we are creating a new entry
   $.ajax({
     url: '/user' + (userID === '0' ? '' : '/' + userID),
@@ -44,8 +65,19 @@ $('#btnEditConfirm').on('click', () => {
       location.reload()
     },
     error: error => {
-      console.log(error)
+      console.error('[User] Save/Update error:', error)
+      console.error('[User] Error details:', error.responseText)
+      
+      // Handle specific error cases
+      if (error.status === 409) {
       $('#errorCat409').show()
+      } else if (error.status === 403) {
+        alert('You do not have permission to create this type of user')
+      } else if (error.status === 400) {
+        alert('Invalid input. Please check all required fields.')
+      } else {
+        alert('Failed to save user. Check console for details.')
+      }
     },
   })
 })
@@ -62,7 +94,9 @@ $('.deleteUser').on('click', event => {
         location.reload()
       },
       error: error => {
-        console.log(error)
+        console.error('[User] Delete error:', error)
+        console.error('[User] Error details:', error.responseText)
+        alert('Failed to delete user. They may not exist or you may not have permission.')
       },
     })
   }

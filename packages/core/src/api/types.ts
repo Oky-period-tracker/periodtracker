@@ -19,6 +19,8 @@ export interface EncyclopediaResponseItem {
   isAgeRestricted?: boolean
   ageRestrictionLevel?: number
   voiceOverKey?: string | null
+  provinceRestricted?: boolean
+  allowedProvinces?: string | null
   lang: string
   live: boolean
 }
@@ -30,6 +32,8 @@ export interface VideosResponseItem {
   youtubeId: string | null
   assetName: string | null
   parent_category: string
+  provinceRestricted?: boolean
+  allowedProvinces?: string | null
   live: boolean
 }
 
@@ -46,6 +50,8 @@ interface QuizResponseItem {
   right_answer: string
   wrong_answer_response: string
   right_answer_response: string
+  provinceRestricted?: boolean
+  allowedProvinces?: string | null
   lang: string
   live: boolean
 }
@@ -60,6 +66,8 @@ interface SurveyResponseItem {
   option4: string
   option5: string
   response: string
+  provinceRestricted?: boolean
+  allowedProvinces?: string | null
   lang: string
 }
 export interface SurveysResponse extends Array<SurveyResponseItem> {}
@@ -67,6 +75,8 @@ export interface SurveysResponse extends Array<SurveyResponseItem> {}
 interface AvatarMessagesResponseItem {
   id: string
   content: string
+  provinceRestricted?: boolean
+  allowedProvinces?: string | null
   lang: string
   live: boolean
 }
@@ -77,6 +87,8 @@ interface DidYouKnowResponseItem {
   isAgeRestricted: boolean
   title: string
   content: string
+  provinceRestricted?: boolean
+  allowedProvinces?: string | null
   lang: string
   live: boolean
 }
@@ -90,6 +102,8 @@ interface HelpCenterResponseItem {
   contactTwo: string
   address: string
   website: string
+  provinceRestricted?: boolean
+  allowedProvinces?: string | null
   lang: string
 }
 export interface HelpCenterResponse extends Array<HelpCenterResponseItem> {}

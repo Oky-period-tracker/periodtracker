@@ -51,6 +51,8 @@ export class RenderController {
     cmsLanguages,
     ageRestrictionOptions,
     contentFilterOptions,
+    provinces,
+    countries,
   }
 
   async render(
@@ -59,7 +61,12 @@ export class RenderController {
     options?: object,
     callback?: (err: Error, html: string) => void,
   ) {
-    response.render(view, { ...this.globalRenderOptions, ...options }, callback)
+    const user = (response.req as any).user
+    response.render(view, { 
+      ...this.globalRenderOptions, 
+      currentUser: user,
+      ...options 
+    }, callback)
   }
 
   async renderLogin(request: Request, response: Response, next: NextFunction) {

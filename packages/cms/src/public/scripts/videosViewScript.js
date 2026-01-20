@@ -108,6 +108,10 @@ $(document).on('click', '.liveCheckbox', () => {
     youtubeId: videoInfo.youtubeId,
     assetName: videoInfo.title,
     live: button.prop('checked'),
+    contentFilter: videoInfo.contentFilter || '0',
+    ageRestrictionLevel: videoInfo.ageRestrictionLevel || '0',
+    provinceRestricted: videoInfo.provinceRestricted || false,
+    allowedProvinces: videoInfo.allowedProvinces || null,
   }
 
   // if the ID is 0 we are creating a new entry
@@ -119,7 +123,10 @@ $(document).on('click', '.liveCheckbox', () => {
       location.reload()
     },
     error: (error) => {
-      console.log(error)
+      console.error('[Video Toggle] Error:', error)
+      console.error('[Video Toggle] Error details:', error.responseText)
+      alert('Failed to update video. Page will reload.')
+      location.reload()
     },
   })
 })

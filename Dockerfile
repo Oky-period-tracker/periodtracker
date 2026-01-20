@@ -1,5 +1,6 @@
-# FROM --platform=linux/amd64 node:16.13.1
-FROM node:16.13.1
+# Updated to Node.js 20 LTS to meet dependency requirements
+# FROM --platform=linux/amd64 node:20-alpine
+FROM node:20
 
 WORKDIR /usr/src/app
 

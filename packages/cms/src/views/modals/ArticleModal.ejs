@@ -83,6 +83,102 @@
               </td>
           </tbody>
         </table>
+
+        <!-- Province Restriction Section -->
+        <div class="form-group">
+          <label><%= __('Province Restrictions')%></label>
+          <div class="custom-control custom-checkbox">
+            <input 
+              type="checkbox" 
+              class="custom-control-input" 
+              id="provinceRestricted" 
+              name="provinceRestricted"
+            >
+            <label class="custom-control-label" for="provinceRestricted">
+              <%= __('Restrict to specific provinces')%>
+            </label>
+            <small class="form-text text-muted">
+              <%= __('When enabled, this content will only be visible to users from selected provinces.')%>
+            </small>
+          </div>
+        </div>
+
+        <!-- Country Selector (shows when restriction is enabled) -->
+        <div class="form-group" id="countrySelector" style="display: none;">
+          <label><%= __('Select Countries')%></label>
+          <select 
+            id="allowedCountriesSelect" 
+            multiple 
+            class="form-control" 
+            size="8"
+            style="height: 150px;"
+          >
+            <% 
+              const userLang = (typeof currentUser !== 'undefined' && currentUser && currentUser.lang) ? currentUser.lang : 'en';
+              const countryList = [];
+              const seenCountries = new Set();
+              
+              if (typeof provinces !== 'undefined' && Array.isArray(provinces)) {
+                provinces.forEach(function(province) {
+                  if (!seenCountries.has(province.code) && province.code !== '00') {
+                    seenCountries.add(province.code);
+                    const countryName = (typeof countries !== 'undefined' && countries[province.code]) 
+                      ? (countries[province.code][userLang] || countries[province.code]['en']) 
+                      : province.code;
+                    countryList.push({ code: province.code, name: countryName });
+                  }
+                });
+                countryList.sort((a, b) => a.name.localeCompare(b.name));
+                countryList.forEach(function(country) { 
+            %>
+              <option value="<%= country.code %>">
+                <%= country.name %> (<%= country.code %>)
+              </option>
+            <% 
+                });
+              }
+            %>
+          </select>
+          <small class="form-text text-muted">
+            <%= __('Hold Ctrl (Cmd on Mac) to select multiple countries. Select countries first, then provinces will appear below.')%>
+          </small>
+        </div>
+
+        <!-- Province Selector (shows provinces from selected countries) -->
+        <div class="form-group" id="provinceSelector" style="display: none;">
+          <label><%= __('Select Provinces')%></label>
+          <select 
+            name="allowedProvinces" 
+            id="allowedProvincesSelect" 
+            multiple 
+            class="form-control" 
+            size="10"
+            style="height: 200px;"
+          >
+            <% 
+              const userLang2 = (typeof currentUser !== 'undefined' && currentUser && currentUser.lang) ? currentUser.lang : 'en';
+              if (typeof provinces !== 'undefined' && Array.isArray(provinces)) {
+                provinces.forEach(function(province) { 
+                  if (province.code !== '00') {
+                    const provinceName = province[userLang2] || province['en'];
+            %>
+              <option 
+                value="<%= province.uid %>" 
+                data-country="<%= province.code %>"
+              >
+                <%= province.code %> - <%= provinceName %>
+              </option>
+            <% 
+                  }
+                });
+              }
+            %>
+          </select>
+          <small class="form-text text-muted">
+            <%= __('Hold Ctrl (Cmd on Mac) to select multiple provinces.')%>
+          </small>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal"><%= __('Close')%></button>

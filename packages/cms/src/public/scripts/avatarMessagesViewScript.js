@@ -62,6 +62,10 @@ function changeRelevantAvatarMessage(avatarMessageID, key, value) {
   const data = {
     content: avatarMessageInfo.content,
     live: key === 'live' ? value : avatarMessageInfo.live,
+    contentFilter: avatarMessageInfo.contentFilter || '0',
+    ageRestrictionLevel: avatarMessageInfo.ageRestrictionLevel || '0',
+    provinceRestricted: avatarMessageInfo.provinceRestricted || false,
+    allowedProvinces: avatarMessageInfo.allowedProvinces || null,
   }
   // if the ID is 0 we are creating a new entry
   $.ajax({
@@ -72,7 +76,10 @@ function changeRelevantAvatarMessage(avatarMessageID, key, value) {
       location.reload()
     },
     error: error => {
-      console.log(error)
+      console.error('[Avatar Message Toggle] Error:', error)
+      console.error('[Avatar Message Toggle] Error details:', error.responseText)
+      alert('Failed to update avatar message. Page will reload.')
+      location.reload()
     },
   })
 }

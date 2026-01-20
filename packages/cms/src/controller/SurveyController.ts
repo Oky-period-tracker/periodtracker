@@ -5,6 +5,8 @@ import { Survey } from '../entity/Survey'
 import { Question } from '../entity/Question'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
+import { ProvinceFilterService } from '../helpers/ProvinceFilterService'
+import { OkyUser } from '../entity/OkyUser'
 
 // TODO_ALEX: survey
 const reformatSurveyData = (res: any) => {
@@ -46,7 +48,16 @@ export class SurveyController {
       completedSurveys.length > 0
         ? completedSurveys.map((surveyAnswer: any) => surveyAnswer.id)
         : [uuid()]
-    return await createQueryBuilder('survey')
+    
+    // Get user province for filtering
+    let userProvince: string | null = null
+    if (request.query.user_id) {
+      const okyUserRepository = getRepository(OkyUser)
+      const user = await okyUserRepository.findOne(request.query.user_id as string)
+      userProvince = user?.province || null
+    }
+    
+    const queryBuilder = createQueryBuilder('survey')
       .from(Survey, 'survey')
       .where(
         `survey.lang=:lang and survey.live=:live AND survey.date_created BETWEEN :start_date AND :end_date AND survey.id NOT IN (:...ids)
@@ -63,8 +74,11 @@ export class SurveyController {
       .leftJoin('oky_user', 'oky_user', 'oky_user.id = :id', { id: request.query.user_id })
       .leftJoinAndMapMany('survey.questions', Question, 'question', 'question.surveyId = survey.id')
       .select(['survey', 'question'])
-      .getMany()
-      .then((res) => reformatSurveyData(res))
+    
+    // Apply province filter
+    ProvinceFilterService.applyProvinceFilter(queryBuilder, userProvince, 'survey')
+    
+    return queryBuilder.getMany().then((res) => reformatSurveyData(res))
   }
   async mobileSurveysByLanguage(request: Request, response: Response, next: NextFunction) {
     return this.surveyRepository.find({
@@ -77,7 +91,7 @@ export class SurveyController {
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
-    const surveyToSave = {
+    const surveyToSave: any = {
       question: '',
       option1: '',
       option2: '',
@@ -94,6 +108,17 @@ export class SurveyController {
     surveyToSave.live = request.body.live
     surveyToSave.lang = request.user.lang
     surveyToSave.id = uuid()
+    
+    // Handle province restrictions
+    surveyToSave.provinceRestricted = request.body.provinceRestricted === 'true' || request.body.provinceRestricted === true
+    if (surveyToSave.provinceRestricted && request.body.allowedProvinces) {
+      surveyToSave.allowedProvinces = Array.isArray(request.body.allowedProvinces)
+        ? request.body.allowedProvinces.join(',')
+        : request.body.allowedProvinces
+    } else {
+      surveyToSave.allowedProvinces = null
+    }
+    
     const survay = await this.surveyRepository.save(surveyToSave)
     request.body.questions.forEach(async (question: any) => {
       await this.questionRepository.save({
@@ -108,6 +133,22 @@ export class SurveyController {
   }
 
   async update(request: Request, response: Response, next: NextFunction) {
+    try {
+      if (!request.params.id) {
+        return response.status(400).json({
+          error: true,
+          message: 'Survey ID is required'
+        })
+      }
+
+      const surveyToUpdate = await this.surveyRepository.findOne(request.params.id)
+      if (!surveyToUpdate) {
+        return response.status(404).json({
+          error: true,
+          message: 'Survey not found'
+        })
+      }
+
     if (request.body.questions && request.body.questions.length) {
       request.body.questions.forEach(async (question: any) => {
         if (!question.id || question.id === '') {
@@ -135,14 +176,32 @@ export class SurveyController {
         })
       }
     }
-    const surveyToUpdate = await this.surveyRepository.findOne(request.params.id)
+      
     surveyToUpdate.lang = request.user.lang
-    if (request.body.live) surveyToUpdate.live = request.body.live === 'true'
-    else surveyToUpdate.live = surveyToUpdate.live
-    if (request.body.isAgeRestricted)
-      surveyToUpdate.isAgeRestricted = request.body.isAgeRestricted === 'true'
+      if (request.body.live !== undefined) surveyToUpdate.live = request.body.live === 'true' || request.body.live === true
+      if (request.body.isAgeRestricted !== undefined)
+        surveyToUpdate.isAgeRestricted = request.body.isAgeRestricted === 'true' || request.body.isAgeRestricted === true
+    
+    // Handle province restrictions
+    surveyToUpdate.provinceRestricted = request.body.provinceRestricted === 'true' || request.body.provinceRestricted === true
+    if (surveyToUpdate.provinceRestricted && request.body.allowedProvinces) {
+      surveyToUpdate.allowedProvinces = Array.isArray(request.body.allowedProvinces)
+        ? request.body.allowedProvinces.join(',')
+        : request.body.allowedProvinces
+    } else {
+      surveyToUpdate.allowedProvinces = null
+    }
+    
     await this.surveyRepository.save(surveyToUpdate)
     return true
+    } catch (error) {
+      console.error('[SurveyController] Update failed:', error)
+      return response.status(500).json({
+        error: true,
+        message: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      })
+    }
   }
 
   async remove(request: Request, response: Response, next: NextFunction) {

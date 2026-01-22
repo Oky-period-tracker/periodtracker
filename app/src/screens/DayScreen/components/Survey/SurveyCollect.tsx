@@ -2,12 +2,13 @@ import React from 'react'
 import { Checkbox } from '../../../../components/Checkbox'
 import { Input } from '../../../../components/Input'
 import { getSurveyQuestionOptions, useSurvey } from './SurveyContext'
+import { Dimensions, ScrollView, StyleSheet } from 'react-native'
 
 export const SurveyCollect = () => {
   const { state, dispatch } = useSurvey()
 
   const onCheckboxPress = (value: number) => {
-    dispatch({ type: 'answerIndex', value })
+    dispatch({ type: 'select_answer', value })
   }
 
   const setAnswerDraft = (value: string) => {
@@ -27,7 +28,10 @@ export const SurveyCollect = () => {
   return (
     <>
       {isMultiple ? (
-        <>
+        <ScrollView style={styles.scrollContainer}
+        contentContainerStyle = {styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        >
           {options.map((option, i) => {
             const checked = state.answerIndex === i
             const onPress = () => {
@@ -46,7 +50,7 @@ export const SurveyCollect = () => {
               />
             )
           })}
-        </>
+        </ScrollView>
       ) : (
         <Input
           value={state.answerDraft}
@@ -58,3 +62,13 @@ export const SurveyCollect = () => {
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  scrollContainer:{
+    maxHeight:Dimensions.get("window").height * 0.35,
+    marginBottom:0
+  },
+  scrollContent:{
+    paddingBottom:0
+  }
+})

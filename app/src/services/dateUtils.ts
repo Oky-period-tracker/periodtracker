@@ -21,11 +21,21 @@ export function toShortISO(time: Moment) {
 }
 
 export function calculateAge(birthday: Moment) {
-  const diffDuration = moment.duration(moment().diff(birthday))
+  const now = moment()
+
+  const years = now.diff(birthday, 'years')
+  birthday.add(years, 'years')
+
+  let months = now.diff(birthday, 'months')
+  birthday.add(months, 'months')
+
+  if (now.date() < birthday.date()) {
+    months -= 1
+  }
 
   return {
-    years: diffDuration.years(),
-    months: diffDuration.months(),
+    years,
+    months,
   }
 }
 

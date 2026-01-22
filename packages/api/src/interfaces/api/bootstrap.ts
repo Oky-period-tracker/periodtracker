@@ -17,6 +17,12 @@ const corsOptions = {
 export async function bootstrap() {
   const app = express()
 
+  app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff')
+    res.setHeader('Content-Security-Policy', "default-src 'none'")
+    next()
+  })
+
   app.use(cors(corsOptions))
 
   app.use(bodyParser.json())

@@ -12,7 +12,8 @@ The avatar system uses **two sets of assets** for each customization option:
 
 2. **Preview Assets** (SVG files) - Used in the actual avatar preview/display
    - Location: `app/src/resources/assets/images/avatars/friend/avatar-parts/`
-   - Format: SVG files (imported as React components via `react-native-svg-transformer`)
+   - Format: SVG files that are automatically converted to React components via regeneration scripts
+   - **Important**: After adding SVG files, you must run the regeneration script to convert them to React components
 
 **Exception**: Body previews use JSX components (`BodyComponents.tsx`), not SVG files.
 
@@ -57,6 +58,11 @@ app/src/resources/assets/images/avatars/friend/
   - `avatar-parts/clothing/your-item-name-medium.svg`
   - `avatar-parts/clothing/your-item-name-large.svg`
 - SVGs should be designed to layer on top of the body
+- **After creating SVG files, run the regeneration script:**
+  ```bash
+  cd app && node scripts/regenerate-clothing-correct.js
+  ```
+  This will automatically convert your SVG files to React components with animation support in `ClothingComponents.tsx`
 
 #### Step 1.2: Update `friendAssets.ts`
 
@@ -126,6 +132,11 @@ customizer_clothing_your-item-name: 'Your Item Display Name',
   - `your-device-name-small.svg`
   - `your-device-name-medium.svg`
   - `your-device-name-large.svg`
+- **After creating SVG files, run the regeneration script:**
+  ```bash
+  cd app && node scripts/regenerate-devices-correct.js
+  ```
+  This will automatically convert your SVG files to React components with animation support in `DevicesComponents.tsx`
 
 #### Step 2.2: Update `friendAssets.ts`
 
@@ -216,6 +227,11 @@ customizer_device_your-device-name: 'Your Device Display Name',
 **Preview (SVG):**
 - Create SVG file: `avatar-parts/hair/XX.svg`
 - **Note**: '00' is reserved for bald (no hair SVG needed)
+- **After creating SVG files, run the regeneration script:**
+  ```bash
+  cd app && node scripts/regenerate-hair-correct.js
+  ```
+  This will automatically convert your SVG files to React components with animation support in `HairComponents.tsx`
 
 #### Step 3.2: Update `friendAssets.ts`
 
@@ -265,6 +281,11 @@ customizer_hair_19: 'Hair Style 19',
 
 **Preview (SVG):**
 - Create SVG file: `avatar-parts/eyes/XX.svg`
+- **After creating SVG files, run the regeneration script:**
+  ```bash
+  cd app && node scripts/regenerate-eyes-correct.js
+  ```
+  This will automatically convert your SVG files to React components with animation support in `EyesComponents.tsx`
 
 #### Step 4.2: Update `friendAssets.ts`
 
@@ -364,6 +385,10 @@ The body preview system uses JSX components with color props, not SVG files.
   - Use consistent coordinate system
 - **Colors**: Can use `color` or `fill` props for dynamic coloring (hair, eyes)
 - **Size variants**: Clothing must have 3 sizes (small, medium, large)
+- **Animation support**: SVG files are automatically converted to React components with animation support
+  - Use `class` attributes in SVG to mark animated parts (e.g., `class="leftHand"`, `class="rightHand"`, `class="leftLeg"`, `class="rightLeg"`)
+  - The regeneration scripts will automatically create `AnimatedG` components for these parts
+  - See [Animation System Documentation](./avatar-animations.md) for details
 
 ---
 
@@ -398,16 +423,37 @@ The body preview system uses JSX components with color props, not SVG files.
 
 ---
 
+## Regeneration Scripts
+
+After adding new SVG files, you must run the appropriate regeneration script to convert them to React components:
+
+- **Clothing**: `node scripts/regenerate-clothing-correct.js`
+- **Devices**: `node scripts/regenerate-devices-correct.js`
+- **Hair**: `node scripts/regenerate-hair-correct.js`
+- **Eyes**: `node scripts/regenerate-eyes-correct.js`
+- **Smile**: `node scripts/regenerate-smile-correct.js`
+
+These scripts:
+1. Read all SVG files from the respective directories
+2. Convert SVG elements to React Native SVG components
+3. Add animation support (AnimatedSvg, AnimatedG) where needed
+4. Generate TypeScript interfaces with proper props
+5. Write the complete component file
+
+**Important**: Always run the regeneration script after adding or modifying SVG files.
+
 ## Testing Checklist
 
 After adding new assets:
 
+- [ ] Run the appropriate regeneration script
 - [ ] Selection UI shows the new asset in the customization screen
 - [ ] Preview shows the new asset correctly on the avatar
 - [ ] Asset appears in the correct category/tab
 - [ ] Asset can be selected and deselected
 - [ ] Asset renders correctly with different body sizes (for clothing)
 - [ ] Asset renders correctly with different colors (for hair/eyes)
+- [ ] Asset animates correctly (if animations are enabled)
 - [ ] Translation keys work in all supported languages
 - [ ] Device subcategory logic works correctly (if applicable)
 - [ ] Multiple device selection works correctly (if in 'others' subcategory)

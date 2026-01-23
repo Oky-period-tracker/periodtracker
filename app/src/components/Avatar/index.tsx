@@ -19,6 +19,7 @@ import { AvatarMessage } from './AvatarMessage'
 import { getCustomAvatarStyles } from '../../optional/styles'
 import { useAvatar } from '../../hooks/useAvatar'
 import { AvatarPreview } from '../AvatarPreview'
+import { AnimatedAvatarPreview } from '../AvatarPreview/AnimatedAvatarPreview'
 import { useResponsive } from '../../contexts/ResponsiveContext'
 import { getAvatarContainerStyle, getAvatarContainerBottomStyle, getCustomAvatarScaleStyle, getLottieViewStyle } from './Avatar.styles'
 
@@ -292,7 +293,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         <AvatarMessage style={customStyle?.avatarMessage} />
         {isCustomAvatar && avatarPreviewData ? (
           <View style={getCustomAvatarScaleStyle(customAvatarScale)}>
-            <AvatarPreview
+            <AnimatedAvatarPreview
               bodyType={avatarPreviewData.bodyType}
               skinColor={avatarPreviewData.skinColor}
               hairStyle={avatarPreviewData.hairStyle}
@@ -339,6 +340,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    position: 'relative',
     zIndex: 3,
   },
   cloudsWrapper: {

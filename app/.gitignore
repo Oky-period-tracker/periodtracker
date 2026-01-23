@@ -10,3 +10,10 @@ ios
 *.js
 *.js.map
 *.apk
+# Exception: Regeneration scripts should be tracked
+!scripts/
+!scripts/regenerate-clothing-correct.js
+!scripts/regenerate-devices-correct.js
+!scripts/regenerate-eyes-correct.js
+!scripts/regenerate-hair-correct.js
+!scripts/regenerate-smile-correct.js

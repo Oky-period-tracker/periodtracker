@@ -26,8 +26,16 @@ Welcome to the Custom Avatar System documentation. This index provides links to 
    - Guide for adding new clothing, devices, hair, eyes, or body types
    - File structure and naming conventions
    - Asset requirements and best practices
+   - Regeneration scripts for converting SVGs to React components
 
-5. **[Design System Overview](./design-system/overview.md)**
+5. **[Avatar Animation System](./avatar-assets/avatar-animations.md)**
+   - How the animation system works
+   - Adding animation support to new components
+   - AnimatedSvg and AnimatedG usage
+   - Animation sequence and timing
+   - Troubleshooting guide
+
+6. **[Design System Overview](./design-system/overview.md)**
    - Breakpoint system and responsive design
    - Scaling functions and patterns
    - Component categories and best practices
@@ -714,5 +722,6 @@ For more information on specific topics, see:
 
 - **[Translations Documentation](./translations/TRANSLATIONS_DOCUMENTATION.md)** - Complete translations guide with update instructions and keys reference
 - **[Adding New Avatar Assets](./avatar-assets/adding-new-assets.md)** - Guide for adding new avatar components
+- **[Avatar Animation System](./avatar-assets/avatar-animations.md)** - How animations work and how to add animation support
 - **[Design System Overview](./design-system/overview.md)** - Responsive design and breakpoint system
 

@@ -25,21 +25,7 @@ createConnection(ormconfig)
     const app = express()
     app.use((_req, res, next) => {
       res.setHeader('X-Content-Type-Options', 'nosniff')
-
-      res.setHeader(
-        'Content-Security-Policy',
-        [
-          "default-src 'self'",
-          "script-src 'self'",
-          "style-src 'self' 'unsafe-inline'",
-          "img-src 'self' data:",
-          "font-src 'self' data:",
-          "object-src 'none'",
-          "frame-ancestors 'none'",
-          "base-uri 'self'",
-        ].join('; '),
-      )
-
+      res.setHeader('Content-Security-Policy', ["base-uri 'self'"].join('; '))
       next()
     })
     app.set('view engine', 'ejs')

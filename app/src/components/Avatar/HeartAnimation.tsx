@@ -29,14 +29,14 @@ export function HeartAnimation({ count }: { count: number }) {
     }
     const items = Array(numHearts).fill(0)
     heartId.current = heartId.current + 1
-    const newHearts = items.map(() => heartId.current).map(createHeart)
+    const newHearts = items?.map(() => heartId.current)?.map(createHeart)
     oldCount.current = count
     setHearts((heartsCurrent) => heartsCurrent.concat(newHearts))
   }, [count])
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
-      {hearts.map(({ id, left }) => {
+      {hearts?.map(({ id, left }) => {
         return (
           <AnimatedShape
             key={id}

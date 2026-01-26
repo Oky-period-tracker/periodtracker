@@ -40,6 +40,11 @@ export const Swiper = ({ index, setIndex, pages, renderActionRight }: SwiperProp
   }
 
   const slideToPosition = (i: number) => {
+
+    if(fullWidth <=0 ){
+      return 
+    }
+
     'worklet'
     const endX = -i * fullWidth
     totalTranslationX.value = endX
@@ -88,7 +93,7 @@ export const Swiper = ({ index, setIndex, pages, renderActionRight }: SwiperProp
     <View style={styles.container} onLayout={onLayout}>
       <GestureDetector gesture={panGesture}>
         <Animated.View style={[styles.pagesContainer, globalStyles.shadow, animatedStyle]}>
-          {pages.map((page, i) => (
+          {pages?.map((page, i) => (
             <View key={i} style={[styles.page, globalStyles.shadow]}>
               {page}
             </View>
@@ -98,7 +103,7 @@ export const Swiper = ({ index, setIndex, pages, renderActionRight }: SwiperProp
 
       <View style={styles.footer}>
         <View style={styles.footerAction} />
-        {pages.map((_, i) => {
+        {pages?.map((_, i) => {
           const isSelected = i === index
           const onPress = () => handleIndicatorPress(i)
 

@@ -26,7 +26,7 @@ interface SegmentControlProps {
 export const SegmentControl = ({
   label,
   selected,
-  options,
+  options = [],
   onSelect,
   errors,
   errorKey,
@@ -42,7 +42,7 @@ export const SegmentControl = ({
       <View style={styles.container}>
         {hasError && <ErrorText>{errorKey}</ErrorText>}
 
-        {options.map((option) => {
+        {options?.map((option) => {
           const isSelected = selected === option.value
           const onPress = () => onSelect(option.value)
 
@@ -53,7 +53,7 @@ export const SegmentControl = ({
                 style={styles.iconContainer}
                 onPress={onPress}
               >
-                {option.emoji ? (
+                {option?.emoji ? (
                   <Text enableTranslate={false} style={styles.emoji}>
                     {option.emoji}
                   </Text>

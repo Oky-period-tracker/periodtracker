@@ -11,7 +11,7 @@ export const Carousel = () => {
   return (
     <GestureDetector gesture={carouselPanGesture}>
       <View style={[styles.container, { marginLeft: constants.CARD_SCALED_DIFFERENCE }]}>
-        {data.map((item, i) => {
+        {data?.map((item, i) => {
           return <CarouselCard key={`${item}${i}`} index={i} item={item} />
         })}
       </View>
@@ -41,7 +41,9 @@ const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
       selectedScale === null ||
       selectedIndex === null
     ) {
-      return {}
+      return {
+        transform:[{translateX:0},{scale:1}]
+      }
     }
 
     const selected = index === selectedIndex?.value

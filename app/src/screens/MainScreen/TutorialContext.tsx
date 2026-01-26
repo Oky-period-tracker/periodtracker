@@ -143,7 +143,7 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
   const reduxDispatch = useDispatch()
 
   const steps = state.tutorial === 'tutorial_one' ? tutorialOneSteps : tutorialTwoSteps
-  const step = steps[state.stepIndex]
+  const step = state.stepIndex >= 0 && state.stepIndex < steps.length ? steps[state.stepIndex] : undefined;
 
   const tutorialConfig =
     state.tutorial === 'tutorial_one'
@@ -163,8 +163,15 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
   const translateX = useSharedValue(0)
   const translateY = useSharedValue(0)
 
-  // @ts-expect-error TODO:
-  const stepConfig = tutorialConfig?.[step]
+  let stepConfig :TutorialStepConfig | undefined
+  if(state.tutorial === 'tutorial_one')
+    {
+      stepConfig = step ? (tutorialConfig as Record<TutorialOneStep,TutorialStepConfig>)[ step as TutorialOneStep] : undefined
+    }
+    else if (state.tutorial === 'tutorial_two')
+      {
+        stepConfig = step ? (tutorialConfig as Record<TutorialTwoStep,TutorialStepConfig>)[step as TutorialTwoStep] : undefined
+      }
 
   React.useEffect(() => {
     if (stepConfig) {

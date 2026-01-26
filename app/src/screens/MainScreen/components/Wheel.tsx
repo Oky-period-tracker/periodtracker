@@ -74,7 +74,11 @@ const WheelButton = ({ index, item }: { index: number; item: DayData }) => {
 
   const wheelButtonAnimatedStyle = useAnimatedStyle(() => {
     if (rotationAngle === null || selectedScale === null || selectedIndex === null) {
-      return {}
+      return {
+        transform:[{rotate:'0rad'},{scale:1}],
+        width:BUTTON_SIZE,
+        height:BUTTON_SIZE
+      }
     }
 
     const selected = index === selectedIndex?.value

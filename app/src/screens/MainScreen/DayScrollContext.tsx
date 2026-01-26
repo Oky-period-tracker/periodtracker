@@ -147,7 +147,9 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const NUMBER_OF_BUTTONS = 12
   const ANGLE_FULL_CIRCLE = 2 * Math.PI
   const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS
-  const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH
+  // const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / FULL_CARD_WIDTH
+  const SAFE_FULL_CARD_WIDTH = FULL_CARD_WIDTH || 1
+  const ROTATION_PER_PIXEL_DRAGGED = ANGLE_BETWEEN_BUTTONS / SAFE_FULL_CARD_WIDTH
 
   const INITIAL_INDEX = NUMBER_OF_BUTTONS / 2
   const INITIAL_X = -FULL_CARD_WIDTH * (NUMBER_OF_BUTTONS / 2)
@@ -265,6 +267,12 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   // ================ Carousel Worklet ================ //
   const calculateClosestCardPosition = (position: number) => {
     'worklet'
+
+    if(FULL_CARD_WIDTH <= 0)
+      {
+        return 0
+      }
+    
     const closestIndex = Math.round(position / FULL_CARD_WIDTH)
     const closestPosition = closestIndex * FULL_CARD_WIDTH
     return closestPosition
@@ -295,7 +303,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   // ================ Handle Gestures ================ //
   const handlePanStart = () => {
     'worklet'
-    if (disabled.value) {
+    if (disabled.value || FULL_CARD_WIDTH <= 0) {
       return
     }
 
@@ -321,7 +329,8 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const handlePanEnd = (displacement: number) => {
     'worklet'
-    if (disabled.value) {
+    if (disabled.value || FULL_CARD_WIDTH <= 0) {
+      disabled.value = false
       return
     }
 
@@ -381,6 +390,10 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   // ================ Wheel Style ================ //
   const wheelAnimatedStyle = useAnimatedStyle(() => {
+    if(diameter <= 0)
+      {
+        return {}
+      }
     return {
       transform: [{ rotate: `${rotationAngle.value}rad` }],
       width: diameter,

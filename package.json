@@ -18,7 +18,7 @@
     "reinstall": "yarn run rm && yarn",
     "clean": "yarn workspaces run clean",
     "compile": "yarn workspace @oky/core compile && yarn workspaces run compile",
-    "dev": "yarn run clean && yarn run compile && concurrently --kill-others \"docker compose up -d\"",
+    "dev": "git submodule update --init --recursive && yarn run clean && yarn run compile && concurrently --kill-others \"docker compose up -d\"",
     "dev:app": "cd app && npx expo start --go -c",
     "prod:web": "docker-compose -f docker-compose.yml build && docker-compose -f docker-compose.yml up",
     "format": "yarn workspaces run format",

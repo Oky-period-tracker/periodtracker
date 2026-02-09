@@ -126,6 +126,38 @@ To change branches across all submodules at once use this command
 yarn modules:checkout branch-name
 ```
 
+## Branch-Specific Submodules
+
+Some branches (like `custom-avatar-final-update`) require specific submodule branches or commits. Git does not automatically update submodules when you switch branches in the parent repository.
+
+When checking out a branch that requires specific submodule states:
+
+1. Checkout the branch in the parent repo:
+
+```bash
+git checkout branch-name
+```
+
+2. Update submodules to match the branch requirements:
+
+```bash
+git submodule update --init --recursive
+```
+
+3. If the branch uses specific submodule branches (not just commits), run:
+
+```bash
+yarn modules:checkout branch-name
+```
+
+**Important:** Always run `git submodule update --init --recursive` after switching branches to ensure your submodules are at the correct commits. This is especially critical for:
+
+- Building Docker images (`yarn dev` now handles this automatically)
+- Running the Expo app (`yarn dev:app`)
+- Ensuring all assets and translations are available
+
+If you encounter "module not found" errors after switching branches, it's usually because the submodules weren't updated. Run the submodule update command to fix this.
+
 ## Optional submodules
 
 Not all submodules are required to run the project. Optional features can be included or excluded by changing the urls in the [urls.sh](../bin//modules/urls.sh) file.

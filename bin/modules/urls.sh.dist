@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Required to run
-resources_url="git@github.com:Oky-period-tracker/periodtracker_resources-whitelabelled.git"
-common_url="git@github.com:Oky-period-tracker/periodtracker_common-whitelabelled.git"
+resources_url="git@github.com:Oky-period-tracker/periodtracker_resources-global.git"
+common_url="git@github.com:Oky-period-tracker/periodtracker_common-global.git"
 
 # Required to deploy
 k8s_url="git@github.com:Oky-period-tracker/periodtracker_k8s-whitelabelled.git"

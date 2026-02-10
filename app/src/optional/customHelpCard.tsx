@@ -15,7 +15,8 @@ try {
   customHelpTranslations = require('../resources/features/customHelpCard/translations')
     .customHelpTranslations
 
-  CUSTOM_HELP_CARD_ENABLED = true
+  // Force disabled - set to true to re-enable custom help card
+  CUSTOM_HELP_CARD_ENABLED = false
 } catch (e) {
   //
 }

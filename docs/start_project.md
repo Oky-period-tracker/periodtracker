@@ -15,13 +15,17 @@ To test the app's API-CMS interaction, you will need to build the Docker images 
 - Navigate to the Root Directory:
   Open a terminal and navigate to the root directory of the project where the docker-compose.yml file is located.
 
-- Build the Docker Images by running the following command:
+- Build the Docker Images by running the following commands:
+
+```bash
+docker-compose build base
+```
 
 ```bash
 docker-compose build
 ```
 
-This command will build the required images for development.
+These command will build the required images for development.
 
 ## Start the backend/website/cms/api
 
@@ -34,6 +38,9 @@ yarn dev
 ```
 
 **Notes**
+- If running on Mac, you may experience issues with port 5000 availability for PostgreSQL. These issues are tied to the Airplay Receiver, ensure you turn it off following these instrucions:
+  
+- On your Mac, choose Apple menu  > System Settings, click General  in the sidebar, then click AirDrop & Handoff  on the right. (You may need to scroll down.) then disable it and run the yarn dev command again
 
 - Ensure that the images are successfully built before running the development command.
 

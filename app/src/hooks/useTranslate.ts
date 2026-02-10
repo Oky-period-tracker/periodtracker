@@ -13,7 +13,6 @@ import { currentLocaleSelector, translationsSelector } from '../redux/selectors'
 import React from 'react'
 import { setLocale } from '../redux/actions'
 import { useSelector } from '../redux/useSelector'
-import { customSignUpTranslations } from '../optional/customSignUp'
 import { customHelpTranslations } from '../optional/customHelpCard'
 import { miscTranslations } from '../optional/misc'
 import type { ReduxState } from '../redux/reducers'
@@ -65,7 +64,6 @@ export const allTranslations = combineTranslations([
   (miscTranslations as unknown) as TranslationObject,
   // (chatTranslations as unknown) as TranslationObject,
   // (flowerTranslations as unknown) as TranslationObject,
-  (customSignUpTranslations as unknown) as TranslationObject,
   (customHelpTranslations as unknown) as TranslationObject,
 ])
 

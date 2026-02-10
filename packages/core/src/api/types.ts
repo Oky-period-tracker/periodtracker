@@ -1,7 +1,5 @@
 export interface UserMetadata {
   accommodationRequirement?: string
-  religion?: string
-  contentSelection?: number
   city?: string
 }
 

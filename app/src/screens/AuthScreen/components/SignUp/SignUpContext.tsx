@@ -9,13 +9,8 @@ import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { httpClient } from '../../../../services/HttpClient'
 import { useDebounce } from '../../../../hooks/useDebounce'
-import {
-  CUSTOM_SIGN_UP_ENABLED,
-  customStepIndex,
-  validateCustomStep,
-} from '../../../../optional/customSignUp'
 
-export type SignUpStep = 'confirmation' | 'information' | 'secret' | 'age' | 'location' | 'custom'
+export type SignUpStep = 'confirmation' | 'information' | 'secret' | 'age' | 'location'
 
 const steps: SignUpStep[] = ['confirmation', 'information', 'secret', 'age', 'location']
 
@@ -251,11 +246,6 @@ const validateStep = (
     }
   }
 
-  // ========== custom ========== //
-  if (step === 'custom') {
-    return validateCustomStep({ state, isValid, errors })
-  }
-
   return { isValid, errors }
 }
 
@@ -350,12 +340,6 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
     // TODO: wait for success
     setAuthMode('avatar_selection')
   }, [step])
-
-  React.useEffect(() => {
-    if (CUSTOM_SIGN_UP_ENABLED && !steps.includes('custom')) {
-      steps.splice(customStepIndex, 0, 'custom')
-    }
-  }, [CUSTOM_SIGN_UP_ENABLED, steps, customStepIndex])
 
   return (
     <SignUpContext.Provider

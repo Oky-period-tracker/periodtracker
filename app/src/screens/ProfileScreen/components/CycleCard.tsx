@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { EmojiBadge } from '../../../components/EmojiBadge'
 import { useSelector } from '../../../redux/useSelector'
 import { mostAnsweredSelector } from '../../../redux/selectors'
@@ -15,6 +15,7 @@ import { emojiOptions } from '../../../optional/emojis'
 export const CycleCard = ({
   item,
   cycleNumber,
+  navigation,
 }: {
   item: {
     cycleStartDate: Moment
@@ -23,6 +24,7 @@ export const CycleCard = ({
     cycleLength: number
   }
   cycleNumber: number
+  navigation?: any
 }) => {
   const { palette, backgroundColor } = useColor()
   const { months } = useMonths()
@@ -63,8 +65,24 @@ export const CycleCard = ({
   const periodEndMonthIndex = parseInt(periodEndDate.format('M')) - 1
   const periodEndMonth = months[periodEndMonthIndex]
 
+  const goToCalendar = () => {
+    if (!navigation) return
+    
+    const parent = navigation.getParent()
+    if (parent) {
+      parent.navigate('home', { screen: 'Calendar' })
+    } else {
+      navigation.navigate('home' as any, { screen: 'Calendar' })
+    }
+  }
+
   return (
-    <View style={[styles.container, globalStyles.shadow]} testID="cycle">
+    <TouchableOpacity 
+      style={[styles.container, globalStyles.shadow]} 
+      testID="cycle"
+      onPress={goToCalendar}
+      activeOpacity={0.7}
+    >
       <View style={[styles.cycleCard, { backgroundColor }]}>
         {/* ===== Header ===== */}
         <View style={[styles.cycleCardHeader, { backgroundColor: palette.danger.base }]}>
@@ -154,7 +172,7 @@ export const CycleCard = ({
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   )
 }
 

@@ -27,7 +27,11 @@ const ProfileScreen: ScreenComponent<'Profile'> = ({ navigation, ...props }) => 
         data={History}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <CycleCard item={item} cycleNumber={History.length - index} />
+          <CycleCard 
+            item={item} 
+            cycleNumber={History.length - index} 
+            navigation={navigation}
+          />
         )}
       />
     </Screen>

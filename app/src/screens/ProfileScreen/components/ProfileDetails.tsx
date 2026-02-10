@@ -55,6 +55,15 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
     navigation.navigate('Theme')
   }
 
+  const goToCalendar = () => {
+    const parent = navigation.getParent()
+    if (parent) {
+      parent.navigate('home', { screen: 'Calendar' })
+    } else {
+      navigation.navigate('home' as any, { screen: 'Calendar' })
+    }
+  }
+
   const days = translate('days')
 
   const cycleLength = todayInfo.cycleLength === 100 ? '-' : `${todayInfo.cycleLength} ${days}`
@@ -125,7 +134,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
       {/* ===== Middle Section ===== */}
       <View style={styles.row}>
         <View style={styles.iconColumn}>
-          <CircleProgress />
+          <CircleProgress onPress={goToCalendar} />
         </View>
         <View style={styles.column}>
           <View>

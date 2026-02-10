@@ -10,7 +10,8 @@ ios
 *.js
 *.js.map
 *.apk
-# Exception: Regeneration scripts should be tracked
+# Exception: Configuration files and regeneration scripts should be tracked
+!metro.config.js
 !scripts/
 !scripts/regenerate-clothing-correct.js
 !scripts/regenerate-devices-correct.js

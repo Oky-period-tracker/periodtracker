@@ -19,7 +19,7 @@ export const useCycleCalculation = () => {
   const appToken = useSelector(appTokenSelector)
 
   const updateCycleCount = useCallback(async (updatedPeriodDates: PeriodDate[]) => {
-    if (!currentUser) return
+    if (!currentUser || !appToken) return
 
     try {
       const metadataForCalculation: UserMetadata = {
@@ -30,12 +30,10 @@ export const useCycleCalculation = () => {
       const cycleResult = calculateCycles(metadataForCalculation)
 
       if (cycleResult.cyclesNumber !== (currentUser.cyclesNumber || 0)) {
-        if (appToken) {
-          await httpClient.updateCyclesNumber({
-            appToken,
-            cyclesNumber: cycleResult.cyclesNumber,
-          })
-        }
+        await httpClient.updateCyclesNumber({
+          appToken,
+          cyclesNumber: cycleResult.cyclesNumber,
+        })
 
         dispatch(editUser({
           cyclesNumber: cycleResult.cyclesNumber,
@@ -48,7 +46,7 @@ export const useCycleCalculation = () => {
         })
       }
     } catch (error) {
-      // Error handling
+      console.error('Error updating cycle count:', error)
     }
   }, [currentUser, appToken, dispatch])
 

@@ -84,8 +84,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
       const data = generatePeriodDates(predictionFullState)
-
-      updateUserVerifiedDates({ metadata: { periodDates: data } })
+      // Only update local Redux state, don't sync to server on mount
       editUserReduxState({ metadata: { periodDates: data } })
     }
   }, [])
@@ -198,7 +197,11 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
     }
 
     // Step 4: Sort by date for consistency
-    updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    updatedPeriodDates.sort((a, b) => {
+      const dateA = moment(a.date, ['DD/MM/YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'], true)
+      const dateB = moment(b.date, ['DD/MM/YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'], true)
+      return dateA.valueOf() - dateB.valueOf()
+    })
 
     try {
       // Update period dates
@@ -220,6 +223,15 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   }
 
   const updateUserVerifiedDates = async (changes: Partial<User>) => {
+    if (!appToken) {
+      console.warn('Cannot update verified dates: no app token', {
+        hasCurrentUser: !!currentUser,
+        currentUserId: currentUser?.id,
+        appTokenType: typeof appToken,
+        appTokenValue: appToken
+      })
+      return
+    }
     await httpClient.updateUserVerifiedDays({
       appToken,
       ...changes,
@@ -231,6 +243,8 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   }
 
   const updateCycleCount = async (updatedPeriodDates: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]) => {
+    if (!currentUser || !appToken) return
+    
     try {
       // Calculate new cycles number
       const cycleResult = calculateCycles({

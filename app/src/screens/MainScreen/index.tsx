@@ -105,13 +105,22 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
       const data = generatePeriodDates(predictionFullState)
-      updateUserVerifiedDates({ metadata: { periodDates: data } })
+      // Only update local Redux state, don't sync to server on mount
       editUserReduxState({ metadata: { periodDates: data } })
     }
   }, [])
 
   const updateUserVerifiedDates = (changes: Partial<User>) => {
-    httpClient.updateUserVerifiedDays({
+    if (!appToken) {
+      console.warn('Cannot update verified dates: no app token', { 
+        hasCurrentUser: !!currentUser, 
+        currentUserId: currentUser?.id,
+        appTokenType: typeof appToken,
+        appTokenValue: appToken 
+      })
+      return Promise.resolve()
+    }
+    return httpClient.updateUserVerifiedDays({
       appToken,
       ...changes,
     })
@@ -186,7 +195,11 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       }
     }
 
-    updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    updatedPeriodDates.sort((a, b) => {
+      const dateA = moment(a.date, ['DD/MM/YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'], true)
+      const dateB = moment(b.date, ['DD/MM/YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'], true)
+      return dateA.valueOf() - dateB.valueOf()
+    })
 
     try {
       await updateUserVerifiedDates({
@@ -201,7 +214,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
         await updateCycleCount(updatedPeriodDates)
       }
     } catch (error) {
-      // Error handling
+      console.error('Error updating period dates:', error)
     }
   }
 

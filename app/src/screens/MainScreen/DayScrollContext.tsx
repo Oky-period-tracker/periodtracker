@@ -201,7 +201,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
     return fullInfoForDateRange.map((dayInfo) => {
       const dateString = dayInfo.date.format('DD/MM/YYYY')
-      const userVerifiedEntry = currentUser.metadata.periodDates.find(
+      const userVerifiedEntry = currentUser.metadata.periodDates?.find(
         (periodDate) => periodDate.date === dateString && periodDate.userVerified === true
       )
 

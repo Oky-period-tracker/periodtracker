@@ -37,13 +37,14 @@ export interface AvatarConfig {
 }
 
 export interface UserMetadata {
-  periodDates: {
+  periodDates?: {
     date: string
     mlGenerated: boolean
-    userVerified: boolean
-  }
+    userVerified: boolean | null
+  }[]
   isProfileUpdateSkipped?: boolean
   accommodationRequirement?: string
+  city?: string
 }
 
 @Entity()

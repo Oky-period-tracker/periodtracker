@@ -207,6 +207,7 @@ export class AccountController {
       dateSignedUp: user.getDateSignedUp(),
       metadata: user.getMetadata(),
       avatar: user.getAvatar(),
+      cyclesNumber: user.getCyclesNumber(),
     }
 
     const appToken = jwt.sign(userDescriptor, env.app.secret, {
@@ -227,7 +228,7 @@ export class AccountController {
   ) {
     // console.log('request ===== ', request);
 
-    const metadata = request.getMetadata()
+    const metadata = request.metadata
 
     await this.okyUserApplicationService.updateUserVerifiedPeriodDays({
       userId,

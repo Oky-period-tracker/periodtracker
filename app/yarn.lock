@@ -965,7 +965,20 @@
     "@babel/parser" "^7.27.2"
     "@babel/types" "^7.27.1"
 
-"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3", "@babel/traverse@^7.25.3", "@babel/traverse@^7.25.9":
+"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3":
+  version "7.25.9"
+  resolved "https://registry.npmjs.org/@babel/traverse/-/traverse-7.25.9.tgz"
+  integrity sha512-ZCuvfwOwlz/bawvAuvcj8rrithP2/N55Tzz342AkTvq4qaWbGfmCk/tKhNaV2cthijKrPAA8SRJV5WWe7IBMJw==
+  dependencies:
+    "@babel/code-frame" "^7.25.9"
+    "@babel/generator" "^7.25.9"
+    "@babel/parser" "^7.25.9"
+    "@babel/template" "^7.25.9"
+    "@babel/types" "^7.25.9"
+    debug "^4.3.1"
+    globals "^11.1.0"
+
+"@babel/traverse@^7.25.3", "@babel/traverse@^7.25.9":
   version "7.25.9"
   resolved "https://registry.npmjs.org/@babel/traverse/-/traverse-7.25.9.tgz"
   integrity sha512-ZCuvfwOwlz/bawvAuvcj8rrithP2/N55Tzz342AkTvq4qaWbGfmCk/tKhNaV2cthijKrPAA8SRJV5WWe7IBMJw==
@@ -2266,29 +2279,29 @@
   resolved "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-11.4.1.tgz"
   integrity sha512-B0BYAkghz3Q2V09BF88RA601XursIEA111tnc2JOaN7axJWmNefmfjZqw/KdSxKZp7CZUuPpjBmz/WCR9uaHYg==
 
-"@react-native-firebase/analytics@^20.4.0":
-  version "20.5.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/analytics/-/analytics-20.5.0.tgz"
-  integrity sha512-mZa7fHtyfBZQuMl6QZLmO0sL1pB32c2+NGqKcGyLhYcMc+PFpOOI1axxFLC32JmgZ5lXBLBWbPR1oF2QndQdCA==
+"@react-native-firebase/analytics@20.4.0":
+  version "20.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-20.4.0.tgz#19e8e04ff22b8fd875b29bca32ad1eaed04bda05"
+  integrity sha512-z+f6J8qJmsdEKzJEd1WSPqS6al9pcgmtN+zokpnWntcIiN52+ckdZtV9qrrcgPFHO5dqFnG5zo+yu60OTKE70Q==
 
-"@react-native-firebase/app@^20.4.0":
-  version "20.5.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-20.5.0.tgz"
-  integrity sha512-zW6jc9R8Ikxxo5qXv25No6QxdWOx37D4U0ppKZQoY6CzwGUzqc4oQUU9MclbUcx+H5p+GEzvT1EIGV6JG7/FAg==
+"@react-native-firebase/app@20.4.0":
+  version "20.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-20.4.0.tgz#a9c5c12505432d42f7d4a0c4265b8684dc8353fc"
+  integrity sha512-I3YswH5tq0kSezyFwyV0d3J+lnH+N/SdznFZ70Lr671X0YlrbEBb6BK7FzEiwq8rKeIPh+pbgnbYwzj/k9uEnQ==
   dependencies:
     firebase "10.12.2"
     superstruct "^0.6.2"
 
-"@react-native-firebase/crashlytics@^20.4.0":
-  version "20.5.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/crashlytics/-/crashlytics-20.5.0.tgz"
-  integrity sha512-HXnxv5XrLW4zMWIGBbQZqyHKEqimvr4SULtk9J694WHOvPnXClibwXTAYzHV7WmZ3ypwUwbVJFrGJ1IdOb+Aaw==
+"@react-native-firebase/crashlytics@20.4.0":
+  version "20.4.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/crashlytics/-/crashlytics-20.4.0.tgz#6e1b289feb0b907602fdd3e9ba17fd15cb92b283"
+  integrity sha512-D3j9UdLcMkRJA7Oks3l2xYIH7lhwb2hf0ZiB2djKkGwc0tJDtOLe7Cbi2gJKezzwxaaFnNI8ZNXPLkizNgtbyw==
   dependencies:
     stacktrace-js "^2.0.2"
 
-"@react-native-firebase/messaging@^20.4.0":
+"@react-native-firebase/messaging@20.4.0":
   version "20.4.0"
-  resolved "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-20.4.0.tgz"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-20.4.0.tgz#4f616bd5df0bf3feffc768968bec763ed2f702eb"
   integrity sha512-Ju0rQLoJIzur+QQSQ3O2q/7aBnJa9dyT7kY1tt52vRJ38Bm3/W1NKcYPbbfqMV+N6Nelonlxs1/kaQmo/p+/AA==
 
 "@react-native/assets-registry@0.76.9":
@@ -9207,7 +9220,16 @@ string-length@^5.0.1:
     char-regex "^2.0.0"
     strip-ansi "^7.0.1"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -9278,7 +9300,7 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
   version "6.0.1"
   resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -9291,6 +9313,13 @@ strip-ansi@^5.2.0:
   integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
   dependencies:
     ansi-regex "^4.1.0"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
 
 strip-ansi@^7.0.1:
   version "7.1.0"
@@ -10086,7 +10115,16 @@ word-wrap@^1.2.5:
   resolved "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.5.tgz"
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==

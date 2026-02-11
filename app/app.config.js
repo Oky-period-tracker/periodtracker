@@ -1,10 +1,13 @@
-let customConfig = {}
+const path = require('path')
+const fs = require('fs')
 
+let customConfig = {}
+const configPath = path.join(__dirname, 'src', 'resources', 'app.json')
 try {
-  // eslint-disable-next-line no-undef
-  customConfig = require(`./src/resources/app.json`)
+  const raw = fs.readFileSync(configPath, 'utf8')
+  customConfig = JSON.parse(raw)
 } catch (e) {
-  console.log('Failed to load custom config')
+  console.error('Failed to load custom config from', configPath, e.message)
 }
 
 export default ({ config }) => ({

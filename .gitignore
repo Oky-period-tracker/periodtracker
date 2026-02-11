@@ -11,6 +11,8 @@ yarn-error.log
 **/*.js.map
 **/*.d.ts
 !app/scripts/*
+!app/app.config.js
+!app/metro.config.js
 -la packages/delete-account/*/jest.config.js
 -la packages/delete-account/*/babel.config.js
 -la packages/delete-account/*/app.config.js

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="174"
+   height="240"
+   viewBox="0 0 174 240"
+   fill="none"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="Smile with shadow.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     id="namedview10"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="2.2083333"
+     inkscape:cx="86.943396"
+     inkscape:cy="120"
+     inkscape:window-width="1366"
+     inkscape:window-height="694"
+     inkscape:window-x="0"
+     inkscape:window-y="26"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8" />
+  <path
+     d="M87.0032 79.0502C96.0925 79.0502 103.46 71.702 103.46 62.6368H70.5396C70.5396 71.702 77.9075 79.0502 86.9969 79.0502H87.0032Z"
+     fill="#BF6658"
+     id="path4" />
+  <path
+     d="M72.6949 62.6371C72.6951 71.3419 79.4894 78.462 88.0777 79.014C87.7224 79.0369 87.3636 79.0502 87.0025 79.0502H86.9966C77.9075 79.0501 70.5399 71.702 70.5396 62.6371H72.6949Z"
+     fill="#964B3F"
+     id="path6" />
+</svg>

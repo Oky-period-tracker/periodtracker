@@ -3,7 +3,6 @@
 node_modules/
 yarn-error.log
 .obsidian
-.gitmodules
 /bin/modules/urls.sh
 *.env
 .expo

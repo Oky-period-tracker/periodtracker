@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "559067581096",
+    "project_id": "periodtracker-v2-dev",
+    "storage_bucket": "periodtracker-v2-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559067581096:android:e97169438fc9fdbe60d09d",
+        "android_client_info": {
+          "package_name": "com.oky"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp3yjCdMhPiz0jSRvyddsh_UUkfIPlTfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559067581096:android:80c679ac75db6dfb60d09d",
+        "android_client_info": {
+          "package_name": "com.unicef.oky"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp3yjCdMhPiz0jSRvyddsh_UUkfIPlTfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

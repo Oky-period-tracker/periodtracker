@@ -9,5 +9,5 @@ try {
 
 export default ({ config }) => ({
   ...config,
-  ...customConfig,
+  ...(customConfig.expo ?? customConfig),
 })

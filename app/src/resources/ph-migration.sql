@@ -1,0 +1,11 @@
+-- PH ONLY
+
+-- Migrate oky_user columns into metadata column
+UPDATE oky_user
+SET metadata = json_build_object(
+    'accommodationRequirement', oky_user."accommodationRequirement",
+    'religion', oky_user."religion",
+    'city', oky_user."city",
+    'contentSelection', CASE WHEN oky_user."encyclopediaVersion" = 'Yes' THEN 2 ELSE 1 END
+)
+WHERE metadata IS NULL OR metadata::text = '{}';

@@ -105,10 +105,10 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
           </View>
           <View style={styles.column}>
             <View>
-              <Text style={styles.text}>Name:</Text>
-              <Text style={styles.text}>Date of birth:</Text>
-              <Text style={styles.text}>Gender:</Text>
-              <Text style={styles.text}>Location:</Text>
+              <Text style={styles.text}>profile_label_name</Text>
+              <Text style={styles.text}>profile_label_dob</Text>
+              <Text style={styles.text}>profile_label_gender</Text>
+              <Text style={styles.text}>profile_label_location</Text>
             </View>
           </View>
           <View style={styles.column}>
@@ -138,8 +138,8 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={styles.text}>Cycle lenght:</Text>
-            <Text style={styles.text}>Period lenght:</Text>
+            <Text style={styles.text}>profile_label_cycle_length</Text>
+            <Text style={styles.text}>profile_label_period_length</Text>
           </View>
         </View>
         <View style={styles.column}>

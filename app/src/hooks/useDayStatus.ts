@@ -15,7 +15,6 @@ export const useDayStatus = (
 } => {
   const day = useSelector((state) => verifyPeriodDaySelectorWithDate(state, dataEntry.date))
 
-  // @ts-expect-error TODO:
   const isVerified = day?.periodDay
 
   if (dataEntry.onPeriod && isVerified) {
@@ -54,7 +53,6 @@ export const getDayStatus = (
 } => {
   const day = verifyPeriodDaySelectorWithDate(state, dataEntry.date)
 
-  // @ts-expect-error TODO:
   const isVerified = day?.periodDay
 
   if (dataEntry.onPeriod && isVerified) {

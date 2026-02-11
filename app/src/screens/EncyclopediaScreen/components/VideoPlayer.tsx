@@ -1,6 +1,6 @@
 import React from 'react'
 import { Alert, Modal, StyleSheet, View } from 'react-native'
-import { ResizeMode, Video } from 'expo-av'
+import { useVideoPlayer, VideoView } from 'expo-video'
 import YoutubePlayer from 'react-native-youtube-iframe'
 import { FontAwesome } from '@expo/vector-icons'
 import { useEncyclopedia } from '../EncyclopediaContext'
@@ -90,6 +90,12 @@ export const VideoPlayerModal = () => {
     width = height * videoAspectRatio
   }
 
+  const player = useVideoPlayer(bundledSource ?? null, (p) => {
+    if (bundledSource) {
+      p.play()
+    }
+  })
+
   if (!videoData) {
     return null
   }
@@ -109,12 +115,11 @@ export const VideoPlayerModal = () => {
       <View style={styles.container}>
         <View style={styles.body}>
           {bundledSource ? (
-            <Video
-              source={bundledSource}
-              resizeMode={ResizeMode.CONTAIN}
+            <VideoView
+              player={player}
+              contentFit="contain"
               style={{ width, height }}
-              shouldPlay={true}
-              useNativeControls
+              nativeControls
             />
           ) : (
             <YoutubePlayer videoId={videoData.youtubeId} height={height} width={width} />

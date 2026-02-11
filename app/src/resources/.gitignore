@@ -2,3 +2,9 @@
 
 # Remove this to track builds
 builds
+
+# Sensitive Firebase/Google service files
+google-services.json
+google-services.json.*
+GoogleService-Info.plist
+GoogleService-Info.plist.*

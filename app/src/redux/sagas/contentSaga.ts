@@ -18,7 +18,6 @@ import {
 function* onRehydrate(action: RehydrateAction) {
   // @ts-expect-error TODO:
   const locale = yield select(selectors.currentLocaleSelector)
-
   const hasPreviousContentFromStorage =
     // @ts-expect-error TODO:
     action.payload && action.payload.content
@@ -236,10 +235,13 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     )
   } catch (error) {
     yield put(actions.fetchContentFailure())
+    // Always ensure stale content is loaded when API is unreachable
+    // This prevents the app from showing empty/placeholder content
+    const localeInit = (yield select(selectors.currentLocaleSelector)) as Locale
     // @ts-expect-error TODO:
-    const aboutContent = yield select(selectors.aboutContent)
-    if (!aboutContent) {
-      const localeInit = (yield select(selectors.currentLocaleSelector)) as Locale
+    const currentArticles = yield select(selectors.articlesSelector)
+    const hasContent = currentArticles?.allIds?.length > 0
+    if (!hasContent) {
       yield put(actions.initStaleContent(staleContent[localeInit]))
     }
   }

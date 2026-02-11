@@ -2,7 +2,7 @@
   "expo": {
     "name": "Oky",
     "slug": "okyapp",
-    "version": "8.0.2",
+    "version": "9.0.0",
     "orientation": "default",
     "icon": "./src/resources/assets/app/icon.jpg",
     "splash": {
@@ -13,9 +13,9 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.unicef.oky",
-      "buildNumber": "7",
+      "buildNumber": "15",
       "supportsTablet": true,
-      "googleServicesFile": "./src/resources/GoogleService-Info.plist",
+      "googleServicesFile": "./src/resources/GoogleService-Info.plist.prod",
       "deploymentTarget": "12.0",
       "infoPlist": {
         "UIBackgroundModes": ["fetch", "remote-notification"],
@@ -27,8 +27,8 @@
     },
     "android": {
       "package": "com.oky",
-      "googleServicesFile": "./src/resources/google-services.json",
-      "versionCode": 82,
+      "googleServicesFile": "./src/resources/google-services.json.prod",
+      "versionCode": 88,
       "supportsTablet": true,
       "permissions": ["INTERNET"]
     },
@@ -38,7 +38,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "b4ff42c2-754b-46c8-a8a3-cb550b8bf86b"
+        "projectId": "3d789989-7904-447c-aa65-dd8e22163514"
       }
     },
     "plugins": [
@@ -48,7 +48,7 @@
           "android": {
             "useLegacyPackaging": true,
             "enableShrinkResourcesInReleaseBuilds": true,
-            "enableProguardInReleaseBuilds": true,
+            "enableMinifyInReleaseBuilds": true,
             "manifest": {
               "application": {
                 "meta-data": [

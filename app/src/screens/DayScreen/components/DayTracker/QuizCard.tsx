@@ -71,7 +71,7 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
           </>
         )}
         {!answeredQuestion &&
-          selectedQuestion.answers.map((answer, index) => {
+          selectedQuestion.answers.map((answer: any, index: number) => {
             const onPress = () => {
               dispatch(
                 answerQuiz({

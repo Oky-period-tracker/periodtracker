@@ -1,38 +1,37 @@
 import _ from 'lodash'
+import { createSelector } from 'reselect'
 import { ReduxState } from '../reducers'
 import { isDefined } from '../../services/utils'
 
-const s = (state: ReduxState) => state.content
+// Stable empty references to avoid creating new objects/arrays on every call
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const EMPTY_OBJECT = {} as any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const EMPTY_ARRAY: any[] = []
 
-// Simple memoization helper: caches last input reference and result
-function memoize<TInput, TResult>(fn: (input: TInput) => TResult): (input: TInput) => TResult {
-  let lastInput: TInput | undefined
-  let lastResult: TResult
-  return (input: TInput) => {
-    if (input === lastInput) return lastResult
-    lastInput = input
-    lastResult = fn(input)
-    return lastResult
-  }
-}
+const s = (state: ReduxState) => state.content
 
 export const articlesSelector = (state: ReduxState) => s(state).articles
 
-const _allArticles = memoize((articles: ReturnType<typeof articlesSelector>) => {
-  if (!articles?.allIds || !articles?.byId) {
-    return []
-  }
-  return articles.allIds.map((id) => articles.byId?.[id]).filter(isDefined)
-})
-export const allArticlesSelector = (state: ReduxState) => _allArticles(s(state)?.articles)
+export const allArticlesSelector = createSelector(
+  [(state: ReduxState) => s(state)?.articles],
+  (articles) => {
+    if (!articles?.allIds || !articles?.byId) {
+      return EMPTY_ARRAY
+    }
+    return articles.allIds.map((id) => articles.byId?.[id]).filter(isDefined)
+  },
+)
 
-const _allVideos = memoize((videos: ReduxState['content']['videos']) => {
-  if (!videos?.allIds || !videos?.byId) {
-    return []
-  }
-  return videos.allIds.map((id) => videos.byId?.[id]).filter(isDefined)
-})
-export const allVideosSelector = (state: ReduxState) => _allVideos(s(state)?.videos)
+export const allVideosSelector = createSelector(
+  [(state: ReduxState) => s(state)?.videos],
+  (videos) => {
+    if (!videos?.allIds || !videos?.byId) {
+      return EMPTY_ARRAY
+    }
+    return videos.allIds.map((id) => videos.byId?.[id]).filter(isDefined)
+  },
+)
 
 export const articleByIDSelector = (state: ReduxState, id: string) => {
   const articles = s(state).articles
@@ -44,35 +43,42 @@ export const videoByIDSelector = (state: ReduxState, id: string) => {
 }
 
 export const articlesObjectByIDSelector = (state: ReduxState) => {
-  return s(state).articles?.byId ?? {}
+  return s(state).articles?.byId ?? EMPTY_OBJECT
 }
 
-export const allHelpCentersForCurrentLocale = (state: ReduxState) => {
-  return s(state).helpCenters.filter((item) => item.lang === state.app?.locale)
-}
+export const allHelpCentersForCurrentLocale = createSelector(
+  [(state: ReduxState) => s(state).helpCenters, (state: ReduxState) => state.app?.locale],
+  (helpCenters, locale) => {
+    return helpCenters.filter((item) => item.lang === locale)
+  },
+)
 
 export const helpCenterAttributesSelector = (state: ReduxState) => {
   return s(state).helpCenterAttributes
 }
 
-const _allCategories = memoize((categories: ReduxState['content']['categories']) => {
-  if (!categories?.allIds || !categories?.byId) {
-    return []
-  }
-  return categories.allIds.map((id) => categories?.byId?.[id]).filter(isDefined)
-})
-export const allCategoriesSelector = (state: ReduxState) => _allCategories(s(state)?.categories)
+export const allCategoriesSelector = createSelector(
+  [(state: ReduxState) => s(state)?.categories],
+  (categories) => {
+    if (!categories?.allIds || !categories?.byId) {
+      return EMPTY_ARRAY
+    }
+    return categories.allIds.map((id) => categories?.byId?.[id]).filter(isDefined)
+  },
+)
 
-const _allSubCategories = memoize((subCategories: ReduxState['content']['subCategories']) => {
-  if (!subCategories?.byId || !subCategories?.allIds) {
-    return []
-  }
-  return subCategories?.allIds.map((id) => subCategories.byId?.[id]).filter(isDefined)
-})
-export const allSubCategoriesSelector = (state: ReduxState) => _allSubCategories(s(state)?.subCategories)
+export const allSubCategoriesSelector = createSelector(
+  [(state: ReduxState) => s(state)?.subCategories],
+  (subCategories) => {
+    if (!subCategories?.byId || !subCategories?.allIds) {
+      return EMPTY_ARRAY
+    }
+    return subCategories.allIds.map((id) => subCategories.byId?.[id]).filter(isDefined)
+  },
+)
 
 export const allSubCategoriesByIdSelector = (state: ReduxState) => {
-  return s(state)?.subCategories?.byId ?? {}
+  return s(state)?.subCategories?.byId ?? EMPTY_OBJECT
 }
 
 export const categoryByIDSelector = (state: ReduxState, id: string) => {
@@ -88,7 +94,7 @@ export const allAvatarText = (state: ReduxState) => {
 }
 
 export const translationsSelector = (state: ReduxState) => {
-  return s(state)?.translations ?? {}
+  return s(state)?.translations ?? EMPTY_OBJECT
 }
 
 export const privacyContent = (state: ReduxState) => {
@@ -104,72 +110,63 @@ export const aboutContent = (state: ReduxState) => {
 }
 
 export const allSurveysSelector = (state: ReduxState) => {
-  return s(state)?.allSurveys ?? []
+  return s(state)?.allSurveys ?? EMPTY_ARRAY
 }
 
 export const completedSurveysSelector = (state: ReduxState) => {
-  return s(state)?.completedSurveys ?? []
+  return s(state)?.completedSurveys ?? EMPTY_ARRAY
 }
 
 export const aboutBannerSelector = (state: ReduxState) => {
   return s(state)?.aboutBanner
 }
 
-export const allQuizzesSelectors = (state: ReduxState) => {
-  // TODO: FIXME
-  const isUserYoungerThan15 = true
-  // moment()
-  //   .utc()
-  //   .diff(state.auth.user.dateOfBirth) < 15
-  const tempArr = []
-  const filteredArray = s(state).quizzes.allIds.reduce((acc, id) => {
-    if (
-      (!s(state).quizzes.byId[id]?.isAgeRestricted && isUserYoungerThan15) ||
-      !isUserYoungerThan15
-    ) {
-      tempArr.push(s(state).quizzes.byId[id])
+export const allQuizzesSelectors = createSelector(
+  [(state: ReduxState) => s(state).quizzes],
+  (quizzes) => {
+    // TODO: FIXME
+    const isUserYoungerThan15 = true
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filteredArray = quizzes.allIds.reduce((acc: any[], id) => {
+      if (
+        (!quizzes.byId[id]?.isAgeRestricted && isUserYoungerThan15) ||
+        !isUserYoungerThan15
+      ) {
+        acc.push(quizzes.byId[id])
+      }
+      return acc
+    }, [])
+
+    // In the extreme event of all content being age restricted return the first quiz instead of crashing
+    if (_.isEmpty(filteredArray)) {
+      return [quizzes.byId[quizzes.allIds[0]]]
     }
-    if (
-      (!s(state).quizzes.byId[id].isAgeRestricted && isUserYoungerThan15) ||
-      !isUserYoungerThan15
-    ) {
-      // @ts-expect-error TODO:
-      acc.push(s(state).quizzes.byId[id])
+
+    return filteredArray
+  },
+)
+
+export const allDidYouKnowsSelectors = createSelector(
+  [(state: ReduxState) => s(state).didYouKnows],
+  (didYouKnows) => {
+    // TODO: FIXME
+    const isUserYoungerThan15 = true
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filteredArray = didYouKnows.allIds.reduce((acc: any[], id) => {
+      if (
+        (!didYouKnows.byId[id]?.isAgeRestricted && isUserYoungerThan15) ||
+        !isUserYoungerThan15
+      ) {
+        acc.push(didYouKnows.byId[id])
+      }
+      return acc
+    }, [])
+
+    // In the extreme event of all content being age restricted return the first did you know instead of crashing
+    if (_.isEmpty(filteredArray)) {
+      return [didYouKnows.byId[didYouKnows.allIds[0]]]
     }
-    return acc
-  }, [])
 
-  // In the extreme event of all content being age restricted return the first quiz/ did you know instead of crashing the app
-
-  if (_.isEmpty(filteredArray)) {
-    return [s(state).quizzes.byId[s(state).quizzes.allIds[0]]]
-  }
-
-  return filteredArray
-}
-
-export const allDidYouKnowsSelectors = (state: ReduxState) => {
-  // TODO: FIXME
-  // FYI Age restriction occurs server side now
-  const isUserYoungerThan15 = true
-  // moment()
-  //   .utc()
-  //   .diff(state.auth.user.dateOfBirth) < 15
-  const filteredArray = s(state).didYouKnows.allIds.reduce((acc, id) => {
-    if (
-      (!s(state).didYouKnows.byId[id]?.isAgeRestricted && isUserYoungerThan15) ||
-      !isUserYoungerThan15
-    ) {
-      // @ts-expect-error TODO:
-      acc.push(s(state).didYouKnows.byId[id])
-    }
-    return acc
-  }, [])
-
-  // In the extreme event of all content being age restricted return the first quiz/ did you know instead of crashing the app
-  if (_.isEmpty(filteredArray)) {
-    return [s(state).didYouKnows.byId[s(state).didYouKnows.allIds[0]]]
-  }
-
-  return filteredArray
-}
+    return filteredArray
+  },
+)

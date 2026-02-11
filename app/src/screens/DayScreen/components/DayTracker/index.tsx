@@ -1,14 +1,22 @@
 import * as React from 'react'
+import moment from 'moment'
 
 import { EmojiQuestionCard } from './EmojiQuestionCard'
 import { QuizCard } from './QuizCard'
 import { DidYouKnowCard } from './DidYouKnowCard'
 import { NotesCard } from './NotesCard'
 import { Swiper } from '../../../../components/Swiper'
-import { usePredictDay } from '../../../../contexts/PredictionProvider'
+import { usePredictDay, usePredictionEngineState } from '../../../../contexts/PredictionProvider'
 import { ScreenProps } from '../../../../navigation/RootNavigator'
 import { DayModal } from '../../../../components/DayModal'
 import { useToggle } from '../../../../hooks/useToggle'
+import { useDispatch, useSelector } from 'react-redux'
+import { appTokenSelector, currentUserSelector } from '../../../../redux/selectors'
+import { editUser } from '../../../../redux/actions'
+import { httpClient } from '../../../../services/HttpClient'
+import { generatePeriodDates } from '../../../../prediction/predictionLogic'
+import { useCycleCalculation } from '../../../../hooks/useCycleCalculation'
+import { User } from '../../../../types'
 
 export const DayTracker = ({ navigation, route }: ScreenProps<'Day'>) => {
   const dataEntry = usePredictDay(route.params.date)
@@ -17,9 +25,99 @@ export const DayTracker = ({ navigation, route }: ScreenProps<'Day'>) => {
 
   const [index, setIndex] = React.useState(0)
 
+  const currentUser = useSelector(currentUserSelector) as User
+  const appToken = useSelector(appTokenSelector)
+  const reduxDispatch = useDispatch()
+  const predictionFullState = usePredictionEngineState()
+  const { updateCycleCount } = useCycleCalculation()
+
   const goBack = () => {
     if (navigation.canGoBack()) {
       navigation.goBack()
+    }
+  }
+
+  const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
+    const predictedPeriodDates = generatePeriodDates(predictionFullState)
+
+    let updatedPeriodDates = currentUser.metadata?.periodDates
+      ? [...currentUser.metadata.periodDates]
+      : []
+
+    const mlDatesToAdd = predictedPeriodDates
+      .filter((entry) => !updatedPeriodDates.some((u) => u.date === entry.date))
+      .map((entry) => ({
+        ...entry,
+        mlGenerated: false,
+        userVerified: entry.userVerified || false,
+      }))
+    updatedPeriodDates = [...updatedPeriodDates, ...mlDatesToAdd]
+
+    const isMlPredicted = predictedPeriodDates.some((entry) => entry.date === periodDate)
+    const existingDateIndex = updatedPeriodDates.findIndex((entry) => entry.date === periodDate)
+
+    let shouldRecalculateCycles = false
+
+    if (isPeriodDay) {
+      if (existingDateIndex !== -1) {
+        const existingEntry = updatedPeriodDates[existingDateIndex]
+        if (existingEntry.userVerified === true) {
+          return
+        } else {
+          updatedPeriodDates[existingDateIndex] = {
+            ...existingEntry,
+            userVerified: true,
+            mlGenerated: false,
+          }
+          shouldRecalculateCycles = true
+        }
+      } else {
+        updatedPeriodDates.push({
+          date: periodDate,
+          mlGenerated: isMlPredicted,
+          userVerified: true,
+        })
+        shouldRecalculateCycles = true
+      }
+    } else {
+      if (existingDateIndex !== -1) {
+        const existingEntry = updatedPeriodDates[existingDateIndex]
+        if (existingEntry.userVerified === true) {
+          updatedPeriodDates.splice(existingDateIndex, 1)
+          shouldRecalculateCycles = true
+        } else {
+          updatedPeriodDates.splice(existingDateIndex, 1)
+        }
+      } else {
+        return
+      }
+    }
+
+    updatedPeriodDates.sort((a, b) => {
+      const dateA = moment(a.date, ['DD/MM/YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'], true)
+      const dateB = moment(b.date, ['DD/MM/YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'], true)
+      return dateA.valueOf() - dateB.valueOf()
+    })
+
+    // Update local state first (optimistic) so locks unlock immediately
+    reduxDispatch(editUser({
+      metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+    }))
+
+    if (shouldRecalculateCycles) {
+      await updateCycleCount(updatedPeriodDates)
+    }
+
+    // Sync to server in the background (failure won't block local state)
+    if (appToken) {
+      try {
+        await httpClient.updateUserVerifiedDays({
+          appToken,
+          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+        })
+      } catch (error) {
+        console.error('Error syncing period dates to server:', error)
+      }
     }
   }
 
@@ -50,6 +148,7 @@ export const DayTracker = ({ navigation, route }: ScreenProps<'Day'>) => {
         visible={visible}
         toggleVisible={toggleVisible}
         hideLaunchButton={false}
+        onHandleResponse={handleDayModalResponse}
       />
     </>
   )

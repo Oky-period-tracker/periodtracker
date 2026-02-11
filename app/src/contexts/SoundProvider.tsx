@@ -13,7 +13,11 @@ const defaultValue: SoundContext = {
   stopSound: emptyPromise,
   unloadSound: () => emptyPromise,
   assetUri: null,
-  playbackStatus: undefined,
+  playbackProgress: {
+    currentTime: 0,
+    duration: 0,
+    isLoaded: false,
+  },
   status: 'idle',
 }
 

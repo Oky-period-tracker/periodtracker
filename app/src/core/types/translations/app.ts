@@ -494,4 +494,31 @@ export interface AppTranslations {
   password_change_fail_description: string
   info_button: string
   new_password: string
+
+  // Profile
+  profile_title: string
+  profile_subtitle: string
+  profile_label_name: string
+  profile_label_dob: string
+  profile_label_gender: string
+  profile_label_location: string
+  profile_label_cycle_length: string
+  profile_label_period_length: string
+  change_oky_friend: string
+  change_the_name: string
+  change_background: string
+  track_regularly_cycle_updates: string
+
+  // Error/Validation
+  password_change_fail: string
+  no_gender: string
+  no_year: string
+  no_month: string
+  no_location: string
+  no_country: string
+  no_province: string
+
+  // Misc
+  close: string
+  skip_tutorial: string
 }

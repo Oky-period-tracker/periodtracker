@@ -19,7 +19,7 @@ export const useCycleCalculation = () => {
   const appToken = useSelector(appTokenSelector)
 
   const updateCycleCount = useCallback(async (updatedPeriodDates: PeriodDate[]) => {
-    if (!currentUser || !appToken) return
+    if (!currentUser) return
 
     try {
       const metadataForCalculation: UserMetadata = {
@@ -30,11 +30,7 @@ export const useCycleCalculation = () => {
       const cycleResult = calculateCycles(metadataForCalculation)
 
       if (cycleResult.cyclesNumber !== (currentUser.cyclesNumber || 0)) {
-        await httpClient.updateCyclesNumber({
-          appToken,
-          cyclesNumber: cycleResult.cyclesNumber,
-        })
-
+        // Update local Redux state first (works for both guest and logged-in users)
         dispatch(editUser({
           cyclesNumber: cycleResult.cyclesNumber,
         }))
@@ -44,6 +40,18 @@ export const useCycleCalculation = () => {
           previousCyclesNumber: currentUser.cyclesNumber || 0,
           newCyclesNumber: cycleResult.cyclesNumber,
         })
+
+        // Sync to server only if logged in (appToken exists)
+        if (appToken) {
+          try {
+            await httpClient.updateCyclesNumber({
+              appToken,
+              cyclesNumber: cycleResult.cyclesNumber,
+            })
+          } catch (serverError) {
+            console.error('Error syncing cycle count to server:', serverError)
+          }
+        }
       }
     } catch (error) {
       console.error('Error updating cycle count:', error)

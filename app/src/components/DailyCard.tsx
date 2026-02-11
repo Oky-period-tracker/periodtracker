@@ -137,21 +137,16 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
 
       <View style={styles.bottom}>
         {Object.entries(emojiOptions).map(([key]) => {
-          // @ts-expect-error TODO:
           const isArray = Array.isArray(cardAnswersValues[key])
 
           const isEmojiActive = isArray
-            ? // @ts-expect-error TODO:
-              cardAnswersValues[key]?.length > 0
-            : // @ts-expect-error TODO:
-              !!cardAnswersValues[key]
+            ? cardAnswersValues[key]?.length > 0
+            : !!cardAnswersValues[key]
 
           const answer = isEmojiActive
             ? isArray
-              ? // @ts-expect-error TODO:
-                cardAnswersValues[key][0]
-              : // @ts-expect-error TODO:
-                cardAnswersValues[key]
+              ? cardAnswersValues[key][0]
+              : cardAnswersValues[key]
             : ''
 
           const emoji = isEmojiActive

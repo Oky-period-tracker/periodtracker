@@ -3,14 +3,14 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { View, StyleSheet } from 'react-native'
 import { useSound } from '../contexts/SoundProvider'
 import { Button } from './Button'
-import { AVPlaybackStatus } from 'expo-av'
+import { PlaybackProgress } from '../hooks/useAudio'
 import { PaletteStatus, useColor } from '../hooks/useColor'
 import { useThrottledFunction } from '../hooks/useThrottledFunction'
 import { Spinner } from './Spinner'
 import { ErrorText } from './ErrorText'
 
 export const AudioPlayer = ({ audioAssetUri }: { audioAssetUri: string }) => {
-  const { playSound, pauseSound, assetUri, playbackStatus, status } = useSound()
+  const { playSound, pauseSound, assetUri, playbackProgress, status } = useSound()
   const [loading, setLoading] = React.useState(false)
 
   const assetSelected = assetUri === audioAssetUri
@@ -47,7 +47,7 @@ export const AudioPlayer = ({ audioAssetUri }: { audioAssetUri: string }) => {
         )}
       </Button>
       {assetSelected && (
-        <ProgressBar playbackStatus={playbackStatus} paletteStatus={paletteStatus} />
+        <ProgressBar playbackProgress={playbackProgress} paletteStatus={paletteStatus} />
       )}
       {error && <ErrorText style={styles.error}>error</ErrorText>}
     </View>
@@ -55,20 +55,20 @@ export const AudioPlayer = ({ audioAssetUri }: { audioAssetUri: string }) => {
 }
 
 const ProgressBar = ({
-  playbackStatus,
+  playbackProgress,
   paletteStatus,
 }: {
-  playbackStatus: AVPlaybackStatus | undefined
+  playbackProgress: PlaybackProgress
   paletteStatus: PaletteStatus
 }) => {
   const { palette } = useColor()
 
-  if (!playbackStatus || !playbackStatus.isLoaded || !playbackStatus.durationMillis) {
+  if (!playbackProgress || !playbackProgress.isLoaded || !playbackProgress.duration) {
     return null
   }
 
   const color = palette[paletteStatus].base
-  const progress = (playbackStatus.positionMillis / playbackStatus.durationMillis) * 100
+  const progress = (playbackProgress.currentTime / playbackProgress.duration) * 100
 
   return (
     <View style={[styles.progressBarContainer, { borderColor: color }]}>

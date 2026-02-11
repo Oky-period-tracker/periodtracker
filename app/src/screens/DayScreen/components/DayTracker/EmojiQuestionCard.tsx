@@ -11,13 +11,14 @@ import { EmojiQuestionOptions } from './types'
 import { useSelector } from '../../../../redux/useSelector'
 import { Text } from '../../../../components/Text'
 import {
+  appTokenSelector,
   cardAnswerSelector,
   currentUserSelector,
   lastPressedEmojiSelector,
 } from '../../../../redux/selectors'
 import { DayData } from '../../../MainScreen/DayScrollContext'
 import { useDispatch } from 'react-redux'
-import { answerDailyCard, updateLastPressedEmojiDate } from '../../../../redux/actions'
+import { answerDailyCard, editUser, updateLastPressedEmojiDate } from '../../../../redux/actions'
 import { DayModal } from '../../../../components/DayModal'
 import { useToggle } from '../../../../hooks/useToggle'
 import { useTranslate } from '../../../../hooks/useTranslate'
@@ -25,6 +26,11 @@ import moment from 'moment'
 import { firebaseLogEvent } from '../../../../services/firebase'
 import { useResponsive } from '../../../../contexts/ResponsiveContext'
 import { useColor } from '../../../../hooks/useColor'
+import { usePredictionEngineState } from '../../../../contexts/PredictionProvider'
+import { generatePeriodDates } from '../../../../prediction/predictionLogic'
+import { useCycleCalculation } from '../../../../hooks/useCycleCalculation'
+import { httpClient } from '../../../../services/HttpClient'
+import { User } from '../../../../types'
 
 export const EmojiQuestionCard = ({
   topic,
@@ -57,7 +63,11 @@ export const EmojiQuestionCard = ({
   const includeDayModal = topic === 'flow'
   const [dayModalVisible, toggleDayModal] = useToggle()
 
-  const userID = useSelector(currentUserSelector)?.id
+  const currentUser = useSelector(currentUserSelector) as User
+  const userID = currentUser?.id
+  const appToken = useSelector(appTokenSelector)
+  const predictionFullState = usePredictionEngineState()
+  const { updateCycleCount } = useCycleCalculation()
 
   const selectedEmojis = dataEntry
     ? useSelector((state) => cardAnswerSelector(state, dataEntry?.date))
@@ -99,6 +109,90 @@ export const EmojiQuestionCard = ({
 
     if (!dataEntry?.onPeriod && onPeriodOptions.includes(answer)) {
       toggleDayModal()
+    }
+  }
+
+  const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
+    const predictedPeriodDates = generatePeriodDates(predictionFullState)
+
+    let updatedPeriodDates = currentUser.metadata?.periodDates
+      ? [...currentUser.metadata.periodDates]
+      : []
+
+    const mlDatesToAdd = predictedPeriodDates
+      .filter((entry) => !updatedPeriodDates.some((u) => u.date === entry.date))
+      .map((entry) => ({
+        ...entry,
+        mlGenerated: false,
+        userVerified: entry.userVerified || false,
+      }))
+    updatedPeriodDates = [...updatedPeriodDates, ...mlDatesToAdd]
+
+    const isMlPredicted = predictedPeriodDates.some((entry) => entry.date === periodDate)
+    const existingDateIndex = updatedPeriodDates.findIndex((entry) => entry.date === periodDate)
+
+    let shouldRecalculateCycles = false
+
+    if (isPeriodDay) {
+      if (existingDateIndex !== -1) {
+        const existingEntry = updatedPeriodDates[existingDateIndex]
+        if (existingEntry.userVerified === true) {
+          return
+        } else {
+          updatedPeriodDates[existingDateIndex] = {
+            ...existingEntry,
+            userVerified: true,
+            mlGenerated: false,
+          }
+          shouldRecalculateCycles = true
+        }
+      } else {
+        updatedPeriodDates.push({
+          date: periodDate,
+          mlGenerated: isMlPredicted,
+          userVerified: true,
+        })
+        shouldRecalculateCycles = true
+      }
+    } else {
+      if (existingDateIndex !== -1) {
+        const existingEntry = updatedPeriodDates[existingDateIndex]
+        if (existingEntry.userVerified === true) {
+          updatedPeriodDates.splice(existingDateIndex, 1)
+          shouldRecalculateCycles = true
+        } else {
+          updatedPeriodDates.splice(existingDateIndex, 1)
+        }
+      } else {
+        return
+      }
+    }
+
+    updatedPeriodDates.sort((a, b) => {
+      const dateA = moment(a.date, ['DD/MM/YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'], true)
+      const dateB = moment(b.date, ['DD/MM/YYYY', 'DD-MM-YYYY', 'YYYY-MM-DD'], true)
+      return dateA.valueOf() - dateB.valueOf()
+    })
+
+    // Update local state first (optimistic) so locks unlock immediately
+    dispatch(editUser({
+      metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+    }))
+
+    if (shouldRecalculateCycles) {
+      await updateCycleCount(updatedPeriodDates)
+    }
+
+    // Sync to server in the background (failure won't block local state)
+    if (appToken) {
+      try {
+        await httpClient.updateUserVerifiedDays({
+          appToken,
+          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+        })
+      } catch (error) {
+        console.error('Error syncing period dates to server:', error)
+      }
     }
   }
 
@@ -144,7 +238,6 @@ export const EmojiQuestionCard = ({
       <View style={styles.body}>
         <ScrollView contentContainerStyle={styles.emojiContainer}>
           {options.map(([key, emoji]) => {
-            // @ts-expect-error TODO:
             const isSelected = selectedEmojis[topic]?.includes?.(key)
             const status = isSelected ? 'neutral' : 'basic'
             const onPress = () => {
@@ -173,6 +266,7 @@ export const EmojiQuestionCard = ({
           toggleVisible={toggleDayModal}
           data={dataEntry}
           hideLaunchButton={false}
+          onHandleResponse={handleDayModalResponse}
         />
       )}
     </View>

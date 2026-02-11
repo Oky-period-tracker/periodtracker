@@ -1,72 +1,69 @@
 import React from 'react'
-import { Audio, AVPlaybackStatus } from 'expo-av'
+import { createAudioPlayer, setAudioModeAsync, AudioPlayer, AudioStatus } from 'expo-audio'
 
 export type SoundStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'error'
 
+export interface PlaybackProgress {
+  currentTime: number
+  duration: number
+  isLoaded: boolean
+}
+
 export const useAudio = () => {
-  const [playbackObject, setPlaybackObject] = React.useState<Audio.Sound | null>(null)
+  const [player, setPlayer] = React.useState<AudioPlayer | null>(null)
   const [assetUri, setAssetUri] = React.useState<string | null>(null)
   const [status, setStatus] = React.useState<SoundStatus>('idle')
-  const [playbackStatus, setPlaybackStatus] = React.useState<AVPlaybackStatus | undefined>()
+  const [playbackProgress, setPlaybackProgress] = React.useState<PlaybackProgress>({
+    currentTime: 0,
+    duration: 0,
+    isLoaded: false,
+  })
 
-  const updateStatus = async () => {
-    if (playbackObject) {
-      const currentStatus = await playbackObject.getStatusAsync()
-      setPlaybackStatus(currentStatus)
-    }
-  }
-
+  // Poll playback status
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      updateStatus()
-    }, 1000) // update every second
-    return () => clearInterval(interval)
-  }, [playbackObject])
+    if (!player) return
 
-  const loadSound = async (uri: string) => {
-    setAssetUri(uri)
+    const onStatusChange = (audioStatus: AudioStatus) => {
+      setPlaybackProgress({
+        currentTime: audioStatus.currentTime,
+        duration: audioStatus.duration,
+        isLoaded: audioStatus.isLoaded,
+      })
 
-    try {
-      if (playbackObject) {
-        await playbackObject.unloadAsync()
-        setPlaybackObject(null)
+      if (audioStatus.playing) {
+        setStatus('playing')
+      } else if (audioStatus.isLoaded && audioStatus.currentTime > 0 && status === 'playing') {
+        setStatus('paused')
       }
-
-      const { sound, status } = await Audio.Sound.createAsync({ uri }, { shouldPlay: false })
-
-      if (!sound) {
-        setStatus('error')
-        return null
-      }
-
-      setPlaybackObject(sound)
-      setAssetUri(uri)
-      setPlaybackStatus(status)
-
-      return sound
-    } catch (error) {
-      setStatus('error')
-      return null
     }
+
+    const subscription = player.addListener('playbackStatusUpdate', onStatusChange)
+    return () => subscription.remove()
+  }, [player])
+
+  const loadSound = (uri: string): AudioPlayer => {
+    if (player) {
+      player.remove()
+    }
+
+    const newPlayer = createAudioPlayer({ uri })
+    setPlayer(newPlayer)
+    setAssetUri(uri)
+    return newPlayer
   }
 
   const playSound = async (url: string) => {
     setStatus('loading')
 
-    let sound = playbackObject
-    const sameAsset = assetUri === url
-
-    if (!sameAsset || !sound) {
-      sound = await loadSound(url)
-    }
-
-    if (!sound) {
-      setStatus('error')
-      return
-    }
-
     try {
-      await sound.playAsync()
+      let currentPlayer = player
+      const sameAsset = assetUri === url
+
+      if (!sameAsset || !currentPlayer) {
+        currentPlayer = loadSound(url)
+      }
+
+      currentPlayer.play()
       setStatus('playing')
     } catch (error) {
       setStatus('error')
@@ -74,17 +71,16 @@ export const useAudio = () => {
   }
 
   const pauseSound = async () => {
-    if (playbackObject && status === 'playing') {
-      await playbackObject.pauseAsync()
+    if (player && status === 'playing') {
+      player.pause()
       setStatus('paused')
     }
   }
 
   const stopSound = async () => {
-    if (playbackObject) {
-      await playbackObject.stopAsync()
-      await playbackObject.unloadAsync()
-      setPlaybackObject(null)
+    if (player) {
+      player.pause()
+      await player.seekTo(0)
       setAssetUri(null)
       setStatus('idle')
     }
@@ -93,23 +89,23 @@ export const useAudio = () => {
   // Clean up the sound object
   const unloadSound = React.useCallback(() => {
     return () => {
-      if (playbackObject) {
-        playbackObject.unloadAsync()
-        setPlaybackObject(null)
+      if (player) {
+        player.remove()
+        setPlayer(null)
         setAssetUri(null)
         setStatus('idle')
       }
     }
-  }, [playbackObject])
+  }, [player])
 
   // Set audio mode
   const setAudioMode = async () => {
-    await Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      allowsRecordingIOS: false,
-      staysActiveInBackground: false,
-      shouldDuckAndroid: true,
-      playThroughEarpieceAndroid: false,
+    await setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: false,
+      shouldRouteThroughEarpiece: false,
+      allowsRecording: false,
+      interruptionMode: 'mixWithOthers',
     })
   }
 
@@ -118,13 +114,22 @@ export const useAudio = () => {
     setAudioMode()
   }, [])
 
+  // Clean up on unmount
+  React.useEffect(() => {
+    return () => {
+      if (player) {
+        player.remove()
+      }
+    }
+  }, [player])
+
   return {
     playSound,
     pauseSound,
     stopSound,
     unloadSound,
     assetUri,
-    playbackStatus,
+    playbackProgress,
     status,
   }
 }

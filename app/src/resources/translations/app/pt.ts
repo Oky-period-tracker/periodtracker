@@ -354,4 +354,154 @@ export const pt: AppTranslations = {
   password_change_fail_description: 'Não foi possível alterar a palavra-passe',
   info_button: 'botão de informação',
   new_password: 'introduza nova senha',
+
+  // -------------------------Avatar Selection----------------------------
+  choose_avatar: 'Escolher avatar',
+  select_avatar_title: 'Escolhe o teu amigo Oky',
+  select_avatar_subtitle: 'Escolhe um personagem para te guiar no Oky!',
+  select_avatar_title_unlocked: 'Escolhe o teu amigo Oky',
+  select_avatar_subtitle_unlocked:
+    'O teu amigo personalizado está desbloqueado! Toca para personalizar ou escolher outro.',
+  select_avatar_reminder_locked: 'Regista 3 ciclos para desbloquear o teu amigo personalizado!',
+  select_avatar_reminder_unlocked_created: 'O teu amigo personalizado está pronto! Toca para editar.',
+  select_avatar_reminder_unlocked_not_created:
+    'Agora podes criar o teu próprio amigo! Toca para começar.',
+
+  // -------------------------Theme Selection----------------------------
+  select_theme_title: 'Escolhe um fundo',
+  select_theme_subtitle: 'Escolhe um fundo para a tua experiência Oky!',
+  go_back: 'Voltar',
+
+  // -------------------------Custom Avatar / Friend----------------------------
+  customizer_title: 'Cria o teu amigo',
+  customizer_subtitle: 'Personaliza o teu amigo Oky!',
+  customizer_tutorial: 'Como personalizar',
+  customizer_exit: 'Sair',
+  customizer_save_friend: 'Guardar o teu amigo Oky',
+  customizer_body: 'Corpo',
+  customizer_hair: 'Cabelo',
+  customizer_eyes: 'Olhos',
+  customizer_clothes: 'Roupa',
+  customizer_personal_items: 'Objetos pessoais',
+  customizer_skin: 'Cor da pele',
+  customizer_hair_color: 'Cor do cabelo',
+  customizer_hairstyle: 'Penteado',
+  customizer_eye_color: 'Cor dos olhos',
+  customizer_eye_shape: 'Forma dos olhos',
+  customizer_first_visit_tooltip:
+    'Bem-vinda! Toca nas categorias abaixo para personalizar o teu amigo.',
+
+  // -------------------------Avatar Tutorial----------------------------
+  customizer_tutorial_title: 'Como criar o teu amigo Oky',
+  customizer_tutorial_step1_title: 'Começa a criar o teu amigo Oky!',
+  customizer_tutorial_step1_text:
+    'Toca nos botões (Corpo, Cabelo, Olhos, Roupa e Objetos pessoais) para começar.',
+  customizer_tutorial_step2_title: 'Seleciona cores',
+  customizer_tutorial_step2_text:
+    'Toca nos botões de cor para mudar a pele, cabelo ou olhos.',
+  customizer_tutorial_step3_title: 'Ver mais opções',
+  customizer_tutorial_step3_text:
+    'Usa as setas ou desliza para ver mais opções.',
+  customizer_tutorial_step4_title: 'Objetos pessoais',
+  customizer_tutorial_step4_text:
+    'Adiciona um ou mais objetos pessoais para o teu amigo Oky.',
+  customizer_tutorial_step5_title: 'Terminaste?',
+  customizer_tutorial_step5_text:
+    "Toca em 'Guardar' para salvar.\nToca em 'Sair' para voltar sem guardar.",
+  customizer_tutorial_back: 'Voltar',
+  customizer_tutorial_next: 'Seguinte',
+  customizer_tutorial_finish: 'Terminar',
+  skip_tutorial: 'Saltar tutorial',
+
+  // -------------------------Avatar Naming----------------------------
+  avatar_naming_modal_title: 'Dá um nome ao teu amigo',
+  avatar_naming_modal_placeholder: 'Introduz um nome',
+  avatar_naming_modal_hint: 'Escolhe um nome com até 8 caracteres.',
+  characters: 'caracteres',
+  save_and_continue_button: 'Guardar e continuar',
+  skip_name_button: 'Saltar nome',
+
+  // -------------------------Friend Unlock----------------------------
+  friend_unlock_modal_title: 'Desbloqueaste o teu amigo personalizado!',
+  friend_unlock_modal_button: 'Criar o meu amigo',
+
+  // -------------------------Profile----------------------------
+  profile_title: 'O Teu Perfil',
+  profile_subtitle: 'Consulta e gere a tua informação',
+  profile_label_name: 'Nome:',
+  profile_label_dob: 'Data de nascimento:',
+  profile_label_gender: 'Género:',
+  profile_label_location: 'Localização:',
+  profile_label_cycle_length: 'Duração do ciclo:',
+  profile_label_period_length: 'Duração do período:',
+  change_oky_friend: 'Mudar o teu amigo Oky',
+  change_the_name: 'Mudar o nome',
+  change_background: 'Mudar fundo',
+  track_regularly_cycle_updates: 'Regista regularmente para manter as informações do ciclo atualizadas!',
+
+  // -------------------------Error/Validation----------------------------
+  password_change_fail: 'Falha ao alterar a palavra-passe',
+  no_gender: 'Por favor seleciona um género',
+  no_year: 'Por favor seleciona um ano de nascimento',
+  no_month: 'Por favor seleciona um mês de nascimento',
+  no_location: 'Por favor seleciona uma localização',
+  no_country: 'Por favor seleciona um país',
+  no_province: 'Por favor seleciona uma província',
+
+  // -------------------------Avatar Messages----------------------------
+  avatar_message_enter_period_days: 'Introduz os teus dias de período para acompanhar o teu ciclo!',
+  avatar_message_keep_entering_period_days: 'Continua a introduzir os teus dias para desbloquear o teu amigo!',
+
+  // -------------------------Accessibility----------------------------
+  close: 'Fechar',
+  select_option_button: 'Selecionar opção',
+  select_color_button: 'Selecionar cor',
+  previous_page_button: 'Página anterior',
+  next_page_button: 'Página seguinte',
+  select_category_button: 'Selecionar categoria',
+  close_tooltip_button: 'Fechar dica',
+  name_input: 'Introduz o nome do teu amigo',
+  tutorial_button: 'Tutorial',
+  select_theme_button: 'Selecionar tema',
+  select_avatar_button: 'Selecionar avatar',
+  friend_unlock_celebration_image: 'Animação de celebração mostrando o desbloqueio do amigo',
+  skip_tutorial_button: 'Saltar tutorial',
+
+  // -------------------------Skin Color Names (Accessibility)----------------------------
+  customizer_skin_color_light_pink: 'Rosa claro',
+  customizer_skin_color_peach: 'Pêssego',
+  customizer_skin_color_beige: 'Bege',
+  customizer_skin_color_tan: 'Bronzeado',
+  customizer_skin_color_dark_brown: 'Castanho escuro',
+  customizer_skin_color_light_tan: 'Bronzeado claro',
+  customizer_skin_color_medium_brown: 'Castanho médio',
+  customizer_skin_color_cream: 'Creme',
+  customizer_skin_color_bronze: 'Bronze',
+  customizer_skin_color_ivory: 'Marfim',
+  customizer_skin_color_sand: 'Areia',
+  customizer_skin_color_caramel: 'Caramelo',
+  customizer_skin_color_unknown: 'Cor de pele desconhecida',
+
+  // -------------------------Hair Color Names (Accessibility)----------------------------
+  customizer_hair_color_black: 'Preto',
+  customizer_hair_color_brown: 'Castanho',
+  customizer_hair_color_red: 'Ruivo',
+  customizer_hair_color_blonde: 'Loiro',
+  customizer_hair_color_green: 'Verde',
+  customizer_hair_color_pink: 'Rosa',
+  customizer_hair_color_orange: 'Laranja',
+  customizer_hair_color_purple: 'Roxo',
+  customizer_hair_color_dark_brown: 'Castanho escuro',
+  customizer_hair_color_bright_orange: 'Laranja vivo',
+  customizer_hair_color_blue: 'Azul',
+  customizer_hair_color_unknown: 'Cor de cabelo desconhecida',
+
+  // -------------------------Eye Color Names (Accessibility)----------------------------
+  customizer_eye_color_black: 'Preto',
+  customizer_eye_color_brown: 'Castanho',
+  customizer_eye_color_hazel: 'Avelã',
+  customizer_eye_color_green: 'Verde',
+  customizer_eye_color_blue: 'Azul',
+  customizer_eye_color_gray: 'Cinzento',
+  customizer_eye_color_unknown: 'Cor de olhos desconhecida',
 }

@@ -212,20 +212,22 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       return dateA.valueOf() - dateB.valueOf()
     })
 
+    // Update local state first (optimistic) so locks unlock immediately
+    editUserReduxState({
+      metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+    })
+
+    if (shouldRecalculateCycles) {
+      await updateCycleCount(updatedPeriodDates)
+    }
+
+    // Sync to server in the background (failure won't block local state)
     try {
       await updateUserVerifiedDates({
         metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
       })
-
-      editUserReduxState({
-        metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-      })
-
-      if (shouldRecalculateCycles) {
-        await updateCycleCount(updatedPeriodDates)
-      }
     } catch (error) {
-      console.error('Error updating period dates:', error)
+      console.error('Error syncing period dates to server:', error)
     }
   }
 

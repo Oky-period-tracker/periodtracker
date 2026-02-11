@@ -1,11 +1,10 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from '../../components/Button'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { CustomStackNavigationOptions } from './NavigationStack'
-import { IS_ANDROID } from '../../services/device'
 import { Text } from '../../components/Text'
 import { DateBadge } from '../../components/DateBadge'
 import { useAccessibilityLabel } from '../../hooks/useAccessibilityLabel'
@@ -27,6 +26,7 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
 
   const { size } = useResponsive()
   const { palette } = useColor()
+  const insets = useSafeAreaInsets()
 
   const onBackPress = () => {
     navigation.goBack()
@@ -38,7 +38,7 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
 
   return (
     <View style={styles.wrapper}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { paddingBottom: Math.max(insets.bottom, 8) }]}>
         {showBackButton ? (
           <Button onPress={onBackPress} style={styles.button} accessibilityLabel={label}>
             <FontAwesome size={12} name={'arrow-left'} color={'#fff'} />
@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     paddingHorizontal: 24,
-    paddingBottom: IS_ANDROID ? 20 : -20,
   },
   button: {
     width: 24,

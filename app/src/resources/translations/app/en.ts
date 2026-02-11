@@ -348,4 +348,154 @@ export const en: AppTranslations = {
   password_change_fail_description: 'Could not change the password',
   info_button: 'information button',
   new_password: 'enter new passcode',
+
+  // -------------------------Avatar Selection----------------------------
+  choose_avatar: 'Choose Avatar',
+  select_avatar_title: 'Choose Your Oky Buddy',
+  select_avatar_subtitle: 'Pick a character to guide you through Oky!',
+  select_avatar_title_unlocked: 'Choose Your Oky Buddy',
+  select_avatar_subtitle_unlocked:
+    'Your custom friend is unlocked! Tap to customize or pick another buddy.',
+  select_avatar_reminder_locked: 'Track 3 cycles to unlock your custom friend!',
+  select_avatar_reminder_unlocked_created: 'Your custom friend is ready! Tap to edit anytime.',
+  select_avatar_reminder_unlocked_not_created:
+    'You can now create your own custom friend! Tap to get started.',
+
+  // -------------------------Theme Selection----------------------------
+  select_theme_title: 'Choose a Background',
+  select_theme_subtitle: 'Pick a background for your Oky experience!',
+  go_back: 'Go Back',
+
+  // -------------------------Custom Avatar / Friend----------------------------
+  customizer_title: 'Create Your Friend',
+  customizer_subtitle: 'Customize your Oky buddy!',
+  customizer_tutorial: 'How to customize',
+  customizer_exit: 'Exit',
+  customizer_save_friend: 'Save your Oky friend',
+  customizer_body: 'Body',
+  customizer_hair: 'Hair',
+  customizer_eyes: 'Eyes',
+  customizer_clothes: 'Clothes',
+  customizer_personal_items: 'Personal Items',
+  customizer_skin: 'Skin Colour',
+  customizer_hair_color: 'Hair Colour',
+  customizer_hairstyle: 'Hairstyle',
+  customizer_eye_color: 'Eye Colour',
+  customizer_eye_shape: 'Eye Shape',
+  customizer_first_visit_tooltip:
+    'Welcome! Tap the categories below to customize your friend.',
+
+  // -------------------------Avatar Tutorial----------------------------
+  customizer_tutorial_title: 'How to create your Oky friend',
+  customizer_tutorial_step1_title: 'Start creating your Oky friend!',
+  customizer_tutorial_step1_text:
+    'Tap the buttons (Body, Hair, Eyes, Clothes and Personal items) to start customizing.',
+  customizer_tutorial_step2_title: 'Select colors',
+  customizer_tutorial_step2_text:
+    'Tap the color buttons to change skin, hair or eye color.',
+  customizer_tutorial_step3_title: 'See more options',
+  customizer_tutorial_step3_text:
+    'To see more options use arrows or swipe for more colors.',
+  customizer_tutorial_step4_title: 'Personal items',
+  customizer_tutorial_step4_text:
+    'Add one or more personal items for your Oky friend.',
+  customizer_tutorial_step5_title: 'Finished?',
+  customizer_tutorial_step5_text:
+    "Tap 'Save your friend' to save your changes.\nTap 'Exit' to go back without saving.",
+  customizer_tutorial_back: 'Back',
+  customizer_tutorial_next: 'Next',
+  customizer_tutorial_finish: 'Finish',
+  skip_tutorial: 'Skip tutorial',
+
+  // -------------------------Avatar Naming----------------------------
+  avatar_naming_modal_title: 'Name Your Friend',
+  avatar_naming_modal_placeholder: 'Enter name',
+  avatar_naming_modal_hint: 'Choose a name up to 8 characters.',
+  characters: 'characters',
+  save_and_continue_button: 'Save & Continue',
+  skip_name_button: 'Skip naming',
+
+  // -------------------------Friend Unlock----------------------------
+  friend_unlock_modal_title: 'You unlocked your custom friend!',
+  friend_unlock_modal_button: 'Create My Friend',
+
+  // -------------------------Profile----------------------------
+  profile_title: 'Your Profile',
+  profile_subtitle: 'View and manage your information',
+  profile_label_name: 'Name:',
+  profile_label_dob: 'Date of birth:',
+  profile_label_gender: 'Gender:',
+  profile_label_location: 'Location:',
+  profile_label_cycle_length: 'Cycle length:',
+  profile_label_period_length: 'Period length:',
+  change_oky_friend: 'Change your Oky buddy',
+  change_the_name: 'Change the name',
+  change_background: 'Change background',
+  track_regularly_cycle_updates: 'Track regularly to keep your cycle info up to date!',
+
+  // -------------------------Error/Validation----------------------------
+  password_change_fail: 'Password change failed',
+  no_gender: 'Please select a gender',
+  no_year: 'Please select a year of birth',
+  no_month: 'Please select a month of birth',
+  no_location: 'Please select a location',
+  no_country: 'Please select a country',
+  no_province: 'Please select a province',
+
+  // -------------------------Avatar Messages----------------------------
+  avatar_message_enter_period_days: 'Enter your period days to track your cycle!',
+  avatar_message_keep_entering_period_days: 'Keep entering your period days to unlock your custom friend!',
+
+  // -------------------------Accessibility----------------------------
+  close: 'Close',
+  select_option_button: 'Select option',
+  select_color_button: 'Select color',
+  previous_page_button: 'Previous page',
+  next_page_button: 'Next page',
+  select_category_button: 'Select category',
+  close_tooltip_button: 'Close tooltip',
+  name_input: "Enter your friend's name",
+  tutorial_button: 'Tutorial',
+  select_theme_button: 'Select theme',
+  select_avatar_button: 'Select avatar',
+  friend_unlock_celebration_image: 'Celebration animation showing unlocked friend avatar feature',
+  skip_tutorial_button: 'Skip tutorial',
+
+  // -------------------------Skin Color Names (Accessibility)----------------------------
+  customizer_skin_color_light_pink: 'Light pink',
+  customizer_skin_color_peach: 'Peach',
+  customizer_skin_color_beige: 'Beige',
+  customizer_skin_color_tan: 'Tan',
+  customizer_skin_color_dark_brown: 'Dark brown',
+  customizer_skin_color_light_tan: 'Light tan',
+  customizer_skin_color_medium_brown: 'Medium brown',
+  customizer_skin_color_cream: 'Cream',
+  customizer_skin_color_bronze: 'Bronze',
+  customizer_skin_color_ivory: 'Ivory',
+  customizer_skin_color_sand: 'Sand',
+  customizer_skin_color_caramel: 'Caramel',
+  customizer_skin_color_unknown: 'Unknown skin color',
+
+  // -------------------------Hair Color Names (Accessibility)----------------------------
+  customizer_hair_color_black: 'Black',
+  customizer_hair_color_brown: 'Brown',
+  customizer_hair_color_red: 'Red',
+  customizer_hair_color_blonde: 'Blonde',
+  customizer_hair_color_green: 'Green',
+  customizer_hair_color_pink: 'Pink',
+  customizer_hair_color_orange: 'Orange',
+  customizer_hair_color_purple: 'Purple',
+  customizer_hair_color_dark_brown: 'Dark brown',
+  customizer_hair_color_bright_orange: 'Bright orange',
+  customizer_hair_color_blue: 'Blue',
+  customizer_hair_color_unknown: 'Unknown hair color',
+
+  // -------------------------Eye Color Names (Accessibility)----------------------------
+  customizer_eye_color_black: 'Black',
+  customizer_eye_color_brown: 'Brown',
+  customizer_eye_color_hazel: 'Hazel',
+  customizer_eye_color_green: 'Green',
+  customizer_eye_color_blue: 'Blue',
+  customizer_eye_color_gray: 'Gray',
+  customizer_eye_color_unknown: 'Unknown eye color',
 }

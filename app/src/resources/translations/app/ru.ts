@@ -389,4 +389,154 @@ export const ru: AppTranslations = {
   password_change_fail_description: 'Не удалось изменить пароль.',
   info_button: 'кнопка информации',
   new_password: 'введите новый пароль',
+
+  // -------------------------Avatar Selection----------------------------
+  choose_avatar: 'Выбрать аватар',
+  select_avatar_title: 'Выбери своего друга Oky',
+  select_avatar_subtitle: 'Выбери персонажа, который будет помогать тебе в Oky!',
+  select_avatar_title_unlocked: 'Выбери своего друга Oky',
+  select_avatar_subtitle_unlocked:
+    'Твой персональный друг разблокирован! Нажми, чтобы настроить или выбрать другого.',
+  select_avatar_reminder_locked: 'Отслеживай 3 цикла, чтобы разблокировать персонального друга!',
+  select_avatar_reminder_unlocked_created: 'Твой персональный друг готов! Нажми для редактирования.',
+  select_avatar_reminder_unlocked_not_created:
+    'Теперь ты можешь создать своего друга! Нажми, чтобы начать.',
+
+  // -------------------------Theme Selection----------------------------
+  select_theme_title: 'Выбери фон',
+  select_theme_subtitle: 'Выбери фон для Oky!',
+  go_back: 'Назад',
+
+  // -------------------------Custom Avatar / Friend----------------------------
+  customizer_title: 'Создай друга',
+  customizer_subtitle: 'Настрой своего друга Oky!',
+  customizer_tutorial: 'Как настроить',
+  customizer_exit: 'Выход',
+  customizer_save_friend: 'Сохранить друга Oky',
+  customizer_body: 'Тело',
+  customizer_hair: 'Волосы',
+  customizer_eyes: 'Глаза',
+  customizer_clothes: 'Одежда',
+  customizer_personal_items: 'Личные вещи',
+  customizer_skin: 'Цвет кожи',
+  customizer_hair_color: 'Цвет волос',
+  customizer_hairstyle: 'Причёска',
+  customizer_eye_color: 'Цвет глаз',
+  customizer_eye_shape: 'Форма глаз',
+  customizer_first_visit_tooltip:
+    'Добро пожаловать! Нажми на категории ниже, чтобы настроить друга.',
+
+  // -------------------------Avatar Tutorial----------------------------
+  customizer_tutorial_title: 'Как создать друга Oky',
+  customizer_tutorial_step1_title: 'Начни создавать друга Oky!',
+  customizer_tutorial_step1_text:
+    'Нажми кнопки (Тело, Волосы, Глаза, Одежда и Личные вещи) для начала.',
+  customizer_tutorial_step2_title: 'Выбери цвета',
+  customizer_tutorial_step2_text:
+    'Нажми кнопки цвета, чтобы изменить кожу, волосы или глаза.',
+  customizer_tutorial_step3_title: 'Больше вариантов',
+  customizer_tutorial_step3_text:
+    'Используй стрелки или свайп для просмотра дополнительных вариантов.',
+  customizer_tutorial_step4_title: 'Личные вещи',
+  customizer_tutorial_step4_text:
+    'Добавь один или несколько личных предметов для друга Oky.',
+  customizer_tutorial_step5_title: 'Готово?',
+  customizer_tutorial_step5_text:
+    "Нажми 'Сохранить' для сохранения.\nНажми 'Выход' чтобы вернуться без сохранения.",
+  customizer_tutorial_back: 'Назад',
+  customizer_tutorial_next: 'Далее',
+  customizer_tutorial_finish: 'Готово',
+  skip_tutorial: 'Пропустить урок',
+
+  // -------------------------Avatar Naming----------------------------
+  avatar_naming_modal_title: 'Назови друга',
+  avatar_naming_modal_placeholder: 'Введите имя',
+  avatar_naming_modal_hint: 'Выберите имя до 8 символов.',
+  characters: 'символов',
+  save_and_continue_button: 'Сохранить и продолжить',
+  skip_name_button: 'Пропустить имя',
+
+  // -------------------------Friend Unlock----------------------------
+  friend_unlock_modal_title: 'Ты разблокировал персонального друга!',
+  friend_unlock_modal_button: 'Создать друга',
+
+  // -------------------------Profile----------------------------
+  profile_title: 'Твой Профиль',
+  profile_subtitle: 'Просмотр и управление информацией',
+  profile_label_name: 'Имя:',
+  profile_label_dob: 'Дата рождения:',
+  profile_label_gender: 'Пол:',
+  profile_label_location: 'Местоположение:',
+  profile_label_cycle_length: 'Длина цикла:',
+  profile_label_period_length: 'Длина месячных:',
+  change_oky_friend: 'Сменить друга Oky',
+  change_the_name: 'Изменить имя',
+  change_background: 'Изменить фон',
+  track_regularly_cycle_updates: 'Регулярно отслеживай, чтобы информация о цикле была актуальной!',
+
+  // -------------------------Error/Validation----------------------------
+  password_change_fail: 'Не удалось изменить пароль',
+  no_gender: 'Пожалуйста, выберите пол',
+  no_year: 'Пожалуйста, выберите год рождения',
+  no_month: 'Пожалуйста, выберите месяц рождения',
+  no_location: 'Пожалуйста, выберите местоположение',
+  no_country: 'Пожалуйста, выберите страну',
+  no_province: 'Пожалуйста, выберите провинцию',
+
+  // -------------------------Avatar Messages----------------------------
+  avatar_message_enter_period_days: 'Введи свои дни месячных, чтобы отслеживать цикл!',
+  avatar_message_keep_entering_period_days: 'Продолжай вводить дни месячных, чтобы разблокировать друга!',
+
+  // -------------------------Accessibility----------------------------
+  close: 'Закрыть',
+  select_option_button: 'Выбрать вариант',
+  select_color_button: 'Выбрать цвет',
+  previous_page_button: 'Предыдущая страница',
+  next_page_button: 'Следующая страница',
+  select_category_button: 'Выбрать категорию',
+  close_tooltip_button: 'Закрыть подсказку',
+  name_input: 'Введите имя друга',
+  tutorial_button: 'Обучение',
+  select_theme_button: 'Выбрать тему',
+  select_avatar_button: 'Выбрать аватар',
+  friend_unlock_celebration_image: 'Анимация празднования разблокировки друга',
+  skip_tutorial_button: 'Пропустить урок',
+
+  // -------------------------Skin Color Names (Accessibility)----------------------------
+  customizer_skin_color_light_pink: 'Светло-розовый',
+  customizer_skin_color_peach: 'Персиковый',
+  customizer_skin_color_beige: 'Бежевый',
+  customizer_skin_color_tan: 'Загорелый',
+  customizer_skin_color_dark_brown: 'Тёмно-коричневый',
+  customizer_skin_color_light_tan: 'Светло-загорелый',
+  customizer_skin_color_medium_brown: 'Средне-коричневый',
+  customizer_skin_color_cream: 'Кремовый',
+  customizer_skin_color_bronze: 'Бронзовый',
+  customizer_skin_color_ivory: 'Слоновая кость',
+  customizer_skin_color_sand: 'Песочный',
+  customizer_skin_color_caramel: 'Карамельный',
+  customizer_skin_color_unknown: 'Неизвестный цвет кожи',
+
+  // -------------------------Hair Color Names (Accessibility)----------------------------
+  customizer_hair_color_black: 'Чёрный',
+  customizer_hair_color_brown: 'Коричневый',
+  customizer_hair_color_red: 'Рыжий',
+  customizer_hair_color_blonde: 'Блонд',
+  customizer_hair_color_green: 'Зелёный',
+  customizer_hair_color_pink: 'Розовый',
+  customizer_hair_color_orange: 'Оранжевый',
+  customizer_hair_color_purple: 'Фиолетовый',
+  customizer_hair_color_dark_brown: 'Тёмно-коричневый',
+  customizer_hair_color_bright_orange: 'Ярко-оранжевый',
+  customizer_hair_color_blue: 'Голубой',
+  customizer_hair_color_unknown: 'Неизвестный цвет волос',
+
+  // -------------------------Eye Color Names (Accessibility)----------------------------
+  customizer_eye_color_black: 'Чёрный',
+  customizer_eye_color_brown: 'Коричневый',
+  customizer_eye_color_hazel: 'Ореховый',
+  customizer_eye_color_green: 'Зелёный',
+  customizer_eye_color_blue: 'Голубой',
+  customizer_eye_color_gray: 'Серый',
+  customizer_eye_color_unknown: 'Неизвестный цвет глаз',
 }

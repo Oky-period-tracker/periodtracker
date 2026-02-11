@@ -1,0 +1,41 @@
+{
+  "cli": {
+    "version": ">= 11.0.3",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "staging": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://api.okyapp.info/",
+        "EXPO_PUBLIC_API_BASE_CMS_URL": "https://cms.okyapp.info/",
+        "EXPO_PUBLIC_PREDICTION_ENDPOINT": "https://hl2pmjf66f.execute-api.eu-west-2.amazonaws.com/Prod/mentruation-prediction",
+        "EXPO_PUBLIC_WEBSITE_URL": "https://okyapp.info",
+        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/staging"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://api.okyapp.info",
+        "EXPO_PUBLIC_API_BASE_CMS_URL": "https://cms.okyapp.info",
+        "EXPO_PUBLIC_PREDICTION_ENDPOINT": "https://hl2pmjf66f.execute-api.eu-west-2.amazonaws.com/Prod/mentruation-prediction",
+        "EXPO_PUBLIC_WEBSITE_URL": "https://okyapp.info",
+        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/production",
+       }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

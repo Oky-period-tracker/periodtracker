@@ -1,20 +1,17 @@
 {
-  "cli": {
-    "version": ">= 11.0.3",
-    "appVersionSource": "remote"
-  },
+  "cli": { "version": ">= 11.0.3", "appVersionSource": "remote" },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "autoIncrement": true
+      "autoIncrement": true,
+      "environment": "development"
     },
     "staging": {
       "distribution": "internal",
       "autoIncrement": true,
-      "android": {
-        "buildType": "apk"
-      },
+      "environment": "preview",
+      "android": { "buildType": "apk" },
       "env": {
         "EXPO_PUBLIC_API_BASE_URL": "https://api.en.oky.greychaindesign.com",
         "EXPO_PUBLIC_API_BASE_CMS_URL": "https://cms.en.oky.greychaindesign.com",
@@ -26,9 +23,8 @@
     },
     "production": {
       "autoIncrement": true,
-      "android": {
-        "buildType": "apk"
-      },
+      "environment": "production",
+      "android": { "buildType": "apk" },
       "env": {
         "EXPO_PUBLIC_API_BASE_URL": "https://api.okyapp.info",
         "EXPO_PUBLIC_API_BASE_CMS_URL": "https://cms.okyapp.info",
@@ -39,7 +35,5 @@
       }
     }
   },
-  "submit": {
-    "production": {}
-  }
+  "submit": { "production": {} }
 }

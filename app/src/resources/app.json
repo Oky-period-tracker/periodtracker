@@ -15,8 +15,7 @@
       "bundleIdentifier": "com.unicef.oky",
       "buildNumber": "15",
       "supportsTablet": true,
-      "googleServicesFile": "./src/resources/GoogleService-Info.plist.prod",
-      "deploymentTarget": "12.0",
+      "deploymentTarget": "16.0",
       "infoPlist": {
         "UIBackgroundModes": ["fetch", "remote-notification"],
         "ITSAppUsesNonExemptEncryption": false
@@ -27,7 +26,6 @@
     },
     "android": {
       "package": "com.oky",
-      "googleServicesFile": "./src/resources/google-services.json.prod",
       "versionCode": 88,
       "supportsTablet": true,
       "permissions": ["INTERNET"]

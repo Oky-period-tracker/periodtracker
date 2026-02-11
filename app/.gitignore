@@ -12,6 +12,8 @@ ios
 # Exception: Configuration files and regeneration scripts should be tracked
 !metro.config.js
 !app.config.js
+!plugins/
+!plugins/*.js
 !scripts/
 !scripts/regenerate-clothing-correct.js
 !scripts/regenerate-devices-correct.js

@@ -15,7 +15,7 @@ import { currentThemeSelector } from '../../redux/selectors'
 import { setTheme } from '../../redux/actions'
 import { themeNames } from '../../resources/translations'
 import { getAsset } from '../../services/asset'
-import { analytics } from '../../services/firebase'
+import { firebaseLogEvent } from '../../services/firebase'
 import { assets } from '../../resources/assets'
 import { getThemeSvg } from '../../resources/assets/friendAssets'
 import { createThemeScreenStyles, getThemeStyle, getThemeImageWrapperStyle, getThemeContainerStyle } from './ThemeScreen.styles'
@@ -77,7 +77,7 @@ export const ThemeSelect = ({ onConfirm, onGoBack, navigation }: ThemeSelectProp
     dispatch(setTheme(selectedTheme))
 
     if (selectedTheme !== currentTheme) {
-      analytics?.().logEvent('themeChanged', {
+      firebaseLogEvent('themeChanged', {
         selectedTheme,
       })
     }

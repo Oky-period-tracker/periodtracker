@@ -7,7 +7,7 @@ import { availableAppLocales } from '../resources/translations'
 import { useDispatch } from 'react-redux'
 import { setLocale } from '../redux/actions'
 import { WheelPickerOption } from './WheelPicker'
-import { analytics } from '../services/firebase'
+import { firebaseLogEvent } from '../services/firebase'
 
 export const LanguageSelector = (props: ButtonProps) => {
   const locale = useSelector(currentLocaleSelector)
@@ -20,7 +20,7 @@ export const LanguageSelector = (props: ButtonProps) => {
 
     dispatch(setLocale(option.value))
 
-    analytics?.().logEvent('languageChanged', {
+    firebaseLogEvent('languageChanged', {
       selectedLanguage: option.value,
     })
   }

@@ -33,7 +33,7 @@ import { User } from '../../types'
 import { httpClient } from '../../services/HttpClient'
 import { editUser } from '../../redux/actions'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
-import { calculateCycles } from '../../utils/cycleCalculator'
+import { useCycleCalculation } from '../../hooks/useCycleCalculation'
 
 // TODO: dynamic start & end dates?
 const startDate = moment().startOf('day').subtract(24, 'months')
@@ -67,6 +67,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector) as User
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
+  const { updateCycleCount: recalcCycleCount } = useCycleCalculation()
 
   React.useEffect(() => {
     if (!message) {
@@ -82,12 +83,23 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   }, [message])
 
   React.useEffect(() => {
-    if (!currentUser?.metadata?.periodDates?.length) {
-      const data = generatePeriodDates(predictionFullState)
-      // Only update local Redux state, don't sync to server on mount
-      editUserReduxState({ metadata: { periodDates: data } })
+    const initPeriodDates = async () => {
+      if (!currentUser?.metadata?.periodDates?.length) {
+        const data = generatePeriodDates(predictionFullState)
+        // Only update local Redux state, don't sync to server on mount
+        editUserReduxState({ metadata: { periodDates: data } })
+      }
+
+      // Always recalculate cycles on mount to sync locks
+      // This ensures cyclesNumber is correct after app restart/update
+      const dates = currentUser?.metadata?.periodDates || []
+      if (dates.length > 0) {
+        await recalcCycleCount(dates)
+      }
     }
-  }, [])
+
+    initPeriodDates()
+  }, [currentUser?.id, appToken])
   const toDailyCard = () => {
     toggleChoiceModalVisible()
     navigation.navigate('Day', { date: dataEntry.date })
@@ -215,7 +227,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
       // Recalculate cycles if needed
       if (shouldRecalculateCycles) {
-        await updateCycleCount(updatedPeriodDates)
+        await recalcCycleCount(updatedPeriodDates)
       }
     } catch (error) {
       console.error('Error updating period dates:', error)
@@ -240,34 +252,6 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
   const editUserReduxState = (changes: Partial<User>) => {
     reduxDispatch(editUser(changes))
-  }
-
-  const updateCycleCount = async (updatedPeriodDates: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]) => {
-    if (!currentUser || !appToken) return
-    
-    try {
-      // Calculate new cycles number
-      const cycleResult = calculateCycles({
-        ...currentUser.metadata,
-        periodDates: updatedPeriodDates
-      })
-
-      // Only update if cycles number changed
-      if (cycleResult.cyclesNumber !== (currentUser.cyclesNumber || 0)) {
-        // Update backend
-        await httpClient.updateCyclesNumber({
-          appToken,
-          cyclesNumber: cycleResult.cyclesNumber,
-        })
-
-        // Update local Redux state
-        editUserReduxState({
-          cyclesNumber: cycleResult.cyclesNumber,
-        })
-      }
-    } catch (error) {
-      console.error('Error updating cycle count:', error)
-    }
   }
 
   // Usage

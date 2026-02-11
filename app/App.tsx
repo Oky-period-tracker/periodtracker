@@ -14,7 +14,7 @@ import { PredictionProvider } from './src/contexts/PredictionProvider'
 import { AuthProvider } from './src/contexts/AuthContext'
 import { LoadingProvider } from './src/contexts/LoadingProvider'
 import { StatusBar } from 'react-native'
-import { analytics } from './src/services/firebase'
+import { firebaseLogAppOpen } from './src/services/firebase'
 import { ReducedMotionConfig, ReduceMotion } from 'react-native-reanimated'
 import { SoundProvider } from './src/contexts/SoundProvider'
 
@@ -22,13 +22,13 @@ function App() {
   useOrientationLock()
 
   React.useEffect(() => {
-    analytics?.().logAppOpen()
+    firebaseLogAppOpen()
   }, [])
 
   return (
     <SafeAreaProvider>
       <ReducedMotionConfig mode={ReduceMotion.Never} />
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <AuthProvider>

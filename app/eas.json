@@ -1,7 +1,6 @@
 {
   "cli": {
-    "version": ">= 11.0.3",
-    "appVersionSource": "remote"
+    "version": ">= 11.0.3"
   },
   "build": {
     "development": {
@@ -14,15 +13,15 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_BASE_URL": "https://api.okyapp.info/",
-        "EXPO_PUBLIC_API_BASE_CMS_URL": "https://cms.okyapp.info/",
+        "EXPO_PUBLIC_API_BASE_URL": "https://api.en.oky.greychaindesign.com",
+        "EXPO_PUBLIC_API_BASE_CMS_URL": "https://cms.en.oky.greychaindesign.com",
         "EXPO_PUBLIC_PREDICTION_ENDPOINT": "https://hl2pmjf66f.execute-api.eu-west-2.amazonaws.com/Prod/mentruation-prediction",
         "EXPO_PUBLIC_WEBSITE_URL": "https://okyapp.info",
-        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/staging"
+        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/staging",
+        "EXPO_PUBLIC_AUDIO_BASE_URL": "https://firebasestorage.googleapis.com/v0/b/EXAMPLE_CHANGE_ME.appspot.com/o"
       }
     },
     "production": {
-      "autoIncrement": true,
       "android": {
         "buildType": "apk"
       },
@@ -32,7 +31,8 @@
         "EXPO_PUBLIC_PREDICTION_ENDPOINT": "https://hl2pmjf66f.execute-api.eu-west-2.amazonaws.com/Prod/mentruation-prediction",
         "EXPO_PUBLIC_WEBSITE_URL": "https://okyapp.info",
         "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/production",
-       }
+        "EXPO_PUBLIC_AUDIO_BASE_URL": "https://firebasestorage.googleapis.com/v0/b/EXAMPLE_CHANGE_ME.appspot.com/o"
+      }
     }
   },
   "submit": {

@@ -3,7 +3,14 @@ import { PermissionsAndroid } from 'react-native'
 import { useSelector } from '../redux/useSelector'
 import { currentLocaleSelector } from '../redux/selectors'
 import { IS_ANDROID } from '../services/device'
-import { messaging } from '../services/firebase'
+import {
+  isFirebaseEnabled,
+  firebaseSubscribeToTopic,
+  firebaseUnsubscribeFromTopic,
+  firebaseHasPermission,
+  firebaseRequestPermission,
+  FirebaseAuthorizationStatus,
+} from '../services/firebase'
 
 export const useMessaging = () => {
   const locale = useSelector(currentLocaleSelector)
@@ -18,19 +25,19 @@ export const useMessaging = () => {
         return
       }
 
-      messaging?.().subscribeToTopic(topicName)
+      firebaseSubscribeToTopic(topicName)
     }
 
     handleMessaging()
 
     return () => {
-      messaging?.().unsubscribeFromTopic(topicName)
+      firebaseUnsubscribeFromTopic(topicName)
     }
   }, [locale])
 }
 
 const requestPermission = async () => {
-  if (!messaging) {
+  if (!isFirebaseEnabled) {
     return false
   }
 
@@ -57,17 +64,17 @@ const requestPermission = async () => {
     PROVISIONAL: 2
     EPHEMERAL: 3
   */
-  const status = await messaging().hasPermission()
+  const status = await firebaseHasPermission()
 
   // AUTHORIZED
-  if (status === 1) {
+  if (status === FirebaseAuthorizationStatus.AUTHORIZED) {
     return true
   }
 
-  const authStatus = await messaging().requestPermission()
+  const authStatus = await firebaseRequestPermission()
   const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL
+    authStatus === FirebaseAuthorizationStatus.AUTHORIZED ||
+    authStatus === FirebaseAuthorizationStatus.PROVISIONAL
 
   return enabled
 }

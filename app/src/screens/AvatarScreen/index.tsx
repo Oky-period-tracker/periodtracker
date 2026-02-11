@@ -9,7 +9,7 @@ import { currentAvatarSelector, currentUserSelector } from '../../redux/selector
 import { useDispatch } from 'react-redux'
 import { setAvatarWithValidation } from '../../redux/actions'
 import { Text } from '../../components/Text'
-import { analytics } from '../../services/firebase'
+import { firebaseLogEvent } from '../../services/firebase'
 import { AvatarLock } from '../../components/AvatarLock'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { assets } from '../../resources/assets'
@@ -241,7 +241,7 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
       dispatch(action)
 
       if (selectedAvatar !== currentAvatar) {
-        analytics?.().logEvent('avatarChanged', {
+        firebaseLogEvent('avatarChanged', {
           selectedAvatar,
         })
       }

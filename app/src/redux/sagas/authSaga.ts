@@ -12,7 +12,7 @@ import moment from 'moment'
 import { fetchNetworkConnectionStatus } from '../../services/network'
 import { PartialStateSnapshot } from '../types/partialStore'
 import { ReduxState } from '../reducers'
-import { analytics } from '../../services/firebase'
+import { firebaseLogEvent } from '../../services/firebase'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -185,7 +185,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
       password,
     })
 
-    analytics?.().logEvent('deleteAccount')
+    firebaseLogEvent('deleteAccount')
 
     yield put(actions.updateAllSurveyContent([])) // TODO: ?
     yield put(actions.updateCompletedSurveys([])) // TODO: ?

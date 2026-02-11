@@ -8,7 +8,7 @@ import { isFuturePredictionActiveSelector } from '../redux/selectors'
 import { userUpdateFuturePrediction } from '../redux/actions'
 import { useTodayPrediction } from '../contexts/PredictionProvider'
 import { currentUserSelector } from '../redux/selectors'
-import { analytics } from '../services/firebase'
+import { firebaseLogEvent } from '../services/firebase'
 
 export const Switch = () => {
   const isSwitchedOn = useSelector(isFuturePredictionActiveSelector)
@@ -24,7 +24,7 @@ export const Switch = () => {
     }
 
     dispatch(userUpdateFuturePrediction(true, currentStartDate))
-    analytics?.().logEvent('futurePredictionSwitchedOn', {
+    firebaseLogEvent('futurePredictionSwitchedOn', {
       user: user.id,
     })
   }
@@ -35,7 +35,7 @@ export const Switch = () => {
     }
 
     dispatch(userUpdateFuturePrediction(false, currentStartDate))
-    analytics?.().logEvent('futurePredictionSwitchedOff', {
+    firebaseLogEvent('futurePredictionSwitchedOff', {
       user: user.id,
     })
   }

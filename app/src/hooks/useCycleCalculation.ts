@@ -4,7 +4,7 @@ import { httpClient } from '../services/HttpClient'
 import { editUser } from '../redux/actions'
 import { appTokenSelector, currentUserSelector } from '../redux/selectors'
 import { calculateCycles } from '../utils/cycleCalculator'
-import { analytics } from '../services/firebase'
+import { firebaseLogEvent } from '../services/firebase'
 import type { UserMetadata } from '../types'
 
 interface PeriodDate {
@@ -39,7 +39,7 @@ export const useCycleCalculation = () => {
           cyclesNumber: cycleResult.cyclesNumber,
         }))
 
-        analytics?.().logEvent('CYCLES_NUMBER_UPDATE', {
+        firebaseLogEvent('CYCLES_NUMBER_UPDATE', {
           userId: currentUser?.id || null,
           previousCyclesNumber: currentUser.cyclesNumber || 0,
           newCyclesNumber: cycleResult.cyclesNumber,

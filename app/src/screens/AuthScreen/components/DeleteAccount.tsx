@@ -9,7 +9,7 @@ import { formatPassword } from '../../../services/auth'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
-import { analytics } from '../../../services/firebase'
+import { firebaseLogEvent } from '../../../services/firebase'
 
 export const DeleteAccount = () => {
   const { setAuthMode } = useAuthMode()
@@ -48,7 +48,7 @@ export const DeleteAccount = () => {
         },
       ])
 
-      analytics?.().logEvent('deleteAccount')
+      firebaseLogEvent('deleteAccount')
     } catch (e) {
       Alert.alert('error', 'delete_account_fail')
       setName('')

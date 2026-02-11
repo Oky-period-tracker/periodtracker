@@ -2,16 +2,14 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { useCycleCalculation } from '../../../src/hooks/useCycleCalculation'
 import { httpClient } from '../../../src/services/HttpClient'
 import { editUser } from '../../../src/redux/actions'
-import { analytics } from '../../../src/services/firebase'
+import { firebaseLogEvent } from '../../../src/services/firebase'
 import { calculateCycles } from '../../../src/utils/cycleCalculator'
 
 jest.mock('../../../src/services/HttpClient')
 jest.mock('../../../src/redux/actions')
 const mockLogEvent = jest.fn()
 jest.mock('../../../src/services/firebase', () => ({
-  analytics: () => ({
-    logEvent: mockLogEvent,
-  }),
+  firebaseLogEvent: (...args: any[]) => mockLogEvent(...args),
 }))
 jest.mock('../../../src/utils/cycleCalculator')
 

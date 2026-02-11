@@ -223,7 +223,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 
   React.useEffect(() => {
     runInitialAnimation(animationSequences.lookingAndWave)
-  })
+  }, [])
 
   const onPress = () => {
     isJumpingToggled.value = true

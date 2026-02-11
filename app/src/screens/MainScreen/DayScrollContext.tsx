@@ -251,9 +251,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   // Ensure scrolling doesn't lock
   React.useEffect(() => {
-    runOnJS(() => {
-      disabled.value = false
-    })()
+    disabled.value = false
   }, [state])
 
   // Reset
@@ -387,6 +385,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   }
 
   const carouselPanGesture = Gesture.Pan()
+    .minDistance(10)
     .onStart(handlePanStart)
     .onUpdate((event) => {
       handlePanUpdate(event.translationX)
@@ -396,6 +395,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     })
 
   const wheelPanGesture = Gesture.Pan()
+    .minDistance(10)
     .onStart(handlePanStart)
     .onUpdate((event) => {
       handlePanUpdate(-event.translationY * SCROLL_SPEED_MULTIPLIER)

@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import moment from 'moment'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { Carousel } from './components/Carousel'
 import { CenterCard } from './components/CenterCard'
@@ -28,7 +29,6 @@ import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
 import { useCycleCalculation } from '../../hooks/useCycleCalculation'
-import { analytics } from '../../services/firebase'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -103,12 +103,23 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   // Auto start tutorial due to route params
 
   React.useEffect(() => {
-    if (!currentUser?.metadata?.periodDates?.length) {
-      const data = generatePeriodDates(predictionFullState)
-      // Only update local Redux state, don't sync to server on mount
-      editUserReduxState({ metadata: { periodDates: data } })
+    const initPeriodDates = async () => {
+      if (!currentUser?.metadata?.periodDates?.length) {
+        const data = generatePeriodDates(predictionFullState)
+        // Only update local Redux state, don't sync to server on mount
+        editUserReduxState({ metadata: { periodDates: data } })
+      }
+
+      // Always recalculate cycles on mount to sync locks
+      // This ensures cyclesNumber is correct after app restart/update
+      const dates = currentUser?.metadata?.periodDates || []
+      if (dates.length > 0) {
+        await updateCycleCount(dates)
+      }
     }
-  }, [])
+
+    initPeriodDates()
+  }, [currentUser?.id, appToken])
 
   const updateUserVerifiedDates = (changes: Partial<User>) => {
     if (!appToken) {

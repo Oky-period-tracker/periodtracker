@@ -60,9 +60,7 @@ jest.mock('../../../../src/hooks/useAccessibilityLabel', () => ({
 }))
 
 jest.mock('../../../../src/services/firebase', () => ({
-  analytics: () => ({
-    logEvent: jest.fn(),
-  }),
+  firebaseLogEvent: jest.fn(),
 }))
 
 jest.mock('react-native-safe-area-context', () => ({

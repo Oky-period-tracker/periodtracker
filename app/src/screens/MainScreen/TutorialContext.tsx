@@ -189,7 +189,7 @@ export const TutorialProvider = ({ children }: React.PropsWithChildren) => {
 
       dispatch({ type: 'reset' })
     })
-  })
+  }, [stepConfig, state.isPlaying, step, state.tutorial])
 
   useStopLoadingEffect()
 

@@ -66,9 +66,7 @@ jest.mock('../../../../src/services/asset', () => ({
 }))
 
 jest.mock('../../../../src/services/firebase', () => ({
-  analytics: () => ({
-    logEvent: jest.fn(),
-  }),
+  firebaseLogEvent: jest.fn(),
 }))
 
 jest.mock('../../../../src/redux/actions', () => ({

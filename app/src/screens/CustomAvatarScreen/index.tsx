@@ -28,7 +28,7 @@ import { assets } from '../../resources/assets'
 import { globalStyles } from '../../config/theme'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslate } from '../../hooks/useTranslate'
-import { analytics } from '../../services/firebase'
+import { firebaseLogEvent } from '../../services/firebase'
 import { useAccessibilityLabel } from '../../hooks/useAccessibilityLabel'
 import { BodyOptions } from './components/BodyOptions'
 import { HairOptions } from './components/HairOptions'
@@ -209,7 +209,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
           setFirstVisitTooltipVisible(true)
           await AsyncStorage.setItem('customizer_has_visited', 'true')
           
-          analytics?.().logEvent('CUSTOM_AVATAR_UNLOCK', {
+          firebaseLogEvent('CUSTOM_AVATAR_UNLOCK', {
             userId: currentUser?.id || null,
           })
         }
@@ -372,7 +372,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
       dispatch(setAvatarAction)
     }
 
-    analytics?.().logEvent('CUSTOM_AVATAR_UPDATED', {
+    firebaseLogEvent('CUSTOM_AVATAR_UPDATED', {
       userId: currentUser?.id || null,
       hasBody: !!updatedAvatar.body,
       hasHair: !!updatedAvatar.hair,

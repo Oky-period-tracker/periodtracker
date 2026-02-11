@@ -69,7 +69,7 @@ export const useStopLoadingEffect = (duration = 1500) => {
     return () => {
       clearTimeout(timeout)
     }
-  })
+  }, [loading, duration, setLoading])
 }
 
 const styles = StyleSheet.create({

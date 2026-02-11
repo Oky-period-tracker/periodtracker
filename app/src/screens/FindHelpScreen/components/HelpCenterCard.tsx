@@ -9,7 +9,7 @@ import { HelpCenter } from '../../../core/types'
 import { globalStyles } from '../../../config/theme'
 import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector, helpCenterAttributesSelector } from '../../../redux/selectors'
-import { analytics } from '../../../services/firebase'
+import { firebaseLogEvent } from '../../../services/firebase'
 import { useAuth } from '../../../contexts/AuthContext'
 import { useColor } from '../../../hooks/useColor'
 
@@ -38,13 +38,13 @@ export const HelpCenterCard = ({
     }
 
     if (hasAccess) {
-      analytics?.().logEvent('helpCenterPressedLoggedIn', {
+      firebaseLogEvent('helpCenterPressedLoggedIn', {
         userId: user.id,
         helpCenterId: helpCenter.id,
         helpCenterTitle: helpCenter.title,
       })
     } else {
-      analytics?.().logEvent('helpCenterPressedLoggedOut', {
+      firebaseLogEvent('helpCenterPressedLoggedOut', {
         helpCenterId: helpCenter.id,
         helpCenterTitle: helpCenter.title,
       })

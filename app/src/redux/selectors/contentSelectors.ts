@@ -4,23 +4,35 @@ import { isDefined } from '../../services/utils'
 
 const s = (state: ReduxState) => state.content
 
+// Simple memoization helper: caches last input reference and result
+function memoize<TInput, TResult>(fn: (input: TInput) => TResult): (input: TInput) => TResult {
+  let lastInput: TInput | undefined
+  let lastResult: TResult
+  return (input: TInput) => {
+    if (input === lastInput) return lastResult
+    lastInput = input
+    lastResult = fn(input)
+    return lastResult
+  }
+}
+
 export const articlesSelector = (state: ReduxState) => s(state).articles
 
-export const allArticlesSelector = (state: ReduxState) => {
-  const articles = s(state)?.articles
+const _allArticles = memoize((articles: ReturnType<typeof articlesSelector>) => {
   if (!articles?.allIds || !articles?.byId) {
     return []
   }
   return articles.allIds.map((id) => articles.byId?.[id]).filter(isDefined)
-}
+})
+export const allArticlesSelector = (state: ReduxState) => _allArticles(s(state)?.articles)
 
-export const allVideosSelector = (state: ReduxState) => {
-  const videos = s(state)?.videos
+const _allVideos = memoize((videos: ReduxState['content']['videos']) => {
   if (!videos?.allIds || !videos?.byId) {
     return []
   }
   return videos.allIds.map((id) => videos.byId?.[id]).filter(isDefined)
-}
+})
+export const allVideosSelector = (state: ReduxState) => _allVideos(s(state)?.videos)
 
 export const articleByIDSelector = (state: ReduxState, id: string) => {
   const articles = s(state).articles
@@ -43,21 +55,21 @@ export const helpCenterAttributesSelector = (state: ReduxState) => {
   return s(state).helpCenterAttributes
 }
 
-export const allCategoriesSelector = (state: ReduxState) => {
-  const categories = s(state)?.categories
+const _allCategories = memoize((categories: ReduxState['content']['categories']) => {
   if (!categories?.allIds || !categories?.byId) {
     return []
   }
   return categories.allIds.map((id) => categories?.byId?.[id]).filter(isDefined)
-}
+})
+export const allCategoriesSelector = (state: ReduxState) => _allCategories(s(state)?.categories)
 
-export const allSubCategoriesSelector = (state: ReduxState) => {
-  const subCategories = s(state)?.subCategories
+const _allSubCategories = memoize((subCategories: ReduxState['content']['subCategories']) => {
   if (!subCategories?.byId || !subCategories?.allIds) {
     return []
   }
   return subCategories?.allIds.map((id) => subCategories.byId?.[id]).filter(isDefined)
-}
+})
+export const allSubCategoriesSelector = (state: ReduxState) => _allSubCategories(s(state)?.subCategories)
 
 export const allSubCategoriesByIdSelector = (state: ReduxState) => {
   return s(state)?.subCategories?.byId ?? {}

@@ -1,9 +1,0 @@
-[submodule ".k8s"]
-	path = .k8s
-	url = git@github.com:Oky-period-tracker/periodtracker_k8s-whitelabelled.git
-[submodule "packages/core/src/common"]
-	path = packages/core/src/common
-	url = git@github.com:Oky-period-tracker/periodtracker_common-global.git
-[submodule "packages/delete-account"]
-	path = packages/delete-account
-	url = git@github.com:Oky-period-tracker/periodtracker_delete_account-whitelabelled.git

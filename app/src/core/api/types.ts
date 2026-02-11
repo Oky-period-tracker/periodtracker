@@ -130,6 +130,7 @@ export interface LoginResponse {
     dateSignedUp: string
     metadata: UserMetadata
     avatar?: AvatarConfig | null
+    cyclesNumber?: number
   }
   store: {
     storeVersion: number
@@ -153,6 +154,7 @@ export interface SignupResponse {
     secretAnswer: string
     metadata: UserMetadata
     avatar?: AvatarConfig | null
+    cyclesNumber?: number
   }
 }
 

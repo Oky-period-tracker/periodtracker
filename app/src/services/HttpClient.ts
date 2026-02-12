@@ -3,6 +3,7 @@ import * as types from '../core/api/types'
 import { API_BASE_CMS_URL, API_BASE_URL, PREDICTION_ENDPOINT } from '../config/env'
 import { Locale } from '../resources/translations'
 import { User } from '../types'
+import { answerSurvey } from '../redux/actions'
 // import * as config from "../config";
 
 export const httpClient = createHttpClient(API_BASE_URL, API_BASE_CMS_URL, {
@@ -330,6 +331,10 @@ export function createHttpClient(
 
       return response.data
     },
+    answerSurvey:async({appToken,live,questions}:any)=>{
+      const response : AxiosResponse<any> = await axios.post(`${endpoint}/survey`,{live,questions},{headers:{Authorization:`Bearer ${appToken}`}})
+      return response.data
+    }
     // TODO:
     // fetchContent: async ({ locale, timestamp = 0 }) => {
     //   const response: AxiosResponse<types.ContentResponse> = await axios.get(

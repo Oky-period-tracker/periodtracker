@@ -10,10 +10,15 @@ import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
 import { analytics } from '../../../services/firebase'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteAccountRequest } from '../../../redux/actions'
+import { appTokenSelector } from '../../../redux/selectors'
 
 export const DeleteAccount = () => {
   const { setAuthMode } = useAuthMode()
   const translate = useTranslate()
+  const dispatch = useDispatch()
+  const appToken = useSelector(appTokenSelector)
 
   const [name, setName] = React.useState('')
   const [password, setPassword] = React.useState('')
@@ -32,10 +37,25 @@ export const DeleteAccount = () => {
     }
 
     try {
-      // Check user exists
+      // If offline account (no appToken), dispatch Redux action to handle SQLite deletion
+      if (!appToken) {
+        console.log('🔹 [DeleteAccount] Offline account - using Redux action')
+        dispatch(deleteAccountRequest({ name, password: formatPassword(password) }))
+        
+        Alert.alert('success', 'delete_account_completed', [
+          {
+            text: translate('continue'),
+            onPress: goBack,
+          },
+        ])
+        return
+      }
+
+      // Online account - check user exists
+      console.log('🔹 [DeleteAccount] Online account - checking with API')
       await httpClient.getUserInfo(name)
 
-      // Delete
+      // Delete from server
       await httpClient.deleteUserFromPassword({
         name,
         password: formatPassword(password),
@@ -50,6 +70,7 @@ export const DeleteAccount = () => {
 
       analytics?.().logEvent('deleteAccount')
     } catch (e) {
+      console.error('❌ [DeleteAccount] Error:', e)
       Alert.alert('error', 'delete_account_fail')
       setName('')
       setPassword('')

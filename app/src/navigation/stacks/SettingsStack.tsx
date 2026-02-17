@@ -6,6 +6,7 @@ import TermsScreen from '../../screens/TermsScreen'
 import AboutScreen from '../../screens/AboutScreen'
 import PrivacyScreen from '../../screens/PrivacyScreen'
 import ContactUsScreen from '../../screens/ContactUsScreen'
+import { DebugDatabaseScreen } from '../../screens/DebugDatabaseScreen'
 
 export type SettingsStackParamList = {
   Settings: undefined
@@ -14,6 +15,7 @@ export type SettingsStackParamList = {
   About: undefined
   Privacy: undefined
   Contact: undefined
+  DebugDatabase: undefined
 }
 
 const config: StackConfig<keyof SettingsStackParamList> = {
@@ -42,6 +44,10 @@ const config: StackConfig<keyof SettingsStackParamList> = {
     Contact: {
       title: 'contact_us',
       component: ContactUsScreen,
+    },
+    DebugDatabase: {
+      title: 'Database Debug',
+      component: DebugDatabaseScreen,
     },
   },
 }

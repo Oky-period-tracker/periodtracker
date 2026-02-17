@@ -39,6 +39,10 @@ export function setTutorialTwoActive(isTutorialActive: boolean) {
   return createAction('SET_TUTORIAL_TWO_ACTIVE', { isTutorialActive })
 }
 
+export function setLoading(loading: boolean) {
+  return createAction('SET_LOADING', { loading })
+}
+
 export function setLoginPassword(isLoginPasswordActive: boolean) {
   return createAction('SET_LOGIN_PASSWORD_ACTIVE', { isLoginPasswordActive })
 }

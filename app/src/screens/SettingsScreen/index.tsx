@@ -108,6 +108,12 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       component: <PredictionControls />,
       disabled: true,
     },
+    {
+      title: '🐛 Database Debug',
+      description: 'Check SQLite data',
+      onPress: () => navigation.navigate('DebugDatabase'),
+      component: <ArrowRight color={palette.basic.base} />,
+    },
   ]
 
   return (

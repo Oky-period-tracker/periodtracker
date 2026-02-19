@@ -67,7 +67,6 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
 
-
   React.useEffect(() => {
     if (!message) {
       return

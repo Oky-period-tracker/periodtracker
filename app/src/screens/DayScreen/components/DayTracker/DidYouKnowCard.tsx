@@ -5,6 +5,7 @@ import _ from 'lodash'
 import { StyleSheet, View } from 'react-native'
 import { Text } from '../../../../components/Text'
 import { useColor } from '../../../../hooks/useColor'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export const DidYouKnowCard = () => {
   const allDidYouKnows = useSelector(allDidYouKnowsSelectors)
@@ -15,15 +16,17 @@ export const DidYouKnowCard = () => {
   const { palette, backgroundColor } = useColor()
 
   return (
-    <View style={[styles.page, { backgroundColor }]}>
-      <Text style={[styles.title, { color: palette.secondary.text }]}>didYouKnow</Text>
-      <Text>daily_didYouKnow_content</Text>
-      <View style={styles.body}>
-        <Text enableTranslate={false} style={[styles.content, { color: palette.danger.text }]}>
-          {randomDidYouKnow?.content}
-        </Text>
+    <ScrollView style={[styles.page, { backgroundColor }]}>
+      <View style={{ padding: 24 }}>
+        <Text style={[styles.title, { color: palette.secondary.text }]}>didYouKnow</Text>
+        <Text>daily_didYouKnow_content</Text>
+        <View style={styles.body}>
+          <Text enableTranslate={false} style={[styles.content, { color: palette.danger.text }]}>
+            {randomDidYouKnow?.content}
+          </Text>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -32,7 +35,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     flexDirection: 'column',
-    padding: 24,
     maxWidth: 800,
     borderRadius: 20,
   },

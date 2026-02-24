@@ -82,7 +82,12 @@ createConnection(ormconfig)
       app.use(route.route, Authentication.isLoggedIn)
     })
 
-    app.use('/mobile/suggestions', cors())
+    if (env.isDevelopment) {
+      // Enable web to use all routes
+      app.use('/mobile', cors())
+    } else {
+      app.use('/mobile/suggestions', cors())
+    }
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
       storageBucket: env.storage.bucket,

@@ -65,13 +65,7 @@ export const EncyclopediaProvider = ({ children }: React.PropsWithChildren) => {
 
   const moderatedArticles: ArticleWithParentIds[] = React.useMemo(() => {
     return articlesWithParentIds.filter((item) => canAccessContent(item, currentUser))
-  }, [
-    liveArticles,
-    categories,
-    subCategories,
-    currentUser,
-    currentUser?.metadata?.contentSelection,
-  ])
+  }, [liveArticles, categories, subCategories, currentUser])
 
   const { query, setQuery, results } = useSearch<ArticleWithParentIds>({
     options: moderatedArticles,

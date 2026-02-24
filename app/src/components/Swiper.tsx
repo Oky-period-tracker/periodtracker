@@ -49,6 +49,8 @@ export const Swiper = ({ index, setIndex, pages, renderActionRight }: SwiperProp
   }
 
   const panGesture = Gesture.Pan()
+    .activeOffsetX([-10, 10])  // Only activate on horizontal movement
+    .failOffsetY([-5, 5])      // Fail (let ScrollView win) on vertical movement
     .onUpdate((event) => {
       translationX.value = totalTranslationX.value + event.translationX
     })
@@ -136,6 +138,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
     width: '100%',
+    height: '100%',
     marginRight,
   },
   footer: {

@@ -38,7 +38,7 @@ export const resetToAuth = () => {
       }
     }, 300)
   } else {
-    console.warn('⚠️ [Navigation] Cannot reset - navigationRef not available')
+    console.warn('[Navigation] Cannot reset - navigationRef not available')
   }
 }
 
@@ -48,7 +48,7 @@ export const navigateToAuth = () => {
     console.log('[Navigation] Navigating to Auth...')
     navigationRef.navigate('Auth' as any)
   } else {
-    console.warn('⚠️ [Navigation] Cannot navigate - navigationRef is null')
+    console.warn('[Navigation] Cannot navigate - navigationRef is null')
   }
 }
 

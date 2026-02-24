@@ -131,7 +131,7 @@ export function generatePeriodDates(predictionFullStateInfo: PredictionState) {
   if (predictionFullStateInfo.history && Array.isArray(predictionFullStateInfo.history)) {
     predictionFullStateInfo.history.forEach((entry) => {
       if (entry.cycleStartDate && entry.periodLength) {
-        const startDate = moment(entry.cycleStartDate).toDate() // ✅ FIXED: Convert Moment to Date
+        const startDate = moment(entry.cycleStartDate).toDate() // Convert Moment to Date
         periodDates.push(...getPeriodDays(startDate, entry.periodLength, true, null))
       }
     })
@@ -143,7 +143,7 @@ export function generatePeriodDates(predictionFullStateInfo: PredictionState) {
     predictionFullStateInfo.currentCycle.startDate &&
     predictionFullStateInfo.currentCycle.periodLength
   ) {
-    const startDate = moment(predictionFullStateInfo.currentCycle.startDate).toDate() // ✅ FIXED: Convert Moment to Date
+    const startDate = moment(predictionFullStateInfo.currentCycle.startDate).toDate() // Convert Moment to Date
     periodDates.push(
       ...getPeriodDays(startDate, predictionFullStateInfo.currentCycle.periodLength, true, null),
     )
@@ -153,10 +153,10 @@ export function generatePeriodDates(predictionFullStateInfo: PredictionState) {
   if (predictionFullStateInfo.smartPrediction) {
     const { smaCycleLength, smaPeriodLength } = predictionFullStateInfo.smartPrediction
     if (smaCycleLength && smaPeriodLength) {
-      let lastCycleStartDate = moment(predictionFullStateInfo.currentCycle.startDate).toDate() // ✅ FIXED
+      let lastCycleStartDate = moment(predictionFullStateInfo.currentCycle.startDate).toDate()
 
       for (let i = 0; i < 12; i++) {
-        const futureStartDate = new Date(lastCycleStartDate) // ✅ FIXED: Create a new Date to avoid mutation
+        const futureStartDate = new Date(lastCycleStartDate) // Create a new Date to avoid mutation
         futureStartDate.setDate(futureStartDate.getDate() + smaCycleLength)
         lastCycleStartDate = new Date(futureStartDate) // Update reference
         periodDates.push(...getPeriodDays(futureStartDate, smaPeriodLength, true, null))

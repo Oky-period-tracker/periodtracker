@@ -59,7 +59,7 @@ export function DebugDatabaseScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>📊 Database Debug</Text>
+        <Text style={styles.title}>Database Debug</Text>
       </View>
 
       <TouchableOpacity
@@ -81,7 +81,7 @@ export function DebugDatabaseScreen() {
       {data && (
         <View style={styles.dataContainer}>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>👤 Users ({data.userCount})</Text>
+            <Text style={styles.sectionTitle}>Users ({data.userCount})</Text>
             {data.users.length > 0 ? (
               data.users.map((user: any, idx: number) => (
                 <View key={idx} style={styles.item}>
@@ -109,7 +109,7 @@ export function DebugDatabaseScreen() {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>💾 App States ({data.appStateCount})</Text>
+            <Text style={styles.sectionTitle}>App States ({data.appStateCount})</Text>
             {data.appStates.length > 0 ? (
               data.appStates.map((state: any, idx: number) => (
                 <View key={idx} style={styles.item}>

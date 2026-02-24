@@ -29,15 +29,15 @@ function App() {
 
   React.useEffect(() => {
     storeInitPromiseExport.then(async () => {
-      console.log('🔹 [App] Store initialized')
+      console.log('[App] Store initialized')
       const readyStore = await getStore()
       const readyPersistor = await getPersistor()
-      console.log('🔹 [App] Store ready:', !!readyStore)
-      console.log('🔹 [App] Persistor ready:', !!readyPersistor)
+      console.log('[App] Store ready:', !!readyStore)
+      console.log('[App] Persistor ready:', !!readyPersistor)
       setStore(readyStore)
       setPersistor(readyPersistor)
     }).catch(error => {
-      console.error('❌ [App] Failed to initialize store:', error)
+      console.error('[App] Failed to initialize store:', error)
       // Fallback - try to continue anyway
       getStore().then(readyStore => {
         getPersistor().then(readyPersistor => {

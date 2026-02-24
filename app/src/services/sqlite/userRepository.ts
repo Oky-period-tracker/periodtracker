@@ -113,23 +113,23 @@ class UserRepository {
         'SELECT * FROM users WHERE name = ? AND deviceId = ?',
         [name, deviceId]
       )
-      console.log('🔍 getUserByName result:', JSON.stringify(result.rows._array))
-      console.log('🔍 Result type:', typeof result.rows._array, 'IsArray:', Array.isArray(result.rows._array))
-      console.log('🔍 Result length:', result.rows._array.length, result.rows._array.length === 0 ? '(EMPTY - no user found)' : '(FOUND USER)')
+      console.log('[SQLite] getUserByName result:', JSON.stringify(result.rows._array))
+      console.log('[SQLite] Result type:', typeof result.rows._array, 'IsArray:', Array.isArray(result.rows._array))
+      console.log('[SQLite] Result length:', result.rows._array.length, result.rows._array.length === 0 ? '(EMPTY - no user found)' : '(FOUND USER)')
       
       // Explicit check for empty result
       if (!result.rows._array || result.rows._array.length === 0) {
-        console.log('❌ No user found for name:', name, 'deviceId:', deviceId)
+        console.log('[SQLite] No user found for name:', name, 'deviceId:', deviceId)
         return null
       }
       
       const row = result.rows._array[0]
-      console.log('🔍 Row data:', row, 'Type:', typeof row, 'IsArray:', Array.isArray(row))
+      console.log('[SQLite] Row data:', row, 'Type:', typeof row, 'IsArray:', Array.isArray(row))
       
       // Convert array format to object if needed
       let userObj = row
       if (Array.isArray(row)) {
-        console.log('🔍 Converting array to object, length:', row.length)
+        console.log('[SQLite] Converting array to object, length:', row.length)
         // SELECT * returns: [id, deviceId, name, password, gender, location, country, province, dateOfBirth, secretQuestion, secretAnswer, metadata, dateSignedUp, dateAccountSaved, appToken, isActive, isPendingSync, isPendingDelete, isPendingPasswordChange, createdAt, syncedAt]
         userObj = {
           id: row[0],
@@ -154,14 +154,14 @@ class UserRepository {
           createdAt: row[19],
           syncedAt: row[20],
         }
-        console.log('🔍 Converted - id:', userObj.id, 'name:', userObj.name, 'deviceId:', userObj.deviceId)
+        console.log('[SQLite] Converted - id:', userObj.id, 'name:', userObj.name, 'deviceId:', userObj.deviceId)
       }
       
       const user = this.mapRowToUser(userObj as any)
       console.log('User found:', user.name, 'id:', user.id)
       return user
     } catch (error) {
-      console.error('❌ Error getting user by name:', error)
+      console.error('[SQLite] Error getting user by name:', error)
       return null
     }
   }
@@ -266,7 +266,7 @@ class UserRepository {
       console.log('[SQLite] User created/updated:', user.id)
       return { ...user, createdAt, syncedAt: undefined }
     } catch (error) {
-      console.error('❌ [SQLite] Error creating user:', error)
+      console.error('[SQLite] Error creating user:', error)
       throw error
     }
   }

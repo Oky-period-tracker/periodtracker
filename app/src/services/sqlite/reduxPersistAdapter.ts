@@ -7,16 +7,16 @@ let dbInitialized = false
 async function ensureDbInitialized(): Promise<void> {
   if (!dbInitialized) {
     try {
-      console.log('🔹 [PersistAdapter] Ensuring database initialization...')
+      console.log('[PersistAdapter] Ensuring database initialization...')
       // Force initialization through initializeDatabase to ensure tables are created
       const db = await initializeDatabase()
       if (!db) {
         throw new Error('initializeDatabase returned null')
       }
       dbInitialized = true
-      console.log('✅ [PersistAdapter] Database ready with tables')
+      console.log('[PersistAdapter] Database ready with tables')
     } catch (error) {
-      console.error('❌ [PersistAdapter] Failed to ensure database initialization:', error)
+      console.error('[PersistAdapter] Failed to ensure database initialization:', error)
       // Don't suppress - let it fail so we know what's wrong
       throw error
     }
@@ -38,22 +38,22 @@ export const reduxPersistSQLiteAdapter = {
       const userId = key.split('_')[1] || key
 
       if (!userId || userId === 'primary') {
-        console.log('🔹 [PersistAdapter] Skipping primary key')
+        console.log('[PersistAdapter] Skipping primary key')
         return null
       }
 
-      console.log('🔹 [PersistAdapter] Getting app state for userId:', userId)
+      console.log('[PersistAdapter] Getting app state for userId:', userId)
       const appState = await userRepository.getAppState(userId)
 
       if (!appState) {
-        console.log('🔹 [PersistAdapter] No app state found for userId:', userId)
+        console.log('[PersistAdapter] No app state found for userId:', userId)
         return null
       }
 
       // Redux-persist expects stringified data
       return appState.appState
     } catch (error) {
-      console.error('❌ [PersistAdapter] Error getting item from SQLite:', error)
+      console.error('[PersistAdapter] Error getting item from SQLite:', error)
       // Don't throw, let redux-persist handle missing data gracefully
       return null
     }
@@ -69,11 +69,11 @@ export const reduxPersistSQLiteAdapter = {
       const userId = key.split('_')[1] || key
 
       if (!userId || userId === 'primary' || !value) {
-        console.log('🔹 [PersistAdapter] Skipping setItem for key:', key)
+        console.log('[PersistAdapter] Skipping setItem for key:', key)
         return
       }
 
-      console.log('🔹 [PersistAdapter] Saving app state for userId:', userId)
+      console.log('[PersistAdapter] Saving app state for userId:', userId)
 
       // Parse to get storeVersion if available
       let storeVersion = 1
@@ -86,9 +86,9 @@ export const reduxPersistSQLiteAdapter = {
 
       // Save to SQLite
       await userRepository.saveAppState(userId, storeVersion, value)
-      console.log('✅ [PersistAdapter] Saved app state for userId:', userId)
+      console.log('[PersistAdapter] Saved app state for userId:', userId)
     } catch (error) {
-      console.error('❌ [PersistAdapter] Error setting item in SQLite:', error)
+      console.error('[PersistAdapter] Error setting item in SQLite:', error)
       // Don't throw - allow app to continue even if persistence fails
     }
   },

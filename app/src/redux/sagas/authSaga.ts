@@ -50,7 +50,7 @@ function* periodicallyAttemptConvertGuestAccount() {
 }
 
 function* syncPendingAccounts() {
-  console.log('🔹 [Auth] syncPendingAccounts: Starting sync check')
+  console.log('[Auth] syncPendingAccounts: Starting sync check')
   
   while (true) {
     try {
@@ -62,20 +62,20 @@ function* syncPendingAccounts() {
       try {
         isOnline = yield fetchNetworkConnectionStatus()
       } catch (netError) {
-        console.warn('⚠️ [Auth] Network detection failed:', netError)
+        console.warn('[Auth] Network detection failed:', netError)
         isOnline = false
       }
 
       if (!isOnline) {
-        console.log('🔹 [Auth] syncPendingAccounts: No internet - skipping sync')
+        console.log('[Auth] syncPendingAccounts: No internet - skipping sync')
         continue
       }
 
-      console.log('🔹 [Auth] syncPendingAccounts: Internet available - checking for pending accounts')
+      console.log('[Auth] syncPendingAccounts: Internet available - checking for pending accounts')
 
       // Get all accounts with pending sync
       const pendingAccounts: any = yield userRepository.getUsersWithPendingSync()
-      console.log('🔹 [Auth] syncPendingAccounts: Found', pendingAccounts.length, 'accounts pending sync')
+      console.log('[Auth] syncPendingAccounts: Found', pendingAccounts.length, 'accounts pending sync')
 
       if (pendingAccounts.length === 0) {
         continue
@@ -84,27 +84,27 @@ function* syncPendingAccounts() {
       // Sync each pending account
       for (const account of pendingAccounts) {
         try {
-          console.log('🔹 [Auth] Syncing account:', account.name)
-          console.log('🔹 [Auth] Full Account data:', {
+          console.log('[Auth] Syncing account:', account.name)
+          console.log('[Auth] Full Account data:', {
             name: account.name,
-            password: account.password ? '✅ SET' : '❌ MISSING',
+            password: account.password ? 'SET' : 'MISSING',
             dateOfBirth: account.dateOfBirth,
             gender: account.gender,
             location: account.location,
             country: account.country,
             province: account.province,
-            secretQuestion: account.secretQuestion ? '✅ SET' : '❌ MISSING',
-            secretAnswer: account.secretAnswer ? '✅ SET' : '❌ MISSING',
+            secretQuestion: account.secretQuestion ? 'SET' : 'MISSING',
+            secretAnswer: account.secretAnswer ? 'SET' : 'MISSING',
             dateSignedUp: account.dateSignedUp,
             metadata: account.metadata,
           })
 
           if (!account.password) {
-            console.error('❌ [Auth] Missing password for account:', account.name)
+            console.error('[Auth] Missing password for account:', account.name)
             continue
           }
 
-          // Call signup API with account details
+          // Call signup API with account details (including device info for tracking)
           const { appToken, user } = yield httpClient.signup({
             name: account.name,
             password: account.password,
@@ -118,10 +118,11 @@ function* syncPendingAccounts() {
             dateSignedUp: account.dateSignedUp,
             metadata: account.metadata,
             preferredId: account.id, // Use existing ID
+            deviceId: account.deviceId, // Track which device this account came from
           })
 
-          console.log('✅ [Auth] Account synced successfully:', account.name)
-          console.log('✅ [Auth] Received appToken:', appToken ? 'YES' : 'NO')
+          console.log('[Auth] Account synced successfully:', account.name)
+          console.log('[Auth] Received appToken:', appToken ? 'YES' : 'NO')
 
           // Update account with appToken and mark as synced
           yield userRepository.updateUser({
@@ -132,22 +133,22 @@ function* syncPendingAccounts() {
             syncedAt: moment.utc().toISOString(),
           })
 
-          console.log('✅ [Auth] Account updated in SQLite:', account.name)
+          console.log('[Auth] Account updated in SQLite:', account.name)
         } catch (syncError) {
-          console.warn('⚠️ [Auth] Failed to sync account:', account.name)
+          console.warn('[Auth] Failed to sync account:', account.name)
           if (syncError && syncError.response) {
-            console.error('⚠️ [Auth] API Response Error:', syncError.response.status, syncError.response.data)
+            console.error('[Auth] API Response Error:', syncError.response.status, syncError.response.data)
           } else if (syncError && syncError.message) {
-            console.error('⚠️ [Auth] Error Details:', syncError.message)
-            console.error('⚠️ [Auth] Full Error:', syncError)
+            console.error('[Auth] Error Details:', syncError.message)
+            console.error('[Auth] Full Error:', syncError)
           } else {
-            console.error('⚠️ [Auth] Error:', syncError)
+            console.error('[Auth] Error:', syncError)
           }
           // Continue with next account instead of failing
         }
       }
     } catch (err) {
-      console.error('❌ [Auth] syncPendingAccounts error:', err)
+      console.error('[Auth] syncPendingAccounts error:', err)
       // Continue the loop even if there's an error
     }
   }
@@ -159,10 +160,10 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
   const state: ReduxState = yield select()
   const currentUser = selectors.currentUserSelector(state)
   
-  console.log('🔹 [Auth] onConvertGuestAccount: Current user isGuest:', currentUser?.isGuest, 'Payload isGuest:', payload?.isGuest)
+  console.log('[Auth] onConvertGuestAccount: Current user isGuest:', currentUser?.isGuest, 'Payload isGuest:', payload?.isGuest)
   
   if (currentUser && !currentUser.isGuest) {
-    console.log('🔹 [Auth] User is no longer guest, skipping conversion attempt')
+    console.log('[Auth] User is no longer guest, skipping conversion attempt')
     return
   }
   
@@ -177,7 +178,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
 
   try {
     // First try to login with API
-    console.log('🔹 [Auth] Login: Trying API first')
+    console.log('[Auth] Login: Trying API first')
     try {
       const {
         appToken,
@@ -188,7 +189,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         password,
       })
 
-      console.log('✅ [Auth] API login successful')
+      console.log('[Auth] API login successful')
       yield put(
         actions.loginSuccess({
           appToken,
@@ -215,30 +216,30 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       }
     } catch (apiError) {
       // API failed - try to login from SQLite (offline account)
-      console.warn('⚠️ [Auth] API login failed, trying offline login:', apiError)
+      console.warn('[Auth] API login failed, trying offline login:', apiError)
       const deviceId: any = yield getDeviceId()
-      console.log('🔹 [Auth] Device ID:', deviceId)
-      console.log('🔹 [Auth] Looking for user:', name)
+      console.log('[Auth] Device ID:', deviceId)
+      console.log('[Auth] Looking for user:', name)
       
       const offlineUser: any = yield userRepository.getUserByName(name, deviceId)
-      console.log('🔹 [Auth] Found offline user:', offlineUser)
+      console.log('[Auth] Found offline user:', offlineUser)
       
       if (!offlineUser) {
-        console.error('❌ [Auth] User not found in SQLite')
+        console.error('[Auth] User not found in SQLite')
         throw new Error('login_failed')
       }
       
       // Verify password matches
-      console.log('🔹 [Auth] Comparing passwords')
-      console.log('🔹 [Auth] Input password:', password)
-      console.log('🔹 [Auth] Stored password:', offlineUser.password)
+      console.log('[Auth] Comparing passwords')
+      console.log('[Auth] Input password:', password)
+      console.log('[Auth] Stored password:', offlineUser.password)
       
       if (offlineUser.password !== password) {
-        console.error('❌ [Auth] Password incorrect')
+        console.error('[Auth] Password incorrect')
         throw new Error('login_failed')
       }
       
-      console.log('✅ [Auth] Offline login successful')
+      console.log('[Auth] Offline login successful')
       yield put(
         actions.loginSuccess({
           appToken: offlineUser.appToken || undefined,
@@ -273,7 +274,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       errorMessage = error.message
     }
     
-    console.error('❌ [Auth] Login error:', errorMessage)
+    console.error('[Auth] Login error:', errorMessage)
     yield put(
       actions.loginFailure({
         error: errorMessage,
@@ -291,7 +292,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     const state: ReduxState = yield select()
     const currentUser = selectors.currentUserSelector(state)
     if (currentUser && currentUser.name === name) {
-      console.log('🔹 [Auth] Signup: User already logged in with this name, skipping:', name)
+      console.log('[Auth] Signup: User already logged in with this name, skipping:', name)
       yield put(actions.createAccountSuccess({
         appToken: currentUser.appToken,
         user: currentUser,
@@ -300,33 +301,33 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     }
 
     // Check network status
-    console.log('🔹 [Auth] Signup: Checking network status...')
+    console.log('[Auth] Signup: Checking network status...')
     let isOnline: any = false
     try {
       isOnline = yield fetchNetworkConnectionStatus()
-      console.log('🔹 [Auth] Signup: Network status =', isOnline ? 'ONLINE' : 'OFFLINE')
+      console.log('[Auth] Signup: Network status =', isOnline ? 'ONLINE' : 'OFFLINE')
     } catch (netError) {
-      console.warn('⚠️ [Auth] Network detection failed, assuming offline:', netError)
+      console.warn('[Auth] Network detection failed, assuming offline:', netError)
       isOnline = false
     }
 
     if (!isOnline) {
       // OFFLINE MODE: Save account to SQLite
-      console.log('🔹 [Auth] Signup: OFFLINE MODE - saving to SQLite')
+      console.log('[Auth] Signup: OFFLINE MODE - saving to SQLite')
       const deviceId: any = yield getDeviceId()
-      console.log('🔹 [Auth] DeviceId:', deviceId)
+      console.log('[Auth] DeviceId:', deviceId)
 
       // Check if username already exists on this device
       const existingUser: any = yield userRepository.getUserByName(name, deviceId)
-      console.log('🔹 [Auth] getUserByName returned:', existingUser ? 'USER FOUND' : 'NO USER', existingUser?.name)
+      console.log('[Auth] getUserByName returned:', existingUser ? 'USER FOUND' : 'NO USER', existingUser?.name)
       if (existingUser) {
-        console.log('🔹 [Auth] THROWING: Username already taken for:', name, 'Found user:', existingUser.name)
+        console.log('[Auth] THROWING: Username already taken for:', name, 'Found user:', existingUser.name)
         throw new Error('Username already taken on this device')
       }
 
       // Check if device already has max 3 users
       const userCount: any = yield userRepository.getUserCount(deviceId)
-      console.log('🔹 [Auth] User count on device:', userCount)
+      console.log('[Auth] User count on device:', userCount)
       if (userCount >= 3) {
         throw new Error('Maximum 3 accounts allowed per device, Try to delete a account before creating a new account')
       }
@@ -359,7 +360,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
       })
 
       // Log offline signup
-      console.log('✅ [Auth] Offline account created:', { name, deviceId, userId })
+      console.log('[Auth] Offline account created:', { name, deviceId, userId })
 
       // Dispatch success with local ID (no appToken yet)
       yield put(
@@ -376,7 +377,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
       )
     } else {
       // ONLINE MODE: Call API
-      console.log('🔹 [Auth] Signup: ONLINE MODE - calling API')
+      console.log('[Auth] Signup: ONLINE MODE - calling API')
       
       // Check device limit BEFORE calling API
       const deviceId: any = yield getDeviceId()
@@ -422,7 +423,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           isGuest: false,
         })
 
-        console.log('✅ [Auth] Online signup successful, saved to SQLite')
+        console.log('[Auth] Online signup successful, saved to SQLite')
         
         // Verify data was saved to database
         yield verifyDatabaseData()
@@ -441,7 +442,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
         )
       } catch (apiError) {
         // API call failed - fallback to offline mode
-        console.warn('⚠️ [Auth] API call failed, falling back to offline mode:', apiError)
+        console.warn('[Auth] API call failed, falling back to offline mode:', apiError)
         const deviceId: any = yield getDeviceId()
 
         // Check if username already exists on this device
@@ -483,7 +484,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           isGuest: false,
         })
 
-        console.log('✅ [Auth] Offline account created (API fallback):', { name, deviceId, userId })
+        console.log('[Auth] Offline account created (API fallback):', { name, deviceId, userId })
 
         // Verify data was actually saved to database
         yield verifyDatabaseData()
@@ -512,7 +513,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
         : null // to check various error codes and respond accordingly
     
     const errorMessage = error instanceof Error ? error.message : 'Signup failed'
-    console.error('❌ [Auth] Signup error:', errorMessage, error)
+    console.error('[Auth] Signup error:', errorMessage, error)
     
     // Check if this is a validation error that should navigate back
     const shouldNavigateBack = 
@@ -530,14 +531,14 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
         {
           text: 'OK',
           onPress: () => {
-            console.log('🔹 [Auth] User acknowledged error - resetting to auth screen')
+            console.log('[Auth] User acknowledged error - resetting to auth screen')
             resetToAuth()
           },
         },
       ])
     } else {
       // For other errors, log but don't show - offline fallback should have handled it
-      console.warn('⚠️ [Auth] Signup failed silently (will retry when online):', errorMessage)
+      console.warn('[Auth] Signup failed silently (will retry when online):', errorMessage)
     }
     
     // IMPORTANT: Always dispatch failure - don't allow navigation to succeed
@@ -566,18 +567,18 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     const { name, password } = action.payload
     
     // Check if internet is available
-    console.log('🔹 [Auth] Delete account - checking internet...')
+    console.log('[Auth] Delete account - checking internet...')
     let isOnline: any = false
     try {
       isOnline = yield fetchNetworkConnectionStatus()
     } catch (netError) {
-      console.warn('⚠️ [Auth] Network detection failed:', netError)
+      console.warn('[Auth] Network detection failed:', netError)
       isOnline = false
     }
 
     if (isOnline) {
       // Internet available - delete from BOTH server and SQLite
-      console.log('🔹 [Auth] Internet available - deleting from both server and SQLite')
+      console.log('[Auth] Internet available - deleting from both server and SQLite')
       
       // Try to delete from server
       try {
@@ -585,40 +586,40 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
           name,
           password,
         })
-        console.log('✅ [Auth] Account deleted from server')
+        console.log('[Auth] Account deleted from server')
       } catch (apiError) {
-        console.error('❌ [Auth] Server delete failed:', apiError)
+        console.error('[Auth] Server delete failed:', apiError)
         throw apiError
       }
 
       // Delete from SQLite
       try {
         yield userRepository.deleteUser(user?.id)
-        console.log('✅ [Auth] Account deleted from SQLite')
+        console.log('[Auth] Account deleted from SQLite')
       } catch (sqlError) {
-        console.error('❌ [Auth] SQLite delete error:', sqlError)
+        console.error('[Auth] SQLite delete error:', sqlError)
         throw new Error('Failed to delete account from local database')
       }
     } else {
       // No internet - can only delete from SQLite if it's pure offline
-      console.log('🔹 [Auth] No internet - checking if account can be deleted locally')
+      console.log('[Auth] No internet - checking if account can be deleted locally')
       
       const isPendingSyncFlag = user?.isPendingSync || 0
-      console.log('🔹 [Auth] isPendingSync flag:', isPendingSyncFlag)
+      console.log('[Auth] isPendingSync flag:', isPendingSyncFlag)
       
       if (isPendingSyncFlag || appToken) {
         // Account is synced or has appToken - cannot delete without internet
-        console.log('❌ [Auth] Account is synced/online - needs internet to delete')
+        console.log('[Auth] Account is synced/online - needs internet to delete')
         throw new Error('unable to process your request, as there is no internet')
       }
 
       // Pure offline account - delete from SQLite
       try {
-        console.log('🔹 [Auth] Pure offline account - deleting from SQLite')
+        console.log('[Auth] Pure offline account - deleting from SQLite')
         yield userRepository.deleteUser(user?.id)
-        console.log('✅ [Auth] Offline account deleted from SQLite')
+        console.log('[Auth] Offline account deleted from SQLite')
       } catch (sqlError) {
-        console.error('❌ [Auth] SQLite delete error:', sqlError)
+        console.error('[Auth] SQLite delete error:', sqlError)
         throw new Error('Failed to delete account')
       }
     }
@@ -633,7 +634,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     }
   } catch (err) {    
     const errorMessage = err instanceof Error ? err.message : 'delete_account_fail'
-    console.error('❌ [Auth] Delete account error:', errorMessage)
+    console.error('[Auth] Delete account error:', errorMessage)
     Alert.alert('error', errorMessage)
   }
 }

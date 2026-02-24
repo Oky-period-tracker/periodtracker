@@ -39,7 +39,7 @@ export const DeleteAccount = () => {
     try {
       // If offline account (no appToken), dispatch Redux action to handle SQLite deletion
       if (!appToken) {
-        console.log('🔹 [DeleteAccount] Offline account - using Redux action')
+        console.log('[DeleteAccount] Offline account - using Redux action')
         dispatch(deleteAccountRequest({ name, password: formatPassword(password) }))
         
         Alert.alert('success', 'delete_account_completed', [
@@ -52,7 +52,7 @@ export const DeleteAccount = () => {
       }
 
       // Online account - check user exists
-      console.log('🔹 [DeleteAccount] Online account - checking with API')
+      console.log('[DeleteAccount] Online account - checking with API')
       await httpClient.getUserInfo(name)
 
       // Delete from server
@@ -70,7 +70,7 @@ export const DeleteAccount = () => {
 
       analytics?.().logEvent('deleteAccount')
     } catch (e) {
-      console.error('❌ [DeleteAccount] Error:', e)
+      console.error('[DeleteAccount] Error:', e)
       Alert.alert('error', 'delete_account_fail')
       setName('')
       setPassword('')

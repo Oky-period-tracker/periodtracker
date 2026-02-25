@@ -1,9 +1,23 @@
-import axios, { AxiosResponse } from 'axios'
 import * as types from '../core/api/types'
 import { API_BASE_CMS_URL, API_BASE_URL, PREDICTION_ENDPOINT } from '../config/env'
 import { Locale } from '../resources/translations'
 import { User } from '../types'
 // import * as config from "../config";
+
+async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...((options?.headers as Record<string, string>) || {}),
+    },
+    ...options,
+  })
+  if (!response.ok) {
+    const error = new Error(`HTTP Error: ${response.status}`)
+    throw error
+  }
+  return response.json() as Promise<T>
+}
 
 export const httpClient = createHttpClient(API_BASE_URL, API_BASE_CMS_URL, {
   predictionEndpoint: PREDICTION_ENDPOINT,
@@ -22,14 +36,13 @@ export function createHttpClient(
     // TODO:
     // eslint-disable-next-line
     login: async ({ name, password }: any) => {
-      const response: AxiosResponse<types.LoginResponse> = await axios.post(
-        `${endpoint}/account/login`,
-        {
+      return fetchJson<types.LoginResponse>(`${endpoint}/account/login`, {
+        method: 'POST',
+        body: JSON.stringify({
           name,
           password,
-        },
-      )
-      return response.data
+        }),
+      })
     },
     signup: async ({
       name,
@@ -47,9 +60,9 @@ export function createHttpClient(
     }: // TODO:
     // eslint-disable-next-line
     any) => {
-      const response: AxiosResponse<types.SignupResponse> = await axios.post(
-        `${endpoint}/account/signup`,
-        {
+      return fetchJson<types.SignupResponse>(`${endpoint}/account/signup`, {
+        method: 'POST',
+        body: JSON.stringify({
           name,
           dateOfBirth,
           gender,
@@ -62,65 +75,63 @@ export function createHttpClient(
           dateSignedUp,
           metadata,
           preferredId,
-        },
-      )
-      return response.data
+        }),
+      })
     },
     // TODO:
     // eslint-disable-next-line
     resetPassword: async ({ name, secretAnswer, password }: any) => {
       // TODO:
       // eslint-disable-next-line
-      const response: AxiosResponse<{}> = await axios.post(`${endpoint}/account/reset-password`, {
-        name,
-        secretAnswer,
-        password,
+      return fetchJson<{}>(`${endpoint}/account/reset-password`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name,
+          secretAnswer,
+          password,
+        }),
       })
-
-      return response.data
     },
     // TODO:
     // eslint-disable-next-line
     deleteUser: async ({ appToken }: any) => {
-      await axios.post(`${endpoint}/account/delete`, null, {
+      await fetchJson<{}>(`${endpoint}/account/delete`, {
+        method: 'POST',
         headers: { Authorization: `Bearer ${appToken}` },
       })
     },
     // TODO:
     // eslint-disable-next-line
     deleteUserFromPassword: async ({ name, password }: any) => {
-      await axios.post(`${endpoint}/account/delete-from-password`, {
-        name,
-        password,
+      await fetchJson<{}>(`${endpoint}/account/delete-from-password`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name,
+          password,
+        }),
       })
     },
     getUserInfo: async (userName: string) => {
-      const response: AxiosResponse<types.UserInfoResponse> = await axios.get(
+      return fetchJson<types.UserInfoResponse>(
         `${endpoint}/account/info/${encodeURIComponent(userName)}`,
       )
-
-      return response.data
     },
     getPermanentAlert: async (versionName: string, locale: string, user: string) => {
-      const response: AxiosResponse<types.PermanentAlertResponse> = await axios.get(
+      return fetchJson<types.PermanentAlertResponse>(
         `${cmsEndpoint}/mobile/permanent-notification/${versionName}&${locale}&${user}`,
       )
-      return response.data
     },
     // TODO:
     // eslint-disable-next-line
     replaceStore: async ({ storeVersion, appState, appToken }: any) => {
-      const response: AxiosResponse<types.ReplaceStoreResponse> = await axios.post(
-        `${endpoint}/account/replace-store`,
-        {
+      return fetchJson<types.ReplaceStoreResponse>(`${endpoint}/account/replace-store`, {
+        method: 'POST',
+        body: JSON.stringify({
           storeVersion,
           appState: JSON.stringify(appState),
-        },
-        {
-          headers: { Authorization: `Bearer ${appToken}` },
-        },
-      )
-      return response.data
+        }),
+        headers: { Authorization: `Bearer ${appToken}` },
+      })
     },
     editUserInfo: async ({
       appToken,
@@ -135,22 +146,18 @@ export function createHttpClient(
     any) => {
       // TODO:
       // eslint-disable-next-line
-      const response: AxiosResponse<{}> = await axios.post(
-        `${endpoint}/account/edit-info`,
-        {
+      return fetchJson<{}>(`${endpoint}/account/edit-info`, {
+        method: 'POST',
+        body: JSON.stringify({
           name,
           dateOfBirth,
           gender,
           location,
           secretQuestion,
           metadata,
-        },
-        {
-          headers: { Authorization: `Bearer ${appToken}` },
-        },
-      )
-
-      return response.data
+        }),
+        headers: { Authorization: `Bearer ${appToken}` },
+      })
     },
     editUserSecretAnswer: async ({
       appToken,
@@ -161,71 +168,55 @@ export function createHttpClient(
     any) => {
       // TODO:
       // eslint-disable-next-line
-      const response: AxiosResponse<{}> = await axios.post(
-        `${endpoint}/account/edit-secret-answer`,
-        {
+      return fetchJson<{}>(`${endpoint}/account/edit-secret-answer`, {
+        method: 'POST',
+        body: JSON.stringify({
           previousSecretAnswer,
           nextSecretAnswer,
-        },
-        {
-          headers: { Authorization: `Bearer ${appToken}` },
-        },
-      )
-
-      return response.data
+        }),
+        headers: { Authorization: `Bearer ${appToken}` },
+      })
     },
     fetchAvatarMessages: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.AvatarMessagesResponse> = await axios.get(
+      return fetchJson<types.AvatarMessagesResponse>(
         `${cmsEndpoint}/mobile/avatar-messages/${locale}`,
       )
-      return response.data
     },
     fetchEncyclopedia: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
+      return fetchJson<types.EncyclopediaResponse>(
         `${cmsEndpoint}/mobile/articles/${locale}`,
       )
-      return response.data
     },
     fetchVideos: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
+      return fetchJson<types.EncyclopediaResponse>(
         `${cmsEndpoint}/mobile/videos/${locale}`,
       )
-      return response.data
     },
     fetchSurveys: async ({ locale, userID }: { locale: Locale; userID: User }) => {
-      const response: AxiosResponse<types.SurveysResponse> = await axios.get(
+      return fetchJson<types.SurveysResponse>(
         `${cmsEndpoint}/mobile/new-surveys/${locale}?user_id=${userID.id}`,
       )
-      return response.data
     },
     fetchPrivacyPolicy: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.PrivacyResponse> = await axios.get(
+      return fetchJson<types.PrivacyResponse>(
         `${cmsEndpoint}/mobile/privacy-policy/${locale}`,
       )
-
-      return response.data
     },
     fetchTermsAndConditions: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.TermsAndConditionsResponse> = await axios.get(
+      return fetchJson<types.TermsAndConditionsResponse>(
         `${cmsEndpoint}/mobile/terms-and-conditions/${locale}`,
       )
-
-      return response.data
     },
     fetchAbout: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.AboutResponse> = await axios.get(
+      return fetchJson<types.AboutResponse>(
         `${cmsEndpoint}/mobile/about/${locale}`,
       )
-
-      return response.data
     },
     fetchAboutBanner: async ({ locale }: { locale: Locale }) => {
       // @deprecated
-      const response: AxiosResponse<types.AboutBannerResponse> = await axios.get(
+      return fetchJson<types.AboutBannerResponse>(
         `${cmsEndpoint}/mobile/about-banner/${locale}`,
       )
-
-      return response.data
     },
     fetchAboutBannerConditional: async ({
       locale,
@@ -234,81 +225,67 @@ export function createHttpClient(
       locale: Locale
       timestamp: number
     }) => {
-      const response: AxiosResponse<types.AboutBannerConditionalResponse> = await axios.get(
+      return fetchJson<types.AboutBannerConditionalResponse>(
         `${cmsEndpoint}/mobile/about-banner-conditional/${locale}?timestamp=${timestamp}`,
       )
-
-      return response.data
     },
     fetchQuizzes: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.QuizzesResponse> = await axios.get(
+      return fetchJson<types.QuizzesResponse>(
         `${cmsEndpoint}/mobile/quizzes/${locale}`,
       )
-      return response.data
     },
     fetchDidYouKnows: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.DidYouKnowsResponse> = await axios.get(
+      return fetchJson<types.DidYouKnowsResponse>(
         `${cmsEndpoint}/mobile/didyouknows/${locale}`,
       )
-      return response.data
     },
     fetchHelpCenters: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.HelpCenterResponse> = await axios.get(
+      return fetchJson<types.HelpCenterResponse>(
         `${cmsEndpoint}/mobile/help-center/${locale}`,
       )
-      return response.data
     },
     fetchHelpCenterAttributes: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.HelpCenterResponse> = await axios.get(
+      return fetchJson<types.HelpCenterResponse>(
         `${cmsEndpoint}/mobile/help-center-attribute/${locale}`,
       )
-      return response.data
     },
     fetchSingleNotification: async ({ locale }: { locale: Locale }) => {
-      const response: AxiosResponse<types.EncyclopediaResponse> = await axios.get(
+      return fetchJson<types.EncyclopediaResponse>(
         `${cmsEndpoint}/mobile/notification/${locale}`,
       )
-      return response.data
     },
     // TODO:
     // eslint-disable-next-line
     appendEvents: async ({ events, appToken }: any) => {
-      await axios.post(
-        `${endpoint}/analytics/append-events`,
-        { events },
-        {
-          headers: appToken ? { Authorization: `Bearer ${appToken}` } : {},
-        },
-      )
+      await fetchJson<{}>(`${endpoint}/analytics/append-events`, {
+        method: 'POST',
+        body: JSON.stringify({ events }),
+        headers: appToken ? { Authorization: `Bearer ${appToken}` } : {},
+      })
     },
     // @ts-expect-error TODO:
     sendContactUsForm: async (payload) => {
-      const response: AxiosResponse<types.EncyclopediaResponse> = await axios.post(
-        `${cmsEndpoint}/mobile/suggestions`,
-        payload,
-      )
-      return response.data
+      return fetchJson<types.EncyclopediaResponse>(`${cmsEndpoint}/mobile/suggestions`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      })
     },
     // TODO:
     // eslint-disable-next-line
     getPeriodCycles: async ({ cycle_lengths, period_lengths, age }: any) => {
       // TODO:
       // eslint-disable-next-line
-      const response: AxiosResponse<{}> = await axios.post(
+      return fetchJson<{}>(
         predictionEndpoint,
         {
-          cycle_lengths,
-          period_lengths,
-          age,
-        },
-        {
-          headers: {
-            'content-type': 'application/json',
-          },
+          method: 'POST',
+          body: JSON.stringify({
+            cycle_lengths,
+            period_lengths,
+            age,
+          }),
         },
       )
-
-      return response.data
     },
     updateUserVerifiedDays: async ({
       appToken,
@@ -318,17 +295,13 @@ export function createHttpClient(
     any) => {
       // TODO:
       // eslint-disable-next-line
-      const response: AxiosResponse<{}> = await axios.post(
-        `${endpoint}/account/update-verified-dates`,
-        {
+      return fetchJson<{}>(`${endpoint}/account/update-verified-dates`, {
+        method: 'POST',
+        body: JSON.stringify({
           metadata,
-        },
-        {
-          headers: { Authorization: `Bearer ${appToken}` },
-        },
-      )
-
-      return response.data
+        }),
+        headers: { Authorization: `Bearer ${appToken}` },
+      })
     },
     // TODO:
     // fetchContent: async ({ locale, timestamp = 0 }) => {

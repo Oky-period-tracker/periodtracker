@@ -49,6 +49,7 @@ export class OkyUserApplicationService {
     dateSignedUp,
     dateAccountSaved,
     metadata,
+    deviceId,
   }: SignupCommand) {
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
     if (await this.okyUserRepository.byId(id)) {
@@ -74,6 +75,7 @@ export class OkyUserApplicationService {
       dateSignedUp,
       dateAccountSaved,
       metadata,
+      deviceId,
     })
     return this.okyUserRepository.save(user)
   }

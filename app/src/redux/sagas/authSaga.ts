@@ -105,7 +105,7 @@ function* syncPendingAccounts() {
           }
 
           // Call signup API with account details (including device info for tracking)
-          const { appToken, user } = yield httpClient.signup({
+          const signupPayload = {
             name: account.name,
             password: account.password,
             dateOfBirth: account.dateOfBirth,
@@ -117,12 +117,22 @@ function* syncPendingAccounts() {
             secretAnswer: account.secretAnswer,
             dateSignedUp: account.dateSignedUp,
             metadata: account.metadata,
-            preferredId: account.id, // Use existing ID
-            deviceId: account.deviceId, // Track which device this account came from
-          })
+            preferredId: account.id,
+            deviceId: account.deviceId,
+          }
+          
+          console.log('[Auth] SENDING SIGNUP REQUEST:', JSON.stringify({
+            name: signupPayload.name,
+            dateSignedUp: signupPayload.dateSignedUp,
+            deviceId: signupPayload.deviceId,
+            preferredId: signupPayload.preferredId,
+          }))
+          
+          const { appToken, user } = yield httpClient.signup(signupPayload)
 
           console.log('[Auth] Account synced successfully:', account.name)
           console.log('[Auth] Received appToken:', appToken ? 'YES' : 'NO')
+
 
           // Update account with appToken and mark as synced
           yield userRepository.updateUser({

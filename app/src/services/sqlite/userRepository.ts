@@ -245,6 +245,8 @@ class UserRepository {
     try {
       const createdAt = new Date().toISOString()
       
+      console.log('[SQLite] Creating user with deviceId:', user.deviceId)
+      
       // Use INSERT OR REPLACE to handle concurrent creates
       await execAsync(
         db,
@@ -259,11 +261,11 @@ class UserRepository {
           user.gender ?? null, user.location ?? null, user.country ?? null, user.province ?? null,
           user.dateOfBirth ?? null, user.secretQuestion ?? null, user.secretAnswer ?? null,
           user.metadata ?? null, user.dateSignedUp ?? null, user.dateAccountSaved ?? null,
-          user.appToken ?? null, user.isActive, user.isPendingSync,
-          user.isPendingDelete, user.isPendingPasswordChange, createdAt
+          user.appToken ?? null, user.isActive ? 1 : 0, user.isPendingSync ? 1 : 0,
+          user.isPendingDelete ? 1 : 0, user.isPendingPasswordChange ? 1 : 0, createdAt
         ]
       )
-      console.log('[SQLite] User created/updated:', user.id)
+      console.log('[SQLite] User created/updated:', user.id, 'isPendingSync:', user.isPendingSync ? 1 : 0, 'deviceId:', user.deviceId)
       return { ...user, createdAt, syncedAt: undefined }
     } catch (error) {
       console.error('[SQLite] Error creating user:', error)
@@ -288,11 +290,12 @@ class UserRepository {
           user.name, user.password, user.gender ?? null, user.location ?? null, user.country ?? null,
           user.province ?? null, user.dateOfBirth ?? null, user.secretQuestion ?? null,
           user.secretAnswer ?? null, user.metadata ?? null, user.dateSignedUp ?? null,
-          user.dateAccountSaved ?? null, user.appToken ?? null, user.isActive,
-          user.isPendingSync, user.isPendingDelete,
-          user.isPendingPasswordChange, user.syncedAt ?? null, user.id
+          user.dateAccountSaved ?? null, user.appToken ?? null, user.isActive ? 1 : 0,
+          user.isPendingSync ? 1 : 0, user.isPendingDelete ? 1 : 0,
+          user.isPendingPasswordChange ? 1 : 0, user.syncedAt ?? null, user.id
         ]
       )
+      console.log('[SQLite] User updated:', user.id, 'isPendingSync:', user.isPendingSync ? 1 : 0)
     } catch (error) {
       console.error('Error updating user:', error)
       throw error
@@ -394,8 +397,14 @@ class UserRepository {
   async getUsersWithPendingSync(): Promise<User[]> {
     const db = await getDatabase()
     try {
+      // First, get all users to see their isPendingSync values
+      const allResult = await execAsync(db, 'SELECT id, isPendingSync FROM users')
+      console.log('[SQLite] All users isPendingSync values:', allResult.rows._array)
+      
       const result = await execAsync(db, 'SELECT * FROM users WHERE isPendingSync = 1')
-      return result.rows._array.map((row: any) => {
+      console.log('[SQLite] getUsersWithPendingSync raw result count:', result.rows._array.length)
+      console.log('[SQLite] getUsersWithPendingSync raw result:', result.rows._array)
+      const mapped = result.rows._array.map((row: any) => {
         let userObj = row
         if (Array.isArray(row)) {
           userObj = {
@@ -422,8 +431,11 @@ class UserRepository {
             syncedAt: row[20],
           }
         }
+        console.log('[SQLite] Mapped user:', { id: userObj.id, deviceId: userObj.deviceId, name: userObj.name })
         return this.mapRowToUser(userObj as any) as User
       })
+      console.log('[SQLite] Final mapped users with deviceId:', mapped.map(u => ({ id: u.id, deviceId: u.deviceId })))
+      return mapped
     } catch (error) {
       console.error('Error getting pending syncs:', error)
       return []

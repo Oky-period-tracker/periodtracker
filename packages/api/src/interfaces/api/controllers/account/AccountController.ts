@@ -53,8 +53,25 @@ export class AccountController {
       secretAnswer,
       dateSignedUp,
       metadata,
+      deviceId,
     }: SignupRequest,
   ) {
+    console.log('[AccountController] FULL SIGNUP REQUEST:', JSON.stringify({
+      preferredId,
+      name,
+      dateOfBirth,
+      gender,
+      location,
+      country,
+      province,
+      password: password ? '***' : undefined,
+      secretQuestion,
+      secretAnswer: secretAnswer ? '***' : undefined,
+      dateSignedUp,
+      metadata,
+      deviceId,
+    }, null, 2))
+    
     if (country === null || country === '00') {
       // this is to stop account creation on the old variant of the app. Worth removing if the old variant is completely removed.
       // At the time of writing the old variant of the app and the new english only version had the same endpoint for the backend
@@ -74,6 +91,7 @@ export class AccountController {
       dateSignedUp,
       dateAccountSaved: new Date().toISOString(),
       metadata,
+      deviceId,
     })
 
     return this.signTokenResponse(user)

@@ -46,6 +46,23 @@ function* onTrackAction(action) {
   )
 }
 
+
+function* onAnswerSurvey(action:any):Generator<any,void,any>{
+  try{
+    const appToken = yield select(selectors.appTokenSelector)
+    yield httpClient.answerSurvey({
+      appToken,
+      live:action.payload.live,
+      questions: action.payload.questions, 
+    }) 
+    yield put(actions.answerSurveySuccess())
+  }catch(error)
+  {
+    yield put(actions.answerSurveyFailed(error))
+  }
+}
+
+
 function* processEventQueue() {
   while (true) {
     // process queue every minute
@@ -77,5 +94,5 @@ function* processEventQueue() {
 }
 
 export function* analyticsSaga() {
-  yield all([fork(processEventQueue), takeLatest(ACTIONS_TO_TRACK, onTrackAction)])
+  yield all([fork(processEventQueue), takeLatest(ACTIONS_TO_TRACK, onTrackAction), takeLatest('ANSWER_SURVEY',onAnswerSurvey)])
 }

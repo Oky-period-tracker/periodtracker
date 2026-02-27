@@ -96,16 +96,8 @@
       "reactNativeDirectoryCheck": {
         "exclude": [
           "expo-av",
-          "redux-persist",
-          "@babel/plugin-proposal-export-namespace-from",
-          "circular-buffer",
-          "moment",
-          "redux-persist-transform-encrypt",
-          "redux-saga",
-          "typescript",
-          "uuid"
-        ],
-        "listUnknownPackages": false
+          "redux-persist"
+        ]
       }
     }
   }

@@ -19,12 +19,26 @@ import multer from 'multer'
 import path from 'path'
 import { cmsLocales, defaultLocale } from '@oky/core'
 import { ArticleVoiceOverController } from './controller/ArticleVoiceOverController'
+import helmet from 'helmet'
 
 createConnection(ormconfig)
   .then(() => {
     const app = express()
     app.set('view engine', 'ejs')
     app.set('views', __dirname + '/views')
+
+    // Security headers
+    app.use(
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'none'"],
+            frameAncestors: ["'none'"],
+          },
+        },
+      }),
+    )
+
     app.use(bodyParser.json({ limit: '50mb' }))
     app.use(
       bodyParser.urlencoded({

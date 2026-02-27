@@ -19,4 +19,10 @@ COPY --from=oky/base /usr/src/app/node_modules ./node_modules
 COPY --from=oky/base /usr/src/app/packages/cms/package.json .
 COPY --from=oky/base /usr/src/app/packages/cms/dist ./dist
 
+COPY --from=oky/base /usr/src/app/packages/core/package.json ./packages/core/package.json
+COPY --from=oky/base /usr/src/app/packages/core/dist ./packages/core/dist
+COPY --from=oky/base /usr/src/app/packages/core/src/common/translations ./packages/core/src/common/translations
+
+WORKDIR /usr/src/app/packages/cms
+
 CMD [ "yarn", "serve" ]

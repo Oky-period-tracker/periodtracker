@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import { env } from 'interfaces/env'
 import cors from 'cors'
+import helmet from 'helmet'
 
 const dirs = {
   controllers: [__dirname + '/controllers/**/*.{ts,js}'],
@@ -24,6 +25,17 @@ export async function bootstrap() {
     app.use(cors(corsOptions))
   }
 
+
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'none'"],
+          frameAncestors: ["'none'"],
+        },
+      },
+    }),
+  )
 
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))

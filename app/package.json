@@ -20,6 +20,7 @@
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@expo/metro-runtime": "~4.0.0",
+    "@lottiefiles/dotlottie-react": "^0.6.5",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.4.1",
     "@react-native-firebase/analytics": "^20.4.0",
@@ -61,6 +62,7 @@
     "react-native-screens": "~4.1.0",
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.13",
+    "react-native-web-webview": "^1.0.2",
     "react-native-webview": "13.12.4",
     "react-native-youtube-iframe": "^2.3.0",
     "react-redux": "^9.1.2",

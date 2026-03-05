@@ -18,7 +18,13 @@ const corsOptions = {
 export async function bootstrap() {
   const app = express()
 
-  app.use(cors(corsOptions))
+  if (env.isDevelopment) {
+    // Enable web to use all routes
+    app.use(cors())
+  } else {
+    app.use(cors(corsOptions))
+  }
+
 
   app.use(
     helmet({

@@ -205,7 +205,8 @@ export class AccountController {
       metadata: user.getMetadata(),
     }
 
-    const appToken = jwt.sign(userDescriptor, env.app.secret, {
+    /** Add ID to the token, it's the only info we need to pass */
+    const appToken = jwt.sign({ id: user.getId() }, env.app.secret, {
       audience: 'app',
     })
 

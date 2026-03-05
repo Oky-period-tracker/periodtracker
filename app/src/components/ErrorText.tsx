@@ -14,7 +14,8 @@ export const ErrorText = ({ style, children, ...props }: CustomTextProps) => {
 
 const styles = StyleSheet.create({
   error: {
-    fontSize: 10,
+    fontSize: 12,
     textAlign: 'center',
+    lineHeight: 16,
   },
 })

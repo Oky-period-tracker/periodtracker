@@ -273,7 +273,7 @@ export async function verifyDatabaseData() {
     if (userCount > 0) {
       allUsers = await execAsync(
         database,
-        'SELECT id, name, appToken, isPendingSync, createdAt FROM users ORDER BY createdAt DESC;',
+        'SELECT id, name, password, appToken, isPendingSync, createdAt FROM users ORDER BY createdAt DESC;',
         []
       )
       console.log('[SQLite] Raw user data:', JSON.stringify(allUsers.rows._array))
@@ -283,13 +283,14 @@ export async function verifyDatabaseData() {
       // Convert array format to object format if needed
       const users = allUsers.rows._array.map((user: any) => {
         if (Array.isArray(user)) {
-          // Data comes as [id, name, appToken, isPendingSync, createdAt]
+          // Data comes as [id, name, password, appToken, isPendingSync, createdAt]
           return {
             id: user[0],
             name: user[1],
-            appToken: user[2],
-            isPendingSync: user[3],
-            createdAt: user[4],
+            password: user[2],
+            appToken: user[3],
+            isPendingSync: user[4],
+            createdAt: user[5],
           }
         }
         // Already an object

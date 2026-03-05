@@ -125,6 +125,7 @@ class UserRepository {
       
       const row = result.rows._array[0]
       console.log('[SQLite] Row data:', row, 'Type:', typeof row, 'IsArray:', Array.isArray(row))
+      console.log('[SQLite] Row length:', row.length, 'password (index 3):', row[3])
       
       // Convert array format to object if needed
       let userObj = row

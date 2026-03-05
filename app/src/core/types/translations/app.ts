@@ -301,6 +301,7 @@ export interface AppTranslations {
   fertile_popup_heading: string
   fertile_popup: string
   name_taken_error: string
+  max_accounts_error: string
   // ---------------------day screen content-----------------------
   daily_mood_content: string
   daily_flow_content: string

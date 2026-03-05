@@ -4,12 +4,12 @@ import { useSignUp } from '../SignUpContext'
 import { Text } from '../../../../../components/Text'
 
 export const SignUpConfirmButton = () => {
-  const { dispatch } = useSignUp()
+  const { continueSignUp, state } = useSignUp()
 
-  const onPress = () => dispatch({ type: 'continue' })
+  const onPress = () => continueSignUp()
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.confirm}>
+    <TouchableOpacity onPress={onPress} style={styles.confirm} disabled={state.isCheckingUsername}>
       <Text style={styles.confirmText}>confirm</Text>
     </TouchableOpacity>
   )

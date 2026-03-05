@@ -232,20 +232,16 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       console.log('[Auth] Looking for user:', name)
       
       const offlineUser: any = yield userRepository.getUserByName(name, deviceId)
-      console.log('[Auth] Found offline user:', offlineUser)
+      console.log('[AUTH DEBUG] SQLite user lookup result:', offlineUser ? `FOUND: ${offlineUser.name} (id: ${offlineUser.id})` : 'NOT FOUND')
       
       if (!offlineUser) {
-        console.error('[Auth] User not found in SQLite')
+        console.error('[AUTH DEBUG] USER NOT FOUND IN DATABASE - this causes login_failed')
+        console.error('[AUTH DEBUG] Searched for name:', name, 'deviceId:', deviceId)
         throw new Error('login_failed')
       }
       
       // Verify password matches
-      console.log('[Auth] Comparing passwords')
-      console.log('[Auth] Input password:', password)
-      console.log('[Auth] Stored password:', offlineUser.password)
-      
       if (offlineUser.password !== password) {
-        console.error('[Auth] Password incorrect')
         throw new Error('login_failed')
       }
       
@@ -380,6 +376,13 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
             id: userId,
             name,
             password,
+            dateOfBirth: action.payload.dateOfBirth,
+            gender: action.payload.gender,
+            location: action.payload.location,
+            country: action.payload.country,
+            province: action.payload.province,
+            secretQuestion: action.payload.secretQuestion,
+            secretAnswer: action.payload.secretAnswer,
             dateSignedUp,
             isGuest: false,
           } as any,
@@ -507,6 +510,13 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
               id: userId,
               name,
               password,
+              dateOfBirth: action.payload.dateOfBirth,
+              gender: action.payload.gender,
+              location: action.payload.location,
+              country: action.payload.country,
+              province: action.payload.province,
+              secretQuestion: action.payload.secretQuestion,
+              secretAnswer: action.payload.secretAnswer,
               dateSignedUp,
               isGuest: false,
             } as any,
@@ -524,35 +534,27 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     
     const errorMessage = error instanceof Error ? error.message : 'Signup failed'
     console.error('[Auth] Signup error:', errorMessage, error)
-    
-    // Check if this is a validation error that should navigate back
-    const shouldNavigateBack = 
-      errorMessage.includes('already taken') || 
-      errorMessage.includes('Maximum') || 
-      errorMessage.includes('already exists')
-    
-    // Only show error if it's a validation error (not network-related)
-    if (shouldNavigateBack) {
-      // Show loading and then navigate back
-      yield put(actions.setLoading(true))
-      
-      // Show validation error to user
+
+    const isNameTaken =
+      errorMessage.includes('already taken') || errorMessage.includes('already exists')
+    const isMaxAccounts = errorMessage.includes('Maximum')
+
+    if (isNameTaken) {
+      // Signal SignUpContext via Redux error - it will navigate back to the information step
+      console.log('[Auth] Duplicate username - signalling SignUpContext')
+      yield put(actions.setAuthError({ error: 'name_taken' }))
+    } else if (isMaxAccounts) {
       Alert.alert('Signup Failed', errorMessage, [
         {
           text: 'OK',
-          onPress: () => {
-            console.log('[Auth] User acknowledged error - resetting to auth screen')
-            resetToAuth()
-          },
+          onPress: () => resetToAuth(),
         },
       ])
     } else {
       // For other errors, log but don't show - offline fallback should have handled it
       console.warn('[Auth] Signup failed silently (will retry when online):', errorMessage)
     }
-    
-    // IMPORTANT: Always dispatch failure - don't allow navigation to succeed
-    yield put(actions.setAuthError({ error: errorStatusCode }))
+
     yield put(actions.createAccountFailure())
   }
 }
@@ -570,12 +572,22 @@ function* onCreateAccountSuccess(action: ExtractActionFromActionType<'CREATE_ACC
 }
 function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACCOUNT_REQUEST'>) {
   const state: ReduxState = yield select()
-  const user = selectors.currentUserSelector(state)
+  const currentUser = selectors.currentUserSelector(state)
   const appToken = selectors.appTokenSelector(state)
 
   try {
     const { name, password } = action.payload
-    
+
+    // Look up the user by name in SQLite - this works whether called from the
+    // signup page (no currentUser) or the settings page (currentUser exists).
+    const deviceId: any = yield getDeviceId()
+    const userByName: any = yield userRepository.getUserByName(name, deviceId)
+
+    // Prefer the SQLite look-up; fall back to currentUser (settings page)
+    const user = userByName || currentUser
+
+    console.log('[Auth] Delete account - resolved user:', user ? `id=${user.id} name=${user.name}` : 'NOT FOUND')
+
     // Check if internet is available
     console.log('[Auth] Delete account - checking internet...')
     let isOnline: any = false
@@ -603,34 +615,43 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
       }
 
       // Delete from SQLite
-      try {
-        yield userRepository.deleteUser(user?.id)
-        console.log('[Auth] Account deleted from SQLite')
-      } catch (sqlError) {
-        console.error('[Auth] SQLite delete error:', sqlError)
-        throw new Error('Failed to delete account from local database')
+      if (user?.id) {
+        try {
+          yield userRepository.deleteUser(user.id)
+          console.log('[Auth] Account deleted from SQLite')
+        } catch (sqlError) {
+          console.error('[Auth] SQLite delete error:', sqlError)
+          throw new Error('Failed to delete account from local database')
+        }
+      } else {
+        console.log('[Auth] No local SQLite record found for this user - skipping local delete')
       }
     } else {
       // No internet - can only delete from SQLite if it's pure offline
       console.log('[Auth] No internet - checking if account can be deleted locally')
       
-      const isPendingSyncFlag = user?.isPendingSync || 0
-      console.log('[Auth] isPendingSync flag:', isPendingSyncFlag)
-      
-      if (isPendingSyncFlag || appToken) {
-        // Account is synced or has appToken - cannot delete without internet
-        console.log('[Auth] Account is synced/online - needs internet to delete')
+      const sqliteUserAppToken = user?.appToken
+      console.log('[Auth] SQLite user appToken:', sqliteUserAppToken ? 'exists (synced to server)' : 'none (pure offline)')
+
+      if (sqliteUserAppToken) {
+        // Account has been synced to server - cannot delete without internet
+        console.log('[Auth] Account exists on server - needs internet to delete')
         throw new Error('unable to process your request, as there is no internet')
       }
 
       // Pure offline account - delete from SQLite
-      try {
-        console.log('[Auth] Pure offline account - deleting from SQLite')
-        yield userRepository.deleteUser(user?.id)
-        console.log('[Auth] Offline account deleted from SQLite')
-      } catch (sqlError) {
-        console.error('[Auth] SQLite delete error:', sqlError)
-        throw new Error('Failed to delete account')
+      if (user?.id) {
+        try {
+          console.log('[Auth] Pure offline account - deleting from SQLite')
+          yield userRepository.deleteUser(user.id)
+          console.log('[Auth] Offline account deleted from SQLite')
+        } catch (sqlError) {
+          console.error('[Auth] SQLite delete error:', sqlError)
+          throw new Error('Failed to delete account')
+        }
+      } else {
+        console.log('[Auth] No local user found with name:', name)
+        throw new Error('delete_account_fail')
       }
     }
 
@@ -639,8 +660,13 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     yield put(actions.updateAllSurveyContent([])) // TODO: ?
     yield put(actions.updateCompletedSurveys([])) // TODO: ?
 
-    if (user) {
+    if (currentUser) {
+      // User was logged in (settings page) - logout handles navigation
       yield put(actions.logout())
+    } else {
+      // Called from signup page - no active session to log out, navigate manually
+      Alert.alert('delete_account', 'delete_account_completed')
+      resetToAuth()
     }
   } catch (err) {    
     const errorMessage = err instanceof Error ? err.message : 'delete_account_fail'

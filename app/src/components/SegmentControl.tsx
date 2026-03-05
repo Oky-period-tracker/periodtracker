@@ -32,13 +32,17 @@ export const SegmentControl = ({
   errorKey,
   errorsVisible,
 }: SegmentControlProps) => {
-  const { placeholderTextColor } = useColor()
+  const { color } = useColor()
 
   const hasError = errorsVisible && errorKey && errors && errors.includes(errorKey)
 
   return (
     <View style={styles.wrapper}>
-      {label && <Text style={{ color: placeholderTextColor }}>{label}</Text>}
+      {label && (
+        <Text style={[styles.label, { color }]}>
+          {label}
+        </Text>
+      )}
       <View style={styles.container}>
         {hasError && <ErrorText>{errorKey}</ErrorText>}
 
@@ -66,7 +70,7 @@ export const SegmentControl = ({
                   />
                 )}
               </Button>
-              <Text enableTranslate={true} style={styles.optionText}>
+              <Text style={styles.optionText}>
                 {option.label}
               </Text>
             </View>
@@ -81,12 +85,21 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'column',
     alignItems: 'center',
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
   },
   container: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
     padding: 4,
+    alignSelf: 'stretch',
   },
   option: {
     flexDirection: 'column',

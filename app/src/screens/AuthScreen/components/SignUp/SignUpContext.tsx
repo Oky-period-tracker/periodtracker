@@ -3,12 +3,15 @@ import { User } from '../../../../types'
 import { FAST_SIGN_UP } from '../../../../config/env'
 import { useAuthMode } from '../../AuthModeContext'
 import { useDispatch } from 'react-redux'
+import { useSelector } from '../../../../redux/useSelector'
+import { authError as authErrorSelector, currentUserSelector } from '../../../../redux/selectors'
 import { createAccountRequest } from '../../../../redux/actions'
 import { formatPassword } from '../../../../services/auth'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { httpClient } from '../../../../services/HttpClient'
-import { useDebounce } from '../../../../hooks/useDebounce'
+import { userRepository } from '../../../../services/sqlite/userRepository'
+import { getDeviceId } from '../../../../services/deviceId'
 
 export type SignUpStep = 'confirmation' | 'information' | 'secret' | 'age' | 'location'
 
@@ -22,6 +25,8 @@ export type SignUpState = Omit<User, 'id' | 'dateSignedUp' | 'isGuest' | 'countr
   month?: number
   year?: number
   errorsVisible: boolean
+  isCheckingUsername: boolean
+  accountsExhausted: boolean
   // Make required User properties optional for state
   country?: User['country']
   province?: User['province']
@@ -41,6 +46,8 @@ const defaultState: SignUpState = {
   agree: false,
   nameAvailable: true,
   errorsVisible: false,
+  isCheckingUsername: false,
+  accountsExhausted: false,
   name: '',
   password: '',
   passwordConfirm: '',
@@ -63,6 +70,8 @@ const prefilledState: SignUpState = {
   agree: true,
   nameAvailable: true,
   errorsVisible: false,
+  isCheckingUsername: false,
+  accountsExhausted: false,
   name: 'aaa',
   password: 'aaa',
   passwordConfirm: 'aaa',
@@ -175,6 +184,10 @@ const validateStep = (
 
   // ========== information ========== //
   if (step === 'information') {
+    if (state.accountsExhausted) {
+      isValid = false
+      errors.push('max_accounts_error')
+    }
     if (!state.nameAvailable) {
       isValid = false
       errors.push('name_taken_error')
@@ -255,6 +268,7 @@ type SignUpContext = {
   step: SignUpStep
   isValid: boolean
   errors: string[]
+  continueSignUp: () => Promise<void>
 }
 
 const defaultValue: SignUpContext = {
@@ -265,6 +279,7 @@ const defaultValue: SignUpContext = {
   step: steps[0],
   isValid: false,
   errors: [],
+  continueSignUp: async () => {},
 }
 
 const SignUpContext = React.createContext<SignUpContext>(defaultValue)
@@ -278,37 +293,80 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
   const { setAuthMode } = useAuthMode()
 
   const reduxDispatch = useDispatch()
+  const currentUser = useSelector(currentUserSelector)
+  const loginError = useSelector(authErrorSelector)
+  const submittedRef = React.useRef(false)
 
-  const [debouncedName] = useDebounce(state.name, 500)
+  // Navigate to avatar/theme selection once account is successfully created
   React.useEffect(() => {
-    if (!debouncedName || debouncedName.length < MINIMUM_NAME_LENGTH) {
+    if (!submittedRef.current || !currentUser) {
       return
     }
+    submittedRef.current = false
+    setAuthMode('avatar_and_theme')
+  }, [currentUser])
 
-    let cleanup = false
-    const checkUserNameAvailability = async () => {
-      try {
-        await httpClient.getUserInfo(debouncedName)
-        if (cleanup) {
-          return
-        }
-        // user does exist
-        dispatch({ type: 'nameAvailable', value: false })
-      } catch (err) {
-        if (cleanup) {
-          return
-        }
+  // On duplicate username, bring user back to the information step
+  React.useEffect(() => {
+    if (!submittedRef.current || loginError !== 'name_taken') {
+      return
+    }
+    submittedRef.current = false
+    // Reset to information step and mark name as taken so the inline error shows
+    dispatch({ type: 'stepIndex', value: 1 })
+    dispatch({ type: 'nameAvailable', value: false })
+    setAuthMode('sign_up')
+  }, [loginError])
 
-        // user does not exist
-        dispatch({ type: 'nameAvailable', value: true })
+  const continueSignUp = async () => {
+    if (state.isCheckingUsername) return
+    dispatch({ type: 'isCheckingUsername', value: true })
+    const currentStep = steps[state.stepIndex]
+    if (currentStep === 'information') {
+      // Check if max accounts reached
+      const deviceId = await getDeviceId()
+      const userCount = await userRepository.getUserCount(deviceId)
+      if (userCount >= 3) {
+        dispatch({ type: 'accountsExhausted', value: true })
+        dispatch({ type: 'errorsVisible', value: true })
+        dispatch({ type: 'isCheckingUsername', value: false })
+        return
       }
+      // Proceed with username check
+      if (state.name.length >= MINIMUM_NAME_LENGTH) {
+      // First check local database
+      const deviceId = await getDeviceId()
+      const existingUser = await userRepository.getUserByName(state.name, deviceId)
+      if (existingUser) {
+        // Username taken locally
+        dispatch({ type: 'nameAvailable', value: false })
+        dispatch({ type: 'errorsVisible', value: true })
+        dispatch({ type: 'isCheckingUsername', value: false })
+        return
+      }
+      // Not taken locally, check API
+      try {
+        await httpClient.getUserInfo(state.name)
+        // Username exists remotely
+        dispatch({ type: 'nameAvailable', value: false })
+        dispatch({ type: 'errorsVisible', value: true })
+        dispatch({ type: 'isCheckingUsername', value: false })
+      } catch {
+        // Username does not exist
+        dispatch({ type: 'nameAvailable', value: true })
+        dispatch({ type: 'errorsVisible', value: false })
+        dispatch({ type: 'continue' })
+        dispatch({ type: 'isCheckingUsername', value: false })
+      }
+    } else {
+      dispatch({ type: 'continue' })
+      dispatch({ type: 'isCheckingUsername', value: false })
     }
-    checkUserNameAvailability()
-
-    return () => {
-      cleanup = true
-    }
-  }, [debouncedName])
+  } else {
+    dispatch({ type: 'continue' })
+    dispatch({ type: 'isCheckingUsername', value: false })
+  }
+  }
 
   // Finish
   React.useEffect(() => {
@@ -336,9 +394,9 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       isGuest: false,
     }
 
+    submittedRef.current = true
     reduxDispatch(createAccountRequest(user))
-    // TODO: wait for success
-    setAuthMode('avatar_and_theme')
+    // Navigation is now handled by the useEffects above that watch currentUser / loginError
   }, [step])
 
   return (
@@ -349,6 +407,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
         step,
         isValid,
         errors,
+        continueSignUp,
       }}
     >
       {children}

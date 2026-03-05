@@ -78,7 +78,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       }),
     )
 
-    if (store && store.storeVersion && store.appState) {
+    if (store && store.storeVersion >= 0 && store.appState) {
       const partialState: PartialStateSnapshot = {
         ...store.appState,
         app: {

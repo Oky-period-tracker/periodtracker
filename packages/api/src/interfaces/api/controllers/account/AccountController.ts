@@ -205,11 +205,8 @@ export class AccountController {
       metadata: user.getMetadata(),
     }
 
-    // Exclude metadata from JWT payload
-    // Deconstructure userDescriptor to separate metadata from the rest of the payload
-    const { metadata, ...tokenPayload } = userDescriptor
-
-    const appToken = jwt.sign(tokenPayload, env.app.secret, {
+    /** Add ID to the token, it's the only info we need to pass */
+    const appToken = jwt.sign({ id: user.getId() }, env.app.secret, {
       audience: 'app',
     })
 

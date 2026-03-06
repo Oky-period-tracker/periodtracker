@@ -17,6 +17,7 @@ import { useAccessibilityLabel } from '../../../hooks/useAccessibilityLabel'
 export const VideoPlayerModal = () => {
   const { width: screenWidth, height: screenHeight } = useScreenDimensions()
   const { selectedVideoId, setSelectedVideoId } = useEncyclopedia()
+  const videoRef = React.useRef<Video>(null)
   const translate = useTranslate()
 
   const getAccessibilityLabel = useAccessibilityLabel()
@@ -24,7 +25,12 @@ export const VideoPlayerModal = () => {
 
   const videoData = useSelector((state) => videoByIDSelector(state, selectedVideoId || ''))
 
-  const close = () => {
+  const close = async () => {
+    try {
+      await videoRef.current?.dismissFullscreenPlayer()
+    } catch (e) {
+      //
+    }
     setSelectedVideoId(undefined)
   }
 
@@ -110,6 +116,7 @@ export const VideoPlayerModal = () => {
         <View style={styles.body}>
           {bundledSource ? (
             <Video
+              ref={videoRef}
               source={bundledSource}
               resizeMode={ResizeMode.CONTAIN}
               style={{ width, height }}

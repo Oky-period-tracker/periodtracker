@@ -31,7 +31,7 @@ function handleTokenTooLarge() {
   const t = (key: string) => allTranslations?.[locale]?.[key] || key
 
   Alert.alert(t('error'), t('session_expired'), [
-    { text: 'OK', onPress: () => { hasHandledTokenTooLarge = false } },
+    { text: t('ok'), onPress: () => { hasHandledTokenTooLarge = false } },
   ])
 }
 

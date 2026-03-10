@@ -39,7 +39,7 @@ export const CycleCard = ({
   const endMonthIndex = parseInt(item.cycleEndDate.format('M')) - 1
   const endMonth = months[endMonthIndex]
 
-  const periodEndDate = item.cycleStartDate.clone().add(item.periodLength, 'days')
+  const periodEndDate = item.cycleStartDate.clone().add(item.periodLength -1 , 'days')
 
   const periodEndDay = periodEndDate.format('DD')
   const periodEndMonthIndex = parseInt(periodEndDate.format('M')) - 1

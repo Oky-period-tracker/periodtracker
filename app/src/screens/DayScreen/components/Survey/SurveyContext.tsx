@@ -78,7 +78,7 @@ function reducer(state: SurveyState, action: Action): SurveyState {
         question: currentQuestion.question,
         answerID: `${answerId}`,
         answer: state.answerDraft,
-        response: currentQuestion.response,
+        response: state.answerDraft,
         isMultiple: currentQuestion.is_multiple,
       }
 
@@ -113,6 +113,18 @@ function reducer(state: SurveyState, action: Action): SurveyState {
       return {
         ...state,
         questionIndex: nextQuestionIndex,
+      }
+    }
+
+    case 'select_answer':{
+      const question = state.survey!.questions[state.questionIndex]
+      const options = getSurveyQuestionOptions(question)
+      const selectedText = options[action.value] || ''
+
+      return {
+        ...state,
+        answerIndex:action.value,
+        answerDraft:selectedText,
       }
     }
 
@@ -161,6 +173,7 @@ export const SurveyProvider = ({
       user_id: currentUser.id,
       isCompleted: true,
       isSurveyAnswered: true,
+      live:true,
       questions: state.answers,
       utcDateTime: moment(),
     }

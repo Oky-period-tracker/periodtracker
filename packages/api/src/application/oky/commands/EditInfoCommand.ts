@@ -6,6 +6,6 @@ export interface EditInfoCommand {
   dateOfBirth: Date
   gender: 'Male' | 'Female' | 'Other'
   location: string
-  secretQuestion?: string
-  metadata?: UserMetadata
+  secretQuestion: string
+  metadata: UserMetadata
 }

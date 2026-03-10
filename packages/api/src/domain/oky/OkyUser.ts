@@ -181,8 +181,8 @@ export class OkyUser {
     dateOfBirth: Date
     gender: 'Male' | 'Female' | 'Other'
     location: string
-    secretQuestion?: string
-    metadata?: UserMetadata
+    secretQuestion: string
+    metadata: UserMetadata
   }) {
     if (!name) {
       throw new Error(`The user name must be provided`)
@@ -193,8 +193,8 @@ export class OkyUser {
     this.dateOfBirth = dateOfBirth
     this.gender = gender
     this.location = location
-    if (secretQuestion) this.memorable = await this.memorable.changeQuestion(secretQuestion)
-    if (metadata) this.metadata = metadata
+    this.memorable = await this.memorable.changeQuestion(secretQuestion)
+    this.metadata = metadata
   }
 
   public async editSecretAnswer(previousSecretAnswer: string, nextSecretAnswer: string) {

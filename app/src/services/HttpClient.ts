@@ -1,10 +1,50 @@
 import axios, { AxiosResponse } from 'axios'
+import { Alert } from 'react-native'
 import * as types from '../core/api/types'
 import { API_BASE_CMS_URL, API_BASE_URL, PREDICTION_ENDPOINT } from '../config/env'
 import { Locale } from '../resources/translations'
 import { User } from '../types'
-import { answerSurvey } from '../redux/actions'
-// import * as config from "../config";
+import { allTranslations, initialLocale } from '../hooks/useTranslate'
+
+type StoreRef = {
+  dispatch: (action: { type: string }) => void
+  getState: () => { app: { locale: string } }
+}
+
+let storeRef: StoreRef | null = null
+let hasHandledTokenTooLarge = false
+
+export function setHttpClientStore(store: StoreRef) {
+  storeRef = store
+}
+
+function handleTokenTooLarge() {
+  if (hasHandledTokenTooLarge) return
+  hasHandledTokenTooLarge = true
+
+  if (storeRef) {
+    storeRef.dispatch({ type: 'LOGOUT' })
+  }
+
+  const locale = (storeRef?.getState()?.app?.locale || initialLocale) as Locale
+  // @ts-expect-error TODO: allTranslations type
+  const t = (key: string) => allTranslations?.[locale]?.[key] || key
+
+  Alert.alert(t('error'), t('session_expired'), [
+    { text: 'OK', onPress: () => { hasHandledTokenTooLarge = false } },
+  ])
+}
+
+// Add a global axios response interceptor to catch 431 (Request Header Fields Too Large)
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 431) {
+      handleTokenTooLarge()
+    }
+    return Promise.reject(error)
+  },
+)
 
 export const httpClient = createHttpClient(API_BASE_URL, API_BASE_CMS_URL, {
   predictionEndpoint: PREDICTION_ENDPOINT,

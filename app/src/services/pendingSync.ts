@@ -4,6 +4,9 @@ import { UserMetadata } from '../redux/reducers/authReducer'
 
 const PENDING_SYNC_KEY = '@pending_sync_after_431'
 
+/**
+ * Profile data interface
+ */
 export interface EditInfoData {
   name: string
   dateOfBirth: string
@@ -13,6 +16,9 @@ export interface EditInfoData {
   metadata?: UserMetadata
 }
 
+/**
+ * Data awaiting synchronization with the server.
+ */
 export interface PendingSyncData {
   userId: string
   replaceStore: {
@@ -22,6 +28,11 @@ export interface PendingSyncData {
   editInfo: EditInfoData
 }
 
+/**
+ * Store data awaiting synchronization with the server.
+ * This workflow addresses a 431 error caused by backend token sizes exceeding limits due to excessive metadata.
+ * @param data Data awaiting synchronization with the server.
+ */
 export async function savePendingSyncData(data: PendingSyncData): Promise<void> {
   try {
     await AsyncStorage.setItem(PENDING_SYNC_KEY, JSON.stringify(data))
@@ -30,6 +41,10 @@ export async function savePendingSyncData(data: PendingSyncData): Promise<void> 
   }
 }
 
+/**
+ * Get data awaiting synchronization with the server.
+ * @returns Data awaiting synchronization with the server.
+ */
 export async function loadPendingSyncData(): Promise<PendingSyncData | null> {
   try {
     const raw = await AsyncStorage.getItem(PENDING_SYNC_KEY)
@@ -40,6 +55,9 @@ export async function loadPendingSyncData(): Promise<PendingSyncData | null> {
   }
 }
 
+/**
+ * Clear data awaiting synchronization with the server.
+ */
 export async function clearPendingSyncData(): Promise<void> {
   try {
     await AsyncStorage.removeItem(PENDING_SYNC_KEY)

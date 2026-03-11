@@ -21,15 +21,11 @@ export function setHttpClientStore(store: StoreRef) {
   storeRef = store
 }
 
-const tokenTooLargeHits: number[] = []
-const MAX_HITS = 5
-
-function shouldHandleTokenTooLarge(): boolean {
-  const now = Date.now()
-  tokenTooLargeHits.push(now)
-  return tokenTooLargeHits.length >= MAX_HITS
-}
-
+/**
+ * Force logout of user, and store data locally so on next login we can reupload it.
+ * This workflow addresses a 431 error caused by backend token sizes exceeding limits due to excessive metadata.
+ * @returns 
+ */
 function handleTokenTooLarge() {
   if (hasHandledTokenTooLarge) return
   hasHandledTokenTooLarge = true
@@ -77,7 +73,7 @@ function handleTokenTooLarge() {
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error?.response?.status === 431 && shouldHandleTokenTooLarge()) {
+    if (error?.response?.status === 431) {
       handleTokenTooLarge()
     }
     return Promise.reject(error)

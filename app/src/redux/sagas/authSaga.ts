@@ -50,6 +50,12 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
   yield put(actions.createAccountRequest(action.payload))
 }
 
+/**
+ * Queue data locally and upload upon the next login to prevent potential data loss.
+ * This workflow addresses a 431 error caused by backend token sizes exceeding limits due to excessive metadata.
+ * @param appToken Authentication token
+ * @param pendingData The data queued for upload.
+ */
 function* resendPendingSyncDataToServer(appToken: string, pendingData: NonNullable<Awaited<ReturnType<typeof loadPendingSyncData>>>) {
   try {
     yield httpClient.replaceStore({

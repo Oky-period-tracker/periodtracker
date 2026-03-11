@@ -5,10 +5,13 @@ import { API_BASE_CMS_URL, API_BASE_URL, PREDICTION_ENDPOINT } from '../config/e
 import { Locale } from '../resources/translations'
 import { User } from '../types'
 import { allTranslations, initialLocale } from '../hooks/useTranslate'
+import { ReduxState } from '../redux/reducers'
+import { savePendingSyncData } from './pendingSync'
+import { reduxStoreVersion } from '../optional/reduxMigrations'
 
 type StoreRef = {
   dispatch: (action: { type: string }) => void
-  getState: () => { app: { locale: string } }
+  getState: () => ReduxState
 }
 
 let storeRef: StoreRef | null = null
@@ -32,6 +35,32 @@ function handleTokenTooLarge() {
   hasHandledTokenTooLarge = true
 
   if (storeRef) {
+    const state = storeRef.getState()
+    const user = state.auth?.user
+
+    if (user?.id) {
+      savePendingSyncData({
+        userId: user.id,
+        replaceStore: {
+          storeVersion: reduxStoreVersion,
+          appState: {
+            app: state.app,
+            prediction: state.prediction,
+            verifiedDates: state.answer?.[user.id]?.verifiedDates,
+            helpCenters: state.helpCenters,
+          },
+        },
+        editInfo: {
+          name: user.name,
+          dateOfBirth: user.dateOfBirth,
+          gender: user.gender,
+          location: user.location,
+          secretQuestion: user.secretQuestion,
+          metadata: user.metadata,
+        },
+      })
+    }
+
     storeRef.dispatch({ type: 'LOGOUT' })
   }
 

@@ -13,12 +13,15 @@ function* syncAppState() {
 
   while (true) {
     // process queue every minute
-    yield delay(60 * 1000)
+    yield delay(15 * 1000)
 
     // @ts-expect-error TODO:
     const appToken = yield select(selectors.appTokenSelector)
     // @ts-expect-error TODO:
     const currentUser = yield select(selectors.currentUserSelector)
+
+    console.log('Sync...')
+    console.log(JSON.stringify(currentUser))
 
     if (!appToken || !currentUser) {
       // not logged

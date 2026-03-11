@@ -18,6 +18,15 @@ export function setHttpClientStore(store: StoreRef) {
   storeRef = store
 }
 
+const tokenTooLargeHits: number[] = []
+const MAX_HITS = 5
+
+function shouldHandleTokenTooLarge(): boolean {
+  const now = Date.now()
+  tokenTooLargeHits.push(now)
+  return tokenTooLargeHits.length >= MAX_HITS
+}
+
 function handleTokenTooLarge() {
   if (hasHandledTokenTooLarge) return
   hasHandledTokenTooLarge = true
@@ -39,7 +48,7 @@ function handleTokenTooLarge() {
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error?.response?.status === 431) {
+    if (error?.response?.status === 431 && shouldHandleTokenTooLarge()) {
       handleTokenTooLarge()
     }
     return Promise.reject(error)

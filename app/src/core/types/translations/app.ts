@@ -296,6 +296,7 @@ export interface AppTranslations {
   something_went_wrong: string // TODO:
   could_not_change_secret: string // TODO:
   wrong_old_secret_answer: string // TODO:
+  wrong_secret_answer: string
   close_try_again: string // TODO:
   // user_not_found: string; // Old Delete account
   fertile_popup_heading: string

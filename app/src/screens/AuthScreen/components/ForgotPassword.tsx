@@ -9,6 +9,9 @@ import { formatPassword } from '../../../services/auth'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
+import { fetchNetworkConnectionStatus } from '../../../services/network'
+import { userRepository } from '../../../services/sqlite/userRepository'
+import { getDeviceId } from '../../../services/deviceId'
 
 export const ForgotPassword = () => {
   const translate = useTranslate()
@@ -44,15 +47,11 @@ export const ForgotPassword = () => {
     )
   }
 
-  const failAlert = () => {
+  const errorAlert = (message: string) => {
     Alert.alert(
       translate('password_change_fail'),
-      translate('password_change_fail_description'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
+      message,
+      [{ text: translate('continue') }],
       { cancelable: false },
     )
   }
@@ -64,19 +63,41 @@ export const ForgotPassword = () => {
     }
 
     try {
-      // Check exists
-      await httpClient.getUserInfo(name)
+      const isOnline = await fetchNetworkConnectionStatus()
 
-      // Reset
-      await httpClient.resetPassword({
-        name,
-        secretAnswer: formatPassword(answer),
-        password: formatPassword(password),
-      })
+      if (isOnline) {
+        // Online flow: verify and reset via API
+        await httpClient.getUserInfo(name)
+        await httpClient.resetPassword({
+          name,
+          secretAnswer: formatPassword(answer),
+          password: formatPassword(password),
+        })
+      } else {
+        // Offline flow: verify and reset locally via SQLite
+        const deviceId = await getDeviceId()
+        const user = await userRepository.getUserByName(name, deviceId)
+
+        if (!user) {
+          errorAlert(translate('user_not_found'))
+          return
+        }
+
+        if (user.secretAnswer !== formatPassword(answer)) {
+          errorAlert(translate('wrong_secret_answer'))
+          return
+        }
+
+        await userRepository.updateUser({
+          ...user,
+          password: formatPassword(password),
+        })
+        await userRepository.markPasswordChangeSync(user.id)
+      }
 
       successAlert()
     } catch (e) {
-      failAlert()
+      errorAlert(translate('something_went_wrong'))
     }
 
     // Reset

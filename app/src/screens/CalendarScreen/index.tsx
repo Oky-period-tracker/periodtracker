@@ -60,6 +60,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
   const [choiceModalVisible, toggleChoiceModalVisible] = useToggle()
   const [dayModalVisible, toggleDayModal] = useToggle()
+  const pendingDayModal = React.useRef(false)
 
   const [message, setMessage] = React.useState('')
   const predictionFullState = usePredictionEngineState()
@@ -94,8 +95,15 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   }
 
   const toDayModal = () => {
+    pendingDayModal.current = true
     toggleChoiceModalVisible()
-    toggleDayModal()
+  }
+
+  const onChoiceModalDismiss = () => {
+    if (pendingDayModal.current) {
+      pendingDayModal.current = false
+      toggleDayModal()
+    }
   }
 
   const onDayPress = (day: DateData) => {
@@ -243,6 +251,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           visible={choiceModalVisible}
           toggleVisible={toggleChoiceModalVisible}
           hideLaunchButton={true}
+          onDismiss={onChoiceModalDismiss}
         >
           <View style={[styles.modalBody, { backgroundColor }]}>
             <TouchableOpacity onPress={toDailyCard} style={styles.confirm}>

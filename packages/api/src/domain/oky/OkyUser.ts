@@ -44,8 +44,6 @@ export interface UserMetadata {
   }
   isProfileUpdateSkipped?: boolean
   accommodationRequirement?: string
-  religion?: string
-  contentSelection?: number
 }
 
 @Entity()

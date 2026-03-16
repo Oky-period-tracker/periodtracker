@@ -222,7 +222,7 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   const { months, monthOptions } = useMonths()
   const month = months[state.month]
   const year = state.year?.toString()
-  const initialMonth = monthOptions.find((item) => item.value === month)
+  const initialMonth = monthOptions.find((item: WheelPickerOption) => item.value === month)
   const initialYear = yearOptions.find((item) => item.value === year)
 
   const { isValid, errors } = validateState(state)

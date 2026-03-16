@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Text } from '../../../../components/Text'
 import { Hr } from '../../../../components/Hr'
@@ -36,37 +36,43 @@ export const Survey = () => {
 
   return (
     <View style={[styles.page, { backgroundColor }]}>
-      <View style={styles.body}>
-        <View style={styles.header}>
-          <Text style={[styles.title, { color: palette.secondary.text }]}>survey</Text>
-          <InfoButton title={'survey'} content={'info_button_survey'} />
-        </View>
-        <Text>anonymous_answer</Text>
-        <Text>choose_one</Text>
+      <ScrollView
+        style={styles.body}
+        showsVerticalScrollIndicator={true}
+        persistentScrollbar={true} // For Android
+      >
+        <View style={{ padding: 24 }}>
+          <View style={styles.header}>
+            <Text style={[styles.title, { color: palette.secondary.text }]}>survey</Text>
+            <InfoButton title={'survey'} content={'info_button_survey'} />
+          </View>
+          <Text>anonymous_answer</Text>
+          <Text>choose_one</Text>
 
-        {state.hasAnsweredAll ? (
-          <Text style={styles.thanks} status={'danger'}>
-            thank_you_msg
-          </Text>
-        ) : state.consented ? (
-          <>
-            <Text
-              style={[styles.question, { color: palette.secondary.text }]}
-              enableTranslate={false}
-            >
-              {question}
+          {state.hasAnsweredAll ? (
+            <Text style={styles.thanks} status={'danger'}>
+              thank_you_msg
             </Text>
-            <SurveyCollect />
-          </>
-        ) : (
-          <>
-            <Text style={[styles.question, { color: palette.secondary.text }]}>
-              {consentQuestion}
-            </Text>
-            <SurveyConsent />
-          </>
-        )}
-      </View>
+          ) : state.consented ? (
+            <>
+              <Text
+                style={[styles.question, { color: palette.secondary.text }]}
+                enableTranslate={false}
+              >
+                {question}
+              </Text>
+              <SurveyCollect />
+            </>
+          ) : (
+            <>
+              <Text style={[styles.question, { color: palette.secondary.text }]}>
+                {consentQuestion}
+              </Text>
+              <SurveyConsent />
+            </>
+          )}
+        </View>
+      </ScrollView>
 
       <Hr />
       <View style={styles.buttons}>
@@ -98,7 +104,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     marginBottom: 'auto',
-    padding: 24,
   },
   header: {
     flexDirection: 'row',

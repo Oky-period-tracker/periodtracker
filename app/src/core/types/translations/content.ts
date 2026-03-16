@@ -4,8 +4,8 @@ export interface Article {
   content: string
   category: string
   subCategory: string
-  isAgeRestricted: boolean
-  ageRestrictionLevel: number
+  isAgeRestricted?: boolean
+  ageRestrictionLevel?: number
   contentFilter?: number
   voiceOverKey?: string
   live?: boolean

@@ -35,8 +35,6 @@ export interface User {
 export interface UserMetadata {
   // PH
   accommodationRequirement?: string
-  religion?: string
-  contentSelection?: number
   city?: string
   isProfileUpdateSkipped?: boolean
   periodDates?: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]

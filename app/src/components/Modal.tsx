@@ -21,9 +21,10 @@ export interface ModalProps {
   style?: StyleProp<ViewStyle>
   hideLaunchButton?: boolean
   onHandleResponse?: (response: boolean, periodDate: string) => void
+  onDismiss?: () => void
 }
 
-export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) => {
+export const Modal = ({ visible, toggleVisible, children, style, onDismiss }: ModalProps) => {
   const { modalBackdropColor } = useColor()
   const { width, height } = useScreenDimensions()
   const maxWidth = Math.min(width, 800)
@@ -34,6 +35,7 @@ export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) =
     <RNModal
       visible={visible}
       onRequestClose={toggleVisible}
+      onDismiss={onDismiss}
       animationType={'fade'}
       transparent={true}
       statusBarTranslucent={true}

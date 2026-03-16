@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Calendar, CalendarProps, DateData, LocaleConfig } from 'react-native-calendars'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { DisplayButton } from '../../components/Button'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { ScreenComponent } from '../../navigation/RootNavigator'
@@ -60,7 +60,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
   const [choiceModalVisible, toggleChoiceModalVisible] = useToggle()
   const [dayModalVisible, toggleDayModal] = useToggle()
-  const pendingDayModal = React.useRef(false)
+  const [pendingDayModal, setPendingDayModal] = useState(false)
 
   const [message, setMessage] = React.useState('')
   const predictionFullState = usePredictionEngineState()
@@ -95,13 +95,17 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   }
 
   const toDayModal = () => {
-    pendingDayModal.current = true
     toggleChoiceModalVisible()
+    if (Platform.OS === 'android') {
+      toggleDayModal()
+    } else {
+      setPendingDayModal(true)
+    }
   }
 
   const onChoiceModalDismiss = () => {
-    if (pendingDayModal.current) {
-      pendingDayModal.current = false
+    if (pendingDayModal) {
+      setPendingDayModal(false)
       toggleDayModal()
     }
   }

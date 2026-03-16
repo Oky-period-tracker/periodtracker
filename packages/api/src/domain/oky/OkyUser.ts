@@ -87,7 +87,7 @@ export class OkyUser {
   @Column({ name: 'date_account_saved' })
   private dateAccountSaved: string
 
-  @Column({ name: 'cycles_number', default: 0 })
+  @Column({ name: 'cyclesNumber', default: 0 })
   private cyclesNumber: number
 
   @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })

@@ -12,6 +12,8 @@ import { AuthCardBody } from './AuthCardBody'
 import { fetchNetworkConnectionStatus } from '../../../services/network'
 import { userRepository } from '../../../services/sqlite/userRepository'
 import { getDeviceId } from '../../../services/deviceId'
+import { verifySecret } from '../../../services/sqlite/hashUtils'
+import { savePasswordSecurely } from '../../../services/sqlite/secureStorage'
 
 export const ForgotPassword = () => {
   const translate = useTranslate()
@@ -83,7 +85,14 @@ export const ForgotPassword = () => {
           return
         }
 
-        if (user.secretAnswer !== formatPassword(answer)) {
+        // Verify secret answer — use PBKDF2 hash if available, plain fallback for legacy accounts
+        let secretMatch = false
+        if (user.secretAnswerHash && user.secretAnswerSalt) {
+          secretMatch = await verifySecret(formatPassword(answer), user.secretAnswerHash, user.secretAnswerSalt)
+        } else {
+          secretMatch = user.secretAnswer === formatPassword(answer)
+        }
+        if (!secretMatch) {
           errorAlert(translate('wrong_secret_answer'))
           return
         }
@@ -92,6 +101,8 @@ export const ForgotPassword = () => {
           ...user,
           password: formatPassword(password),
         })
+        // Update Keychain with new password so server sync uses the correct one
+        await savePasswordSecurely(user.id, formatPassword(password))
         await userRepository.markPasswordChangeSync(user.id)
       }
 

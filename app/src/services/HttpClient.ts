@@ -57,6 +57,7 @@ export function createHttpClient(
       dateSignedUp,
       metadata,
       preferredId = null,
+      deviceId = null,
     }: // TODO:
     // eslint-disable-next-line
     any) => {
@@ -75,6 +76,7 @@ export function createHttpClient(
           dateSignedUp,
           metadata,
           preferredId,
+          deviceId,
         }),
       })
     },

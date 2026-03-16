@@ -1,4 +1,6 @@
 import { getDatabase, execAsync } from './database'
+import { hashSecret } from './hashUtils'
+import { savePasswordSecurely, deleteSecurePassword, saveSecretAnswerSecurely, deleteSecureSecretAnswer } from './secureStorage'
 
 export interface User {
   id: string
@@ -22,6 +24,10 @@ export interface User {
   isPendingPasswordChange: number
   createdAt: string
   syncedAt?: string
+  passwordHash?: string
+  passwordSalt?: string
+  secretAnswerHash?: string
+  secretAnswerSalt?: string
 }
 
 export interface AppState {
@@ -56,6 +62,10 @@ class UserRepository {
       isPendingPasswordChange: row.isPendingPasswordChange as number,
       createdAt: row.createdAt as string,
       syncedAt: row.syncedAt as string | undefined,
+      passwordHash: row.passwordHash as string | undefined,
+      passwordSalt: row.passwordSalt as string | undefined,
+      secretAnswerHash: row.secretAnswerHash as string | undefined,
+      secretAnswerSalt: row.secretAnswerSalt as string | undefined,
     }
   }
 
@@ -94,6 +104,10 @@ class UserRepository {
           isPendingPasswordChange: row[18],
           createdAt: row[19],
           syncedAt: row[20],
+          passwordHash: row[21],
+          passwordSalt: row[22],
+          secretAnswerHash: row[23],
+          secretAnswerSalt: row[24],
         }
       }
       
@@ -113,24 +127,13 @@ class UserRepository {
         'SELECT * FROM users WHERE name = ? AND deviceId = ?',
         [name, deviceId]
       )
-      console.log('[SQLite] getUserByName result:', JSON.stringify(result.rows._array))
-      console.log('[SQLite] Result type:', typeof result.rows._array, 'IsArray:', Array.isArray(result.rows._array))
-      console.log('[SQLite] Result length:', result.rows._array.length, result.rows._array.length === 0 ? '(EMPTY - no user found)' : '(FOUND USER)')
-      
-      // Explicit check for empty result
       if (!result.rows._array || result.rows._array.length === 0) {
-        console.log('[SQLite] No user found for name:', name, 'deviceId:', deviceId)
         return null
       }
       
       const row = result.rows._array[0]
-      console.log('[SQLite] Row data:', row, 'Type:', typeof row, 'IsArray:', Array.isArray(row))
-      console.log('[SQLite] Row length:', row.length, 'password (index 3):', row[3])
-      
-      // Convert array format to object if needed
       let userObj = row
       if (Array.isArray(row)) {
-        console.log('[SQLite] Converting array to object, length:', row.length)
         // SELECT * returns: [id, deviceId, name, password, gender, location, country, province, dateOfBirth, secretQuestion, secretAnswer, metadata, dateSignedUp, dateAccountSaved, appToken, isActive, isPendingSync, isPendingDelete, isPendingPasswordChange, createdAt, syncedAt]
         userObj = {
           id: row[0],
@@ -154,13 +157,14 @@ class UserRepository {
           isPendingPasswordChange: row[18],
           createdAt: row[19],
           syncedAt: row[20],
+          passwordHash: row[21],
+          passwordSalt: row[22],
+          secretAnswerHash: row[23],
+          secretAnswerSalt: row[24],
         }
-        console.log('[SQLite] Converted - id:', userObj.id, 'name:', userObj.name, 'deviceId:', userObj.deviceId)
       }
       
-      const user = this.mapRowToUser(userObj as any)
-      console.log('User found:', user.name, 'id:', user.id)
-      return user
+      return this.mapRowToUser(userObj as any)
     } catch (error) {
       console.error('[SQLite] Error getting user by name:', error)
       return null
@@ -203,6 +207,10 @@ class UserRepository {
             isPendingPasswordChange: row[18],
             createdAt: row[19],
             syncedAt: row[20],
+            passwordHash: row[21],
+            passwordSalt: row[22],
+            secretAnswerHash: row[23],
+            secretAnswerSalt: row[24],
           }
         }
         return this.mapRowToUser(userObj as any) as User
@@ -241,13 +249,30 @@ class UserRepository {
   }
 
   // Create user
-  async createUser(user: Omit<User, 'createdAt' | 'syncedAt'>): Promise<User> {
+  async createUser(user: Omit<User, 'createdAt' | 'syncedAt' | 'passwordHash' | 'passwordSalt' | 'secretAnswerHash' | 'secretAnswerSalt'>): Promise<User> {
     const db = await getDatabase()
     try {
       const createdAt = new Date().toISOString()
-      
-      console.log('[SQLite] Creating user with deviceId:', user.deviceId)
-      
+
+      // Hash password for offline auth
+      const { hash: passwordHash, salt: passwordSalt } = await hashSecret(user.password)
+
+      // Store plain password in Keychain/Keystore — NOT in SQLite
+      // This is only needed for server sync; deleted after successful sync
+      await savePasswordSecurely(user.id, user.password)
+
+      // Hash secret answer if provided
+      let secretAnswerHash: string | undefined
+      let secretAnswerSalt: string | undefined
+      if (user.secretAnswer) {
+        // Store plain secret answer in Keychain/Keystore — NOT in SQLite
+        // This is only needed for server sync; deleted after successful sync
+        await saveSecretAnswerSecurely(user.id, user.secretAnswer)
+        const result = await hashSecret(user.secretAnswer)
+        secretAnswerHash = result.hash
+        secretAnswerSalt = result.salt
+      }
+
       // Use INSERT OR REPLACE to handle concurrent creates
       await execAsync(
         db,
@@ -255,19 +280,20 @@ class UserRepository {
           id, deviceId, name, password, gender, location, country, province,
           dateOfBirth, secretQuestion, secretAnswer, metadata, dateSignedUp,
           dateAccountSaved, appToken, isActive, isPendingSync, isPendingDelete,
-          isPendingPasswordChange, createdAt
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          isPendingPasswordChange, createdAt,
+          passwordHash, passwordSalt, secretAnswerHash, secretAnswerSalt
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
-          user.id, user.deviceId, user.name, user.password,
+          user.id, user.deviceId, user.name, '',
           user.gender ?? null, user.location ?? null, user.country ?? null, user.province ?? null,
-          user.dateOfBirth ?? null, user.secretQuestion ?? null, user.secretAnswer ?? null,
+          user.dateOfBirth ?? null, user.secretQuestion ?? null, null, // secretAnswer blanked — plain value stored in Keychain/Keystore
           user.metadata ?? null, user.dateSignedUp ?? null, user.dateAccountSaved ?? null,
           user.appToken ?? null, user.isActive ? 1 : 0, user.isPendingSync ? 1 : 0,
-          user.isPendingDelete ? 1 : 0, user.isPendingPasswordChange ? 1 : 0, createdAt
+          user.isPendingDelete ? 1 : 0, user.isPendingPasswordChange ? 1 : 0, createdAt,
+          passwordHash, passwordSalt, secretAnswerHash ?? null, secretAnswerSalt ?? null,
         ]
       )
-      console.log('[SQLite] User created/updated:', user.id, 'isPendingSync:', user.isPendingSync ? 1 : 0, 'deviceId:', user.deviceId)
-      return { ...user, createdAt, syncedAt: undefined }
+      return { ...user, createdAt, syncedAt: undefined, passwordHash, passwordSalt, secretAnswerHash, secretAnswerSalt }
     } catch (error) {
       console.error('[SQLite] Error creating user:', error)
       throw error
@@ -278,6 +304,28 @@ class UserRepository {
   async updateUser(user: User): Promise<void> {
     const db = await getDatabase()
     try {
+      // Only recompute password hash if a real password is provided
+      // (SQLite stores '' for offline users — don't hash that)
+      let passwordHash = user.passwordHash
+      let passwordSalt = user.passwordSalt
+      if (user.password && user.password.trim() !== '') {
+        const result = await hashSecret(user.password)
+        passwordHash = result.hash
+        passwordSalt = result.salt
+      }
+
+      // Recompute secret answer hash if a real answer is provided
+      // (SQLite blanks this column — don't hash an empty value)
+      let secretAnswerHash: string | undefined = user.secretAnswerHash
+      let secretAnswerSalt: string | undefined = user.secretAnswerSalt
+      if (user.secretAnswer && user.secretAnswer.trim() !== '') {
+        // Store plain secret answer in Keychain/Keystore — NOT in SQLite
+        await saveSecretAnswerSecurely(user.id, user.secretAnswer)
+        const result = await hashSecret(user.secretAnswer)
+        secretAnswerHash = result.hash
+        secretAnswerSalt = result.salt
+      }
+
       await execAsync(
         db,
         `UPDATE users SET
@@ -285,18 +333,21 @@ class UserRepository {
           province = ?, dateOfBirth = ?, secretQuestion = ?, secretAnswer = ?,
           metadata = ?, dateSignedUp = ?, dateAccountSaved = ?, appToken = ?,
           isActive = ?, isPendingSync = ?, isPendingDelete = ?,
-          isPendingPasswordChange = ?, syncedAt = ?
+          isPendingPasswordChange = ?, syncedAt = ?,
+          passwordHash = ?, passwordSalt = ?, secretAnswerHash = ?, secretAnswerSalt = ?
         WHERE id = ?`,
         [
-          user.name, user.password, user.gender ?? null, user.location ?? null, user.country ?? null,
+          user.name, '', user.gender ?? null, user.location ?? null, user.country ?? null,
           user.province ?? null, user.dateOfBirth ?? null, user.secretQuestion ?? null,
-          user.secretAnswer ?? null, user.metadata ?? null, user.dateSignedUp ?? null,
+          null, // secretAnswer blanked — plain value stored in Keychain/Keystore
+          user.metadata ?? null, user.dateSignedUp ?? null,
           user.dateAccountSaved ?? null, user.appToken ?? null, user.isActive ? 1 : 0,
           user.isPendingSync ? 1 : 0, user.isPendingDelete ? 1 : 0,
-          user.isPendingPasswordChange ? 1 : 0, user.syncedAt ?? null, user.id
+          user.isPendingPasswordChange ? 1 : 0, user.syncedAt ?? null,
+          passwordHash, passwordSalt, secretAnswerHash ?? null, secretAnswerSalt ?? null,
+          user.id,
         ]
       )
-      console.log('[SQLite] User updated:', user.id, 'isPendingSync:', user.isPendingSync ? 1 : 0)
     } catch (error) {
       console.error('Error updating user:', error)
       throw error
@@ -308,6 +359,9 @@ class UserRepository {
     const db = await getDatabase()
     try {
       await execAsync(db, 'DELETE FROM users WHERE id = ?', [id])
+      // Also remove credentials from secure storage if they exist
+      await deleteSecurePassword(id)
+      await deleteSecureSecretAnswer(id)
     } catch (error) {
       console.error('Error deleting user:', error)
       throw error
@@ -344,6 +398,10 @@ class UserRepository {
             isPendingPasswordChange: row[18],
             createdAt: row[19],
             syncedAt: row[20],
+            passwordHash: row[21],
+            passwordSalt: row[22],
+            secretAnswerHash: row[23],
+            secretAnswerSalt: row[24],
           }
         }
         return this.mapRowToUser(userObj as any) as User
@@ -384,6 +442,10 @@ class UserRepository {
             isPendingPasswordChange: row[18],
             createdAt: row[19],
             syncedAt: row[20],
+            passwordHash: row[21],
+            passwordSalt: row[22],
+            secretAnswerHash: row[23],
+            secretAnswerSalt: row[24],
           }
         }
         return this.mapRowToUser(userObj as any) as User
@@ -398,13 +460,7 @@ class UserRepository {
   async getUsersWithPendingSync(): Promise<User[]> {
     const db = await getDatabase()
     try {
-      // First, get all users to see their isPendingSync values
-      const allResult = await execAsync(db, 'SELECT id, isPendingSync FROM users')
-      console.log('[SQLite] All users isPendingSync values:', allResult.rows._array)
-      
       const result = await execAsync(db, 'SELECT * FROM users WHERE isPendingSync = 1')
-      console.log('[SQLite] getUsersWithPendingSync raw result count:', result.rows._array.length)
-      console.log('[SQLite] getUsersWithPendingSync raw result:', result.rows._array)
       const mapped = result.rows._array.map((row: any) => {
         let userObj = row
         if (Array.isArray(row)) {
@@ -430,12 +486,14 @@ class UserRepository {
             isPendingPasswordChange: row[18],
             createdAt: row[19],
             syncedAt: row[20],
+            passwordHash: row[21],
+            passwordSalt: row[22],
+            secretAnswerHash: row[23],
+            secretAnswerSalt: row[24],
           }
         }
-        console.log('[SQLite] Mapped user:', { id: userObj.id, deviceId: userObj.deviceId, name: userObj.name })
         return this.mapRowToUser(userObj as any) as User
       })
-      console.log('[SQLite] Final mapped users with deviceId:', mapped.map(u => ({ id: u.id, deviceId: u.deviceId })))
       return mapped
     } catch (error) {
       console.error('Error getting pending syncs:', error)

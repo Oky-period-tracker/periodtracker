@@ -17,6 +17,8 @@ import { analytics } from '../../services/firebase'
 import { userRepository } from '../../services/sqlite/userRepository'
 import { getDeviceId } from '../../services/deviceId'
 import { verifyDatabaseData } from '../../services/sqlite/database'
+import { verifySecret } from '../../services/sqlite/hashUtils'
+import { getSecurePassword, deleteSecurePassword, getSecureSecretAnswer, deleteSecureSecretAnswer } from '../../services/sqlite/secureStorage'
 
 // unwrap promise
 type Await<T> = T extends Promise<infer U> ? U : T
@@ -50,8 +52,6 @@ function* periodicallyAttemptConvertGuestAccount() {
 }
 
 function* syncPendingAccounts() {
-  console.log('[Auth] syncPendingAccounts: Starting sync check')
-  
   while (true) {
     try {
       // Check every 60 seconds
@@ -67,15 +67,11 @@ function* syncPendingAccounts() {
       }
 
       if (!isOnline) {
-        console.log('[Auth] syncPendingAccounts: No internet - skipping sync')
         continue
       }
 
-      console.log('[Auth] syncPendingAccounts: Internet available - checking for pending accounts')
-
       // Get all accounts with pending sync
       const pendingAccounts: any = yield userRepository.getUsersWithPendingSync()
-      console.log('[Auth] syncPendingAccounts: Found', pendingAccounts.length, 'accounts pending sync')
 
       if (pendingAccounts.length === 0) {
         continue
@@ -84,55 +80,41 @@ function* syncPendingAccounts() {
       // Sync each pending account
       for (const account of pendingAccounts) {
         try {
-          console.log('[Auth] Syncing account:', account.name)
-          console.log('[Auth] Full Account data:', {
-            name: account.name,
-            password: account.password ? 'SET' : 'MISSING',
-            dateOfBirth: account.dateOfBirth,
-            gender: account.gender,
-            location: account.location,
-            country: account.country,
-            province: account.province,
-            secretQuestion: account.secretQuestion ? 'SET' : 'MISSING',
-            secretAnswer: account.secretAnswer ? 'SET' : 'MISSING',
-            dateSignedUp: account.dateSignedUp,
-            metadata: account.metadata,
-          })
-
-          if (!account.password) {
-            console.error('[Auth] Missing password for account:', account.name)
+          if (!account.id) {
+            console.error('[Auth] Missing account id for secure storage lookup:', account.name)
             continue
           }
 
-          // Call signup API with account details (including device info for tracking)
+          // Read plain password from Keychain (never stored in SQLite)
+          const plainPassword: string | null = yield getSecurePassword(account.id)
+          if (!plainPassword) {
+            console.error('[SecureStore] ❌ No password in Keychain for:', account.name, '- skipping sync')
+            continue
+          }
+
+          // Read plain secret answer from Keychain — fall back to SQLite for legacy accounts
+          // created before this security update
+          const plainSecretAnswer: string | null =
+            (yield getSecureSecretAnswer(account.id)) ?? account.secretAnswer ?? null
+
+          // Call signup API with account details
           const signupPayload = {
             name: account.name,
-            password: account.password,
+            password: plainPassword,
             dateOfBirth: account.dateOfBirth,
             gender: account.gender,
             location: account.location,
             country: account.country,
             province: account.province,
             secretQuestion: account.secretQuestion,
-            secretAnswer: account.secretAnswer,
+            secretAnswer: plainSecretAnswer,
             dateSignedUp: account.dateSignedUp,
             metadata: account.metadata,
             preferredId: account.id,
             deviceId: account.deviceId,
           }
           
-          console.log('[Auth] SENDING SIGNUP REQUEST:', JSON.stringify({
-            name: signupPayload.name,
-            dateSignedUp: signupPayload.dateSignedUp,
-            deviceId: signupPayload.deviceId,
-            preferredId: signupPayload.preferredId,
-          }))
-          
           const { appToken, user } = yield httpClient.signup(signupPayload)
-
-          console.log('[Auth] Account synced successfully:', account.name)
-          console.log('[Auth] Received appToken:', appToken ? 'YES' : 'NO')
-
 
           // Update account with appToken and mark as synced
           yield userRepository.updateUser({
@@ -143,7 +125,10 @@ function* syncPendingAccounts() {
             syncedAt: moment.utc().toISOString(),
           })
 
-          console.log('[Auth] Account updated in SQLite:', account.name)
+          // Credentials no longer needed on device — delete from secure storage
+          yield deleteSecurePassword(account.id)
+          yield deleteSecureSecretAnswer(account.id)
+
         } catch (syncError) {
           console.warn('[Auth] Failed to sync account:', account.name)
           if (syncError && syncError.response) {
@@ -170,10 +155,7 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
   const state: ReduxState = yield select()
   const currentUser = selectors.currentUserSelector(state)
   
-  console.log('[Auth] onConvertGuestAccount: Current user isGuest:', currentUser?.isGuest, 'Payload isGuest:', payload?.isGuest)
-  
   if (currentUser && !currentUser.isGuest) {
-    console.log('[Auth] User is no longer guest, skipping conversion attempt')
     return
   }
   
@@ -187,8 +169,6 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
   yield actions.setLocale(localeapp)
 
   try {
-    // First try to login with API
-    console.log('[Auth] Login: Trying API first')
     try {
       const {
         appToken,
@@ -199,7 +179,6 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
         password,
       })
 
-      console.log('[Auth] API login successful')
       yield put(
         actions.loginSuccess({
           appToken,
@@ -226,33 +205,32 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       }
     } catch (apiError) {
       // API failed - try to login from SQLite (offline account)
-      console.warn('[Auth] API login failed, trying offline login:', apiError)
       const deviceId: any = yield getDeviceId()
-      console.log('[Auth] Device ID:', deviceId)
-      console.log('[Auth] Looking for user:', name)
-      
       const offlineUser: any = yield userRepository.getUserByName(name, deviceId)
-      console.log('[AUTH DEBUG] SQLite user lookup result:', offlineUser ? `FOUND: ${offlineUser.name} (id: ${offlineUser.id})` : 'NOT FOUND')
       
       if (!offlineUser) {
-        console.error('[AUTH DEBUG] USER NOT FOUND IN DATABASE - this causes login_failed')
-        console.error('[AUTH DEBUG] Searched for name:', name, 'deviceId:', deviceId)
+        throw new Error('login_failed')
+      }
+
+      // Verify password — use PBKDF2 hash if available, plain fallback for legacy accounts
+      let passwordMatch = false
+      if (offlineUser.passwordHash && offlineUser.passwordSalt) {
+        passwordMatch = yield verifySecret(password, offlineUser.passwordHash, offlineUser.passwordSalt)
+      } else {
+        // Legacy account created before hashing was added
+        passwordMatch = offlineUser.password === password
+      }
+      if (!passwordMatch) {
         throw new Error('login_failed')
       }
       
-      // Verify password matches
-      if (offlineUser.password !== password) {
-        throw new Error('login_failed')
-      }
-      
-      console.log('[Auth] Offline login successful')
       yield put(
         actions.loginSuccess({
           appToken: offlineUser.appToken || undefined,
           user: {
             id: offlineUser.id,
             name: offlineUser.name,
-            password: offlineUser.password,
+            password, // use the user-entered password, not the blank '' stored in SQLite
             dateOfBirth: offlineUser.dateOfBirth,
             gender: offlineUser.gender,
             location: offlineUser.location,
@@ -298,7 +276,6 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     const state: ReduxState = yield select()
     const currentUser = selectors.currentUserSelector(state)
     if (currentUser && currentUser.name === name) {
-      console.log('[Auth] Signup: User already logged in with this name, skipping:', name)
       yield put(actions.createAccountSuccess({
         appToken: currentUser.appToken,
         user: currentUser,
@@ -306,34 +283,22 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
       return
     }
 
-    // Check network status
-    console.log('[Auth] Signup: Checking network status...')
     let isOnline: any = false
     try {
       isOnline = yield fetchNetworkConnectionStatus()
-      console.log('[Auth] Signup: Network status =', isOnline ? 'ONLINE' : 'OFFLINE')
     } catch (netError) {
-      console.warn('[Auth] Network detection failed, assuming offline:', netError)
       isOnline = false
     }
 
     if (!isOnline) {
-      // OFFLINE MODE: Save account to SQLite
-      console.log('[Auth] Signup: OFFLINE MODE - saving to SQLite')
       const deviceId: any = yield getDeviceId()
-      console.log('[Auth] DeviceId:', deviceId)
 
-      // Check if username already exists on this device
       const existingUser: any = yield userRepository.getUserByName(name, deviceId)
-      console.log('[Auth] getUserByName returned:', existingUser ? 'USER FOUND' : 'NO USER', existingUser?.name)
       if (existingUser) {
-        console.log('[Auth] THROWING: Username already taken for:', name, 'Found user:', existingUser.name)
         throw new Error('Username already taken on this device')
       }
 
-      // Check if device already has max 3 users
       const userCount: any = yield userRepository.getUserCount(deviceId)
-      console.log('[Auth] User count on device:', userCount)
       if (userCount >= 3) {
         throw new Error('Maximum 3 accounts allowed per device, Try to delete a account before creating a new account')
       }
@@ -365,9 +330,6 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
         isGuest: false,
       })
 
-      // Log offline signup
-      console.log('[Auth] Offline account created:', { name, deviceId, userId })
-
       // Dispatch success with local ID (no appToken yet)
       yield put(
         actions.createAccountSuccess({
@@ -389,9 +351,6 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
         }),
       )
     } else {
-      // ONLINE MODE: Call API
-      console.log('[Auth] Signup: ONLINE MODE - calling API')
-      
       // Check device limit BEFORE calling API
       const deviceId: any = yield getDeviceId()
       const userCount: any = yield userRepository.getUserCount(deviceId)
@@ -404,6 +363,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           {
             ...action.payload,
             preferredId: id || null,
+            deviceId,
           },
         )
         if (!appToken || !user || !user.id) {
@@ -416,7 +376,7 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           throw new Error('Maximum 3 accounts allowed per device, Try to delete a account before creating a new account')
         }
 
-        // Save to SQLite
+        // Save to SQLite (savePasswordSecurely is called inside createUser)
         yield userRepository.createUser({
           id: user.id,
           deviceId,
@@ -436,8 +396,6 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           isGuest: false,
         })
 
-        console.log('[Auth] Online signup successful, saved to SQLite')
-        
         // Verify data was saved to database
         yield verifyDatabaseData()
         
@@ -497,8 +455,6 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
           isGuest: false,
         })
 
-        console.log('[Auth] Offline account created (API fallback):', { name, deviceId, userId })
-
         // Verify data was actually saved to database
         yield verifyDatabaseData()
 
@@ -540,8 +496,6 @@ function* onCreateAccountRequest(action: ExtractActionFromActionType<'CREATE_ACC
     const isMaxAccounts = errorMessage.includes('Maximum')
 
     if (isNameTaken) {
-      // Signal SignUpContext via Redux error - it will navigate back to the information step
-      console.log('[Auth] Duplicate username - signalling SignUpContext')
       yield put(actions.setAuthError({ error: 'name_taken' }))
     } else if (isMaxAccounts) {
       Alert.alert('Signup Failed', errorMessage, [
@@ -586,10 +540,6 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     // Prefer the SQLite look-up; fall back to currentUser (settings page)
     const user = userByName || currentUser
 
-    console.log('[Auth] Delete account - resolved user:', user ? `id=${user.id} name=${user.name}` : 'NOT FOUND')
-
-    // Check if internet is available
-    console.log('[Auth] Delete account - checking internet...')
     let isOnline: any = false
     try {
       isOnline = yield fetchNetworkConnectionStatus()
@@ -599,16 +549,12 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     }
 
     if (isOnline) {
-      // Internet available - delete from BOTH server and SQLite
-      console.log('[Auth] Internet available - deleting from both server and SQLite')
-      
       // Try to delete from server
       try {
         yield httpClient.deleteUserFromPassword({
           name,
           password,
         })
-        console.log('[Auth] Account deleted from server')
       } catch (apiError) {
         console.error('[Auth] Server delete failed:', apiError)
         throw apiError
@@ -618,39 +564,27 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
       if (user?.id) {
         try {
           yield userRepository.deleteUser(user.id)
-          console.log('[Auth] Account deleted from SQLite')
         } catch (sqlError) {
           console.error('[Auth] SQLite delete error:', sqlError)
           throw new Error('Failed to delete account from local database')
         }
-      } else {
-        console.log('[Auth] No local SQLite record found for this user - skipping local delete')
       }
     } else {
-      // No internet - can only delete from SQLite if it's pure offline
-      console.log('[Auth] No internet - checking if account can be deleted locally')
-      
       const sqliteUserAppToken = user?.appToken
-      console.log('[Auth] SQLite user appToken:', sqliteUserAppToken ? 'exists (synced to server)' : 'none (pure offline)')
 
       if (sqliteUserAppToken) {
-        // Account has been synced to server - cannot delete without internet
-        console.log('[Auth] Account exists on server - needs internet to delete')
         throw new Error('unable to process your request, as there is no internet')
       }
 
       // Pure offline account - delete from SQLite
       if (user?.id) {
         try {
-          console.log('[Auth] Pure offline account - deleting from SQLite')
           yield userRepository.deleteUser(user.id)
-          console.log('[Auth] Offline account deleted from SQLite')
         } catch (sqlError) {
           console.error('[Auth] SQLite delete error:', sqlError)
           throw new Error('Failed to delete account')
         }
       } else {
-        console.log('[Auth] No local user found with name:', name)
         throw new Error('delete_account_fail')
       }
     }
@@ -696,7 +630,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
         cycle_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, cycleLength],
       })
     } catch (error) {
-      // console.log(error);
+      // ignore prediction error
     }
   }
 

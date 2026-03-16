@@ -14,6 +14,7 @@ import { DayData } from '../../../MainScreen/DayScrollContext'
 import { answerQuiz } from '../../../../redux/actions'
 import { useSelector } from '../../../../redux/useSelector'
 import { useColor } from '../../../../hooks/useColor'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
   const userID = useSelector(currentUserSelector)?.id
@@ -39,70 +40,80 @@ export const QuizCard = ({ dataEntry }: { dataEntry: DayData }) => {
   }
 
   return (
-    <View style={[styles.page, { backgroundColor }]}>
-      <Text style={[styles.title, { color: palette.secondary.text }]}>quiz</Text>
-      <Text>daily_quiz_content</Text>
-      <View style={styles.body}>
-        <Text style={[styles.question, { color: palette.secondary.text }]} enableTranslate={false}>
-          {question}
-        </Text>
-        {answeredQuestion && (
-          <>
-            <View style={styles.checkboxContainer}>
-              <DisplayButton
-                style={styles.checkbox}
-                status={answeredQuestion.isCorrect ? 'primary' : 'secondary'}
-              />
+    <ScrollView
+      style={[styles.page, { backgroundColor }]}
+      showsVerticalScrollIndicator={true}
+      persistentScrollbar={true} // For Android
+    >
+      <View style={{ padding: 24 }}>
+        <Text style={[styles.title, { color: palette.secondary.text }]}>quiz</Text>
+        <Text>daily_quiz_content</Text>
+        <View style={styles.body}>
+          <Text
+            style={[styles.question, { color: palette.secondary.text }]}
+            enableTranslate={false}
+          >
+            {question}
+          </Text>
+          {answeredQuestion && (
+            <>
+              <View style={styles.checkboxContainer}>
+                <DisplayButton
+                  style={styles.checkbox}
+                  status={answeredQuestion.isCorrect ? 'primary' : 'secondary'}
+                />
+                <Text
+                  status={answeredQuestion.isCorrect ? 'primary' : 'secondary'}
+                  style={styles.label}
+                  enableTranslate={false}
+                >
+                  {answeredQuestion.answer}
+                </Text>
+              </View>
               <Text
+                style={styles.response}
                 status={answeredQuestion.isCorrect ? 'primary' : 'secondary'}
-                style={styles.label}
                 enableTranslate={false}
               >
-                {answeredQuestion.answer}
+                {answeredQuestion.response}
               </Text>
-            </View>
-            <Text
-              style={styles.response}
-              status={answeredQuestion.isCorrect ? 'primary' : 'secondary'}
-              enableTranslate={false}
-            >
-              {answeredQuestion.response}
-            </Text>
-          </>
-        )}
-        {!answeredQuestion &&
-          selectedQuestion.answers.map((answer, index) => {
-            const onPress = () => {
-              dispatch(
-                answerQuiz({
-                  id: selectedQuestion.id,
-                  answerID: index + 1,
-                  question: selectedQuestion.question,
-                  emoji: '', //TODO: answer.emoji ?
-                  answer: answer.text,
-                  isCorrect: answer.isCorrect,
-                  response: selectedQuestion.response[answer.isCorrect ? 'correct' : 'in_correct'],
-                  userID,
-                  utcDateTime: dataEntry.date,
-                }),
-              )
-            }
+            </>
+          )}
+          {!answeredQuestion &&
+            selectedQuestion.answers.map((answer, index) => {
+              const onPress = () => {
+                dispatch(
+                  answerQuiz({
+                    id: selectedQuestion.id,
+                    answerID: index + 1,
+                    question: selectedQuestion.question,
+                    emoji: '', //TODO: answer.emoji ?
+                    answer: answer.text,
+                    isCorrect: answer.isCorrect,
+                    response:
+                      selectedQuestion.response[answer.isCorrect ? 'correct' : 'in_correct'],
+                    userID,
+                    utcDateTime: dataEntry.date,
+                  }),
+                )
+              }
 
-            return (
-              <TouchableOpacity
-                key={answer.text}
-                onPress={onPress}
-                style={styles.checkboxContainer}
-              >
-                <DisplayButton style={styles.checkbox} status={'basic'} />
-                <Text status={'basic'} style={styles.label} enableTranslate={false}>
-                  {answer.text}
-                </Text>
-              </TouchableOpacity>
-            )
-          })}
+              return (
+                <TouchableOpacity
+                  key={answer.text}
+                  onPress={onPress}
+                  style={styles.checkboxContainer}
+                >
+                  <DisplayButton style={styles.checkbox} status={'basic'} />
+                  <Text status={'basic'} style={styles.label} enableTranslate={false}>
+                    {answer.text}
+                  </Text>
+                </TouchableOpacity>
+              )
+            })}
+        </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -124,7 +135,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     flexDirection: 'column',
-    padding: 24,
     maxWidth: 800,
     borderRadius: 20,
   },

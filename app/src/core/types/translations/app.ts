@@ -335,6 +335,8 @@ export interface AppTranslations {
   clear_filters: string
   videos_tag: string
   delete_account_fail: string
+  session_expired: string
+  ok: string
   error: string
   success: string
   unsuccessful: string

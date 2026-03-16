@@ -6,9 +6,15 @@ import { InfoButton } from '../../../../../components/InfoButton'
 import { AuthCardBody } from '../../AuthCardBody'
 import { useAccessibilityLabel } from '../../../../../hooks/useAccessibilityLabel'
 import { genders } from '../../../../../optional/misc'
+import { useAuthMode } from '../../../AuthModeContext'
+import { Text } from '../../../../../components/Text'
+import { TouchableOpacity } from 'react-native'
+import { useColor } from '../../../../../hooks/useColor'
 
 export const AskUserInfo = () => {
   const { state, dispatch, errors } = useSignUp()
+  const { setAuthMode } = useAuthMode()
+  const { color } = useColor()
 
   const getAccessibilityLabel = useAccessibilityLabel()
   const label = getAccessibilityLabel('name_info_label')
@@ -29,6 +35,8 @@ export const AskUserInfo = () => {
     dispatch({ type: 'passwordConfirm', value })
   }
 
+  const hasMaxAccountsError = errors.includes('max_accounts_error') && state.errorsVisible
+
   return (
     <AuthCardBody>
       <Input
@@ -36,12 +44,22 @@ export const AskUserInfo = () => {
         onChangeText={onChangeName}
         placeholder="name"
         errors={errors}
-        errorKeys={['username_too_short', 'name_taken_error']}
+        errorKeys={['username_too_short', 'name_taken_error', 'max_accounts_error']}
         errorsVisible={state.errorsVisible}
         actionLeft={
           <InfoButton title={'name'} content={'name_info_label'} accessibilityLabel={label} />
         }
       />
+      {hasMaxAccountsError && (
+        <TouchableOpacity
+          onPress={() => setAuthMode('delete_account')}
+          style={{ marginTop: 8, marginBottom: 8 }}
+        >
+          <Text style={{ color, textAlign: 'center', textDecorationLine: 'underline' }}>
+            delete_account
+          </Text>
+        </TouchableOpacity>
+      )}
       <SegmentControl
         label={'your_gender'}
         options={genders}

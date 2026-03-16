@@ -1,18 +1,17 @@
 import React from 'react'
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, TouchableOpacity, Alert } from 'react-native'
 import { AuthHeader } from './AuthHeader'
 import { Hr } from '../../../components/Hr'
 import { Input } from '../../../components/Input'
 import { Text } from '../../../components/Text'
-import { httpClient } from '../../../services/HttpClient'
 import { formatPassword } from '../../../services/auth'
-import { useTranslate } from '../../../hooks/useTranslate'
-import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
-import { analytics } from '../../../services/firebase'
+import { useDispatch } from 'react-redux'
+import { deleteAccountRequest } from '../../../redux/actions'
+import { useTranslate } from '../../../hooks/useTranslate'
 
 export const DeleteAccount = () => {
-  const { setAuthMode } = useAuthMode()
+  const dispatch = useDispatch()
   const translate = useTranslate()
 
   const [name, setName] = React.useState('')
@@ -21,39 +20,32 @@ export const DeleteAccount = () => {
   const [errorsVisible, setErrorsVisible] = React.useState(false)
   const { errors } = validateCredentials(name, password)
 
-  const goBack = () => {
-    setAuthMode('start')
-  }
-
-  const onConfirm = async () => {
+  const onConfirm = () => {
     if (errors.length) {
       setErrorsVisible(true)
       return
     }
 
-    try {
-      // Check user exists
-      await httpClient.getUserInfo(name)
-
-      // Delete
-      await httpClient.deleteUserFromPassword({
-        name,
-        password: formatPassword(password),
-      })
-
-      Alert.alert('success', 'delete_account_completed', [
+    // Show confirmation dialog before deleting
+    Alert.alert(
+      translate('are_you_sure'),
+      translate('delete_account_description'),
+      [
         {
-          text: translate('continue'),
-          onPress: goBack,
+          text: translate('cancel'),
+          style: 'cancel',
         },
-      ])
-
-      analytics?.().logEvent('deleteAccount')
-    } catch (e) {
-      Alert.alert('error', 'delete_account_fail')
-      setName('')
-      setPassword('')
-    }
+        {
+          text: translate('yes'),
+          onPress: () => {
+            // Route all deletions through the Redux saga.
+            // The saga handles: server deletion (if online), SQLite deletion, success/error alerts and navigation.
+            dispatch(deleteAccountRequest({ name, password: formatPassword(password) }))
+          },
+        },
+      ],
+      { cancelable: false },
+    )
   }
 
   return (

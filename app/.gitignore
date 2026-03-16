@@ -6,3 +6,4 @@ node_modules
 eas.json
 android
 ios
+dist

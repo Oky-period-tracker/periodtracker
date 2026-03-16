@@ -18,6 +18,7 @@ interface OkyUserProps {
   dateSignedUp: string
   dateAccountSaved: string
   metadata: UserMetadata
+  deviceId?: string
 }
 
 export interface UserMetadata {
@@ -74,6 +75,9 @@ export class OkyUser {
   @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })
   private metadata: UserMetadata
 
+  @Column({ name: 'deviceId', type: 'varchar', nullable: true })
+  public deviceId: string | undefined
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -88,6 +92,7 @@ export class OkyUser {
         memorable,
         dateSignedUp,
         metadata,
+        deviceId,
       } = props
 
       this.id = id
@@ -102,6 +107,7 @@ export class OkyUser {
       this.store = null
       this.dateSignedUp = dateSignedUp
       this.metadata = metadata
+      this.deviceId = deviceId
     }
   }
 
@@ -119,6 +125,7 @@ export class OkyUser {
     dateSignedUp,
     dateAccountSaved,
     metadata,
+    deviceId,
   }: {
     id: string
     name: string
@@ -133,6 +140,7 @@ export class OkyUser {
     dateSignedUp: string
     dateAccountSaved: string
     metadata: UserMetadata
+    deviceId?: string
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -159,6 +167,7 @@ export class OkyUser {
       dateSignedUp,
       dateAccountSaved,
       metadata,
+      deviceId,
     })
   }
 
@@ -267,5 +276,9 @@ export class OkyUser {
 
   public getMetadata() {
     return this.metadata
+  }
+
+  public getDeviceId() {
+    return this.deviceId
   }
 }

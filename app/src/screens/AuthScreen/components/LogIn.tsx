@@ -5,7 +5,7 @@ import { Hr } from '../../../components/Hr'
 import { Input } from '../../../components/Input'
 import { ErrorText } from '../../../components/ErrorText'
 import { useSelector } from '../../../redux/useSelector'
-import { currentUserSelector } from '../../../redux/selectors'
+import { currentUserSelector, authError } from '../../../redux/selectors'
 import { useAuth } from '../../../contexts/AuthContext'
 import { formatPassword } from '../../../services/auth'
 import { useDispatch } from 'react-redux'
@@ -15,6 +15,7 @@ import { AuthCardBody } from './AuthCardBody'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
+  const loginError = useSelector(authError)
   const [wasPreLoggedIn] = React.useState(!!user)
   const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
@@ -26,8 +27,14 @@ export const LogIn = () => {
   const { errors } = validateCredentials(name, password)
 
   const [success, setSuccess] = React.useState<boolean | null>(null)
+  const [attemptedLogin, setAttemptedLogin] = React.useState(false)
 
   const [margin, setMargin] = React.useState(0)
+
+  // Reset the error display when the user changes their input
+  React.useEffect(() => {
+    setAttemptedLogin(false)
+  }, [name, password])
 
   const onConfirm = () => {
     if (errors.length) {
@@ -48,6 +55,7 @@ export const LogIn = () => {
       return
     }
 
+    setAttemptedLogin(true)
     dispatch(loginRequest({ name, password: formatPassword(password) }))
   }
 
@@ -90,6 +98,7 @@ export const LogIn = () => {
           errorsVisible={errorsVisible}
         />
         {success === false && <ErrorText>password_incorrect</ErrorText>}
+        {!wasPreLoggedIn && attemptedLogin && !!loginError && <ErrorText>password_incorrect</ErrorText>}
       </AuthCardBody>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={[styles.confirm, { marginBottom: margin }]}>

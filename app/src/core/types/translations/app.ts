@@ -296,11 +296,13 @@ export interface AppTranslations {
   something_went_wrong: string // TODO:
   could_not_change_secret: string // TODO:
   wrong_old_secret_answer: string // TODO:
+  wrong_secret_answer: string
   close_try_again: string // TODO:
   // user_not_found: string; // Old Delete account
   fertile_popup_heading: string
   fertile_popup: string
   name_taken_error: string
+  max_accounts_error: string
   // ---------------------day screen content-----------------------
   daily_mood_content: string
   daily_flow_content: string

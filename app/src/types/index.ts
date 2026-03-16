@@ -14,6 +14,14 @@ export interface User {
   dateSignedUp: string
   isGuest: boolean
   metadata: UserMetadata
+  // NEW: Device and sync fields
+  deviceId?: string
+  isPendingSync?: boolean
+  isPendingDelete?: boolean
+  isPendingPasswordChange?: boolean
+  isActive?: boolean
+  dateAccountSaved?: string
+  appToken?: string
 }
 
 export interface UserMetadata {

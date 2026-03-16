@@ -14,4 +14,5 @@ export interface SignupCommand {
   dateSignedUp: string
   dateAccountSaved: string
   metadata: UserMetadata
+  deviceId?: string
 }

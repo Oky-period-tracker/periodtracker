@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { Service } from 'typedi'
-import { Repository } from 'typeorm'
+import { Repository, getConnection } from 'typeorm'
 import { InjectRepository } from 'typeorm-typedi-extensions'
 import { OkyUser } from 'domain/oky/OkyUser'
 import { OkyUserRepository, OkyUserRepositoryToken } from 'domain/oky/OkyUserRepository'
@@ -26,7 +26,24 @@ export class TypeORMOkyUserRepository implements OkyUserRepository {
   }
 
   public async save(user: OkyUser) {
-    return this.repository.save(user)
+    console.log('[TypeORM] Saving user:', { 
+      id: user.getId(), 
+      deviceId: user.deviceId,
+    })
+    const saved = await this.repository.save(user)
+    
+    // If deviceId is provided, ensure it's saved via raw SQL
+    if (user.deviceId) {
+      console.log('[TypeORM] Setting deviceId via raw SQL:', user.deviceId)
+      const connection = getConnection()
+      await connection.query(
+        'UPDATE oky_user SET "deviceId" = $1 WHERE id = $2',
+        [user.deviceId, user.getId()]
+      )
+    }
+    
+    console.log('[TypeORM] User saved successfully')
+    return saved
   }
 
   public async delete(user: OkyUser) {

@@ -45,4 +45,6 @@ export class SignupRequest {
   public readonly dateSignedUp: string
 
   public readonly metadata?: UserMetadata
+
+  public readonly deviceId?: string
 }

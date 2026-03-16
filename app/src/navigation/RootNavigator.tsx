@@ -22,6 +22,8 @@ import { analytics } from '../services/firebase'
 import { useMessaging } from '../hooks/useMessaging'
 import { useAvailableLocaleEffect } from '../hooks/useTranslate'
 import { useSound } from '../contexts/SoundProvider'
+import { setNavigationRef, registerLoadingCallback } from '../services/navigationService'
+import { useLoading } from '../contexts/LoadingProvider'
 
 export type RootStackParamList = MainStackParamList & AuthStackParamList
 
@@ -118,11 +120,17 @@ function RootNavigator() {
   useMessaging()
   useAvailableLocaleEffect()
   const { stopSound } = useSound()
+  const { setLoading } = useLoading()
 
   const user = useSelector(currentUserSelector)
   const { isLoggedIn } = useAuth()
 
   const hasAccess = user && isLoggedIn
+
+  // Register loading callback for navigation service
+  React.useEffect(() => {
+    registerLoadingCallback(setLoading)
+  }, [setLoading])
 
   //eslint-disable-next-line
   const linking: LinkingOptions<any> = hasAccess ? loggedInLinking : loggedOutLinking
@@ -134,6 +142,7 @@ function RootNavigator() {
     <NavigationContainer
       ref={navigationRef}
       onReady={() => {
+        setNavigationRef(navigationRef)
         const currentRoute = navigationRef.getCurrentRoute()
         if (currentRoute) {
           routeNameRef.current = currentRoute.name

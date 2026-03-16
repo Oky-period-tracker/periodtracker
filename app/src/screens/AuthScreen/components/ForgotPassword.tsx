@@ -9,6 +9,11 @@ import { formatPassword } from '../../../services/auth'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
+import { fetchNetworkConnectionStatus } from '../../../services/network'
+import { userRepository } from '../../../services/sqlite/userRepository'
+import { getDeviceId } from '../../../services/deviceId'
+import { verifySecret } from '../../../services/sqlite/hashUtils'
+import { savePasswordSecurely } from '../../../services/sqlite/secureStorage'
 
 export const ForgotPassword = () => {
   const translate = useTranslate()
@@ -44,15 +49,11 @@ export const ForgotPassword = () => {
     )
   }
 
-  const failAlert = () => {
+  const errorAlert = (message: string) => {
     Alert.alert(
       translate('password_change_fail'),
-      translate('password_change_fail_description'),
-      [
-        {
-          text: translate('continue'),
-        },
-      ],
+      message,
+      [{ text: translate('continue') }],
       { cancelable: false },
     )
   }
@@ -64,19 +65,50 @@ export const ForgotPassword = () => {
     }
 
     try {
-      // Check exists
-      await httpClient.getUserInfo(name)
+      const isOnline = await fetchNetworkConnectionStatus()
 
-      // Reset
-      await httpClient.resetPassword({
-        name,
-        secretAnswer: formatPassword(answer),
-        password: formatPassword(password),
-      })
+      if (isOnline) {
+        // Online flow: verify and reset via API
+        await httpClient.getUserInfo(name)
+        await httpClient.resetPassword({
+          name,
+          secretAnswer: formatPassword(answer),
+          password: formatPassword(password),
+        })
+      } else {
+        // Offline flow: verify and reset locally via SQLite
+        const deviceId = await getDeviceId()
+        const user = await userRepository.getUserByName(name, deviceId)
+
+        if (!user) {
+          errorAlert(translate('user_not_found'))
+          return
+        }
+
+        // Verify secret answer — use PBKDF2 hash if available, plain fallback for legacy accounts
+        let secretMatch = false
+        if (user.secretAnswerHash && user.secretAnswerSalt) {
+          secretMatch = await verifySecret(formatPassword(answer), user.secretAnswerHash, user.secretAnswerSalt)
+        } else {
+          secretMatch = user.secretAnswer === formatPassword(answer)
+        }
+        if (!secretMatch) {
+          errorAlert(translate('wrong_secret_answer'))
+          return
+        }
+
+        await userRepository.updateUser({
+          ...user,
+          password: formatPassword(password),
+        })
+        // Update Keychain with new password so server sync uses the correct one
+        await savePasswordSecurely(user.id, formatPassword(password))
+        await userRepository.markPasswordChangeSync(user.id)
+      }
 
       successAlert()
     } catch (e) {
-      failAlert()
+      errorAlert(translate('something_went_wrong'))
     }
 
     // Reset

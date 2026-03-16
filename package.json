@@ -36,6 +36,25 @@
     "copy-eas": "./bin/setup/eas.sh",
     "postinstall": "if [ -z \"$DOCKER_ENV\" ]; then cd app && yarn; fi"
   },
+  "expo":{
+    "doctor":{
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "expo-av",
+          "redux-persist",
+          "@babel/plugin-proposal-export-namespace-from",
+          "circular-buffer",
+          "moment",
+          "redux-persist-transform-encrypt",
+          "redux-saga",
+          "typescript",
+          "uuid"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  },
+
   "workspaces": {
     "packages": [
       "packages/*"

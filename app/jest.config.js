@@ -27,5 +27,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   moduleNameMapper: {
     '@expo/vector-icons': '<rootDir>/__mocks__/vector-icons.js',
+    '@react-native-async-storage/async-storage':
+      '@react-native-async-storage/async-storage/jest/async-storage-mock',
   },
 }

@@ -28,9 +28,10 @@ export const SurveyCollect = () => {
   return (
     <>
       {isMultiple ? (
-        <ScrollView style={styles.scrollContainer}
-        contentContainerStyle = {styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+        <ScrollView
+          style={styles.scrollContainer}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
         >
           {options.map((option, i) => {
             const checked = state.answerIndex === i
@@ -64,11 +65,11 @@ export const SurveyCollect = () => {
 }
 
 const styles = StyleSheet.create({
-  scrollContainer:{
-    maxHeight:Dimensions.get("window").height * 0.35,
-    marginBottom:0
+  scrollContainer: {
+    maxHeight: Dimensions.get('window').height * 0.35,
+    marginBottom: 0,
   },
-  scrollContent:{
-    paddingBottom:0
-  }
+  scrollContent: {
+    paddingBottom: 0,
+  },
 })

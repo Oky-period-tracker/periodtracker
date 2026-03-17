@@ -81,7 +81,7 @@ describe('OkyUserApplicationService', () => {
         dateOfBirth: new Date(),
         dateSignedUp: new Date().toISOString(),
         dateAccountSaved: new Date().toISOString(),
-        metadata: null
+        metadata: null,
       }
 
       const result = await okyUserApplicationService.signup(command)
@@ -105,7 +105,7 @@ describe('OkyUserApplicationService', () => {
         dateOfBirth: new Date(),
         dateSignedUp: new Date().toISOString(),
         dateAccountSaved: new Date().toISOString(),
-        metadata: null
+        metadata: null,
       }
 
       await expect(okyUserApplicationService.signup(command)).rejects.toThrow(
@@ -158,7 +158,7 @@ describe('OkyUserApplicationService', () => {
         dateOfBirth: new Date(),
         dateSignedUp: new Date().toISOString(),
         dateAccountSaved: new Date().toISOString(),
-        metadata: null
+        metadata: null,
       }
 
       const okyUser = await okyUserApplicationService.signup(command)
@@ -287,13 +287,13 @@ describe('OkyUserApplicationService', () => {
         location: 'Urban',
         gender: 'Male' as const,
         secretQuestion: 'favourite_actor',
-       metadata: {  
-        periodDates: {
-          date: new Date().toISOString(),
-          mlGenerated: false,
-          userVerified: true,
-        }
-      }
+        metadata: {
+          periodDates: {
+            date: new Date().toISOString(),
+            mlGenerated: false,
+            userVerified: true,
+          },
+        },
       }
 
       const result = await okyUserApplicationService.editInfo(command)
@@ -314,13 +314,13 @@ describe('OkyUserApplicationService', () => {
           location: 'Urban',
           gender: 'Male' as const,
           secretQuestion: 'favourite_actor',
-          metadata: {  
-          periodDates: {
-            date: new Date().toISOString(),
-            mlGenerated: false,
-            userVerified: true,
-          }
-        }
+          metadata: {
+            periodDates: {
+              date: new Date().toISOString(),
+              mlGenerated: false,
+              userVerified: true,
+            },
+          },
         }
 
         await okyUserApplicationService.editInfo(command)

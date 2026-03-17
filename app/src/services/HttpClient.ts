@@ -332,7 +332,11 @@ export function createHttpClient(
       return response.data
     },
     answerSurvey:async({appToken,live,questions}:any)=>{
-      const response : AxiosResponse<any> = await axios.post(`${endpoint}/survey`,{live,questions},{headers:{Authorization:`Bearer ${appToken}`}})
+      const response : AxiosResponse<any> = await axios.post(
+        `${endpoint}/survey`,
+        {live,questions},
+        {headers:{Authorization:`Bearer ${appToken}`}}
+      )
       return response.data
     }
     // TODO:

@@ -5,7 +5,7 @@ export interface Article {
   category: string
   subCategory: string
   isAgeRestricted?: boolean
-  ageRestrictionLevel?: number
+  ageRestrictionLevel: number
   contentFilter?: number
   voiceOverKey?: string
   live?: boolean
@@ -166,7 +166,6 @@ export interface SurveyQuestionAnswer {
   answerID: string
   answer: string
   // TODO: Below is redundant?
-  response: string
   isMultiple: boolean
 }
 

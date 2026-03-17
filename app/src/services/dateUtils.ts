@@ -24,14 +24,8 @@ export function calculateAge(birthday: Moment) {
   const now = moment()
 
   const years = now.diff(birthday, 'years')
-  birthday.add(years, 'years')
 
-  let months = now.diff(birthday, 'months')
-  birthday.add(months, 'months')
-
-  if (now.date() < birthday.date()) {
-    months -= 1
-  }
+  const months = now.diff(birthday.clone().add(years, 'years'), 'months')
 
   return {
     years,

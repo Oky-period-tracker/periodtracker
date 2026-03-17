@@ -29,7 +29,7 @@ export const VideoPlayerModal = () => {
     try {
       await videoRef.current?.dismissFullscreenPlayer()
     } catch (e) {
-      //
+      // Ignore error if player is not in fullscreen or already dismissed
     }
     setSelectedVideoId(undefined)
   }

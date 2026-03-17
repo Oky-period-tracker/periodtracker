@@ -169,13 +169,13 @@ const getCheckStatus = ({
 }
 
 const styles = StyleSheet.create({
-  screen: { 
+  screen: {
     maxWidth: 800,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    marginBottom:30,
+    marginBottom: 30,
   },
   title: {
     fontSize: 20,

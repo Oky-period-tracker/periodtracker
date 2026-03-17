@@ -114,11 +114,24 @@ function reducer(state: SurveyState, action: Action): SurveyState {
     }
 
     case 'skip': {
-      const nextQuestionIndex = getNextSurveyQuestionIndex(state)
+      if (!state.survey) {
+        return state
+      }
+
+      const nextQuestionIndex = state.questionIndex + 1
+
+      if (nextQuestionIndex >= state.survey.questions.length) {
+        return {
+          ...state,
+          hasAnsweredAll: true,
+        }
+      }
 
       return {
         ...state,
         questionIndex: nextQuestionIndex,
+        answerIndex: null,
+        answerDraft: '',
       }
     }
 
@@ -224,9 +237,7 @@ const getNextSurveyQuestionIndex = (state: SurveyState) => {
   const currentQuestion = state.survey.questions[state.questionIndex]
 
   // Convert { option1: string, option2:string } to string[]
-  const nextQuestions = Object.values(currentQuestion.next_question).map(
-    (option) => Object.values(option)[0],
-  )
+  const nextQuestions = Object.values(currentQuestion.next_question)
 
   const currentAnswerIndex = state.answerIndex ?? 0
   const nextQuestion = nextQuestions[currentAnswerIndex]

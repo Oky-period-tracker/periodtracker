@@ -272,7 +272,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           data={dataEntry}
           visible={dayModalVisible}
           toggleVisible={toggleDayModal}
-          hideLaunchButton={true}
+          hideLaunchButton={false}
           onHandleResponse={handleDayModalResponse} // Pass the method as a prop
         />
       </View>

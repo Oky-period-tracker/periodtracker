@@ -274,6 +274,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           toggleVisible={toggleDayModal}
           hideLaunchButton={false}
           onHandleResponse={handleDayModalResponse} // Pass the method as a prop
+          onLaunchTutorial={() => navigation.navigate('Home', { tutorial: 'tutorial_one' })}
         />
       </View>
     </View>

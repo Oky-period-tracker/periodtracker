@@ -14,7 +14,6 @@ import {
   isTutorialTwoActiveSelector,
   lastPressedCardSelector,
 } from '../redux/selectors'
-import { useNavigation } from '@react-navigation/native'
 import { defaultEmoji } from '../config/options'
 import { globalStyles } from '../config/theme'
 import { useTutorial } from '../screens/MainScreen/TutorialContext'
@@ -49,7 +48,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const { formatMomentDayMonth } = useFormatDate()
   const translate = useTranslate()
   const { dispatch: tutorialDispatch } = useTutorial()
-  const { isDragging, constants } = useDayScroll()
+  const { isDragging, constants, toggleDayModal } = useDayScroll()
   const { CARD_WIDTH, CARD_MARGIN } = constants
   const { backgroundColor, starColor } = useColor()
 
@@ -64,8 +63,6 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     cardAnswerSelector(state, moment(dataEntry.date)),
   )
 
-  // eslint-disable-next-line
-  const navigation = useNavigation() as any // @TODO: Fixme
   const dispatch = useDispatch()
   const lastPressedDate = useSelector(lastPressedCardSelector)
 
@@ -91,7 +88,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
       analytics?.().logEvent('dailyCardPressed')
     }
 
-    navigation.navigate('Day', { date: dataEntry.date })
+    toggleDayModal()
   }
 
   const day = dataEntry.cycleDay === 0 ? '-' : dataEntry.cycleDay

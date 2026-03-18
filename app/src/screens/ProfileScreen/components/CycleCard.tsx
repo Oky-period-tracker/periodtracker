@@ -52,31 +52,36 @@ export const CycleCard = ({
       <View style={[styles.cycleCard, { backgroundColor }]}>
         {/* ===== Header ===== */}
         <View style={[styles.cycleCardHeader, { backgroundColor: palette.danger.base }]}>
-          <View style={styles.row}>
+          <Text
+            style={styles.headerText}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            enableTranslate={false}
+          >
             <Text style={styles.headerText}>cycle</Text>
-            <Text
-              enableTranslate={false}
-              style={[styles.headerText, styles.bold]}
-            >{` ${cycleNumber}`}</Text>
-          </View>
-
-          <View style={styles.row}>
+            <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
+              {` ${cycleNumber}   `}
+            </Text>
             <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
               {`${item.cycleLength} `}
             </Text>
             <Text style={styles.headerText}>day_cycle</Text>
-          </View>
-
-          <View style={styles.row}>
+            <Text enableTranslate={false} style={styles.headerText}>
+              {'   '}
+            </Text>
             <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
               {startDay}
             </Text>
-            <Text enableTranslate={false} style={styles.headerText}>{` ${startMonth} - `}</Text>
+            <Text enableTranslate={false} style={styles.headerText}>
+              {` ${startMonth} - `}
+            </Text>
             <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
               {endDay}
             </Text>
-            <Text enableTranslate={false} style={styles.headerText}>{` ${endMonth}`}</Text>
-          </View>
+            <Text enableTranslate={false} style={styles.headerText}>
+              {` ${endMonth}`}
+            </Text>
+          </Text>
         </View>
 
         {/* ===== Body ===== */}
@@ -157,12 +162,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cycleCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
-    height: ' 33%',
-    paddingHorizontal: 16,
+    height: '33%',
+    paddingHorizontal: 12,
   },
   headerText: {
     color: '#fff',
@@ -184,9 +187,6 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
-  },
-  row: {
-    flexDirection: 'row',
   },
   bold: {
     fontWeight: 'bold',

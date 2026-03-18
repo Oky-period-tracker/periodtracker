@@ -63,11 +63,7 @@
     "react-native-svg": "15.8.0",
     "react-native-web": "~0.19.13",
     "react-native-web-webview": "^1.0.2",
-<<<<<<< HEAD
-    "react-native-webview": "13.12.4",
-=======
     "react-native-webview": "13.12.5",
->>>>>>> release/8.2.0
     "react-native-youtube-iframe": "^2.3.0",
     "react-redux": "^9.1.2",
     "redux": "^5.0.1",

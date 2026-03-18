@@ -21,7 +21,7 @@ import { EditSecretModal } from './EditSecretModal'
 import { useMonths } from '../../hooks/useMonths'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
-import { genders } from '../../optional/misc'
+import { genders } from '../../resources/translations'
 
 type EditProfileState = {
   name: User['name']
@@ -72,7 +72,8 @@ function reducer(state: EditProfileState, action: Action): EditProfileState {
 
     case 'year': {
       const year = action.value as number
-      if (state.month == null || isNaN(state.month)) {
+      
+      if (_.isNil(state.month) || isNaN(state.month)) {
         return {
           ...state,
           year,

@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { EmojiBadge } from '../../../components/EmojiBadge'
+import { shallowEqual } from 'react-redux'
 import { useSelector } from '../../../redux/useSelector'
 import { mostAnsweredSelector } from '../../../redux/selectors'
 import { defaultEmoji } from '../../../config/options'
@@ -27,8 +28,9 @@ export const CycleCard = ({
   const { palette, backgroundColor } = useColor()
   const { months } = useMonths()
   const translate = useTranslate()
-  const cardAnswersValues = useSelector((state) =>
-    mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
+  const cardAnswersValues = useSelector(
+    (state) => mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
+    shallowEqual,
   )
 
   const startDay = item.cycleStartDate.format('DD')

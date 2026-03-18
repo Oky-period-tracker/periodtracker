@@ -14,6 +14,7 @@ import {
   isTutorialTwoActiveSelector,
   lastPressedCardSelector,
 } from '../redux/selectors'
+import { useNavigation } from '@react-navigation/native'
 import { defaultEmoji } from '../config/options'
 import { globalStyles } from '../config/theme'
 import { useTutorial } from '../screens/MainScreen/TutorialContext'
@@ -63,6 +64,8 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
     cardAnswerSelector(state, moment(dataEntry.date)),
   )
 
+  // eslint-disable-next-line
+  const navigation = useNavigation() as any // @TODO: Fixme
   const dispatch = useDispatch()
   const lastPressedDate = useSelector(lastPressedCardSelector)
 
@@ -88,7 +91,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
       analytics?.().logEvent('dailyCardPressed')
     }
 
-    toggleDayModal()
+    navigation.navigate('Day', { date: dataEntry.date })
   }
 
   const day = dataEntry.cycleDay === 0 ? '-' : dataEntry.cycleDay
@@ -123,7 +126,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
           appearance={appearance}
           text={formatMomentDayMonth(dataEntry.date)}
           size={IconSize}
-          disabled
+          onPress={toggleDayModal}
         />
         <FontAwesome
           name={getStar(Object.keys(cardAnswersValues).length)}

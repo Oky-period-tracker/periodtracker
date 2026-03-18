@@ -359,6 +359,7 @@ const LaunchTutorialButton = ({
   const onPress = () => {
     toggleVisible() // Hide DayModal
     if (onLaunchTutorial) {
+      // Execute callback if provided, instead of starting tutorial
       onLaunchTutorial()
     } else {
       setLoading(true, 'please_wait_tutorial', () => {

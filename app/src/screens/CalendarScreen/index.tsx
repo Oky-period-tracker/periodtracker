@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Calendar, CalendarProps, DateData, LocaleConfig } from 'react-native-calendars'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { DisplayButton } from '../../components/Button'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { ScreenComponent } from '../../navigation/RootNavigator'
@@ -60,6 +60,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
   const [choiceModalVisible, toggleChoiceModalVisible] = useToggle()
   const [dayModalVisible, toggleDayModal] = useToggle()
+  const [pendingDayModal, setPendingDayModal] = useState(false)
 
   const [message, setMessage] = React.useState('')
   const predictionFullState = usePredictionEngineState()
@@ -95,7 +96,18 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
   const toDayModal = () => {
     toggleChoiceModalVisible()
-    toggleDayModal()
+    if (Platform.OS === 'android') {
+      toggleDayModal()
+    } else {
+      setPendingDayModal(true)
+    }
+  }
+
+  const onChoiceModalDismiss = () => {
+    if (pendingDayModal) {
+      setPendingDayModal(false)
+      toggleDayModal()
+    }
   }
 
   const onDayPress = (day: DateData) => {
@@ -243,6 +255,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           visible={choiceModalVisible}
           toggleVisible={toggleChoiceModalVisible}
           hideLaunchButton={true}
+          onDismiss={onChoiceModalDismiss}
         >
           <View style={[styles.modalBody, { backgroundColor }]}>
             <TouchableOpacity onPress={toDailyCard} style={styles.confirm}>
@@ -259,8 +272,9 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           data={dataEntry}
           visible={dayModalVisible}
           toggleVisible={toggleDayModal}
-          hideLaunchButton={true}
+          hideLaunchButton={false}
           onHandleResponse={handleDayModalResponse} // Pass the method as a prop
+          onLaunchTutorial={() => navigation.navigate('Home', { tutorial: 'tutorial_one' })}
         />
       </View>
     </View>

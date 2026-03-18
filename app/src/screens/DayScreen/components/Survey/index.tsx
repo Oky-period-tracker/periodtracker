@@ -76,7 +76,7 @@ export const Survey = () => {
 
       <Hr />
       <View style={styles.buttons}>
-        {state.consented && !state.hasAnsweredAll && (
+        {state.consented && !isLastQuestion && !state.hasAnsweredAll && (
           <>
             <TouchableOpacity onPress={onSkip} style={styles.button}>
               <Text style={styles.buttonText}>{'skip'}</Text>

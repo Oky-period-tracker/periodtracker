@@ -137,6 +137,7 @@ export function createHttpClient(
           dateSignedUp,
           metadata,
           preferredId,
+          date_account_saved: new Date().toISOString(),
         },
       )
       return response.data
@@ -252,6 +253,12 @@ export function createHttpClient(
     fetchAvatarMessages: async ({ locale }: { locale: Locale }) => {
       const response: AxiosResponse<types.AvatarMessagesResponse> = await axios.get(
         `${cmsEndpoint}/mobile/avatar-messages/${locale}`,
+      )
+      return response.data
+    },
+    fetchTranslations: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.TranslationsResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/translations/${locale}`,
       )
       return response.data
     },
@@ -397,6 +404,51 @@ export function createHttpClient(
         `${endpoint}/account/update-verified-dates`,
         {
           metadata,
+        },
+        {
+          headers: { Authorization: `Bearer ${appToken}` },
+        },
+      )
+
+      return response.data
+    },
+    updateCyclesNumber: async ({
+      appToken,
+      cyclesNumber,
+    }: {
+      appToken: string
+      cyclesNumber: number
+    }) => {
+      
+      try {
+        const response: AxiosResponse<{}> = await axios.post(
+          `${endpoint}/account/update-cycles-number`,
+          {
+            cyclesNumber,
+          },
+          {
+            headers: { Authorization: `Bearer ${appToken}` },
+          },
+        )
+        
+        
+        return response.data
+      } catch (error) {
+        console.error('Error in updateCyclesNumber request:', error instanceof Error ? error.message : 'Unknown error')
+        throw error
+      }
+    },
+    updateAvatar: async ({
+      appToken,
+      avatar,
+    }: {
+      appToken: string
+      avatar: any
+    }) => {
+      const response: AxiosResponse<{}> = await axios.post(
+        `${endpoint}/account/update-avatar`,
+        {
+          avatar,
         },
         {
           headers: { Authorization: `Bearer ${appToken}` },

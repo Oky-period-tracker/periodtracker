@@ -5,6 +5,20 @@ export interface UserMetadata {
   city?: string
 }
 
+export interface AvatarConfig {
+  body?: string | null
+  hair?: string | null
+  eyes?: string | null
+  smile?: string | null
+  clothing?: string | null
+  devices?: string | string[] | null // Supports both legacy string format and new array format
+  skinColor?: string | null
+  hairColor?: string | null
+  eyeColor?: string | null
+  customAvatarUnlocked: boolean
+  name?: string
+}
+
 export interface EncyclopediaResponseItem {
   id: string
   cat_id: string
@@ -71,6 +85,14 @@ interface AvatarMessagesResponseItem {
 }
 export interface AvatarMessagesResponse extends Array<AvatarMessagesResponseItem> {}
 
+interface TranslationsResponseItem {
+  key: string
+  label: string
+  lang: string
+  live: boolean
+}
+export interface TranslationsResponse extends Array<TranslationsResponseItem> {}
+
 interface DidYouKnowResponseItem {
   id: string
   isAgeRestricted: boolean
@@ -107,6 +129,7 @@ export interface LoginResponse {
     secretAnswer: string
     dateSignedUp: string
     metadata: UserMetadata
+    avatar?: AvatarConfig | null
   }
   store: {
     storeVersion: number
@@ -129,6 +152,7 @@ export interface SignupResponse {
     secretQuestion: string
     secretAnswer: string
     metadata: UserMetadata
+    avatar?: AvatarConfig | null
   }
 }
 

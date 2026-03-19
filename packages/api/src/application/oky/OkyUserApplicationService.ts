@@ -48,7 +48,9 @@ export class OkyUserApplicationService {
     secretAnswer,
     dateSignedUp,
     dateAccountSaved,
+    cyclesNumber,
     metadata,
+    avatar,
   }: SignupCommand) {
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
     if (await this.okyUserRepository.byId(id)) {
@@ -73,7 +75,9 @@ export class OkyUserApplicationService {
       secretAnswer,
       dateSignedUp,
       dateAccountSaved,
+      cyclesNumber,
       metadata,
+      avatar,
     })
     return this.okyUserRepository.save(user)
   }
@@ -176,6 +180,28 @@ export class OkyUserApplicationService {
     await user.updateUserVerifiedPeriodDays({
       metadata,
     })
+
+    return this.okyUserRepository.save(user)
+  }
+
+  public async updateCyclesNumber({ userId, cyclesNumber }: { userId: string; cyclesNumber: number }) {
+    const user = await this.okyUserRepository.byId(userId)
+    if (!user) {
+      throw new Error(`Cannot update cycles number for missing ${userId} user`)
+    }
+
+    await user.updateCyclesNumber(cyclesNumber)
+
+    return this.okyUserRepository.save(user)
+  }
+
+  public async updateAvatar({ userId, avatar }: { userId: string; avatar: any }) {
+    const user = await this.okyUserRepository.byId(userId)
+    if (!user) {
+      throw new Error(`Cannot update avatar for missing ${userId} user`)
+    }
+
+    await user.updateAvatar(avatar)
 
     return this.okyUserRepository.save(user)
   }

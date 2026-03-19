@@ -7,8 +7,8 @@ import Constants from 'expo-constants'
 import { Platform } from 'react-native'
 
 // Don't use firebase with ExpoGo, causes a crash on iOS
+// Don't use firebase on web, @react-native-firebase doesn't support web
 const isExpoGo = Constants?.executionEnvironment === 'storeClient'
-// @react-native-firebase doesn't support web
 const isWeb = Platform.OS === 'web'
 
 let analytics:

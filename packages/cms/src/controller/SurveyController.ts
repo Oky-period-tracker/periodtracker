@@ -50,7 +50,7 @@ export class SurveyController {
       .from(Survey, 'survey')
       .where(
         `survey.lang=:lang and survey.live=:live AND survey.date_created BETWEEN :start_date AND :end_date AND survey.id NOT IN (:...ids)
-      AND (survey.isAgeRestricted=true AND DATE_PART('year', age(:end_date, oky_user.date_of_birth)) > 14 OR survey.isAgeRestricted=false)
+      AND (survey.isAgeRestricted=true AND DATE_PART('year', age(oky_user.date_of_birth::date, :end_date::date)) > 14 OR survey.isAgeRestricted=false)
       `,
         {
           lang: request.params.lang,

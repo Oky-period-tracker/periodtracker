@@ -1,5 +1,19 @@
 export * from './dailyCards'
 
+export interface AvatarConfig {
+  body?: string | null
+  hair?: string | null
+  eyes?: string | null
+  smile?: string | null
+  clothing?: string | null
+  devices?: string | null
+  skinColor?: string | null
+  hairColor?: string | null
+  eyeColor?: string | null
+  customAvatarUnlocked: boolean
+  name?: string
+}
+
 export interface User {
   id: string
   name: string
@@ -13,7 +27,9 @@ export interface User {
   secretAnswer: string
   dateSignedUp: string
   isGuest: boolean
+  cyclesNumber?: number
   metadata: UserMetadata
+  avatar?: AvatarConfig | null
 }
 
 export interface UserMetadata {

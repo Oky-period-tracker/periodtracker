@@ -7,6 +7,7 @@ import { Input } from '../../components/Input'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { SegmentControl } from '../../components/SegmentControl'
 import { locations, yearOptions } from '../../config/options'
+import { genders } from '../../optional/misc'
 import { User } from '../../types'
 import { WheelPickerOption } from '../../components/WheelPicker'
 import { WheelPickerModal } from '../../components/WheelPickerModal'
@@ -21,7 +22,6 @@ import { EditSecretModal } from './EditSecretModal'
 import { useMonths } from '../../hooks/useMonths'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
-import { genders } from '../../resources/translations'
 
 type EditProfileState = {
   name: User['name']

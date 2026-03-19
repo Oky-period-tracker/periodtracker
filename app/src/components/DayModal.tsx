@@ -59,6 +59,15 @@ export const DayModal = ({
   const currentCycleInfo = useTodayPrediction()
   const inputDayStr = moment(inputDay).format('YYYY-MM-DD')
   const todayStr = moment().format('YYYY-MM-DD')
+  
+  // Check if this day is user verified as period day
+  const inputDayFormatted = inputDay.format('DD/MM/YYYY')
+  const isUserVerifiedPeriodDay = React.useMemo(() => {
+    if (!currentUser?.metadata?.periodDates) return false
+    return currentUser.metadata.periodDates.some(
+      (pd) => pd.date === inputDayFormatted && pd.userVerified === true
+    )
+  }, [currentUser?.metadata?.periodDates, inputDayFormatted])
 
   // flower
   // const cardAnswersToday = useSelector((state) =>
@@ -219,6 +228,10 @@ export const DayModal = ({
         periodDay: true,
       }),
     )
+    // Call onHandleResponse to trigger cycle recalculation
+    if (onHandleResponse) {
+      onHandleResponse(true, inputDay.format('DD/MM/YYYY'))
+    }
   }
 
   function onYesPress() {
@@ -226,6 +239,24 @@ export const DayModal = ({
 
     if (isFutureDate(inputDay)) {
       setAvatarMessage('too_far_ahead', true)
+      toggleVisible()
+      return
+    }
+
+    // Check if already verified - if so, just update prediction engine if needed
+    if (isUserVerifiedPeriodDay) {
+      // Still dispatch to prediction engine to ensure onPeriod is true
+      if (!selectedDayInfo.onPeriod) {
+        checkForDay()
+      } else {
+        reduxDispatch(
+          answerVerifyDates({
+            userID,
+            utcDateTime: inputDay,
+            periodDay: true,
+          }),
+        )
+      }
       toggleVisible()
       return
     }
@@ -239,7 +270,15 @@ export const DayModal = ({
             periodDay: true,
           }),
         )
-        // incFlowerProgress();
+        // Update prediction engine to ensure onPeriod stays true
+        if (actionPink) {
+          dispatch({
+            type: actionPink.type,
+            inputDay: actionPink.day,
+            errorCallBack,
+            getPredictedCycles,
+          })
+        }
       } else {
         dispatch({
           type: 'add-new-cycle-history',
@@ -254,10 +293,10 @@ export const DayModal = ({
             periodDay: true,
           }),
         )
-        // incFlowerProgress();
       }
       if (onHandleResponse) {
-        onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
+        const dateStr = inputDay.format('DD/MM/YYYY')
+        onHandleResponse(true, dateStr) // This will update userVerified = true
       }
     } else {
       if (selectedDayInfo.onPeriod) {
@@ -268,11 +307,20 @@ export const DayModal = ({
             periodDay: true,
           }),
         )
+        // Update prediction engine to ensure onPeriod stays true
+        if (actionPink) {
+          dispatch({
+            type: actionPink.type,
+            inputDay: actionPink.day,
+            errorCallBack,
+            getPredictedCycles,
+          })
+        }
         getUpdatedData()
-        // incFlowerProgress();
         toggleVisible()
         if (onHandleResponse) {
-          onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
+          const dateStr = inputDay.format('DD/MM/YYYY')
+          onHandleResponse(true, dateStr) // This will update userVerified = true
         }
       } else {
         checkForDay()
@@ -298,7 +346,11 @@ export const DayModal = ({
       return
     }
 
-    if (selectedDayInfoEngine.onPeriod) {
+    // Check if day is user verified or predicted as period day
+    const isPeriodDay = isUserVerifiedPeriodDay || selectedDayInfoEngine.onPeriod
+
+    if (isPeriodDay) {
+      // Update prediction engine to remove period day
       if (actionBlue) {
         dispatch({
           type: actionBlue.type,
@@ -306,17 +358,19 @@ export const DayModal = ({
           errorCallBack,
           getPredictedCycles,
         })
-        reduxDispatch(
-          answerVerifyDates({
-            userID,
-            utcDateTime: inputDay,
-            periodDay: false,
-          }),
-        )
       }
+      
+      reduxDispatch(
+        answerVerifyDates({
+          userID,
+          utcDateTime: inputDay,
+          periodDay: false,
+        }),
+      )
 
       if (onHandleResponse) {
-        onHandleResponse(false, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
+        const dateStr = inputDay.format('DD/MM/YYYY')
+        onHandleResponse(false, dateStr) // This will remove userVerified or set it to false
       }
     }
     toggleVisible()

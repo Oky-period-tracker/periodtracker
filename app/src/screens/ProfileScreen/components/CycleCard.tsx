@@ -27,9 +27,27 @@ export const CycleCard = ({
   const { palette, backgroundColor } = useColor()
   const { months } = useMonths()
   const translate = useTranslate()
-  const cardAnswersValues = useSelector((state) =>
+  
+  // Memoize the date strings to create stable dependencies
+  const startDateStr = React.useMemo(() => item.cycleStartDate.format('YYYYMMDD'), [item.cycleStartDate])
+  const endDateStr = React.useMemo(() => item.cycleEndDate.format('YYYYMMDD'), [item.cycleEndDate])
+  
+  // Get the selector result
+  const selectorResult = useSelector((state) =>
     mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
   )
+  
+  // Memoize the result to prevent returning new object references when values haven't changed
+  const cardAnswersValues = React.useMemo(() => {
+    return selectorResult
+  }, [
+    selectorResult.mood,
+    selectorResult.body,
+    selectorResult.activity,
+    selectorResult.flow,
+    startDateStr,
+    endDateStr,
+  ])
 
   const startDay = item.cycleStartDate.format('DD')
   const startMonthIndex = parseInt(item.cycleStartDate.format('M')) - 1

@@ -1,4 +1,4 @@
-import { UserMetadata } from 'domain/oky/OkyUser'
+import { UserMetadata, AvatarConfig } from 'domain/oky/OkyUser'
 
 export interface SignupCommand {
   preferredId: string
@@ -13,5 +13,7 @@ export interface SignupCommand {
   secretAnswer: string
   dateSignedUp: string
   dateAccountSaved: string
+  cyclesNumber: number
   metadata: UserMetadata
+  avatar?: AvatarConfig | null
 }

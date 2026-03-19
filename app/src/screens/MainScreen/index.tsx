@@ -10,6 +10,7 @@ import { DayModal } from '../../components/DayModal'
 import { CircleProgress } from './components/CircleProgress'
 import { Text } from '../../components/Text'
 import { Avatar } from '../../components/Avatar'
+import { FriendUnlockModal } from '../../components/FriendUnlockModal'
 import { TutorialProvider, useTutorial } from './TutorialContext'
 import { TutorialTextbox } from './components/TutorialTextbox'
 import { TutorialArrow } from './components/TutorialArrow'
@@ -26,6 +27,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
+import { useCycleCalculation } from '../../hooks/useCycleCalculation'
+import { analytics } from '../../services/firebase'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -59,10 +62,27 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
   const predictionFullState = usePredictionEngineState()
+  const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
+  const { updateCycleCount } = useCycleCalculation()
 
-  // Auto start tutorial due to route params
+  // Check if friend unlock modal should be shown
+  const shouldShowFriendUnlockModal = React.useMemo(() => {
+    if (!currentUser) return false
+    const cyclesNumber = currentUser.cyclesNumber || 0
+    const avatar = currentUser.avatar
+
+    return (
+      cyclesNumber >= 3 &&
+      (avatar === null || avatar === undefined || avatar.customAvatarUnlocked === false)
+    )
+  }, [currentUser?.cyclesNumber, currentUser?.avatar])
+
+  // Show modal when screen opens or cyclesNumber changes
   useFocusEffect(
     React.useCallback(() => {
+      if (shouldShowFriendUnlockModal) {
+        setFriendUnlockModalVisible(true)
+      }
       if (route.params?.tutorial) {
         setLoading(true, 'please_wait_tutorial', () => {
           tutorialDispatch({ type: 'start', value: route.params?.tutorial })
@@ -70,8 +90,17 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           navigation.setParams({ tutorial: undefined })
         })
       }
-    }, [route.params?.tutorial]),
+    }, [shouldShowFriendUnlockModal, route.params?.tutorial]),
   )
+
+  // Also check when cyclesNumber changes
+  React.useEffect(() => {
+    if (shouldShowFriendUnlockModal) {
+      setFriendUnlockModalVisible(true)
+    }
+  }, [shouldShowFriendUnlockModal])
+
+  // Auto start tutorial due to route params
 
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
@@ -100,15 +129,12 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   const goToCalendar = () => navigation.navigate('Calendar')
   const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
-    // Generate latest ML-based predictions
     const predictedPeriodDates = generatePeriodDates(predictionFullState)
 
-    // Get the existing periodDates from user metadata
     let updatedPeriodDates = currentUser.metadata?.periodDates
       ? [...currentUser.metadata.periodDates]
       : []
 
-    // Step 1: Ensure all ML-generated dates are included
     const mlDatesToAdd = predictedPeriodDates
       .filter((entry) => !updatedPeriodDates.some((u) => u.date === entry.date))
       .map((entry) => ({
@@ -118,50 +144,96 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       }))
     updatedPeriodDates = [...updatedPeriodDates, ...mlDatesToAdd]
 
-    // Step 2: Check if the selected date is ML-predicted
     const isMlPredicted = predictedPeriodDates.some((entry) => entry.date === periodDate)
-
-    // Step 3: Find if the selected date exists in the array
     const existingDateIndex = updatedPeriodDates.findIndex((entry) => entry.date === periodDate)
 
-    if (existingDateIndex !== -1) {
-      // Step 4: Date exists in array
-      const existingEntry = updatedPeriodDates[existingDateIndex]
+    let shouldRecalculateCycles = false
 
-      if (!existingEntry.mlGenerated && !isPeriodDay) {
-        // Remove user-added dates if marked as non-period and not ML-generated
-        updatedPeriodDates.splice(existingDateIndex, 1)
-      } else {
-        // Update userVerified value
-        updatedPeriodDates[existingDateIndex] = {
-          ...existingEntry,
-          userVerified: isPeriodDay,
+    if (isPeriodDay) {
+      if (existingDateIndex !== -1) {
+        const existingEntry = updatedPeriodDates[existingDateIndex]
+        
+        if (existingEntry.userVerified === true) {
+          return
+        } else {
+          updatedPeriodDates[existingDateIndex] = {
+            ...existingEntry,
+            userVerified: true,
+            mlGenerated: false,
+          }
+          shouldRecalculateCycles = true
         }
+      } else {
+        updatedPeriodDates.push({
+          date: periodDate,
+          mlGenerated: isMlPredicted,
+          userVerified: true,
+        })
+        shouldRecalculateCycles = true
       }
-    } else if (isPeriodDay && !isMlPredicted) {
-      // Step 5: Date doesn't exist and isn't ML-predicted, but user marks it as period day
-      updatedPeriodDates.push({
-        date: periodDate,
-        mlGenerated: false,
-        userVerified: true,
-      })
+    } else {
+      if (existingDateIndex !== -1) {
+        const existingEntry = updatedPeriodDates[existingDateIndex]
+        
+        if (existingEntry.userVerified === true) {
+          updatedPeriodDates.splice(existingDateIndex, 1)
+          shouldRecalculateCycles = true
+        } else {
+          updatedPeriodDates.splice(existingDateIndex, 1)
+        }
+      } else {
+        return
+      }
     }
 
-    // Step 6: Sort by date for consistency
     updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
     try {
-      if (updatedPeriodDates) {
-        await updateUserVerifiedDates({
-          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-        })
+      await updateUserVerifiedDates({
+        metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+      })
 
-        editUserReduxState({
-          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-        })
+      editUserReduxState({
+        metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
+      })
+
+      if (shouldRecalculateCycles) {
+        await updateCycleCount(updatedPeriodDates)
       }
     } catch (error) {
-      console.error('Error updating period dates:', error)
+      // Error handling
+    }
+  }
+
+
+  const handleCreateFriend = async () => {
+    if (!currentUser) return
+
+    // Only update customAvatarUnlocked = true, preserve existing avatar data
+    const updatedAvatar = { customAvatarUnlocked: true };
+    
+    // Save to Redux state immediately (local save)
+    editUserReduxState({
+      avatar: updatedAvatar,
+    })
+
+    // Navigate to custom avatar screen in ProfileStack
+    // Since MainScreen is in HomeStack, we need to navigate to the profile tab first
+    const parentNavigation = navigation.getParent()
+    if (parentNavigation) {
+      parentNavigation.navigate('profile', { screen: 'CustomAvatar' })
+    } else {
+      // Fallback: try direct navigation (shouldn't happen but just in case)
+      navigation.navigate('CustomAvatar' as any)
+    }
+    
+    // Sync with server in the background - ONLY send customAvatarUnlocked
+    if (appToken) {
+      httpClient.updateAvatar({
+        appToken,
+        avatar: { customAvatarUnlocked: true },
+      }).catch((error) => {
+      })
     }
   }
   
@@ -170,10 +242,12 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       <View style={styles.screen}>
         <View style={styles.body} onLayout={onBodyLayout}>
           <View style={styles.topLeft} onLayout={onTopLeftLayout}>
+            <View style={styles.circleProgressContainer}>
             <CircleProgress onPress={goToCalendar} style={circleProgressHidden && styles.hidden} />
             <TouchableOpacity onPress={goToCalendar} style={circleProgressHidden && styles.hidden}>
               <Text>calendar</Text>
             </TouchableOpacity>
+            </View>
             <Avatar style={avatarHidden && styles.hidden} />
           </View>
 
@@ -206,6 +280,11 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           />
         </View>
       )}
+      <FriendUnlockModal
+        visible={friendUnlockModalVisible}
+        toggleVisible={() => setFriendUnlockModalVisible(false)}
+        onCreateFriend={handleCreateFriend}
+      />
     </>
   )
 }
@@ -213,6 +292,9 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 export default MainScreen
 
 const styles = StyleSheet.create({
+  circleProgressContainer: {
+    top: 0,
+  },
   screen: {
     flex: 1,
     justifyContent: 'center',

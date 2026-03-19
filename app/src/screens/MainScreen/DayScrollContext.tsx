@@ -17,6 +17,8 @@ import { useCalculateFullInfoForDateRange } from '../../contexts/PredictionProvi
 import { PredictionDayInfo } from '../../prediction'
 import { useDebounceEffect } from '../../hooks/useDebounceEffect'
 import { useResponsive } from '../../contexts/ResponsiveContext'
+import { useSelector } from '../../redux/useSelector'
+import { currentUserSelector } from '../../redux/selectors'
 
 export type DayData = PredictionDayInfo
 
@@ -190,6 +192,29 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   }
 
   const fullInfoForDateRange = useCalculateFullInfoForDateRange(startDate, endDate)
+  const currentUser = useSelector(currentUserSelector)
+
+  const fullInfoWithUserVerified = React.useMemo(() => {
+    if (!currentUser?.metadata?.periodDates || !fullInfoForDateRange) {
+      return fullInfoForDateRange
+    }
+
+    return fullInfoForDateRange.map((dayInfo) => {
+      const dateString = dayInfo.date.format('DD/MM/YYYY')
+      const userVerifiedEntry = currentUser.metadata.periodDates.find(
+        (periodDate) => periodDate.date === dateString && periodDate.userVerified === true
+      )
+
+      if (userVerifiedEntry) {
+        return {
+          ...dayInfo,
+          onPeriod: true,
+        }
+      }
+
+      return dayInfo
+    })
+  }, [fullInfoForDateRange, currentUser?.metadata?.periodDates])
 
   const [diameter, setDiameter] = React.useState(0)
   const radius = diameter / 2
@@ -259,7 +284,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     }
   }, [state.currentIndex])
 
-  const data = reorderData(fullInfoForDateRange, state.offset)
+  const data = reorderData(fullInfoWithUserVerified, state.offset)
   const selectedItem = data[state.currentIndex]
 
   // ================ Carousel Worklet ================ //

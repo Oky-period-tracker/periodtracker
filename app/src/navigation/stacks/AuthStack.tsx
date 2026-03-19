@@ -30,6 +30,7 @@ const config: StackConfig<keyof AuthStackParamList> = {
     Auth: {
       title: '',
       component: AuthScreen,
+      headerShown: false,
     },
     Info: {
       title: 'info',

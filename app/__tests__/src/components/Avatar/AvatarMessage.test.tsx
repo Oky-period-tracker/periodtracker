@@ -7,6 +7,13 @@ import { AvatarMessage } from '../../../../src/components/Avatar/AvatarMessage'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
 
+// Mock react-native-size-matters first
+jest.mock('react-native-size-matters', () => ({
+  moderateScale: jest.fn((value) => value),
+  scale: jest.fn((value) => value),
+  verticalScale: jest.fn((value) => value),
+}))
+
 // Mock the hooks
 jest.mock('../../../../src/contexts/AvatarMessageContext', () => ({
   useAvatarMessage: jest.fn(),

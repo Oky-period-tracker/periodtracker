@@ -29,6 +29,9 @@ export interface AppAssets {
     locked: ImageSourcePropType
     unlocked: ImageSourcePropType
   }
+  gifs: {
+    unlockFriend: ImageSourcePropType
+  }
   general: {
     aboutBanner: Record<Locale, ImageSourcePropType>
   }

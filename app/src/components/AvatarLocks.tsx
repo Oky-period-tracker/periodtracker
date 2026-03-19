@@ -1,14 +1,17 @@
 import React from 'react'
-import { View, Image } from 'react-native'
+import { View, Image, StyleSheet } from 'react-native'
 import { getAsset } from '../services/asset'
 import { useResponsive } from '../contexts/ResponsiveContext'
-import { StyleSheet } from 'react-native'
 
 interface AvatarLocksProps {
   cyclesNumber: number
   customAvatarUnlocked?: boolean // If true, all locks are permanently unlocked regardless of cyclesNumber
 }
 
+/**
+ * Avatar locks component.
+ * Indicate the number of cycles remaining to unlock the avatar feature.
+ */
 export const AvatarLocks = ({ cyclesNumber, customAvatarUnlocked = false }: AvatarLocksProps) => {
   const locks = [1, 2, 3]
   const { UIConfig } = useResponsive()

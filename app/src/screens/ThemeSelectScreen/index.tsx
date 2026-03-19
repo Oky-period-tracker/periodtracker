@@ -50,11 +50,6 @@ export const ThemeSelect = ({ onConfirm }: ThemeSelectProps) => {
 
   return (
     <Screen>
-      {/* Title */}
-      {isInitialSelection && (
-        <Text style={[styles.title, { color: palette.secondary.text }]}>theme_select_login</Text>
-      )}
-
       {/* List of themes */}
       <View style={styles.themes}>
         {themeNames.map((theme) => {

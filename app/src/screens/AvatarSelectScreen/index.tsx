@@ -51,11 +51,6 @@ export const AvatarSelect = ({ onConfirm }: AvatarSelectProps) => {
 
   return (
     <Screen>
-      {/* Title */}
-      {isInitialSelection && (
-        <Text style={[styles.title, { color: palette.secondary.text }]}>avatar_select_login</Text>
-      )}
-
       {/* List of themes */}
       <View style={styles.avatars}>
         {avatarNames.map((avatar) => {

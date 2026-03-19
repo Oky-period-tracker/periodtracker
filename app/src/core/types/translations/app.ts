@@ -352,4 +352,6 @@ export interface AppTranslations {
   // end avatar customization feature
   select_theme: string
   select_theme_title: string
+  select_avatar: string
+  select_avatar_title: string
 }

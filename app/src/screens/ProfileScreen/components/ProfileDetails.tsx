@@ -42,6 +42,10 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
     navigation.navigate('ThemeSelect')
   }
 
+  const goToAvatar = () => {
+    navigation.navigate('AvatarSelect')
+  }
+
   const days = translate('days')
 
   const cycleLength = todayInfo.cycleLength === 100 ? '-' : `${todayInfo.cycleLength} ${days}`
@@ -135,6 +139,19 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
           <View>
             <Text style={[styles.text, styles.bold]}>{avatar}</Text>
             <Text style={[styles.text, styles.bold]}>{theme}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      {/* ===== Select avatar ===== */}
+      <TouchableOpacity style={styles.row} onPress={goToAvatar}>
+        <View style={styles.column}>
+          <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
+        </View>
+        <View style={styles.column}>
+          <View>
+            <Text style={[styles.text, styles.bold]}>select_avatar</Text>
+            <Text style={[styles.text, styles.bold]}>{avatar}</Text>
           </View>
         </View>
       </TouchableOpacity>

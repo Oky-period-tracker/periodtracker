@@ -14,4 +14,4 @@ export const AUDIO_BASE_URL = process.env.EXPO_PUBLIC_AUDIO_BASE_URL
 
 /** === Optional feature === */
 // Custom avatar, default to false
-export const USE_AVATAR_CUSTOMIZATION = process.env.USE_AVATAR_CUSTOMIZATION || false;
+export const USE_AVATAR_CUSTOMIZATION = process.env.EXPO_PUBLIC_USE_AVATAR_CUSTOMIZATION || false;

@@ -34,10 +34,6 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
     navigation.navigate('EditProfile')
   }
 
-  const goToAvatarAndTheme = () => {
-    navigation.navigate('AvatarAndTheme')
-  }
-
   const goToTheme = () => {
     navigation.navigate('ThemeSelect')
   }
@@ -125,24 +121,6 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
       </View>
       <Hr />
 
-      {/* ===== Bottom Section ===== */}
-      <TouchableOpacity style={styles.row} onPress={goToAvatarAndTheme}>
-        <View style={styles.column}>
-          <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
-        </View>
-        <View style={styles.column}>
-          <View style={styles.themeWrapper}>
-            <Image source={getAsset(`backgrounds.${theme}.default`)} style={styles.themeImage} />
-          </View>
-        </View>
-        <View style={styles.column}>
-          <View>
-            <Text style={[styles.text, styles.bold]}>{avatar}</Text>
-            <Text style={[styles.text, styles.bold]}>{theme}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-
       {/* ===== Select avatar ===== */}
       <TouchableOpacity style={styles.row} onPress={goToAvatar}>
         <View style={styles.column}>
@@ -155,6 +133,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
           </View>
         </View>
       </TouchableOpacity>
+      <Hr />
 
       {/* ===== Select theme ===== */}
       <TouchableOpacity style={styles.row} onPress={goToTheme}>

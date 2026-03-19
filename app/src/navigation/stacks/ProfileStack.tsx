@@ -3,11 +3,13 @@ import NavigationStack, { StackConfig } from '../components/NavigationStack'
 import EditProfileScreen from '../../screens/EditProfileScreen'
 import ProfileScreen from '../../screens/ProfileScreen'
 import AvatarAndThemeScreen from '../../screens/AvatarAndThemeScreen'
+import ThemeSelectScreen from '../../screens/ThemeSelectScreen'
 
 export type ProfileStackParamList = {
   Profile: undefined
   EditProfile: undefined
   AvatarAndTheme: undefined
+  ThemeSelect: undefined
 }
 
 const config: StackConfig<keyof ProfileStackParamList> = {
@@ -25,6 +27,10 @@ const config: StackConfig<keyof ProfileStackParamList> = {
       title: 'avatar_amp_themes',
       component: AvatarAndThemeScreen,
     },
+    ThemeSelect: {
+      title: 'select_theme_title',
+      component: ThemeSelectScreen,
+    }
   },
 }
 

@@ -350,4 +350,6 @@ export interface AppTranslations {
   unlock_friend_modal_button: string
   unlock_friend_celebration_image: string
   // end avatar customization feature
+  select_theme: string
+  select_theme_title: string
 }

@@ -38,6 +38,10 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
     navigation.navigate('AvatarAndTheme')
   }
 
+  const goToTheme = () => {
+    navigation.navigate('ThemeSelect')
+  }
+
   const days = translate('days')
 
   const cycleLength = todayInfo.cycleLength === 100 ? '-' : `${todayInfo.cycleLength} ${days}`
@@ -63,7 +67,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
         </>
       )}
 
-      {/* ===== Top Section ===== */}
+      {/* ===== Edit profile ===== */}
       <TouchableOpacity style={styles.row} onPress={goToEdit}>
         <View style={styles.column}>
           <DisplayButton style={styles.icon}>
@@ -93,7 +97,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
       </TouchableOpacity>
       <Hr />
 
-      {/* ===== Middle Section ===== */}
+      {/* ===== Cycle data ===== */}
       <View style={styles.row}>
         <View style={styles.column}>
           <CircleProgress />
@@ -130,6 +134,21 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
         <View style={styles.column}>
           <View>
             <Text style={[styles.text, styles.bold]}>{avatar}</Text>
+            <Text style={[styles.text, styles.bold]}>{theme}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      {/* ===== Select theme ===== */}
+      <TouchableOpacity style={styles.row} onPress={goToTheme}>
+        <View style={styles.column}>
+          <View style={styles.themeWrapper}>
+            <Image source={getAsset(`backgrounds.${theme}.default`)} style={styles.themeImage} />
+          </View>
+        </View>
+        <View style={styles.column}>
+          <View>
+            <Text style={[styles.text, styles.bold]}>select_theme</Text>
             <Text style={[styles.text, styles.bold]}>{theme}</Text>
           </View>
         </View>

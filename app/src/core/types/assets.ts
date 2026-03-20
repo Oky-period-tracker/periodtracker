@@ -25,6 +25,13 @@ export interface AppAssets {
     spin_load_face: ImageSourcePropType
     spin_load_circle: ImageSourcePropType
   }
+  icons: {
+    locked: ImageSourcePropType
+    unlocked: ImageSourcePropType
+  }
+  gifs: {
+    unlockFriend: ImageSourcePropType
+  }
   general: {
     aboutBanner: Record<Locale, ImageSourcePropType>
   }

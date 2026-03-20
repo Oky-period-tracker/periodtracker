@@ -344,4 +344,14 @@ export interface AppTranslations {
   password_change_fail_description: string
   info_button: string
   new_password: string
+
+  // Optional: Avatar customization feature
+  unlock_friend_modal_title: string
+  unlock_friend_modal_button: string
+  unlock_friend_celebration_image: string
+  // end avatar customization feature
+  select_theme: string
+  select_theme_title: string
+  select_avatar: string
+  select_avatar_title: string
 }

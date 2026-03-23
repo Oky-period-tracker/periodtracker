@@ -488,30 +488,36 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         </View>
       </ScrollView>
 
-      <AvatarTutorialModal
-        visible={tutorialModalVisible}
-        onClose={() => setTutorialModalVisible(false)}
-      />
+      {/* Modal to display tutorial */}
+      <View>
+        <AvatarTutorialModal
+          visible={tutorialModalVisible}
+          onClose={() => setTutorialModalVisible(false)}
+        />
+      </View>
 
-      <AvatarNamingModal
-        visible={nameModalVisible}
-        onClose={() => setNameModalVisible(false)}
-        onConfirm={handleConfirmSave}
-        onSkip={() => {
-          setNameModalVisible(false)
-          const parent = navigation.getParent()
-          if (parent) {
-            parent.navigate('home')
-          } else {
-            navigation.navigate('home' as any)
-          }
-        }}
-        tempName={tempName}
-        onNameChange={setTempName}
-        avatarSelection={avatarSelection}
-        avatarConfig={avatarConfig}
-        styles={styles}
-      />
+      {/* Modal to set name of avatar */}
+      <View>
+        <AvatarNamingModal
+          visible={nameModalVisible}
+          onClose={() => setNameModalVisible(false)}
+          onConfirm={handleConfirmSave}
+          onSkip={() => {
+            setNameModalVisible(false)
+            const parent = navigation.getParent()
+            if (parent) {
+              parent.navigate('home')
+            } else {
+              navigation.navigate('home' as any)
+            }
+          }}
+          tempName={tempName}
+          onNameChange={setTempName}
+          avatarSelection={avatarSelection}
+          avatarConfig={avatarConfig}
+          styles={styles}
+        />
+      </View>
     </View>
   )
 }

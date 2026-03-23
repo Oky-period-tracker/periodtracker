@@ -4,7 +4,11 @@ import { Button } from '../../components/Button'
 import { avatarNames } from '../../resources/translations'
 import { getAsset } from '../../services/asset'
 import { useSelector } from '../../redux/useSelector'
-import { currentAvatarSelector, currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
+import {
+  currentAvatarSelector,
+  currentUserSelector,
+  cyclesNumberSelector,
+} from '../../redux/selectors'
 import { useDispatch } from 'react-redux'
 import { setAvatarWithValidation } from '../../redux/actions'
 import { Text } from '../../components/Text'

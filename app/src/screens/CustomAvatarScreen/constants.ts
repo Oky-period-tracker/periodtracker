@@ -86,7 +86,11 @@ export const DEVICE_SUBCATEGORIES = {
   others: ['purse', 'prostetic2', 'prostetic1', 'cane', 'earings'],
 } as const
 
-// Helper to get subcategory for a device
+/**
+ * Returns the subcategory a device belongs to (hats, glasses, accessories, or others).
+ * @param device - The device identifier string
+ * @returns The subcategory key, or null if the device is not found
+ */
 export const getDeviceSubcategory = (device: string): keyof typeof DEVICE_SUBCATEGORIES | null => {
   for (const [category, items] of Object.entries(DEVICE_SUBCATEGORIES)) {
     if ((items as readonly string[]).includes(device)) {
@@ -96,7 +100,11 @@ export const getDeviceSubcategory = (device: string): keyof typeof DEVICE_SUBCAT
   return null
 }
 
-// Helper to check if device allows multiple selection
+/**
+ * Checks if a device belongs to the "others" subcategory, which allows multiple simultaneous selections.
+ * @param device - The device identifier string
+ * @returns True if the device supports multiple selection
+ */
 export const allowsMultipleDevices = (device: string): boolean => {
   return (DEVICE_SUBCATEGORIES.others as readonly string[]).includes(device)
 }

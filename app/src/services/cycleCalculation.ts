@@ -2,8 +2,11 @@ import moment from 'moment'
 import { UserMetadata, CycleCalculationResult } from '../types'
 
 /**
- * Calculates the number of cycles based on verified period dates
- * A cycle is a group of consecutive period dates (allowing 2-day gaps)
+ * Calculates the number of menstrual cycles from user-verified period dates.
+ * Groups consecutive dates (allowing up to 2-day gaps) into distinct cycles.
+ * Supports multiple date formats (DD/MM/YYYY, YYYY-MM-DD, ISO).
+ * @param metadata - The user's metadata containing period date entries, or null/undefined
+ * @returns An object with `cyclesNumber` indicating the total number of detected cycles
  */
 export function calculateCycles(metadata: UserMetadata | null | undefined): CycleCalculationResult {
   // If no metadata or period dates, return 0 cycles

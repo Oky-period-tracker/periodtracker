@@ -2,7 +2,9 @@ import { WidthBreakpointSize, widthBreakpoints } from '../config/UIConfig'
 import { moderateScale, scale } from 'react-native-size-matters'
 
 /**
- * Get the current width breakpoint based on screen width
+ * Determines the current width breakpoint category based on screen width.
+ * @param width - The current screen width in pixels
+ * @returns The matching breakpoint size ('xs' | 'sm' | 'md' | 'lg' | 'xl')
  */
 export const getWidthBreakpoint = (width: number): WidthBreakpointSize => {
   if (width >= widthBreakpoints.xl) return 'xl'
@@ -13,8 +15,11 @@ export const getWidthBreakpoint = (width: number): WidthBreakpointSize => {
 }
 
 /**
- * Get responsive value based on width breakpoints
- * Falls back to smaller breakpoints if value not defined
+ * Resolves a responsive value by matching the current screen width to the closest defined breakpoint.
+ * Falls back to smaller breakpoints if the value for the current breakpoint is not defined.
+ * @param width - The current screen width in pixels
+ * @param values - A partial map of breakpoint sizes to values
+ * @returns The value for the matching or nearest smaller breakpoint, or undefined if none match
  */
 export const getResponsiveValue = <T>(
   width: number,
@@ -40,40 +45,46 @@ export const getResponsiveValue = <T>(
  */
 
 /**
- * Scale horizontal dimensions (width, padding, margins)
- * Uses moderateScale with 0.3 factor for consistent scaling
+ * Scales a horizontal dimension (width, horizontal padding/margin) using moderate scaling.
+ * @param value - The base dimension in logical pixels
+ * @returns The scaled value using a 0.3 moderate scale factor
  */
 export const scaleHorizontal = (value: number): number => {
   return moderateScale(value, 0.3)
 }
 
 /**
- * Scale vertical dimensions (height, padding, margins)
- * Uses moderateScale with 0.3 factor for consistent scaling
+ * Scales a vertical dimension (height, vertical padding/margin) using moderate scaling.
+ * @param value - The base dimension in logical pixels
+ * @returns The scaled value using a 0.3 moderate scale factor
  */
 export const scaleVertical = (value: number): number => {
   return moderateScale(value, 0.3)
 }
 
 /**
- * Scale font sizes and text-related dimensions
- * Uses moderateScale with 0.3 factor for consistent scaling
+ * Scales a font size or text-related dimension using moderate scaling.
+ * @param value - The base font size in logical pixels
+ * @returns The scaled value using a 0.3 moderate scale factor
  */
 export const scaleFont = (value: number): number => {
   return moderateScale(value, 0.3)
 }
 
 /**
- * Scale general dimensions (icons, borders, etc.)
- * Uses moderateScale with 0.3 factor for consistent scaling
+ * Scales a general dimension (icons, borders, etc.) using moderate scaling.
+ * @param value - The base dimension in logical pixels
+ * @returns The scaled value using a 0.3 moderate scale factor
  */
 export const scaleDimension = (value: number): number => {
   return moderateScale(value, 0.3)
 }
 
 /**
- * Scale using the original scale function (for specific cases)
- * Use sparingly, prefer scaleHorizontal/scaleVertical/scaleFont
+ * Scales a value using the original linear scale function (no moderation).
+ * Prefer `scaleHorizontal`/`scaleVertical`/`scaleFont` for most cases.
+ * @param value - The base dimension in logical pixels
+ * @returns The linearly scaled value
  */
 export const scaleOriginal = (value: number): number => {
   return scale(value)

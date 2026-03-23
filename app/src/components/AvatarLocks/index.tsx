@@ -6,6 +6,10 @@ import { styles } from './AvatarLocks.styles'
 import { useSelector } from '../../redux/useSelector'
 import { currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
 
+/**
+ * Displays a row of lock/unlock icons representing the user's progress toward unlocking the custom avatar.
+ * Locks open based on the number of completed menstrual cycles or if the avatar has been manually unlocked.
+ */
 export const AvatarLocks = () => {
   const locks = [1, 2, 3]
   const { UIConfig } = useResponsive()

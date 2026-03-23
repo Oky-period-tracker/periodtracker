@@ -6,6 +6,13 @@ import type { UIConfig } from '../../../config/UIConfig'
 const MAX_TABLET_WIDTH = 1200
 const HEIGHT_ADDITION_RATIO = 4 / 10
 
+/**
+ * Calculates the display width for theme items based on screen width and theme configuration.
+ * Handles multiple screen size ranges with device-specific adjustments.
+ * @param width - The current screen width in pixels
+ * @param themeConfig - The theme selection UI configuration
+ * @returns The calculated theme item width in pixels
+ */
 export const calculateThemeWidth = (
   width: number,
   themeConfig: UIConfig['themeSelection']
@@ -86,6 +93,13 @@ export const calculateThemeWidth = (
   return width <= 360 ? baseWidth : baseWidth * 0.85
 }
 
+/**
+ * Calculates all display dimensions for a theme item (image size, container size, border radii, icon positioning).
+ * @param themeWidth - The base theme item width (from calculateThemeWidth)
+ * @param themeConfig - The theme selection UI configuration
+ * @param screenWidth - The current screen width in pixels
+ * @returns An object containing imageWidth, imageHeight, containerWidth, containerHeight, border radii, and icon offsets
+ */
 export const calculateThemeDimensions = (
   themeWidth: number,
   themeConfig: UIConfig['themeSelection'],
@@ -142,6 +156,12 @@ export const calculateThemeDimensions = (
   }
 }
 
+/**
+ * Determines the background color for a theme container based on its selection state.
+ * @param isCurrent - Whether this is the currently active theme
+ * @param isSelected - Whether the user has selected this theme (pending confirmation)
+ * @returns A CSS color string (green for current+selected, grey for current+unselected, orange for pending, transparent otherwise)
+ */
 export const getContainerBackgroundColor = (
   isCurrent: boolean,
   isSelected: boolean

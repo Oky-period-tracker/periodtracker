@@ -35,6 +35,10 @@ export const AnimatedAvatarPreview: React.FC<BaseAvatarPreviewProps> = (props) =
 
   // Start animation whenever the screen is focused (page opened)
   // This ensures animations restart every time the user navigates to the page
+  /**
+   * Initializes and starts all avatar animation sequences (eyes, jump, legs, hand waves).
+   * Cancels any running animations before restarting. Returns a cleanup function to clear the start timeout.
+   */
   const startAnimations = React.useCallback(() => {
     // Cancel any existing animations
     cancelAnimation(eyeX)

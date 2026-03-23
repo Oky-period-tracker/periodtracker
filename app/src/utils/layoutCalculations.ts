@@ -187,7 +187,10 @@ export const calculateOptimalItemWidth = (
 }
 
 /**
- * Get responsive margin based on width breakpoint
+ * Returns a scaled margin value based on the current screen width breakpoint.
+ * @param width - The current screen width in pixels
+ * @param margins - Partial map of breakpoint sizes to margin values
+ * @returns The scaled margin for the matching breakpoint, or 0 if none defined
  */
 export const getResponsiveMargin = (
   width: number,
@@ -202,7 +205,10 @@ export const getResponsiveMargin = (
 }
 
 /**
- * Get responsive padding based on width breakpoint
+ * Returns a scaled padding value based on the current screen width breakpoint.
+ * @param width - The current screen width in pixels
+ * @param paddings - Partial map of breakpoint sizes to padding values
+ * @returns The scaled padding for the matching breakpoint, or 0 if none defined
  */
 export const getResponsivePadding = (
   width: number,

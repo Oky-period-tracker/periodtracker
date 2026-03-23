@@ -114,12 +114,21 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
     return DeviceSvgs.filter(item => !item.isAccessory)
   }, [DeviceSvgs])
 
-  // Helper to check if a value is a valid React component
+  /**
+   * Checks if a value is a renderable React component (function component or valid element).
+   * @param component - The value to check
+   * @returns True if the value can be rendered as an SVG component
+   */
   const isValidComponent = (component: any): component is SvgComponent => {
     return component && (typeof component === 'function' || React.isValidElement(component))
   }
 
-  // Helper to render body SVG with colors applied via props
+  /**
+   * Renders the body SVG component with skin color and shadow color applied.
+   * Falls back to default grey tones when no skin color is set.
+   * @param props - Object containing width and height for the SVG
+   * @returns The rendered body component, or null if no BodyComponent is loaded
+   */
   const renderBodySvg = React.useCallback((props: any) => {
     if (!BodyComponent) {
       return null
@@ -141,7 +150,12 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
     )
   }, [BodyComponent, skinColor, animatedTransforms])
 
-  // Helper to render SVG component safely
+  /**
+   * Safely renders an SVG component, returning null if the component is invalid.
+   * @param SvgComponent - The SVG component to render (or null)
+   * @param props - Props to pass through to the SVG component
+   * @returns The rendered SVG element, or null
+   */
   const renderSvg = (SvgComponent: SvgComponent | null, props: any) => {
     if (!SvgComponent || !isValidComponent(SvgComponent)) {
       return null

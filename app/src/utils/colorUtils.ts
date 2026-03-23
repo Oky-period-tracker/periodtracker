@@ -3,7 +3,9 @@
  */
 
 /**
- * Converts hex color to RGB
+ * Converts a hex color string to its RGB components.
+ * @param hex - Hex color string (e.g., "#FF0000" or "FF0000")
+ * @returns Object with r, g, b values (0-255), or null if parsing fails
  */
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
@@ -17,7 +19,11 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 }
 
 /**
- * Converts RGB to HSL
+ * Converts RGB color values to HSL color space.
+ * @param r - Red component (0-255)
+ * @param g - Green component (0-255)
+ * @param b - Blue component (0-255)
+ * @returns Object with h, s, l values (all normalized 0-1)
  */
 function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: number } {
   r /= 255
@@ -51,7 +57,11 @@ function rgbToHsl(r: number, g: number, b: number): { h: number; s: number; l: n
 }
 
 /**
- * Converts HSL to RGB
+ * Converts HSL color values to RGB color space.
+ * @param h - Hue (0-1)
+ * @param s - Saturation (0-1)
+ * @param l - Lightness (0-1)
+ * @returns Object with r, g, b values (0-255)
  */
 function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
   let r: number
@@ -86,7 +96,11 @@ function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: n
 }
 
 /**
- * Converts RGB to hex
+ * Converts RGB color values to a hex color string.
+ * @param r - Red component (0-255)
+ * @param g - Green component (0-255)
+ * @param b - Blue component (0-255)
+ * @returns Hex color string prefixed with '#' (e.g., "#ff0000")
  */
 function rgbToHex(r: number, g: number, b: number): string {
   return '#' + [r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('')

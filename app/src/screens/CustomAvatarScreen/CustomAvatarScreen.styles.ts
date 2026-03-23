@@ -483,6 +483,7 @@ export const createCustomAvatarStyles = (
       color: '#999',
     },
     modalButtons: {
+      paddingHorizontal: config.spacing.medium * 1.5,
       flexDirection: 'row',
       gap: config.spacing.small,
       marginTop: config.spacing.medium * 1.5,

@@ -18,13 +18,14 @@ export interface ModalProps {
   visible: boolean
   toggleVisible: () => void
   children?: React.ReactNode
+  footer?: React.ReactNode
   style?: StyleProp<ViewStyle>
   hideLaunchButton?: boolean
   onHandleResponse?: (response: boolean, periodDate: string) => void
   onDismiss?: () => void
 }
 
-export const Modal = ({ visible, toggleVisible, children, style, onDismiss }: ModalProps) => {
+export const Modal = ({ visible, toggleVisible, children, footer, style, onDismiss }: ModalProps) => {
   const { modalBackdropColor } = useColor()
   const { width, height } = useScreenDimensions()
   const maxWidth = Math.min(width, 800)
@@ -52,6 +53,11 @@ export const Modal = ({ visible, toggleVisible, children, style, onDismiss }: Mo
         >
           {children}
         </SafeAreaView>
+        {footer && (
+          <View style={[styles.footer, { maxWidth }]}>
+            {footer}
+          </View>
+        )}
       </View>
     </RNModal>
   )
@@ -86,6 +92,12 @@ const styles = StyleSheet.create({
   children: {
     flex: 1,
     margin: 24,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 24,
+    alignItems: 'center',
+    width: '100%',
   },
   closeButton: {
     position: 'absolute',

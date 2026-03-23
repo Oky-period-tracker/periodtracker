@@ -24,6 +24,7 @@ import { useTranslate } from '../../hooks/useTranslate'
 import { calculateOptimalItemWidth, getResponsiveMargin } from '../../utils/layoutCalculations'
 import { scaleOriginal } from '../../utils/responsive'
 import { AvatarItem } from './components/AvatarItem'
+import { Screen } from '../../components/Screen'
 
 const AvatarScreen: ScreenComponent<'Avatar'> = ({ navigation }) => {
   return <AvatarSelect navigation={navigation} />
@@ -35,9 +36,10 @@ interface AvatarSelectProps {
   onConfirm?: () => void
   onGoBack?: () => void
   navigation?: any
+  isOnboarding?: boolean
 }
 
-export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectProps) => {
+export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = false }: AvatarSelectProps) => {
   const currentAvatar = useSelector(currentAvatarSelector)
   const currentUser = useSelector(currentUserSelector)
   const dispatch = useDispatch()
@@ -51,10 +53,9 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
   const translate = useTranslate()
 
 
-  const isInitialSelection = !!onConfirm
   const [selectedAvatar, setSelectedAvatar] = React.useState(() => {
     const isFriendLocked = currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
-    if (isInitialSelection && isFriendLocked && currentAvatar === 'friend') {
+    if (isOnboarding && isFriendLocked && currentAvatar === 'friend') {
       return avatarNames.find(avatar => avatar !== 'friend') || avatarNames[0]
     }
     return currentAvatar || avatarNames[0]
@@ -212,7 +213,7 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
 
   const dynamicStyles = React.useMemo(
     () => createAvatarScreenStyles(effectiveAvatarConfig, width, true),
-    [effectiveAvatarConfig, avatarWidth, onGoBack, isInitialSelection, reminderMaxWidth, width],
+    [effectiveAvatarConfig, avatarWidth, onGoBack, isOnboarding, reminderMaxWidth, width],
   )
   
   const returningFromCustomAvatarRef = React.useRef(false)
@@ -249,9 +250,10 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
 
   const avatarChanged = currentAvatar !== selectedAvatar
 
-  const confirmStatus = avatarChanged || isInitialSelection ? 'primary' : 'basic'
+  const confirmStatus = avatarChanged || isOnboarding ? 'primary' : 'basic'
 
   return (
+    <Screen>
     <View style={dynamicStyles.screen}>
       <ImageBackground
         source={backgroundImage || undefined}
@@ -277,12 +279,12 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
             </View>
             <View style={dynamicStyles.titleBox}>
               <Text style={[dynamicStyles.title, { color: '#000000' }]}>
-                {isInitialSelection 
+                {isOnboarding 
                   ? 'select_avatar_title' 
                   : (isFriendUnlocked ? 'select_avatar_title_unlocked' : 'select_avatar_title')}
               </Text>
               <Text style={[dynamicStyles.subtitle, { color: '#000000' }]}>
-                {isInitialSelection 
+                {isOnboarding 
                   ? 'select_avatar_subtitle' 
                   : (isFriendUnlocked ? 'select_avatar_subtitle_unlocked' : 'select_avatar_subtitle')}
               </Text>
@@ -297,8 +299,8 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
               const isFriendAvatar = avatar === 'friend'
               const isFriendAvatarLocked = isFriendAvatar && isFriendLocked
               
-              const isSelected = avatar === selectedAvatar && !(isFriendAvatarLocked && isInitialSelection)
-              const isCurrent = avatar === currentAvatar && !(isFriendAvatarLocked && isInitialSelection)
+              const isSelected = avatar === selectedAvatar && !(isFriendAvatarLocked && isOnboarding)
+              const isCurrent = avatar === currentAvatar && !(isFriendAvatarLocked && isOnboarding)
 
               const onPress = () => {
                 if (isFriendAvatarLocked) {
@@ -387,8 +389,8 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
         </ScrollView>
         
         {/* Buttons - Fixed at bottom */}
-        <View style={[dynamicStyles.buttonContainer, isInitialSelection && { paddingBottom: avatarConfig.buttonPaddingBottom + insets.bottom }]}>
-          {isInitialSelection ? (
+        <View style={[dynamicStyles.buttonContainer, isOnboarding && { paddingBottom: avatarConfig.buttonPaddingBottom + insets.bottom }]}>
+          {isOnboarding ? (
             <Button 
               onPress={confirm} 
               status={confirmStatus}
@@ -408,6 +410,7 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation }: AvatarSelectPr
         </View>
       </ImageBackground>
     </View>
+    </Screen>
   )
 }
 

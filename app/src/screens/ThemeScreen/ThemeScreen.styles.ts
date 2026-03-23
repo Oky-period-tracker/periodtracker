@@ -6,7 +6,7 @@ import { scaleHorizontal } from '../../utils/responsive'
 
 export const createThemeScreenStyles = (
   themeConfig: UIConfig['themeSelection'],
-  isInitialSelection: boolean,
+  isOnboarding: boolean,
   hasGoBack: boolean,
   hasHeader: boolean = false,
   screenWidth?: number
@@ -209,7 +209,7 @@ export const createThemeScreenStyles = (
       width: '100%',
       maxWidth: 1200, // Cap at 1200px for large tablets
       alignSelf: 'center',
-      justifyContent: (isInitialSelection && hasGoBack) ? 'space-between' : 'center',
+      justifyContent: (isOnboarding && hasGoBack) ? 'space-between' : 'center',
       gap: 12,
     },
   })

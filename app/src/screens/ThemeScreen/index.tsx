@@ -32,9 +32,10 @@ interface ThemeSelectProps {
   onConfirm?: () => void
   onGoBack?: () => void
   navigation?: any
+  isOnboarding?: boolean
 }
 
-export const ThemeSelect = ({ onConfirm, onGoBack, navigation }: ThemeSelectProps) => {
+export const ThemeSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = false }: ThemeSelectProps) => {
   const currentTheme = useSelector(currentThemeSelector)
   const dispatch = useDispatch()
   const { UIConfig, width } = useResponsive()
@@ -66,10 +67,9 @@ export const ThemeSelect = ({ onConfirm, onGoBack, navigation }: ThemeSelectProp
     return calculateThemeWidth(width, themeConfig)
   }, [themeConfig, width])
 
-  const isInitialSelection = !!onConfirm
   const dynamicStyles = React.useMemo(
-    () => createThemeScreenStyles(themeConfig, isInitialSelection, !!onGoBack, true, width),
-    [themeConfig, themeWidth, isInitialSelection, onGoBack, width],
+    () => createThemeScreenStyles(themeConfig, isOnboarding, !!onGoBack, true, width),
+    [themeConfig, themeWidth, isOnboarding, onGoBack, width],
   )
 
   const confirm = () => {
@@ -93,7 +93,7 @@ export const ThemeSelect = ({ onConfirm, onGoBack, navigation }: ThemeSelectProp
   }
 
   const themeChanged = currentTheme !== selectedTheme
-  const confirmStatus = themeChanged || isInitialSelection ? 'primary' : 'basic'
+  const confirmStatus = themeChanged || isOnboarding ? 'primary' : 'basic'
 
   const getThemeDimensions = React.useCallback((themeWidth: number) => {
     return calculateThemeDimensions(themeWidth, themeConfig, width)
@@ -242,10 +242,10 @@ export const ThemeSelect = ({ onConfirm, onGoBack, navigation }: ThemeSelectProp
         <View
           style={[
             dynamicStyles.buttonContainer,
-            isInitialSelection && { paddingBottom: themeConfig.buttonPaddingBottom + insets.bottom },
+            isOnboarding && { paddingBottom: themeConfig.buttonPaddingBottom + insets.bottom },
           ]}
         >
-          {isInitialSelection ? (
+          {isOnboarding ? (
             <>
               {onGoBack && (
                 <Button 

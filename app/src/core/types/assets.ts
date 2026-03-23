@@ -2,9 +2,12 @@ import { ImageSourcePropType } from 'react-native'
 import { AnimationObject } from 'lottie-react-native'
 import { AvatarName, Locale, ThemeName } from '../../resources/translations'
 
+// Avatar names that have PNG assets (excludes 'friend' which uses SVG components)
+type AvatarWithAssets = Exclude<AvatarName, 'friend'>
+
 export interface AppAssets {
   avatars: Record<
-    AvatarName,
+    AvatarWithAssets,
     {
       default: ImageSourcePropType
       stationary_colour: ImageSourcePropType
@@ -24,6 +27,7 @@ export interface AppAssets {
     launch_icon: ImageSourcePropType
     spin_load_face: ImageSourcePropType
     spin_load_circle: ImageSourcePropType
+    clouds: ImageSourcePropType
   }
   icons: {
     locked: ImageSourcePropType

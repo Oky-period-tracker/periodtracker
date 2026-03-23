@@ -11,6 +11,7 @@ import { httpClient } from '../services/HttpClient'
 import { User } from '../types'
 import { useDispatch } from 'react-redux'
 import { editUser } from '../redux/actions'
+import { useAccessibilityLabel } from '../hooks/useAccessibilityLabel'
 
 /**
  * Modal appearing when custom avatar is made available.
@@ -21,6 +22,7 @@ export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {
   const navigation = useNavigation() as any
   const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
+  const getAccessibilityLabel = useAccessibilityLabel()
   const reduxDispatch = useDispatch()
   const editUserReduxState = (changes: Partial<User>) => {
     reduxDispatch(editUser(changes))
@@ -71,20 +73,32 @@ export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {
   return (
     <Modal visible={visible} toggleVisible={toggleVisible} style={styles.modal}>
       <View style={styles.content}>
-        <Text style={styles.title}>
-          Hooray! All 3 locks are open – make your very own Oky friend, just the way you like!
+        <Text
+          style={styles.title}
+          enableTranslate={true}
+          accessibilityLabel={getAccessibilityLabel('friend_unlock_modal_title')}
+        >
+          friend_unlock_modal_title
         </Text>
 
         <View style={styles.iconContainer}>
-          <Image source={getAsset('gifs.friendUnlock')} style={styles.icon} resizeMode="contain" />
+          <Image
+            source={getAsset('gifs.friendUnlock')}
+            style={styles.icon}
+            resizeMode="contain"
+            accessibilityLabel={getAccessibilityLabel('friend_unlock_celebration_image')}
+            accessibilityRole="image"
+          />
         </View>
 
         <TouchableOpacity
           onPress={handleCreateFriend}
           style={[styles.createButton, { backgroundColor: '#FF9800' }]}
+          accessibilityLabel={getAccessibilityLabel('friend_unlock_modal_button')}
+          accessibilityRole="button"
         >
           <Text style={styles.buttonText} enableTranslate={false}>
-            Create your friend
+            friend_unlock_modal_button
           </Text>
         </TouchableOpacity>
       </View>

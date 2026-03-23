@@ -109,7 +109,7 @@ export const SelectAvatar = ({ onConfirm, onGoBack, navigation }: SelectAvatarPr
   }, [])
 
   const confirm = () => {
-    const action = setAvatarWithValidation(selectedAvatar, cyclesNumber)
+    const action = setAvatarWithValidation(selectedAvatar, cyclesNumber, currentUser?.avatar?.customAvatarUnlocked)
     if (action) {
       dispatch(action)
 

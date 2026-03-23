@@ -6,7 +6,7 @@ export interface UserMetadata {
 }
 
 export interface AvatarConfig {
-  body?: string | null
+  body?: 'small' | 'medium' | 'large' | null
   hair?: string | null
   eyes?: string | null
   smile?: string | null

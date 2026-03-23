@@ -33,10 +33,6 @@ export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {
 
   const handleCreateFriend = async () => {
     toggleVisible()
-    // Navigate to custom avatar screen
-    const parentNavigation = navigation.getParent()
-    parentNavigation.navigate('profile', { screen: 'EditAvatar' })
-
     // Update avatar to set customAvatarUnlocked to true
     if (appToken && currentUser) {
       try {
@@ -67,6 +63,10 @@ export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {
         // todo: improve error handling
       }
     }
+
+    // Navigate to custom avatar screen
+    const parentNavigation = navigation.getParent()
+    parentNavigation.navigate('profile', { screen: 'CustomAvatar' })
   }
 
   const modalWidth =

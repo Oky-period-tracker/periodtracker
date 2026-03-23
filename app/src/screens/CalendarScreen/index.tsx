@@ -7,10 +7,7 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { Text } from '../../components/Text'
 import { Modal } from '../../components/Modal'
 import { useToggle } from '../../hooks/useToggle'
-import {
-  useCalculateStatusForDateRange,
-  usePredictDay,
-} from '../../contexts/PredictionProvider'
+import { useCalculateStatusForDateRange, usePredictDay } from '../../contexts/PredictionProvider'
 import moment from 'moment'
 import { asLocal, isFutureDate } from '../../services/dateUtils'
 import { DayModal } from '../../components/DayModal'
@@ -119,7 +116,6 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   )
 
   const messageOpacity = message ? 1 : 0
-
 
   const theme: CalendarProps['theme'] = {
     monthTextColor: palette.secondary.text,

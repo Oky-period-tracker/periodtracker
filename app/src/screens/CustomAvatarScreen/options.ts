@@ -1,4 +1,7 @@
-export const HAIR_OPTIONS = ['00', ...Array.from({ length: 18 }, (_, i) => String(i + 1).padStart(2, '0'))]
+export const HAIR_OPTIONS = [
+  '00',
+  ...Array.from({ length: 18 }, (_, i) => String(i + 1).padStart(2, '0')),
+]
 
 export const EYE_OPTIONS = Array.from({ length: 7 }, (_, i) => String(i).padStart(2, '0'))
 
@@ -56,4 +59,3 @@ export const DEVICE_OPTIONS = [
   'cane',
   'earings',
 ]
-

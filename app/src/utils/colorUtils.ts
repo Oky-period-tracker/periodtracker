@@ -109,14 +109,14 @@ function rgbToHex(r: number, g: number, b: number): string {
 /**
  * Calculates the darker shade of a skin color based on the relationship
  * between the original light grey (#EFEFEF) and dark grey (#C1C1C1) body colors.
- * 
+ *
  * The original colors:
  * - Light grey: #EFEFEF (rgb(239, 239, 239)) - main body
  * - Dark grey: #C1C1C1 (rgb(193, 193, 193)) - shadow parts
- * 
+ *
  * This function calculates the same lightness reduction ratio and applies it
  * to any given skin color to generate the darker shadow color.
- * 
+ *
  * @param skinColor - Hex color string (e.g., "#F1B98C")
  * @returns Hex color string for the darker shadow version
  */
@@ -163,4 +163,3 @@ export function getDarkerSkinColor(skinColor: string): string {
   const darkerRgb = hslToRgb(darkerHsl.h, darkerHsl.s, darkerHsl.l)
   return rgbToHex(darkerRgb.r, darkerRgb.g, darkerRgb.b)
 }
-

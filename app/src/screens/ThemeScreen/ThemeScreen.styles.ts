@@ -9,7 +9,7 @@ export const createThemeScreenStyles = (
   isOnboarding: boolean,
   hasGoBack: boolean,
   hasHeader: boolean = false,
-  screenWidth?: number
+  screenWidth?: number,
 ) =>
   StyleSheet.create({
     screen: {
@@ -33,8 +33,8 @@ export const createThemeScreenStyles = (
       // Reduce top padding when header is shown (header already provides spacing)
       paddingTop: hasHeader ? 16 : themeConfig.paddingTop,
       // Reduce bottom padding when header is shown (remove extra 80px)
-      paddingBottom: hasHeader 
-        ? themeConfig.buttonPaddingTop + themeConfig.buttonPaddingBottom 
+      paddingBottom: hasHeader
+        ? themeConfig.buttonPaddingTop + themeConfig.buttonPaddingBottom
         : themeConfig.buttonPaddingTop + themeConfig.buttonPaddingBottom + 80,
       width: '100%',
     },
@@ -93,25 +93,31 @@ export const createThemeScreenStyles = (
       flexWrap: 'wrap',
       marginTop: 20,
       marginBottom: 20,
-      paddingHorizontal: (screenWidth && screenWidth <= 480)
-        ? 0
-        : themeConfig.itemsContainerPaddingHorizontal,
-      width: (screenWidth && screenWidth <= 360) ? '98%' : (screenWidth && screenWidth <= 480) ? '92%' : '100%',
+      paddingHorizontal:
+        screenWidth && screenWidth <= 480 ? 0 : themeConfig.itemsContainerPaddingHorizontal,
+      width:
+        screenWidth && screenWidth <= 360
+          ? '98%'
+          : screenWidth && screenWidth <= 480
+          ? '92%'
+          : '100%',
       maxWidth: 1200,
       alignSelf: 'center',
     },
     theme: {
       height: themeConfig.themeSize.height,
-      marginLeft: screenWidth && screenWidth <= 360
-        ? 2
-        : screenWidth && screenWidth <= 480
-        ? getResponsiveMargin(screenWidth, { xs: 6, sm: 6, md: 8 })
-        : themeConfig.themeMarginHorizontal / 2,
-      marginRight: screenWidth && screenWidth <= 360
-        ? 2
-        : screenWidth && screenWidth <= 480
-        ? getResponsiveMargin(screenWidth, { xs: 6, sm: 6, md: 8 })
-        : themeConfig.themeMarginHorizontal / 2,
+      marginLeft:
+        screenWidth && screenWidth <= 360
+          ? 2
+          : screenWidth && screenWidth <= 480
+          ? getResponsiveMargin(screenWidth, { xs: 6, sm: 6, md: 8 })
+          : themeConfig.themeMarginHorizontal / 2,
+      marginRight:
+        screenWidth && screenWidth <= 360
+          ? 2
+          : screenWidth && screenWidth <= 480
+          ? getResponsiveMargin(screenWidth, { xs: 6, sm: 6, md: 8 })
+          : themeConfig.themeMarginHorizontal / 2,
       marginVertical: themeConfig.themeMarginVertical,
     },
     themeBody: {
@@ -209,15 +215,28 @@ export const createThemeScreenStyles = (
       width: '100%',
       maxWidth: 1200, // Cap at 1200px for large tablets
       alignSelf: 'center',
-      justifyContent: (isOnboarding && hasGoBack) ? 'space-between' : 'center',
+      justifyContent: isOnboarding && hasGoBack ? 'space-between' : 'center',
       gap: 12,
     },
   })
 
-export const getThemeStyle = (themeWidth: number, containerHeight: number, screenWidth: number) => ({
+export const getThemeStyle = (
+  themeWidth: number,
+  containerHeight: number,
+  screenWidth: number,
+) => ({
   width: themeWidth,
   height: containerHeight,
-  maxWidth: screenWidth <= 360 ? 165 : (screenWidth > 360 && screenWidth <= 392) ? 135 : (screenWidth > 392 && screenWidth <= 411) ? 138 : (screenWidth > 411 && screenWidth <= 480) ? scaleHorizontal(140) : undefined,
+  maxWidth:
+    screenWidth <= 360
+      ? 165
+      : screenWidth > 360 && screenWidth <= 392
+      ? 135
+      : screenWidth > 392 && screenWidth <= 411
+      ? 138
+      : screenWidth > 411 && screenWidth <= 480
+      ? scaleHorizontal(140)
+      : undefined,
 })
 
 export const getThemeImageWrapperStyle = () => ({
@@ -225,7 +244,12 @@ export const getThemeImageWrapperStyle = () => ({
   justifyContent: 'center' as const,
 })
 
-export const getThemeContainerStyle = (containerWidth: number, containerHeight: number, borderRadius: number, backgroundColor: string) => ({
+export const getThemeContainerStyle = (
+  containerWidth: number,
+  containerHeight: number,
+  borderRadius: number,
+  backgroundColor: string,
+) => ({
   width: containerWidth,
   height: containerHeight,
   borderRadius,
@@ -233,4 +257,3 @@ export const getThemeContainerStyle = (containerWidth: number, containerHeight: 
   alignItems: 'center' as const,
   justifyContent: 'center' as const,
 })
-

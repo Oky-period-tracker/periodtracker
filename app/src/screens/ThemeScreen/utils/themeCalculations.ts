@@ -15,14 +15,14 @@ const HEIGHT_ADDITION_RATIO = 4 / 10
  */
 export const calculateThemeWidth = (
   width: number,
-  themeConfig: UIConfig['themeSelection']
+  themeConfig: UIConfig['themeSelection'],
 ): number => {
   const itemsPerRow = 2
-  const containerWidthPercent = width <= 360 ? 0.98 : (width <= 480 ? 0.92 : 0.92)
+  const containerWidthPercent = width <= 360 ? 0.98 : width <= 480 ? 0.92 : 0.92
   const containerWidth = Math.min(width * containerWidthPercent, MAX_TABLET_WIDTH)
-  
+
   let baseWidth: number
-  
+
   if (width <= 480) {
     if (width <= 360) {
       const actualContainerWidth = width * 0.98
@@ -86,10 +86,10 @@ export const calculateThemeWidth = (
     const themesPadding = scaleHorizontal(themeConfig.itemsContainerPaddingHorizontal) * 2
     const totalMarginSpace = scaleHorizontal(themeConfig.themeMarginHorizontal) * 2
     const availableWidth = containerWidth - containerPadding - themesPadding - totalMarginSpace
-    
+
     baseWidth = availableWidth > 0 ? availableWidth / itemsPerRow : 0
   }
-  
+
   return width <= 360 ? baseWidth : baseWidth * 0.85
 }
 
@@ -103,17 +103,18 @@ export const calculateThemeWidth = (
 export const calculateThemeDimensions = (
   themeWidth: number,
   themeConfig: UIConfig['themeSelection'],
-  screenWidth: number
+  screenWidth: number,
 ) => {
   const isNarrowScreen = screenWidth <= 480
   const themeImageAspectRatio = themeConfig.themeSize.width / themeConfig.themeSize.height
   const imageWidth = themeWidth
   const imageHeight = imageWidth / themeImageAspectRatio
-  const extraWidth = (screenWidth <= 360) ? 0 : (isNarrowScreen ? scaleHorizontal(3) : scaleHorizontal(4))
+  const extraWidth =
+    screenWidth <= 360 ? 0 : isNarrowScreen ? scaleHorizontal(3) : scaleHorizontal(4)
   const baseWidthReduction = scaleHorizontal(14)
-  const additionalReduction = (screenWidth > 480 && screenWidth <= 600) ? scaleHorizontal(6) : 0
+  const additionalReduction = screenWidth > 480 && screenWidth <= 600 ? scaleHorizontal(6) : 0
   const widthReduction = baseWidthReduction + additionalReduction
-  
+
   const getContainerWidthAdjustment = (width: number): number => {
     if (width <= 360) return scaleHorizontal(8)
     if (width <= 392) return scaleHorizontal(16)
@@ -123,10 +124,13 @@ export const calculateThemeDimensions = (
     if (width <= 720) return scaleHorizontal(0)
     return scaleHorizontal(8)
   }
-  
+
   const containerWidthAdjustment = getContainerWidthAdjustment(screenWidth)
-  const containerWidth = Math.max(0, imageWidth + extraWidth - widthReduction + containerWidthAdjustment)
-  const containerHeight = imageHeight + (scaleDimension(themeConfig.iconSize) * HEIGHT_ADDITION_RATIO)
+  const containerWidth = Math.max(
+    0,
+    imageWidth + extraWidth - widthReduction + containerWidthAdjustment,
+  )
+  const containerHeight = imageHeight + scaleDimension(themeConfig.iconSize) * HEIGHT_ADDITION_RATIO
   const borderRadiusRatio = themeConfig.themeBorderRadius / themeConfig.themeSize.height
   const imageBorderRadius = imageHeight * borderRadiusRatio
   const containerBorderRadius = containerHeight * borderRadiusRatio
@@ -143,7 +147,7 @@ export const calculateThemeDimensions = (
   const iconOffsetMultiplier = getIconOffsetMultiplier(screenWidth)
   const iconOffset = scaledIconSize * iconOffsetMultiplier
   const iconPositionOffset = 0
-  
+
   return {
     imageWidth,
     imageHeight,
@@ -162,10 +166,7 @@ export const calculateThemeDimensions = (
  * @param isSelected - Whether the user has selected this theme (pending confirmation)
  * @returns A CSS color string (green for current+selected, grey for current+unselected, orange for pending, transparent otherwise)
  */
-export const getContainerBackgroundColor = (
-  isCurrent: boolean,
-  isSelected: boolean
-): string => {
+export const getContainerBackgroundColor = (isCurrent: boolean, isSelected: boolean): string => {
   const THEME_COLORS = {
     CURRENT_SELECTED: '#A4D233',
     CURRENT_UNSELECTED: '#D1D0D2',
@@ -178,4 +179,3 @@ export const getContainerBackgroundColor = (
   if (isSelected) return THEME_COLORS.PENDING
   return THEME_COLORS.TRANSPARENT
 }
-

@@ -104,7 +104,6 @@ import { PeriodDate } from '../screens/CalendarScreen'
 import { PredictionState } from './PredictionState'
 
 export function generatePeriodDates(predictionFullStateInfo: PredictionState) {
-
   const periodDates: Array<PeriodDate> = []
 
   // Helper function to generate period days from start date and period length
@@ -122,7 +121,7 @@ export function generatePeriodDates(predictionFullStateInfo: PredictionState) {
         date: date.toLocaleDateString('en-GB'), // Format DD/MM/YYYY
         mlGenerated: isMLGenerated,
         userVerified: userVerified,
-      });
+      })
     }
     return dates
   }

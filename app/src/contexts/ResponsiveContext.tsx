@@ -1,5 +1,11 @@
 import React from 'react'
-import { BreakPointSize, UIConfig, breakPoints, responsiveConfig, WidthBreakpointSize } from '../config/UIConfig'
+import {
+  BreakPointSize,
+  UIConfig,
+  breakPoints,
+  responsiveConfig,
+  WidthBreakpointSize,
+} from '../config/UIConfig'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { recordToArray } from '../services/utils'
 import { getWidthBreakpoint } from '../utils/responsive'

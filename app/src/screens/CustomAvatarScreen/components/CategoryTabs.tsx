@@ -36,7 +36,10 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
             key={category.key}
             onPress={() => onSelectCategory(category.key)}
             style={[styles.categoryButton, isSelected && styles.categoryButtonSelected]}
-            accessibilityLabel={getAccessibilityLabel('select_category_button') + `: ${category.translationKey}, ${isSelected ? 'selected' : 'tap to select'}`}
+            accessibilityLabel={
+              getAccessibilityLabel('select_category_button') +
+              `: ${category.translationKey}, ${isSelected ? 'selected' : 'tap to select'}`
+            }
             accessibilityRole="button"
           >
             <View
@@ -49,15 +52,15 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
               {categoryIcon && (
                 <Image
                   source={categoryIcon}
-                  style={[
-                    styles.categoryIconImage,
-                    isSelected && styles.categoryIconImageSelected,
-                  ]}
+                  style={[styles.categoryIconImage, isSelected && styles.categoryIconImageSelected]}
                   resizeMode="contain"
                 />
               )}
             </View>
-            <Text style={[styles.categoryLabel, isSelected && { fontWeight: 'bold' }]} enableTranslate={true}>
+            <Text
+              style={[styles.categoryLabel, isSelected && { fontWeight: 'bold' }]}
+              enableTranslate={true}
+            >
               {category.translationKey}
             </Text>
           </TouchableOpacity>
@@ -66,5 +69,3 @@ export const CategoryTabs: React.FC<CategoryTabsProps> = ({
     </View>
   )
 }
-
-

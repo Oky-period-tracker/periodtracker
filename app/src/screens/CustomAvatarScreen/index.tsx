@@ -66,14 +66,17 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
   const avatarSelectionConfig = UIConfig.avatarSelection
   const getAccessibilityLabel = useAccessibilityLabel()
   const cyclesNumber = useSelector(cyclesNumberSelector)
-  
-  const styles = React.useMemo(() => createCustomAvatarStyles(avatarConfig, avatarSelectionConfig, width), [avatarConfig, avatarSelectionConfig, width])
-  
+
+  const styles = React.useMemo(
+    () => createCustomAvatarStyles(avatarConfig, avatarSelectionConfig, width),
+    [avatarConfig, avatarSelectionConfig, width],
+  )
+
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     })
-    
+
     const parent = navigation.getParent()
     if (parent) {
       parent.setOptions({
@@ -84,12 +87,12 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
       })
     }
   }, [navigation])
-  
+
   const route = useRoute()
   const routeParams = route.params as { openNameModal?: boolean } | undefined
-  
+
   const hasOpenedNameModalRef = React.useRef(false)
-  
+
   useFocusEffect(
     React.useCallback(() => {
       const parent = navigation.getParent()
@@ -101,9 +104,9 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
           },
         })
       }
-      
+
       hasOpenedNameModalRef.current = false
-      
+
       return () => {
         if (parent) {
           parent.setOptions({
@@ -112,9 +115,9 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         }
         hasOpenedNameModalRef.current = false
       }
-    }, [navigation])
+    }, [navigation]),
   )
-  
+
   React.useEffect(() => {
     if (routeParams?.openNameModal && !hasOpenedNameModalRef.current) {
       setTimeout(() => {
@@ -125,13 +128,13 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
       }, 100)
     }
   }, [routeParams?.openNameModal, currentUser?.avatar?.name, navigation])
-  
+
   useFocusEffect(
     React.useCallback(() => {
       return () => {
         hasOpenedNameModalRef.current = false
       }
-    }, [])
+    }, []),
   )
   React.useEffect(() => {
     const checkFirstVisit = async () => {
@@ -140,7 +143,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         if (!hasVisited) {
           setFirstVisitTooltipVisible(true)
           await AsyncStorage.setItem('customizer_has_visited', 'true')
-          
+
           analytics?.().logEvent('CUSTOM_AVATAR_UNLOCK', {
             userId: currentUser?.id || null,
           })
@@ -168,7 +171,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
   }
 
   const [selectedCategory, setSelectedCategory] = React.useState<Category>('body')
-  
+
   const [avatarSelection, setAvatarSelection] = React.useState<AvatarSelection>(() => {
     let hasCustomAvatarParts = false
     if (currentUser?.avatar) {
@@ -181,9 +184,17 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
       const hasEyeColor = avatar.eyeColor !== null && avatar.eyeColor !== undefined
       const hasClothing = avatar.clothing !== null && avatar.clothing !== undefined
       const hasDevices = avatar.devices !== null && avatar.devices !== undefined
-      hasCustomAvatarParts = hasBody || hasHair || hasEyes || hasSkinColor || hasHairColor || hasEyeColor || hasClothing || hasDevices
+      hasCustomAvatarParts =
+        hasBody ||
+        hasHair ||
+        hasEyes ||
+        hasSkinColor ||
+        hasHairColor ||
+        hasEyeColor ||
+        hasClothing ||
+        hasDevices
     }
-    
+
     if (!hasCustomAvatarParts) {
       return {
         bodyType: 'body-medium',
@@ -198,25 +209,34 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         name: currentUser?.avatar?.name || DEFAULT_AVATAR.name,
       }
     }
-    
+
     if (currentUser?.avatar) {
       let bodyType: 'body-small' | 'body-medium' | 'body-large' = DEFAULT_AVATAR.bodyType
       if (currentUser.avatar.body) {
         if (currentUser.avatar.body === 'body1' || currentUser.avatar.body === 'body-small') {
           bodyType = 'body-small'
-        } else if (currentUser.avatar.body === 'body2' || currentUser.avatar.body === 'body-medium') {
+        } else if (
+          currentUser.avatar.body === 'body2' ||
+          currentUser.avatar.body === 'body-medium'
+        ) {
           bodyType = 'body-medium'
-        } else if (currentUser.avatar.body === 'body3' || currentUser.avatar.body === 'body-large') {
+        } else if (
+          currentUser.avatar.body === 'body3' ||
+          currentUser.avatar.body === 'body-large'
+        ) {
           bodyType = 'body-large'
         }
       }
-      
+
       const hasHairStyle = currentUser.avatar.hair !== null && currentUser.avatar.hair !== undefined
       const hasEyeShape = currentUser.avatar.eyes !== null && currentUser.avatar.eyes !== undefined
-      const hasSkinColor = currentUser.avatar.skinColor !== null && currentUser.avatar.skinColor !== undefined
-      const hasHairColor = currentUser.avatar.hairColor !== null && currentUser.avatar.hairColor !== undefined
-      const hasEyeColor = currentUser.avatar.eyeColor !== null && currentUser.avatar.eyeColor !== undefined
-      
+      const hasSkinColor =
+        currentUser.avatar.skinColor !== null && currentUser.avatar.skinColor !== undefined
+      const hasHairColor =
+        currentUser.avatar.hairColor !== null && currentUser.avatar.hairColor !== undefined
+      const hasEyeColor =
+        currentUser.avatar.eyeColor !== null && currentUser.avatar.eyeColor !== undefined
+
       return {
         bodyType: bodyType || DEFAULT_AVATAR.bodyType,
         skinColor: hasSkinColor ? currentUser.avatar.skinColor! : undefined,
@@ -241,83 +261,93 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
   const [nameModalVisible, setNameModalVisible] = React.useState(false)
   const [tempName, setTempName] = React.useState(avatarSelection.name)
 
-  const buildAvatarObject = React.useCallback((name?: string) => {
-    const updatedAvatar: any = {
-      customAvatarUnlocked: true,
-    }
-    
-    if (avatarSelection.bodyType) {
-      updatedAvatar.body = avatarSelection.bodyType
-    }
-    if (avatarSelection.hairStyle !== null && avatarSelection.hairStyle !== undefined) {
-      updatedAvatar.hair = avatarSelection.hairStyle
-    }
-    if (avatarSelection.eyeShape !== null && avatarSelection.eyeShape !== undefined) {
-      updatedAvatar.eyes = avatarSelection.eyeShape
-    }
-    updatedAvatar.smile = avatarSelection.smile || 'smile'
-    if (avatarSelection.clothing !== null && avatarSelection.clothing !== undefined) {
-      updatedAvatar.clothing = avatarSelection.clothing
-    }
-    if (avatarSelection.devices && avatarSelection.devices.length > 0) {
-      updatedAvatar.devices = avatarSelection.devices
-    }
-    if (avatarSelection.skinColor !== undefined) {
-      updatedAvatar.skinColor = avatarSelection.skinColor
-    }
-    if (avatarSelection.hairColor !== undefined) {
-      updatedAvatar.hairColor = avatarSelection.hairColor
-    }
-    if (avatarSelection.eyeColor !== undefined) {
-      updatedAvatar.eyeColor = avatarSelection.eyeColor
-    }
-    if (name && name.trim()) {
-      updatedAvatar.name = name.trim()
-    } else if (avatarSelection.name) {
-      updatedAvatar.name = avatarSelection.name
-    } else {
-      updatedAvatar.name = 'Friend'
-    }
+  const buildAvatarObject = React.useCallback(
+    (name?: string) => {
+      const updatedAvatar: any = {
+        customAvatarUnlocked: true,
+      }
 
-    return updatedAvatar
-  }, [avatarSelection])
+      if (avatarSelection.bodyType) {
+        updatedAvatar.body = avatarSelection.bodyType
+      }
+      if (avatarSelection.hairStyle !== null && avatarSelection.hairStyle !== undefined) {
+        updatedAvatar.hair = avatarSelection.hairStyle
+      }
+      if (avatarSelection.eyeShape !== null && avatarSelection.eyeShape !== undefined) {
+        updatedAvatar.eyes = avatarSelection.eyeShape
+      }
+      updatedAvatar.smile = avatarSelection.smile || 'smile'
+      if (avatarSelection.clothing !== null && avatarSelection.clothing !== undefined) {
+        updatedAvatar.clothing = avatarSelection.clothing
+      }
+      if (avatarSelection.devices && avatarSelection.devices.length > 0) {
+        updatedAvatar.devices = avatarSelection.devices
+      }
+      if (avatarSelection.skinColor !== undefined) {
+        updatedAvatar.skinColor = avatarSelection.skinColor
+      }
+      if (avatarSelection.hairColor !== undefined) {
+        updatedAvatar.hairColor = avatarSelection.hairColor
+      }
+      if (avatarSelection.eyeColor !== undefined) {
+        updatedAvatar.eyeColor = avatarSelection.eyeColor
+      }
+      if (name && name.trim()) {
+        updatedAvatar.name = name.trim()
+      } else if (avatarSelection.name) {
+        updatedAvatar.name = avatarSelection.name
+      } else {
+        updatedAvatar.name = 'Friend'
+      }
 
-  const saveAvatarToStore = React.useCallback((updatedAvatar: any) => {
-    dispatch(editUser({
-      avatar: updatedAvatar,
-    }))
+      return updatedAvatar
+    },
+    [avatarSelection],
+  )
 
-    const setAvatarAction = setAvatarWithValidation(
-      'friend', 
-      cyclesNumber || 0,
-      currentUser?.avatar?.customAvatarUnlocked === true
-    )
-    if (setAvatarAction) {
-      dispatch(setAvatarAction)
-    }
+  const saveAvatarToStore = React.useCallback(
+    (updatedAvatar: any) => {
+      dispatch(
+        editUser({
+          avatar: updatedAvatar,
+        }),
+      )
 
-    analytics?.().logEvent('CUSTOM_AVATAR_UPDATED', {
-      userId: currentUser?.id || null,
-      hasBody: !!updatedAvatar.body,
-      hasHair: !!updatedAvatar.hair,
-      hasEyes: !!updatedAvatar.eyes,
-      hasSkinColor: !!updatedAvatar.skinColor,
-      hasHairColor: !!updatedAvatar.hairColor,
-      hasEyeColor: !!updatedAvatar.eyeColor,
-      hasClothing: !!updatedAvatar.clothing,
-      hasDevices: !!updatedAvatar.devices,
-      hasName: !!updatedAvatar.name,
-    })
+      const setAvatarAction = setAvatarWithValidation(
+        'friend',
+        cyclesNumber || 0,
+        currentUser?.avatar?.customAvatarUnlocked === true,
+      )
+      if (setAvatarAction) {
+        dispatch(setAvatarAction)
+      }
 
-    if (appToken && currentUser) {
-      httpClient.updateAvatar({
-        appToken,
-        avatar: updatedAvatar,
-      }).catch(() => {
-        // Silently fail - local save already done, app works offline
+      analytics?.().logEvent('CUSTOM_AVATAR_UPDATED', {
+        userId: currentUser?.id || null,
+        hasBody: !!updatedAvatar.body,
+        hasHair: !!updatedAvatar.hair,
+        hasEyes: !!updatedAvatar.eyes,
+        hasSkinColor: !!updatedAvatar.skinColor,
+        hasHairColor: !!updatedAvatar.hairColor,
+        hasEyeColor: !!updatedAvatar.eyeColor,
+        hasClothing: !!updatedAvatar.clothing,
+        hasDevices: !!updatedAvatar.devices,
+        hasName: !!updatedAvatar.name,
       })
-    }
-  }, [dispatch, currentUser, appToken, cyclesNumber])
+
+      if (appToken && currentUser) {
+        httpClient
+          .updateAvatar({
+            appToken,
+            avatar: updatedAvatar,
+          })
+          .catch(() => {
+            // Silently fail - local save already done, app works offline
+          })
+      }
+    },
+    [dispatch, currentUser, appToken, cyclesNumber],
+  )
 
   const handleSave = () => {
     const updatedAvatar = buildAvatarObject()
@@ -386,11 +416,11 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
 
   return (
     <View style={[styles.screen, { backgroundColor: '#E3F2FD' }]}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingBottom: avatarConfig.spacing.medium + insets.bottom }
+          { paddingBottom: avatarConfig.spacing.medium + insets.bottom },
         ]}
         showsVerticalScrollIndicator={false}
       >
@@ -418,7 +448,9 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
             accessibilityRole="button"
           >
             <FontAwesome name="info-circle" size={18} color="#2196F3" />
-            <Text style={styles.tutorialButtonText} enableTranslate={true}>customizer_tutorial</Text>
+            <Text style={styles.tutorialButtonText} enableTranslate={true}>
+              customizer_tutorial
+            </Text>
           </TouchableOpacity>
 
           {renderAvatarPreview()}
@@ -438,7 +470,9 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
               accessibilityLabel={getAccessibilityLabel('customizer_exit')}
               accessibilityRole="button"
             >
-              <Text style={styles.buttonText} enableTranslate={true}>customizer_exit</Text>
+              <Text style={styles.buttonText} enableTranslate={true}>
+                customizer_exit
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSave}
@@ -446,7 +480,9 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
               accessibilityLabel={getAccessibilityLabel('customizer_save_friend')}
               accessibilityRole="button"
             >
-              <Text style={styles.buttonText} enableTranslate={true}>customizer_save_friend</Text>
+              <Text style={styles.buttonText} enableTranslate={true}>
+                customizer_save_friend
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

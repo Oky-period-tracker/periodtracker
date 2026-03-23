@@ -10,7 +10,6 @@ import { getDeviceSubcategory, DEVICE_SUBCATEGORIES } from '../constants'
 import type { AvatarSelection } from '../types'
 import type { UIConfig } from '../../../config/UIConfig'
 
-
 interface DeviceOptionsProps {
   avatarSelection: AvatarSelection
   onSelectionChange: (selection: AvatarSelection) => void
@@ -28,7 +27,7 @@ export const DeviceOptions: React.FC<DeviceOptionsProps> = ({
 }) => {
   const translate = useTranslate()
   const getAccessibilityLabel = useAccessibilityLabel()
-  
+
   const [devicePage, setDevicePage] = React.useState(0)
   const deviceScrollRef = React.useRef<ScrollView>(null)
   const isScrollingProgrammatically = React.useRef(false)
@@ -69,39 +68,45 @@ export const DeviceOptions: React.FC<DeviceOptionsProps> = ({
     }
   }, [devicePage, maxPage, snapInterval])
 
-  const handleScrollEnd = React.useCallback((event: any) => {
-    if (isScrollingProgrammatically.current) {
-      isScrollingProgrammatically.current = false
-      return
-    }
-    const offsetX = event.nativeEvent.contentOffset.x
-    const page = Math.round(offsetX / snapInterval)
-    const newPage = Math.max(0, Math.min(page, maxPage))
-    if (newPage !== devicePage) {
-      setDevicePage(newPage)
-    }
-  }, [snapInterval, maxPage, devicePage])
-
-  const handleDeviceSelect = React.useCallback((item: string) => {
-    const currentDevices = [...avatarSelection.devices]
-    const subcategory = getDeviceSubcategory(item)
-    const isSelected = currentDevices.includes(item)
-    
-    if (isSelected) {
-      const newDevices = currentDevices.filter(d => d !== item)
-      onSelectionChange({ ...avatarSelection, devices: newDevices })
-    } else {
-      let newDevices = [...currentDevices]
-      
-      if (subcategory && subcategory !== 'others') {
-        const subcategoryItems = DEVICE_SUBCATEGORIES[subcategory] as readonly string[]
-        newDevices = newDevices.filter(d => !subcategoryItems.includes(d))
+  const handleScrollEnd = React.useCallback(
+    (event: any) => {
+      if (isScrollingProgrammatically.current) {
+        isScrollingProgrammatically.current = false
+        return
       }
-      
-      newDevices.push(item)
-      onSelectionChange({ ...avatarSelection, devices: newDevices })
-    }
-  }, [avatarSelection, onSelectionChange])
+      const offsetX = event.nativeEvent.contentOffset.x
+      const page = Math.round(offsetX / snapInterval)
+      const newPage = Math.max(0, Math.min(page, maxPage))
+      if (newPage !== devicePage) {
+        setDevicePage(newPage)
+      }
+    },
+    [snapInterval, maxPage, devicePage],
+  )
+
+  const handleDeviceSelect = React.useCallback(
+    (item: string) => {
+      const currentDevices = [...avatarSelection.devices]
+      const subcategory = getDeviceSubcategory(item)
+      const isSelected = currentDevices.includes(item)
+
+      if (isSelected) {
+        const newDevices = currentDevices.filter((d) => d !== item)
+        onSelectionChange({ ...avatarSelection, devices: newDevices })
+      } else {
+        let newDevices = [...currentDevices]
+
+        if (subcategory && subcategory !== 'others') {
+          const subcategoryItems = DEVICE_SUBCATEGORIES[subcategory] as readonly string[]
+          newDevices = newDevices.filter((d) => !subcategoryItems.includes(d))
+        }
+
+        newDevices.push(item)
+        onSelectionChange({ ...avatarSelection, devices: newDevices })
+      }
+    },
+    [avatarSelection, onSelectionChange],
+  )
 
   const isNextDisabled = devicePage >= maxPage
   const itemHeight = avatarConfig.optionImageSize?.height || 100
@@ -109,7 +114,9 @@ export const DeviceOptions: React.FC<DeviceOptionsProps> = ({
   return (
     <View style={styles.optionsContainer}>
       <View style={styles.optionTitleRow}>
-        <Text style={styles.optionTitle} enableTranslate={true}>customizer_personal_items</Text>
+        <Text style={styles.optionTitle} enableTranslate={true}>
+          customizer_personal_items
+        </Text>
         <View style={styles.arrowButtons}>
           <TouchableOpacity
             onPress={handlePrevious}
@@ -118,7 +125,11 @@ export const DeviceOptions: React.FC<DeviceOptionsProps> = ({
             accessibilityLabel={getAccessibilityLabel('previous_page_button')}
             accessibilityRole="button"
           >
-            <FontAwesome name="chevron-left" size={16} color={devicePage === 0 ? '#ccc' : '#000000'} />
+            <FontAwesome
+              name="chevron-left"
+              size={16}
+              color={devicePage === 0 ? '#ccc' : '#000000'}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleNext}
@@ -127,7 +138,11 @@ export const DeviceOptions: React.FC<DeviceOptionsProps> = ({
             accessibilityLabel={getAccessibilityLabel('next_page_button')}
             accessibilityRole="button"
           >
-            <FontAwesome name="chevron-right" size={16} color={isNextDisabled ? '#ccc' : '#000000'} />
+            <FontAwesome
+              name="chevron-right"
+              size={16}
+              color={isNextDisabled ? '#ccc' : '#000000'}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -145,16 +160,16 @@ export const DeviceOptions: React.FC<DeviceOptionsProps> = ({
               contentContainerStyle={[
                 styles.paginatedOptions,
                 styles.lastOptionSection,
-                { 
-                  flexWrap: 'nowrap', 
-                  paddingRight: 0, 
+                {
+                  flexWrap: 'nowrap',
+                  paddingRight: 0,
                   paddingLeft: 0,
                   marginLeft: 0,
                   marginRight: 0,
                   overflow: 'visible',
                   justifyContent: 'flex-start',
                   gap: itemGap,
-                }
+                },
               ]}
               onMomentumScrollEnd={handleScrollEnd}
             >
@@ -177,7 +192,12 @@ export const DeviceOptions: React.FC<DeviceOptionsProps> = ({
                       },
                       isSelected && { borderColor: '#4CAF50' },
                     ]}
-                    accessibilityLabel={getAccessibilityLabel('select_option_button') + `: personal item ${translate(`customizer_device_${item}`)}, ${isSelected ? 'selected' : 'tap to select'}`}
+                    accessibilityLabel={
+                      getAccessibilityLabel('select_option_button') +
+                      `: personal item ${translate(`customizer_device_${item}`)}, ${
+                        isSelected ? 'selected' : 'tap to select'
+                      }`
+                    }
                     accessibilityRole="button"
                   >
                     {deviceImage && (
@@ -200,4 +220,3 @@ export const DeviceOptions: React.FC<DeviceOptionsProps> = ({
     </View>
   )
 }
-

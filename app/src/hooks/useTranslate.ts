@@ -74,9 +74,10 @@ const capitalizeFirstLetter = (text: string): string => {
 
 export const useTranslate = () => {
   const locale = useSelector(currentLocaleSelector)
-  
+
   // Get CMS translations (unified translations from CMS)
-  const selector = translationsSelector || ((state: ReduxState) => state?.content?.translations || {})
+  const selector =
+    translationsSelector || ((state: ReduxState) => state?.content?.translations || {})
   const cmsTranslations = useSelector(selector) || {}
 
   return (key: string): string => {
@@ -88,7 +89,7 @@ export const useTranslate = () => {
 
     // First try to get from CMS (unified translations)
     let translation = cmsTranslations[key]
-    
+
     // If not found in CMS, fall back to app translations
     if (!translation) {
       translation =

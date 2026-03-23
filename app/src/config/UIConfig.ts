@@ -6,11 +6,11 @@ export type BreakPointSize = 's' | 'm' | 'l' // | 'xl'
 export type WidthBreakpointSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 export const widthBreakpoints: Record<WidthBreakpointSize, number> = {
-  xs: 0,      // < 360dp (very small phones)
-  sm: 360,    // 360-480dp (small phones)
-  md: 480,    // 480-840dp (large phones/small tablets)
-  lg: 840,    // 840-1200dp (tablets)
-  xl: 1200,   // > 1200dp (large tablets)
+  xs: 0, // < 360dp (very small phones)
+  sm: 360, // 360-480dp (small phones)
+  md: 480, // 480-840dp (large phones/small tablets)
+  lg: 840, // 840-1200dp (tablets)
+  xl: 1200, // > 1200dp (large tablets)
 }
 
 export interface UIConfig {

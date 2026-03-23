@@ -6,9 +6,10 @@ import type { ReduxState } from '../redux/reducers'
 
 export const useAccessibilityLabel = () => {
   const translate = useTranslate()
-  
+
   // Ensure selector is always a function
-  const selector = translationsSelector || ((state: ReduxState) => state?.content?.translations || {})
+  const selector =
+    translationsSelector || ((state: ReduxState) => state?.content?.translations || {})
   const translations = useSelector(selector) || {}
 
   return (labelKey: string, shouldTranslate = true) => {
@@ -18,7 +19,7 @@ export const useAccessibilityLabel = () => {
 
     // First try to get from CMS (unified translations)
     let label = translations[labelKey]
-    
+
     // If not found in CMS, fall back to app translations (for backward compatibility)
     if (!label && shouldTranslate) {
       label = translate(labelKey)

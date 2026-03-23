@@ -6,7 +6,6 @@ import { generatePeriodDates } from '../prediction/predictionLogic'
 import { httpClient } from '../services/HttpClient'
 import { User } from '../types'
 
-
 /**
  * Hook for managing user period date entries.
  * Handles syncing user-verified and ML-predicted period dates

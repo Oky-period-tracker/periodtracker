@@ -5,7 +5,7 @@ import { scaleHorizontal, getResponsiveValue } from '../../utils/responsive'
 export const createCustomAvatarStyles = (
   config: UIConfig['avatarCustomization'],
   avatarSelectionConfig: UIConfig['avatarSelection'],
-  screenWidth?: number
+  screenWidth?: number,
 ) =>
   StyleSheet.create({
     screen: {
@@ -32,11 +32,11 @@ export const createCustomAvatarStyles = (
       flexDirection: 'row',
       alignItems: 'flex-end',
       marginBottom: config.spacing.medium,
-      paddingHorizontal: screenWidth 
-        ? (getResponsiveValue(screenWidth, {
+      paddingHorizontal: screenWidth
+        ? getResponsiveValue(screenWidth, {
             md: 14,
             lg: avatarSelectionConfig.titlePaddingHorizontal,
-          }) || avatarSelectionConfig.titlePaddingHorizontal)
+          }) || avatarSelectionConfig.titlePaddingHorizontal
         : avatarSelectionConfig.titlePaddingHorizontal,
       paddingTop: avatarSelectionConfig.paddingTop,
     },
@@ -397,9 +397,12 @@ export const createCustomAvatarStyles = (
       borderRadius: screenWidth && screenWidth >= 840 ? 24 : 20,
       padding: config.spacing.medium * 1.5,
       paddingTop: config.spacing.medium * 3.5,
-      width: screenWidth && screenWidth >= 840 
-        ? Math.min(screenWidth * 0.9, 600) 
-        : (screenWidth ? screenWidth * 0.95 : scaleHorizontal(320)),
+      width:
+        screenWidth && screenWidth >= 840
+          ? Math.min(screenWidth * 0.9, 600)
+          : screenWidth
+          ? screenWidth * 0.95
+          : scaleHorizontal(320),
       maxWidth: screenWidth && screenWidth >= 840 ? 600 : undefined,
       minWidth: undefined,
     },
@@ -503,5 +506,3 @@ export const createCustomAvatarStyles = (
       color: '#424242',
     },
   })
-
-

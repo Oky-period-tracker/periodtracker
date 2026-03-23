@@ -8,13 +8,12 @@ export type TranslationsResult = ReturnType<typeof fromTranslations>
 
 export function fromTranslations(response: TranslationsResponse) {
   const translations: Translations = {}
-  
+
   response.forEach((item) => {
     if (item.live !== false) {
       translations[item.key] = item.label
     }
   })
-  
+
   return { translations }
 }
-

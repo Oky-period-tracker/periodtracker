@@ -23,19 +23,19 @@ export const getWidthBreakpoint = (width: number): WidthBreakpointSize => {
  */
 export const getResponsiveValue = <T>(
   width: number,
-  values: Partial<Record<WidthBreakpointSize, T>>
+  values: Partial<Record<WidthBreakpointSize, T>>,
 ): T | undefined => {
   const breakpoint = getWidthBreakpoint(width)
-  
+
   // Try current breakpoint first, then fall back to smaller ones
   const order: WidthBreakpointSize[] = [breakpoint, 'lg', 'md', 'sm', 'xs']
-  
+
   for (const bp of order) {
     if (values[bp] !== undefined) {
       return values[bp]
     }
   }
-  
+
   return undefined
 }
 
@@ -89,4 +89,3 @@ export const scaleDimension = (value: number): number => {
 export const scaleOriginal = (value: number): number => {
   return scale(value)
 }
-

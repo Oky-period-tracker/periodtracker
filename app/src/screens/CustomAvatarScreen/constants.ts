@@ -28,14 +28,7 @@ export const HAIR_COLORS = [
   '#498CFA',
 ]
 
-export const EYE_COLORS = [
-  '#111111',
-  '#945A1C',
-  '#A88044',
-  '#909249',
-  '#6F979E',
-  '#ABADB3',
-]
+export const EYE_COLORS = ['#111111', '#945A1C', '#A88044', '#909249', '#6F979E', '#ABADB3']
 
 // Color name mapping for accessibility labels
 export const SKIN_COLOR_NAMES: Record<string, string> = {
@@ -80,7 +73,20 @@ export const COLORS_PER_PAGE = 6
 
 // Device subcategories - hidden logic
 export const DEVICE_SUBCATEGORIES = {
-  hats: ['bandana', 'beanie', 'beanie2', 'buckethat', 'cap', 'crown', 'flowers', 'hat', 'head', 'headband', 'sunhat', 'headphones'],
+  hats: [
+    'bandana',
+    'beanie',
+    'beanie2',
+    'buckethat',
+    'cap',
+    'crown',
+    'flowers',
+    'hat',
+    'head',
+    'headband',
+    'sunhat',
+    'headphones',
+  ],
   glasses: ['darkglasses', 'glasses', 'readingglasses2', 'sunglass1', 'sunglass2'],
   accessories: ['necklace1', 'necklace2', 'necklace3'],
   others: ['purse', 'prostetic2', 'prostetic1', 'cane', 'earings'],

@@ -3,7 +3,7 @@ import { WidthBreakpointSize, widthBreakpoints } from '../config/UIConfig'
 
 /**
  * Calculate item width to fit a specific number of items per row
- * 
+ *
  * @param containerWidth - Total available width for items
  * @param itemsPerRow - Desired number of items per row
  * @param marginHorizontal - Horizontal margin between items (scaled)
@@ -16,20 +16,20 @@ export const calculateItemWidth = (
   itemsPerRow: number,
   marginHorizontal: number = 0,
   containerPadding: number = 0,
-  safetyBuffer: number = 0
+  safetyBuffer: number = 0,
 ): number => {
   const totalMargins = marginHorizontal * (itemsPerRow - 1)
   const totalPadding = containerPadding * 2
   const availableWidth = containerWidth - totalMargins - totalPadding - safetyBuffer
-  
+
   if (availableWidth <= 0) return 0
-  
+
   return Math.floor(availableWidth / itemsPerRow)
 }
 
 /**
  * Calculate item width with min/max constraints
- * 
+ *
  * @param containerWidth - Total available width for items
  * @param itemsPerRow - Desired number of items per row
  * @param options - Configuration options
@@ -49,7 +49,7 @@ export interface CalculateItemWidthOptions {
 export const calculateItemWidthWithConstraints = (
   containerWidth: number,
   itemsPerRow: number,
-  options: CalculateItemWidthOptions = {}
+  options: CalculateItemWidthOptions = {},
 ): number => {
   const {
     marginHorizontal = 0,
@@ -71,7 +71,7 @@ export const calculateItemWidthWithConstraints = (
     itemsPerRow,
     scaledMargin,
     scaledPadding,
-    scaledBuffer
+    scaledBuffer,
   )
 
   let finalWidth = calculatedWidth
@@ -87,12 +87,12 @@ export const calculateItemWidthWithConstraints = (
     finalWidth = Math.min(finalWidth, scaledMaxWidth)
   }
 
-  return finalWidth > 0 ? finalWidth : (minWidth ? scaleHorizontal(minWidth) : 0)
+  return finalWidth > 0 ? finalWidth : minWidth ? scaleHorizontal(minWidth) : 0
 }
 
 /**
  * Verify that a specific number of items fit in the container
- * 
+ *
  * @param itemWidth - Width of each item
  * @param itemsPerRow - Number of items to check
  * @param containerWidth - Total container width
@@ -103,16 +103,16 @@ export const verifyItemsFit = (
   itemWidth: number,
   itemsPerRow: number,
   containerWidth: number,
-  marginHorizontal: number = 0
+  marginHorizontal: number = 0,
 ): boolean => {
-  const totalWidth = (itemWidth * itemsPerRow) + (marginHorizontal * (itemsPerRow - 1))
+  const totalWidth = itemWidth * itemsPerRow + marginHorizontal * (itemsPerRow - 1)
   return totalWidth <= containerWidth
 }
 
 /**
  * Calculate optimal item width ensuring exact number of items per row
  * Will adjust width if needed to prevent overflow or underflow
- * 
+ *
  * @param containerWidth - Total available width
  * @param itemsPerRow - Desired number of items per row
  * @param options - Configuration options
@@ -121,7 +121,7 @@ export const verifyItemsFit = (
 export const calculateOptimalItemWidth = (
   containerWidth: number,
   itemsPerRow: number,
-  options: CalculateItemWidthOptions = {}
+  options: CalculateItemWidthOptions = {},
 ): number => {
   const {
     marginHorizontal = 0,
@@ -139,31 +139,27 @@ export const calculateOptimalItemWidth = (
   const scaledBuffer = scaleBuffer ? scaleHorizontal(safetyBuffer) : safetyBuffer
 
   // Initial calculation
-  let finalWidth = calculateItemWidthWithConstraints(
-    containerWidth,
-    itemsPerRow,
-    {
-      marginHorizontal: scaledMargin,
-      containerPadding: scaledPadding,
-      safetyBuffer: scaledBuffer,
-      minWidth,
-      maxWidth,
-      scaleMargins: false,
-      scalePadding: false,
-      scaleBuffer: false,
-    }
-  )
+  let finalWidth = calculateItemWidthWithConstraints(containerWidth, itemsPerRow, {
+    marginHorizontal: scaledMargin,
+    containerPadding: scaledPadding,
+    safetyBuffer: scaledBuffer,
+    minWidth,
+    maxWidth,
+    scaleMargins: false,
+    scalePadding: false,
+    scaleBuffer: false,
+  })
 
   // Verify items fit correctly
-  const totalWidth = (finalWidth * itemsPerRow) + (scaledMargin * (itemsPerRow - 1))
-  const availableWidth = containerWidth - (scaledPadding * 2) - scaledBuffer
+  const totalWidth = finalWidth * itemsPerRow + scaledMargin * (itemsPerRow - 1)
+  const availableWidth = containerWidth - scaledPadding * 2 - scaledBuffer
 
   // If items don't fit, recalculate
   if (totalWidth > availableWidth) {
     const recalculatedWidth = Math.floor(
-      (availableWidth - (scaledMargin * (itemsPerRow - 1))) / itemsPerRow
+      (availableWidth - scaledMargin * (itemsPerRow - 1)) / itemsPerRow,
     )
-    
+
     if (minWidth !== undefined) {
       const scaledMinWidth = scaleHorizontal(minWidth)
       finalWidth = Math.max(recalculatedWidth, scaledMinWidth)
@@ -173,17 +169,17 @@ export const calculateOptimalItemWidth = (
   }
 
   // Check if one more item would fit (to prevent underutilization)
-  const nextItemTotal = (finalWidth * (itemsPerRow + 1)) + (scaledMargin * itemsPerRow)
+  const nextItemTotal = finalWidth * (itemsPerRow + 1) + scaledMargin * itemsPerRow
   if (nextItemTotal <= availableWidth && maxWidth === undefined) {
     // One more item would fit, but we want exactly itemsPerRow
     // Slightly increase width to prevent this
     const maxWidthForExactFit = Math.floor(
-      (availableWidth - (scaledMargin * (itemsPerRow - 1))) / itemsPerRow
+      (availableWidth - scaledMargin * (itemsPerRow - 1)) / itemsPerRow,
     )
     finalWidth = Math.min(finalWidth, maxWidthForExactFit)
   }
 
-  return finalWidth > 0 ? finalWidth : (minWidth ? scaleHorizontal(minWidth) : 0)
+  return finalWidth > 0 ? finalWidth : minWidth ? scaleHorizontal(minWidth) : 0
 }
 
 /**
@@ -194,7 +190,7 @@ export const calculateOptimalItemWidth = (
  */
 export const getResponsiveMargin = (
   width: number,
-  margins: Partial<Record<WidthBreakpointSize, number>>
+  margins: Partial<Record<WidthBreakpointSize, number>>,
 ): number => {
   if (width >= widthBreakpoints.xl && margins.xl !== undefined) return scaleHorizontal(margins.xl)
   if (width >= widthBreakpoints.lg && margins.lg !== undefined) return scaleHorizontal(margins.lg)
@@ -212,7 +208,7 @@ export const getResponsiveMargin = (
  */
 export const getResponsivePadding = (
   width: number,
-  paddings: Partial<Record<WidthBreakpointSize, number>>
+  paddings: Partial<Record<WidthBreakpointSize, number>>,
 ): number => {
   if (width >= widthBreakpoints.xl && paddings.xl !== undefined) return scaleHorizontal(paddings.xl)
   if (width >= widthBreakpoints.lg && paddings.lg !== undefined) return scaleHorizontal(paddings.lg)
@@ -221,4 +217,3 @@ export const getResponsivePadding = (
   if (paddings.xs !== undefined) return scaleHorizontal(paddings.xs)
   return 0
 }
-

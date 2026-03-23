@@ -32,7 +32,6 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
   const styles = createAvatarTutorialModalStyles(UIConfig.avatarCustomization, width)
   const currentStepRef = React.useRef(currentStep)
 
-
   const totalSteps = 5
 
   // Keep ref in sync with state
@@ -66,7 +65,9 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (_, gestureState) => {
         // Only respond to horizontal swipes
-        return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 10
+        return (
+          Math.abs(gestureState.dx) > Math.abs(gestureState.dy) && Math.abs(gestureState.dx) > 10
+        )
       },
       onPanResponderRelease: (_, gestureState) => {
         const swipeThreshold = 50
@@ -85,7 +86,7 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
           }
         }
       },
-    })
+    }),
   ).current
 
   const getStepContent = () => {
@@ -142,15 +143,17 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
         <View style={styles.modal} {...panResponder.panHandlers}>
           {/* Header */}
           <View style={styles.header}>
-            <Button 
-              onPress={handleBack} 
+            <Button
+              onPress={handleBack}
               style={styles.backButton}
               accessibilityLabel={getAccessibilityLabel('arrow_button')}
             >
               <FontAwesome size={12} name={'arrow-left'} color={'#fff'} />
             </Button>
             <View style={styles.headerTitleContainer}>
-              <Text style={styles.headerTitle} enableTranslate={true}>customizer_tutorial_title</Text>
+              <Text style={styles.headerTitle} enableTranslate={true}>
+                customizer_tutorial_title
+              </Text>
             </View>
           </View>
 
@@ -180,18 +183,15 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
             {Array.from({ length: totalSteps }).map((_, index) => (
               <View
                 key={index}
-                style={[
-                  styles.progressDot,
-                  index + 1 === currentStep && styles.progressDotActive,
-                ]}
+                style={[styles.progressDot, index + 1 === currentStep && styles.progressDotActive]}
               />
             ))}
           </View>
 
           {/* Navigation Buttons */}
           <View style={styles.navigationContainer}>
-            <TouchableOpacity 
-              onPress={handleBack} 
+            <TouchableOpacity
+              onPress={handleBack}
               style={[styles.navButton, styles.navButtonBack]}
               accessibilityLabel={getAccessibilityLabel('customizer_tutorial_back')}
               accessibilityRole="button"
@@ -200,21 +200,27 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
                 customizer_tutorial_back
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={handleNext} 
+            <TouchableOpacity
+              onPress={handleNext}
               style={[styles.navButton, styles.navButtonNext]}
-              accessibilityLabel={getAccessibilityLabel(currentStep === totalSteps ? 'customizer_tutorial_finish' : 'customizer_tutorial_next')}
+              accessibilityLabel={getAccessibilityLabel(
+                currentStep === totalSteps
+                  ? 'customizer_tutorial_finish'
+                  : 'customizer_tutorial_next',
+              )}
               accessibilityRole="button"
             >
               <Text style={styles.navButtonTextNext} enableTranslate={true}>
-                {currentStep === totalSteps ? 'customizer_tutorial_finish' : 'customizer_tutorial_next'}
+                {currentStep === totalSteps
+                  ? 'customizer_tutorial_finish'
+                  : 'customizer_tutorial_next'}
               </Text>
             </TouchableOpacity>
           </View>
 
           {/* Skip Tutorial Link */}
-          <TouchableOpacity 
-            onPress={handleSkip} 
+          <TouchableOpacity
+            onPress={handleSkip}
             style={styles.skipContainer}
             accessibilityLabel={getAccessibilityLabel('skip_tutorial_button')}
             accessibilityRole="button"

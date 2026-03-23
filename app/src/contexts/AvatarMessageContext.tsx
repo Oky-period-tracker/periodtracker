@@ -30,7 +30,8 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
   // Check if locks are locked
   // If customAvatarUnlocked is true, locks are permanently unlocked regardless of cyclesNumber
   // Otherwise, check if cyclesNumber < 3
-  const isLocked = currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
+  const isLocked =
+    currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
 
   // Track lock messages - show them first when locked
   const lockMessagesRef = React.useRef<{ content: string; id: string }[]>([])
@@ -44,7 +45,7 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     }
     return [
       { content: translate('avatar_message_enter_period_days'), id: 'lock_message_1' },
-      { content: translate('avatar_message_keep_entering_period_days'), id: 'lock_message_2' }
+      { content: translate('avatar_message_keep_entering_period_days'), id: 'lock_message_2' },
     ]
   }, [isLocked, translate])
 
@@ -92,7 +93,7 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     if (lockMessage) {
       setMessage(lockMessage.content)
       currentLockMessageIndexRef.current++
-      
+
       // If we've shown all lock messages, mark as done
       if (currentLockMessageIndexRef.current >= lockMessagesRef.current.length) {
         currentLockMessageIndexRef.current = -1
@@ -128,7 +129,14 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
       }, 500)
       return () => clearTimeout(timeout)
     }
-  }, [isScreenFocussed, isLocked, message, availableMessages, setNextLockMessage, setRandomAvatarMessage])
+  }, [
+    isScreenFocussed,
+    isLocked,
+    message,
+    availableMessages,
+    setNextLockMessage,
+    setRandomAvatarMessage,
+  ])
 
   // ===== Show next message after current message is cleared ===== //
   React.useEffect(() => {
@@ -157,7 +165,14 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
       }, RANDOM_MESSAGE_INTERVAL)
       return () => clearTimeout(timeout)
     }
-  }, [message, isScreenFocussed, isLocked, availableMessages, setNextLockMessage, setRandomAvatarMessage])
+  }, [
+    message,
+    isScreenFocussed,
+    isLocked,
+    availableMessages,
+    setNextLockMessage,
+    setRandomAvatarMessage,
+  ])
 
   // ===== Clear message ===== //
   React.useEffect(() => {

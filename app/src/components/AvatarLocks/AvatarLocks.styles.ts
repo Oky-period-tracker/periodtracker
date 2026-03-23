@@ -11,4 +11,3 @@ export const styles = StyleSheet.create({
     // Size is set dynamically based on UIConfig.progressSection.iconSize
   },
 })
-

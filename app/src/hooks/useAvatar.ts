@@ -65,4 +65,3 @@ export const useAvatar = (): AvatarData | null => {
     name: avatar.name ?? '',
   }
 }
-

@@ -9,7 +9,6 @@ import { CLOTHING_OPTIONS } from '../options'
 import type { AvatarSelection } from '../types'
 import type { UIConfig } from '../../../config/UIConfig'
 
-
 interface ClothingOptionsProps {
   avatarSelection: AvatarSelection
   onSelectionChange: (selection: AvatarSelection) => void
@@ -27,7 +26,7 @@ export const ClothingOptions: React.FC<ClothingOptionsProps> = ({
 }) => {
   const translate = useTranslate()
   const getAccessibilityLabel = useAccessibilityLabel()
-  
+
   const [clothingPage, setClothingPage] = React.useState(0)
   const clothingScrollRef = React.useRef<ScrollView>(null)
   const isScrollingProgrammatically = React.useRef(false)
@@ -68,26 +67,32 @@ export const ClothingOptions: React.FC<ClothingOptionsProps> = ({
     }
   }, [clothingPage, maxPage, snapInterval])
 
-  const handleScrollEnd = React.useCallback((event: any) => {
-    if (isScrollingProgrammatically.current) {
-      isScrollingProgrammatically.current = false
-      return
-    }
-    const offsetX = event.nativeEvent.contentOffset.x
-    const page = Math.round(offsetX / snapInterval)
-    const newPage = Math.max(0, Math.min(page, maxPage))
-    if (newPage !== clothingPage) {
-      setClothingPage(newPage)
-    }
-  }, [snapInterval, maxPage, clothingPage])
+  const handleScrollEnd = React.useCallback(
+    (event: any) => {
+      if (isScrollingProgrammatically.current) {
+        isScrollingProgrammatically.current = false
+        return
+      }
+      const offsetX = event.nativeEvent.contentOffset.x
+      const page = Math.round(offsetX / snapInterval)
+      const newPage = Math.max(0, Math.min(page, maxPage))
+      if (newPage !== clothingPage) {
+        setClothingPage(newPage)
+      }
+    },
+    [snapInterval, maxPage, clothingPage],
+  )
 
-  const handleItemSelect = React.useCallback((item: string) => {
-    const isSelected = avatarSelection.clothing === item
-    onSelectionChange({
-      ...avatarSelection,
-      clothing: isSelected ? null : item
-    })
-  }, [avatarSelection, onSelectionChange])
+  const handleItemSelect = React.useCallback(
+    (item: string) => {
+      const isSelected = avatarSelection.clothing === item
+      onSelectionChange({
+        ...avatarSelection,
+        clothing: isSelected ? null : item,
+      })
+    },
+    [avatarSelection, onSelectionChange],
+  )
 
   const isNextDisabled = clothingPage >= maxPage
   const itemHeight = avatarConfig.optionImageSize?.height || 100
@@ -95,7 +100,9 @@ export const ClothingOptions: React.FC<ClothingOptionsProps> = ({
   return (
     <View style={styles.optionsContainer}>
       <View style={styles.optionTitleRow}>
-        <Text style={styles.optionTitle} enableTranslate={true}>customizer_clothes</Text>
+        <Text style={styles.optionTitle} enableTranslate={true}>
+          customizer_clothes
+        </Text>
         <View style={styles.arrowButtons}>
           <TouchableOpacity
             onPress={handlePrevious}
@@ -104,7 +111,11 @@ export const ClothingOptions: React.FC<ClothingOptionsProps> = ({
             accessibilityLabel={getAccessibilityLabel('previous_page_button')}
             accessibilityRole="button"
           >
-            <FontAwesome name="chevron-left" size={16} color={clothingPage === 0 ? '#ccc' : '#000000'} />
+            <FontAwesome
+              name="chevron-left"
+              size={16}
+              color={clothingPage === 0 ? '#ccc' : '#000000'}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleNext}
@@ -113,7 +124,11 @@ export const ClothingOptions: React.FC<ClothingOptionsProps> = ({
             accessibilityLabel={getAccessibilityLabel('next_page_button')}
             accessibilityRole="button"
           >
-            <FontAwesome name="chevron-right" size={16} color={isNextDisabled ? '#ccc' : '#000000'} />
+            <FontAwesome
+              name="chevron-right"
+              size={16}
+              color={isNextDisabled ? '#ccc' : '#000000'}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -131,54 +146,59 @@ export const ClothingOptions: React.FC<ClothingOptionsProps> = ({
               contentContainerStyle={[
                 styles.paginatedOptions,
                 styles.lastOptionSection,
-                { 
-                  flexWrap: 'nowrap', 
-                  paddingRight: 0, 
+                {
+                  flexWrap: 'nowrap',
+                  paddingRight: 0,
                   paddingLeft: 0,
                   marginLeft: 0,
                   marginRight: 0,
                   overflow: 'visible',
                   justifyContent: 'flex-start',
                   gap: itemGap,
-                }
+                },
               ]}
               onMomentumScrollEnd={handleScrollEnd}
             >
-            {CLOTHING_OPTIONS.map((item) => {
-              const clothingImage = getSelectionAsset('clothing', item)
-              const isSelected = avatarSelection.clothing === item
-              return (
-                <TouchableOpacity
-                  key={item}
-                  onPress={() => handleItemSelect(item)}
-                  style={[
-                    {
-                      width: itemWidth,
-                      height: itemHeight,
-                      borderRadius: avatarConfig.spacing.small,
-                      borderWidth: avatarSelectionConfig.borderWidth || 2,
-                      borderColor: 'transparent',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    },
-                    isSelected && { borderColor: '#4CAF50' },
-                  ]}
-                  accessibilityLabel={getAccessibilityLabel('select_option_button') + `: clothing ${translate(`customizer_clothing_${item}`)}, ${isSelected ? 'selected' : 'tap to select'}`}
-                  accessibilityRole="button"
-                >
-                  {clothingImage && (
-                    <Image
-                      source={clothingImage as any}
-                      style={{
-                        width: itemWidth * 0.96,
-                        height: itemHeight * 0.8,
-                      }}
-                      resizeMode="contain"
-                    />
-                  )}
-                </TouchableOpacity>
-              )
-            })}
+              {CLOTHING_OPTIONS.map((item) => {
+                const clothingImage = getSelectionAsset('clothing', item)
+                const isSelected = avatarSelection.clothing === item
+                return (
+                  <TouchableOpacity
+                    key={item}
+                    onPress={() => handleItemSelect(item)}
+                    style={[
+                      {
+                        width: itemWidth,
+                        height: itemHeight,
+                        borderRadius: avatarConfig.spacing.small,
+                        borderWidth: avatarSelectionConfig.borderWidth || 2,
+                        borderColor: 'transparent',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      },
+                      isSelected && { borderColor: '#4CAF50' },
+                    ]}
+                    accessibilityLabel={
+                      getAccessibilityLabel('select_option_button') +
+                      `: clothing ${translate(`customizer_clothing_${item}`)}, ${
+                        isSelected ? 'selected' : 'tap to select'
+                      }`
+                    }
+                    accessibilityRole="button"
+                  >
+                    {clothingImage && (
+                      <Image
+                        source={clothingImage as any}
+                        style={{
+                          width: itemWidth * 0.96,
+                          height: itemHeight * 0.8,
+                        }}
+                        resizeMode="contain"
+                      />
+                    )}
+                  </TouchableOpacity>
+                )
+              })}
             </ScrollView>
           </View>
         </View>
@@ -186,4 +206,3 @@ export const ClothingOptions: React.FC<ClothingOptionsProps> = ({
     </View>
   )
 }
-

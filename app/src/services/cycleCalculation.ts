@@ -16,10 +16,10 @@ export function calculateCycles(metadata: UserMetadata | null | undefined): Cycl
 
   // Filter and sort verified period dates
   const verifiedPeriodDates = metadata.periodDates
-    .filter(periodDate => {
+    .filter((periodDate) => {
       return periodDate.userVerified === true
     })
-    .map(periodDate => {
+    .map((periodDate) => {
       try {
         // Try DD/MM/YYYY format first (from DayModal)
         let parsed = moment(periodDate.date, 'DD/MM/YYYY', true)

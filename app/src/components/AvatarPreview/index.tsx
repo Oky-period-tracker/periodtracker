@@ -2,7 +2,11 @@ import * as React from 'react'
 import { View, StyleSheet, ViewStyle } from 'react-native'
 import { getPreviewAsset, BodySize } from '../../resources/assets/friendAssets'
 import { getDarkerSkinColor } from '../../utils/colorUtils'
-import { BodySmall, BodyMedium, BodyLarge } from '../../resources/assets/images/avatars/friend/avatar-parts/bodies/BodyComponents'
+import {
+  BodySmall,
+  BodyMedium,
+  BodyLarge,
+} from '../../resources/assets/images/avatars/friend/avatar-parts/bodies/BodyComponents'
 import { SharedValue } from 'react-native-reanimated'
 
 export interface AvatarPreviewProps {
@@ -24,14 +28,22 @@ export interface AvatarPreviewProps {
     head?: { translateX?: SharedValue<number>; translateY?: SharedValue<number> }
     leftLeg?: { translateY?: SharedValue<number>; scaleY?: SharedValue<number> }
     rightLeg?: { translateY?: SharedValue<number>; scaleY?: SharedValue<number> }
-    leftHand?: { rotation?: SharedValue<number>; translateX?: SharedValue<number>; translateY?: SharedValue<number> }
-    rightHand?: { rotation?: SharedValue<number>; translateX?: SharedValue<number>; translateY?: SharedValue<number> }
+    leftHand?: {
+      rotation?: SharedValue<number>
+      translateX?: SharedValue<number>
+      translateY?: SharedValue<number>
+    }
+    rightHand?: {
+      rotation?: SharedValue<number>
+      translateX?: SharedValue<number>
+      translateY?: SharedValue<number>
+    }
     eyes?: { translateX?: SharedValue<number>; translateY?: SharedValue<number> }
   }
 }
 
 // Type for SVG component (returned by react-native-svg-transformer)
-type SvgComponent = React.ComponentType<{ 
+type SvgComponent = React.ComponentType<{
   width?: number | string
   height?: number | string
   color?: string
@@ -41,7 +53,7 @@ type SvgComponent = React.ComponentType<{
 /**
  * Reusable AvatarPreview component that stacks SVG layers and applies colors
  * Can be used throughout the app to display custom avatars
- * 
+ *
  * Body components are JSX components with color props (BodyComponents.tsx)
  * Other parts use react-native-svg-transformer to import SVGs as React components
  * Colors are applied via props for body, and `color`/`fill` props for other parts
@@ -67,7 +79,6 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
     return 'medium'
   }, [bodyType])
 
-
   // Normalize devices to array format (handle both string and array)
   const devicesArray = React.useMemo(() => {
     if (!devices) return []
@@ -78,8 +89,17 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
   // Check if any device is a prosthetic type that needs to render before clothing
   const isProstheticDevice = React.useMemo(() => {
     if (!devicesArray || devicesArray.length === 0) return false
-    const prostheticDevices = ['prostetic1', 'prostetic2', 'prostetic2-small', 'prostetic2-medium', 'prostetic2-large', 'prosteticleg2-small', 'prosteticleg2-medium', 'prosteticleg2-large']
-    return devicesArray.some(device => prostheticDevices.includes(device))
+    const prostheticDevices = [
+      'prostetic1',
+      'prostetic2',
+      'prostetic2-small',
+      'prostetic2-medium',
+      'prostetic2-large',
+      'prosteticleg2-small',
+      'prosteticleg2-medium',
+      'prosteticleg2-large',
+    ]
+    return devicesArray.some((device) => prostheticDevices.includes(device))
   }, [devicesArray])
 
   // Load body component based on size (now using JSX components with color props)
@@ -95,23 +115,25 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
   const SmileSvg = smile ? getPreviewAsset('smile', smile, bodySize) : null
   const EyeSvg = getPreviewAsset('eyes', eyeShape, bodySize)
   const ClothingSvg = getPreviewAsset('clothing', clothing, bodySize)
-  
+
   // Load device SVGs for all selected devices, separated by subcategory
   const DeviceSvgs = React.useMemo(() => {
-    return devicesArray.map(device => ({
-      device,
-      svg: getPreviewAsset('devices', device, bodySize),
-      isAccessory: ['necklace1', 'necklace2', 'necklace3'].includes(device)
-    })).filter(item => item.svg !== null)
+    return devicesArray
+      .map((device) => ({
+        device,
+        svg: getPreviewAsset('devices', device, bodySize),
+        isAccessory: ['necklace1', 'necklace2', 'necklace3'].includes(device),
+      }))
+      .filter((item) => item.svg !== null)
   }, [devicesArray, bodySize])
-  
+
   // Separate devices into accessories and non-accessories
   const AccessorySvgs = React.useMemo(() => {
-    return DeviceSvgs.filter(item => item.isAccessory)
+    return DeviceSvgs.filter((item) => item.isAccessory)
   }, [DeviceSvgs])
-  
+
   const NonAccessoryDeviceSvgs = React.useMemo(() => {
-    return DeviceSvgs.filter(item => !item.isAccessory)
+    return DeviceSvgs.filter((item) => !item.isAccessory)
   }, [DeviceSvgs])
 
   /**
@@ -129,26 +151,29 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
    * @param props - Object containing width and height for the SVG
    * @returns The rendered body component, or null if no BodyComponent is loaded
    */
-  const renderBodySvg = React.useCallback((props: any) => {
-    if (!BodyComponent) {
-      return null
-    }
-    
-    // Calculate darker color if skin color is provided
-    const darkerColor = skinColor ? getDarkerSkinColor(skinColor) : '#C1C1C1'
-    const mainColor = skinColor || '#EFEFEF'
-    
-    // Render body component with color props and animated transforms
-    return (
-      <BodyComponent
-        width={props.width}
-        height={props.height}
-        mainColor={mainColor}
-        darkerColor={darkerColor}
-        animatedTransforms={animatedTransforms}
-      />
-    )
-  }, [BodyComponent, skinColor, animatedTransforms])
+  const renderBodySvg = React.useCallback(
+    (props: any) => {
+      if (!BodyComponent) {
+        return null
+      }
+
+      // Calculate darker color if skin color is provided
+      const darkerColor = skinColor ? getDarkerSkinColor(skinColor) : '#C1C1C1'
+      const mainColor = skinColor || '#EFEFEF'
+
+      // Render body component with color props and animated transforms
+      return (
+        <BodyComponent
+          width={props.width}
+          height={props.height}
+          mainColor={mainColor}
+          darkerColor={darkerColor}
+          animatedTransforms={animatedTransforms}
+        />
+      )
+    },
+    [BodyComponent, skinColor, animatedTransforms],
+  )
 
   /**
    * Safely renders an SVG component, returning null if the component is invalid.
@@ -176,7 +201,13 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
       {/* Hair layer with color */}
       {HairSvg && isValidComponent(HairSvg) && hairColor && (
         <View style={[styles.layer, styles.hairLayer]}>
-          {renderSvg(HairSvg, { width, height, color: hairColor, fill: hairColor, animatedTransforms })}
+          {renderSvg(HairSvg, {
+            width,
+            height,
+            color: hairColor,
+            fill: hairColor,
+            animatedTransforms,
+          })}
         </View>
       )}
       {/* Hair layer without color (if hair selected but no color) */}
@@ -196,7 +227,13 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
       {/* Eyes layer with color */}
       {EyeSvg && isValidComponent(EyeSvg) && eyeColor && (
         <View style={[styles.layer, styles.eyeLayer]}>
-          {renderSvg(EyeSvg, { width, height, color: eyeColor, fill: eyeColor, animatedTransforms })}
+          {renderSvg(EyeSvg, {
+            width,
+            height,
+            color: eyeColor,
+            fill: eyeColor,
+            animatedTransforms,
+          })}
         </View>
       )}
       {/* Eyes layer without color (if eyes selected but no color) */}
@@ -217,9 +254,12 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
       {NonAccessoryDeviceSvgs.map(({ device, svg }) => {
         if (!svg || !isValidComponent(svg)) return null
         return (
-          <View 
-            key={device} 
-            style={[styles.layer, isProstheticDevice ? styles.deviceLayerProsthetic : styles.deviceLayer]}
+          <View
+            key={device}
+            style={[
+              styles.layer,
+              isProstheticDevice ? styles.deviceLayerProsthetic : styles.deviceLayer,
+            ]}
           >
             {renderSvg(svg, { width, height, animatedTransforms })}
           </View>
@@ -237,10 +277,7 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
       {AccessorySvgs.map(({ device, svg }) => {
         if (!svg || !isValidComponent(svg)) return null
         return (
-          <View 
-            key={device} 
-            style={[styles.layer, styles.accessoryLayer]}
-          >
+          <View key={device} style={[styles.layer, styles.accessoryLayer]}>
             {renderSvg(svg, { width, height, animatedTransforms })}
           </View>
         )

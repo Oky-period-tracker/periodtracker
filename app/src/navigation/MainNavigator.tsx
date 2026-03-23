@@ -65,7 +65,7 @@ function MainNavigator() {
             // Reset ProfileStack to initial route (Profile) when tab is pressed
             // Use React Navigation's built-in utility to get the focused route name
             const focusedRouteName = getFocusedRouteNameFromRoute(route)
-            
+
             // If we're not on Profile screen (the initial route), navigate to it
             if (focusedRouteName && focusedRouteName !== 'Profile') {
               e.preventDefault()

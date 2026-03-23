@@ -126,17 +126,23 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const carouselHidden = state.isPlaying && !['track', 'summary', 'stars'].includes(step ?? '')
 
   const goToCalendar = () => navigation.navigate('Calendar')
-  
+
   return (
     <>
       <View style={styles.screen}>
         <View style={styles.body} onLayout={onBodyLayout}>
           <View style={styles.topLeft} onLayout={onTopLeftLayout}>
             <View style={styles.circleProgressContainer}>
-            <CircleProgress onPress={goToCalendar} style={circleProgressHidden && styles.hidden} />
-            <TouchableOpacity onPress={goToCalendar} style={circleProgressHidden && styles.hidden}>
-              <Text>calendar</Text>
-            </TouchableOpacity>
+              <CircleProgress
+                onPress={goToCalendar}
+                style={circleProgressHidden && styles.hidden}
+              />
+              <TouchableOpacity
+                onPress={goToCalendar}
+                style={circleProgressHidden && styles.hidden}
+              >
+                <Text>calendar</Text>
+              </TouchableOpacity>
             </View>
             <Avatar style={avatarHidden && styles.hidden} />
           </View>
@@ -166,7 +172,6 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
             data={selectedItem}
             hideLaunchButton={false}
             onHandleResponse={handleDayModalResponse} // Pass the method as a prop
-
           />
         </View>
       )}

@@ -12,4 +12,3 @@ export interface AvatarSelection {
 }
 
 export type Category = 'body' | 'hair' | 'eyes' | 'clothing' | 'devices'
-

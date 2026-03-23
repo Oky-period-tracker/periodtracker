@@ -27,7 +27,7 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
 }) => {
   const translate = useTranslate()
   const getAccessibilityLabel = useAccessibilityLabel()
-  
+
   const [skinColorPage, setSkinColorPage] = React.useState(0)
   const skinColorScrollRef = React.useRef<ScrollView>(null)
   const isScrollingProgrammatically = React.useRef(false)
@@ -36,7 +36,7 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
     if (skinColorPage > 0) {
       const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
       const spacing = scaleHorizontal(10)
-      const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
+      const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
       const newPage = skinColorPage - 1
       const scrollTo = newPage * containerWidth
       isScrollingProgrammatically.current = true
@@ -53,7 +53,7 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
     if (skinColorPage < maxPage) {
       const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
       const spacing = scaleHorizontal(10)
-      const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
+      const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
       const newPage = skinColorPage + 1
       const scrollTo = newPage * containerWidth
       isScrollingProgrammatically.current = true
@@ -65,55 +65,69 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
     }
   }, [skinColorPage, avatarConfig])
 
-  const handleSkinColorScroll = React.useCallback((event: any) => {
-    if (isScrollingProgrammatically.current) return
-    const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
-    const spacing = scaleHorizontal(10)
-    const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
-    const offsetX = event.nativeEvent.contentOffset.x
-    const totalPages = Math.ceil(SKIN_COLORS.length / COLORS_PER_PAGE)
-    const page = Math.round(offsetX / containerWidth)
-    const newPage = Math.max(0, Math.min(page, totalPages - 1))
-    if (newPage !== skinColorPage) {
+  const handleSkinColorScroll = React.useCallback(
+    (event: any) => {
+      if (isScrollingProgrammatically.current) return
+      const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
+      const spacing = scaleHorizontal(10)
+      const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
+      const offsetX = event.nativeEvent.contentOffset.x
+      const totalPages = Math.ceil(SKIN_COLORS.length / COLORS_PER_PAGE)
+      const page = Math.round(offsetX / containerWidth)
+      const newPage = Math.max(0, Math.min(page, totalPages - 1))
+      if (newPage !== skinColorPage) {
+        setSkinColorPage(newPage)
+      }
+    },
+    [avatarConfig, skinColorPage],
+  )
+
+  const handleSkinColorScrollEnd = React.useCallback(
+    (event: any) => {
+      if (isScrollingProgrammatically.current) {
+        isScrollingProgrammatically.current = false
+        return
+      }
+      const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
+      const spacing = scaleHorizontal(10)
+      const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
+      const offsetX = event.nativeEvent.contentOffset.x
+      const totalPages = Math.ceil(SKIN_COLORS.length / COLORS_PER_PAGE)
+      const page = Math.round(offsetX / containerWidth)
+      const newPage = Math.max(0, Math.min(page, totalPages - 1))
       setSkinColorPage(newPage)
-    }
-  }, [avatarConfig, skinColorPage])
+    },
+    [avatarConfig],
+  )
 
-  const handleSkinColorScrollEnd = React.useCallback((event: any) => {
-    if (isScrollingProgrammatically.current) {
-      isScrollingProgrammatically.current = false
-      return
-    }
-    const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
-    const spacing = scaleHorizontal(10)
-    const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
-    const offsetX = event.nativeEvent.contentOffset.x
-    const totalPages = Math.ceil(SKIN_COLORS.length / COLORS_PER_PAGE)
-    const page = Math.round(offsetX / containerWidth)
-    const newPage = Math.max(0, Math.min(page, totalPages - 1))
-    setSkinColorPage(newPage)
-  }, [avatarConfig])
+  const handleSkinColorSelect = React.useCallback(
+    (color: string) => {
+      onSelectionChange({ ...avatarSelection, skinColor: color })
+    },
+    [avatarSelection, onSelectionChange],
+  )
 
-  const handleSkinColorSelect = React.useCallback((color: string) => {
-    onSelectionChange({ ...avatarSelection, skinColor: color })
-  }, [avatarSelection, onSelectionChange])
-
-  const handleBodyTypeSelect = React.useCallback((bodyType: 'body-small' | 'body-medium' | 'body-large') => {
-    onSelectionChange({ ...avatarSelection, bodyType })
-  }, [avatarSelection, onSelectionChange])
+  const handleBodyTypeSelect = React.useCallback(
+    (bodyType: 'body-small' | 'body-medium' | 'body-large') => {
+      onSelectionChange({ ...avatarSelection, bodyType })
+    },
+    [avatarSelection, onSelectionChange],
+  )
 
   const maxSkinColorPage = Math.ceil(SKIN_COLORS.length / COLORS_PER_PAGE) - 1
   const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
   const spacing = scaleHorizontal(10)
-  const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
+  const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
   const totalItems = SKIN_COLORS.length
-  const actualContentWidth = (swatchSize * totalItems) + (spacing * (totalItems - 1))
+  const actualContentWidth = swatchSize * totalItems + spacing * (totalItems - 1)
 
   return (
     <View style={styles.optionsContainer}>
       <View style={styles.optionSection}>
         <View style={styles.optionTitleRow}>
-          <Text style={styles.optionTitle} enableTranslate={true}>customizer_skin</Text>
+          <Text style={styles.optionTitle} enableTranslate={true}>
+            customizer_skin
+          </Text>
           <View style={styles.arrowButtons}>
             <TouchableOpacity
               onPress={handleSkinColorPrevious}
@@ -122,16 +136,27 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
               accessibilityLabel={getAccessibilityLabel('previous_page_button')}
               accessibilityRole="button"
             >
-              <FontAwesome name="chevron-left" size={16} color={skinColorPage === 0 ? '#ccc' : '#000000'} />
+              <FontAwesome
+                name="chevron-left"
+                size={16}
+                color={skinColorPage === 0 ? '#ccc' : '#000000'}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleSkinColorNext}
               disabled={skinColorPage >= maxSkinColorPage}
-              style={[styles.arrowButton, skinColorPage >= maxSkinColorPage && styles.arrowButtonDisabled]}
+              style={[
+                styles.arrowButton,
+                skinColorPage >= maxSkinColorPage && styles.arrowButtonDisabled,
+              ]}
               accessibilityLabel={getAccessibilityLabel('next_page_button')}
               accessibilityRole="button"
             >
-              <FontAwesome name="chevron-right" size={16} color={skinColorPage >= maxSkinColorPage ? '#ccc' : '#000000'} />
+              <FontAwesome
+                name="chevron-right"
+                size={16}
+                color={skinColorPage >= maxSkinColorPage ? '#ccc' : '#000000'}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -142,7 +167,7 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={[
               styles.colorSwatches,
-              { paddingRight: 0, minWidth: actualContentWidth }
+              { paddingRight: 0, minWidth: actualContentWidth },
             ]}
             scrollEventThrottle={16}
             onScroll={handleSkinColorScroll}
@@ -164,7 +189,12 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
                   },
                   avatarSelection.skinColor === color && { borderColor: '#4CAF50' },
                 ]}
-                accessibilityLabel={getAccessibilityLabel('select_color_button') + `: skin color ${translate(SKIN_COLOR_NAMES[color] || 'customizer_skin_color_unknown')}, ${avatarSelection.skinColor === color ? 'selected' : 'tap to select'}`}
+                accessibilityLabel={
+                  getAccessibilityLabel('select_color_button') +
+                  `: skin color ${translate(
+                    SKIN_COLOR_NAMES[color] || 'customizer_skin_color_unknown',
+                  )}, ${avatarSelection.skinColor === color ? 'selected' : 'tap to select'}`
+                }
                 accessibilityRole="button"
               />
             ))}
@@ -174,7 +204,9 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
 
       <View style={[styles.optionSection, styles.lastOptionSection]}>
         <View style={styles.optionTitleRow}>
-          <Text style={styles.optionTitle} enableTranslate={true}>customizer_body</Text>
+          <Text style={styles.optionTitle} enableTranslate={true}>
+            customizer_body
+          </Text>
         </View>
         <View style={{ flexDirection: 'row' }}>
           <View style={styles.bodyTypeContainer}>
@@ -182,16 +214,16 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
               const bodyAsset = getSelectionAsset('body', bodyType)
               const isSelected = avatarSelection.bodyType === bodyType
               const isSvgComponent = bodyAsset && typeof bodyAsset === 'function'
-              
+
               return (
                 <TouchableOpacity
                   key={bodyType}
                   onPress={() => handleBodyTypeSelect(bodyType)}
-                  style={[
-                    styles.bodyTypeOption,
-                    isSelected && styles.bodyTypeOptionSelected,
-                  ]}
-                  accessibilityLabel={getAccessibilityLabel('select_option_button') + `: body type ${bodyType}, ${isSelected ? 'selected' : 'tap to select'}`}
+                  style={[styles.bodyTypeOption, isSelected && styles.bodyTypeOptionSelected]}
+                  accessibilityLabel={
+                    getAccessibilityLabel('select_option_button') +
+                    `: body type ${bodyType}, ${isSelected ? 'selected' : 'tap to select'}`
+                  }
                   accessibilityRole="button"
                 >
                   {bodyAsset ? (
@@ -217,4 +249,3 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
     </View>
   )
 }
-

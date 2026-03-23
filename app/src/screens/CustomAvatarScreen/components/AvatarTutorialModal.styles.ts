@@ -3,7 +3,7 @@ import { responsiveConfig } from '../../../config/UIConfig'
 
 export const createAvatarTutorialModalStyles = (
   config: typeof responsiveConfig.s.avatarCustomization,
-  screenWidth: number
+  screenWidth: number,
 ) =>
   StyleSheet.create({
     container: {

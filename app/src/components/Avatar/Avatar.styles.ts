@@ -1,6 +1,10 @@
 import { ViewStyle } from 'react-native'
 
-export const getAvatarContainerStyle = (lottieWidth: number, containerHeight: number, marginTop: number): ViewStyle => ({
+export const getAvatarContainerStyle = (
+  lottieWidth: number,
+  containerHeight: number,
+  marginTop: number,
+): ViewStyle => ({
   width: lottieWidth,
   height: containerHeight,
   marginTop,
@@ -18,4 +22,3 @@ export const getLottieViewStyle = (width: number, height: number): ViewStyle => 
   width,
   height,
 })
-

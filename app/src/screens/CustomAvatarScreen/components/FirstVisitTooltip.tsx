@@ -38,4 +38,3 @@ export const FirstVisitTooltip: React.FC<FirstVisitTooltipProps> = ({
     </View>
   )
 }
-

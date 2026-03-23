@@ -64,17 +64,13 @@ export const AvatarNamingModal: React.FC<AvatarNamingModalProps> = ({
   }
 
   return (
-    <Modal
-      visible={visible}
-      toggleVisible={onClose}
-      style={styles.nameModal}
-    >
+    <Modal visible={visible} toggleVisible={onClose} style={styles.nameModal}>
       <Text style={styles.modalTitle} enableTranslate={true}>
         avatar_naming_modal_title
       </Text>
-      
+
       {renderAvatarPreview()}
-      
+
       <View style={styles.nameInputContainer}>
         <TextInput
           style={styles.nameInput}
@@ -119,4 +115,3 @@ export const AvatarNamingModal: React.FC<AvatarNamingModalProps> = ({
     </Modal>
   )
 }
-

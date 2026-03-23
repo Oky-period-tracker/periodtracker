@@ -155,12 +155,12 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         // @ts-expect-error TODO:
         user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
       }
-      // case 'UPDATE_USER_VERIFIED_PERIOD_DAYS':
-      //   return {
-      //     ...state,
-      //     // @ts-expect-error TODO:
-      //     user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
-      //   }
+    // case 'UPDATE_USER_VERIFIED_PERIOD_DAYS':
+    //   return {
+    //     ...state,
+    //     // @ts-expect-error TODO:
+    //     user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
+    //   }
 
     default:
       return state

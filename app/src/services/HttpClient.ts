@@ -24,7 +24,7 @@ export function setHttpClientStore(store: StoreRef) {
 /**
  * Force logout of user, and store data locally so on next login we can reupload it.
  * This workflow addresses a 431 error caused by backend token sizes exceeding limits due to excessive metadata.
- * @returns 
+ * @returns
  */
 function handleTokenTooLarge() {
   if (hasHandledTokenTooLarge) return
@@ -65,7 +65,12 @@ function handleTokenTooLarge() {
   const t = (key: string) => allTranslations?.[locale]?.[key] || key
 
   Alert.alert(t('error'), t('session_expired'), [
-    { text: t('ok'), onPress: () => { hasHandledTokenTooLarge = false } },
+    {
+      text: t('ok'),
+      onPress: () => {
+        hasHandledTokenTooLarge = false
+      },
+    },
   ])
 }
 
@@ -412,17 +417,15 @@ export function createHttpClient(
 
       return response.data
     },
-    answerSurvey:async({appToken,live,questions}:any)=>{
-      const response : AxiosResponse<any> = await axios.post(`${endpoint}/survey`,{live,questions},{headers:{Authorization:`Bearer ${appToken}`}})
+    answerSurvey: async ({ appToken, live, questions }: any) => {
+      const response: AxiosResponse<any> = await axios.post(
+        `${endpoint}/survey`,
+        { live, questions },
+        { headers: { Authorization: `Bearer ${appToken}` } },
+      )
       return response.data
     },
-    updateAvatar: async ({
-      appToken,
-      avatar,
-    }: {
-      appToken: string
-      avatar: any
-    }) => {
+    updateAvatar: async ({ appToken, avatar }: { appToken: string; avatar: any }) => {
       const response: AxiosResponse<{}> = await axios.post(
         `${endpoint}/account/update-avatar`,
         {

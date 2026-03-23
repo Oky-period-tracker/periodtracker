@@ -7,7 +7,7 @@ import { getResponsiveMargin } from '../../utils/layoutCalculations'
 export const createAvatarScreenStyles = (
   avatarConfig: UIConfig['avatarSelection'],
   screenWidth: number,
-  hasHeader: boolean = false
+  hasHeader: boolean = false,
 ) =>
   StyleSheet.create({
     screen: {
@@ -20,8 +20,7 @@ export const createAvatarScreenStyles = (
     backgroundImageStyle: {
       opacity: 1,
     },
-    scrollView: {
-    },
+    scrollView: {},
     scrollContent: {
       // Reduce top padding when header is shown (header already provides spacing)
       paddingTop: hasHeader ? 16 : avatarConfig.paddingTop,
@@ -262,19 +261,20 @@ export const createAvatarScreenStyles = (
     },
     name: {
       position: 'absolute',
-      top: screenWidth <= 360
-        ? -5
-        : screenWidth > 360 && screenWidth <= 392
-        ? 8  // Pushed to bottom more for 392dp
-        : screenWidth > 392 && screenWidth <= 411
-        ? 2
-        : screenWidth > 411 && screenWidth <= 480
-        ? -7
-        : screenWidth > 480 && screenWidth <= 600
-        ? -7
-        : screenWidth > 600 && screenWidth <= 720
-        ? -8
-        : -9,
+      top:
+        screenWidth <= 360
+          ? -5
+          : screenWidth > 360 && screenWidth <= 392
+          ? 8 // Pushed to bottom more for 392dp
+          : screenWidth > 392 && screenWidth <= 411
+          ? 2
+          : screenWidth > 411 && screenWidth <= 480
+          ? -7
+          : screenWidth > 480 && screenWidth <= 600
+          ? -7
+          : screenWidth > 600 && screenWidth <= 720
+          ? -8
+          : -9,
       left: 0,
       width: '100%',
       fontFamily: 'Roboto',
@@ -346,7 +346,12 @@ export const createAvatarScreenStyles = (
 
 export const getAvatarStyle = (avatarWidth: number, screenWidth: number) => ({
   width: avatarWidth,
-  maxWidth: screenWidth <= 360 ? undefined : (screenWidth <= 480 ? scaleHorizontal(115) : scaleHorizontal(120)),
+  maxWidth:
+    screenWidth <= 360
+      ? undefined
+      : screenWidth <= 480
+      ? scaleHorizontal(115)
+      : scaleHorizontal(120),
 })
 
 export const getAvatarBodyStyle = () => ({
@@ -369,7 +374,6 @@ export const getAvatarPreviewStyle = (imageHeight: number) => ({
 })
 
 export const getCheckIconStyle = (borderWidth: number, iconSize: number, iconOffset: number) => ({
-  right: (borderWidth / 2) - iconSize + iconOffset,
-  top: (borderWidth / 2) - iconSize + iconOffset,
+  right: borderWidth / 2 - iconSize + iconOffset,
+  top: borderWidth / 2 - iconSize + iconOffset,
 })
-

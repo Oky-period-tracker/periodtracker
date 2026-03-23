@@ -20,7 +20,12 @@ import { getCustomAvatarStyles } from '../../optional/styles'
 import { useAvatar } from '../../hooks/useAvatar'
 import { AnimatedAvatarPreview } from '../AvatarPreview/AnimatedAvatarPreview'
 import { useResponsive } from '../../contexts/ResponsiveContext'
-import { getAvatarContainerStyle, getAvatarContainerBottomStyle, getCustomAvatarScaleStyle, getLottieViewStyle } from './Avatar.styles'
+import {
+  getAvatarContainerStyle,
+  getAvatarContainerBottomStyle,
+  getCustomAvatarScaleStyle,
+  getLottieViewStyle,
+} from './Avatar.styles'
 
 const AVATAR_CONFIG = {
   baseWidthOffset: 12,
@@ -56,7 +61,7 @@ const dances = [
 const defaultDance = animationSequences.danceFour
 
 const getSizeMultiplier = (screenWidth: number): number => {
-  if (screenWidth <= 360) return 0.20
+  if (screenWidth <= 360) return 0.2
   if (screenWidth <= 392) return 0.22
   if (screenWidth <= 411) return 0.23
   if (screenWidth <= 480) return 0.22
@@ -65,14 +70,12 @@ const getSizeMultiplier = (screenWidth: number): number => {
   return 0.28
 }
 
-
-
 const getCustomAvatarScale = (screenWidth: number): number => {
-  if (screenWidth <= 360) return 0.70
+  if (screenWidth <= 360) return 0.7
   if (screenWidth <= 392) return 0.72
   if (screenWidth <= 411) return 0.75
   if (screenWidth <= 480) return 0.72
-  if (screenWidth <= 600) return 0.80
+  if (screenWidth <= 600) return 0.8
   if (screenWidth <= 720) return 0.82
   return 0.85
 }
@@ -116,7 +119,7 @@ const getLottieBottomOffset = (screenWidth: number): number => {
 
 const getOkyBottomOffset = (screenWidth: number): number => {
   // Reduce spacing between oky avatar and ProgressSection
-  if (screenWidth <= 360) return 0  // Less negative = closer to ProgressSection
+  if (screenWidth <= 360) return 0 // Less negative = closer to ProgressSection
   if (screenWidth <= 392) return 0
   if (screenWidth <= 411) return 0
   if (screenWidth <= 480) return 0
@@ -243,13 +246,13 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
   const baseWidth = diameter * sizeMultiplier - AVATAR_CONFIG.baseWidthOffset
   const maxWidth = getMaxWidth(width)
   let lottieWidth = maxWidth ? Math.min(baseWidth, maxWidth) : baseWidth
-  
+
   // Apply custom responsive scaling for oky avatar
   if (avatar === 'oky') {
     const okyScaleFactor = getOkyScaleFactor(width)
     lottieWidth = lottieWidth * okyScaleFactor
   }
-  
+
   const lottieHeight = lottieWidth / lottieAspectRatio
 
   const marginTopOffset = getMarginTopOffset(width)
@@ -261,7 +264,8 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 
   const avatarBottomOffset = getAvatarBottomOffset(width)
   // Use specific bottom offset for oky to reduce spacing, otherwise use default
-  const lottieBottomOffset = avatar === 'oky' ? getOkyBottomOffset(width) : getLottieBottomOffset(width)
+  const lottieBottomOffset =
+    avatar === 'oky' ? getOkyBottomOffset(width) : getLottieBottomOffset(width)
   const customAvatarScale = getCustomAvatarScale(width)
 
   // Optional submodule style customisation
@@ -282,13 +286,14 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
       activeOpacity={1}
     >
       <View style={styles.cloudsWrapper}>
-        <Image
-          source={assets.static.clouds}
-          style={styles.cloudsBackground}
-          resizeMode="contain"
-        />
+        <Image source={assets.static.clouds} style={styles.cloudsBackground} resizeMode="contain" />
       </View>
-      <View style={[styles.avatarContainer, getAvatarContainerBottomStyle(isCustomAvatar ? avatarBottomOffset : lottieBottomOffset)]}>
+      <View
+        style={[
+          styles.avatarContainer,
+          getAvatarContainerBottomStyle(isCustomAvatar ? avatarBottomOffset : lottieBottomOffset),
+        ]}
+      >
         <AvatarMessage style={customStyle?.avatarMessage} />
         {isCustomAvatar && avatarPreviewData ? (
           <View style={getCustomAvatarScaleStyle(customAvatarScale)}>
@@ -317,10 +322,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
           />
         )}
       </View>
-      <ProgressSection
-        heartProgress={animatedHearts}
-        style={customStyle?.progressSection}
-      />
+      <ProgressSection heartProgress={animatedHearts} style={customStyle?.progressSection} />
     </TouchableOpacity>
   )
 }

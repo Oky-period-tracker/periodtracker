@@ -14,16 +14,12 @@ import { useDispatch } from 'react-redux'
 import { User } from '../types'
 import { editUser } from '../redux/actions'
 
-
 /**
  * Modal shown when the user unlocks the custom avatar ("Friend") feature.
  * Navigates to the avatar editor and persists the unlock state to the backend.
  */
-export const FriendUnlockModal = ({
-  visible,
-  toggleVisible,
-}: ModalProps) => {
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const navigation = useNavigation() as any
   const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
@@ -72,47 +68,53 @@ export const FriendUnlockModal = ({
     }
   }
 
-  const modalWidth = responsiveWidth >= 840 
-    ? Math.min(responsiveWidth * 0.9, 600) 
-    : responsiveWidth * 0.95
+  const modalWidth =
+    responsiveWidth >= 840 ? Math.min(responsiveWidth * 0.9, 600) : responsiveWidth * 0.95
 
   return (
-    <Modal visible={visible} toggleVisible={toggleVisible} style={[styles.modal, { 
-      width: modalWidth,
-      maxWidth: responsiveWidth >= 840 ? 600 : undefined,
-      minWidth: undefined,
-      borderRadius: responsiveWidth >= 840 ? 24 : 20,
-    }]}>
+    <Modal
+      visible={visible}
+      toggleVisible={toggleVisible}
+      style={[
+        styles.modal,
+        {
+          width: modalWidth,
+          maxWidth: responsiveWidth >= 840 ? 600 : undefined,
+          minWidth: undefined,
+          borderRadius: responsiveWidth >= 840 ? 24 : 20,
+        },
+      ]}
+    >
       <View style={styles.content}>
-        <Text 
-          style={styles.title} 
+        <Text
+          style={styles.title}
           enableTranslate={true}
           accessibilityLabel={getAccessibilityLabel('friend_unlock_modal_title')}
         >
           friend_unlock_modal_title
         </Text>
-        
+
         <View style={styles.iconContainer}>
-          <Image 
-            source={getAsset('gifs.friendUnlock')} 
+          <Image
+            source={getAsset('gifs.friendUnlock')}
             style={styles.icon}
             resizeMode="contain"
             accessibilityLabel={getAccessibilityLabel('friend_unlock_celebration_image')}
             accessibilityRole="image"
           />
         </View>
-        
-        <TouchableOpacity 
-          onPress={handleCreateFriend} 
+
+        <TouchableOpacity
+          onPress={handleCreateFriend}
           style={[styles.createButton, { backgroundColor: '#FF9800' }]}
           accessibilityLabel={getAccessibilityLabel('friend_unlock_modal_button')}
           accessibilityRole="button"
         >
-          <Text style={styles.buttonText} enableTranslate={true}>friend_unlock_modal_button</Text>
+          <Text style={styles.buttonText} enableTranslate={true}>
+            friend_unlock_modal_button
+          </Text>
         </TouchableOpacity>
       </View>
     </Modal>
   )
 }
-
-

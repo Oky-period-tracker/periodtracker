@@ -28,7 +28,7 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
 }) => {
   const translate = useTranslate()
   const getAccessibilityLabel = useAccessibilityLabel()
-  
+
   const [eyeColorPage, setEyeColorPage] = React.useState(0)
   const [eyePage, setEyePage] = React.useState(0)
   const eyeColorScrollRef = React.useRef<ScrollView>(null)
@@ -40,7 +40,7 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
     if (eyeColorPage > 0) {
       const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
       const spacing = scaleHorizontal(10)
-      const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
+      const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
       const newPage = eyeColorPage - 1
       const scrollTo = newPage * containerWidth
       isScrollingProgrammatically.current.eye = true
@@ -57,7 +57,7 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
     if (eyeColorPage < maxPage) {
       const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
       const spacing = scaleHorizontal(10)
-      const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
+      const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
       const newPage = eyeColorPage + 1
       const scrollTo = newPage * containerWidth
       isScrollingProgrammatically.current.eye = true
@@ -69,44 +69,53 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
     }
   }, [eyeColorPage, avatarConfig])
 
-  const handleEyeColorScroll = React.useCallback((event: any) => {
-    if (isScrollingProgrammatically.current.eye) return
-    const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
-    const spacing = scaleHorizontal(10)
-    const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
-    const offsetX = event.nativeEvent.contentOffset.x
-    const totalPages = Math.ceil(EYE_COLORS.length / COLORS_PER_PAGE)
-    const page = Math.round(offsetX / containerWidth)
-    const newPage = Math.max(0, Math.min(page, totalPages - 1))
-    if (newPage !== eyeColorPage) {
+  const handleEyeColorScroll = React.useCallback(
+    (event: any) => {
+      if (isScrollingProgrammatically.current.eye) return
+      const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
+      const spacing = scaleHorizontal(10)
+      const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
+      const offsetX = event.nativeEvent.contentOffset.x
+      const totalPages = Math.ceil(EYE_COLORS.length / COLORS_PER_PAGE)
+      const page = Math.round(offsetX / containerWidth)
+      const newPage = Math.max(0, Math.min(page, totalPages - 1))
+      if (newPage !== eyeColorPage) {
+        setEyeColorPage(newPage)
+      }
+    },
+    [avatarConfig, eyeColorPage],
+  )
+
+  const handleEyeColorScrollEnd = React.useCallback(
+    (event: any) => {
+      if (isScrollingProgrammatically.current.eye) {
+        isScrollingProgrammatically.current.eye = false
+        return
+      }
+      const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
+      const spacing = scaleHorizontal(10)
+      const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
+      const offsetX = event.nativeEvent.contentOffset.x
+      const totalPages = Math.ceil(EYE_COLORS.length / COLORS_PER_PAGE)
+      const page = Math.round(offsetX / containerWidth)
+      const newPage = Math.max(0, Math.min(page, totalPages - 1))
       setEyeColorPage(newPage)
-    }
-  }, [avatarConfig, eyeColorPage])
+    },
+    [avatarConfig],
+  )
 
-  const handleEyeColorScrollEnd = React.useCallback((event: any) => {
-    if (isScrollingProgrammatically.current.eye) {
-      isScrollingProgrammatically.current.eye = false
-      return
-    }
-    const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
-    const spacing = scaleHorizontal(10)
-    const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
-    const offsetX = event.nativeEvent.contentOffset.x
-    const totalPages = Math.ceil(EYE_COLORS.length / COLORS_PER_PAGE)
-    const page = Math.round(offsetX / containerWidth)
-    const newPage = Math.max(0, Math.min(page, totalPages - 1))
-    setEyeColorPage(newPage)
-  }, [avatarConfig])
-
-  const handleEyeColorSelect = React.useCallback((color: string) => {
-    onSelectionChange({ ...avatarSelection, eyeColor: color })
-  }, [avatarSelection, onSelectionChange])
+  const handleEyeColorSelect = React.useCallback(
+    (color: string) => {
+      onSelectionChange({ ...avatarSelection, eyeColor: color })
+    },
+    [avatarSelection, onSelectionChange],
+  )
 
   const itemsPerRow = 3
   const totalEyeItems = EYE_OPTIONS.length
   const totalPages = Math.ceil(totalEyeItems / itemsPerRow)
   const maxEyeShapePage = Math.max(0, totalPages - 1)
-  
+
   const eyeItemWidth = avatarConfig.optionImageSize.width
   const eyeItemGap = avatarConfig.optionImageGap || 8
   const eyeContainerWidth = eyeItemWidth * itemsPerRow + eyeItemGap * (itemsPerRow - 1)
@@ -138,35 +147,43 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
     }
   }, [eyePage, maxEyeShapePage, eyeSnapInterval])
 
-  const handleEyeShapeScrollEnd = React.useCallback((event: any) => {
-    if (isScrollingProgrammatically.current.eyeShape) {
-      isScrollingProgrammatically.current.eyeShape = false
-      return
-    }
-    const offsetX = event.nativeEvent.contentOffset.x
-    const page = Math.round(offsetX / eyeSnapInterval)
-    const newPage = Math.max(0, Math.min(page, maxEyeShapePage))
-    if (newPage !== eyePage) {
-      setEyePage(newPage)
-    }
-  }, [eyeSnapInterval, maxEyeShapePage, eyePage])
+  const handleEyeShapeScrollEnd = React.useCallback(
+    (event: any) => {
+      if (isScrollingProgrammatically.current.eyeShape) {
+        isScrollingProgrammatically.current.eyeShape = false
+        return
+      }
+      const offsetX = event.nativeEvent.contentOffset.x
+      const page = Math.round(offsetX / eyeSnapInterval)
+      const newPage = Math.max(0, Math.min(page, maxEyeShapePage))
+      if (newPage !== eyePage) {
+        setEyePage(newPage)
+      }
+    },
+    [eyeSnapInterval, maxEyeShapePage, eyePage],
+  )
 
-  const handleEyeShapeSelect = React.useCallback((item: string) => {
-    onSelectionChange({ ...avatarSelection, eyeShape: item })
-  }, [avatarSelection, onSelectionChange])
+  const handleEyeShapeSelect = React.useCallback(
+    (item: string) => {
+      onSelectionChange({ ...avatarSelection, eyeShape: item })
+    },
+    [avatarSelection, onSelectionChange],
+  )
 
   const maxEyeColorPage = Math.ceil(EYE_COLORS.length / COLORS_PER_PAGE) - 1
   const swatchSize = scaleDimension(avatarConfig.colorSwatchSize - 4)
   const spacing = scaleHorizontal(10)
-  const containerWidth = (swatchSize * COLORS_PER_PAGE) + (spacing * (COLORS_PER_PAGE - 1))
+  const containerWidth = swatchSize * COLORS_PER_PAGE + spacing * (COLORS_PER_PAGE - 1)
   const totalItems = EYE_COLORS.length
-  const actualContentWidth = (swatchSize * totalItems) + (spacing * (totalItems - 1))
+  const actualContentWidth = swatchSize * totalItems + spacing * (totalItems - 1)
 
   return (
     <View style={styles.optionsContainer}>
       <View style={styles.optionSection}>
         <View style={styles.optionTitleRow}>
-          <Text style={styles.optionTitle} enableTranslate={true}>customizer_eye_color</Text>
+          <Text style={styles.optionTitle} enableTranslate={true}>
+            customizer_eye_color
+          </Text>
           <View style={styles.arrowButtons}>
             <TouchableOpacity
               onPress={handleEyeColorPrevious}
@@ -175,16 +192,27 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
               accessibilityLabel={getAccessibilityLabel('previous_page_button')}
               accessibilityRole="button"
             >
-              <FontAwesome name="chevron-left" size={16} color={eyeColorPage === 0 ? '#ccc' : '#000000'} />
+              <FontAwesome
+                name="chevron-left"
+                size={16}
+                color={eyeColorPage === 0 ? '#ccc' : '#000000'}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleEyeColorNext}
               disabled={eyeColorPage >= maxEyeColorPage}
-              style={[styles.arrowButton, eyeColorPage >= maxEyeColorPage && styles.arrowButtonDisabled]}
+              style={[
+                styles.arrowButton,
+                eyeColorPage >= maxEyeColorPage && styles.arrowButtonDisabled,
+              ]}
               accessibilityLabel={getAccessibilityLabel('next_page_button')}
               accessibilityRole="button"
             >
-              <FontAwesome name="chevron-right" size={16} color={eyeColorPage >= maxEyeColorPage ? '#ccc' : '#000000'} />
+              <FontAwesome
+                name="chevron-right"
+                size={16}
+                color={eyeColorPage >= maxEyeColorPage ? '#ccc' : '#000000'}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -195,7 +223,7 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={[
               styles.colorSwatches,
-              { paddingRight: 0, minWidth: actualContentWidth }
+              { paddingRight: 0, minWidth: actualContentWidth },
             ]}
             scrollEventThrottle={16}
             onScroll={handleEyeColorScroll}
@@ -217,7 +245,12 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
                   },
                   avatarSelection.eyeColor === color && { borderColor: '#4CAF50' },
                 ]}
-                accessibilityLabel={getAccessibilityLabel('select_color_button') + `: eye color ${translate(EYE_COLOR_NAMES[color] || 'customizer_eye_color_unknown')}, ${avatarSelection.eyeColor === color ? 'selected' : 'tap to select'}`}
+                accessibilityLabel={
+                  getAccessibilityLabel('select_color_button') +
+                  `: eye color ${translate(
+                    EYE_COLOR_NAMES[color] || 'customizer_eye_color_unknown',
+                  )}, ${avatarSelection.eyeColor === color ? 'selected' : 'tap to select'}`
+                }
                 accessibilityRole="button"
               />
             ))}
@@ -227,7 +260,9 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
 
       <View style={[styles.optionSection, styles.lastOptionSection]}>
         <View style={styles.optionTitleRow}>
-          <Text style={styles.optionTitle} enableTranslate={true}>customizer_eye_shape</Text>
+          <Text style={styles.optionTitle} enableTranslate={true}>
+            customizer_eye_shape
+          </Text>
           <View style={styles.arrowButtons}>
             <TouchableOpacity
               onPress={handleEyeShapePrevious}
@@ -236,7 +271,11 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
               accessibilityLabel={getAccessibilityLabel('previous_page_button')}
               accessibilityRole="button"
             >
-              <FontAwesome name="chevron-left" size={16} color={eyePage === 0 ? '#ccc' : '#000000'} />
+              <FontAwesome
+                name="chevron-left"
+                size={16}
+                color={eyePage === 0 ? '#ccc' : '#000000'}
+              />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleEyeShapeNext}
@@ -245,7 +284,11 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
               accessibilityLabel={getAccessibilityLabel('next_page_button')}
               accessibilityRole="button"
             >
-              <FontAwesome name="chevron-right" size={16} color={eyePage >= maxEyeShapePage ? '#ccc' : '#000000'} />
+              <FontAwesome
+                name="chevron-right"
+                size={16}
+                color={eyePage >= maxEyeShapePage ? '#ccc' : '#000000'}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -263,49 +306,49 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
                 contentContainerStyle={[
                   styles.paginatedOptions,
                   styles.lastOptionSection,
-                  { 
-                    flexWrap: 'nowrap', 
-                    paddingRight: 0, 
+                  {
+                    flexWrap: 'nowrap',
+                    paddingRight: 0,
                     paddingLeft: 0,
                     marginLeft: 0,
                     marginRight: 0,
                     overflow: 'visible',
                     justifyContent: 'flex-start',
                     gap: eyeItemGap,
-                  }
+                  },
                 ]}
                 onMomentumScrollEnd={handleEyeShapeScrollEnd}
               >
-            {EYE_OPTIONS.map((item) => {
-              const eyeAsset = getSelectionAsset('eyes', item)
-              const isSelected = avatarSelection.eyeShape === item
-              const isSvgComponent = eyeAsset && typeof eyeAsset === 'function'
-              return (
-                <TouchableOpacity
-                  key={item}
-                  onPress={() => handleEyeShapeSelect(item)}
-                  style={[
-                    styles.eyeShapeOption,
-                    isSelected && styles.eyeShapeOptionSelected,
-                  ]}
-                  accessibilityLabel={getAccessibilityLabel('select_option_button') + `: eye shape ${item}, ${isSelected ? 'selected' : 'tap to select'}`}
-                  accessibilityRole="button"
-                >
-                  {eyeAsset && isSvgComponent ? (
-                    React.createElement(eyeAsset as React.ComponentType<any>, {
-                      width: avatarConfig.optionImageSize.width - 4,
-                      height: avatarConfig.optionImageSize.width - 4,
-                    })
-                  ) : eyeAsset ? (
-                    <Image
-                      source={eyeAsset as any}
-                      style={styles.eyeShapeImage}
-                      resizeMode="contain"
-                    />
-                  ) : null}
-                </TouchableOpacity>
-              )
-            })}
+                {EYE_OPTIONS.map((item) => {
+                  const eyeAsset = getSelectionAsset('eyes', item)
+                  const isSelected = avatarSelection.eyeShape === item
+                  const isSvgComponent = eyeAsset && typeof eyeAsset === 'function'
+                  return (
+                    <TouchableOpacity
+                      key={item}
+                      onPress={() => handleEyeShapeSelect(item)}
+                      style={[styles.eyeShapeOption, isSelected && styles.eyeShapeOptionSelected]}
+                      accessibilityLabel={
+                        getAccessibilityLabel('select_option_button') +
+                        `: eye shape ${item}, ${isSelected ? 'selected' : 'tap to select'}`
+                      }
+                      accessibilityRole="button"
+                    >
+                      {eyeAsset && isSvgComponent ? (
+                        React.createElement(eyeAsset as React.ComponentType<any>, {
+                          width: avatarConfig.optionImageSize.width - 4,
+                          height: avatarConfig.optionImageSize.width - 4,
+                        })
+                      ) : eyeAsset ? (
+                        <Image
+                          source={eyeAsset as any}
+                          style={styles.eyeShapeImage}
+                          resizeMode="contain"
+                        />
+                      ) : null}
+                    </TouchableOpacity>
+                  )
+                })}
               </ScrollView>
             </View>
           </View>
@@ -314,4 +357,3 @@ export const EyesOptions: React.FC<EyesOptionsProps> = ({
     </View>
   )
 }
-

@@ -8,7 +8,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { useAccessibilityLabel } from '../hooks/useAccessibilityLabel'
 import { Button, ButtonProps } from './Button'
@@ -60,9 +60,14 @@ export const Modal = ({ visible, toggleVisible, children, style, onDismiss }: Mo
 export const ModalCloseButton = (props: ButtonProps) => {
   const getAccessibilityLabel = useAccessibilityLabel()
   const label = getAccessibilityLabel('close')
+  const insets = useSafeAreaInsets()
 
   return (
-    <Button style={styles.closeButton} status={'basic'} {...props}>
+    <Button
+      style={[styles.closeButton, { top: insets.top + 12 }]}
+      status={'basic'}
+      {...props}
+    >
       <FontAwesome name="close" size={24} color="white" accessibilityLabel={label} />
     </Button>
   )
@@ -85,7 +90,6 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 60,
     right: 24,
     width: 32,
     height: 32,

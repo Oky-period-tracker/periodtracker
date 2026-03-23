@@ -219,7 +219,7 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
             accessibilityLabel={getAccessibilityLabel('skip_tutorial_button')}
             accessibilityRole="button"
           >
-            <Text style={styles.skipText}>Skip tutorial</Text>
+            <Text style={styles.skipText}>skip_tutorial_button</Text>
           </TouchableOpacity>
         </View>
       </View>

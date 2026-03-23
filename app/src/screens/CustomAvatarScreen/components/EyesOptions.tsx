@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, TouchableOpacity, Image, ScrollView, Dimensions } from 'react-native'
+import { View, TouchableOpacity, Image, ScrollView } from 'react-native'
 import { Text } from '../../../components/Text'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { getSelectionAsset } from '../../../resources/assets/friendAssets'

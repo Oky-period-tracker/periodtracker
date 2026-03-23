@@ -99,13 +99,3 @@ export const getDeviceSubcategory = (device: string): keyof typeof DEVICE_SUBCAT
   }
   return null
 }
-
-/**
- * Checks if a device belongs to the "others" subcategory, which allows multiple simultaneous selections.
- * @param device - The device identifier string
- * @returns True if the device supports multiple selection
- */
-export const allowsMultipleDevices = (device: string): boolean => {
-  return (DEVICE_SUBCATEGORIES.others as readonly string[]).includes(device)
-}
-

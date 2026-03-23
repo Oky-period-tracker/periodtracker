@@ -452,7 +452,6 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         </View>
       </ScrollView>
 
-      {}
       <AvatarTutorialModal
         visible={tutorialModalVisible}
         onClose={() => setTutorialModalVisible(false)}

@@ -165,7 +165,6 @@ export interface SurveyQuestionAnswer {
   question: string
   answerID: string
   answer: string
-  // TODO: Below is redundant?
   isMultiple: boolean
 }
 

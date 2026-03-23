@@ -23,14 +23,10 @@ export const VideoPlayerModal = () => {
   const getAccessibilityLabel = useAccessibilityLabel()
   const label = getAccessibilityLabel('close')
 
-  const videoData = useSelector((state) => videoByIDSelector(state, selectedVideoId || ''))
+  const videoData = useSelector((state: any) => videoByIDSelector(state, selectedVideoId || ''))
 
   const close = async () => {
-    try {
-      await videoRef.current?.dismissFullscreenPlayer()
-    } catch (e) {
-      // Ignore error if player is not in fullscreen or already dismissed
-    }
+    await videoRef.current?.dismissFullscreenPlayer()
     setSelectedVideoId(undefined)
   }
 

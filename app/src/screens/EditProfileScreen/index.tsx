@@ -139,7 +139,7 @@ const validateState = (state: EditProfileState): { isValid: boolean; errors: str
 }
 
 const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
-  const currentUser = useSelector(currentUserSelector) as User
+  const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
   const { backgroundColor } = useColor()
@@ -148,10 +148,14 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
   const [secretModalVisible, toggleSecretModal] = useToggle()
 
   const initialState = React.useMemo(() => {
+    if (!currentUser) return null
     return getInitialState(currentUser)
   }, [currentUser])
 
-  const [state, dispatch] = React.useReducer(reducer, initialState)
+  const [state, dispatch] = React.useReducer(
+    reducer,
+    initialState ?? ({ name: '', gender: '', month: NaN, year: 0, dateOfBirth: '', location: '' } as EditProfileState),
+  )
 
   const onChangeName = (value: string) => {
     dispatch({ type: 'name', value })
@@ -231,6 +235,10 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
 
   const canConfirm = hasChanged && isValid
   const confirmStatus = canConfirm ? 'primary' : 'basic'
+
+  if (!currentUser || !initialState) {
+    return null
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>

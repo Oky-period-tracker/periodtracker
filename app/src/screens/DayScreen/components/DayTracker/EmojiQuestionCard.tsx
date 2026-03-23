@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { BadgeSize, EmojiBadge } from '../../../../components/EmojiBadge'
 import {
   EmojiCardText,
@@ -25,6 +25,7 @@ import moment from 'moment'
 import { analytics } from '../../../../services/firebase'
 import { useResponsive } from '../../../../contexts/ResponsiveContext'
 import { useColor } from '../../../../hooks/useColor'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export const EmojiQuestionCard = ({
   topic,
@@ -106,43 +107,47 @@ export const EmojiQuestionCard = ({
   const { title, description, question } = EmojiCardText[topic]
 
   return (
-    <View style={[styles.page, { backgroundColor }]}>
-      <Text
-        style={[
-          styles.title,
-          { color: palette.secondary.text },
-          tutorial && {
-            fontSize: titleFontSize,
-            marginBottom: titleMargin,
-          },
-        ]}
-      >
-        {title}
-      </Text>
-      <Text
-        style={
-          tutorial && {
-            fontSize: textFontSize,
+    <ScrollView
+      style={[styles.page, { backgroundColor }]}
+      showsVerticalScrollIndicator={true}
+      persistentScrollbar={true} // For Android
+    >
+      <View style={{ padding: 24 }}>
+        <Text
+          style={[
+            styles.title,
+            { color: palette.secondary.text },
+            tutorial && {
+              fontSize: titleFontSize,
+              marginBottom: titleMargin,
+            },
+          ]}
+        >
+          {title}
+        </Text>
+        <Text
+          style={
+            tutorial && {
+              fontSize: textFontSize,
+            }
           }
-        }
-      >
-        {description}
-      </Text>
-      <Text
-        style={[
-          styles.question,
-          { color: palette.secondary.text },
-          tutorial && {
-            marginTop: questionMargin,
-            marginBottom: questionMargin,
-            fontSize: questionFontSize,
-          },
-        ]}
-      >
-        {question}
-      </Text>
-      <View style={styles.body}>
-        <ScrollView contentContainerStyle={styles.emojiContainer}>
+        >
+          {description}
+        </Text>
+        <Text
+          style={[
+            styles.question,
+            { color: palette.secondary.text },
+            tutorial && {
+              marginTop: questionMargin,
+              marginBottom: questionMargin,
+              fontSize: questionFontSize,
+            },
+          ]}
+        >
+          {question}
+        </Text>
+        <View style={styles.emojiContainer}>
           {options.map(([key, emoji]) => {
             // @ts-expect-error TODO:
             const isSelected = selectedEmojis[topic]?.includes?.(key)
@@ -165,17 +170,17 @@ export const EmojiQuestionCard = ({
               />
             )
           })}
-        </ScrollView>
+        </View>
+        {includeDayModal && dataEntry && (
+          <DayModal
+            visible={dayModalVisible}
+            toggleVisible={toggleDayModal}
+            data={dataEntry}
+            hideLaunchButton={false}
+          />
+        )}
       </View>
-      {includeDayModal && dataEntry && (
-        <DayModal
-          visible={dayModalVisible}
-          toggleVisible={toggleDayModal}
-          data={dataEntry}
-          hideLaunchButton={false}
-        />
-      )}
-    </View>
+    </ScrollView>
   )
 }
 
@@ -184,7 +189,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     flexDirection: 'column',
-    padding: 24,
     maxWidth: 800,
     borderRadius: 20,
   },
@@ -202,10 +206,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 12,
   },
-  body: {
-    flex: 1,
-    justifyContent: 'center',
-  },
   emojiContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
   },
-
   emojiBadge: {
     flexBasis: '25%',
     marginVertical: 7,

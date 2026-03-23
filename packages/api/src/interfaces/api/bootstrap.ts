@@ -4,6 +4,7 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import { env } from 'interfaces/env'
 import cors from 'cors'
+import helmet from 'helmet'
 
 const dirs = {
   controllers: [__dirname + '/controllers/**/*.{ts,js}'],

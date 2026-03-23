@@ -55,10 +55,16 @@ function reducer(state: SurveyState, action: Action): SurveyState {
       }
 
       if (!state.consented && state.agree !== null) {
+        if (!state.agree) {
+          // User declined consent - finish immediately without showing the thank-you message
+          return {
+            ...state,
+            finished: true,
+          }
+        }
         return {
           ...state,
-          consented: state.agree,
-          hasAnsweredAll: !state.agree,
+          consented: true,
         }
       }
 

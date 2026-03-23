@@ -8,7 +8,6 @@ import { AskAge } from './components/AskAge'
 import { AskUserInfo } from './components/AskUserInfo'
 import { AskSecret } from './components/AskSecret'
 import { AskLocation } from './components/AskLocation'
-import { AskCustom } from '../../../../optional/customSignUp'
 
 export const SignUp = () => {
   return (
@@ -38,5 +37,4 @@ const stepComponents: Record<SignUpStep, React.FC> = {
   secret: AskSecret,
   age: AskAge,
   location: AskLocation,
-  custom: AskCustom,
 }

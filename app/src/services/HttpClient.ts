@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
+import { Alert } from 'react-native'
 import * as types from '../core/api/types'
 import { API_BASE_CMS_URL, API_BASE_URL, PREDICTION_ENDPOINT } from '../config/env'
 import { Locale } from '../resources/translations'

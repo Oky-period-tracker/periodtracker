@@ -4,7 +4,7 @@ import { Button } from '../../components/Button'
 import { avatarNames } from '../../resources/translations'
 import { getAsset } from '../../services/asset'
 import { useSelector } from '../../redux/useSelector'
-import { currentAvatarSelector, currentUserSelector } from '../../redux/selectors'
+import { currentAvatarSelector, currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
 import { useDispatch } from 'react-redux'
 import { setAvatarWithValidation } from '../../redux/actions'
 import { Text } from '../../components/Text'
@@ -56,10 +56,11 @@ export const AvatarSelect = ({
   const insets = useSafeAreaInsets()
   const getAccessibilityLabel = useAccessibilityLabel()
   const translate = useTranslate()
+  const cyclesNumber = useSelector(cyclesNumberSelector)
 
   const [selectedAvatar, setSelectedAvatar] = React.useState(() => {
     const isFriendLocked =
-      currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
+      currentUser?.avatar?.customAvatarUnlocked !== true && (cyclesNumber || 0) < 3
     if (isOnboarding && isFriendLocked && currentAvatar === 'friend') {
       return avatarNames.find((avatar) => avatar !== 'friend') || avatarNames[0]
     }
@@ -69,7 +70,7 @@ export const AvatarSelect = ({
   const avatarConfig = UIConfig.avatarSelection
 
   const isFriendLocked =
-    currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
+    currentUser?.avatar?.customAvatarUnlocked !== true && (cyclesNumber || 0) < 3
   const isFriendUnlocked =
     !isFriendLocked && currentUser?.avatar && currentUser.avatar.customAvatarUnlocked === true
 
@@ -246,7 +247,7 @@ export const AvatarSelect = ({
   const confirm = () => {
     const action = setAvatarWithValidation(
       selectedAvatar,
-      currentUser?.cyclesNumber || 0,
+      cyclesNumber || 0,
       currentUser?.avatar?.customAvatarUnlocked === true,
     )
     if (action) {

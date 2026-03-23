@@ -32,7 +32,30 @@ createConnection(ormconfig)
       helmet({
         contentSecurityPolicy: {
           directives: {
-            defaultSrc: ["'none'"],
+            defaultSrc: ["'self'"],
+            scriptSrc: [
+              "'self'",
+              'https://cdnjs.cloudflare.com',
+              'https://code.jquery.com',
+              'https://maxcdn.bootstrapcdn.com',
+              'https://cdn.datatables.net',
+              'https://cdn.amcharts.com',
+            ],
+            styleSrc: [
+              "'self'",
+              "'unsafe-inline'",
+              'https://stackpath.bootstrapcdn.com',
+              'https://cdnjs.cloudflare.com',
+              'https://fonts.googleapis.com',
+              'https://cdn.datatables.net',
+            ],
+            fontSrc: [
+              "'self'",
+              'https://fonts.gstatic.com',
+              'https://cdnjs.cloudflare.com',
+            ],
+            imgSrc: ["'self'", 'data:'],
+            connectSrc: ["'self'"],
             frameAncestors: ["'none'"],
           },
         },

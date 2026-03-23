@@ -6,7 +6,7 @@ import {
   BodySmall,
   BodyMedium,
   BodyLarge,
-} from '../../resources/assets/images/avatars/friend/avatar-parts/bodies/BodyComponents'
+} from '../../resources/assets/images/avatars/friend/display/bodies/BodyComponents'
 import { SharedValue } from 'react-native-reanimated'
 
 export interface AvatarPreviewProps {

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const eyesDir = path.join(__dirname, '../src/resources/assets/images/avatars/friend/avatar-parts/eyes');
+const eyesDir = path.join(__dirname, '../src/resources/assets/images/avatars/friend/display/eyes');
 const svgFiles = fs.readdirSync(eyesDir).filter(file => file.endsWith('.svg')).sort();
 
 // Classes that should use AnimatedG (for eyes, "eye" class)

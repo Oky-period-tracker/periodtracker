@@ -7,11 +7,11 @@ This guide explains how to add new assets (clothes, devices, hair, eyes, or body
 The avatar system uses **two sets of assets** for each customization option:
 
 1. **Selection UI Assets** (PNG files) - Used in the customization screen where users select options
-   - Location: `app/src/resources/assets/images/avatars/friend/customization-page/`
+   - Location: `app/src/resources/assets/images/avatars/friend/edit/`
    - Format: PNG files (with @2x and @3x variants for retina displays)
 
 2. **Preview Assets** (SVG files) - Used in the actual avatar preview/display
-   - Location: `app/src/resources/assets/images/avatars/friend/avatar-parts/`
+   - Location: `app/src/resources/assets/images/avatars/friend/display/`
    - Format: SVG files that are automatically converted to React components via regeneration scripts
    - **Important**: After adding SVG files, you must run the regeneration script to convert them to React components
 
@@ -23,14 +23,14 @@ The avatar system uses **two sets of assets** for each customization option:
 
 ```
 app/src/resources/assets/images/avatars/friend/
-├── customization-page/          # Selection UI (PNG)
+├── edit/          # Selection UI (PNG)
 │   ├── bodies/
 │   ├── hair/
 │   ├── eyes/
 │   ├── clothing/
 │   ├── devices/
 │   └── categories/
-└── avatar-parts/                # Preview (SVG)
+└── display/                # Preview (SVG)
     ├── bodies/                  # (Uses JSX components, not SVG)
     ├── hair/
     ├── eyes/
@@ -48,15 +48,15 @@ app/src/resources/assets/images/avatars/friend/
 #### Step 1.1: Prepare Assets
 
 **Selection UI (PNG):**
-- Create PNG files: `customization-page/clothing/your-item-name.png`
+- Create PNG files: `edit/clothing/your-item-name.png`
 - Include @2x and @3x variants for retina displays
 - Recommended size: ~80x100px (base)
 
 **Preview (SVG):**
 - Create SVG files for each body size:
-  - `avatar-parts/clothing/your-item-name-small.svg`
-  - `avatar-parts/clothing/your-item-name-medium.svg`
-  - `avatar-parts/clothing/your-item-name-large.svg`
+  - `display/clothing/your-item-name-small.svg`
+  - `display/clothing/your-item-name-medium.svg`
+  - `display/clothing/your-item-name-large.svg`
 - SVGs should be designed to layer on top of the body
 - **After creating SVG files, run the regeneration script:**
   ```bash
@@ -70,7 +70,7 @@ app/src/resources/assets/images/avatars/friend/
 ```typescript
 clothing: {
   // ... existing items
-  'your-item-name': require('./images/avatars/friend/customization-page/clothing/your-item-name.png'),
+  'your-item-name': require('./images/avatars/friend/edit/clothing/your-item-name.png'),
 }
 ```
 
@@ -78,9 +78,9 @@ clothing: {
 ```typescript
 clothing: {
   // ... existing items
-  'your-item-name-small': require('./images/avatars/friend/avatar-parts/clothing/your-item-name-small.svg'),
-  'your-item-name-medium': require('./images/avatars/friend/avatar-parts/clothing/your-item-name-medium.svg'),
-  'your-item-name-large': require('./images/avatars/friend/avatar-parts/clothing/your-item-name-large.svg'),
+  'your-item-name-small': require('./images/avatars/friend/display/clothing/your-item-name-small.svg'),
+  'your-item-name-medium': require('./images/avatars/friend/display/clothing/your-item-name-medium.svg'),
+  'your-item-name-large': require('./images/avatars/friend/display/clothing/your-item-name-large.svg'),
 }
 ```
 
@@ -123,11 +123,11 @@ customizer_clothing_your-item-name: 'Your Item Display Name',
 #### Step 2.1: Prepare Assets
 
 **Selection UI (PNG):**
-- Create PNG file: `customization-page/devices/your-device-name.png`
+- Create PNG file: `edit/devices/your-device-name.png`
 - Include @2x and @3x variants
 
 **Preview (SVG):**
-- Create SVG file: `avatar-parts/devices/your-device-name.svg`
+- Create SVG file: `display/devices/your-device-name.svg`
 - **Exception**: If device needs size variants (like `prostetic2`), create:
   - `your-device-name-small.svg`
   - `your-device-name-medium.svg`
@@ -144,7 +144,7 @@ customizer_clothing_your-item-name: 'Your Item Display Name',
 ```typescript
 devices: {
   // ... existing items
-  'your-device-name': require('./images/avatars/friend/customization-page/devices/your-device-name.png'),
+  'your-device-name': require('./images/avatars/friend/edit/devices/your-device-name.png'),
 }
 ```
 
@@ -152,11 +152,11 @@ devices: {
 ```typescript
 devices: {
   // ... existing items
-  'your-device-name': require('./images/avatars/friend/avatar-parts/devices/your-device-name.svg'),
+  'your-device-name': require('./images/avatars/friend/display/devices/your-device-name.svg'),
   // OR if size variants:
-  'your-device-name-small': require('./images/avatars/friend/avatar-parts/devices/your-device-name-small.svg'),
-  'your-device-name-medium': require('./images/avatars/friend/avatar-parts/devices/your-device-name-medium.svg'),
-  'your-device-name-large': require('./images/avatars/friend/avatar-parts/devices/your-device-name-large.svg'),
+  'your-device-name-small': require('./images/avatars/friend/display/devices/your-device-name-small.svg'),
+  'your-device-name-medium': require('./images/avatars/friend/display/devices/your-device-name-medium.svg'),
+  'your-device-name-large': require('./images/avatars/friend/display/devices/your-device-name-large.svg'),
 }
 ```
 
@@ -220,12 +220,12 @@ customizer_device_your-device-name: 'Your Device Display Name',
 #### Step 3.1: Prepare Assets
 
 **Selection UI (PNG):**
-- Create PNG file: `customization-page/hair/XX.png` (where XX is a 2-digit number)
+- Create PNG file: `edit/hair/XX.png` (where XX is a 2-digit number)
 - Use the next available number (currently 00-18, so next would be 19)
 - Include @2x and @3x variants
 
 **Preview (SVG):**
-- Create SVG file: `avatar-parts/hair/XX.svg`
+- Create SVG file: `display/hair/XX.svg`
 - **Note**: '00' is reserved for bald (no hair SVG needed)
 - **After creating SVG files, run the regeneration script:**
   ```bash
@@ -239,7 +239,7 @@ customizer_device_your-device-name: 'Your Device Display Name',
 ```typescript
 hair: {
   // ... existing items
-  '19': require('./images/avatars/friend/customization-page/hair/19.png'),
+  '19': require('./images/avatars/friend/edit/hair/19.png'),
 }
 ```
 
@@ -247,7 +247,7 @@ hair: {
 ```typescript
 hair: {
   // ... existing items
-  '19': require('./images/avatars/friend/avatar-parts/hair/19.svg'),
+  '19': require('./images/avatars/friend/display/hair/19.svg'),
 }
 ```
 
@@ -275,12 +275,12 @@ customizer_hair_19: 'Hair Style 19',
 #### Step 4.1: Prepare Assets
 
 **Selection UI (PNG):**
-- Create PNG file: `customization-page/eyes/XX.png` (where XX is a 2-digit number)
+- Create PNG file: `edit/eyes/XX.png` (where XX is a 2-digit number)
 - Use the next available number (currently 00-06, so next would be 07)
 - Include @2x and @3x variants
 
 **Preview (SVG):**
-- Create SVG file: `avatar-parts/eyes/XX.svg`
+- Create SVG file: `display/eyes/XX.svg`
 - **After creating SVG files, run the regeneration script:**
   ```bash
   cd app && node scripts/regenerate-eyes-correct.js
@@ -293,7 +293,7 @@ customizer_hair_19: 'Hair Style 19',
 ```typescript
 eyes: {
   // ... existing items
-  '07': require('./images/avatars/friend/customization-page/eyes/07.png'),
+  '07': require('./images/avatars/friend/edit/eyes/07.png'),
 }
 ```
 
@@ -301,7 +301,7 @@ eyes: {
 ```typescript
 eyes: {
   // ... existing items
-  '07': require('./images/avatars/friend/avatar-parts/eyes/07.svg'),
+  '07': require('./images/avatars/friend/display/eyes/07.svg'),
 }
 ```
 
@@ -328,8 +328,8 @@ customizer_eyes_07: 'Eye Shape 07',
 
 If you need to modify body assets:
 
-1. **Selection UI**: Update PNG files in `customization-page/bodies/`
-2. **Preview**: Update JSX components in `avatar-parts/bodies/BodyComponents.tsx`
+1. **Selection UI**: Update PNG files in `edit/bodies/`
+2. **Preview**: Update JSX components in `display/bodies/BodyComponents.tsx`
 
 The body preview system uses JSX components with color props, not SVG files.
 
@@ -476,8 +476,8 @@ After adding new assets:
 
 ### Example 1: Adding a New Dress
 
-1. Create `customization-page/clothing/dress4.png` (with @2x, @3x)
-2. Create `avatar-parts/clothing/dress4-small.svg`, `dress4-medium.svg`, `dress4-large.svg`
+1. Create `edit/clothing/dress4.png` (with @2x, @3x)
+2. Create `display/clothing/dress4-small.svg`, `dress4-medium.svg`, `dress4-large.svg`
 3. Add to `selectionAssets.clothing`: `'dress4': require(...)`
 4. Add to `previewAssets.clothing`: `'dress4-small': require(...)`, etc.
 5. Add to `CLOTHING_OPTIONS`: `'dress4'`
@@ -485,8 +485,8 @@ After adding new assets:
 
 ### Example 2: Adding a New Hat Device
 
-1. Create `customization-page/devices/baseballcap.png` (with @2x, @3x)
-2. Create `avatar-parts/devices/baseballcap.svg`
+1. Create `edit/devices/baseballcap.png` (with @2x, @3x)
+2. Create `display/devices/baseballcap.svg`
 3. Add to `selectionAssets.devices`: `'baseballcap': require(...)`
 4. Add to `previewAssets.devices`: `'baseballcap': require(...)`
 5. Add to `DEVICE_OPTIONS`: `'baseballcap'`
@@ -495,8 +495,8 @@ After adding new assets:
 
 ### Example 3: Adding a New Hair Style
 
-1. Create `customization-page/hair/19.png` (with @2x, @3x)
-2. Create `avatar-parts/hair/19.svg`
+1. Create `edit/hair/19.png` (with @2x, @3x)
+2. Create `display/hair/19.svg`
 3. Add to `selectionAssets.hair`: `'19': require(...)`
 4. Add to `previewAssets.hair`: `'19': require(...)`
 5. Update `HAIR_OPTIONS`: Change length from 18 to 19

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const devicesDir = path.join(__dirname, '../src/resources/assets/images/avatars/friend/avatar-parts/devices');
+const devicesDir = path.join(__dirname, '../src/resources/assets/images/avatars/friend/display/devices');
 const svgFiles = fs.readdirSync(devicesDir).filter(file => file.endsWith('.svg')).sort();
 
 // Classes that should use AnimatedG (head and chest are now regular G, only hands and legs use AnimatedG)

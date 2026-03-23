@@ -25,7 +25,14 @@ export interface ModalProps {
   onDismiss?: () => void
 }
 
-export const Modal = ({ visible, toggleVisible, children, footer, style, onDismiss }: ModalProps) => {
+export const Modal = ({
+  visible,
+  toggleVisible,
+  children,
+  footer,
+  style,
+  onDismiss,
+}: ModalProps) => {
   const { modalBackdropColor } = useColor()
   const { width, height } = useScreenDimensions()
   const maxWidth = Math.min(width, 800)
@@ -53,11 +60,7 @@ export const Modal = ({ visible, toggleVisible, children, footer, style, onDismi
         >
           {children}
         </SafeAreaView>
-        {footer && (
-          <View style={[styles.footer, { maxWidth }]}>
-            {footer}
-          </View>
-        )}
+        {footer && <View style={[styles.footer, { maxWidth }]}>{footer}</View>}
       </View>
     </RNModal>
   )

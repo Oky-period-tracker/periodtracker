@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const hairDir = path.join(__dirname, '../src/resources/assets/images/avatars/friend/avatar-parts/hair');
+const hairDir = path.join(__dirname, '../src/resources/assets/images/avatars/friend/display/hair');
 const svgFiles = fs.readdirSync(hairDir).filter(file => file.endsWith('.svg')).sort();
 
 // Classes that should use AnimatedG (head and chest are now regular G, only hands and legs use AnimatedG)

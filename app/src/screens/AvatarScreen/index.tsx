@@ -39,7 +39,12 @@ interface AvatarSelectProps {
   isOnboarding?: boolean
 }
 
-export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = false }: AvatarSelectProps) => {
+export const AvatarSelect = ({
+  onConfirm,
+  onGoBack,
+  navigation,
+  isOnboarding = false,
+}: AvatarSelectProps) => {
   const currentAvatar = useSelector(currentAvatarSelector)
   const currentUser = useSelector(currentUserSelector)
   const dispatch = useDispatch()
@@ -52,25 +57,25 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
   const getAccessibilityLabel = useAccessibilityLabel()
   const translate = useTranslate()
 
-
   const [selectedAvatar, setSelectedAvatar] = React.useState(() => {
-    const isFriendLocked = currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
+    const isFriendLocked =
+      currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
     if (isOnboarding && isFriendLocked && currentAvatar === 'friend') {
-      return avatarNames.find(avatar => avatar !== 'friend') || avatarNames[0]
+      return avatarNames.find((avatar) => avatar !== 'friend') || avatarNames[0]
     }
     return currentAvatar || avatarNames[0]
   })
-  
+
   const avatarConfig = UIConfig.avatarSelection
-  
-  const isFriendLocked = currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
-  const isFriendUnlocked = !isFriendLocked && 
-    currentUser?.avatar && 
-    currentUser.avatar.customAvatarUnlocked === true
-  
+
+  const isFriendLocked =
+    currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
+  const isFriendUnlocked =
+    !isFriendLocked && currentUser?.avatar && currentUser.avatar.customAvatarUnlocked === true
+
   const isFriendCustomized = React.useMemo(() => {
     if (!isFriendUnlocked || !currentUser?.avatar) return false
-    
+
     const avatar = currentUser.avatar
     const hasBody = avatar.body !== null && avatar.body !== undefined
     const hasHair = avatar.hair !== null && avatar.hair !== undefined
@@ -80,10 +85,19 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
     const hasEyeColor = avatar.eyeColor !== null && avatar.eyeColor !== undefined
     const hasClothing = avatar.clothing !== null && avatar.clothing !== undefined
     const hasDevices = avatar.devices !== null && avatar.devices !== undefined
-    
-    return hasBody || hasHair || hasEyes || hasSkinColor || hasHairColor || hasEyeColor || hasClothing || hasDevices
+
+    return (
+      hasBody ||
+      hasHair ||
+      hasEyes ||
+      hasSkinColor ||
+      hasHairColor ||
+      hasEyeColor ||
+      hasClothing ||
+      hasDevices
+    )
   }, [isFriendUnlocked, currentUser?.avatar])
-  
+
   const isFriendCreated = isFriendUnlocked && isFriendCustomized
   const backgroundImage = React.useMemo(() => {
     try {
@@ -97,7 +111,7 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
       return null
     }
   }, [theme, onPeriod, isLoggedIn])
-  
+
   const reminderMessage = React.useMemo(() => {
     if (isFriendLocked) {
       return 'select_avatar_reminder_locked'
@@ -107,7 +121,7 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
       return 'select_avatar_reminder_unlocked_not_created'
     }
   }, [isFriendLocked, isFriendCreated])
-  
+
   const reminderIcon = React.useMemo(() => {
     return isFriendLocked ? 'icons.locked' : 'icons.unlocked'
   }, [isFriendLocked])
@@ -116,15 +130,16 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
     const avatarsContainerWidth = Math.min(avatarsContainerWidthPercent, 1200)
     const itemsPerRow = 3
 
-    const marginHorizontal = width > 720
-      ? 12
-      : getResponsiveMargin(width, {
-          xs: 3,
-          sm: 3,
-          md: 3,
-          lg: avatarConfig.avatarMarginHorizontal || 4,
-          xl: 2,
-        })
+    const marginHorizontal =
+      width > 720
+        ? 12
+        : getResponsiveMargin(width, {
+            xs: 3,
+            sm: 3,
+            md: 3,
+            lg: avatarConfig.avatarMarginHorizontal || 4,
+            xl: 2,
+          })
 
     const getConstraints = () => {
       if (width <= 360) {
@@ -153,7 +168,7 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
           minWidth: 95,
           maxWidth: 110,
           safetyBuffer: 10,
-          containerWidthMultiplier: 0.90,
+          containerWidthMultiplier: 0.9,
         }
       } else if (width > 480 && width <= 600) {
         return {
@@ -174,7 +189,7 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
           minWidth: undefined,
           maxWidth: 200,
           safetyBuffer: 40,
-          containerWidthMultiplier: 0.70,
+          containerWidthMultiplier: 0.7,
         }
       }
     }
@@ -191,33 +206,32 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
       scaleBuffer: true,
     })
   }, [avatarConfig, width])
-  
+
   const reminderMaxWidth = React.useMemo(() => {
     const contentContainerWidthPercent = width * (avatarConfig.contentContainerWidthPercent / 100)
     const contentContainerWidth = Math.min(contentContainerWidthPercent, 1200)
     const titleBoxWidth = contentContainerWidth * 0.8
     return Math.floor(titleBoxWidth)
   }, [width, avatarConfig])
-  
+
   const scaledMarginHorizontal = scaleOriginal(avatarConfig.avatarMarginHorizontal || 4)
   const effectiveAvatarsContainerWidthPercent = avatarConfig.avatarsContainerWidthPercent
   const effectiveContentContainerWidthPercent = avatarConfig.contentContainerWidthPercent
-  
+
   const effectiveAvatarConfig = {
     ...avatarConfig,
     avatarsContainerWidthPercent: effectiveAvatarsContainerWidthPercent,
     contentContainerWidthPercent: effectiveContentContainerWidthPercent,
     avatarMarginHorizontal: scaledMarginHorizontal,
   }
-  
 
   const dynamicStyles = React.useMemo(
     () => createAvatarScreenStyles(effectiveAvatarConfig, width, true),
     [effectiveAvatarConfig, avatarWidth, onGoBack, isOnboarding, reminderMaxWidth, width],
   )
-  
+
   const returningFromCustomAvatarRef = React.useRef(false)
-  
+
   useFocusEffect(
     React.useCallback(() => {
       if (returningFromCustomAvatarRef.current) {
@@ -226,14 +240,14 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
         }
         returningFromCustomAvatarRef.current = false
       }
-    }, [isFriendCustomized])
+    }, [isFriendCustomized]),
   )
 
   const confirm = () => {
     const action = setAvatarWithValidation(
-      selectedAvatar, 
+      selectedAvatar,
       currentUser?.cyclesNumber || 0,
-      currentUser?.avatar?.customAvatarUnlocked === true
+      currentUser?.avatar?.customAvatarUnlocked === true,
     )
     if (action) {
       dispatch(action)
@@ -254,164 +268,173 @@ export const AvatarSelect = ({ onConfirm, onGoBack, navigation, isOnboarding = f
 
   return (
     <Screen>
-    <View style={dynamicStyles.screen}>
-      <ImageBackground
-        source={backgroundImage || undefined}
-        style={dynamicStyles.backgroundImage}
-        resizeMode="cover"
-        imageStyle={dynamicStyles.backgroundImageStyle}
-      >
-        <ScrollView 
-          style={dynamicStyles.scrollView}
-          contentContainerStyle={dynamicStyles.scrollContent}
-          showsVerticalScrollIndicator={false}
+      <View style={dynamicStyles.screen}>
+        <ImageBackground
+          source={backgroundImage || undefined}
+          style={dynamicStyles.backgroundImage}
+          resizeMode="cover"
+          imageStyle={dynamicStyles.backgroundImageStyle}
         >
-          {/* Top Message Container */}
-          <View style={dynamicStyles.topMessageContainer}>
-            {/* Title Section with Logo */}
-            <View style={dynamicStyles.titleContainer}>
-            <View style={dynamicStyles.titleSpacer}>
-              <Image 
-                source={assets.static.launch_icon} 
-                style={dynamicStyles.logo} 
-                resizeMode="contain" 
-              />
-            </View>
-            <View style={dynamicStyles.titleBox}>
-              <Text style={[dynamicStyles.title, { color: '#000000' }]}>
-                {isOnboarding 
-                  ? 'select_avatar_title' 
-                  : (isFriendUnlocked ? 'select_avatar_title_unlocked' : 'select_avatar_title')}
-              </Text>
-              <Text style={[dynamicStyles.subtitle, { color: '#000000' }]}>
-                {isOnboarding 
-                  ? 'select_avatar_subtitle' 
-                  : (isFriendUnlocked ? 'select_avatar_subtitle_unlocked' : 'select_avatar_subtitle')}
-              </Text>
-            </View>
-          </View>
-          </View>
-
-          {/* Avatars Container */}
-          <View style={dynamicStyles.avatarsContainer}>
-            <View style={dynamicStyles.avatars}>
-            {avatarNames.map((avatar) => {
-              const isFriendAvatar = avatar === 'friend'
-              const isFriendAvatarLocked = isFriendAvatar && isFriendLocked
-              
-              const isSelected = avatar === selectedAvatar && !(isFriendAvatarLocked && isOnboarding)
-              const isCurrent = avatar === currentAvatar && !(isFriendAvatarLocked && isOnboarding)
-
-              const onPress = () => {
-                if (isFriendAvatarLocked) {
-                  return
-                }
-                
-                if (isFriendAvatar && navigation) {
-                  returningFromCustomAvatarRef.current = true
-                  navigation.navigate('CustomAvatar')
-                  return
-                }
-                
-                setSelectedAvatar(avatar)
-              }
-
-              const translatedAvatarName = translate(avatar) || avatar
-              const avatarLabel = isFriendAvatarLocked 
-                ? `${translatedAvatarName} locked`
-                : isFriendAvatar && navigation
-                ? `${translatedAvatarName}, tap to customize`
-                : `${translatedAvatarName}, ${isSelected ? 'selected' : 'tap to select'}`
-              
-              return (
-                <AvatarItem
-                  key={avatar}
-                  avatar={avatar}
-                  isSelected={isSelected}
-                  isCurrent={isCurrent}
-                  isFriendAvatar={isFriendAvatar}
-                  isFriendAvatarLocked={isFriendAvatarLocked}
-                  isFriendCustomized={isFriendCustomized}
-                  avatarData={avatarData}
-                  avatarWidth={avatarWidth}
-                  width={width}
-                  avatarConfig={avatarConfig}
-                  dynamicStyles={dynamicStyles}
-                  onPress={onPress}
-                  avatarLabel={avatarLabel}
-                  getAccessibilityLabel={getAccessibilityLabel}
-                  currentUser={currentUser}
-                />
-              )
-            })}
-            {/* Add empty placeholder spots to fill last row to 3 items */}
-            {(() => {
-              const columns = 3
-              const totalAvatars = avatarNames.length
-              const remainder = totalAvatars % columns
-              const emptySpotsNeeded = remainder > 0 ? columns - remainder : 0
-              
-              return Array.from({ length: emptySpotsNeeded }, (_, index) => (
-                <View
-                  key={`empty-${index}`}
-                  style={[
-                    dynamicStyles.avatar,
-                    {
-                      width: avatarWidth,
-                      opacity: 0,
-                      pointerEvents: 'none',
-                    },
-                  ]}
-                />
-              ))
-            })()}
-            </View>
-          </View>
-
-          {/* Reminder Container */}
-          <View style={dynamicStyles.reminderContainer}>
-            <View style={dynamicStyles.reminderInnerContainer}>
-              <View style={dynamicStyles.reminderSpacer} />
-              <View style={dynamicStyles.reminderBox}>
-              <View style={dynamicStyles.reminderIconContainer}>
-                <Image 
-                  source={getAsset(reminderIcon)} 
-                  style={dynamicStyles.reminderIcon} 
-                  resizeMode="contain"
-                />
+          <ScrollView
+            style={dynamicStyles.scrollView}
+            contentContainerStyle={dynamicStyles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {/* Top Message Container */}
+            <View style={dynamicStyles.topMessageContainer}>
+              {/* Title Section with Logo */}
+              <View style={dynamicStyles.titleContainer}>
+                <View style={dynamicStyles.titleSpacer}>
+                  <Image
+                    source={assets.static.launch_icon}
+                    style={dynamicStyles.logo}
+                    resizeMode="contain"
+                  />
+                </View>
+                <View style={dynamicStyles.titleBox}>
+                  <Text style={[dynamicStyles.title, { color: '#000000' }]}>
+                    {isOnboarding
+                      ? 'select_avatar_title'
+                      : isFriendUnlocked
+                      ? 'select_avatar_title_unlocked'
+                      : 'select_avatar_title'}
+                  </Text>
+                  <Text style={[dynamicStyles.subtitle, { color: '#000000' }]}>
+                    {isOnboarding
+                      ? 'select_avatar_subtitle'
+                      : isFriendUnlocked
+                      ? 'select_avatar_subtitle_unlocked'
+                      : 'select_avatar_subtitle'}
+                  </Text>
+                </View>
               </View>
-              <Text style={[dynamicStyles.reminderText, { color: '#000000' }]}>
-                {reminderMessage}
-              </Text>
             </View>
+
+            {/* Avatars Container */}
+            <View style={dynamicStyles.avatarsContainer}>
+              <View style={dynamicStyles.avatars}>
+                {avatarNames.map((avatar) => {
+                  const isFriendAvatar = avatar === 'friend'
+                  const isFriendAvatarLocked = isFriendAvatar && isFriendLocked
+
+                  const isSelected =
+                    avatar === selectedAvatar && !(isFriendAvatarLocked && isOnboarding)
+                  const isCurrent =
+                    avatar === currentAvatar && !(isFriendAvatarLocked && isOnboarding)
+
+                  const onPress = () => {
+                    if (isFriendAvatarLocked) {
+                      return
+                    }
+
+                    if (isFriendAvatar && navigation) {
+                      returningFromCustomAvatarRef.current = true
+                      navigation.navigate('CustomAvatar')
+                      return
+                    }
+
+                    setSelectedAvatar(avatar)
+                  }
+
+                  const translatedAvatarName = translate(avatar) || avatar
+                  const avatarLabel = isFriendAvatarLocked
+                    ? `${translatedAvatarName} locked`
+                    : isFriendAvatar && navigation
+                    ? `${translatedAvatarName}, tap to customize`
+                    : `${translatedAvatarName}, ${isSelected ? 'selected' : 'tap to select'}`
+
+                  return (
+                    <AvatarItem
+                      key={avatar}
+                      avatar={avatar}
+                      isSelected={isSelected}
+                      isCurrent={isCurrent}
+                      isFriendAvatar={isFriendAvatar}
+                      isFriendAvatarLocked={isFriendAvatarLocked}
+                      isFriendCustomized={isFriendCustomized}
+                      avatarData={avatarData}
+                      avatarWidth={avatarWidth}
+                      width={width}
+                      avatarConfig={avatarConfig}
+                      dynamicStyles={dynamicStyles}
+                      onPress={onPress}
+                      avatarLabel={avatarLabel}
+                      getAccessibilityLabel={getAccessibilityLabel}
+                      currentUser={currentUser}
+                    />
+                  )
+                })}
+                {/* Add empty placeholder spots to fill last row to 3 items */}
+                {(() => {
+                  const columns = 3
+                  const totalAvatars = avatarNames.length
+                  const remainder = totalAvatars % columns
+                  const emptySpotsNeeded = remainder > 0 ? columns - remainder : 0
+
+                  return Array.from({ length: emptySpotsNeeded }, (_, index) => (
+                    <View
+                      key={`empty-${index}`}
+                      style={[
+                        dynamicStyles.avatar,
+                        {
+                          width: avatarWidth,
+                          opacity: 0,
+                          pointerEvents: 'none',
+                        },
+                      ]}
+                    />
+                  ))
+                })()}
+              </View>
             </View>
+
+            {/* Reminder Container */}
+            <View style={dynamicStyles.reminderContainer}>
+              <View style={dynamicStyles.reminderInnerContainer}>
+                <View style={dynamicStyles.reminderSpacer} />
+                <View style={dynamicStyles.reminderBox}>
+                  <View style={dynamicStyles.reminderIconContainer}>
+                    <Image
+                      source={getAsset(reminderIcon)}
+                      style={dynamicStyles.reminderIcon}
+                      resizeMode="contain"
+                    />
+                  </View>
+                  <Text style={[dynamicStyles.reminderText, { color: '#000000' }]}>
+                    {reminderMessage}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+
+          {/* Buttons - Fixed at bottom */}
+          <View
+            style={[
+              dynamicStyles.buttonContainer,
+              isOnboarding && { paddingBottom: avatarConfig.buttonPaddingBottom + insets.bottom },
+            ]}
+          >
+            {isOnboarding ? (
+              <Button
+                onPress={confirm}
+                status={confirmStatus}
+                accessibilityLabel={getAccessibilityLabel('continue')}
+              >
+                continue
+              </Button>
+            ) : (
+              <Button
+                onPress={confirm}
+                status={confirmStatus}
+                accessibilityLabel={getAccessibilityLabel('confirm')}
+              >
+                confirm
+              </Button>
+            )}
           </View>
-        </ScrollView>
-        
-        {/* Buttons - Fixed at bottom */}
-        <View style={[dynamicStyles.buttonContainer, isOnboarding && { paddingBottom: avatarConfig.buttonPaddingBottom + insets.bottom }]}>
-          {isOnboarding ? (
-            <Button 
-              onPress={confirm} 
-              status={confirmStatus}
-              accessibilityLabel={getAccessibilityLabel('continue')}
-            >
-              continue
-            </Button>
-          ) : (
-            <Button 
-              onPress={confirm} 
-              status={confirmStatus}
-              accessibilityLabel={getAccessibilityLabel('confirm')}
-            >
-              confirm
-            </Button>
-          )}
-        </View>
-      </ImageBackground>
-    </View>
+        </ImageBackground>
+      </View>
     </Screen>
   )
 }
-
-

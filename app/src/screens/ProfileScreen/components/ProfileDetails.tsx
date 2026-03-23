@@ -37,7 +37,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const { formatMonthYear } = useFormatDate()
   const { backgroundColor } = useColor()
   const { UIConfig } = useResponsive()
-  
+
   const avatarConfig = UIConfig.avatarSelection
   const { width } = useResponsive()
   const avatarData = useAvatar()
@@ -61,59 +61,59 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const periodLength = todayInfo.periodLength === 0 ? '-' : `${todayInfo.periodLength} ${days}`
 
   return (
-      <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
-        {currentUser?.isGuest && (
-          <>
-            <View style={styles.column}>
-              <View style={styles.row}>
-                <View style={styles.column}>
-                  <InfoButton title={'alert'} content={'connect_account_info'} />
-                  <Text style={styles.infoLabel}>guest_mode_user_alert</Text>
-                </View>
+    <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
+      {currentUser?.isGuest && (
+        <>
+          <View style={styles.column}>
+            <View style={styles.row}>
+              <View style={styles.column}>
+                <InfoButton title={'alert'} content={'connect_account_info'} />
+                <Text style={styles.infoLabel}>guest_mode_user_alert</Text>
+              </View>
 
-                <View style={styles.column}>
-                  <SaveAccountButton />
-                </View>
+              <View style={styles.column}>
+                <SaveAccountButton />
               </View>
             </View>
-            <Hr />
-          </>
-        )}
-
-        {/* ===== Top Section ===== */}
-        <TouchableOpacity style={styles.row} onPress={goToEdit}>
-          <View style={styles.iconColumn}>
-            <DisplayButton style={styles.icon}>
-              <UserIcon size={28} />
-            </DisplayButton>
           </View>
-          <View style={styles.column}>
-            <View>
+          <Hr />
+        </>
+      )}
+
+      {/* ===== Top Section ===== */}
+      <TouchableOpacity style={styles.row} onPress={goToEdit}>
+        <View style={styles.iconColumn}>
+          <DisplayButton style={styles.icon}>
+            <UserIcon size={28} />
+          </DisplayButton>
+        </View>
+        <View style={styles.column}>
+          <View>
             <Text style={styles.text}>name</Text>
             <Text style={styles.text}>age</Text>
             <Text style={styles.text}>gender</Text>
             <Text style={styles.text}>location</Text>
-            </View>
           </View>
-          <View style={styles.column}>
-            <View>
-              <Text enableTranslate={false} style={[styles.text, styles.bold]}>
-                {currentUser?.name}
-              </Text>
-              <Text enableTranslate={false} style={[styles.text, styles.bold]}>
-                {formatMonthYear(currentUser?.dateOfBirth)}
-              </Text>
-              <Text style={[styles.text, styles.bold]}>{currentUser?.gender}</Text>
-              <Text style={[styles.text, styles.bold]}>{currentUser?.location}</Text>
-            </View>
+        </View>
+        <View style={styles.column}>
+          <View>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+              {currentUser?.name}
+            </Text>
+            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+              {formatMonthYear(currentUser?.dateOfBirth)}
+            </Text>
+            <Text style={[styles.text, styles.bold]}>{currentUser?.gender}</Text>
+            <Text style={[styles.text, styles.bold]}>{currentUser?.location}</Text>
           </View>
-          <View style={styles.editIconContainer}>
-            <DisplayButton style={styles.editIcon}>
-              <FontAwesome name="pencil" size={12} color="#FFFFFF" />
-            </DisplayButton>
-          </View>
-        </TouchableOpacity>
-        <Hr />
+        </View>
+        <View style={styles.editIconContainer}>
+          <DisplayButton style={styles.editIcon}>
+            <FontAwesome name="pencil" size={12} color="#FFFFFF" />
+          </DisplayButton>
+        </View>
+      </TouchableOpacity>
+      <Hr />
 
       {/* ===== Middle Section ===== */}
       <View style={styles.row}>
@@ -153,20 +153,21 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
       <TouchableOpacity style={styles.row} onPress={goToAvatar}>
         <View style={styles.iconColumn}>
           {(() => {
-            const avatarWidth = getResponsiveValue(width, {
-              xs: 100,
-              sm: 100,
-              md: 100,
-              lg: 110,
-              xl: 110,
-            }) || 100
-            
+            const avatarWidth =
+              getResponsiveValue(width, {
+                xs: 100,
+                sm: 100,
+                md: 100,
+                lg: 110,
+                xl: 110,
+              }) || 100
+
             if (avatar === 'friend') {
               const BlankSvg = getStandardAvatarSvg('friend')
               const friendImageAspectRatio = 105 / 74
               const friendImageWidth = avatarWidth
               const friendImageHeight = friendImageWidth / friendImageAspectRatio
-              
+
               return BlankSvg ? (
                 <View style={styles.imageWrapper}>
                   {/* Friend avatar container */}
@@ -191,7 +192,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
                           height={friendImageHeight * 1.3}
                           style={{
                             ...styles.avatarPreview,
-                            bottom: -(friendImageHeight * 0.6)
+                            bottom: -(friendImageHeight * 0.6),
                           }}
                         />
                       </View>
@@ -204,7 +205,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
               const imageAspectRatio = 105 / 74
               const imageWidth = avatarWidth
               const imageHeight = imageWidth / imageAspectRatio
-              
+
               if (StandardAvatarSvg) {
                 return (
                   <View style={styles.imageWrapper}>
@@ -217,7 +218,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
                   </View>
                 )
               }
-              
+
               return null
             }
           })()}
@@ -233,11 +234,11 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
           </DisplayButton>
         </View>
       </TouchableOpacity>
-      
+
       {/* ===== Avatar Name Section (only for custom avatar) ===== */}
       {avatar === 'friend' && currentUser?.avatar?.name && (
-        <TouchableOpacity 
-          style={[styles.row, styles.nameChangeRow]} 
+        <TouchableOpacity
+          style={[styles.row, styles.nameChangeRow]}
           onPress={() => navigation.navigate('CustomAvatar', { openNameModal: true })}
         >
           <View style={styles.iconColumn}>
@@ -245,10 +246,10 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
           </View>
           <View style={styles.column}>
             <View>
-              <Text style={styles.text} enableTranslate={true}>change_the_name</Text>
-              <Text style={[styles.text, styles.bold]}>
-                {currentUser.avatar.name}
+              <Text style={styles.text} enableTranslate={true}>
+                change_the_name
               </Text>
+              <Text style={[styles.text, styles.bold]}>{currentUser.avatar.name}</Text>
             </View>
           </View>
           <View style={styles.editIconContainer}>
@@ -268,7 +269,10 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
               const ThemeSvg = getThemeSvg(theme)
               if (!ThemeSvg) {
                 return (
-                  <Image source={getAsset(`backgrounds.${theme}.default`)} style={styles.themeImage} />
+                  <Image
+                    source={getAsset(`backgrounds.${theme}.default`)}
+                    style={styles.themeImage}
+                  />
                 )
               }
               return (
@@ -297,4 +301,3 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
     </View>
   )
 }
-

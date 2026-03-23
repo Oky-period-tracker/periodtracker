@@ -36,6 +36,10 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
   const { authMode, setAuthMode } = useAuthMode()
   const goToInfo = () => navigation.navigate('Info')
 
+  const hideHeader = authMode === 'avatar_selection' || authMode === 'theme_selection'
+  React.useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: !hideHeader })
+  }, [navigation, hideHeader])
 
   if (authMode === 'avatar_selection') {
     const onConfirm = () => setAuthMode('theme_selection')

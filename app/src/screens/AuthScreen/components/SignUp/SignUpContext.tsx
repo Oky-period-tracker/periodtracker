@@ -338,7 +338,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
 
     reduxDispatch(createAccountRequest(user))
     // TODO: wait for success
-    setAuthMode('avatar_and_theme')
+    setAuthMode('select_avatar')
   }, [step])
 
   return (

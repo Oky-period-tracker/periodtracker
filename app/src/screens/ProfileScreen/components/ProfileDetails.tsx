@@ -34,8 +34,12 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
     navigation.navigate('EditProfile')
   }
 
-  const goToAvatarAndTheme = () => {
-    navigation.navigate('AvatarAndTheme')
+  const goToTheme = () => {
+    navigation.navigate('ThemeSelect')
+  }
+
+  const goToAvatar = () => {
+    navigation.navigate('AvatarSelect')
   }
 
   const days = translate('days')
@@ -63,7 +67,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
         </>
       )}
 
-      {/* ===== Top Section ===== */}
+      {/* ===== Edit profile ===== */}
       <TouchableOpacity style={styles.row} onPress={goToEdit}>
         <View style={styles.column}>
           <DisplayButton style={styles.icon}>
@@ -93,7 +97,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
       </TouchableOpacity>
       <Hr />
 
-      {/* ===== Middle Section ===== */}
+      {/* ===== Cycle data ===== */}
       <View style={styles.row}>
         <View style={styles.column}>
           <CircleProgress />
@@ -117,11 +121,22 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
       </View>
       <Hr />
 
-      {/* ===== Bottom Section ===== */}
-      <TouchableOpacity style={styles.row} onPress={goToAvatarAndTheme}>
+      {/* ===== Select avatar ===== */}
+      <TouchableOpacity style={styles.row} onPress={goToAvatar}>
         <View style={styles.column}>
           <Image source={getAsset(`avatars.${avatar}.theme`)} style={styles.avatarImage} />
         </View>
+        <View style={styles.column}>
+          <View>
+            <Text style={[styles.text, styles.bold]}>select_avatar</Text>
+            <Text style={[styles.text, styles.bold]}>{avatar}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+      <Hr />
+
+      {/* ===== Select theme ===== */}
+      <TouchableOpacity style={styles.row} onPress={goToTheme}>
         <View style={styles.column}>
           <View style={styles.themeWrapper}>
             <Image source={getAsset(`backgrounds.${theme}.default`)} style={styles.themeImage} />
@@ -129,7 +144,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
         </View>
         <View style={styles.column}>
           <View>
-            <Text style={[styles.text, styles.bold]}>{avatar}</Text>
+            <Text style={[styles.text, styles.bold]}>select_theme</Text>
             <Text style={[styles.text, styles.bold]}>{theme}</Text>
           </View>
         </View>
@@ -149,6 +164,7 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: 100,
     padding: 12,
+    gap: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },

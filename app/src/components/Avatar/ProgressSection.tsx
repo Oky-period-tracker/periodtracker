@@ -10,6 +10,8 @@ import { SharedValue, runOnJS, useAnimatedReaction } from 'react-native-reanimat
 import { HeartAnimation } from './HeartAnimation'
 import { useResponsive } from '../../contexts/ResponsiveContext'
 import { useColor } from '../../hooks/useColor'
+import { AvatarLocks } from '../AvatarLocks'
+import { USE_AVATAR_CUSTOMIZATION } from '../../config/env'
 
 export const ProgressSection = ({
   heartProgress,
@@ -99,6 +101,13 @@ export const ProgressSection = ({
 
       {/* ===== Animated hearts ===== */}
       <HeartAnimation count={progress} />
+
+      {/* === Avatar Locks */}
+      {USE_AVATAR_CUSTOMIZATION && (
+        <View style={[styles.locksContainer]}>
+          <AvatarLocks cyclesNumber={0} customAvatarUnlocked={false} />
+        </View>
+      )}
     </View>
   )
 }
@@ -137,4 +146,7 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 4,
   },
+  locksContainer: {
+    marginTop: 4,
+  }
 })

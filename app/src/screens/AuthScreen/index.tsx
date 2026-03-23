@@ -7,7 +7,6 @@ import { SignUp } from './components/SignUp'
 import { AuthToggle } from './components/AuthToggle'
 import { AuthModeProvider, useAuthMode } from './AuthModeContext'
 import { ScreenProps } from '../../navigation/RootNavigator'
-import { AvatarAndThemeSelect } from '../AvatarAndThemeScreen'
 import { Welcome } from './components/Welcome'
 import { Journey } from './components/Journey'
 import { AuthLinks } from './components/AuthLinks'
@@ -19,6 +18,8 @@ import { useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AuthScreenHeader } from './components/AuthScreenHeader'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
+import { AvatarSelect } from '../AvatarSelectScreen'
+import { ThemeSelect } from '../ThemeSelectScreen'
 
 const AuthScreen = (props: ScreenProps<'Auth'>) => {
   useStopLoadingEffect()
@@ -35,9 +36,16 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
   const { authMode, setAuthMode } = useAuthMode()
   const goToInfo = () => navigation.navigate('Info')
 
-  if (authMode === 'avatar_and_theme') {
+  // Process with avatar selection
+  if (authMode === 'select_avatar') {
+    const onConfirm = () => setAuthMode('select_theme')
+    return <AvatarSelect onConfirm={onConfirm} />
+  }
+
+  // Process with theme selection
+  if (authMode === 'select_theme') {
     const onConfirm = () => setAuthMode('onboard_journey')
-    return <AvatarAndThemeSelect onConfirm={onConfirm} />
+    return <ThemeSelect onConfirm={onConfirm} />
   }
 
   if (authMode === 'welcome') {

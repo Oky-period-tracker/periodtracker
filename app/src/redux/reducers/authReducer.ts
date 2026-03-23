@@ -8,7 +8,7 @@ export interface AvatarConfig {
   eyes?: string | null
   smile?: string | null
   clothing?: string | null
-  devices?: string[] | null // Supports both legacy string format and new array format
+  devices?: string[] | null
   skinColor?: string | null
   hairColor?: string | null
   eyeColor?: string | null

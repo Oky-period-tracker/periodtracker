@@ -18,7 +18,7 @@ export interface AvatarPreviewProps {
   eyeColor?: string
   smile?: string // Optional in props but will always have a value when used
   clothing?: string | null
-  devices?: string | string[] | null // Support both string (old format) and array (new format)
+  devices?: string[] | null
   width?: number
   height?: number
   style?: ViewStyle
@@ -75,11 +75,9 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
 }) => {
   const bodySize: BodySize = bodyType
 
-  // Normalize devices to array format (handle both string and array)
   const devicesArray = React.useMemo(() => {
     if (!devices) return []
-    if (Array.isArray(devices)) return devices
-    return [devices] // Old format: single string
+    return devices
   }, [devices])
 
   // Check if any device is a prosthetic type that needs to render before clothing

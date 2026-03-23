@@ -49,14 +49,7 @@ export const useAvatar = (): AvatarData | null => {
     // Smile defaults to 'smile' if not set (always show smile)
     smile: avatar.smile || 'smile',
     clothing: avatar.clothing || null,
-    // Convert devices from string (old format) or array (new format) to array
-    devices: (() => {
-      const devices = avatar.devices
-      if (!devices) return []
-      if (Array.isArray(devices)) return devices
-      // Old format: single string, convert to array
-      return [devices]
-    })(),
+    devices: avatar.devices ?? [],
     // Preserve undefined if not set
     name: avatar.name ?? '',
   }

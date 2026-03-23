@@ -43,6 +43,9 @@ export interface AppTranslations {
   correct: string
   profile: string
   profile_edit: string
+  track_regularly_cycle_updates: string
+  change_oky_friend: string
+  change_the_name: string
   password: string
   confirm_password: string
   secret_question: string
@@ -93,6 +96,135 @@ export interface AppTranslations {
 
   avatar_amp_themes: string
   avatar_amp_themes_login: string
+  select_avatar: string
+  select_avatar_title: string
+  select_avatar_subtitle: string
+  select_avatar_title_unlocked: string
+  select_avatar_subtitle_unlocked: string
+  select_avatar_reminder_locked: string
+  select_avatar_reminder_unlocked_not_created: string
+  select_avatar_reminder_unlocked_created: string
+  avatar_message_enter_period_days: string
+  avatar_message_keep_entering_period_days: string
+  friend_unlock_modal_title: string
+  friend_unlock_modal_button: string
+  friend_unlock_celebration_image: string
+  select_theme: string
+  select_theme_title: string
+  select_theme_subtitle: string
+  edit_avatar_title: string
+  edit_avatar_subtitle: string
+  edit_avatar_tutorial: string
+  edit_avatar_first_visit_tooltip: string
+  edit_avatar_skin: string
+  edit_avatar_body: string
+  edit_avatar_hair: string
+  edit_avatar_hair_color: string
+  edit_avatar_hairstyle: string
+  edit_avatar_eyes: string
+  edit_avatar_eye_color: string
+  edit_avatar_eye_shape: string
+  edit_avatar_clothes: string
+  edit_avatar_personal_items: string
+  edit_avatar_exit: string
+  edit_avatar_save_friend: string
+  edit_avatar_tutorial_title: string
+  edit_avatar_tutorial_back: string
+  edit_avatar_tutorial_next: string
+  edit_avatar_tutorial_finish: string
+  edit_avatar_tutorial_step1_title: string
+  edit_avatar_tutorial_step1_text: string
+  edit_avatar_tutorial_step2_title: string
+  edit_avatar_tutorial_step2_text: string
+  edit_avatar_tutorial_step3_title: string
+  edit_avatar_tutorial_step3_text: string
+  edit_avatar_tutorial_step4_title: string
+  edit_avatar_tutorial_step4_text: string
+  edit_avatar_tutorial_step5_title: string
+  edit_avatar_tutorial_step5_text: string
+  go_back: string
+  // Clothing item translations
+  edit_avatar_clothing_dress1: string
+  edit_avatar_clothing_dress2: string
+  edit_avatar_clothing_dress3: string
+  edit_avatar_clothing_longdressbelt: string
+  edit_avatar_clothing_shortandshirt1: string
+  edit_avatar_clothing_shortandshirt2: string
+  edit_avatar_clothing_shortandshirt3: string
+  edit_avatar_clothing_skirtandshirt: string
+  edit_avatar_clothing_shirtandpants: string
+  edit_avatar_clothing_blazer1: string
+  edit_avatar_clothing_blazer2: string
+  edit_avatar_clothing_jumper: string
+  edit_avatar_clothing_cape: string
+  edit_avatar_clothing_hijab: string
+  edit_avatar_clothing_longuniform: string
+  edit_avatar_clothing_traditional1: string
+  edit_avatar_clothing_traditional2: string
+  edit_avatar_clothing_traditional3: string
+  edit_avatar_clothing_traditional4: string
+  edit_avatar_clothing_traditional5: string
+  // Personal item (device) translations
+  edit_avatar_device_glasses: string
+  edit_avatar_device_readingglasses2: string
+  edit_avatar_device_darkglasses: string
+  edit_avatar_device_sunglass1: string
+  edit_avatar_device_sunglass2: string
+  edit_avatar_device_crown: string
+  edit_avatar_device_hat: string
+  edit_avatar_device_beanie: string
+  edit_avatar_device_beanie2: string
+  edit_avatar_device_buckethat: string
+  edit_avatar_device_cap: string
+  edit_avatar_device_sunhat: string
+  edit_avatar_device_headband: string
+  edit_avatar_device_head: string
+  edit_avatar_device_flowers: string
+  edit_avatar_device_bandana: string
+  edit_avatar_device_headphones: string
+  edit_avatar_device_necklace1: string
+  edit_avatar_device_necklace2: string
+  edit_avatar_device_necklace3: string
+  edit_avatar_device_earings: string
+  edit_avatar_device_purse: string
+  edit_avatar_device_cane: string
+  edit_avatar_device_prostetic1: string
+  edit_avatar_device_prostetic2: string
+  // Skin color translations
+  edit_avatar_skin_color_light_pink: string
+  edit_avatar_skin_color_peach: string
+  edit_avatar_skin_color_beige: string
+  edit_avatar_skin_color_tan: string
+  edit_avatar_skin_color_dark_brown: string
+  edit_avatar_skin_color_light_tan: string
+  edit_avatar_skin_color_medium_brown: string
+  edit_avatar_skin_color_cream: string
+  edit_avatar_skin_color_bronze: string
+  edit_avatar_skin_color_ivory: string
+  edit_avatar_skin_color_sand: string
+  edit_avatar_skin_color_caramel: string
+  edit_avatar_skin_color_unknown: string
+  // Hair color translations
+  edit_avatar_hair_color_black: string
+  edit_avatar_hair_color_brown: string
+  edit_avatar_hair_color_red: string
+  edit_avatar_hair_color_blonde: string
+  edit_avatar_hair_color_green: string
+  edit_avatar_hair_color_pink: string
+  edit_avatar_hair_color_orange: string
+  edit_avatar_hair_color_purple: string
+  edit_avatar_hair_color_dark_brown: string
+  edit_avatar_hair_color_bright_orange: string
+  edit_avatar_hair_color_blue: string
+  edit_avatar_hair_color_unknown: string
+  // Eye color translations
+  edit_avatar_eye_color_black: string
+  edit_avatar_eye_color_brown: string
+  edit_avatar_eye_color_hazel: string
+  edit_avatar_eye_color_green: string
+  edit_avatar_eye_color_blue: string
+  edit_avatar_eye_color_gray: string
+  edit_avatar_eye_color_unknown: string
 
   // ------------------------- Onboard ----------------------------
   calendar_onboard: string
@@ -320,6 +452,24 @@ export interface AppTranslations {
   arrow_button: string
   // main page text
   avatar: string
+  // Accessibility labels
+  select_avatar_button: string
+  select_theme_button: string
+  select_color_button: string
+  select_option_button: string
+  select_category_button: string
+  previous_page_button: string
+  next_page_button: string
+  close_tooltip_button: string
+  tutorial_button: string
+  skip_tutorial_button: string
+  name_input: string
+  skip_name_button: string
+  save_and_continue_button: string
+  avatar_naming_modal_title: string
+  avatar_naming_modal_placeholder: string
+  avatar_naming_modal_hint: string
+  characters: string
   // prediction change
   videos: string
   internet_required_title: string

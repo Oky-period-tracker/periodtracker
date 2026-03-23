@@ -11,6 +11,27 @@ export function setAvatar(avatar: AvatarName) {
   return createAction('SET_AVATAR', { avatar })
 }
 
+/**
+ * Check that user can update avatar
+ * @param avatar Avatar name
+ * @param cyclesNumber Number of cycles user entered
+ * @param customAvatarUnlocked Has user unlocked avatar already
+ * @returns 
+ */
+export function setAvatarWithValidation(
+  avatar: AvatarName,
+  cyclesNumber: number,
+  customAvatarUnlocked?: boolean,
+) {
+  // If customAvatarUnlocked is true, friend avatar is always allowed regardless of cyclesNumber
+  // Otherwise, prevent setting friend avatar if user doesn't have 3 cycles
+  if (avatar === 'friend' && customAvatarUnlocked !== true && cyclesNumber < 3) {
+    console.warn('Cannot set friend avatar: user needs 3+ cycles')
+    return null
+  }
+  return createAction('SET_AVATAR', { avatar })
+}
+
 export function setLocale(locale: string) {
   return createAction('SET_LOCALE', { locale })
 }

@@ -10,13 +10,168 @@ import {
   fromQuizzes,
 } from '@oky/core'
 import { StaticContent } from './app/src/core/types'
+import { Locale } from './app/src/resources/translations'
+import { appTranslations } from './app/src/resources/translations/app'
 
-const locale = 'en'
-const cms_url = 'https://cms.okyapp.info/'
+// Use local CMS container by default, allow override via environment variable
+const cms_url = process.env.CMS_URL || 'http://localhost:5000/'
 
-const getContent = async () => {
-  console.log(`Locale: ${locale}`)
-  console.log(`CMS: ${cms_url}\n`)
+// All supported locales
+const locales: Locale[] = ['en', 'fr', 'ru', 'pt', 'es']
+
+// List of all 116 translation keys that should be in the translations object
+const translationKeys = [
+  // Accessibility Labels (34 keys)
+  'select_avatar_button',
+  'select_theme_button',
+  'select_color_button',
+  'select_option_button',
+  'select_category_button',
+  'previous_page_button',
+  'next_page_button',
+  'arrow_button',
+  'continue',
+  'confirm',
+  'close',
+  'customizer_exit',
+  'customizer_save_friend',
+  'tutorial_button',
+  'skip_tutorial_button',
+  'close_tooltip_button',
+  'customizer_tutorial_back',
+  'customizer_tutorial_next',
+  'customizer_tutorial_finish',
+  'name_input',
+  'skip_name_button',
+  'save_and_continue_button',
+  'friend_unlock_modal_title',
+  'friend_unlock_modal_button',
+  'friend_unlock_celebration_image',
+  'name_info_label',
+  'privacy_policy_link',
+  't_and_c_link',
+  'i_agree',
+  'month_selector',
+  'search_country',
+  'clear_search',
+  'info_button',
+  'accessibility_prompt',
+  // Tutorial Texts (11 keys)
+  'customizer_tutorial_title',
+  'customizer_tutorial_step1_title',
+  'customizer_tutorial_step1_text',
+  'customizer_tutorial_step2_title',
+  'customizer_tutorial_step2_text',
+  'customizer_tutorial_step3_title',
+  'customizer_tutorial_step3_text',
+  'customizer_tutorial_step4_title',
+  'customizer_tutorial_step4_text',
+  'customizer_tutorial_step5_title',
+  'customizer_tutorial_step5_text',
+  // Clothing Items (17 keys)
+  'customizer_clothing_dress1',
+  'customizer_clothing_dress2',
+  'customizer_clothing_dress3',
+  'customizer_clothing_longdressbelt',
+  'customizer_clothing_shortandshirt1',
+  'customizer_clothing_shortandshirt2',
+  'customizer_clothing_shortandshirt3',
+  'customizer_clothing_skirtandshirt',
+  'customizer_clothing_shirtandpants',
+  'customizer_clothing_blazer1',
+  'customizer_clothing_blazer2',
+  'customizer_clothing_jumper',
+  'customizer_clothing_cape',
+  'customizer_clothing_hijab',
+  'customizer_clothing_longuniform',
+  'customizer_clothing_traditional1',
+  'customizer_clothing_traditional2',
+  'customizer_clothing_traditional3',
+  'customizer_clothing_traditional4',
+  'customizer_clothing_traditional5',
+  // Devices (25 keys)
+  'customizer_device_glasses',
+  'customizer_device_readingglasses2',
+  'customizer_device_darkglasses',
+  'customizer_device_sunglass1',
+  'customizer_device_sunglass2',
+  'customizer_device_crown',
+  'customizer_device_hat',
+  'customizer_device_beanie',
+  'customizer_device_beanie2',
+  'customizer_device_buckethat',
+  'customizer_device_cap',
+  'customizer_device_sunhat',
+  'customizer_device_headband',
+  'customizer_device_head',
+  'customizer_device_flowers',
+  'customizer_device_bandana',
+  'customizer_device_headphones',
+  'customizer_device_necklace1',
+  'customizer_device_necklace2',
+  'customizer_device_necklace3',
+  'customizer_device_earings',
+  'customizer_device_purse',
+  'customizer_device_cane',
+  'customizer_device_prostetic1',
+  'customizer_device_prostetic2',
+  // Skin Colors (12 keys)
+  'customizer_skin_color_light_pink',
+  'customizer_skin_color_peach',
+  'customizer_skin_color_beige',
+  'customizer_skin_color_tan',
+  'customizer_skin_color_dark_brown',
+  'customizer_skin_color_light_tan',
+  'customizer_skin_color_medium_brown',
+  'customizer_skin_color_cream',
+  'customizer_skin_color_bronze',
+  'customizer_skin_color_ivory',
+  'customizer_skin_color_sand',
+  'customizer_skin_color_caramel',
+  'customizer_skin_color_unknown',
+  // Hair Colors (11 keys)
+  'customizer_hair_color_black',
+  'customizer_hair_color_brown',
+  'customizer_hair_color_red',
+  'customizer_hair_color_blonde',
+  'customizer_hair_color_green',
+  'customizer_hair_color_pink',
+  'customizer_hair_color_orange',
+  'customizer_hair_color_purple',
+  'customizer_hair_color_dark_brown',
+  'customizer_hair_color_bright_orange',
+  'customizer_hair_color_blue',
+  'customizer_hair_color_unknown',
+  // Eye Colors (6 keys)
+  'customizer_eye_color_black',
+  'customizer_eye_color_brown',
+  'customizer_eye_color_hazel',
+  'customizer_eye_color_green',
+  'customizer_eye_color_blue',
+  'customizer_eye_color_gray',
+  'customizer_eye_color_unknown',
+]
+
+// Build translations object from app translation files
+const buildTranslationsFromApp = (locale: Locale): Record<string, string> => {
+  const translations: Record<string, string> = {}
+  const appTranslation = appTranslations[locale]
+
+  for (const key of translationKeys) {
+    const value = (appTranslation as any)[key]
+    if (value !== undefined) {
+      translations[key] = value
+    }
+  }
+
+  return translations
+}
+
+const getContent = async (locale: Locale) => {
+  console.log(`\n${'='.repeat(50)}`)
+  console.log(`Processing Locale: ${locale}`)
+  console.log(`CMS: ${cms_url}`)
+  console.log(`${'='.repeat(50)}\n`)
 
   // Encyclopedia
   let encyclopediaResponse = []
@@ -139,6 +294,17 @@ const getContent = async () => {
     console.error(`Request failed: ${avatarUrl}`)
   }
 
+  // Translations (unified translations from CMS)
+  let translationsResponse = []
+  const translationsUrl = `${cms_url}mobile/translations/${locale}`
+  try {
+    console.log('Fetching Translations')
+    const response = await axios.get(translationsUrl)
+    translationsResponse = response.data
+  } catch (error) {
+    console.error(`Request failed: ${translationsUrl}`)
+  }
+
   const { articles, categories, subCategories, videos } = fromEncyclopedia({
     encyclopediaResponse,
     videosResponse,
@@ -149,6 +315,24 @@ const getContent = async () => {
   const { helpCenters } = fromHelpCenters(helpCenterResponse)
   const helpCenterAttributes = helpCenterAttributesResponse
   const { avatarMessages } = fromAvatarMessages(avatarMessagesResponse)
+  
+  // Build translations from app translation files (primary source)
+  // This ensures all 116 translation keys are included
+  const appTranslations = buildTranslationsFromApp(locale)
+  
+  // Convert CMS response array to object format: { key: label }
+  // CMS translations will override app translations if they exist
+  const cmsTranslations: Record<string, string> = {}
+  if (Array.isArray(translationsResponse)) {
+    translationsResponse.forEach((item: any) => {
+      if (item.key && item.label && item.live !== false) {
+        cmsTranslations[item.key] = item.label
+      }
+    })
+  }
+  
+  // Merge: CMS translations override app translations
+  const translations = { ...appTranslations, ...cmsTranslations }
 
   const result: StaticContent = {
     locale,
@@ -160,6 +344,7 @@ const getContent = async () => {
     helpCenters,
     helpCenterAttributes,
     avatarMessages,
+    translations,
     privacyPolicy,
     termsAndConditions,
     about,
@@ -178,7 +363,27 @@ export const ${locale}: StaticContent = ${JSON.stringify(result)}`
 
   fs.writeFileSync(outputFilepath, outputString)
 
-  console.log(`\nFile created: ${outputFilepath}`)
+  console.log(`\n✓ File created: ${outputFilepath}`)
 }
 
-getContent()
+// Generate content files for all locales
+const generateAllContent = async () => {
+  console.log(`\n${'='.repeat(50)}`)
+  console.log(`Generating content files for ${locales.length} locales`)
+  console.log(`Locales: ${locales.join(', ')}`)
+  console.log(`${'='.repeat(50)}`)
+
+  for (const locale of locales) {
+    try {
+      await getContent(locale)
+    } catch (error) {
+      console.error(`\n✗ Error processing locale ${locale}:`, error)
+    }
+  }
+
+  console.log(`\n${'='.repeat(50)}`)
+  console.log(`✓ Completed generating content files for all locales`)
+  console.log(`${'='.repeat(50)}\n`)
+}
+
+generateAllContent()

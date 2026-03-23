@@ -6,14 +6,23 @@ import { CycleCard } from './components/CycleCard'
 import { ProfileDetails } from './components/ProfileDetails'
 import { useHistoryPrediction } from '../../contexts/PredictionProvider'
 
-const ProfileScreen: ScreenComponent<'Profile'> = (props) => {
+const ProfileScreen: ScreenComponent<'Profile'> = ({ navigation, ...props }) => {
   const History = useHistoryPrediction()
+
+  // Hide navigation header
+  React.useLayoutEffect(() => {
+    if (navigation) {
+      navigation.setOptions({
+        headerShown: false,
+      })
+    }
+  }, [navigation])
 
   return (
     <Screen>
       <FlatList
         style={styles.flatList}
-        ListHeaderComponent={<ProfileDetails {...props} />}
+        ListHeaderComponent={<ProfileDetails navigation={navigation} {...props} />}
         showsVerticalScrollIndicator={false}
         data={History}
         keyExtractor={(_, index) => index.toString()}

@@ -1,4 +1,5 @@
 export * from './dailyCards'
+import { AvatarConfig } from '../core/api/types'
 
 export interface User {
   id: string
@@ -13,7 +14,9 @@ export interface User {
   secretAnswer: string
   dateSignedUp: string
   isGuest: boolean
+  cyclesNumber?: number
   metadata: UserMetadata
+  avatar?: AvatarConfig | null
 }
 
 export interface UserMetadata {
@@ -22,4 +25,11 @@ export interface UserMetadata {
   city?: string
   isProfileUpdateSkipped?: boolean
   periodDates?: { date: string; mlGenerated: boolean; userVerified: boolean | null }[]
+}
+
+/**
+ * Cycle calculation result.
+ */
+export interface CycleCalculationResult {
+  cyclesNumber: number
 }

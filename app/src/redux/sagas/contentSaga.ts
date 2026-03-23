@@ -12,6 +12,7 @@ import {
   fromEncyclopedia,
   fromHelpCenters,
   fromQuizzes,
+  fromTranslations,
 } from '../../mappers'
 
 function* onRehydrate(action: RehydrateAction) {
@@ -167,6 +168,19 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     return fromAvatarMessages(avatarMessages)
   }
 
+  function* fetchTranslations() {
+    try {
+      // @ts-expect-error TODO:
+      const translations = yield httpClient.fetchTranslations({
+        locale,
+      })
+      return fromTranslations(translations)
+    } catch (error) {
+      // If endpoint doesn't exist yet, return empty translations
+      return { translations: {} }
+    }
+  }
+
   try {
     const { articles, categories, subCategories, videos } = yield fetchEncyclopedia()
     const { quizzes } = yield fetchQuizzes()
@@ -175,6 +189,7 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
     // @ts-expect-error TODO:
     const helpCenterAttributes = yield fetchHelpCentersAttributes()
     const { avatarMessages } = yield fetchAvatarMessages()
+    const { translations } = yield fetchTranslations()
     // @ts-expect-error TODO:
     const privacyPolicy = yield fetchPrivacyPolicy()
     // @ts-expect-error TODO:
@@ -202,6 +217,12 @@ function* onFetchContentRequest(action: ExtractActionFromActionType<'FETCH_CONTE
         avatarMessages: _.isEmpty(avatarMessages)
           ? staleContent[locale].avatarMessages
           : avatarMessages,
+        // Merge CMS translations with stale content (CMS translations take priority)
+        // This ensures we always have fallback translations even if CMS returns partial data
+        translations: {
+          ...staleContent[locale].translations,
+          ...translations,
+        },
         privacyPolicy: _.isEmpty(privacyPolicy)
           ? staleContent[locale].privacyPolicy
           : privacyPolicy,

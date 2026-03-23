@@ -18,6 +18,21 @@ interface OkyUserProps {
   dateSignedUp: string
   dateAccountSaved: string
   metadata: UserMetadata
+  avatar: AvatarConfig | null
+}
+
+export interface AvatarConfig {
+  body: string | null
+  hair: string | null
+  eyes: string | null
+  smile: string | null
+  clothing: string | null
+  devices: string[] | null
+   skinColor?: string | null
+   hairColor?: string | null
+   eyeColor?: string | null
+  customAvatarUnlocked: boolean
+  name?: string
 }
 
 export interface UserMetadata {
@@ -74,6 +89,9 @@ export class OkyUser {
   @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })
   private metadata: UserMetadata
 
+  @Column({ name: 'avatar', type: 'json', nullable: true, default: null })
+  private avatar: AvatarConfig | null
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -87,7 +105,9 @@ export class OkyUser {
         password,
         memorable,
         dateSignedUp,
+        dateAccountSaved,
         metadata,
+        avatar,
       } = props
 
       this.id = id
@@ -101,7 +121,13 @@ export class OkyUser {
       this.memorable = memorable
       this.store = null
       this.dateSignedUp = dateSignedUp
+      this.dateAccountSaved = dateAccountSaved
       this.metadata = metadata
+      // Ensure customAvatarUnlocked is set to false if not provided
+      this.avatar = {
+        ...avatar,
+        customAvatarUnlocked: avatar.customAvatarUnlocked || false,
+      }
     }
   }
 
@@ -119,6 +145,7 @@ export class OkyUser {
     dateSignedUp,
     dateAccountSaved,
     metadata,
+    avatar = null,
   }: {
     id: string
     name: string
@@ -133,6 +160,7 @@ export class OkyUser {
     dateSignedUp: string
     dateAccountSaved: string
     metadata: UserMetadata
+    avatar?: AvatarConfig | null
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -159,6 +187,7 @@ export class OkyUser {
       dateSignedUp,
       dateAccountSaved,
       metadata,
+      avatar,
     })
   }
 
@@ -267,5 +296,32 @@ export class OkyUser {
 
   public getMetadata() {
     return this.metadata
+  }
+
+  public getAvatar() {
+    return this.avatar
+  }
+
+  public formatAvatar(avatar: AvatarConfig | null) {
+    if (avatar) {
+      // Normalize devices: must be either null or a string array
+      let normalizedDevices: string[] | null = null
+      if (Array.isArray(avatar.devices)) {
+        const filtered = avatar.devices.filter((d) => typeof d === 'string' && d.trim() !== '')
+        normalizedDevices = filtered.length > 0 ? filtered : null
+      }
+
+      const normalizedAvatar: AvatarConfig = {
+        ...avatar,
+        devices: normalizedDevices,
+        customAvatarUnlocked:
+          typeof avatar.customAvatarUnlocked === 'boolean' ? avatar.customAvatarUnlocked : false,
+        smile: avatar.smile ?? 'smile',
+      }
+      this.avatar = normalizedAvatar
+      return
+    }
+
+    this.avatar = avatar
   }
 }

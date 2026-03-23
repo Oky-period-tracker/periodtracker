@@ -137,6 +137,7 @@ export function createHttpClient(
           dateSignedUp,
           metadata,
           preferredId,
+          dateAccountSaved: new Date().toISOString(),
         },
       )
       return response.data
@@ -252,6 +253,12 @@ export function createHttpClient(
     fetchAvatarMessages: async ({ locale }: { locale: Locale }) => {
       const response: AxiosResponse<types.AvatarMessagesResponse> = await axios.get(
         `${cmsEndpoint}/mobile/avatar-messages/${locale}`,
+      )
+      return response.data
+    },
+    fetchTranslations: async ({ locale }: { locale: Locale }) => {
+      const response: AxiosResponse<types.TranslationsResponse> = await axios.get(
+        `${cmsEndpoint}/mobile/translations/${locale}`,
       )
       return response.data
     },
@@ -408,7 +415,26 @@ export function createHttpClient(
     answerSurvey:async({appToken,live,questions}:any)=>{
       const response : AxiosResponse<any> = await axios.post(`${endpoint}/survey`,{live,questions},{headers:{Authorization:`Bearer ${appToken}`}})
       return response.data
-    }
+    },
+    updateAvatar: async ({
+      appToken,
+      avatar,
+    }: {
+      appToken: string
+      avatar: any
+    }) => {
+      const response: AxiosResponse<{}> = await axios.post(
+        `${endpoint}/account/update-avatar`,
+        {
+          avatar,
+        },
+        {
+          headers: { Authorization: `Bearer ${appToken}` },
+        },
+      )
+
+      return response.data
+    },
     // TODO:
     // fetchContent: async ({ locale, timestamp = 0 }) => {
     //   const response: AxiosResponse<types.ContentResponse> = await axios.get(

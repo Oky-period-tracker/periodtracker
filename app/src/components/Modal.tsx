@@ -62,9 +62,13 @@ export const ModalCloseButton = (props: ButtonProps) => {
   const label = getAccessibilityLabel('close')
 
   return (
-    <Button style={styles.closeButton} status={'basic'} {...props}>
-      <FontAwesome name="close" size={24} color="white" accessibilityLabel={label} />
-    </Button>
+    <TouchableOpacity
+      style={[styles.closeButton]}
+      onPress={props.onPress}
+      accessibilityLabel={label}
+    >
+      <FontAwesome name="close" size={18} color="#FFFFFF" />
+    </TouchableOpacity>
   )
 }
 
@@ -90,5 +94,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     zIndex: 9999,
+    backgroundColor: '#A4D233',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })

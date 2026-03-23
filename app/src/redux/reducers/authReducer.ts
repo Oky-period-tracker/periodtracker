@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { Actions } from '../types/index'
 
 export interface AvatarConfig {
-  body?: string | null
+  body?: 'small' | 'medium' | 'large' | null
   hair?: string | null
   eyes?: string | null
   smile?: string | null

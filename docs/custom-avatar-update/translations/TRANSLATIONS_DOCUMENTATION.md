@@ -524,7 +524,7 @@ docker exec -i periodtracker-postgres-1 psql -U periodtracker -d periodtracker <
    - **Status values**:
      - `selected` - When body type is currently selected
      - `tap to select` - When body type is not selected
-   - **Example**: "Select option: body type body-medium, selected"
+   - **Example**: "Select option: body type medium, selected"
    - **Translation Key**: `select_option_button`
 
 ### Hair Section

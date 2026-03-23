@@ -108,7 +108,7 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
   )
 
   const handleBodyTypeSelect = React.useCallback(
-    (bodyType: 'body-small' | 'body-medium' | 'body-large') => {
+    (bodyType: 'small' | 'medium' | 'large') => {
       onSelectionChange({ ...avatarSelection, bodyType })
     },
     [avatarSelection, onSelectionChange],
@@ -210,7 +210,7 @@ export const BodyOptions: React.FC<BodyOptionsProps> = ({
         </View>
         <View style={{ flexDirection: 'row' }}>
           <View style={styles.bodyTypeContainer}>
-            {(['body-small', 'body-medium', 'body-large'] as const).map((bodyType) => {
+            {(['small', 'medium', 'large'] as const).map((bodyType) => {
               const bodyAsset = getSelectionAsset('body', bodyType)
               const isSelected = avatarSelection.bodyType === bodyType
               const isSvgComponent = bodyAsset && typeof bodyAsset === 'function'

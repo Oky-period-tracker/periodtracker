@@ -1,5 +1,5 @@
 export interface AvatarSelection {
-  bodyType: 'body-small' | 'body-medium' | 'body-large'
+  bodyType: 'small' | 'medium' | 'large'
   skinColor?: string | undefined
   hairStyle: string | null
   hairColor?: string | undefined

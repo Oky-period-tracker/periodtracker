@@ -2,7 +2,7 @@ import { useSelector } from '../redux/useSelector'
 import { currentUserSelector } from '../redux/selectors'
 
 export interface AvatarData {
-  bodyType: 'body-small' | 'body-medium' | 'body-large'
+  bodyType: 'small' | 'medium' | 'large'
   skinColor?: string | undefined // Optional - undefined means use default gray
   hairStyle: string | null
   hairColor?: string | undefined
@@ -29,15 +29,11 @@ export const useAvatar = (): AvatarData | null => {
   const avatar = currentUser.avatar
 
   // Convert body type to new format if needed
-  let bodyType: 'body-small' | 'body-medium' | 'body-large' = 'body-medium'
+  let bodyType: 'small' | 'medium' | 'large'
   if (avatar.body) {
-    if (avatar.body === 'body-small') {
-      bodyType = 'body-small'
-    } else if (avatar.body === 'body-medium') {
-      bodyType = 'body-medium'
-    } else if (avatar.body === 'body-large') {
-      bodyType = 'body-large'
-    }
+    bodyType = avatar.body
+  } else {
+    bodyType = 'medium'
   }
 
   return {

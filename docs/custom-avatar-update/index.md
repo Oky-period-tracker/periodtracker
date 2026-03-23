@@ -128,7 +128,7 @@ WHERE "cyclesNumber" IS NULL;
 **Avatar JSON Structure**:
 ```json
 {
-  "body": "body-medium",
+  "body": "medium",
   "hair": "01",
   "eyes": "00",
   "smile": "smile",

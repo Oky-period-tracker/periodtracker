@@ -54,7 +54,7 @@ WHERE avatar IS NULL;
 -- ============================================
 -- Example with devices:
 -- {
---   "body": "body-medium",
+--   "body": "medium",
 --   "hair": "01",
 --   "eyes": "00",
 --   "smile": "smile",
@@ -69,7 +69,7 @@ WHERE avatar IS NULL;
 --
 -- Example without devices:
 -- {
---   "body": "body-medium",
+--   "body": "medium",
 --   "hair": "01",
 --   "eyes": "00",
 --   "smile": "smile",

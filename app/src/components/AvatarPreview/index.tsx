@@ -10,7 +10,7 @@ import {
 import { SharedValue } from 'react-native-reanimated'
 
 export interface AvatarPreviewProps {
-  bodyType: 'body-small' | 'body-medium' | 'body-large'
+  bodyType: 'small' | 'medium' | 'large'
   skinColor?: string
   hairStyle?: string | null
   hairColor?: string
@@ -73,11 +73,7 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
   style,
   animatedTransforms,
 }) => {
-  const bodySize: BodySize = React.useMemo(() => {
-    if (bodyType === 'body-small') return 'small'
-    if (bodyType === 'body-large') return 'large'
-    return 'medium'
-  }, [bodyType])
+  const bodySize: BodySize = bodyType
 
   // Normalize devices to array format (handle both string and array)
   const devicesArray = React.useMemo(() => {

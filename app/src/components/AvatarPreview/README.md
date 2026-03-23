@@ -10,7 +10,7 @@ A reusable component for displaying custom avatars throughout the app. This comp
 import { AvatarPreview } from '../../components/AvatarPreview'
 
 <AvatarPreview
-  bodyType="body-medium"
+  bodyType="medium"
   skinColor="#FFDBAC"
   hairStyle="01"
   hairColor="#000000"
@@ -57,7 +57,7 @@ const MyComponent = () => {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `bodyType` | `'body-small' \| 'body-medium' \| 'body-large'` | Required | Body size type |
+| `bodyType` | `'small' \| 'medium' \| 'large'` | Required | Body size type |
 | `skinColor` | `string` | `'#FFDBAC'` | Skin color (hex) |
 | `hairStyle` | `string \| null` | `null` | Hair style ID (01-18) |
 | `hairColor` | `string` | `'#000000'` | Hair color (hex) |

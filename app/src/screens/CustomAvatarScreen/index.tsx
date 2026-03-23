@@ -29,7 +29,7 @@ import { EYE_COLORS, SKIN_COLORS, HAIR_COLORS } from './constants'
 import type { Category } from './types'
 
 interface AvatarSelection {
-  bodyType: 'body-small' | 'body-medium' | 'body-large'
+  bodyType: 'small' | 'medium' | 'large'
   skinColor?: string | undefined
   hairStyle: string | null
   hairColor?: string | undefined
@@ -42,7 +42,7 @@ interface AvatarSelection {
 }
 
 const DEFAULT_AVATAR: AvatarSelection = {
-  bodyType: 'body-small',
+  bodyType: 'small',
   skinColor: SKIN_COLORS[0],
   hairStyle: '01',
   hairColor: HAIR_COLORS[0],
@@ -197,7 +197,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
 
     if (!hasCustomAvatarParts) {
       return {
-        bodyType: 'body-medium',
+        bodyType: 'medium',
         skinColor: undefined,
         hairStyle: null,
         hairColor: undefined,
@@ -211,21 +211,9 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
     }
 
     if (currentUser?.avatar) {
-      let bodyType: 'body-small' | 'body-medium' | 'body-large' = DEFAULT_AVATAR.bodyType
+      let bodyType: 'small' | 'medium' | 'large' = DEFAULT_AVATAR.bodyType
       if (currentUser.avatar.body) {
-        if (currentUser.avatar.body === 'body1' || currentUser.avatar.body === 'body-small') {
-          bodyType = 'body-small'
-        } else if (
-          currentUser.avatar.body === 'body2' ||
-          currentUser.avatar.body === 'body-medium'
-        ) {
-          bodyType = 'body-medium'
-        } else if (
-          currentUser.avatar.body === 'body3' ||
-          currentUser.avatar.body === 'body-large'
-        ) {
-          bodyType = 'body-large'
-        }
+        bodyType = currentUser.avatar.body
       }
 
       const hasHairStyle = currentUser.avatar.hair !== null && currentUser.avatar.hair !== undefined

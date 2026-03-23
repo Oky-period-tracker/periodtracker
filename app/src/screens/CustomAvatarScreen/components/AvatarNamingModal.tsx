@@ -15,7 +15,7 @@ interface AvatarNamingModalProps {
   tempName: string
   onNameChange: (name: string) => void
   avatarSelection: {
-    bodyType: 'body-small' | 'body-medium' | 'body-large'
+    bodyType: 'small' | 'medium' | 'large'
     skinColor?: string
     hairStyle: string | null
     hairColor?: string

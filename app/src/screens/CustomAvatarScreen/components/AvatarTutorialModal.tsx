@@ -1,22 +1,28 @@
 import * as React from 'react'
-import { View, TouchableOpacity, Modal as RNModal, PanResponder, Image } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  Modal as RNModal,
+  PanResponder,
+  Image,
+  ImageSourcePropType,
+} from 'react-native'
 import { Text } from '../../../components/Text'
 import { Button } from '../../../components/Button'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useResponsive } from '../../../contexts/ResponsiveContext'
 import { useColor } from '../../../hooks/useColor'
-import { useTranslate } from '../../../hooks/useTranslate'
 import { createAvatarTutorialModalStyles } from './AvatarTutorialModal.styles'
 import { assets } from '../../../resources/assets'
 import { useAccessibilityLabel } from '../../../hooks/useAccessibilityLabel'
 
 // Tutorial step PNG images
-const tutorialStepImages: Record<number, any> = {
-  1: assets.tutorialSteps.step1,
-  2: assets.tutorialSteps.step2,
-  3: assets.tutorialSteps.step3,
-  4: assets.tutorialSteps.step4,
-  5: assets.tutorialSteps.step5,
+const tutorialStepImages: Record<number, ImageSourcePropType> = {
+  1: assets.tutorial.avatar.step1,
+  2: assets.tutorial.avatar.step2,
+  3: assets.tutorial.avatar.step3,
+  4: assets.tutorial.avatar.step4,
+  5: assets.tutorial.avatar.step5,
 }
 
 interface AvatarTutorialModalProps {

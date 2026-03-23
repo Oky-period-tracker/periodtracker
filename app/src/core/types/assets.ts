@@ -42,11 +42,13 @@ export interface AppAssets {
   // TODO:
   // eslint-disable-next-line
   videos?: Record<string, any> // TODO: VideoSourcePropType ?
-  tutorialSteps: {
-    step1: ImageSourcePropType
-    step2: ImageSourcePropType
-    step3: ImageSourcePropType
-    step4: ImageSourcePropType
-    step5: ImageSourcePropType
+  tutorial: {
+    avatar: {
+      step1: ImageSourcePropType
+      step2: ImageSourcePropType
+      step3: ImageSourcePropType
+      step4: ImageSourcePropType
+      step5: ImageSourcePropType
+    }
   }
 }

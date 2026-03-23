@@ -18,6 +18,24 @@ interface OkyUserProps {
   dateSignedUp: string
   dateAccountSaved: string
   metadata: UserMetadata
+  avatar: AvatarConfig | null
+}
+
+/**
+ * Avatar configuration
+ */
+export interface AvatarConfig {
+  body: string | null
+  hair: string | null
+  eyes: string | null
+  smile: string | null
+  clothing: string | null
+  devices: string[] | null
+  skinColor?: string | null
+  hairColor?: string | null
+  eyeColor?: string | null
+  customAvatarUnlocked: boolean // Determines if user has already unlocked the avatar
+  name?: string
 }
 
 export interface UserMetadata {
@@ -74,6 +92,9 @@ export class OkyUser {
   @Column({ name: 'metadata', type: 'json', nullable: false, default: {} })
   private metadata: UserMetadata
 
+  @Column({ name: 'avatar', type: 'json', nullable: true, default: null })
+  private avatar: AvatarConfig | null
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -89,6 +110,7 @@ export class OkyUser {
         dateSignedUp,
         dateAccountSaved,
         metadata,
+        avatar,
       } = props
 
       this.id = id
@@ -104,6 +126,10 @@ export class OkyUser {
       this.dateSignedUp = dateSignedUp
       this.dateAccountSaved = dateAccountSaved
       this.metadata = metadata
+      this.avatar = {
+        ...avatar,
+        customAvatarUnlocked: avatar.customAvatarUnlocked || false,
+      }
     }
   }
 
@@ -121,6 +147,7 @@ export class OkyUser {
     dateSignedUp,
     dateAccountSaved,
     metadata,
+    avatar = null,
   }: {
     id: string
     name: string
@@ -135,6 +162,7 @@ export class OkyUser {
     dateSignedUp: string
     dateAccountSaved: string
     metadata: UserMetadata
+    avatar?: AvatarConfig | null
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -161,6 +189,7 @@ export class OkyUser {
       dateSignedUp,
       dateAccountSaved,
       metadata,
+      avatar,
     })
   }
 
@@ -269,5 +298,45 @@ export class OkyUser {
 
   public getMetadata() {
     return this.metadata
+  }
+
+  public getAvatar() {
+    return this.avatar
+  }
+
+  /**
+   * Format avatar configuration
+   * @param avatar Raw avatar configuration
+   * @returns Formatted configuration
+   */
+  public formatAvatar(avatar: AvatarConfig | null) {
+    if (avatar) {
+      // Normalize devices: convert string to array for consistency, or keep array as-is
+      let normalizedDevices: string[] | null = avatar.devices
+      if (Array.isArray(avatar.devices)) {
+        // Filter out empty strings and null values from array
+        normalizedDevices = avatar.devices.filter(
+          (d): d is string => typeof d === 'string' && d.trim() !== '',
+        )
+        // If array is empty after filtering, set to null
+        if (normalizedDevices.length === 0) {
+          normalizedDevices = null
+        }
+      } else {
+        normalizedDevices = null
+      }
+
+      const normalizedAvatar: AvatarConfig = {
+        ...avatar,
+        devices: normalizedDevices,
+        customAvatarUnlocked:
+          typeof avatar.customAvatarUnlocked === 'boolean' ? avatar.customAvatarUnlocked : false,
+        smile: avatar.smile ?? 'smile',
+      }
+      this.avatar = normalizedAvatar
+      return
+    }
+
+    this.avatar = avatar
   }
 }

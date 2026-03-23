@@ -44,6 +44,7 @@ export const styles = StyleSheet.create({
     minWidth: moderateScale(180, 0.3),
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: moderateScale(24, 0.3),
   },
   buttonText: {
     color: '#fff',

@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, TouchableOpacity, Image } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
+import { Image } from 'expo-image'
 import { Modal, ModalProps } from './Modal'
 import { Text } from './Text'
 import { getAsset } from '../services/asset'
@@ -98,7 +99,7 @@ export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {
           <Image
             source={getAsset('gifs.friendUnlock')}
             style={styles.icon}
-            resizeMode="contain"
+            contentFit="contain"
             accessibilityLabel={getAccessibilityLabel('friend_unlock_celebration_image')}
             accessibilityRole="image"
           />

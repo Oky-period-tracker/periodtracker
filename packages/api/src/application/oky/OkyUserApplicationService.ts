@@ -1,10 +1,8 @@
 import { Service, Inject } from 'typedi'
 import { HttpError } from 'routing-controllers'
-
 import { AuthenticationService } from 'domain/oky/AuthenticationService'
 import { OkyUser } from 'domain/oky/OkyUser'
 import { OkyUserRepositoryToken, OkyUserRepository } from 'domain/oky/OkyUserRepository'
-
 import { SignupCommand } from './commands/SignupCommand'
 import { LoginCommand } from './commands/LoginCommand'
 import { ReplaceStoreCommand } from './commands/ReplaceStoreCommand'

@@ -1,9 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { allAvatarText, currentUserSelector } from '../redux/selectors'
+import { allAvatarText, currentUserSelector, cyclesNumberSelector } from '../redux/selectors'
 import { useScreenFocus } from '../hooks/useScreenFocus'
 import _ from 'lodash'
 import { useTranslate } from '../hooks/useTranslate'
+import { useAvatarCustomization } from '../hooks/useAvatarCustomization'
 
 export type AvatarMessageContext = {
   message: null | string
@@ -26,12 +27,17 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
   const isScreenFocussed = useScreenFocus()
   const [message, setMessage] = React.useState('')
   const translate = useTranslate()
+  const isAvatarCustomizationEnabled = useAvatarCustomization()
+  const cyclesNumber = useSelector(cyclesNumberSelector)
 
   // Check if locks are locked
   // If customAvatarUnlocked is true, locks are permanently unlocked regardless of cyclesNumber
   // Otherwise, check if cyclesNumber < 3
+  // If avatar customization feature is disabled, never show lock state
   const isLocked =
-    currentUser?.avatar?.customAvatarUnlocked !== true && (currentUser?.cyclesNumber || 0) < 3
+    isAvatarCustomizationEnabled &&
+    currentUser?.avatar?.customAvatarUnlocked !== true &&
+    (cyclesNumber || 0) < 3
 
   // Track lock messages - show them first when locked
   const lockMessagesRef = React.useRef<{ content: string; id: string }[]>([])

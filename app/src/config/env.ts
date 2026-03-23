@@ -11,3 +11,6 @@ export const WEBSITE_URL = process.env.EXPO_PUBLIC_WEBSITE_URL || ''
 export const FAST_SIGN_UP = !!process.env.EXPO_PUBLIC_FAST_SIGN_UP
 
 export const AUDIO_BASE_URL = process.env.EXPO_PUBLIC_AUDIO_BASE_URL
+
+// Optional features
+export const USE_AVATAR_CUSTOMIZATION = process.env.EXPO_PUBLIC_USE_AVATAR_CUSTOMIZATION === 'true'

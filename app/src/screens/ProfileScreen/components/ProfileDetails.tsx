@@ -27,6 +27,7 @@ import { createProfileDetailsStyles } from './ProfileDetails.styles'
 import { AvatarPreview } from '../../../components/AvatarPreview'
 import { useAvatar } from '../../../hooks/useAvatar'
 import { scaleHorizontal, getResponsiveValue } from '../../../utils/responsive'
+import { useAvatarCustomization } from '../../../hooks/useAvatarCustomization'
 
 export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const currentUser = useSelector(currentUserSelector)
@@ -41,6 +42,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const avatarConfig = UIConfig.avatarSelection
   const { width } = useResponsive()
   const avatarData = useAvatar()
+  const isAvatarCustomizationEnabled = useAvatarCustomization()
   const styles = createProfileDetailsStyles(avatarConfig)
 
   const goToEdit = () => {
@@ -236,7 +238,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
       </TouchableOpacity>
 
       {/* ===== Avatar Name Section (only for custom avatar) ===== */}
-      {avatar === 'friend' && currentUser?.avatar?.name && (
+      {isAvatarCustomizationEnabled && avatar === 'friend' && currentUser?.avatar?.name && (
         <TouchableOpacity
           style={[styles.row, styles.nameChangeRow]}
           onPress={() => navigation.navigate('CustomAvatar', { openNameModal: true })}

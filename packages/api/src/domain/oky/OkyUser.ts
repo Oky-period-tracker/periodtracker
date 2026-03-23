@@ -126,7 +126,7 @@ export class OkyUser {
       // Ensure customAvatarUnlocked is set to false if not provided
       this.avatar = {
         ...avatar,
-        customAvatarUnlocked: avatar.customAvatarUnlocked || false,
+        customAvatarUnlocked: avatar?.customAvatarUnlocked || false,
       }
     }
   }

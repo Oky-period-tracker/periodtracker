@@ -29,6 +29,7 @@ import { calculateOptimalItemWidth, getResponsiveMargin } from '../../utils/layo
 import { scaleOriginal } from '../../utils/responsive'
 import { AvatarItem } from './components/AvatarItem'
 import { Screen } from '../../components/Screen'
+import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
 
 const AvatarScreen: ScreenComponent<'Avatar'> = ({ navigation }) => {
   return <AvatarSelect navigation={navigation} />
@@ -61,6 +62,12 @@ export const AvatarSelect = ({
   const getAccessibilityLabel = useAccessibilityLabel()
   const translate = useTranslate()
   const cyclesNumber = useSelector(cyclesNumberSelector)
+  const isAvatarCustomizationEnabled = useAvatarCustomization()
+
+  const visibleAvatarNames = React.useMemo(
+    () => (isAvatarCustomizationEnabled ? avatarNames : avatarNames.filter((a) => a !== 'friend')),
+    [isAvatarCustomizationEnabled],
+  )
 
   const [selectedAvatar, setSelectedAvatar] = React.useState(() => {
     const isFriendLocked =
@@ -318,7 +325,7 @@ export const AvatarSelect = ({
             {/* Avatars Container */}
             <View style={dynamicStyles.avatarsContainer}>
               <View style={dynamicStyles.avatars}>
-                {avatarNames.map((avatar) => {
+                {visibleAvatarNames.map((avatar) => {
                   const isFriendAvatar = avatar === 'friend'
                   const isFriendAvatarLocked = isFriendAvatar && isFriendLocked
 
@@ -372,7 +379,7 @@ export const AvatarSelect = ({
                 {/* Add empty placeholder spots to fill last row to 3 items */}
                 {(() => {
                   const columns = 3
-                  const totalAvatars = avatarNames.length
+                  const totalAvatars = visibleAvatarNames.length
                   const remainder = totalAvatars % columns
                   const emptySpotsNeeded = remainder > 0 ? columns - remainder : 0
 
@@ -394,23 +401,25 @@ export const AvatarSelect = ({
             </View>
 
             {/* Reminder Container */}
-            <View style={dynamicStyles.reminderContainer}>
-              <View style={dynamicStyles.reminderInnerContainer}>
-                <View style={dynamicStyles.reminderSpacer} />
-                <View style={dynamicStyles.reminderBox}>
-                  <View style={dynamicStyles.reminderIconContainer}>
-                    <Image
-                      source={getAsset(reminderIcon)}
-                      style={dynamicStyles.reminderIcon}
-                      resizeMode="contain"
-                    />
+            {isAvatarCustomizationEnabled && (
+              <View style={dynamicStyles.reminderContainer}>
+                <View style={dynamicStyles.reminderInnerContainer}>
+                  <View style={dynamicStyles.reminderSpacer} />
+                  <View style={dynamicStyles.reminderBox}>
+                    <View style={dynamicStyles.reminderIconContainer}>
+                      <Image
+                        source={getAsset(reminderIcon)}
+                        style={dynamicStyles.reminderIcon}
+                        resizeMode="contain"
+                      />
+                    </View>
+                    <Text style={[dynamicStyles.reminderText, { color: '#000000' }]}>
+                      {reminderMessage}
+                    </Text>
                   </View>
-                  <Text style={[dynamicStyles.reminderText, { color: '#000000' }]}>
-                    {reminderMessage}
-                  </Text>
                 </View>
               </View>
-            </View>
+            )}
           </ScrollView>
 
           {/* Buttons - Fixed at bottom */}

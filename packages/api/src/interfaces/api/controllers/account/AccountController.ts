@@ -242,6 +242,10 @@ export class AccountController {
     @CurrentUser({ required: true }) userId: string,
     @Body() request: { avatar: any },
   ) {
+    if (!env.features.useAvatarCustomization) {
+      throw new UnauthorizedError('Avatar customization is not enabled')
+    }
+
     await this.okyUserApplicationService.updateAvatar({
       userId,
       avatar: request.avatar,

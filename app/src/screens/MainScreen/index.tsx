@@ -28,6 +28,7 @@ import { appTokenSelector, currentUserSelector, cyclesNumberSelector } from '../
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
 import { usePeriodDateUpdate } from '../../hooks/usePeriodDateUpdate'
+import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -63,10 +64,12 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const reduxDispatch = useDispatch()
   const { handleDayModalResponse, initPeriodDatesIfEmpty } = usePeriodDateUpdate()
   const predictionFullState = usePredictionEngineState()
+  const isAvatarCustomizationEnabled = useAvatarCustomization()
   const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
 
   // Check if friend unlock modal should be shown
   const shouldShowFriendUnlockModal = React.useMemo(() => {
+    if (!isAvatarCustomizationEnabled) return false
     if (!currentUser) return false
     const avatar = currentUser.avatar
     // Show modal if cycles >= 3 and avatar is null or customAvatarUnlocked is false
@@ -74,7 +77,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       cyclesNumber >= 3 &&
       (avatar === null || avatar === undefined || avatar.customAvatarUnlocked === false)
     )
-  }, [currentUser, cyclesNumber])
+  }, [currentUser, cyclesNumber, isAvatarCustomizationEnabled])
 
   // Auto start tutorial due to route params
   useFocusEffect(

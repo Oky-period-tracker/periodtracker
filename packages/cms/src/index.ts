@@ -24,6 +24,11 @@ import helmet from 'helmet'
 createConnection(ormconfig)
   .then(() => {
     const app = express()
+    app.use((_req, res, next) => {
+      res.setHeader('X-Content-Type-Options', 'nosniff')
+      res.setHeader('Content-Security-Policy', ["base-uri 'self'"].join('; '))
+      next()
+    })
     app.set('view engine', 'ejs')
     app.set('views', __dirname + '/views')
 

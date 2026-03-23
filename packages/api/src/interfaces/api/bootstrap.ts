@@ -18,24 +18,13 @@ const corsOptions = {
 export async function bootstrap() {
   const app = express()
 
-  if (env.isDevelopment) {
-    // Enable web to use all routes
-    app.use(cors())
-  } else {
-    app.use(cors(corsOptions))
-  }
+  app.use((_req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff')
+    res.setHeader('Content-Security-Policy', "default-src 'none'")
+    next()
+  })
 
-
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'none'"],
-          frameAncestors: ["'none'"],
-        },
-      },
-    }),
-  )
+  app.use(cors(corsOptions))
 
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }))

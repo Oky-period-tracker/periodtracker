@@ -101,7 +101,8 @@
       "reactNativeDirectoryCheck": {
         "exclude": [
           "expo-av",
-          "redux-persist"
+          "redux-persist",
+          "react-native-size-matters"
         ]
       }
     }

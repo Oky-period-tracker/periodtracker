@@ -15,7 +15,7 @@ import { TutorialProvider, useTutorial } from './TutorialContext'
 import { TutorialTextbox } from './components/TutorialTextbox'
 import { TutorialArrow } from './components/TutorialArrow'
 import { TutorialFeature } from './components/TutorialFeature'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { useFetchSurvey } from '../../hooks/useFetchSurvey'
 import { useLoading, useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AvatarMessageProvider } from '../../contexts/AvatarMessageContext'
@@ -65,6 +65,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const { handleDayModalResponse, initPeriodDatesIfEmpty } = usePeriodDateUpdate()
   const predictionFullState = usePredictionEngineState()
   const isAvatarCustomizationEnabled = useAvatarCustomization()
+  const isFocused = useIsFocused()
   const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
 
   // Check if friend unlock modal should be shown
@@ -92,12 +93,12 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     }, [shouldShowFriendUnlockModal, route.params?.tutorial]),
   )
 
-  // Check when to trigger the modal
+  // Check when to trigger the modal only when screen is focused
   React.useEffect(() => {
-    if (shouldShowFriendUnlockModal) {
+    if (shouldShowFriendUnlockModal && isFocused) {
       setFriendUnlockModalVisible(true)
     }
-  }, [shouldShowFriendUnlockModal])
+  }, [shouldShowFriendUnlockModal, isFocused])
 
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
@@ -180,7 +181,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       )}
       <View>
         <FriendUnlockModal
-          visible={friendUnlockModalVisible}
+          visible={friendUnlockModalVisible && isFocused}
           toggleVisible={() => setFriendUnlockModalVisible(false)}
         />
       </View>

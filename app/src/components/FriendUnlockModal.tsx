@@ -16,7 +16,7 @@ import { User } from '../types'
 import { editUser } from '../redux/actions'
 
 /**
- * Modal shown when the user unlocks the custom avatar ("Friend") feature.
+ * Modal shown when the user unlocks the custom avatar feature.
  * Navigates to the avatar editor and persists the unlock state to the backend.
  */
 export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {

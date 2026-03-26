@@ -460,6 +460,7 @@ export interface AppTranslations {
   select_color_button: string
   select_option_button: string
   select_category_button: string
+  default_avatar_name: string
   previous_page_button: string
   next_page_button: string
   close_tooltip_button: string

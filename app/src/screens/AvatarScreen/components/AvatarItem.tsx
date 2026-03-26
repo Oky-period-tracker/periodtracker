@@ -13,6 +13,7 @@ import {
   getAvatarBodyStyle,
 } from '../AvatarScreen.styles'
 import type { AvatarName } from '../../../resources/translations'
+import { useTranslate } from '../../../hooks/useTranslate'
 
 interface AvatarItemProps {
   avatar: AvatarName
@@ -49,6 +50,8 @@ export const AvatarItem: React.FC<AvatarItemProps> = ({
   getAccessibilityLabel,
   currentUser,
 }) => {
+  const translate = useTranslate()
+
   const renderFriendAvatar = () => {
     let FriendSvg
     if (isFriendAvatarLocked) {
@@ -241,7 +244,11 @@ export const AvatarItem: React.FC<AvatarItemProps> = ({
       <View style={[dynamicStyles.avatarBody, getAvatarBodyStyle()]}>
         {isFriendAvatar ? renderFriendAvatar() : renderStandardAvatar()}
         <Text style={[dynamicStyles.name, { color: '#000000' }]}>
-          {isFriendAvatar && currentUser?.avatar?.name ? currentUser.avatar.name : avatar}
+          {isFriendAvatar
+            ? currentUser?.avatar?.name
+              ? currentUser?.avatar?.name
+              : translate('default_avatar_name')
+            : avatar}
         </Text>
       </View>
     </TouchableOpacity>

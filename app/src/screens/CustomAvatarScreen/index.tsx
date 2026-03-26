@@ -20,6 +20,7 @@ import { createCustomAvatarStyles } from './CustomAvatarScreen.styles'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { analytics } from '../../services/firebase'
 import { useAccessibilityLabel } from '../../hooks/useAccessibilityLabel'
+import { useTranslate } from '../../hooks/useTranslate'
 import { BodyOptions } from './components/BodyOptions'
 import { HairOptions } from './components/HairOptions'
 import { EyesOptions } from './components/EyesOptions'
@@ -51,7 +52,7 @@ const DEFAULT_AVATAR: AvatarSelection = {
   smile: 'smile',
   clothing: null,
   devices: [],
-  name: 'Friend',
+  name: '',
 }
 
 const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => {
@@ -65,6 +66,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
   const avatarConfig = UIConfig.avatarCustomization
   const avatarSelectionConfig = UIConfig.avatarSelection
   const getAccessibilityLabel = useAccessibilityLabel()
+  const translate = useTranslate()
   const cyclesNumber = useSelector(cyclesNumberSelector)
 
   const styles = React.useMemo(
@@ -122,7 +124,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
     if (routeParams?.openNameModal && !hasOpenedNameModalRef.current) {
       setTimeout(() => {
         setNameModalVisible(true)
-        setTempName(currentUser?.avatar?.name || 'Friend')
+        setTempName(currentUser?.avatar?.name || translate('default_avatar_name'))
         hasOpenedNameModalRef.current = true
         navigation.setParams({ openNameModal: undefined })
       }, 100)
@@ -206,7 +208,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
         smile: 'smile',
         clothing: null,
         devices: [],
-        name: currentUser?.avatar?.name || DEFAULT_AVATAR.name,
+        name: currentUser?.avatar?.name || translate('default_avatar_name'),
       }
     }
 
@@ -240,10 +242,10 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
           if (Array.isArray(devices)) return devices
           return [devices]
         })(),
-        name: currentUser.avatar.name || DEFAULT_AVATAR.name,
+        name: currentUser.avatar.name || translate('default_avatar_name'),
       }
     }
-    return DEFAULT_AVATAR
+    return { ...DEFAULT_AVATAR, name: translate('default_avatar_name') }
   })
 
   const [nameModalVisible, setNameModalVisible] = React.useState(false)
@@ -285,7 +287,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
       } else if (avatarSelection.name) {
         updatedAvatar.name = avatarSelection.name
       } else {
-        updatedAvatar.name = 'Friend'
+        updatedAvatar.name = translate('default_avatar_name')
       }
 
       return updatedAvatar
@@ -341,7 +343,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
     const updatedAvatar = buildAvatarObject()
     saveAvatarToStore(updatedAvatar)
     setNameModalVisible(true)
-    setTempName(avatarSelection.name || 'Friend')
+    setTempName(avatarSelection.name || translate('default_avatar_name'))
   }
 
   const handleConfirmSave = async () => {

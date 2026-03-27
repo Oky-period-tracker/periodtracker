@@ -11,6 +11,7 @@ import { HeartAnimation } from './HeartAnimation'
 import { useResponsive } from '../../contexts/ResponsiveContext'
 import { useColor } from '../../hooks/useColor'
 import { AvatarLocks } from '../AvatarLocks'
+import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
 
 export const ProgressSection = ({
   heartProgress,
@@ -23,6 +24,7 @@ export const ProgressSection = ({
   const { UIConfig, width } = useResponsive()
   const { palette, starColor } = useColor()
   const currentAvatar = useSelector(currentAvatarSelector)
+  const isAvatarCustomizationEnabled = useAvatarCustomization()
 
   useAnimatedReaction(
     () => heartProgress.value,
@@ -124,9 +126,11 @@ export const ProgressSection = ({
       <HeartAnimation count={progress} />
 
       {/* ===== Avatar Locks ===== */}
-      <View>
-        <AvatarLocks />
-      </View>
+      {isAvatarCustomizationEnabled && (
+        <View>
+          <AvatarLocks />
+        </View>
+      )}
     </View>
   )
 }

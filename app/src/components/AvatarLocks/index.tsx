@@ -5,7 +5,6 @@ import { useResponsive } from '../../contexts/ResponsiveContext'
 import { styles } from './AvatarLocks.styles'
 import { useSelector } from '../../redux/useSelector'
 import { currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
-import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
 
 /**
  * Displays a row of lock/unlock icons representing the user's progress toward unlocking the custom avatar.
@@ -16,9 +15,6 @@ export const AvatarLocks = () => {
   const { UIConfig } = useResponsive()
   const user = useSelector(currentUserSelector)
   const cyclesNumber = useSelector(cyclesNumberSelector)
-  const isAvatarCustomizationEnabled = useAvatarCustomization()
-
-  if (!isAvatarCustomizationEnabled) return null
 
   return (
     <View style={[styles.container]}>

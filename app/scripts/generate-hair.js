@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { stripUnsupportedSvgFeatures, safeStripIds } = require('./svg-utils');
+
 const hairDir = path.join(__dirname, '../src/resources/assets/images/avatars/friend/display/hair');
 const svgFiles = fs.readdirSync(hairDir).filter(file => file.endsWith('.svg')).sort();
 
@@ -47,7 +49,10 @@ function convertSvgToJsx(svgPath, componentName) {
   }
   
   let jsxContent = svgMatch[1];
-  
+
+  // Strip unsupported SVG features before conversion
+  jsxContent = stripUnsupportedSvgFeatures(jsxContent);
+
   // Convert other SVG elements
   jsxContent = jsxContent
     .replace(/<rect/g, '<Rect')
@@ -56,16 +61,6 @@ function convertSvgToJsx(svgPath, componentName) {
     .replace(/<\/path>/g, '</Path>')
     .replace(/<defs/g, '<Defs')
     .replace(/<\/defs>/g, '</Defs>')
-    .replace(/<filter/g, '<Filter')
-    .replace(/<\/filter>/g, '</Filter>')
-    .replace(/<feFlood/g, '<FeFlood')
-    .replace(/<\/feFlood>/g, '</FeFlood>')
-    .replace(/<feColorMatrix/g, '<FeColorMatrix')
-    .replace(/<\/feColorMatrix>/g, '</FeColorMatrix>')
-    .replace(/<feOffset/g, '<FeOffset')
-    .replace(/<\/feOffset>/g, '</FeOffset>')
-    .replace(/<feBlend/g, '<FeBlend')
-    .replace(/<\/feBlend>/g, '</FeBlend>')
     .replace(/fill-rule/g, 'fillRule')
     .replace(/clip-rule/g, 'clipRule')
     .replace(/fill-opacity/g, 'fillOpacity')
@@ -73,19 +68,19 @@ function convertSvgToJsx(svgPath, componentName) {
     .replace(/stroke-linecap/g, 'strokeLinecap')
     .replace(/stroke-linejoin/g, 'strokeLinejoin')
     .replace(/stroke-miterlimit/g, 'strokeMiterlimit')
-    .replace(/color-interpolation-filters/g, 'colorInterpolationFilters')
-    .replace(/flood-opacity/g, 'floodOpacity')
     .replace(/xmlns[^=]*="[^"]*"/g, '')
     .replace(/xmlns[^:]*:[^=]*="[^"]*"/g, '')
     .replace(/version="[^"]*"/g, '')
-    .replace(/id="[^"]*"/g, '')
     .replace(/pagecolor="[^"]*"/g, '')
     .replace(/bordercolor="[^"]*"/g, '')
     .replace(/borderopacity="[^"]*"/g, '')
     .replace(/showgrid="[^"]*"/g, '')
     .replace(/inkscape:[^=]*="[^"]*"/g, '')
     .replace(/sodipodi:[^=]*="[^"]*"/g, '');
-  
+
+  // Strip id="..." attributes but preserve mask ids (needed for mask="url(#...)" references)
+  jsxContent = safeStripIds(jsxContent);
+
   // Now handle <g> tags carefully
   const lines = jsxContent.split('\n');
   const processedLines = [];
@@ -148,7 +143,7 @@ function convertSvgToJsx(svgPath, componentName) {
   jsxContent = jsxContent.replace(/fill="currentColor"/g, 'fill={fillColor}');
   
   // Check if we need Defs
-  const needsDefs = jsxContent.includes('<Defs') || jsxContent.includes('<Filter');
+  const needsDefs = jsxContent.includes('<Defs');
   
   return {
     componentName,
@@ -162,7 +157,7 @@ function convertSvgToJsx(svgPath, componentName) {
 
 // Generate the complete file
 const header = `import * as React from 'react'
-import Svg, { Path, Rect, G, Defs, Filter, FeFlood, FeColorMatrix, FeOffset, FeBlend } from 'react-native-svg'
+import Svg, { Path, Rect, G } from 'react-native-svg'
 import Animated, { useAnimatedProps, SharedValue } from 'react-native-reanimated'
 
 const AnimatedG = Animated.createAnimatedComponent(G)

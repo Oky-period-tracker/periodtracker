@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { stripUnsupportedSvgFeatures, safeStripIds } = require('./svg-utils');
+
 const eyesDir = path.join(__dirname, '../src/resources/assets/images/avatars/friend/display/eyes');
 const svgFiles = fs.readdirSync(eyesDir).filter(file => file.endsWith('.svg')).sort();
 
@@ -47,7 +49,10 @@ function convertSvgToJsx(svgPath, componentName) {
   }
   
   let jsxContent = svgMatch[1];
-  
+
+  // Strip unsupported SVG features before conversion
+  jsxContent = stripUnsupportedSvgFeatures(jsxContent);
+
   // Convert other SVG elements
   jsxContent = jsxContent
     .replace(/<rect/g, '<Rect')
@@ -66,14 +71,16 @@ function convertSvgToJsx(svgPath, componentName) {
     .replace(/xmlns[^=]*="[^"]*"/g, '')
     .replace(/xmlns[^:]*:[^=]*="[^"]*"/g, '')
     .replace(/version="[^"]*"/g, '')
-    .replace(/id="[^"]*"/g, '')
     .replace(/pagecolor="[^"]*"/g, '')
     .replace(/bordercolor="[^"]*"/g, '')
     .replace(/borderopacity="[^"]*"/g, '')
     .replace(/showgrid="[^"]*"/g, '')
     .replace(/inkscape:[^=]*="[^"]*"/g, '')
     .replace(/sodipodi:[^=]*="[^"]*"/g, '');
-  
+
+  // Strip id="..." attributes but preserve mask ids (needed for mask="url(#...)" references)
+  jsxContent = safeStripIds(jsxContent);
+
   // Now handle <g> tags carefully
   const lines = jsxContent.split('\n');
   const processedLines = [];
@@ -137,7 +144,7 @@ function convertSvgToJsx(svgPath, componentName) {
   jsxContent = jsxContent.replace(/fill="currentColor"/g, 'fill={fillColor}');
   
   // Check if we need Defs
-  const needsDefs = jsxContent.includes('<Defs') || jsxContent.includes('<Filter');
+  const needsDefs = jsxContent.includes('<Defs');
   
   return {
     componentName,

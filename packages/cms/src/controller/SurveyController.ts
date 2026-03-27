@@ -5,6 +5,7 @@ import { Survey } from '../entity/Survey'
 import { Question } from '../entity/Question'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
+import { logger } from '../logger'
 
 // TODO_ALEX: survey
 const reformatSurveyData = (res: any) => {
@@ -77,79 +78,114 @@ export class SurveyController {
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
-    const surveyToSave = {
-      question: '',
-      option1: '',
-      option2: '',
-      option3: '',
-      option4: '',
-      option5: '',
-      response: '',
-      is_multiple: true,
-      isAgeRestricted: false,
-      live: false,
-      lang: null,
-      id: null,
+    try {
+      const surveyToSave = {
+        question: '',
+        option1: '',
+        option2: '',
+        option3: '',
+        option4: '',
+        option5: '',
+        response: '',
+        is_multiple: true,
+        isAgeRestricted: false,
+        live: false,
+        lang: null,
+        id: null,
+      }
+      surveyToSave.live = request.body.live
+      surveyToSave.lang = request.user.lang
+      surveyToSave.id = uuid()
+      const survay = await this.surveyRepository.save(surveyToSave)
+      await Promise.all(request.body.questions.map(async (question: any) => {
+        await this.questionRepository.save({
+          ...question,
+          id: uuid(),
+          surveyId: survay.id,
+          is_multiple: question.is_multiple === 'true',
+        })
+      }))
+      logger.info('Survey created', { id: surveyToSave.id, questionsCount: request.body.questions?.length })
+      return surveyToSave
+    } catch (error) {
+      logger.error('SurveyController.save failed', { message: error?.message, stack: error?.stack })
+      throw error
     }
-    surveyToSave.live = request.body.live
-    surveyToSave.lang = request.user.lang
-    surveyToSave.id = uuid()
-    const survay = await this.surveyRepository.save(surveyToSave)
-    request.body.questions.forEach(async (question: any) => {
-      await this.questionRepository.save({
-        ...question,
-        id: uuid(),
-        surveyId: survay.id,
-        is_multiple: question.is_multiple === 'true',
-      })
-    })
-    // console.log('after-create', survay, request.body)
-    return surveyToSave
   }
 
   async update(request: Request, response: Response, next: NextFunction) {
-    if (request.body.questions && request.body.questions.length) {
-      request.body.questions.forEach(async (question: any) => {
-        if (!question.id || question.id === '') {
-          delete question.id
-          await this.questionRepository.save({
-            ...question,
-            id: uuid(),
-            surveyId: request.params.id,
-            is_multiple: question.is_multiple === 'true',
-          })
-        } else {
-          const questionToUpdate = await this.questionRepository.findOne(question.id)
-          delete question.id
-          await this.questionRepository.save({
-            ...questionToUpdate,
-            ...question,
-            is_multiple: question.is_multiple === 'true',
-          })
+    try {
+      if (request.body.questions && request.body.questions.length) {
+        await Promise.all(request.body.questions.map(async (question: any) => {
+          if (!question.id || question.id === '') {
+            delete question.id
+            await this.questionRepository.save({
+              ...question,
+              id: uuid(),
+              surveyId: request.params.id,
+              is_multiple: question.is_multiple === 'true',
+            })
+          } else {
+            const questionToUpdate = await this.questionRepository.findOne(question.id)
+            if (!questionToUpdate) {
+              logger.warn('Question not found for update', { questionId: question.id, surveyId: request.params.id })
+              return
+            }
+            delete question.id
+            await this.questionRepository.save({
+              ...questionToUpdate,
+              ...question,
+              is_multiple: question.is_multiple === 'true',
+            })
+          }
+        }))
+        if (request.body.deletedQuestion) {
+          await Promise.all(request.body.deletedQuestion.map(async (id) => {
+            const question = await this.questionRepository.findOne(id)
+            if (question) {
+              await this.questionRepository.remove(question)
+            } else {
+              logger.warn('Question not found for deletion', { questionId: id })
+            }
+          }))
         }
-      })
-      if (request.body.deletedQuestion) {
-        request.body.deletedQuestion.map(async (id) => {
-          const question = await this.questionRepository.findOne(id)
-          await this.questionRepository.remove(question)
-        })
       }
+      const surveyToUpdate = await this.surveyRepository.findOne(request.params.id)
+      if (!surveyToUpdate) {
+        logger.warn('Survey not found for update', { id: request.params.id })
+        response.status(404).send({ error: 'Survey not found' })
+        return
+      }
+      surveyToUpdate.lang = request.user.lang
+      if (request.body.live) surveyToUpdate.live = request.body.live === 'true'
+      else surveyToUpdate.live = surveyToUpdate.live
+      if (request.body.isAgeRestricted)
+        surveyToUpdate.isAgeRestricted = request.body.isAgeRestricted === 'true'
+      await this.surveyRepository.save(surveyToUpdate)
+      logger.info('Survey updated', { id: request.params.id })
+      return true
+    } catch (error) {
+      logger.error('SurveyController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      throw error
     }
-    const surveyToUpdate = await this.surveyRepository.findOne(request.params.id)
-    surveyToUpdate.lang = request.user.lang
-    if (request.body.live) surveyToUpdate.live = request.body.live === 'true'
-    else surveyToUpdate.live = surveyToUpdate.live
-    if (request.body.isAgeRestricted)
-      surveyToUpdate.isAgeRestricted = request.body.isAgeRestricted === 'true'
-    await this.surveyRepository.save(surveyToUpdate)
-    return true
   }
 
   async remove(request: Request, response: Response, next: NextFunction) {
-    const questions = await this.questionRepository.find({ where: { surveyId: request.params.id } })
-    await this.questionRepository.remove(questions)
-    const surveyToRemove = await this.surveyRepository.findOne(request.params.id)
-    await this.surveyRepository.remove(surveyToRemove)
-    return surveyToRemove
+    try {
+      const questions = await this.questionRepository.find({ where: { surveyId: request.params.id } })
+      await this.questionRepository.remove(questions)
+      const surveyToRemove = await this.surveyRepository.findOne(request.params.id)
+      if (!surveyToRemove) {
+        logger.warn('Survey not found for removal', { id: request.params.id })
+        response.status(404).send({ error: 'Survey not found' })
+        return
+      }
+      await this.surveyRepository.remove(surveyToRemove)
+      logger.info('Survey removed', { id: request.params.id, questionsRemoved: questions.length })
+      return surveyToRemove
+    } catch (error) {
+      logger.error('SurveyController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      throw error
+    }
   }
 }

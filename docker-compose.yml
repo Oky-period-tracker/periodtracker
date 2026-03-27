@@ -21,6 +21,14 @@ services:
     env_file: packages/cms/.env
     depends_on:
       - base
+      - postgres
+    restart: on-failure:5
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http = require('http'); const req = http.get('http://localhost:5000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.setTimeout(5000, () => { req.destroy(); process.exit(1); });"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
   postgres:
     image: postgres:10-alpine
     volumes:

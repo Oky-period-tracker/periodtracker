@@ -57,6 +57,7 @@ export const AvatarMessage = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 
   return (
     <View
+      pointerEvents="none"
       style={[
         styles.container,
         { backgroundColor, top: topPosition, left: leftPosition },

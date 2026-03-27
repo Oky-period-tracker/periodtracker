@@ -295,7 +295,9 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         ]}
       >
         <AvatarMessage style={customStyle?.avatarMessage} />
+        {/* User avatar */}
         {isCustomAvatar && avatarPreviewData ? (
+          // Custom avatar
           <View style={getCustomAvatarScaleStyle(customAvatarScale)}>
             <AnimatedAvatarPreview
               bodyType={avatarPreviewData.bodyType}
@@ -312,6 +314,7 @@ export const Avatar = ({ style }: { style?: StyleProp<ViewStyle> }) => {
             />
           </View>
         ) : (
+          // Other avatars
           <AnimatedLottieView
             resizeMode="contain"
             style={getLottieViewStyle(lottieWidth, lottieHeight)}

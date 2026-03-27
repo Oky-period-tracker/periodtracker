@@ -10,11 +10,12 @@ import { DayModal } from '../../components/DayModal'
 import { CircleProgress } from './components/CircleProgress'
 import { Text } from '../../components/Text'
 import { Avatar } from '../../components/Avatar'
+import { FriendUnlockModal } from '../../components/FriendUnlockModal'
 import { TutorialProvider, useTutorial } from './TutorialContext'
 import { TutorialTextbox } from './components/TutorialTextbox'
 import { TutorialArrow } from './components/TutorialArrow'
 import { TutorialFeature } from './components/TutorialFeature'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { useFetchSurvey } from '../../hooks/useFetchSurvey'
 import { useLoading, useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AvatarMessageProvider } from '../../contexts/AvatarMessageContext'
@@ -23,9 +24,11 @@ import { httpClient } from '../../services/HttpClient'
 import { User } from '../../types'
 import { editUser } from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
-import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
+import { appTokenSelector, currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
+import { usePeriodDateUpdate } from '../../hooks/usePeriodDateUpdate'
+import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -56,9 +59,26 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const { state, step, onTopLeftLayout, onWheelLayout, dispatch: tutorialDispatch } = useTutorial()
 
   const currentUser = useSelector(currentUserSelector) as User
+  const cyclesNumber = useSelector(cyclesNumberSelector)
   const appToken = useSelector(appTokenSelector)
   const reduxDispatch = useDispatch()
+  const { handleDayModalResponse, initPeriodDatesIfEmpty } = usePeriodDateUpdate()
   const predictionFullState = usePredictionEngineState()
+  const isAvatarCustomizationEnabled = useAvatarCustomization()
+  const isFocused = useIsFocused()
+  const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
+
+  // Check if friend unlock modal should be shown
+  const shouldShowFriendUnlockModal = React.useMemo(() => {
+    if (!isAvatarCustomizationEnabled) return false
+    if (!currentUser) return false
+    const avatar = currentUser.avatar
+    // Show modal if cycles >= 3 and avatar is null or customAvatarUnlocked is false
+    return (
+      cyclesNumber >= 3 &&
+      (avatar === null || avatar === undefined || avatar.customAvatarUnlocked === false)
+    )
+  }, [currentUser, cyclesNumber, isAvatarCustomizationEnabled])
 
   // Auto start tutorial due to route params
   useFocusEffect(
@@ -70,8 +90,15 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
           navigation.setParams({ tutorial: undefined })
         })
       }
-    }, [route.params?.tutorial]),
+    }, [shouldShowFriendUnlockModal, route.params?.tutorial]),
   )
+
+  // Check when to trigger the modal only when screen is focused
+  React.useEffect(() => {
+    if (shouldShowFriendUnlockModal && isFocused) {
+      setFriendUnlockModalVisible(true)
+    }
+  }, [shouldShowFriendUnlockModal, isFocused])
 
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
@@ -79,6 +106,10 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
       updateUserVerifiedDates({ metadata: { periodDates: data } })
       editUserReduxState({ metadata: { periodDates: data } })
     }
+  }, [])
+
+  React.useEffect(() => {
+    initPeriodDatesIfEmpty()
   }, [])
 
   const updateUserVerifiedDates = (changes: Partial<User>) => {
@@ -99,81 +130,24 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const carouselHidden = state.isPlaying && !['track', 'summary', 'stars'].includes(step ?? '')
 
   const goToCalendar = () => navigation.navigate('Calendar')
-  const handleDayModalResponse = async (isPeriodDay: boolean, periodDate: string) => {
-    // Generate latest ML-based predictions
-    const predictedPeriodDates = generatePeriodDates(predictionFullState)
 
-    // Get the existing periodDates from user metadata
-    let updatedPeriodDates = currentUser.metadata?.periodDates
-      ? [...currentUser.metadata.periodDates]
-      : []
-
-    // Step 1: Ensure all ML-generated dates are included
-    const mlDatesToAdd = predictedPeriodDates
-      .filter((entry) => !updatedPeriodDates.some((u) => u.date === entry.date))
-      .map((entry) => ({
-        ...entry,
-        mlGenerated: false,
-        userVerified: entry.userVerified || false,
-      }))
-    updatedPeriodDates = [...updatedPeriodDates, ...mlDatesToAdd]
-
-    // Step 2: Check if the selected date is ML-predicted
-    const isMlPredicted = predictedPeriodDates.some((entry) => entry.date === periodDate)
-
-    // Step 3: Find if the selected date exists in the array
-    const existingDateIndex = updatedPeriodDates.findIndex((entry) => entry.date === periodDate)
-
-    if (existingDateIndex !== -1) {
-      // Step 4: Date exists in array
-      const existingEntry = updatedPeriodDates[existingDateIndex]
-
-      if (!existingEntry.mlGenerated && !isPeriodDay) {
-        // Remove user-added dates if marked as non-period and not ML-generated
-        updatedPeriodDates.splice(existingDateIndex, 1)
-      } else {
-        // Update userVerified value
-        updatedPeriodDates[existingDateIndex] = {
-          ...existingEntry,
-          userVerified: isPeriodDay,
-        }
-      }
-    } else if (isPeriodDay && !isMlPredicted) {
-      // Step 5: Date doesn't exist and isn't ML-predicted, but user marks it as period day
-      updatedPeriodDates.push({
-        date: periodDate,
-        mlGenerated: false,
-        userVerified: true,
-      })
-    }
-
-    // Step 6: Sort by date for consistency
-    updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-
-    try {
-      if (updatedPeriodDates) {
-        await updateUserVerifiedDates({
-          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-        })
-
-        editUserReduxState({
-          metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-        })
-      }
-    } catch (error) {
-      console.error('Error updating period dates:', error)
-    }
-  }
-  
   return (
     <>
       <View style={styles.screen}>
         <View style={styles.body} onLayout={onBodyLayout}>
           <View style={styles.topLeft} onLayout={onTopLeftLayout}>
-            <CircleProgress onPress={goToCalendar} style={circleProgressHidden && styles.hidden} />
-            <TouchableOpacity onPress={goToCalendar} style={circleProgressHidden && styles.hidden}>
-              <Text>calendar</Text>
-            </TouchableOpacity>
+            <View style={styles.circleProgressContainer}>
+              <CircleProgress
+                onPress={goToCalendar}
+                style={circleProgressHidden && styles.hidden}
+              />
+              <TouchableOpacity
+                onPress={goToCalendar}
+                style={circleProgressHidden && styles.hidden}
+              >
+                <Text>calendar</Text>
+              </TouchableOpacity>
+            </View>
             <Avatar style={avatarHidden && styles.hidden} />
           </View>
 
@@ -202,10 +176,15 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
             data={selectedItem}
             hideLaunchButton={false}
             onHandleResponse={handleDayModalResponse} // Pass the method as a prop
-
           />
         </View>
       )}
+      <View>
+        <FriendUnlockModal
+          visible={friendUnlockModalVisible && isFocused}
+          toggleVisible={() => setFriendUnlockModalVisible(false)}
+        />
+      </View>
     </>
   )
 }
@@ -213,6 +192,9 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 export default MainScreen
 
 const styles = StyleSheet.create({
+  circleProgressContainer: {
+    top: 0,
+  },
   screen: {
     flex: 1,
     justifyContent: 'center',

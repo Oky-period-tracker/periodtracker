@@ -2,6 +2,20 @@ import { REHYDRATE, RehydrateAction } from 'redux-persist'
 import _ from 'lodash'
 import { Actions } from '../types/index'
 
+export interface AvatarConfig {
+  body?: 'small' | 'medium' | 'large' | null
+  hair?: string | null
+  eyes?: string | null
+  smile?: string | null
+  clothing?: string | null
+  devices?: string[] | null
+  skinColor?: string | null
+  hairColor?: string | null
+  eyeColor?: string | null
+  customAvatarUnlocked: boolean
+  name?: string
+}
+
 export interface User {
   id: string
   name: string
@@ -16,6 +30,7 @@ export interface User {
   dateSignedUp: string
   isGuest: boolean
   metadata: UserMetadata
+  avatar?: AvatarConfig | null
 }
 
 export interface UserMetadata {
@@ -140,12 +155,12 @@ export function authReducer(state = initialState, action: Actions | RehydrateAct
         // @ts-expect-error TODO:
         user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
       }
-      // case 'UPDATE_USER_VERIFIED_PERIOD_DAYS':
-      //   return {
-      //     ...state,
-      //     // @ts-expect-error TODO:
-      //     user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
-      //   }
+    // case 'UPDATE_USER_VERIFIED_PERIOD_DAYS':
+    //   return {
+    //     ...state,
+    //     // @ts-expect-error TODO:
+    //     user: { ...state.user, ..._.omitBy(action.payload, _.isNil) },
+    //   }
 
     default:
       return state

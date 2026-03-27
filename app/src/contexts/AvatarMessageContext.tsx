@@ -6,6 +6,25 @@ import _ from 'lodash'
 import { useTranslate } from '../hooks/useTranslate'
 import { useAvatarCustomization } from '../hooks/useAvatarCustomization'
 
+/**
+ * Context that manages what the avatar "says" via a speech bubble.
+ *
+ * Message lifecycle:
+ *   1. A message is set (either a lock message, a random message, or an
+ *      externally-triggered message via setAvatarMessage).
+ *   2. It stays visible for MESSAGE_DURATION (5 s), then auto-clears.
+ *   3. After RANDOM_MESSAGE_INTERVAL (10 s) of silence, the next message
+ *      is shown automatically.
+ *
+ * Message priority:
+ *   - When the avatar customization is locked, a fixed sequence of "lock
+ *     messages" is shown first (explaining how to unlock).
+ *   - Once all lock messages have been displayed (or if already unlocked),
+ *     random messages from the CMS/content pool rotate indefinitely.
+ *   - Any part of the app can also push a one-off message via
+ *     setAvatarMessage().
+ */
+
 export type AvatarMessageContext = {
   message: null | string
   setAvatarMessage: (text: string, shouldTranslate?: boolean) => void
@@ -18,33 +37,33 @@ const defaultValue: AvatarMessageContext = {
 
 const AvatarMessageContext = React.createContext<AvatarMessageContext>(defaultValue)
 
-const MESSAGE_DURATION = 5000
-const RANDOM_MESSAGE_INTERVAL = 10000
+const MESSAGE_DURATION = 5000 // How long each message stays visible (ms)
+const RANDOM_MESSAGE_INTERVAL = 10000 // Delay before showing the next message after the previous one clears (ms)
 
 export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => {
-  const allMessages = useSelector(allAvatarText)
+  const allMessages = useSelector(allAvatarText) // All regular avatar messages from the content store
   const currentUser = useSelector(currentUserSelector)
-  const isScreenFocussed = useScreenFocus()
+  const isScreenFocussed = useScreenFocus() // Only cycle messages while the screen is in the foreground
   const [message, setMessage] = React.useState('')
   const translate = useTranslate()
   const isAvatarCustomizationEnabled = useAvatarCustomization()
-  const cyclesNumber = useSelector(cyclesNumberSelector)
+  const cyclesNumber = useSelector(cyclesNumberSelector) // Number of menstrual cycles the user has logged
 
-  // Check if locks are locked
-  // If customAvatarUnlocked is true, locks are permanently unlocked regardless of cyclesNumber
-  // Otherwise, check if cyclesNumber < 3
-  // If avatar customization feature is disabled, never show lock state
+  // --- Lock state ---
+  // Avatar customization is locked until the user has logged >= 3 cycles,
+  // unless they already earned a permanent unlock (customAvatarUnlocked).
+  // If the feature flag is off, locks are never shown.
   const isLocked =
     isAvatarCustomizationEnabled &&
     currentUser?.avatar?.customAvatarUnlocked !== true &&
     (cyclesNumber || 0) < 3
 
-  // Track lock messages - show them first when locked
+  // --- Lock-message sequencing refs (mutable, survives re-renders) ---
   const lockMessagesRef = React.useRef<{ content: string; id: string }[]>([])
-  const currentLockMessageIndexRef = React.useRef(-1) // -1 means we've shown all lock messages or not locked
-  const hasShownLockMessagesRef = React.useRef(false)
+  const currentLockMessageIndexRef = React.useRef(-1) // -1 = all lock messages shown (or not locked)
+  const hasShownLockMessagesRef = React.useRef(false) // Becomes true once every lock message has been displayed
 
-  // Get lock messages
+  // The fixed set of lock messages shown sequentially when locked
   const lockMessages = React.useMemo(() => {
     if (!isLocked) {
       return []
@@ -55,41 +74,43 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     ]
   }, [isLocked, translate])
 
-  // Get available messages (regular messages only, lock messages handled separately)
+  // Regular (non-lock) messages available for random rotation
   const availableMessages = React.useMemo(() => {
     return [...(allMessages || [])]
   }, [allMessages])
 
-  // Update lockMessagesRef when lockMessages changes
+  // Keep the ref in sync with the memoized lock messages
   React.useEffect(() => {
     if (isLocked) {
       lockMessagesRef.current = lockMessages
     }
   }, [isLocked, lockMessages])
 
-  // Reset lock message tracking only when lock status changes from unlocked to locked
+  // When transitioning from unlocked → locked (or on first render while locked),
+  // reset the index so lock messages play from the beginning
   const prevIsLockedRef = React.useRef<boolean | undefined>(undefined)
   React.useEffect(() => {
     const wasLocked = prevIsLockedRef.current
     prevIsLockedRef.current = isLocked
 
     if (isLocked) {
-      // Only reset if transitioning from unlocked to locked (or first render)
       if (wasLocked === undefined || !wasLocked) {
-        currentLockMessageIndexRef.current = 0 // Start with first lock message
+        currentLockMessageIndexRef.current = 0
         hasShownLockMessagesRef.current = false
       }
     } else {
-      // When unlocking, reset everything
       currentLockMessageIndexRef.current = -1
       hasShownLockMessagesRef.current = false
     }
   }, [isLocked])
 
+  // Public setter — allows other components to push a custom message into the bubble
   const setAvatarMessage = (text: string, shouldTranslate = false) => {
     setMessage(shouldTranslate ? translate(text) : text)
   }
 
+  // Advances the lock-message sequence by one step.
+  // Returns true if a message was shown, false if there are none left.
   const setNextLockMessage = React.useCallback(() => {
     if (lockMessagesRef.current.length === 0 || currentLockMessageIndexRef.current < 0) {
       return false
@@ -100,7 +121,6 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
       setMessage(lockMessage.content)
       currentLockMessageIndexRef.current++
 
-      // If we've shown all lock messages, mark as done
       if (currentLockMessageIndexRef.current >= lockMessagesRef.current.length) {
         currentLockMessageIndexRef.current = -1
         hasShownLockMessagesRef.current = true
@@ -110,25 +130,26 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     return false
   }, [])
 
+  // Picks a random message from the regular pool and displays it
   const setRandomAvatarMessage = React.useCallback(() => {
     setMessage(_.sample(availableMessages)?.content ?? '')
   }, [availableMessages])
 
-  // ===== Show first message when screen opens ===== //
+  // ===== Effect 1: Show first message when screen opens ===== //
+  // Fires once when the screen gains focus. If locked, immediately starts
+  // the lock-message sequence; otherwise picks a random message.
   React.useEffect(() => {
     if (!isScreenFocussed) {
       return
     }
 
-    // If locked, show first lock message immediately
     if (isLocked && currentLockMessageIndexRef.current === 0 && !hasShownLockMessagesRef.current) {
       const timeout = setTimeout(() => {
         setNextLockMessage()
-      }, 100)
+      }, 100) // Small delay to let the screen settle
       return () => clearTimeout(timeout)
     }
 
-    // If not locked and no message, show random message after a delay
     if (!isLocked && !message && availableMessages.length > 0) {
       const timeout = setTimeout(() => {
         setRandomAvatarMessage()
@@ -144,18 +165,20 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     setRandomAvatarMessage,
   ])
 
-  // ===== Show next message after current message is cleared ===== //
+  // ===== Effect 2: Queue the next message after the current one is cleared ===== //
+  // Waits RANDOM_MESSAGE_INTERVAL after the message disappears, then shows
+  // either the next lock message or a random one.
   React.useEffect(() => {
     if (!isScreenFocussed) {
       return
     }
 
-    // If there's a message showing, wait for it to clear
+    // Wait until the current message has been cleared before scheduling the next
     if (message) {
       return
     }
 
-    // If locked and still have lock messages to show, show next one
+    // Still have lock messages to go through
     if (isLocked && currentLockMessageIndexRef.current >= 0 && !hasShownLockMessagesRef.current) {
       const timeout = setTimeout(() => {
         setNextLockMessage()
@@ -163,8 +186,7 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
       return () => clearTimeout(timeout)
     }
 
-    // After lock messages are shown (hasShownLockMessagesRef is true), show random messages
-    // Also show random messages if not locked
+    // Lock messages done (or never locked) — rotate random messages
     if ((hasShownLockMessagesRef.current || !isLocked) && availableMessages.length > 0) {
       const timeout = setTimeout(() => {
         setRandomAvatarMessage()
@@ -180,7 +202,7 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     setRandomAvatarMessage,
   ])
 
-  // ===== Clear message ===== //
+  // ===== Effect 3: Auto-clear the current message after MESSAGE_DURATION ===== //
   React.useEffect(() => {
     if (!message) {
       return
@@ -207,6 +229,7 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
   )
 }
 
+// Hook for consuming components to read the current message and push custom ones
 export const useAvatarMessage = () => {
   return React.useContext(AvatarMessageContext)
 }

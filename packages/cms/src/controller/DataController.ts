@@ -8,6 +8,7 @@ import { About } from '../entity/About'
 import { AvatarMessages } from '../entity/AvatarMessages'
 import { TermsAndConditions } from '../entity/TermsAndConditions'
 import { PrivacyPolicy } from '../entity/PrivacyPolicy'
+import { safeJsonParse } from '../helpers/safeUtils'
 import xlsx from 'xlsx'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -28,6 +29,7 @@ import {
 } from '@oky/core'
 // import { EncyclopediaResponse, EncyclopediaResponseItem } from '@oky/core/src/api/types'
 import { env } from '../env'
+import { logger } from '../logger'
 
 export class DataController {
   private articleRepository = getRepository(Article)
@@ -40,6 +42,7 @@ export class DataController {
   private avatarMessagesRepository = getRepository(AvatarMessages)
 
   async generateContentTs(request: Request, response: Response, next: NextFunction) {
+    try {
     const live = request.query?.live === 'true'
 
     // ========== Encyclopedia ========== //
@@ -69,59 +72,50 @@ export class DataController {
       encyclopediaResponse: encyclopediaRaw,
     })
 
-    // ========== Quiz ========== //
-    const quizzesRaw = await this.quizRepository.find({
-      where: { lang: request.user.lang, live },
-      order: {
-        topic: 'ASC',
-      },
-    })
+    // ========== Parallel queries ========== //
+    const [
+      quizzesRaw,
+      didYouKnowsRaw,
+      helpCentersRaw,
+      avatarMessagesRaw,
+      latestPrivacyPolicy,
+      latestTermsAndConditions,
+      latestAbout,
+    ] = await Promise.all([
+      this.quizRepository.find({
+        where: { lang: request.user.lang, live },
+        order: { topic: 'ASC' },
+      }),
+      this.didYouKnowRepository.find({
+        where: { lang: request.user.lang, live },
+      }),
+      this.helpCenterRepository.find({
+        where: { lang: request.user.lang },
+      }),
+      this.avatarMessagesRepository.find({
+        where: { lang: request.user.lang, live },
+      }),
+      this.privacyPolicyRepository.findOne({
+        where: { lang: request.user.lang },
+        order: { id: 'DESC' },
+      }),
+      this.termsAndConditionsRepository.findOne({
+        where: { lang: request.user.lang },
+        order: { id: 'DESC' },
+      }),
+      this.aboutRepository.findOne({
+        where: { lang: request.user.lang },
+        order: { id: 'DESC' },
+      }),
+    ])
 
     const { quizzes } = fromQuizzes(quizzesRaw)
-
-    // ========== Did you know ========== //
-    const didYouKnowsRaw = await this.didYouKnowRepository.find({
-      where: { lang: request.user.lang, live },
-    })
-
     const { didYouKnows } = fromDidYouKnows(didYouKnowsRaw)
-
-    // ========== Help ========== //
-    const helpCentersRaw = await this.helpCenterRepository.find({
-      where: { lang: request.user.lang },
-    })
-
     const { helpCenters } = fromHelpCenters(helpCentersRaw)
-
-    // ========== Avatars ========== //
-    const avatarMessagesRaw = await this.avatarMessagesRepository.find({
-      where: { lang: request.user.lang, live },
-    })
-
     const { avatarMessages } = fromAvatarMessages(avatarMessagesRaw)
-
-    // ========== Privacy ========== //
-    const allPoliciesVersions = await this.privacyPolicyRepository.find({
-      where: { lang: request.user.lang },
-    })
-
-    const latestPrivacyPolicy = allPoliciesVersions[allPoliciesVersions.length - 1]
-    const privacyPolicy = latestPrivacyPolicy.json_dump
-
-    // ========== Terms ========== //
-    const allTermsAndConditionVersions = await this.termsAndConditionsRepository.find({
-      where: { lang: request.user.lang },
-    })
-    const latestTermsAndConditions =
-      allTermsAndConditionVersions[allTermsAndConditionVersions.length - 1]
-    const termsAndConditions = latestTermsAndConditions.json_dump
-
-    // ========== About ========== //
-    const allAboutVersions = await this.aboutRepository.find({
-      where: { lang: request.user.lang },
-    })
-    const latestAbout = allAboutVersions[allAboutVersions.length - 1]
-    const about = latestAbout.json_dump
+    const privacyPolicy = latestPrivacyPolicy?.json_dump
+    const termsAndConditions = latestTermsAndConditions?.json_dump
+    const about = latestAbout?.json_dump
 
     // ========== File ========== //
     const fileContent = `
@@ -150,9 +144,15 @@ export class DataController {
     response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
     response.setHeader('Content-type', 'text/plain')
     response.send(fileContent) // Send the file data as a response
+    logger.info('Content TS file generated', { lang: request.user.lang, fileName })
+    } catch (error) {
+      logger.error('DataController.generateContentTs failed', { message: error?.message, stack: error?.stack })
+      throw error
+    }
   }
 
   async generateContentSheet(request: Request, response: Response, next: NextFunction) {
+    try {
     const shouldFilter = request.query?.filter === 'new'
 
     const encyclopediaRaw = (await this.articleRepository.query(
@@ -223,13 +223,42 @@ export class DataController {
       return acc
     }, {})
 
-    // ========== Quiz ========== //
-    const quizzesRaw = await this.quizRepository.find({
-      where: { lang: request.user.lang, live: true },
-      order: {
-        topic: 'ASC',
-      },
-    })
+    // ========== Parallel queries ========== //
+    const [
+      quizzesRaw,
+      didYouKnowsRaw,
+      helpCentersRaw,
+      avatarMessagesRaw,
+      latestPrivacyPolicy,
+      latestTermsAndConditions,
+      latestAbout,
+    ] = await Promise.all([
+      this.quizRepository.find({
+        where: { lang: request.user.lang, live: true },
+        order: { topic: 'ASC' },
+      }),
+      this.didYouKnowRepository.find({
+        where: { lang: request.user.lang },
+      }),
+      this.helpCenterRepository.find({
+        where: { lang: request.user.lang },
+      }),
+      this.avatarMessagesRepository.find({
+        where: { lang: request.user.lang },
+      }),
+      this.privacyPolicyRepository.findOne({
+        where: { lang: request.user.lang },
+        order: { id: 'DESC' },
+      }),
+      this.termsAndConditionsRepository.findOne({
+        where: { lang: request.user.lang },
+        order: { id: 'DESC' },
+      }),
+      this.aboutRepository.findOne({
+        where: { lang: request.user.lang },
+        order: { id: 'DESC' },
+      }),
+    ])
 
     const quizzesRawExtraCols = quizzesRaw.map((item) => {
       return {
@@ -265,9 +294,6 @@ export class DataController {
     })
 
     // ========== Did you know ========== //
-    const didYouKnowsRaw = await this.didYouKnowRepository.find({
-      where: { lang: request.user.lang },
-    })
 
     const didYouKnowsRawExtraCols = didYouKnowsRaw.map((item) => {
       return {
@@ -289,14 +315,8 @@ export class DataController {
     })
 
     // ========== Help ========== //
-    const helpCentersRaw = await this.helpCenterRepository.find({
-      where: { lang: request.user.lang },
-    })
 
     // ========== Avatars ========== //
-    const avatarMessagesRaw = await this.avatarMessagesRepository.find({
-      where: { lang: request.user.lang },
-    })
 
     const avatarMessagesExtraCols = avatarMessagesRaw.map((item) => {
       return {
@@ -316,28 +336,10 @@ export class DataController {
       return true
     })
 
-    // ========== Privacy ========== //
-    const allPoliciesVersions = await this.privacyPolicyRepository.find({
-      where: { lang: request.user.lang },
-    })
-
-    const latestPrivacyPolicy = allPoliciesVersions[allPoliciesVersions.length - 1]
-    const privacyPolicy = JSON.parse(latestPrivacyPolicy.json_dump)
-
-    // ========== Terms ========== //
-    const allTermsAndConditionVersions = await this.termsAndConditionsRepository.find({
-      where: { lang: request.user.lang },
-    })
-    const latestTermsAndConditions =
-      allTermsAndConditionVersions[allTermsAndConditionVersions.length - 1]
-    const termsAndConditions = JSON.parse(latestTermsAndConditions.json_dump)
-
-    // ========== About ========== //
-    const allAboutVersions = await this.aboutRepository.find({
-      where: { lang: request.user.lang },
-    })
-    const latestAbout = allAboutVersions[allAboutVersions.length - 1]
-    const about = JSON.parse(latestAbout.json_dump)
+    // ========== Privacy / Terms / About ========== //
+    const privacyPolicy = safeJsonParse(latestPrivacyPolicy?.json_dump || '[]', [], 'PrivacyPolicy')
+    const termsAndConditions = safeJsonParse(latestTermsAndConditions?.json_dump || '[]', [], 'TermsAndConditions')
+    const about = safeJsonParse(latestAbout?.json_dump || '[]', [], 'About')
 
     // ========== Spread sheet ========== //
     const encyclopediaIdColumns = [0, 1, 2]
@@ -431,9 +433,15 @@ export class DataController {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     )
     response.send(buffer) // Send the file data as a response
+    logger.info('Content sheet generated', { lang: request.user.lang })
+    } catch (error) {
+      logger.error('DataController.generateContentSheet failed', { message: error?.message, stack: error?.stack })
+      throw error
+    }
   }
 
   async uploadContentSheet(request: Request, response: Response, next: NextFunction) {
+    try {
     // Ensure a file was uploaded
     if (!request.file || !request.file.buffer) {
       return response.status(400).send('No file was uploaded.')
@@ -537,6 +545,11 @@ export class DataController {
     response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
     response.setHeader('Content-type', 'text/plain')
     response.send(fileContent) // Send the file data as a response
+    logger.info('Content sheet uploaded and processed', { locale })
+    } catch (error) {
+      logger.error('DataController.uploadContentSheet failed', { message: error?.message, stack: error?.stack })
+      throw error
+    }
   }
 
   /*   

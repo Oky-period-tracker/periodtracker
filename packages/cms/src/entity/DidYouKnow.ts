@@ -1,6 +1,8 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm'
+import { Entity, PrimaryColumn, Column, Index } from 'typeorm'
 
 @Entity()
+@Index('idx_did_you_know_lang', ['lang'])
+@Index('idx_did_you_know_lang_live', ['lang', 'live'])
 export class DidYouKnow {
   @PrimaryColumn('uuid')
   id: string

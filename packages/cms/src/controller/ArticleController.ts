@@ -4,19 +4,25 @@ import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
 import { bulkUpdateRowReorder } from '../helpers/common'
+import { logger } from '../logger'
 
 export class ArticleController {
   private articleRepository = getRepository(Article)
 
   async all(request: Request, response: Response, next: NextFunction) {
-    return this.articleRepository.find({
-      where: {
-        lang: request.user.lang,
-      },
-      order: {
-        sortingKey: 'ASC',
-      },
-    })
+    try {
+      return await this.articleRepository.find({
+        where: {
+          lang: request.user.lang,
+        },
+        order: {
+          sortingKey: 'ASC',
+        },
+      })
+    } catch (error) {
+      logger.error('ArticleController.all failed', { message: error?.message, stack: error?.stack })
+      throw error
+    }
   }
   async mobileArticlesByLanguage(request: Request, response: Response, next: NextFunction) {
     return this.articleRepository.query(
@@ -50,29 +56,41 @@ export class ArticleController {
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
-    const article = await this.articleRepository.findOne({
-      article_heading: request.body.article_heading,
-    })
-    if (article) {
-      return { article, isExist: true }
+    try {
+      const article = await this.articleRepository.findOne({
+        article_heading: request.body.article_heading,
+      })
+      if (article) {
+        return { article, isExist: true }
+      }
+      const articleToSave = request.body
+      articleToSave.lang = request.user.lang
+      articleToSave.id = uuid()
+      await this.articleRepository.save(articleToSave)
+      logger.info('Article created', { id: articleToSave.id, heading: articleToSave.article_heading })
+      return articleToSave
+    } catch (error) {
+      logger.error('ArticleController.save failed', { message: error?.message, stack: error?.stack })
+      throw error
     }
-    const articleToSave = request.body
-    articleToSave.lang = request.user.lang
-    articleToSave.id = uuid()
-    await this.articleRepository.save(articleToSave)
-    return articleToSave
   }
 
   async update(request: Request, response: Response, next: NextFunction) {
-    const article = await this.articleRepository.findOne({
-      article_heading: request.body.article_heading,
-    })
-    if (article && request.params.id !== article.id) {
-      return { article, isExist: true }
-    }
-    const booleanFromString = request.body.live === 'true'
-    const articleToUpdate = await this.articleRepository.findOne(request.params.id)
-    articleToUpdate.category = request.body.category
+    try {
+      const article = await this.articleRepository.findOne({
+        article_heading: request.body.article_heading,
+      })
+      if (article && request.params.id !== article.id) {
+        return { article, isExist: true }
+      }
+      const booleanFromString = request.body.live === 'true'
+      const articleToUpdate = await this.articleRepository.findOne(request.params.id)
+      if (!articleToUpdate) {
+        logger.warn('Article not found for update', { id: request.params.id })
+        response.status(404).send({ error: 'Article not found' })
+        return
+      }
+      articleToUpdate.category = request.body.category
     articleToUpdate.subcategory = request.body.subcategory
     articleToUpdate.article_heading = request.body.article_heading
     articleToUpdate.article_text = request.body.article_text
@@ -83,13 +101,29 @@ export class ArticleController {
     articleToUpdate.live = booleanFromString
     articleToUpdate.lang = request.user.lang
     await this.articleRepository.save(articleToUpdate)
+    logger.info('Article updated', { id: request.params.id })
     return articleToUpdate
+    } catch (error) {
+      logger.error('ArticleController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      throw error
+    }
   }
 
   async remove(request: Request, response: Response, next: NextFunction) {
-    const articleToRemove = await this.articleRepository.findOne(request.params.id)
-    await this.articleRepository.remove(articleToRemove)
-    return articleToRemove
+    try {
+      const articleToRemove = await this.articleRepository.findOne(request.params.id)
+      if (!articleToRemove) {
+        logger.warn('Article not found for removal', { id: request.params.id })
+        response.status(404).send({ error: 'Article not found' })
+        return
+      }
+      await this.articleRepository.remove(articleToRemove)
+      logger.info('Article removed', { id: request.params.id })
+      return articleToRemove
+    } catch (error) {
+      logger.error('ArticleController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      throw error
+    }
   }
 
   async reorderRows(request: Request, response: Response, next: NextFunction) {

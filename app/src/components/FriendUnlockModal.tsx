@@ -95,7 +95,7 @@ export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {
           friend_unlock_modal_title
         </Text>
 
-        <View style={styles.iconContainer}>
+        <View style={styles.gifContainer}>
           <Image
             source={getAsset('gifs.friendUnlock')}
             style={styles.icon}

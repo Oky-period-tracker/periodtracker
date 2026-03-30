@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content: {
+    flex: 1,
     padding: moderateScale(24, 0.3),
     paddingTop: moderateScale(50, 0.3),
     alignItems: 'center',
@@ -23,9 +24,11 @@ export const styles = StyleSheet.create({
     marginBottom: moderateScale(24, 0.3),
     width: '100%',
   },
-  iconContainer: {
+  gifContainer: {
+    flex: 1,
     width: moderateScale(280, 0.3),
-    height: moderateScale(280, 0.3),
+    maxHeight: moderateScale(280, 0.3),
+    aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: moderateScale(24, 0.3),

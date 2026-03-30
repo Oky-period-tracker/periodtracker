@@ -90,8 +90,9 @@ export const createCustomAvatarStyles = (
       color: '#2196F3',
     },
     avatarContainer: {
+      flex: 1,
       width: '100%',
-      height: config.avatarPreviewSize.height + config.spacing.medium,
+      maxHeight: config.avatarPreviewSize.height + config.spacing.medium,
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: config.spacing.medium + config.spacing.small,

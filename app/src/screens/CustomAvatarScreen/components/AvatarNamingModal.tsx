@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, TouchableOpacity, TextInput, ScrollView } from 'react-native'
+import { View, TouchableOpacity, TextInput } from 'react-native'
 import { Modal } from '../../../components/Modal'
 import { Text } from '../../../components/Text'
 import { AvatarPreview } from '../../../components/AvatarPreview'
@@ -93,32 +93,30 @@ export const AvatarNamingModal: React.FC<AvatarNamingModalProps> = ({
         </View>
       }
     >
-      <ScrollView>
-        <Text style={styles.modalTitle} enableTranslate={true}>
-          avatar_naming_modal_title
+      <Text style={styles.modalTitle} enableTranslate={true}>
+        avatar_naming_modal_title
+      </Text>
+
+      {renderAvatarPreview()}
+
+      <View style={styles.nameInputContainer}>
+        <TextInput
+          style={styles.nameInput}
+          placeholder={translate('avatar_naming_modal_placeholder')}
+          placeholderTextColor="#999"
+          value={tempName}
+          onChangeText={(text) => onNameChange(text.substring(0, 8))}
+          maxLength={8}
+          accessibilityLabel={getAccessibilityLabel('name_input')}
+          accessibilityRole="text"
+        />
+        <Text style={styles.characterCount}>
+          {tempName.length}/08 {translate('characters')}
         </Text>
-
-        {renderAvatarPreview()}
-
-        <View style={styles.nameInputContainer}>
-          <TextInput
-            style={styles.nameInput}
-            placeholder={translate('avatar_naming_modal_placeholder')}
-            placeholderTextColor="#999"
-            value={tempName}
-            onChangeText={(text) => onNameChange(text.substring(0, 8))}
-            maxLength={8}
-            accessibilityLabel={getAccessibilityLabel('name_input')}
-            accessibilityRole="text"
-          />
-          <Text style={styles.characterCount}>
-            {tempName.length}/08 {translate('characters')}
-          </Text>
-          <Text style={styles.hintText} enableTranslate={true}>
-            avatar_naming_modal_hint
-          </Text>
-        </View>
-      </ScrollView>
+        <Text style={styles.hintText} enableTranslate={true}>
+          avatar_naming_modal_hint
+        </Text>
+      </View>
     </Modal>
   )
 }

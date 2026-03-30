@@ -40,6 +40,13 @@ export const AvatarTutorialModal = ({ visible, onClose }: AvatarTutorialModalPro
 
   const totalSteps = 5
 
+  // Reset to first step when modal opens
+  React.useEffect(() => {
+    if (visible) {
+      setCurrentStep(1)
+    }
+  }, [visible])
+
   // Keep ref in sync with state
   React.useEffect(() => {
     currentStepRef.current = currentStep

@@ -11,7 +11,7 @@ export const createProfileDetailsStyles = (avatarConfig: UIConfig['avatarSelecti
   StyleSheet.create({
     wrapper: {
       width: '100%',
-      paddingHorizontal: scaleHorizontal(14), // Scaled padding
+      // paddingHorizontal: scaleHorizontal(14), // Scaled padding
       paddingTop: avatarConfig.paddingTop,
     },
     header: {

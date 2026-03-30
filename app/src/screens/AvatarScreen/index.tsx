@@ -32,6 +32,13 @@ import { Screen } from '../../components/Screen'
 import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
 
 const AvatarScreen: ScreenComponent<'Avatar'> = ({ navigation }) => {
+  // Hide header when navigating to the page
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    })
+  }, [navigation])
+
   return <AvatarSelect navigation={navigation} />
 }
 

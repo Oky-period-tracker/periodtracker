@@ -32,6 +32,13 @@ import {
 } from './utils/themeCalculations'
 
 const ThemeScreen: ScreenComponent<'Theme'> = ({ navigation }) => {
+  // Hide header when navigating to the page
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    })
+  }, [navigation])
+
   return <ThemeSelect navigation={navigation} />
 }
 

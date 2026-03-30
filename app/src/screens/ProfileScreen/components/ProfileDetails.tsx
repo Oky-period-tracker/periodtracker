@@ -45,6 +45,13 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const isAvatarCustomizationEnabled = useAvatarCustomization()
   const styles = createProfileDetailsStyles(avatarConfig)
 
+  // Hide header when navigating to the page
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    })
+  }, [navigation])
+
   const goToEdit = () => {
     navigation.navigate('EditProfile')
   }
@@ -63,195 +70,56 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const periodLength = todayInfo.periodLength === 0 ? '-' : `${todayInfo.periodLength} ${days}`
 
   return (
-    <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
-      {currentUser?.isGuest && (
-        <>
-          <View style={styles.column}>
-            <View style={styles.row}>
-              <View style={styles.column}>
-                <InfoButton title={'alert'} content={'connect_account_info'} />
-                <Text style={styles.infoLabel}>guest_mode_user_alert</Text>
-              </View>
+    <View style={styles.wrapper}>
+      {/* Title and Subtitle */}
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: '#000000' }]}>profile_title</Text>
+        <Text style={[styles.subtitle, { color: '#000000' }]}>profile_subtitle</Text>
+      </View>
+      <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
+        {currentUser?.isGuest && (
+          <>
+            <View style={styles.column}>
+              <View style={styles.row}>
+                <View style={styles.column}>
+                  <InfoButton title={'alert'} content={'connect_account_info'} />
+                  <Text style={styles.infoLabel}>guest_mode_user_alert</Text>
+                </View>
 
-              <View style={styles.column}>
-                <SaveAccountButton />
+                <View style={styles.column}>
+                  <SaveAccountButton />
+                </View>
               </View>
             </View>
-          </View>
-          <Hr />
-        </>
-      )}
+            <Hr />
+          </>
+        )}
 
-      {/* ===== Top Section ===== */}
-      <TouchableOpacity style={styles.row} onPress={goToEdit}>
-        <View style={styles.iconColumn}>
-          <DisplayButton style={styles.icon}>
-            <UserIcon size={28} />
-          </DisplayButton>
-        </View>
-        <View style={styles.column}>
-          <View>
-            <Text style={styles.text}>name</Text>
-            <Text style={styles.text}>age</Text>
-            <Text style={styles.text}>gender</Text>
-            <Text style={styles.text}>location</Text>
-          </View>
-        </View>
-        <View style={styles.column}>
-          <View>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
-              {currentUser?.name}
-            </Text>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
-              {formatMonthYear(currentUser?.dateOfBirth)}
-            </Text>
-            <Text style={[styles.text, styles.bold]}>{currentUser?.gender}</Text>
-            <Text style={[styles.text, styles.bold]}>{currentUser?.location}</Text>
-          </View>
-        </View>
-        <View style={styles.editIconContainer}>
-          <DisplayButton style={styles.editIcon}>
-            <FontAwesome name="pencil" size={12} color="#FFFFFF" />
-          </DisplayButton>
-        </View>
-      </TouchableOpacity>
-      <Hr />
-
-      {/* ===== Middle Section ===== */}
-      <View style={styles.row}>
-        <View style={styles.iconColumn}>
-          <CircleProgress />
-        </View>
-        <View style={styles.column}>
-          <View>
-            <Text style={styles.text}>cycle_length</Text>
-            <Text style={styles.text}>period_length</Text>
-          </View>
-        </View>
-        <View style={styles.column}>
-          <View>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
-              {cycleLength}
-            </Text>
-            <Text enableTranslate={false} style={[styles.text, styles.bold]}>
-              {periodLength}
-            </Text>
-          </View>
-        </View>
-      </View>
-      <View style={styles.infoTextRow}>
-        <View style={styles.iconColumn}>
-          <View />
-        </View>
-        <View style={styles.infoTextColumn}>
-          <Text style={[styles.text, styles.bold, styles.infoText]}>
-            track_regularly_cycle_updates
-          </Text>
-        </View>
-      </View>
-      <Hr />
-
-      {/* ===== Avatar Section ===== */}
-      <TouchableOpacity style={styles.row} onPress={goToAvatar}>
-        <View style={styles.iconColumn}>
-          {(() => {
-            const avatarWidth =
-              getResponsiveValue(width, {
-                xs: 100,
-                sm: 100,
-                md: 100,
-                lg: 110,
-                xl: 110,
-              }) || 100
-
-            if (avatar === 'friend') {
-              const BlankSvg = getStandardAvatarSvg('friend')
-              const friendImageAspectRatio = 105 / 74
-              const friendImageWidth = avatarWidth
-              const friendImageHeight = friendImageWidth / friendImageAspectRatio
-
-              return BlankSvg ? (
-                <View style={styles.imageWrapper}>
-                  {/* Friend avatar container */}
-                  <View style={styles.friendAvatarContainer}>
-                    {React.createElement(BlankSvg, {
-                      width: friendImageWidth,
-                      height: friendImageHeight,
-                    })}
-                    {avatarData && (
-                      <View style={styles.avatarPreviewContainer}>
-                        <AvatarPreview
-                          bodyType={avatarData.bodyType}
-                          skinColor={avatarData.skinColor}
-                          hairStyle={avatarData.hairStyle}
-                          hairColor={avatarData.hairColor}
-                          eyeShape={avatarData.eyeShape}
-                          eyeColor={avatarData.eyeColor}
-                          smile={avatarData.smile}
-                          clothing={avatarData.clothing}
-                          devices={avatarData.devices}
-                          width={friendImageWidth * 1.3}
-                          height={friendImageHeight * 1.3}
-                          style={{
-                            ...styles.avatarPreview,
-                            bottom: -(friendImageHeight * 0.6),
-                          }}
-                        />
-                      </View>
-                    )}
-                  </View>
-                </View>
-              ) : null
-            } else {
-              const StandardAvatarSvg = getStandardAvatarSvg(avatar)
-              const imageAspectRatio = 105 / 74
-              const imageWidth = avatarWidth
-              const imageHeight = imageWidth / imageAspectRatio
-
-              if (StandardAvatarSvg) {
-                return (
-                  <View style={styles.imageWrapper}>
-                    <View style={styles.standardAvatarSvgContainer}>
-                      {React.createElement(StandardAvatarSvg, {
-                        width: imageWidth,
-                        height: imageHeight,
-                      })}
-                    </View>
-                  </View>
-                )
-              }
-
-              return null
-            }
-          })()}
-        </View>
-        <View style={[styles.column, { paddingRight: scaleHorizontal(40) }]}>
-          <View>
-            <Text style={styles.text}>change_oky_friend</Text>
-          </View>
-        </View>
-        <View style={styles.editIconContainer}>
-          <DisplayButton style={styles.editIcon}>
-            <FontAwesome name="pencil" size={12} color="#FFFFFF" />
-          </DisplayButton>
-        </View>
-      </TouchableOpacity>
-
-      {/* ===== Avatar Name Section (only for custom avatar) ===== */}
-      {isAvatarCustomizationEnabled && avatar === 'friend' && currentUser?.avatar?.name && (
-        <TouchableOpacity
-          style={[styles.row, styles.nameChangeRow]}
-          onPress={() => navigation.navigate('CustomAvatar', { openNameModal: true })}
-        >
+        {/* ===== Top Section ===== */}
+        <TouchableOpacity style={styles.row} onPress={goToEdit}>
           <View style={styles.iconColumn}>
-            {/* Empty icon column to match layout with other sections */}
+            <DisplayButton style={styles.icon}>
+              <UserIcon size={28} />
+            </DisplayButton>
           </View>
           <View style={styles.column}>
             <View>
-              <Text style={styles.text} enableTranslate={true}>
-                change_the_name
+              <Text style={styles.text}>name</Text>
+              <Text style={styles.text}>age</Text>
+              <Text style={styles.text}>gender</Text>
+              <Text style={styles.text}>location</Text>
+            </View>
+          </View>
+          <View style={styles.column}>
+            <View>
+              <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+                {currentUser?.name}
               </Text>
-              <Text style={[styles.text, styles.bold]}>{currentUser.avatar.name}</Text>
+              <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+                {formatMonthYear(currentUser?.dateOfBirth)}
+              </Text>
+              <Text style={[styles.text, styles.bold]}>{currentUser?.gender}</Text>
+              <Text style={[styles.text, styles.bold]}>{currentUser?.location}</Text>
             </View>
           </View>
           <View style={styles.editIconContainer}>
@@ -260,46 +128,192 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
             </DisplayButton>
           </View>
         </TouchableOpacity>
-      )}
-      <Hr />
+        <Hr />
 
-      {/* ===== Theme Section ===== */}
-      <TouchableOpacity style={styles.row} onPress={goToTheme}>
-        <View style={styles.iconColumn}>
-          <View style={styles.themeWrapper}>
+        {/* ===== Middle Section ===== */}
+        <View style={styles.row}>
+          <View style={styles.iconColumn}>
+            <CircleProgress />
+          </View>
+          <View style={styles.column}>
+            <View>
+              <Text style={styles.text}>cycle_length</Text>
+              <Text style={styles.text}>period_length</Text>
+            </View>
+          </View>
+          <View style={styles.column}>
+            <View>
+              <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+                {cycleLength}
+              </Text>
+              <Text enableTranslate={false} style={[styles.text, styles.bold]}>
+                {periodLength}
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.infoTextRow}>
+          <View style={styles.iconColumn}>
+            <View />
+          </View>
+          <View style={styles.infoTextColumn}>
+            <Text style={[styles.text, styles.bold, styles.infoText]}>
+              track_regularly_cycle_updates
+            </Text>
+          </View>
+        </View>
+        <Hr />
+
+        {/* ===== Avatar Section ===== */}
+        <TouchableOpacity style={styles.row} onPress={goToAvatar}>
+          <View style={styles.iconColumn}>
             {(() => {
-              const ThemeSvg = getThemeSvg(theme)
-              if (!ThemeSvg) {
-                return (
-                  <Image
-                    source={getAsset(`backgrounds.${theme}.default`)}
-                    style={styles.themeImage}
-                  />
-                )
+              const avatarWidth =
+                getResponsiveValue(width, {
+                  xs: 100,
+                  sm: 100,
+                  md: 100,
+                  lg: 110,
+                  xl: 110,
+                }) || 100
+
+              if (avatar === 'friend') {
+                const BlankSvg = getStandardAvatarSvg('friend')
+                const friendImageAspectRatio = 105 / 74
+                const friendImageWidth = avatarWidth
+                const friendImageHeight = friendImageWidth / friendImageAspectRatio
+
+                return BlankSvg ? (
+                  <View style={styles.imageWrapper}>
+                    {/* Friend avatar container */}
+                    <View style={styles.friendAvatarContainer}>
+                      {React.createElement(BlankSvg, {
+                        width: friendImageWidth,
+                        height: friendImageHeight,
+                      })}
+                      {avatarData && (
+                        <View style={styles.avatarPreviewContainer}>
+                          <AvatarPreview
+                            bodyType={avatarData.bodyType}
+                            skinColor={avatarData.skinColor}
+                            hairStyle={avatarData.hairStyle}
+                            hairColor={avatarData.hairColor}
+                            eyeShape={avatarData.eyeShape}
+                            eyeColor={avatarData.eyeColor}
+                            smile={avatarData.smile}
+                            clothing={avatarData.clothing}
+                            devices={avatarData.devices}
+                            width={friendImageWidth * 1.3}
+                            height={friendImageHeight * 1.3}
+                            style={{
+                              ...styles.avatarPreview,
+                              bottom: -(friendImageHeight * 0.6),
+                            }}
+                          />
+                        </View>
+                      )}
+                    </View>
+                  </View>
+                ) : null
+              } else {
+                const StandardAvatarSvg = getStandardAvatarSvg(avatar)
+                const imageAspectRatio = 105 / 74
+                const imageWidth = avatarWidth
+                const imageHeight = imageWidth / imageAspectRatio
+
+                if (StandardAvatarSvg) {
+                  return (
+                    <View style={styles.imageWrapper}>
+                      <View style={styles.standardAvatarSvgContainer}>
+                        {React.createElement(StandardAvatarSvg, {
+                          width: imageWidth,
+                          height: imageHeight,
+                        })}
+                      </View>
+                    </View>
+                  )
+                }
+
+                return null
               }
-              return (
-                <View style={styles.themeSvgContainer}>
-                  {React.createElement(ThemeSvg, {
-                    width: '100%',
-                    height: '100%',
-                  })}
-                </View>
-              )
             })()}
           </View>
-        </View>
-        <View style={styles.column}>
-          <View>
-            <Text style={styles.text}>change_background</Text>
-            <Text style={[styles.text, styles.bold]}>{theme}</Text>
+          <View style={[styles.column, { paddingRight: scaleHorizontal(40) }]}>
+            <View>
+              <Text style={styles.text}>change_oky_friend</Text>
+            </View>
           </View>
-        </View>
-        <View style={styles.editIconContainer}>
-          <DisplayButton style={styles.editIcon}>
-            <FontAwesome name="pencil" size={12} color="#FFFFFF" />
-          </DisplayButton>
-        </View>
-      </TouchableOpacity>
+          <View style={styles.editIconContainer}>
+            <DisplayButton style={styles.editIcon}>
+              <FontAwesome name="pencil" size={12} color="#FFFFFF" />
+            </DisplayButton>
+          </View>
+        </TouchableOpacity>
+
+        {/* ===== Avatar Name Section (only for custom avatar) ===== */}
+        {isAvatarCustomizationEnabled && avatar === 'friend' && currentUser?.avatar?.name && (
+          <TouchableOpacity
+            style={[styles.row, styles.nameChangeRow]}
+            onPress={() => navigation.navigate('CustomAvatar', { openNameModal: true })}
+          >
+            <View style={styles.iconColumn}>
+              {/* Empty icon column to match layout with other sections */}
+            </View>
+            <View style={styles.column}>
+              <View>
+                <Text style={styles.text} enableTranslate={true}>
+                  change_the_name
+                </Text>
+                <Text style={[styles.text, styles.bold]}>{currentUser.avatar.name}</Text>
+              </View>
+            </View>
+            <View style={styles.editIconContainer}>
+              <DisplayButton style={styles.editIcon}>
+                <FontAwesome name="pencil" size={12} color="#FFFFFF" />
+              </DisplayButton>
+            </View>
+          </TouchableOpacity>
+        )}
+        <Hr />
+
+        {/* ===== Theme Section ===== */}
+        <TouchableOpacity style={styles.row} onPress={goToTheme}>
+          <View style={styles.iconColumn}>
+            <View style={styles.themeWrapper}>
+              {(() => {
+                const ThemeSvg = getThemeSvg(theme)
+                if (!ThemeSvg) {
+                  return (
+                    <Image
+                      source={getAsset(`backgrounds.${theme}.default`)}
+                      style={styles.themeImage}
+                    />
+                  )
+                }
+                return (
+                  <View style={styles.themeSvgContainer}>
+                    {React.createElement(ThemeSvg, {
+                      width: '100%',
+                      height: '100%',
+                    })}
+                  </View>
+                )
+              })()}
+            </View>
+          </View>
+          <View style={styles.column}>
+            <View>
+              <Text style={styles.text}>change_background</Text>
+              <Text style={[styles.text, styles.bold]}>{theme}</Text>
+            </View>
+          </View>
+          <View style={styles.editIconContainer}>
+            <DisplayButton style={styles.editIcon}>
+              <FontAwesome name="pencil" size={12} color="#FFFFFF" />
+            </DisplayButton>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   )
 }

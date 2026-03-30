@@ -67,6 +67,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const isAvatarCustomizationEnabled = useAvatarCustomization()
   const isFocused = useIsFocused()
   const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
+  const friendUnlockModalShownRef = React.useRef(false)
 
   // Check if friend unlock modal should be shown
   const shouldShowFriendUnlockModal = React.useMemo(() => {
@@ -95,7 +96,8 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   // Check when to trigger the modal only when screen is focused
   React.useEffect(() => {
-    if (shouldShowFriendUnlockModal && isFocused) {
+    if (shouldShowFriendUnlockModal && isFocused && !friendUnlockModalShownRef.current) {
+      friendUnlockModalShownRef.current = true
       setFriendUnlockModalVisible(true)
     }
   }, [shouldShowFriendUnlockModal, isFocused])

@@ -35,28 +35,28 @@ export const FriendUnlockModal = ({ visible, toggleVisible }: ModalProps) => {
     toggleVisible()
     // Update avatar to set customAvatarUnlocked to true
     if (appToken && currentUser) {
-      try {
-        const updatedAvatar = currentUser.avatar
-          ? {
-              ...currentUser.avatar,
-              customAvatarUnlocked: true,
-            }
-          : {
-              body: null,
-              hair: null,
-              eyes: null,
-              clothing: null,
-              devices: null,
-              customAvatarUnlocked: true,
-            }
+      const updatedAvatar = currentUser.avatar
+        ? {
+            ...currentUser.avatar,
+            customAvatarUnlocked: true,
+          }
+        : {
+            body: null,
+            hair: null,
+            eyes: null,
+            clothing: null,
+            devices: null,
+            customAvatarUnlocked: true,
+          }
 
+      // Update Redux state immediately so the modal won't reappear on navigate-back
+      editUserReduxState({
+        avatar: updatedAvatar,
+      })
+
+      try {
         await httpClient.updateAvatar({
           appToken,
-          avatar: updatedAvatar,
-        })
-
-        // Update Redux state
-        editUserReduxState({
           avatar: updatedAvatar,
         })
       } catch (error) {

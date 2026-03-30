@@ -99,14 +99,13 @@ export function usePeriodDateUpdate() {
     // Step 4: Sort by date for consistency
     updatedPeriodDates.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
-    try {
-      await updateUserVerifiedDates({
-        metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-      })
+    const updatedMetadata = { ...currentUser.metadata, periodDates: updatedPeriodDates }
 
-      editUserReduxState({
-        metadata: { ...currentUser.metadata, periodDates: updatedPeriodDates },
-      })
+    // Update local state immediately so the UI reflects changes even when offline
+    editUserReduxState({ metadata: updatedMetadata })
+
+    try {
+      await updateUserVerifiedDates({ metadata: updatedMetadata })
     } catch (error) {
       console.error('Error updating period dates:', error)
     }

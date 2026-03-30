@@ -143,6 +143,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
               />
               <TouchableOpacity
                 onPress={goToCalendar}
+                hitSlop={{ top: 5, bottom: 15, left: 10, right: 10 }}
                 style={circleProgressHidden && styles.hidden}
               >
                 <Text>calendar</Text>

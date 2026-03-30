@@ -55,6 +55,10 @@ export function setTutorialTwoActive(isTutorialActive: boolean) {
   return createAction('SET_TUTORIAL_TWO_ACTIVE', { isTutorialActive })
 }
 
+export function setCustomAvatarTutorialActive(isTutorialActive: boolean) {
+  return createAction('SET_CUSTOM_AVATAR_TUTORIAL_ACTIVE', { isTutorialActive })
+}
+
 export function setLoginPassword(isLoginPasswordActive: boolean) {
   return createAction('SET_LOGIN_PASSWORD_ACTIVE', { isLoginPasswordActive })
 }

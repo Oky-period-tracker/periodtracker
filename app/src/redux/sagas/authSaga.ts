@@ -288,6 +288,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield put(actions.updateFuturePrediction(true, null))
   yield put(actions.setTutorialOneActive(true))
   yield put(actions.setTutorialTwoActive(true))
+  yield put(actions.setCustomAvatarTutorialActive(true))
 
   // yield delay(5000); // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
   // yield call(navigateAndReset, "MainStack", null);

@@ -4,13 +4,17 @@ import { Text } from '../../components/Text'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useSelector } from '../../redux/useSelector'
-import { appTokenSelector, currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
+import {
+  appTokenSelector,
+  currentUserSelector,
+  cyclesNumberSelector,
+  isCustomAvatarTutorialActiveSelector,
+} from '../../redux/selectors'
 import { httpClient } from '../../services/HttpClient'
 import { useDispatch } from 'react-redux'
-import { editUser, setAvatarWithValidation } from '../../redux/actions'
+import { editUser, setAvatarWithValidation, setCustomAvatarTutorialActive } from '../../redux/actions'
 import { AvatarPreview } from '../../components/AvatarPreview'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useResponsive } from '../../contexts/ResponsiveContext'
 import { AvatarTutorialModal } from './components/AvatarTutorialModal'
 import { CategoryTabs } from './components/CategoryTabs'
@@ -68,6 +72,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
   const getAccessibilityLabel = useAccessibilityLabel()
   const translate = useTranslate()
   const cyclesNumber = useSelector(cyclesNumberSelector)
+  const isCustomAvatarTutorialActive = useSelector(isCustomAvatarTutorialActiveSelector)
 
   const styles = React.useMemo(
     () => createCustomAvatarStyles(avatarConfig, avatarSelectionConfig, width),
@@ -139,23 +144,15 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
     }, []),
   )
   React.useEffect(() => {
-    const checkFirstVisit = async () => {
-      try {
-        const hasVisited = await AsyncStorage.getItem('customizer_has_visited')
-        if (!hasVisited) {
-          setFirstVisitTooltipVisible(true)
-          await AsyncStorage.setItem('customizer_has_visited', 'true')
+    if (isCustomAvatarTutorialActive) {
+      setFirstVisitTooltipVisible(true)
+      dispatch(setCustomAvatarTutorialActive(false))
 
-          analytics?.().logEvent('CUSTOM_AVATAR_UNLOCK', {
-            userId: currentUser?.id || null,
-          })
-        }
-      } catch (error) {
-        // Silently handle error
-      }
+      analytics?.().logEvent('CUSTOM_AVATAR_UNLOCK', {
+        userId: currentUser?.id || null,
+      })
     }
-    checkFirstVisit()
-  }, [currentUser?.id])
+  }, [isCustomAvatarTutorialActive, currentUser?.id, dispatch])
 
   const handleCloseTooltip = () => {
     setFirstVisitTooltipVisible(false)

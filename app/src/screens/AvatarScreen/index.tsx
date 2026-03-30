@@ -312,18 +312,10 @@ export const AvatarSelect = ({
                 </View>
                 <View style={dynamicStyles.titleBox}>
                   <Text style={[dynamicStyles.title, { color: '#000000' }]}>
-                    {isOnboarding
-                      ? 'select_avatar_title'
-                      : isFriendUnlocked
-                      ? 'select_avatar_title_unlocked'
-                      : 'select_avatar_title'}
+                    {isOnboarding ? 'select_avatar_title_onboarding' : 'select_avatar_title'}
                   </Text>
                   <Text style={[dynamicStyles.subtitle, { color: '#000000' }]}>
-                    {isOnboarding
-                      ? 'select_avatar_subtitle'
-                      : isFriendUnlocked
-                      ? 'select_avatar_subtitle_unlocked'
-                      : 'select_avatar_subtitle'}
+                    {isOnboarding ? 'select_avatar_subtitle_onboarding' : 'select_avatar_subtitle'}
                   </Text>
                 </View>
               </View>

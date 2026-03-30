@@ -342,10 +342,10 @@ export interface AppTranslations {
   select_avatar_reminder_locked: string
   select_avatar_reminder_unlocked_created: string
   select_avatar_reminder_unlocked_not_created: string
+  select_avatar_subtitle_onboarding: string
   select_avatar_subtitle: string
-  select_avatar_subtitle_unlocked: string
+  select_avatar_title_onboarding: string
   select_avatar_title: string
-  select_avatar_title_unlocked: string
   select_category_button: string
   select_color_button: string
   select_option_button: string

@@ -18,8 +18,8 @@ import { useAvatarCustomization } from '../hooks/useAvatarCustomization'
  *
  * Message priority:
  *   - When the avatar customization is locked, a single lock message is
- *     shown first (based on cycle count: < 2 → enter period days,
- *     2 → keep entering).
+ *     shown first (based on cycle count: 0 → enter period days,
+ *     1-2 → keep entering).
  *   - After the lock message (or if already unlocked), random messages
  *     from the CMS/content pool rotate indefinitely.
  *   - Any part of the app can also push a one-off message via
@@ -64,7 +64,7 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     if (!isLocked) {
       return null
     }
-    return (cyclesNumber || 0) < 2
+    return (cyclesNumber || 0) < 1
       ? translate('avatar_message_enter_period_days')
       : translate('avatar_message_keep_entering_period_days')
   }, [isLocked, cyclesNumber, translate])
@@ -96,10 +96,10 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     return false
   }, [lockMessage])
 
-  // Reset when the lock message changes (e.g. cycle count goes from 1 → 2)
+  // Reset when cycle count changes so the lock message re-appears (e.g. 0→1, 1→2)
   React.useEffect(() => {
     hasShownLockMessageRef.current = false
-  }, [lockMessage])
+  }, [cyclesNumber])
 
   // ===== Effect 1: Show first message when screen opens ===== //
   React.useEffect(() => {

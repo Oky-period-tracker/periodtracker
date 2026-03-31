@@ -223,10 +223,6 @@ export interface PrivacyPolicy extends Array<ContentItem> {}
 export interface TermsAndConditions extends Array<ContentItem> {}
 export interface About extends Array<ContentItem> {}
 
-export interface Translations {
-  [key: string]: string
-}
-
 export interface StaticContent {
   locale: string
   articles: Articles
@@ -237,7 +233,6 @@ export interface StaticContent {
   helpCenters: HelpCenters
   helpCenterAttributes: HelpCenterAttributes
   avatarMessages: AvatarMessages
-  translations: Translations
   privacyPolicy: PrivacyPolicy
   termsAndConditions: TermsAndConditions
   about: About

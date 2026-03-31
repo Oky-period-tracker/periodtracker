@@ -75,10 +75,6 @@ export const allAvatarText = (state: ReduxState) => {
   return s(state)?.avatarMessages
 }
 
-export const translationsSelector = (state: ReduxState) => {
-  return s(state)?.translations ?? {}
-}
-
 export const privacyContent = (state: ReduxState) => {
   return s(state)?.privacyPolicy
 }

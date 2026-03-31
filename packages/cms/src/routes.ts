@@ -12,7 +12,6 @@ import { SubcategoryController } from './controller/SubcategoryController'
 import { HelpCenterController } from './controller/HelpCenterController'
 import { AnalyticsController } from './controller/AnalyticsController'
 import { AvatarMessageController } from './controller/AvatarMessageController'
-import { TranslationController } from './controller/TranslationController'
 import { AboutController } from './controller/AboutController'
 import { AboutBannerController } from './controller/AboutBannerController'
 import { TermsAndConditionsController } from './controller/TermsAndConditionsController'
@@ -147,12 +146,6 @@ export const Routes = [
     route: '/avatar-message-management',
     controller: RenderController,
     action: 'renderAvatarMessages',
-  },
-  {
-    method: 'get',
-    route: '/translation-management',
-    controller: RenderController,
-    action: 'renderTranslations',
   },
   // ------------ Access ----------------
   {
@@ -455,37 +448,6 @@ export const Routes = [
     controller: AvatarMessageController,
     action: 'remove',
   },
-  // ------------ Accessibility Labels ----------------
-  {
-    method: 'get',
-    route: '/translation',
-    controller: TranslationController,
-    action: 'all',
-  },
-  {
-    method: 'get',
-    route: '/translation/:id',
-    controller: TranslationController,
-    action: 'one',
-  },
-  {
-    method: 'post',
-    route: '/translation',
-    controller: TranslationController,
-    action: 'save',
-  },
-  {
-    method: 'put',
-    route: '/translation/:id',
-    controller: TranslationController,
-    action: 'update',
-  },
-  {
-    method: 'delete',
-    route: '/translation/:id',
-    controller: TranslationController,
-    action: 'remove',
-  },
   // ------------ Did You Know Api ----------------
   {
     method: 'get',
@@ -718,13 +680,6 @@ export const Routes = [
     route: '/mobile/avatar-messages/:lang',
     controller: AvatarMessageController,
     action: 'mobileAvatarMessagesByLanguage',
-    isPublic: true,
-  },
-  {
-    method: 'get',
-    route: '/mobile/translations/:lang',
-    controller: TranslationController,
-    action: 'mobileTranslationsByLanguage',
     isPublic: true,
   },
   {

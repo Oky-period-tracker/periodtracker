@@ -15,7 +15,6 @@ import { analyticsQueries } from '../services/analytics'
 import { HelpCenter } from '../entity/HelpCenter'
 import { About } from '../entity/About'
 import { AvatarMessages } from '../entity/AvatarMessages'
-import { Translations } from '../entity/Translations'
 import { PermanentNotification } from '../entity/PermanentNotification'
 import { provinces, countries, cmsLanguages } from '@oky/core'
 import { TermsAndConditions } from '../entity/TermsAndConditions'
@@ -46,7 +45,6 @@ export class RenderController {
   private notificationRepository = getRepository(Notification)
   private permanentNotificationRepository = getRepository(PermanentNotification)
   private avatarMessagesRepository = getRepository(AvatarMessages)
-  private translationsRepository = getRepository(Translations)
 
   // Apply global render options to all views here
   globalRenderOptions = {
@@ -442,19 +440,6 @@ export class RenderController {
     })
 
     this.render(response, 'AvatarMessages', { avatarMessages })
-  }
-
-  async renderTranslations(request: Request, response: Response, next: NextFunction) {
-    const translations = await this.translationsRepository.find({
-      where: {
-        lang: request.user.lang,
-      },
-      order: {
-        key: 'ASC',
-      },
-    })
-
-    this.render(response, 'Translations', { translations })
   }
 
   async renderDataManagement(request: Request, response: Response, next: NextFunction) {

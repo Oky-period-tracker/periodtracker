@@ -7,7 +7,6 @@ import {
   DidYouKnows,
   HelpCenters,
   AvatarMessages,
-  Translations,
   PrivacyPolicy,
   TermsAndConditions,
   About,
@@ -20,7 +19,6 @@ import {
 export function initStaleContent(payload: {
   articles: Articles
   avatarMessages: AvatarMessages
-  translations: Translations
   categories: Categories
   subCategories: SubCategories
   quizzes: Quizzes
@@ -58,7 +56,6 @@ export function fetchContentSuccess(payload: {
   articles: Articles
   videos: Videos
   avatarMessages: AvatarMessages
-  translations: Translations
   categories: Categories
   subCategories: SubCategories
   quizzes: Quizzes

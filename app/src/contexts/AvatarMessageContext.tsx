@@ -96,10 +96,19 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     return false
   }, [lockMessage])
 
+  const hasShownInitialMessageRef = React.useRef(false)
+
   // Reset when cycle count changes so the lock message re-appears (e.g. 0→1, 1→2)
   React.useEffect(() => {
     hasShownLockMessageRef.current = false
   }, [cyclesNumber])
+
+  // Reset initial message flag when screen loses focus so a fresh message appears on return
+  React.useEffect(() => {
+    if (!isScreenFocussed) {
+      hasShownInitialMessageRef.current = false
+    }
+  }, [isScreenFocussed])
 
   // ===== Effect 1: Show first message when screen opens ===== //
   React.useEffect(() => {
@@ -114,7 +123,8 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
       return () => clearTimeout(timeout)
     }
 
-    if (!isLocked && !message && availableMessages.length > 0) {
+    if (!isLocked && !hasShownInitialMessageRef.current && availableMessages.length > 0) {
+      hasShownInitialMessageRef.current = true
       const timeout = setTimeout(() => {
         setRandomAvatarMessage()
       }, 500)
@@ -124,7 +134,6 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
     isScreenFocussed,
     isLocked,
     lockMessage,
-    message,
     availableMessages,
     showLockMessage,
     setRandomAvatarMessage,

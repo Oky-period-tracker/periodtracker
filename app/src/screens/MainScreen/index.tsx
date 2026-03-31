@@ -197,6 +197,7 @@ export default MainScreen
 const styles = StyleSheet.create({
   circleProgressContainer: {
     top: 0,
+    zIndex: 100000, // Above AvatarMessage (zIndex 99999) so calendar remains tappable
   },
   screen: {
     flex: 1,

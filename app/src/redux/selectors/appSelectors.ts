@@ -23,6 +23,9 @@ export const isTutorialOneActiveSelector = (state: ReduxState) => s(state).isTut
 
 export const isTutorialTwoActiveSelector = (state: ReduxState) => s(state).isTutorialTwoActive
 
+export const isCustomAvatarTutorialActiveSelector = (state: ReduxState) =>
+  s(state).isCustomAvatarTutorialActive
+
 export const isLoginPasswordActiveSelector = (state: ReduxState) => s(state).isLoginPasswordActive
 
 export const currentAppVersion = (state: ReduxState) => s(state).appVersionName

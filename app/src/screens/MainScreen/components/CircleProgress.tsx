@@ -13,6 +13,7 @@ export const CircleProgress = ({ size = 52, style, onPress }: ButtonProps & { si
     <Button
       onPress={onPress}
       status={'secondary'}
+      hitSlop={{ top: 10, bottom: 15, left: 10, right: 10 }}
       style={[
         styles.button,
         {

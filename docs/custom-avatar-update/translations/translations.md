@@ -1,407 +1,81 @@
 # Translations Documentation
 
-This document contains all translations managed from the CMS, including accessibility labels for screen readers and regular UI text translations for the avatar/theme selection screens, custom avatar page, tutorial modal, naming modal, celebration modal, and profile page updates.
+This document contains all translations for the avatar feature, including accessibility labels for screen readers and regular UI text translations for the avatar/theme selection screens, custom avatar page, tutorial modal, naming modal, celebration modal, and profile page updates.
 
-## CMS Management
+## Table of Contents
+1. [Translation System](#translation-system)
+2. [Step-by-Step Guide: Updating Translations](#step-by-step-guide-updating-translations)
+2. [Avatar Selection Screen](#avatar-selection-screen)
+3. [Theme Selection Screen](#theme-selection-screen)
+4. [Custom Avatar Page (Customizer)](#custom-avatar-page-customizer)
+5. [Tutorial Modal](#tutorial-modal)
+6. [Naming Modal](#naming-modal)
+7. [Celebration Modal (Friend Unlock)](#celebration-modal-friend-unlock)
+8. [Profile Page](#profile-page)
+9. [Translation Keys Reference](#translation-keys-reference)
 
-**Important**: All translations (accessibility labels + regular UI text) are now **managed from the CMS** in a unified system.
+## Translation System
 
 ### How It Works
 
-1. **CMS Database**: Translations are stored in the `translations` table with columns:
-   - `id` (UUID)
-   - `key` (string) - The translation key (e.g., `select_avatar_button`, `customizer_clothing_dress1`)
-   - `label` (string) - The translated text
-   - `type` (string) - **Translation type**: `'accessibility'` for screen reader labels, `'ui'` for regular UI text
-   - `live` (boolean) - Whether the translation is active
-   - `lang` (string) - Language code (e.g., `en`, `fr`, `es`, `pt`, `ru`)
+Translations are managed through **static app translation files**, not a CMS database.
 
-### Identifying Translation Types in CMS
+1. **Translation Files**: Located in `app/src/resources/translations/app/{locale}.ts` (e.g., `en.ts`, `pt.ts`, `es.ts`)
+   - Each file exports a translations object with key-value pairs
 
-**How to distinguish between screen reader labels and regular UI text:**
+2. **Translation Key Patterns**:
+   - **Accessibility Labels**: Usually end with `_button`, `_input`, `_link`, `_label`, or are action words like `continue`, `confirm`, `close`
+   - **UI Text**: Usually start with `customizer_` followed by category (e.g., `customizer_clothing_*`, `customizer_device_*`, `customizer_skin_color_*`)
 
-1. **In the CMS Admin Interface** (`/translation-management`):
-   - The **Type** column displays a badge:
-     - **"Screen Reader"** (blue badge) = Accessibility label (used with `useAccessibilityLabel()` hook)
-     - **"UI Text"** (gray badge) = Regular UI text (used with `useTranslate()` hook)
-
-2. **When Adding/Editing Translations**:
-   - A dropdown menu allows you to select the type:
-     - **"UI Text"** - For regular text displayed on screen (clothing items, devices, colors, tutorial texts)
-     - **"Accessibility Label (Screen Reader)"** - For screen reader announcements (button labels, input descriptions)
-
-3. **Translation Key Patterns** (for reference):
-   - **Accessibility Labels** (34 keys): Usually end with `_button`, `_input`, `_link`, `_label`, or are action words like `continue`, `confirm`, `close`
-   - **UI Text** (82 keys): Usually start with `customizer_` followed by category (e.g., `customizer_clothing_*`, `customizer_device_*`, `customizer_skin_color_*`)
-
-4. **Usage in App**:
-   - **Accessibility labels** (`type: 'accessibility'`): Used via `useAccessibilityLabel()` hook for `accessibilityLabel` props
-   - **UI text** (`type: 'ui'`): Used via `useTranslate()` hook for regular text display
-
-2. **CMS Admin Interface**: 
-   - Access via `/translation-management` in the CMS
-   - Translations are filtered by the logged-in user's language
-   - Each language has its own set of translations
-   - To add translations for other languages, switch your CMS user's language or use different users
-   - **Type column** shows whether a translation is for screen readers or regular UI text
-   - **Type dropdown** in add/edit modal allows you to specify the translation type
-
-3. **Mobile API Endpoint**: 
-   - `/mobile/translations/{locale}` - Returns all live translations for the specified locale
-   - Used by the app to fetch translations dynamically
-   - Includes both accessibility labels and regular UI text translations
-
-4. **App Implementation**:
-   - **Hook for Accessibility**: `app/src/hooks/useAccessibilityLabel.ts` retrieves translations from CMS first, then falls back to app translations
-   - **Hook for UI Text**: `app/src/hooks/useTranslate.ts` prioritizes CMS translations, then falls back to app translations
-   - **Redux State**: Translations are stored in `content.translations` after fetching
-   - **Fallback Mechanism**: If a translation is not found in CMS or the API fails, the app falls back to static translations in `app/src/resources/translations/app/{locale}.ts`
-   - **Offline Support**: Static content files (generated by `fetchContent.ts`) include translations for offline use
-
-5. **Static Content Generation**:
-   - **Script**: `fetchContent.ts` fetches translations from CMS and includes them in static TypeScript files
-   - **Command**: `yarn fetch-content` regenerates static content files
-   - **Purpose**: Provides offline fallback when CMS is unavailable
+3. **Usage in App**:
+   - **Accessibility labels**: Used via `useAccessibilityLabel()` hook (`app/src/hooks/useAccessibilityLabel.ts`) for `accessibilityLabel` props
+   - **UI text**: Used via `useTranslate()` hook (`app/src/hooks/useTranslate.ts`) for regular text display
+   - Both hooks use the same underlying static translation system combining app, locale, theme, and custom translations
 
 ### Updating Translations
 
-**For CMS Administrators**:
-1. Log into the CMS admin interface
-2. Navigate to "Translations" in the sidebar
-3. Select your language (translations are filtered by language)
-4. Add, edit, or delete translations as needed
-5. Set `live` to `true` to activate a translation, `false` to deactivate
-6. Translations are automatically available to the app on next content refresh
-
-**For Developers**:
-1. To add new translations:
-   - Add the translation to all language files in `app/src/resources/translations/app/{locale}.ts` (for fallback)
-   - Run the SQL migration or manually insert into the database
-   - Update the CMS admin interface if needed
-2. To update existing translations:
-   - Update in CMS (preferred - no app release needed)
-   - Or update in translation files and run `yarn fetch-content` (requires app release)
-3. To regenerate static content:
-   - Run `yarn fetch-content` to update offline fallback files
+To update translations:
+1. Edit the translation files in `app/src/resources/translations/app/{locale}.ts` for each supported language
+2. The `useTranslate()` hook combines translations from app, locale, theme, and custom help sources
+3. Changes require an app release
 
 ---
 
-## Step-by-Step Guide: Updating CMS-Managed Translations
+## Step-by-Step Guide: Updating Translations
 
-This section provides detailed instructions for updating translations that are managed from the CMS for an app already published on the Play Store.
+### How to Update an Existing Translation
 
-### What Can Be Updated from CMS (No App Update Required)
+1. Edit the translation value in `app/src/resources/translations/app/{locale}.ts` for each supported locale
+2. Build and release a new app version
 
-The following content can be updated from CMS **without** releasing a new app version:
+### How to Add a New Translation Key
 
-1. **Translations** (`/mobile/translations/{locale}`)
-   - **Accessibility Labels**: All screen reader labels for buttons, inputs, and interactive elements
-     - Example: "Select avatar", "Previous page", "Save and continue"
-   - **UI Text Translations**: Clothing items, devices, colors, tutorial texts
-     - Example: "Dress 1", "Glasses", "Light pink", "How to create your Oky friend"
-   - **Total**: 116 translation keys (34 accessibility labels + 82 UI text translations)
+1. Add the key-value pair to all locale files in `app/src/resources/translations/app/`
+2. Use `useTranslate()` or `useAccessibilityLabel()` hooks to reference the key in components
+3. Build and release a new app version
 
-2. **Avatar Messages** (`/mobile/avatar-messages/{locale}`)
-   - Random messages displayed on the main screen
-   - Example: "Keep tracking your period days!"
+### CMS-Managed Content (No App Update Required)
 
-3. **Other CMS Content** (existing):
-   - Articles, Videos, Quizzes, Did You Knows
-   - Help Centers, Privacy Policy, Terms & Conditions
-   - About content
+The following content **can** be updated without an app release:
 
-### What CANNOT Be Updated from CMS (Requires App Update)
+1. **Avatar Messages** (`/mobile/avatar-messages/{locale}`) - Random messages displayed on the main screen
+2. **Other CMS Content**: Articles, Videos, Quizzes, Did You Knows, Help Centers, etc.
 
-The following content **requires** a new app release:
+**Note**: Avatar feature translations (accessibility labels, clothing names, device names, color names, tutorial texts) are **not** CMS-managed. They use static app translation files and require an app release to update.
 
-- **App Structure**: New screens, features, components
-- **Code Changes**: Bug fixes, new functionality
-- **New Translation Keys**: Adding new translation keys requires code changes and app release (but updating existing keys can be done from CMS)
+### Adding New Translations
 
-### Step-by-Step Process: Updating CMS-Managed Translations
+To add new translation keys, update the static translation files for each supported locale:
+- `app/src/resources/translations/app/en.ts`
+- `app/src/resources/translations/app/pt.ts`
+- `app/src/resources/translations/app/es.ts`
+- etc.
 
-#### Scenario: You want to change a translation from "Select avatar" to "Choose your avatar"
+Adding new translation keys requires an app update.
 
-**Step 1: Update Content in CMS**
+### Translation Key Counts
 
-1. **Access your CMS Admin Panel**
-   - Navigate to the "Translations" management section (unified translations menu)
-   - Or use the CMS API directly: `PUT/POST /mobile/translations/{locale}`
-
-2. **Find the Translation to Update**
-   - Locate the translation with key: `select_avatar_button`
-   - Current value: "Select avatar"
-   - New value: "Choose your avatar"
-
-3. **Update the Label**
-   - Change the `label` field for the `select_avatar_button` key
-   - Ensure `live: true` is set (so it's active)
-   - Ensure `lang: "{locale}"` matches the target locale (e.g., "en", "fr", "es")
-
-4. **Save/Publish the Changes**
-   - Save the changes in CMS
-   - Verify the API endpoint returns the updated value:
-     ```bash
-     curl https://cms.okyapp.info/mobile/translations/en
-     ```
-
-**Step 2: Verify CMS Update (Optional but Recommended)**
-
-1. **Test the API Endpoint**
-   ```bash
-   # Test English
-   curl https://cms.okyapp.info/mobile/translations/en | grep select_avatar_button
-   
-   # Test other locales if needed
-   curl https://cms.okyapp.info/mobile/translations/fr | grep select_avatar_button
-   ```
-
-2. **Verify Response Format**
-   - Should return JSON array with objects containing:
-     - `key`: "select_avatar_button"
-     - `label`: "Choose your avatar" (your new value)
-     - `lang`: "en"
-     - `live`: true
-
-**Step 3: Update Static Content Files (For Offline Fallback)**
-
-**Important**: This step does NOT update the database - the database is already updated in Step 1 via CMS. This step updates the static TypeScript files that serve as offline fallback when CMS is unavailable.
-
-1. **Navigate to Project Root**
-   ```bash
-   cd /path/to/periodtracker
-   ```
-
-2. **Compile Core Package** (if needed)
-   ```bash
-   yarn workspace @oky/core compile
-   ```
-
-3. **Update fetchContent.ts**
-   - Edit `fetchContent.ts` if you need to change locale or CMS URL
-   - Default: `locale = 'en'`, `cms_url = 'https://cms.okyapp.info/'`
-
-4. **Run the Fetch Script**
-   ```bash
-   # Use the yarn script (recommended)
-   yarn fetch-content
-   
-   # Or manually with ts-node
-   npx ts-node --transpile-only fetchContent.ts
-   ```
-
-5. **Verify Generated File**
-   - Check `app/src/resources/translations/content/en.ts`
-   - Verify `translations` contains your updated value:
-     ```typescript
-     translations: {
-       "select_avatar_button": "Choose your avatar",
-       // ... other labels
-     }
-     ```
-
-6. **Repeat for Other Locales** (if needed)
-   - Change `locale` in `fetchContent.ts` to `'fr'`, `'es'`, `'pt'`, `'ru'`, etc.
-   - Run the script again for each locale
-
-7. **Commit and Push Changes** (Optional - for version control)
-   
-   **Note**: This step is only for:
-   - Version controlling the static fallback files
-   - Including updated translations in future app builds
-   - Tracking changes in git history
-   
-   ```bash
-   git add app/src/resources/translations/content/
-   git commit -m "Update static translation fallback files from CMS"
-   git push
-   ```
-   
-   **When to skip**: If you only need to update CMS and don't care about version controlling the static files, you can skip this step. Users will still get the updates from CMS when they open the app.
-
-**Step 4: How Users Get the Update**
-
-**No app update required!** The app automatically fetches new content:
-
-1. **On App Launch**
-   - When the app starts, it fetches translations directly from CMS database (`/mobile/translations/{locale}`)
-   - Currently, `fetchInterval = 0`, so it fetches **every time** the app launches
-   - Content is fetched from CMS database (updated in Step 1) and stored in Redux state
-   - **The git commit (Step 7) is NOT needed for users to get updates** - they get it directly from CMS
-
-2. **On Locale Change**
-   - If user changes language, content is immediately fetched for the new locale
-
-3. **Fallback Behavior**
-   - If CMS fetch fails (network error, API down), app uses static content from `app/src/resources/translations/content/{locale}.ts`
-   - This is why Step 3 (updating static files) is important
-
-**Step 5: Testing the Update**
-
-1. **Test on Development Build**
-   - Clear app data/cache
-   - Launch app
-   - Verify the new translation appears
-
-2. **Test on Production**
-   - Wait for users to open the app (they'll automatically fetch new content)
-   - Or force a content refresh by clearing app data
-
-3. **Verify Different Locales**
-   - Test with different language settings
-   - Ensure all locales have the updated translation
-
-### Complete Example: Updating Multiple Translations
-
-**Scenario**: Update 3 translations for English locale
-
-1. **Update in CMS**:
-   - `select_avatar_button`: "Choose your avatar" (was "Select avatar")
-   - `previous_page_button`: "Go back" (was "Previous page")
-   - `save_and_continue_button`: "Save & Continue" (was "Save and continue")
-
-2. **Run fetchContent.ts**:
-   ```bash
-   # Set locale = 'en' in fetchContent.ts
-   yarn fetch-content
-   ```
-
-3. **Verify in generated file**:
-   ```typescript
-   // app/src/resources/translations/content/en.ts
-   translations: {
-     "select_avatar_button": "Choose your avatar",
-     "previous_page_button": "Go back",
-     "save_and_continue_button": "Save & Continue",
-     // ... other labels
-   }
-   ```
-
-4. **Commit and push** (Optional - for version control only):
-   ```bash
-   git add app/src/resources/translations/content/en.ts
-   git commit -m "Update static translation fallback files: Choose your avatar, Go back, Save & Continue"
-   git push
-   ```
-   
-   **Important**: This git commit does NOT update the database. The database was already updated in Step 1 via CMS.
-
-5. **Users automatically get the update** on next app launch!
-
-### Troubleshooting
-
-**Issue: Changes not appearing in app**
-
-**Possible Causes**:
-1. **CMS not updated**: Verify the API endpoint returns the new value
-2. **App cache**: Clear app data/cache and relaunch
-3. **Network issue**: App might be using stale content (offline fallback)
-4. **Wrong locale**: Ensure you updated the correct locale in CMS
-
-**Solutions**:
-- Check CMS API response directly
-- Clear app data and relaunch
-- Verify `live: true` is set in CMS
-- Check network connectivity
-
-**Issue: App shows old translation**
-
-**Possible Causes**:
-1. **Static content not updated**: The offline fallback file still has old value
-2. **CMS fetch failed**: App is using stale content from previous fetch
-
-**Solutions**:
-- Update static content files (Step 3)
-- Ensure CMS API is accessible
-- Check app logs for fetch errors
-
-**Issue: Some users see new translation, others don't**
-
-**Possible Causes**:
-1. **Gradual rollout**: Users who haven't opened the app yet still have old content cached
-2. **Network issues**: Some users' devices can't reach CMS
-
-**Solutions**:
-- This is normal - users will get the update when they next open the app
-- Ensure static content files are updated for offline fallback
-
-### Best Practices
-
-1. **Always Update Static Files**: Even though CMS is the source of truth, update static files for offline fallback
-2. **Test Before Publishing**: Test CMS changes in a staging environment first
-3. **Version Control**: Commit static content file updates to track changes
-4. **Document Changes**: Keep a changelog of CMS translation updates
-5. **Monitor API**: Set up monitoring for CMS API endpoints to catch issues early
-6. **Batch Updates**: If updating multiple labels, do them in one CMS update session
-
-### Summary
-
-**For CMS-Managed Translations (Unified Translations, Avatar Messages)**:
-
-✅ **No app update required**  
-✅ **Update in CMS database** (Step 1) → **Users get it automatically on next app launch**  
-✅ **Works immediately** - users fetch directly from CMS database when they open the app  
-✅ **Optional**: Update static files (Step 3) for offline fallback  
-✅ **Optional**: Git commit (Step 7) for version control (does NOT update database)
-
-**Important Clarifications**:
-- **Step 1 (CMS Update)**: This is what actually updates the database and what users get
-- **Step 3 (Static Files)**: Only for offline fallback - not required for users to get updates
-- **Step 7 (Git Commit)**: Only for version control - does NOT update database or affect users
-
-**For New Translation Keys** (adding new keys, not updating existing ones):
-
-❌ **Requires app update** (new Play Store release)  
-❌ **Must add** new keys to `app/src/resources/translations/app/{locale}.ts`  
-❌ **Must add** to SQL migration or CMS manually  
-❌ **Users must update** the app from Play Store
-
-**Note**: Once a translation key exists in the system, it can be updated from CMS without an app release. Only adding completely new translation keys requires an app update.
-
----
-
-### Running the SQL Migration
-
-**File**: `sql/1760000000000-create-translations-table.sql`
-
-**How to Run**:
-
-**Option 1: Using Adminer (Recommended for Development)**
-1. Access your Adminer interface (typically at `http://localhost:8080` or your CMS admin URL)
-2. Select your database (`periodtracker`)
-3. Navigate to the SQL command section
-4. Copy and paste the contents of `sql/1760000000000-create-translations-table.sql`
-5. Execute the SQL script
-6. Verify the `translations` table was created and populated (should have 580 rows: 116 keys × 5 languages)
-
-**Option 2: Using psql (Command Line)**
-```bash
-# Connect to your PostgreSQL database
-psql -h localhost -U periodtracker -d periodtracker
-
-# Run the migration file
-\i sql/1760000000000-create-translations-table.sql
-```
-
-**Option 3: Using Docker (if running in containers)**
-```bash
-# Copy SQL file into container and execute
-docker cp sql/1760000000000-create-translations-table.sql periodtracker-postgres-1:/tmp/
-docker exec -i periodtracker-postgres-1 psql -U periodtracker -d periodtracker < /tmp/1760000000000-create-translations-table.sql
-```
-
-**Important Notes:**
-- The migration enables the `uuid-ossp` extension (required for PostgreSQL 10)
-- For PostgreSQL 13+, you can modify the file to use `gen_random_uuid()` instead of `uuid_generate_v4()`
-- The migration is idempotent (safe to run multiple times - uses `ON CONFLICT DO NOTHING`)
-- After running, verify the table exists: `SELECT COUNT(*) FROM periodtracker.translations;` (should return 580)
-
-### Important Notes
-
-- **Unified System**: Both accessibility labels (for screen readers) and regular UI text translations (clothing items, devices, colors, tutorial texts) are managed from the same CMS table
-- **Language Filtering**: Each language maintains its own set of translations in the CMS
-- **Fallback Priority**: CMS translations → Static content → App translations → Translation key (as-is)
-- **Initial Population**: The SQL migration `1760000000000-create-translations-table.sql` creates the table and populates it with all 116 translation keys from app translation files (116 keys × 5 languages = 580 entries):
+The avatar feature uses approximately 116 translation keys:
   - 34 accessibility label keys
   - 11 tutorial text keys
   - 17 clothing item keys
@@ -409,18 +83,6 @@ docker exec -i periodtracker-postgres-1 psql -U periodtracker -d periodtracker <
   - 12 skin color keys
   - 11 hair color keys
   - 6 eye color keys
-
-## Table of Contents
-1. [CMS Management](#cms-management)
-2. [Step-by-Step Guide: Updating CMS-Managed Translations](#step-by-step-guide-updating-cms-managed-translations)
-3. [Avatar Selection Screen](#avatar-selection-screen)
-4. [Theme Selection Screen](#theme-selection-screen)
-5. [Custom Avatar Page (Customizer)](#custom-avatar-page-customizer)
-6. [Tutorial Modal](#tutorial-modal)
-7. [Naming Modal](#naming-modal)
-8. [Celebration Modal (Friend Unlock)](#celebration-modal-friend-unlock)
-9. [Profile Page](#profile-page)
-10. [Translation Keys Reference](#translation-keys-reference)
 
 ---
 
@@ -862,11 +524,11 @@ docker exec -i periodtracker-postgres-1 psql -U periodtracker -d periodtracker <
 - UI text translations are used via `useTranslate()` hook (which prioritizes CMS translations)
 - Both hooks fall back to app translations if not found in CMS
 
-**Note**: All 116 translation keys are now managed from CMS and can be updated without app releases.
+**Note**: All 116 translation keys are managed in static app translation files.
 
 ---
 
-### Translation Keys (116 keys - CMS-managed)
+### Translation Keys (116 keys)
 
 #### Accessibility Label Keys (34 keys)
 
@@ -918,13 +580,13 @@ docker exec -i periodtracker-postgres-1 psql -U periodtracker -d periodtracker <
 | `info_button` | "information button" |
 | `accessibility_prompt` | "Double tap to activate" |
 
-**Total: 34 accessibility label keys** (all managed in CMS, with fallback in app translation files)
+**Total: 34 accessibility label keys** (managed in static app translation files)
 
 ---
 
 #### UI Text Translation Keys (82 keys)
 
-These translations are used for regular UI text (clothing items, devices, colors, tutorial texts) and are also managed from CMS in the unified translations system.
+These translations are used for regular UI text (clothing items, devices, colors, tutorial texts) and are managed in static app translation files.
 
 #### Clothing Item Translations
 | `customizer_clothing_dress1` | "Dress 1" |
@@ -1058,16 +720,15 @@ The `accessibility_prompt` translation key should be defined in all language fil
    - Color names (for skin, hair, and eye colors - now using descriptive names instead of numbers)
    - Item names (for avatars, themes, options)
 
-5. **Translation Coverage**: All accessibility labels are managed from CMS and available for all supported locales:
+5. **Translation Coverage**: All accessibility labels are available for all supported locales:
    - English (en)
    - French (fr)
    - Spanish (es)
    - Portuguese (pt)
    - Russian (ru)
-   - And other locales as configured in CMS
-   - **Fallback**: Static translations in `app/src/resources/translations/app/{locale}.ts` are used if translations are not found in CMS
-   - **Initial Data**: All translations are pre-populated in the database via SQL migration `1760000000000-create-translations-table.sql`
-   - **Total Translations**: 116 unique translation keys × 5 languages = 580 translation entries
+   - And other locales as configured
+   - **Location**: Static translations in `app/src/resources/translations/app/{locale}.ts`
+   - **Total Translations**: 116 unique translation keys across all supported languages
 
 ---
 

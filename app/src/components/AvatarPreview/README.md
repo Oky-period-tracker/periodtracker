@@ -18,7 +18,7 @@ import { AvatarPreview } from '../../components/AvatarPreview'
   eyeColor="#000000"
   smile="smile"
   clothing="blazer"
-  devices="glasses"
+  devices={["glasses"]}
   width={150}
   height={200}
 />
@@ -65,7 +65,7 @@ const MyComponent = () => {
 | `eyeColor` | `string` | `'#000000'` | Eye color (hex) |
 | `smile` | `string \| null` | `'smile'` | Smile asset identifier |
 | `clothing` | `string \| null` | `null` | Clothing item name |
-| `devices` | `string \| null` | `null` | Device/accessory name |
+| `devices` | `string[] \| null` | `null` | Device/accessory names (array) |
 | `width` | `number` | `150` | Avatar width |
 | `height` | `number` | `200` | Avatar height |
 | `style` | `ViewStyle` | `undefined` | Additional container styles |

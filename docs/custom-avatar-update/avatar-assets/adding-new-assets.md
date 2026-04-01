@@ -60,7 +60,7 @@ app/src/resources/assets/images/avatars/friend/
 - SVGs should be designed to layer on top of the body
 - **After creating SVG files, run the regeneration script:**
   ```bash
-  cd app && node scripts/regenerate-clothing-correct.js
+  cd app && node scripts/generate-clothing.js
   ```
   This will automatically convert your SVG files to React components with animation support in `ClothingComponents.tsx`
 
@@ -134,7 +134,7 @@ customizer_clothing_your-item-name: 'Your Item Display Name',
   - `your-device-name-large.svg`
 - **After creating SVG files, run the regeneration script:**
   ```bash
-  cd app && node scripts/regenerate-devices-correct.js
+  cd app && node scripts/generate-devices.js
   ```
   This will automatically convert your SVG files to React components with animation support in `DevicesComponents.tsx`
 
@@ -221,7 +221,7 @@ customizer_device_your-device-name: 'Your Device Display Name',
 
 **Selection UI (PNG):**
 - Create PNG file: `edit/hair/XX.png` (where XX is a 2-digit number)
-- Use the next available number (currently 00-18, so next would be 19)
+- Use the next available number (currently 00-18, so next would be 19; there are 19 styles total)
 - Include @2x and @3x variants
 
 **Preview (SVG):**
@@ -229,7 +229,7 @@ customizer_device_your-device-name: 'Your Device Display Name',
 - **Note**: '00' is reserved for bald (no hair SVG needed)
 - **After creating SVG files, run the regeneration script:**
   ```bash
-  cd app && node scripts/regenerate-hair-correct.js
+  cd app && node scripts/generate-hair.js
   ```
   This will automatically convert your SVG files to React components with animation support in `HairComponents.tsx`
 
@@ -283,7 +283,7 @@ customizer_hair_19: 'Hair Style 19',
 - Create SVG file: `display/eyes/XX.svg`
 - **After creating SVG files, run the regeneration script:**
   ```bash
-  cd app && node scripts/regenerate-eyes-correct.js
+  cd app && node scripts/generate-eyes.js
   ```
   This will automatically convert your SVG files to React components with animation support in `EyesComponents.tsx`
 
@@ -427,11 +427,11 @@ The body preview system uses JSX components with color props, not SVG files.
 
 After adding new SVG files, you must run the appropriate regeneration script to convert them to React components:
 
-- **Clothing**: `node scripts/regenerate-clothing-correct.js`
-- **Devices**: `node scripts/regenerate-devices-correct.js`
-- **Hair**: `node scripts/regenerate-hair-correct.js`
-- **Eyes**: `node scripts/regenerate-eyes-correct.js`
-- **Smile**: `node scripts/regenerate-smile-correct.js`
+- **Clothing**: `cd app && node scripts/generate-clothing.js`
+- **Devices**: `cd app && node scripts/generate-devices.js`
+- **Hair**: `cd app && node scripts/generate-hair.js`
+- **Eyes**: `cd app && node scripts/generate-eyes.js`
+- **Smile**: `cd app && node scripts/generate-smile.js`
 
 These scripts:
 1. Read all SVG files from the respective directories

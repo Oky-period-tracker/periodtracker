@@ -206,19 +206,19 @@ The regeneration scripts automatically:
 
 ```bash
 # Clothing
-cd app && node scripts/regenerate-clothing-correct.js
+cd app && node scripts/generate-clothing.js
 
 # Devices
-cd app && node scripts/regenerate-devices-correct.js
+cd app && node scripts/generate-devices.js
 
 # Hair
-cd app && node scripts/regenerate-hair-correct.js
+cd app && node scripts/generate-hair.js
 
 # Eyes
-cd app && node scripts/regenerate-eyes-correct.js
+cd app && node scripts/generate-eyes.js
 
 # Smile
-cd app && node scripts/regenerate-smile-correct.js
+cd app && node scripts/generate-smile.js
 ```
 
 ---
@@ -536,14 +536,14 @@ The complete animation sequence (from `AnimatedAvatarPreview.tsx`):
    <g class="leftHand"><!-- left hand --></g>
    <g class="rightHand"><!-- right hand --></g>
    ```
-3. Run: `node scripts/regenerate-clothing-correct.js`
+3. Run: `cd app && node scripts/generate-clothing.js`
 4. Component is automatically generated with animation support
 
 ### Example 2: Adding Animation to New Device
 
 1. Create SVG file: `sunglasses.svg`
 2. No class attributes needed (devices typically don't animate)
-3. Run: `node scripts/regenerate-devices-correct.js`
+3. Run: `cd app && node scripts/generate-devices.js`
 4. Component is generated with `jumpY` support only
 
 ### Example 3: Manual Animation Setup (Advanced)

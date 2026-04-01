@@ -15,6 +15,12 @@ Welcome to the Custom Avatar System documentation. This index provides links to 
 
 ### Related Documentation
 
+1. **[Feature Toggle](./feature-toggle.md)**
+   - How to enable/disable the custom avatar feature
+   - App environment variable (`EXPO_PUBLIC_USE_AVATAR_CUSTOMIZATION`)
+   - API environment variable (`USE_AVATAR_CUSTOMIZATION`)
+   - What changes when the feature is disabled
+
 2. **[Translations](./translations/translations.md)**
    - Complete guide for avatar translations
    - Step-by-step update instructions
@@ -601,6 +607,7 @@ The custom avatar system provides a gamified unlock mechanism that encourages us
 
 For more information on specific topics, see:
 
+- **[Feature Toggle](./feature-toggle.md)** - How to enable/disable the custom avatar feature
 - **[Translations](./translations/translations.md)** - Complete translations guide with update instructions and keys reference
 - **[Adding New Avatar Assets](./avatar-assets/adding-new-assets.md)** - Guide for adding new avatar components
 - **[Avatar Animation System](./avatar-assets/avatar-animations.md)** - How animations work and how to add animation support

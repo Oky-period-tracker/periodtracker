@@ -1,20 +1,7 @@
 -- Custom Avatar Update Migration
 -- This migration adds support for custom avatars and cycle counting
--- It adds two columns to the oky_user table:
---   1. cyclesNumber: integer counter for tracking user cycles
---   2. avatar: JSON field for storing custom avatar configuration
-
--- ============================================
--- Add cyclesNumber column to oky_user table
--- ============================================
--- Add cyclesNumber column with default value of 0
-ALTER TABLE "periodtracker"."oky_user" 
-ADD COLUMN IF NOT EXISTS "cyclesNumber" integer DEFAULT 0;
-
--- Update existing users to set cyclesNumber to 0 (for users where it might be NULL)
-UPDATE "periodtracker"."oky_user" 
-SET "cyclesNumber" = 0 
-WHERE "cyclesNumber" IS NULL;
+-- It adds one column to the oky_user table:
+--   avatar: JSON field for storing custom avatar configuration
 
 -- ============================================
 -- Add avatar JSON field to oky_user table

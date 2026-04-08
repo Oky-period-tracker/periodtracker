@@ -37,8 +37,8 @@ export class PredictionState {
   public history: History
   public futurePredictionStatus: boolean
   public actualCurrentStartDate: any
- // ----- for verified dates
- public userVerifiedDates: UserVerified[]
+  // ----- for verified dates
+  public userVerifiedDates: UserVerified[]
   private constructor() {}
 
   public static fromData({

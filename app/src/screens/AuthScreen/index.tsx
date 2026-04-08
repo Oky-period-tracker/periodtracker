@@ -7,7 +7,8 @@ import { SignUp } from './components/SignUp'
 import { AuthToggle } from './components/AuthToggle'
 import { AuthModeProvider, useAuthMode } from './AuthModeContext'
 import { ScreenProps } from '../../navigation/RootNavigator'
-import { AvatarAndThemeSelect } from '../AvatarAndThemeScreen'
+import { AvatarSelect } from '../AvatarScreen'
+import { ThemeSelect } from '../ThemeScreen'
 import { Welcome } from './components/Welcome'
 import { Journey } from './components/Journey'
 import { AuthLinks } from './components/AuthLinks'
@@ -35,9 +36,21 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
   const { authMode, setAuthMode } = useAuthMode()
   const goToInfo = () => navigation.navigate('Info')
 
-  if (authMode === 'avatar_and_theme') {
+  const hideHeader = authMode === 'avatar_selection' || authMode === 'theme_selection'
+  React.useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: !hideHeader })
+  }, [navigation, hideHeader])
+
+  if (authMode === 'avatar_selection') {
+    const onConfirm = () => setAuthMode('theme_selection')
+    const onGoBack = () => setAuthMode('sign_up')
+    return <AvatarSelect onConfirm={onConfirm} onGoBack={onGoBack} isOnboarding={true} />
+  }
+
+  if (authMode === 'theme_selection') {
     const onConfirm = () => setAuthMode('onboard_journey')
-    return <AvatarAndThemeSelect onConfirm={onConfirm} />
+    const onGoBack = () => setAuthMode('avatar_selection')
+    return <ThemeSelect onConfirm={onConfirm} onGoBack={onGoBack} isOnboarding={true} />
   }
 
   if (authMode === 'welcome') {

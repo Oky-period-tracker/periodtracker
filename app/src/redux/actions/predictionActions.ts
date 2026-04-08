@@ -64,9 +64,5 @@ export function userUpdateFuturePrediction(
   })
 }
 
-
-
-/// for user verified period dates 
-export function updateUserConfirmedDates() {
-  
-}
+/// for user verified period dates
+export function updateUserConfirmedDates() {}

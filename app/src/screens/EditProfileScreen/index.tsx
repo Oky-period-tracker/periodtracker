@@ -72,7 +72,7 @@ function reducer(state: EditProfileState, action: Action): EditProfileState {
 
     case 'year': {
       const year = action.value as number
-      
+
       if (_.isNil(state.month) || isNaN(state.month)) {
         return {
           ...state,

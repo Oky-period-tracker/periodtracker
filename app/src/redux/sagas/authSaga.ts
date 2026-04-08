@@ -56,7 +56,10 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
  * @param appToken Authentication token
  * @param pendingData The data queued for upload.
  */
-function* resendPendingSyncDataToServer(appToken: string, pendingData: NonNullable<Awaited<ReturnType<typeof loadPendingSyncData>>>) {
+function* resendPendingSyncDataToServer(
+  appToken: string,
+  pendingData: NonNullable<Awaited<ReturnType<typeof loadPendingSyncData>>>,
+) {
   try {
     yield httpClient.replaceStore({
       storeVersion: pendingData.replaceStore.storeVersion,
@@ -92,8 +95,7 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
     })
 
     // Check for pending data saved before a 431-forced logout
-    const pendingData: Awaited<ReturnType<typeof loadPendingSyncData>> =
-      yield loadPendingSyncData()
+    const pendingData: Awaited<ReturnType<typeof loadPendingSyncData>> = yield loadPendingSyncData()
     const hasPendingData = pendingData && pendingData.userId === user.id
 
     // If pending data exists for this user, use its edit-info (more recent than server)
@@ -236,7 +238,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     if (user) {
       yield put(actions.logout())
     }
-  } catch (err) {    
+  } catch (err) {
     Alert.alert('error', 'delete_account_fail')
   }
 }
@@ -286,6 +288,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield put(actions.updateFuturePrediction(true, null))
   yield put(actions.setTutorialOneActive(true))
   yield put(actions.setTutorialTwoActive(true))
+  yield put(actions.setCustomAvatarTutorialActive(true))
 
   // yield delay(5000); // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
   // yield call(navigateAndReset, "MainStack", null);

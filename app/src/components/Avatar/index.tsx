@@ -88,13 +88,13 @@ const getMaxWidth = (screenWidth: number): number | undefined => {
 }
 
 const getMarginTopOffset = (screenWidth: number): number => {
-  if (screenWidth <= 360) return -25
-  if (screenWidth <= 392) return -22
-  if (screenWidth <= 411) return -20
-  if (screenWidth <= 480) return -15
-  if (screenWidth <= 600) return -10
-  if (screenWidth <= 720) return -5
-  return 0
+  if (screenWidth <= 360) return -5
+  if (screenWidth <= 392) return -2
+  if (screenWidth <= 411) return -5
+  if (screenWidth <= 480) return 0
+  if (screenWidth <= 600) return 5
+  if (screenWidth <= 720) return 8
+  return 10
 }
 
 const getAvatarBottomOffset = (screenWidth: number): number => {

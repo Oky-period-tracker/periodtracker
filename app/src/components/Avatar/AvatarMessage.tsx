@@ -9,11 +9,11 @@ import { useResponsive } from '../../contexts/ResponsiveContext'
 
 // Dimensions and styling for the speech bubble that appears above the avatar
 const MESSAGE_BUBBLE_CONFIG = {
-  width: 160,
-  minHeight: 60,
-  padding: 12,
+  width: 135,
+  minHeight: 50,
+  padding: 10,
   borderRadius: 20,
-  zIndex: 99999, // Ensures the bubble renders above all other UI elements
+  zIndex: 10,
 } as const
 
 // Dimensions for the small triangular pointer at the bottom of the bubble,
@@ -30,25 +30,25 @@ const TRIANGLE_CONFIG = {
 // adjusted per screen-width breakpoint so the bubble stays visually
 // aligned with the avatar across different device sizes
 const getMessageTopPosition = (screenWidth: number): number => {
-  if (screenWidth <= 360) return -10
-  if (screenWidth <= 392) return -12
-  if (screenWidth <= 411) return -12
-  if (screenWidth <= 480) return 20
-  if (screenWidth <= 600) return -18
-  if (screenWidth <= 720) return -20
-  return -22
+  if (screenWidth <= 360) return -12
+  if (screenWidth <= 392) return -14
+  if (screenWidth <= 411) return 2
+  if (screenWidth <= 480) return 25
+  if (screenWidth <= 600) return 0
+  if (screenWidth <= 720) return -2
+  return -5
 }
 
 // Returns the horizontal offset of the bubble, increasing with screen
 // width so the bubble stays positioned to the right of the avatar
 const getMessageLeftPosition = (screenWidth: number): number => {
-  if (screenWidth <= 360) return 50
-  if (screenWidth <= 392) return 60
-  if (screenWidth <= 411) return 70
-  if (screenWidth <= 480) return 90
-  if (screenWidth <= 600) return 100
-  if (screenWidth <= 720) return 110
-  return 120
+  if (screenWidth <= 360) return 42
+  if (screenWidth <= 392) return 50
+  if (screenWidth <= 411) return 82
+  if (screenWidth <= 480) return 100
+  if (screenWidth <= 600) return 112
+  if (screenWidth <= 720) return 122
+  return 132
 }
 
 /**
@@ -75,16 +75,15 @@ export const AvatarMessage = ({ style }: { style?: StyleProp<ViewStyle> }) => {
 
   return (
     <View
-      pointerEvents="none" // Allows taps to pass through the bubble to elements beneath
+      pointerEvents="none"
       style={[
         styles.container,
-        { backgroundColor, top: topPosition, left: leftPosition },
+        { backgroundColor, top: topPosition, left: leftPosition, width: width <= 392 ? 135 : MESSAGE_BUBBLE_CONFIG.width, padding: width <= 392 ? 6 : MESSAGE_BUBBLE_CONFIG.padding },
         globalStyles.shadow,
         style,
       ]}
     >
-      {/* enableTranslate={false}: the message is already translated upstream */}
-      <Text enableTranslate={false} accessibilityLabel={message}>
+      <Text enableTranslate={false} accessibilityLabel={message} style={styles.messageText} numberOfLines={3}>
         {message}
       </Text>
       {/* Triangle pointer — colored to match the bubble background */}
@@ -101,6 +100,9 @@ const styles = StyleSheet.create({
     minHeight: MESSAGE_BUBBLE_CONFIG.minHeight,
     padding: MESSAGE_BUBBLE_CONFIG.padding,
     zIndex: MESSAGE_BUBBLE_CONFIG.zIndex,
+  },
+  messageText: {
+    fontSize: 12,
   },
   // CSS border trick to draw a downward-pointing triangle
   triangle: {

@@ -103,13 +103,13 @@ export const createAvatarScreenStyles = (
       }),
       marginVertical: (() => {
         if (screenWidth <= 360) {
-          return scaleVertical(10)
+          return scaleVertical(16)
         } else if (screenWidth > 360 && screenWidth <= 392) {
-          return scaleVertical(10)
+          return scaleVertical(16)
         } else if (screenWidth > 392 && screenWidth <= 411) {
-          return scaleVertical(10)
+          return scaleVertical(16)
         } else if (screenWidth > 411 && screenWidth <= 480) {
-          return scaleVertical(10)
+          return scaleVertical(16)
         } else if (screenWidth > 480 && screenWidth <= 600) {
           return Math.max(24, avatarConfig.avatarMarginVertical * 1.5)
         } else if (screenWidth > 600 && screenWidth <= 720) {
@@ -261,28 +261,15 @@ export const createAvatarScreenStyles = (
     },
     name: {
       position: 'absolute',
-      top:
-        screenWidth <= 360
-          ? -5
-          : screenWidth > 360 && screenWidth <= 392
-          ? 8 // Pushed to bottom more for 392dp
-          : screenWidth > 392 && screenWidth <= 411
-          ? 2
-          : screenWidth > 411 && screenWidth <= 480
-          ? -7
-          : screenWidth > 480 && screenWidth <= 600
-          ? -7
-          : screenWidth > 600 && screenWidth <= 720
-          ? -8
-          : -9,
+      top: -4,
       left: 0,
       width: '100%',
       fontFamily: 'Roboto',
       fontWeight: '700',
       fontStyle: 'normal',
       textAlign: 'center',
-      fontSize: 14,
-      lineHeight: 20,
+      fontSize: 12,
+      lineHeight: 16,
       letterSpacing: 0,
       zIndex: 20,
     },

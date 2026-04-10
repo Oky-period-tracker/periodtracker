@@ -37,7 +37,7 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
   }
 
   return (
-    <Pressable onPress={Keyboard.dismiss} style={styles.wrapper}>
+    <Pressable onPress={Keyboard.dismiss} accessible={false} style={styles.wrapper}>
       <SafeAreaView style={styles.container}>
         {showBackButton ? (
           <Button onPress={onBackPress} style={styles.button} accessibilityLabel={label}>

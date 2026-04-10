@@ -35,7 +35,7 @@ const DayScreen: ScreenComponent<'Day'> = (props) => {
   }
 
   return (
-    <Pressable style={styles.flex} onPress={Keyboard.dismiss}>
+    <Pressable style={styles.flex} onPress={Keyboard.dismiss} accessible={false}>
       <FullScreen>
         {hasSurvey ? (
           <SurveyProvider survey={newSurvey} onFinish={onFinishSurvey}>

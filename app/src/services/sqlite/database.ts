@@ -13,7 +13,6 @@ interface ExecuteSqlResult {
 
 let db: SQLiteDatabase | null = null
 
-// Helper to use the proper v15 API with prepared statements
 async function execAsync(
   database: SQLiteDatabase,
   sql: string,
@@ -23,15 +22,12 @@ async function execAsync(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const dbAny = database as any
 
-    // Verify database object is valid
     if (!dbAny || typeof dbAny !== 'object') {
       throw new Error(`[SQLite] Invalid database object: ${typeof dbAny}`)
     }
 
-    // Determine if this is a SELECT statement
     const isSelect = sql.trim().toUpperCase().startsWith('SELECT')
     
-    // If no parameters and it's DDL (CREATE, ALTER, DROP), use execAsync directly
     if (!isSelect && params.length === 0 && typeof dbAny.execAsync === 'function') {
       await dbAny.execAsync(sql)
       return {

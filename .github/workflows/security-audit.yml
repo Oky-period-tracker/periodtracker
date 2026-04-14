@@ -32,4 +32,3 @@ jobs:
           echo "CI/CD test workflow running successfully"
           node --version
           python --version
-``

@@ -345,6 +345,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     position: 'relative',
     zIndex: 3,
+    overflow: 'visible',
   },
   cloudsWrapper: {
     position: 'absolute',

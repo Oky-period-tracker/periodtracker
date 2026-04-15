@@ -60,4 +60,21 @@ jobs:
           name: semgrep-report
           path: semgrep-report.json
 
+      - name: npm audit (API)
+        working-directory: packages/api
+        run: |
+          npm audit --audit-level=high --json > api-npm-audit.json || true 
+
+      - name: npm audit (CMS)
+        working-directory: packages/cms
+        run: |
+          npm audit --audit-level=high --json > cms-npm-audit.json || true
+
+      - name: Upload npm audit reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: npm-audit-reports
+          path: |
+            api-npm-audit.json
+            cms-npm-audit.json          
           

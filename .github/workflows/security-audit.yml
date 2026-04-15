@@ -90,3 +90,17 @@ jobs:
         with:
           name: gitleaks-report
           path: gitleaks-report.json
+
+      - name: Run TruffleHog (Full Git History)
+        uses: trufflesecurity/trufflehog@v3
+        with:
+          scan: git
+          path: .
+          format: json
+          output: trufflehog-report.json
+
+      - name: Upload TruffleHog report
+        uses: actions/upload-artifact@v4
+        with:
+          name: trufflehog-report
+          path: trufflehog-report.json

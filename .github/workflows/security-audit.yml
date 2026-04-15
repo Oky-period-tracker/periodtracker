@@ -92,7 +92,7 @@ jobs:
           path: gitleaks-report.json
 
       - name: Run TruffleHog (Full Git History)
-        uses: trufflesecurity/trufflehog@v3
+        uses: trufflesecurity/trufflehog@main
         with:
           scan: git
           path: .

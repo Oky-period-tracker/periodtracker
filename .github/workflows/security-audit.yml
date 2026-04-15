@@ -99,6 +99,13 @@ jobs:
           format: json
           output: trufflehog-report.json
 
+
+      - name: Ensure TruffleHog report exists
+        run: |
+          if [ ! -f trufflehog-report.json ]; then
+            echo "{}" > trufflehog-report.json
+          fi
+
       - name: Upload TruffleHog report
         uses: actions/upload-artifact@v4
         with:

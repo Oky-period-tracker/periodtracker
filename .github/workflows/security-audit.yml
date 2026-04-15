@@ -46,6 +46,9 @@ jobs:
       - name: Install Semgrep
         run: pip install semgrep
 
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
       - name: Run Semgrep (SAST)
         run: |
           semgrep --config=auto \
@@ -54,15 +57,17 @@ jobs:
             app/src \
             --json > semgrep-report.json || true
 
-      - name: Upload Semgrep report
-        uses: actions/upload-artifact@v4
-        with:
-          name: semgrep-report
-          path: semgrep-report.json
-
       - name: Convert Semgrep report to CSV
         run: |
-          # Detailed findings (null-safe)
+          # Ensure JSON exists
+          if [ ! -s semgrep-report.json ]; then
+            echo "No Semgrep results, creating empty reports"
+            echo "severity,rule,file,line,message" > semgrep-findings.csv
+            echo "severity,count,status" > semgrep-summary.csv
+            exit 0
+          fi
+
+          # Detailed findings
           jq -r '
             .results[] |
             [
@@ -70,11 +75,11 @@ jobs:
               .check_id,
               .path,
               .start.line,
-              ((.message // "") | gsub("[\n\r]"; " "))
+              ((.message // .extra.message // "") | gsub("[\n\r]"; " "))
             ] | @csv
           ' semgrep-report.json > semgrep-findings.csv
 
-          # Severity summary with status
+          # Severity summary
           jq -r '
             .results
             | group_by(.severity)
@@ -92,6 +97,15 @@ jobs:
             | [.severity, .count, .status]
             | @csv
           ' semgrep-report.json > semgrep-summary.csv
+
+      - name: Upload Semgrep reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-reports
+          path: |
+            semgrep-report.json
+            semgrep-findings.csv
+            semgrep-summary.csv
         
       - name: npm audit (API)
         working-directory: packages/api

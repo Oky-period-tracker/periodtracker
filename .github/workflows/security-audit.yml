@@ -60,6 +60,39 @@ jobs:
           name: semgrep-report
           path: semgrep-report.json
 
+      - name: Convert Semgrep report to CSV
+        run: |
+          # Detailed findings
+          jq -r '
+            .results[] |
+            [
+              (.severity // "UNKNOWN"),
+              .check_id,
+              .path,
+              .start.line,
+              (.message | gsub("[\n\r]"; " "))
+            ] | @csv
+          ' semgrep-report.json > semgrep-findings.csv
+
+          # Severity summary with status
+          jq -r '
+            .results
+            | group_by(.severity)
+            | map({
+                severity: (.[0].severity // "UNKNOWN"),
+                count: length,
+                status: (
+                  if .[0].severity == "ERROR" then "Under Review"
+                  elif .[0].severity == "WARNING" then "Planned"
+                  else "Accepted"
+                  end
+                )
+              })
+            | .[]
+            | [.severity, .count, .status]
+            | @csv
+          ' semgrep-report.json > semgrep-summary.csv
+  
       - name: npm audit (API)
         working-directory: packages/api
         run: |

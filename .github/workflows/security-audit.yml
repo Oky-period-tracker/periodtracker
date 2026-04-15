@@ -32,3 +32,14 @@ jobs:
           echo "CI/CD test workflow running successfully"
           node --version
           python --version
+
+          - name: Install dependencies (API)
+        working-directory: app/packages/api
+        run: |
+          npm ci || npm install
+
+      - name: Run ESLint (API)
+        working-directory: app/packages/api
+        run: |
+          npx eslint . --ext .js,.ts || true
+          

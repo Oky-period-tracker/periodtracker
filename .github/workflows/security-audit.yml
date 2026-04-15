@@ -33,7 +33,7 @@ jobs:
           node --version
           python --version
 
-          - name: Install dependencies (API)
+      - name: Install dependencies (API)
         working-directory: app/packages/api
         run: |
           npm ci || npm install

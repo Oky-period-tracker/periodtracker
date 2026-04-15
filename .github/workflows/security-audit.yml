@@ -42,4 +42,22 @@ jobs:
         working-directory: packages/api
         run: |
           npx eslint . --ext .js,.ts || true
+
+      - name: Install Semgrep
+        run: pip install semgrep
+
+      - name: Run Semgrep (SAST)
+        run: |
+          semgrep --config=auto \
+            packages/api \
+            packages/cms \
+            app/src \
+            --json > semgrep-report.json || true
+
+      - name: Upload Semgrep report
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-report
+          path: semgrep-report.json
+
           

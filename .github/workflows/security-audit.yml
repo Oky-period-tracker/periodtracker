@@ -62,7 +62,7 @@ jobs:
 
       - name: Convert Semgrep report to CSV
         run: |
-          # Detailed findings
+          # Detailed findings (null-safe)
           jq -r '
             .results[] |
             [
@@ -70,7 +70,7 @@ jobs:
               .check_id,
               .path,
               .start.line,
-              (.message | gsub("[\n\r]"; " "))
+              ((.message // "") | gsub("[\n\r]"; " "))
             ] | @csv
           ' semgrep-report.json > semgrep-findings.csv
 
@@ -92,7 +92,7 @@ jobs:
             | [.severity, .count, .status]
             | @csv
           ' semgrep-report.json > semgrep-summary.csv
-  
+        
       - name: npm audit (API)
         working-directory: packages/api
         run: |

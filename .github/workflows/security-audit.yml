@@ -34,7 +34,7 @@ jobs:
           python --version
 
       - name: Install dependencies (API)
-        working-directory: app/packages/api
+        working-directory: packages/api
         run: |
           npm ci || npm install
 

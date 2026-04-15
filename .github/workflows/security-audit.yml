@@ -78,17 +78,12 @@ jobs:
             api-npm-audit.json
             cms-npm-audit.json     
 
-      - name: Install Gitleaks
-        run: |
-          curl -sSL https://raw.githubusercontent.com/gitleaks/gitleaks/master/install.sh | sudo bash
-
       - name: Run Gitleaks (Full Git History)
-        run: |
-          gitleaks detect \
-            --source . \
-            --report-format json \
-            --report-path gitleaks-report.json \
-            --no-git=false || true
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          args: detect --source . --report-format json --report-path gitleaks-report.json --no-git=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Gitleaks report
         uses: actions/upload-artifact@v4

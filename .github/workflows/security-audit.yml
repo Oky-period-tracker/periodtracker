@@ -39,7 +39,7 @@ jobs:
           npm ci || npm install
 
       - name: Run ESLint (API)
-        working-directory: app/packages/api
+        working-directory: packages/api
         run: |
           npx eslint . --ext .js,.ts || true
           

@@ -59,11 +59,13 @@ jobs:
 
       - name: Convert Semgrep report to CSV
         run: |
+          # Create CSV headers
           echo "Severity,Category,Issue Title,File,Line,Description,Impact,Fix Complexity" > semgrep-findings.csv
+          echo "Severity,Count,Status" > semgrep-summary.csv
 
+          # Detailed findings
           jq -r '
             .results[] |
-            # Derive category from rule ID
             def category:
               if (.check_id | test("xss|XSS")) then "Cross-Site Scripting"
               elif (.check_id | test("prototype-pollution")) then "Prototype Pollution"
@@ -71,7 +73,6 @@ jobs:
               else "General Security"
               end;
 
-            # Derive business severity
             def severity:
               if (.check_id | test("xss|prototype-pollution")) then "High"
               elif (.check_id | test("dockerfile")) then "Medium"
@@ -88,7 +89,34 @@ jobs:
               "Potential security risk if exploitable",
               (if severity == "High" then "Medium" elif severity == "Medium" then "Low" else "Low" end)
             ] | @csv
-          ' semgrep-report.json >> semgrep-findings.csv
+          ' semgrep-report.json >> semgrep-findings.csv || true
+
+          # Severity summary
+          jq -r '
+            .results
+            | group_by(.check_id)
+            | map({
+                sev: (
+                  if (.[0].check_id | test("xss|prototype-pollution")) then "High"
+                  elif (.[0].check_id | test("dockerfile")) then "Medium"
+                  else "Low"
+                  end
+                )
+              })
+            | group_by(.sev)
+            | map({
+                severity: .[0].sev,
+                count: length,
+                status: (
+                  if .[0].sev == "High" then "Under Review"
+                  elif .[0].sev == "Medium" then "Planned"
+                  else "Accepted"
+                  end
+                )
+              })
+            | .[]
+            | [.severity, .count, .status] | @csv
+          ' semgrep-report.json >> semgrep-summary.csv || true
 
       - name: Upload Semgrep reports
         uses: actions/upload-artifact@v4

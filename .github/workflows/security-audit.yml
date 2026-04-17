@@ -59,44 +59,36 @@ jobs:
 
       - name: Convert Semgrep report to CSV
         run: |
-          # Ensure JSON exists
-          if [ ! -s semgrep-report.json ]; then
-            echo "No Semgrep results, creating empty reports"
-            echo "severity,rule,file,line,message" > semgrep-findings.csv
-            echo "severity,count,status" > semgrep-summary.csv
-            exit 0
-          fi
+          echo "Severity,Category,Issue Title,File,Line,Description,Impact,Fix Complexity" > semgrep-findings.csv
 
-          # Detailed findings
           jq -r '
             .results[] |
+            # Derive category from rule ID
+            def category:
+              if (.check_id | test("xss|XSS")) then "Cross-Site Scripting"
+              elif (.check_id | test("prototype-pollution")) then "Prototype Pollution"
+              elif (.check_id | test("dockerfile")) then "Container Security"
+              else "General Security"
+              end;
+
+            # Derive business severity
+            def severity:
+              if (.check_id | test("xss|prototype-pollution")) then "High"
+              elif (.check_id | test("dockerfile")) then "Medium"
+              else "Low"
+              end;
+
             [
-              (.severity // "UNKNOWN"),
-              .check_id,
+              severity,
+              category,
+              (.check_id | split(".")[-1]),
               .path,
               .start.line,
-              ((.message // .extra.message // "") | gsub("[\n\r]"; " "))
+              ((.message // .extra.message // "") | gsub("[\n\r]"; " ")),
+              "Potential security risk if exploitable",
+              (if severity == "High" then "Medium" elif severity == "Medium" then "Low" else "Low" end)
             ] | @csv
-          ' semgrep-report.json > semgrep-findings.csv
-
-          # Severity summary
-          jq -r '
-            .results
-            | group_by(.severity)
-            | map({
-                severity: (.[0].severity // "UNKNOWN"),
-                count: length,
-                status: (
-                  if .[0].severity == "ERROR" then "Under Review"
-                  elif .[0].severity == "WARNING" then "Planned"
-                  else "Accepted"
-                  end
-                )
-              })
-            | .[]
-            | [.severity, .count, .status]
-            | @csv
-          ' semgrep-report.json > semgrep-summary.csv
+          ' semgrep-report.json >> semgrep-findings.csv
 
       - name: Upload Semgrep reports
         uses: actions/upload-artifact@v4

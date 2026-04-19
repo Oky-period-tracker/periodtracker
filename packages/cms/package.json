@@ -45,7 +45,7 @@
   "scripts": {
     "build": "tsc && yarn run copy-static-assets",
     "rm": "shx rm -rf node_modules",
-    "clean": "shx rm -rf dist/*",
+    "clean": "shx rm -rf dist",
     "compile": "yarn run build",
     "copy-static-assets": "ts-node copyStaticAssets.ts",
     "serve": "NODE_PATH=./dist node dist/src/index.js",

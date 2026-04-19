@@ -15,8 +15,8 @@ npx expo-doctor
 How run the backend in production mode:
 
 ```bash
-docker-compose -f docker-compose.yml build --no-cache
-docker-compose -f docker-compose.yml up
+docker compose -f docker-compose.yml build --no-cache
+docker compose -f docker-compose.yml up
 ```
 
 Remove all node_modules and Pods

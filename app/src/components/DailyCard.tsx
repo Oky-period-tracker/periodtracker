@@ -201,7 +201,8 @@ const styles = StyleSheet.create({
   bottom: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-start',
   },
 })
 

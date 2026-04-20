@@ -35,4 +35,7 @@ export const env = {
     port: normalizePort(process.env.API_PORT) || 3000,
     // port: 3001,
   },
+  features: {
+    useAvatarCustomization: toBool(process.env.USE_AVATAR_CUSTOMIZATION || 'false'),
+  },
 }

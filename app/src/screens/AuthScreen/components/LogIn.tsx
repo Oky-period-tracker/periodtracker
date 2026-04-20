@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux'
 import { loginRequest } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
+import { loadPendingSyncData } from '../../../services/pendingSync'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
@@ -28,6 +29,16 @@ export const LogIn = () => {
   const [success, setSuccess] = React.useState<boolean | null>(null)
 
   const [margin, setMargin] = React.useState(0)
+
+  // Pre-fill username from pending sync data after a forced logout
+  React.useEffect(() => {
+    if (user || name) return
+    loadPendingSyncData().then((data) => {
+      if (data?.editInfo?.name) {
+        setName(data.editInfo.name)
+      }
+    })
+  }, [])
 
   const onConfirm = () => {
     if (errors.length) {

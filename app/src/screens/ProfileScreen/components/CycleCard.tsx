@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import { EmojiBadge } from '../../../components/EmojiBadge'
+import { shallowEqual } from 'react-redux'
 import { useSelector } from '../../../redux/useSelector'
 import { mostAnsweredSelector } from '../../../redux/selectors'
 import { defaultEmoji } from '../../../config/options'
@@ -27,8 +28,9 @@ export const CycleCard = ({
   const { palette, backgroundColor } = useColor()
   const { months } = useMonths()
   const translate = useTranslate()
-  const cardAnswersValues = useSelector((state) =>
-    mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
+  const cardAnswersValues = useSelector(
+    (state) => mostAnsweredSelector(state, item.cycleStartDate, item.cycleEndDate),
+    shallowEqual,
   )
 
   const startDay = item.cycleStartDate.format('DD')
@@ -39,7 +41,7 @@ export const CycleCard = ({
   const endMonthIndex = parseInt(item.cycleEndDate.format('M')) - 1
   const endMonth = months[endMonthIndex]
 
-  const periodEndDate = item.cycleStartDate.clone().add(item.periodLength, 'days')
+  const periodEndDate = item.cycleStartDate.clone().add(item.periodLength - 1, 'days')
 
   const periodEndDay = periodEndDate.format('DD')
   const periodEndMonthIndex = parseInt(periodEndDate.format('M')) - 1
@@ -50,31 +52,36 @@ export const CycleCard = ({
       <View style={[styles.cycleCard, { backgroundColor }]}>
         {/* ===== Header ===== */}
         <View style={[styles.cycleCardHeader, { backgroundColor: palette.danger.base }]}>
-          <View style={styles.row}>
+          <Text
+            style={styles.headerText}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            enableTranslate={false}
+          >
             <Text style={styles.headerText}>cycle</Text>
-            <Text
-              enableTranslate={false}
-              style={[styles.headerText, styles.bold]}
-            >{` ${cycleNumber}`}</Text>
-          </View>
-
-          <View style={styles.row}>
+            <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
+              {` ${cycleNumber}   `}
+            </Text>
             <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
               {`${item.cycleLength} `}
             </Text>
             <Text style={styles.headerText}>day_cycle</Text>
-          </View>
-
-          <View style={styles.row}>
+            <Text enableTranslate={false} style={styles.headerText}>
+              {'   '}
+            </Text>
             <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
               {startDay}
             </Text>
-            <Text enableTranslate={false} style={styles.headerText}>{` ${startMonth} - `}</Text>
+            <Text enableTranslate={false} style={styles.headerText}>
+              {` ${startMonth} - `}
+            </Text>
             <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
               {endDay}
             </Text>
-            <Text enableTranslate={false} style={styles.headerText}>{` ${endMonth}`}</Text>
-          </View>
+            <Text enableTranslate={false} style={styles.headerText}>
+              {` ${endMonth}`}
+            </Text>
+          </Text>
         </View>
 
         {/* ===== Body ===== */}
@@ -155,12 +162,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cycleCardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
-    height: ' 33%',
-    paddingHorizontal: 16,
+    height: '33%',
+    paddingHorizontal: 12,
   },
   headerText: {
     color: '#fff',
@@ -182,9 +187,6 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
-  },
-  row: {
-    flexDirection: 'row',
   },
   bold: {
     fontWeight: 'bold',

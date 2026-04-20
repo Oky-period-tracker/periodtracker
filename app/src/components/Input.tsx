@@ -65,7 +65,7 @@ export const Input = ({
       {hasError && <ErrorText>{errorKey}</ErrorText>}
       <TouchableOpacity
         onPress={onPress}
-        disabled={displayOnly || !props.multiline}
+        disabled={displayOnly}
         activeOpacity={1}
         style={[
           styles.container,

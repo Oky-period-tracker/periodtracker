@@ -1,9 +1,89 @@
 import axios, { AxiosResponse } from 'axios'
+import { Alert } from 'react-native'
 import * as types from '../core/api/types'
 import { API_BASE_CMS_URL, API_BASE_URL, PREDICTION_ENDPOINT } from '../config/env'
 import { Locale } from '../resources/translations'
 import { User } from '../types'
-// import * as config from "../config";
+import { allTranslations, initialLocale } from '../hooks/useTranslate'
+import { ReduxState } from '../redux/reducers'
+import { savePendingSyncData } from './pendingSync'
+import { reduxStoreVersion } from '../optional/reduxMigrations'
+
+type StoreRef = {
+  dispatch: (action: { type: string }) => void
+  getState: () => ReduxState
+}
+
+let storeRef: StoreRef | null = null
+let hasHandledTokenTooLarge = false
+
+export function setHttpClientStore(store: StoreRef) {
+  storeRef = store
+}
+
+/**
+ * Force logout of user, and store data locally so on next login we can reupload it.
+ * This workflow addresses a 431 error caused by backend token sizes exceeding limits due to excessive metadata.
+ * @returns
+ */
+function handleTokenTooLarge() {
+  if (hasHandledTokenTooLarge) return
+  hasHandledTokenTooLarge = true
+
+  if (storeRef) {
+    const state = storeRef.getState()
+    const user = state.auth?.user
+
+    if (user?.id) {
+      savePendingSyncData({
+        userId: user.id,
+        replaceStore: {
+          storeVersion: reduxStoreVersion,
+          appState: {
+            app: state.app,
+            prediction: state.prediction,
+            verifiedDates: state.answer?.[user.id]?.verifiedDates,
+            helpCenters: state.helpCenters,
+          },
+        },
+        editInfo: {
+          name: user.name,
+          dateOfBirth: user.dateOfBirth,
+          gender: user.gender,
+          location: user.location,
+          secretQuestion: user.secretQuestion,
+          metadata: user.metadata,
+        },
+      })
+    }
+
+    storeRef.dispatch({ type: 'LOGOUT' })
+  }
+
+  const locale = (storeRef?.getState()?.app?.locale || initialLocale) as Locale
+  // @ts-expect-error TODO: allTranslations type
+  const t = (key: string) => allTranslations?.[locale]?.[key] || key
+
+  Alert.alert(t('error'), t('session_expired'), [
+    {
+      text: t('ok'),
+      onPress: () => {
+        hasHandledTokenTooLarge = false
+      },
+    },
+  ])
+}
+
+// Add a global axios response interceptor to catch 431 (Request Header Fields Too Large)
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 431) {
+      handleTokenTooLarge()
+    }
+    return Promise.reject(error)
+  },
+)
 
 export const httpClient = createHttpClient(API_BASE_URL, API_BASE_CMS_URL, {
   predictionEndpoint: PREDICTION_ENDPOINT,
@@ -62,6 +142,7 @@ export function createHttpClient(
           dateSignedUp,
           metadata,
           preferredId,
+          dateAccountSaved: new Date().toISOString(),
         },
       )
       return response.data
@@ -322,6 +403,27 @@ export function createHttpClient(
         `${endpoint}/account/update-verified-dates`,
         {
           metadata,
+        },
+        {
+          headers: { Authorization: `Bearer ${appToken}` },
+        },
+      )
+
+      return response.data
+    },
+    answerSurvey: async ({ appToken, live, questions }: any) => {
+      const response: AxiosResponse<any> = await axios.post(
+        `${endpoint}/survey`,
+        { live, questions },
+        { headers: { Authorization: `Bearer ${appToken}` } },
+      )
+      return response.data
+    },
+    updateAvatar: async ({ appToken, avatar }: { appToken: string; avatar: any }) => {
+      const response: AxiosResponse<{}> = await axios.post(
+        `${endpoint}/account/update-avatar`,
+        {
+          avatar,
         },
         {
           headers: { Authorization: `Bearer ${appToken}` },

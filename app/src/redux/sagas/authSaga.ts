@@ -10,6 +10,7 @@ import { PredictionState } from '../../prediction'
 import moment from 'moment'
 // import { closeOutTTs } from "../../services/textToSpeech";
 import { fetchNetworkConnectionStatus } from '../../services/network'
+import { loadPendingSyncData, clearPendingSyncData } from '../../services/pendingSync'
 import { PartialStateSnapshot } from '../types/partialStore'
 import { ReduxState } from '../reducers'
 import { analytics } from '../../services/firebase'
@@ -49,6 +50,34 @@ function* onConvertGuestAccount(action: ExtractActionFromActionType<'CONVERT_GUE
   yield put(actions.createAccountRequest(action.payload))
 }
 
+/**
+ * Queue data locally and upload upon the next login to prevent potential data loss.
+ * This workflow addresses a 431 error caused by backend token sizes exceeding limits due to excessive metadata.
+ * @param appToken Authentication token
+ * @param pendingData The data queued for upload.
+ */
+function* resendPendingSyncDataToServer(
+  appToken: string,
+  pendingData: NonNullable<Awaited<ReturnType<typeof loadPendingSyncData>>>,
+) {
+  try {
+    yield httpClient.replaceStore({
+      storeVersion: pendingData.replaceStore.storeVersion,
+      appState: pendingData.replaceStore.appState,
+      appToken,
+    })
+
+    yield httpClient.editUserInfo({
+      appToken,
+      ...pendingData.editInfo,
+    })
+
+    yield clearPendingSyncData()
+  } catch (err) {
+    // Best effort - don't block login if resend fails
+  }
+}
+
 function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
   const { name, password } = action.payload
   const stateRedux: ReduxState = yield select()
@@ -56,7 +85,6 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
   yield actions.setLocale(localeapp)
 
   try {
-    
     const {
       appToken,
       user,
@@ -66,29 +94,46 @@ function* onLoginRequest(action: ExtractActionFromActionType<'LOGIN_REQUEST'>) {
       password,
     })
 
-    yield put(
-      actions.loginSuccess({
-        appToken,
-        user: {
-          ...user,
-          name,
-          password,
-          isGuest: false,
-        },
-      }),
-    )
+    // Check for pending data saved before a 431-forced logout
+    const pendingData: Awaited<ReturnType<typeof loadPendingSyncData>> = yield loadPendingSyncData()
+    const hasPendingData = pendingData && pendingData.userId === user.id
 
-    if (store && store.storeVersion && store.appState) {
+    // If pending data exists for this user, use its edit-info (more recent than server)
+    const userForState = hasPendingData
+      ? { ...user, ...pendingData.editInfo, name, password, isGuest: false as const }
+      : { ...user, name, password, isGuest: false as const }
+
+    yield put(actions.loginSuccess({ appToken, user: userForState }))
+
+    // Use pending appState (more recent) over the server's store if available
+    if (hasPendingData) {
+      const pendingAppState = pendingData.replaceStore.appState
       const partialState: PartialStateSnapshot = {
-        ...store.appState,
-        app: {
-          ...store.appState.app,
-          locale: localeapp,
-        },
+        ...pendingAppState,
+        ...(pendingAppState.app ? { app: { ...pendingAppState.app, locale: localeapp } } : {}),
+      }
+      yield put(actions.refreshStore({ userID: user.id, ...partialState }))
+
+      // Send the pending data to the server in the background
+      yield fork(resendPendingSyncDataToServer, appToken, pendingData)
+    } else {
+      if (pendingData) {
+        // Different user - discard stale pending data
+        yield clearPendingSyncData()
       }
 
-      // @TODO: execute migration based on storeVersion
-      yield put(actions.refreshStore({ userID: user.id, ...partialState }))
+      if (store && store.storeVersion >= 0 && store.appState) {
+        const partialState: PartialStateSnapshot = {
+          ...store.appState,
+          app: {
+            ...store.appState.app,
+            locale: localeapp,
+          },
+        }
+
+        // @TODO: execute migration based on storeVersion
+        yield put(actions.refreshStore({ userID: user.id, ...partialState }))
+      }
     }
   } catch (error) {
     let errorMessage = 'request_fail'
@@ -193,7 +238,7 @@ function* onDeleteAccountRequest(action: ExtractActionFromActionType<'DELETE_ACC
     if (user) {
       yield put(actions.logout())
     }
-  } catch (err) {    
+  } catch (err) {
     Alert.alert('error', 'delete_account_fail')
   }
 }
@@ -243,6 +288,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   yield put(actions.updateFuturePrediction(true, null))
   yield put(actions.setTutorialOneActive(true))
   yield put(actions.setTutorialTwoActive(true))
+  yield put(actions.setCustomAvatarTutorialActive(true))
 
   // yield delay(5000); // !!! THis is here for a bug on slower devices that cause the app to crash on sign up. Did no debug further. Note only occurs on much older phones
   // yield call(navigateAndReset, "MainStack", null);

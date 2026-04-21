@@ -1,0 +1,82 @@
+{
+  "expo": {
+    "name": "Periodtracker",
+    "slug": "periodtracker",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./src/resources/assets/app/icon.jpg",
+    "splash": {
+      "image": "./src/resources/assets/app/splash.jpg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "bundleIdentifier": "com.example",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "googleServicesFile": "./src/resources/GoogleService-Info.plist",
+      "deploymentTarget": "12.0",
+      "infoPlist": {
+        "UIBackgroundModes": ["fetch", "remote-notification"]
+      },
+      "entitlements": {
+        "aps-environment": "production"
+      }
+    },
+    "android": {
+      "package": "com.example",
+      "googleServicesFile": "./src/resources/google-services.json",
+      "versionCode": 80,
+      "supportsTablet": true,
+      "permissions": ["INTERNET"]
+    },
+    "web": {
+      "favicon": "./src/resources/assets/app/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": ""
+      }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "useLegacyPackaging": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "enableProguardInReleaseBuilds": true,
+            "manifest": {
+              "application": {
+                "meta-data": [
+                  {
+                    "android:name": "com.google.firebase.messaging.default_notification_channel_id",
+                    "tools:replace": "android:value",
+                    "android:value": "default"
+                  },
+                  {
+                    "android:name": "com.google.firebase.messaging.default_notification_color",
+                    "tools:replace": "android:resource",
+                    "android:resource": "@color/notification_icon_color"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
+      "expo-localization",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
+  }
+}

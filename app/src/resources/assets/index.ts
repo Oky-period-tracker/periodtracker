@@ -41,6 +41,7 @@ export const assets: AppAssets = {
     launch_icon: require('./images/static/circle.png'),
     spin_load_face: require('./images/static/circle.png'),
     spin_load_circle: require('./images/static/icn_oky_spin-2.png'),
+    clouds: require('./images/static/circle.png'),
   },
   general: {
     aboutBanner: {
@@ -52,5 +53,21 @@ export const assets: AppAssets = {
       panda: require('./lottie/avatar.json'),
       unicorn: require('./lottie/avatar.json'),
     },
+  },
+  tutorial: {
+    avatar: {
+      step1: require('./images/static/circle.png'),
+      step2: require('./images/static/circle.png'),
+      step3: require('./images/static/circle.png'),
+      step4: require('./images/static/circle.png'),
+      step5: require('./images/static/circle.png'),
+    },
+  },
+  icons: {
+    locked: require('./images/static/circle.png'),
+    unlocked: require('./images/static/circle.png'),
+  },
+  gifs: {
+    friendUnlock: require('./images/static/circle.png'),
   },
 }

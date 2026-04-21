@@ -183,7 +183,7 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
   }
 
   return (
-    <View style={[styles.container, { width, height }, style]}>
+    <View pointerEvents="none" style={[styles.container, { width, height }, style]}>
       {/* Body layer with skin color */}
       {BodyComponent && (
         <View style={[styles.layer, styles.bodyLayer]}>

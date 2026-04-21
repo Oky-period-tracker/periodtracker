@@ -35,6 +35,12 @@ cd app/android
 
 ## Deploy the CMS and API
 
+### Deployment to AWS
+
+Go [here](./aws_deployment.md) for details of the solution architecture, architecture diagram and description of implementation and configuration steps to complete.
+
+### Deployment to DigitalOcean
+
 Go [here](./deployment_overview.md) for a visual overview of the deployment and architecture.
 
 1. Create a DigitalOcean account & Project

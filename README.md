@@ -66,6 +66,8 @@ Scan the QR code that `yarn dev:app` prints with the Expo Go app on your device,
 
 If you need a native dev build (for example to test push notifications or Firebase features that Expo Go skips), see [start_project.md](./docs/start_project.md#expo).
 
+**Oky internal developers** working with the branded avatars, real Firebase config and the Oky EAS project: see [docs/private_resources.md](./docs/private_resources.md) for the `OKY_PRIVATE_RESOURCES` flag and the `periodtracker_resources-global` overlay.
+
 ---
 
 ## Detailed guides

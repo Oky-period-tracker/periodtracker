@@ -37,4 +37,10 @@ export const env = {
     bucket: process.env.STORAGE_BUCKET,
     baseUrl: process.env.STORAGE_BASE_URL,
   },
+  logging: {
+    level: (process.env.LOG_LEVEL || 'info') as 'debug' | 'info' | 'warn' | 'error',
+    filePath: process.env.LOG_FILE_PATH || '',
+    slowQueryThreshold: parseInt(process.env.SLOW_QUERY_THRESHOLD || '1000', 10),
+    slowRequestThreshold: parseInt(process.env.SLOW_REQUEST_THRESHOLD || '3000', 10),
+  },
 }

@@ -11,6 +11,7 @@ export interface AppTranslations {
   activity: string
   age: string
   alert: string
+  angry: string
   anonymous_answer: string
   Apr: string
   April: string
@@ -29,9 +30,11 @@ export interface AppTranslations {
   avatar_naming_modal_hint: string
   avatar_naming_modal_placeholder: string
   avatar_naming_modal_title: string
+  back_pain: string
   birth_info: string
   birth_info_heading: string
   blah: string
+  bloated: string
   bloating: string
   body: string
   calendar: string
@@ -229,6 +232,7 @@ export interface AppTranslations {
   future_prediciton_info: string
   gender: string
   go_back: string
+  good: string
   'good sleep': string
   guest_mode_user_alert: string
   happy: string
@@ -242,6 +246,7 @@ export interface AppTranslations {
   info_button_survey: string
   internet_required_text: string
   internet_required_title: string
+  iritable: string
   Jan: string
   January: string
   join_oky_message: string
@@ -252,6 +257,7 @@ export interface AppTranslations {
   language: string
   language_subtitle: string
   launch: string
+  lazy: string
   left: string
   light: string
   location: string
@@ -267,6 +273,7 @@ export interface AppTranslations {
   month_of_birth: string
   month_selector: string
   mood: string
+  music: string
   name: string
   name_info_label: string
   name_input: string
@@ -288,6 +295,7 @@ export interface AppTranslations {
   October: string
   off: string
   ok: string
+  okay: string
   old_secret_answer: string
   on: string
   Other: string
@@ -372,6 +380,7 @@ export interface AppTranslations {
   spots: string
   spotting: string
   stressed: string
+  study: string
   submit: string // TODO: survey
   success: string
   survey: string
@@ -404,6 +413,7 @@ export interface AppTranslations {
   too_close: string
   too_far_ahead: string
   too_far_behind: string
+  torrential: string
   track_regularly_cycle_updates: string
   tutorial: string
   tutorial_0: string
@@ -447,6 +457,7 @@ export interface AppTranslations {
   Urban: string
   user_input_instructions: string
   username_too_short: string
+  video: string
   videos: string
   videos_tag: string
   week: string

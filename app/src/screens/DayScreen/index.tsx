@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Keyboard, Pressable, StyleSheet } from 'react-native'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { FullScreen } from '../../components/Screen'
 import { DayTracker } from './components/DayTracker'
@@ -34,16 +35,22 @@ const DayScreen: ScreenComponent<'Day'> = (props) => {
   }
 
   return (
-    <FullScreen>
-      {hasSurvey ? (
-        <SurveyProvider survey={newSurvey} onFinish={onFinishSurvey}>
-          <Survey />
-        </SurveyProvider>
-      ) : (
-        <DayTracker {...props} />
-      )}
-    </FullScreen>
+    <Pressable style={styles.flex} onPress={Keyboard.dismiss} accessible={false}>
+      <FullScreen>
+        {hasSurvey ? (
+          <SurveyProvider survey={newSurvey} onFinish={onFinishSurvey}>
+            <Survey />
+          </SurveyProvider>
+        ) : (
+          <DayTracker {...props} />
+        )}
+      </FullScreen>
+    </Pressable>
   )
 }
+
+const styles = StyleSheet.create({
+  flex: { flex: 1, width: '100%' },
+})
 
 export default DayScreen

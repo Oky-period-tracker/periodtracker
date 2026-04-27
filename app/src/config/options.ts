@@ -7,7 +7,7 @@ export const locations = [
 
 const now = new Date()
 const currentYear = now.getFullYear()
-const years = generateRange(currentYear - 7, currentYear - 100).map((item) => item.toString())
+const years = generateRange(currentYear - 1, currentYear - 100).map((item) => item.toString())
 
 export const yearOptions = years.map((item) => ({ label: item, value: item }))
 

@@ -25,7 +25,6 @@ export async function bootstrap() {
     app.use(cors(corsOptions))
   }
 
-
   app.use(
     helmet({
       contentSecurityPolicy: {

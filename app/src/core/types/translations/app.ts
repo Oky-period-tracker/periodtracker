@@ -54,7 +54,6 @@ export interface AppTranslations {
   characters: string
   childhood_hero: string
   choose_avatar: string
-  choose_one: string
   clear_filters: string
   clear_search: string
   close_tooltip_button: string
@@ -62,6 +61,7 @@ export interface AppTranslations {
   confirm: string
   confirm_and_delete: string
   confirm_password: string
+  end: string
   connect_account: string
   connect_account_info: string
   contact_us: string

@@ -52,19 +52,14 @@ export const Survey = () => {
             </Text>
           ) : state.consented ? (
             <>
-              <Text
-                style={[styles.question, { color: '#000000' }]}
-                enableTranslate={false}
-              >
+              <Text style={styles.question} enableTranslate={false}>
                 {question}
               </Text>
               <SurveyCollect />
             </>
           ) : (
             <>
-              <Text style={[styles.question, { color: '#000000' }]}>
-                {consentQuestion}
-              </Text>
+              <Text style={styles.question}>{consentQuestion}</Text>
               <SurveyConsent />
             </>
           )}

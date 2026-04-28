@@ -20,12 +20,12 @@ export const calendarTranslations: Record<Locale, CalendarTranslations> = {
     monthNamesShort: [
       'Jan',
       'Feb',
-      'Ma',
-      'Ap',
-      'Ma',
-      'Ju',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
       'Jul',
-      'Au',
+      'Aug',
       'Sep',
       'Oct',
       'Nov',
@@ -40,7 +40,7 @@ export const calendarTranslations: Record<Locale, CalendarTranslations> = {
       'Friday',
       'Saturday',
     ],
-    dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat'],
+    dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   },
 }
 

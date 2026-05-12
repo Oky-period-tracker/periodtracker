@@ -1,9 +1,10 @@
-import { all, put, takeLatest } from 'redux-saga/effects'
+import { all, put, select, takeLatest } from 'redux-saga/effects'
 import { ExtractActionFromActionType } from '../types'
 
 import { httpClient } from '../../services/HttpClient'
 
 import * as actions from '../actions'
+import * as selectors from '../selectors'
 import { PredictionState } from '../../prediction'
 
 function* onFetchUpdatedPredictedCycles(
@@ -17,21 +18,35 @@ function* onFetchUpdatedPredictedCycles(
       predictionFullState,
       futurePredictionStatus,
     } = action.payload
-    let predictionResult = null
+
     // @ts-expect-error TODO:
-    predictionResult = yield httpClient.getPeriodCycles({
+    const currentUser = yield select(selectors.currentUserSelector)
+    const userId = currentUser?.id || 'anonymous'
+
+    // @ts-expect-error TODO:
+    const predictionResponse = yield httpClient.getPeriodCycles({
+      user_id: userId,
       age,
       period_lengths,
       cycle_lengths,
     })
+
+    console.log('[PredictionEngine] API response:', JSON.stringify(predictionResponse))
+
+    // Map new API response to the format PredictionState.fromData expects
+    const smaCycleLength = predictionResponse.prediction.predicted_cycle_length
+    const smaPeriodLength =
+      period_lengths && period_lengths.length > 0
+        ? period_lengths.reduce((a: number, b: number) => a + b, 0) / period_lengths.length
+        : predictionFullState.currentCycle.periodLength
 
     const stateToSet = PredictionState.fromData({
       isActive: predictionFullState.isActive,
       startDate: predictionFullState.currentCycle.startDate,
       periodLength: predictionFullState.currentCycle.periodLength,
       cycleLength: predictionFullState.currentCycle.cycleLength,
-      smaCycleLength: predictionResult.predicted_cycles[0],
-      smaPeriodLength: predictionResult.predicted_periods[0],
+      smaCycleLength,
+      smaPeriodLength,
       history: predictionFullState.history,
       actualCurrentStartDate: predictionFullState.currentCycle,
     })

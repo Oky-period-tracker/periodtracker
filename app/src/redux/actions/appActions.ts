@@ -11,6 +11,22 @@ export function setAvatar(avatar: AvatarName) {
   return createAction('SET_AVATAR', { avatar })
 }
 
+export function setAvatarWithValidation(
+  avatar: AvatarName,
+  cyclesNumber: number,
+  customAvatarUnlocked?: boolean,
+) {
+  // If customAvatarUnlocked is true, friend avatar is always allowed regardless of cyclesNumber
+  // Otherwise, prevent setting friend avatar if user doesn't have 3 cycles
+  if (avatar === 'friend' && customAvatarUnlocked !== true && cyclesNumber < 3) {
+    console.warn(
+      'Cannot set friend avatar: user needs 3+ cycles or customAvatarUnlocked must be true',
+    )
+    return null
+  }
+  return createAction('SET_AVATAR', { avatar })
+}
+
 export function setLocale(locale: string) {
   return createAction('SET_LOCALE', { locale })
 }
@@ -37,6 +53,10 @@ export function setTutorialOneActive(isTutorialActive: boolean) {
 
 export function setTutorialTwoActive(isTutorialActive: boolean) {
   return createAction('SET_TUTORIAL_TWO_ACTIVE', { isTutorialActive })
+}
+
+export function setCustomAvatarTutorialActive(isTutorialActive: boolean) {
+  return createAction('SET_CUSTOM_AVATAR_TUTORIAL_ACTIVE', { isTutorialActive })
 }
 
 export function setLoginPassword(isLoginPasswordActive: boolean) {

@@ -27,11 +27,13 @@ const CarouselCard = ({ index, item }: { index: number; item: DayData }) => {
     totalOffset,
     selectedScale,
     selectedIndex,
+    state,
   } = useDayScroll()
 
   const { FULL_CARD_WIDTH, NUMBER_OF_BUTTONS } = constants
 
-  const isSelected = index === selectedIndex?.value
+  // Use state.currentIndex instead of selectedIndex.value to avoid reading shared value during render
+  const isSelected = index === state.currentIndex
 
   const carouselAnimatedStyle = useAnimatedStyle(() => {
     if (

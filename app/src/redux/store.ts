@@ -7,6 +7,7 @@ import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import { config } from '../resources/redux'
 import { reduxMigrations, reduxStoreVersion } from '../optional/reduxMigrations'
+import { setHttpClientStore } from '../services/HttpClient'
 
 const encryptor = encryptTransform({
   secretKey: config.REDUX_ENCRYPT_KEY,
@@ -38,5 +39,7 @@ const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware))
 const persistor = persistStore(store)
 
 sagaMiddleware.run(rootSaga)
+
+setHttpClientStore(store)
 
 export { store, persistor }

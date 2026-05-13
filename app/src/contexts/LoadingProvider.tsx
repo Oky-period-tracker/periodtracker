@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, StyleSheet, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { SpinnerScreen } from '../components/SpinnerScreen'
 
 export type LoadingContext = {
@@ -35,18 +35,12 @@ export const LoadingProvider = ({ children }: React.PropsWithChildren) => {
       }}
     >
       {children}
-      <View>
-        <Modal
-          visible={loading}
-          animationType={'fade'}
-          transparent={true}
-          statusBarTranslucent={true}
-          supportedOrientations={['portrait', 'landscape']}
-        >
+      {loading && (
+        <View style={styles.overlay}>
           <View style={styles.backDrop} />
           <SpinnerScreen text={text} />
-        </Modal>
-      </View>
+        </View>
+      )}
     </LoadingContext.Provider>
   )
 }
@@ -73,6 +67,11 @@ export const useStopLoadingEffect = (duration = 1500) => {
 }
 
 const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 9999,
+    elevation: 9999,
+  },
   backDrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.75)',

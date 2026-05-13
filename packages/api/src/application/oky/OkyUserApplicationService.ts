@@ -1,10 +1,8 @@
 import { Service, Inject } from 'typedi'
 import { HttpError } from 'routing-controllers'
-
 import { AuthenticationService } from 'domain/oky/AuthenticationService'
 import { OkyUser } from 'domain/oky/OkyUser'
 import { OkyUserRepositoryToken, OkyUserRepository } from 'domain/oky/OkyUserRepository'
-
 import { SignupCommand } from './commands/SignupCommand'
 import { LoginCommand } from './commands/LoginCommand'
 import { ReplaceStoreCommand } from './commands/ReplaceStoreCommand'
@@ -49,6 +47,7 @@ export class OkyUserApplicationService {
     dateSignedUp,
     dateAccountSaved,
     metadata,
+    avatar,
   }: SignupCommand) {
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
     if (await this.okyUserRepository.byId(id)) {
@@ -74,6 +73,7 @@ export class OkyUserApplicationService {
       dateSignedUp,
       dateAccountSaved,
       metadata,
+      avatar,
     })
     return this.okyUserRepository.save(user)
   }
@@ -176,6 +176,17 @@ export class OkyUserApplicationService {
     await user.updateUserVerifiedPeriodDays({
       metadata,
     })
+
+    return this.okyUserRepository.save(user)
+  }
+
+  public async updateAvatar({ userId, avatar }: { userId: string; avatar: any }) {
+    const user = await this.okyUserRepository.byId(userId)
+    if (!user) {
+      throw new Error(`Cannot update avatar for missing ${userId} user`)
+    }
+
+    user.formatAvatar(avatar)
 
     return this.okyUserRepository.save(user)
   }

@@ -18,12 +18,21 @@ export interface ModalProps {
   visible: boolean
   toggleVisible: () => void
   children?: React.ReactNode
+  footer?: React.ReactNode
   style?: StyleProp<ViewStyle>
   hideLaunchButton?: boolean
   onHandleResponse?: (response: boolean, periodDate: string) => void
+  onDismiss?: () => void
 }
 
-export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) => {
+export const Modal = ({
+  visible,
+  toggleVisible,
+  children,
+  footer,
+  style,
+  onDismiss,
+}: ModalProps) => {
   const { modalBackdropColor } = useColor()
   const { width, height } = useScreenDimensions()
   const maxWidth = Math.min(width, 800)
@@ -33,6 +42,7 @@ export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) =
     <RNModal
       visible={visible}
       onRequestClose={toggleVisible}
+      onDismiss={onDismiss}
       animationType={'fade'}
       transparent={true}
       statusBarTranslucent={true}
@@ -50,6 +60,7 @@ export const Modal = ({ visible, toggleVisible, children, style }: ModalProps) =
         >
           {children}
         </SafeAreaView>
+        {footer && <View style={[styles.footer, { maxWidth }]}>{footer}</View>}
       </View>
     </RNModal>
   )
@@ -60,9 +71,13 @@ export const ModalCloseButton = (props: ButtonProps) => {
   const label = getAccessibilityLabel('close')
 
   return (
-    <Button style={styles.closeButton} status={'basic'} {...props}>
-      <FontAwesome name="close" size={24} color="white" accessibilityLabel={label} />
-    </Button>
+    <TouchableOpacity
+      style={[styles.closeButton]}
+      onPress={props.onPress}
+      accessibilityLabel={label}
+    >
+      <FontAwesome name="close" size={18} color="#FFFFFF" />
+    </TouchableOpacity>
   )
 }
 
@@ -81,6 +96,12 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 24,
   },
+  footer: {
+    position: 'absolute',
+    bottom: 24,
+    alignItems: 'center',
+    width: '100%',
+  },
   closeButton: {
     position: 'absolute',
     top: 60,
@@ -88,5 +109,9 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     zIndex: 9999,
+    backgroundColor: '#A4D233',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })

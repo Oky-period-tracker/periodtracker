@@ -17,6 +17,7 @@ export interface AppState {
   hasOpened: boolean
   isTutorialOneActive: boolean
   isTutorialTwoActive: boolean
+  isCustomAvatarTutorialActive: boolean
   isLoginPasswordActive: boolean // @deprecated
   isTtsActive: boolean // @deprecated
   isFuturePredictionActive: boolean
@@ -47,6 +48,7 @@ const initialState: AppState = {
   hasOpened: false,
   isTutorialOneActive: true,
   isTutorialTwoActive: true,
+  isCustomAvatarTutorialActive: true,
   isLoginPasswordActive: true,
   isFuturePredictionActive: true,
   theme: defaultTheme,
@@ -119,6 +121,11 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
       return {
         ...state,
         isTutorialTwoActive: action.payload.isTutorialActive,
+      }
+    case 'SET_CUSTOM_AVATAR_TUTORIAL_ACTIVE':
+      return {
+        ...state,
+        isCustomAvatarTutorialActive: action.payload.isTutorialActive,
       }
     case 'SET_LOGIN_PASSWORD_ACTIVE':
       return {

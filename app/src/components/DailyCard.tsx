@@ -49,7 +49,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
   const { formatMomentDayMonth } = useFormatDate()
   const translate = useTranslate()
   const { dispatch: tutorialDispatch } = useTutorial()
-  const { isDragging, constants } = useDayScroll()
+  const { isDragging, constants, toggleDayModal } = useDayScroll()
   const { CARD_WIDTH, CARD_MARGIN } = constants
   const { backgroundColor, starColor } = useColor()
 
@@ -126,7 +126,7 @@ export const DailyCard = ({ dataEntry, disabled }: DailyCardProps) => {
           appearance={appearance}
           text={formatMomentDayMonth(dataEntry.date)}
           size={IconSize}
-          disabled
+          onPress={toggleDayModal}
         />
         <FontAwesome
           name={getStar(Object.keys(cardAnswersValues).length)}

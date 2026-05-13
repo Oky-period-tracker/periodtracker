@@ -18,7 +18,13 @@ const corsOptions = {
 export async function bootstrap() {
   const app = express()
 
-  app.use(cors(corsOptions))
+  if (env.isDevelopment) {
+    // Enable web to use all routes
+    app.use(cors())
+  } else {
+    app.use(cors(corsOptions))
+  }
+
 
   app.use(
     helmet({
@@ -31,8 +37,8 @@ export async function bootstrap() {
     }),
   )
 
-  app.use(bodyParser.json())
-  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(bodyParser.json({ limit: '1mb' }))
+  app.use(bodyParser.urlencoded({ extended: true, limit: '1mb' }))
   app.use(cookieParser())
 
   useExpressServer(app, {

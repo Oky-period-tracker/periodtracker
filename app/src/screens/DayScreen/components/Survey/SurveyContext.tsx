@@ -55,10 +55,16 @@ function reducer(state: SurveyState, action: Action): SurveyState {
       }
 
       if (!state.consented && state.agree !== null) {
+        if (!state.agree) {
+          // User declined consent - finish immediately without showing the thank-you message
+          return {
+            ...state,
+            finished: true,
+          }
+        }
         return {
           ...state,
-          consented: state.agree,
-          hasAnsweredAll: !state.agree,
+          consented: true,
         }
       }
 
@@ -78,7 +84,7 @@ function reducer(state: SurveyState, action: Action): SurveyState {
         question: currentQuestion.question,
         answerID: `${answerId}`,
         answer: state.answerDraft,
-        response: currentQuestion.response,
+        response: state.answerDraft,
         isMultiple: currentQuestion.is_multiple,
       }
 
@@ -108,11 +114,36 @@ function reducer(state: SurveyState, action: Action): SurveyState {
     }
 
     case 'skip': {
-      const nextQuestionIndex = getNextSurveyQuestionIndex(state)
+      if (!state.survey) {
+        return state
+      }
+
+      const nextQuestionIndex = state.questionIndex + 1
+
+      if (nextQuestionIndex >= state.survey.questions.length) {
+        return {
+          ...state,
+          hasAnsweredAll: true,
+        }
+      }
 
       return {
         ...state,
         questionIndex: nextQuestionIndex,
+        answerIndex: null,
+        answerDraft: '',
+      }
+    }
+
+    case 'select_answer': {
+      const question = state.survey!.questions[state.questionIndex]
+      const options = getSurveyQuestionOptions(question)
+      const selectedText = options[action.value] || ''
+
+      return {
+        ...state,
+        answerIndex: action.value,
+        answerDraft: selectedText,
       }
     }
 
@@ -161,6 +192,7 @@ export const SurveyProvider = ({
       user_id: currentUser.id,
       isCompleted: true,
       isSurveyAnswered: true,
+      live: true,
       questions: state.answers,
       utcDateTime: moment(),
     }
@@ -205,9 +237,7 @@ const getNextSurveyQuestionIndex = (state: SurveyState) => {
   const currentQuestion = state.survey.questions[state.questionIndex]
 
   // Convert { option1: string, option2:string } to string[]
-  const nextQuestions = Object.values(currentQuestion.next_question).map(
-    (option) => Object.values(option)[0],
-  )
+  const nextQuestions = Object.values(currentQuestion.next_question)
 
   const currentAnswerIndex = state.answerIndex ?? 0
   const nextQuestion = nextQuestions[currentAnswerIndex]

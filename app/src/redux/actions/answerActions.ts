@@ -69,3 +69,11 @@ export function migrateAnswerData(payload: {
 }) {
   return createAction('MIGRATE_ANSWER_DATA', payload)
 }
+
+export function answerSurveySuccess() {
+  return createAction('ANSWER_SURVEY_SUCCESS')
+}
+
+export function answerSurveyFailed(error: any) {
+  return createAction('ANSWER_SURVEY_FAILED', { error })
+}

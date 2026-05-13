@@ -20,6 +20,12 @@ Start
 npx expo start
 ```
 
+You can also use ngrok:
+
+```bash
+npx expo start --tunnel
+```
+
 Switch to ExpoGo:
 `s`
 

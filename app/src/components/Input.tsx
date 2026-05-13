@@ -65,7 +65,7 @@ export const Input = ({
       {hasError && <ErrorText>{errorKey}</ErrorText>}
       <TouchableOpacity
         onPress={onPress}
-        disabled={displayOnly || !props.multiline}
+        disabled={displayOnly}
         activeOpacity={1}
         style={[
           styles.container,
@@ -88,6 +88,7 @@ export const Input = ({
               {!value && (
                 // Separate from <TextInput> so that the cursor is centered
                 <Text
+                  pointerEvents="none"
                   style={[styles.placeholder, { color: placeholderTextColor }]}
                   enableTranslate={false}
                 >
@@ -95,6 +96,7 @@ export const Input = ({
                 </Text>
               )}
               <TextInput
+                textContentType={props.secureTextEntry ? 'oneTimeCode' : undefined}
                 {...props}
                 ref={ref}
                 value={value}

@@ -38,7 +38,8 @@ export const DayModal = ({
   toggleVisible,
   hideLaunchButton,
   onHandleResponse,
-}: { data: DayData } & ModalProps) => {
+  onLaunchTutorial,
+}: { data: DayData; onLaunchTutorial?: () => void } & ModalProps) => {
   const selectedDayInfo = data
   const inputDay = data.date
   const { setAvatarMessage } = useAvatarMessage()
@@ -329,7 +330,9 @@ export const DayModal = ({
       style={styles.modal}
       hideLaunchButton={false}
     >
-      {!hideLaunchButton && <LaunchTutorialButton toggleVisible={toggleVisible} />}
+      {!hideLaunchButton && (
+        <LaunchTutorialButton toggleVisible={toggleVisible} onLaunchTutorial={onLaunchTutorial} />
+      )}
       <Text style={styles.title}>user_input_instructions</Text>
       <Text style={styles.description}>share_period_details_heading</Text>
 
@@ -343,15 +346,26 @@ export const DayModal = ({
   )
 }
 
-const LaunchTutorialButton = ({ toggleVisible }: { toggleVisible: () => void }) => {
+const LaunchTutorialButton = ({
+  toggleVisible,
+  onLaunchTutorial,
+}: {
+  toggleVisible: () => void
+  onLaunchTutorial?: () => void
+}) => {
   const { setLoading } = useLoading()
   const { dispatch } = useTutorial()
 
   const onPress = () => {
     toggleVisible() // Hide DayModal
-    setLoading(true, 'please_wait_tutorial', () => {
-      dispatch({ type: 'start', value: 'tutorial_one' })
-    })
+    if (onLaunchTutorial) {
+      // Execute callback if provided, instead of starting tutorial
+      onLaunchTutorial()
+    } else {
+      setLoading(true, 'please_wait_tutorial', () => {
+        dispatch({ type: 'start', value: 'tutorial_one' })
+      })
+    }
   }
 
   return (

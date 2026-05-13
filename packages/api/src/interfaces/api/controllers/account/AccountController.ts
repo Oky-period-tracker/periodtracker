@@ -53,6 +53,7 @@ export class AccountController {
       secretAnswer,
       dateSignedUp,
       metadata,
+      avatar,
     }: SignupRequest,
   ) {
     if (country === null || country === '00') {
@@ -74,6 +75,7 @@ export class AccountController {
       dateSignedUp,
       dateAccountSaved: new Date().toISOString(),
       metadata,
+      avatar,
     })
 
     return this.signTokenResponse(user)
@@ -203,9 +205,11 @@ export class AccountController {
       secretAnswer: user.getHashedMemorableAnswer(),
       dateSignedUp: user.getDateSignedUp(),
       metadata: user.getMetadata(),
+      avatar: user.getAvatar(),
     }
 
-    const appToken = jwt.sign(userDescriptor, env.app.secret, {
+    /** Add ID to the token, it's the only info we need to pass */
+    const appToken = jwt.sign({ id: user.getId() }, env.app.secret, {
       audience: 'app',
     })
 
@@ -231,5 +235,22 @@ export class AccountController {
     })
 
     return { userId, metadata }
+  }
+
+  @Post('/update-avatar')
+  public async updateAvatar(
+    @CurrentUser({ required: true }) userId: string,
+    @Body() request: { avatar: any },
+  ) {
+    if (!env.features.useAvatarCustomization) {
+      throw new UnauthorizedError('Avatar customization is not enabled')
+    }
+
+    await this.okyUserApplicationService.updateAvatar({
+      userId,
+      avatar: request.avatar,
+    })
+
+    return { userId, avatar: request.avatar }
   }
 }

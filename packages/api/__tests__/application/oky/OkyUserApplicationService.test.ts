@@ -287,6 +287,13 @@ describe('OkyUserApplicationService', () => {
         location: 'Urban',
         gender: 'Male' as const,
         secretQuestion: 'favourite_actor',
+       metadata: {  
+        periodDates: {
+          date: new Date().toISOString(),
+          mlGenerated: false,
+          userVerified: true,
+        }
+      }
       }
 
       const result = await okyUserApplicationService.editInfo(command)
@@ -307,6 +314,13 @@ describe('OkyUserApplicationService', () => {
           location: 'Urban',
           gender: 'Male' as const,
           secretQuestion: 'favourite_actor',
+          metadata: {  
+          periodDates: {
+            date: new Date().toISOString(),
+            mlGenerated: false,
+            userVerified: true,
+          }
+        }
         }
 
         await okyUserApplicationService.editInfo(command)

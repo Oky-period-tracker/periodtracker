@@ -23,15 +23,25 @@ function* onFetchUpdatedPredictedCycles(
     const currentUser = yield select(selectors.currentUserSelector)
     const userId = currentUser?.id || 'anonymous'
 
+    // Compute days_since_menarche from earliest cycle in history
+    let days_since_menarche: number | undefined
+    if (predictionFullState.history && predictionFullState.history.length > 0) {
+      const firstCycleStart = predictionFullState.history[predictionFullState.history.length - 1]?.startDate
+      if (firstCycleStart) {
+        const firstDate = new Date(firstCycleStart)
+        const now = new Date()
+        days_since_menarche = Math.floor((now.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24))
+      }
+    }
+
     // @ts-expect-error TODO:
     const predictionResponse = yield httpClient.getPeriodCycles({
       user_id: userId,
       age,
       period_lengths,
       cycle_lengths,
+      days_since_menarche,
     })
-
-    console.log('[PredictionEngine] API response:', JSON.stringify(predictionResponse))
 
     // Map new API response to the format PredictionState.fromData expects
     const smaCycleLength = predictionResponse.prediction.predicted_cycle_length

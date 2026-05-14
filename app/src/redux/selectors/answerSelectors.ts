@@ -9,10 +9,13 @@ import { ReduxState } from '../reducers'
 const s = (state: ReduxState) => state.answer
 
 export const surveyHasAnswerSelector = (state: ReduxState, id: string) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return false
-  // @ts-expect-error TODO:
-  return id in s(state)[state.auth.user.id].surveys
+  const userId = state.auth?.user?.id
+  if (!userId) return false
+
+  const answers = s(state)?.[userId]
+  if (!answers) return false
+
+  return id in (answers.surveys || {})
 }
 
 // export const surveysWithoutAnswersSelector = (state: ReduxState) => {
@@ -20,45 +23,62 @@ export const surveyHasAnswerSelector = (state: ReduxState, id: string) => {
 // }
 
 export const quizHasAnswerSelector = (state: ReduxState, id: string) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return false
-  // @ts-expect-error TODO:
-  return id in s(state)[state.auth.user.id].quizzes
+  const userId = state.auth?.user?.id
+  if (!userId) return false
+
+  const answers = s(state)?.[userId]
+  if (!answers) return false
+
+  return id in (answers.quizzes || {})
 }
 
 // Had a type error here had to add any to avoid
 // TODO:
 // eslint-disable-next-line
 export const quizAnswerByDate: any = (state: ReduxState, date: Moment) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return null
-  // @ts-expect-error TODO:
-  return Object.values(s(state)[state.auth.user.id].quizzes).filter(
-    ({ utcDateTime }) => utcDateTime === date.toISOString(),
-  )[0]
+  const userId = state.auth?.user?.id
+  if (!userId) return null
+
+  const quizzes = s(state)?.[userId]?.quizzes
+  if (!quizzes) return null
+
+  return Object.values(quizzes).find((item: any) => item?.utcDateTime === date.toISOString())
 }
 
 export const quizzesWithoutAnswersSelector = (state: ReduxState) => {
-  return allQuizzesSelectors(state).filter(({ id }) => !quizHasAnswerSelector(state, id))
+  return allQuizzesSelectors(state)
+    .filter((quiz: any) => quiz?.id)
+    .filter((quiz: any) => !quizHasAnswerSelector(state, quiz.id))
 }
 
 export const cardAnswerSelector = (state: ReduxState, date: Moment) => {
-  if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
-  if (!s(state)[state.auth.user.id]) return {}
-  return s(state)[state.auth.user.id]?.cards[toShortISO(date)] || {}
+  const userId = state.auth?.user?.id
+  if (!userId) return {}
+
+  const answers = s(state)?.[userId]
+  if (!answers) return {}
+
+  return answers.cards?.[toShortISO(date)] || {}
 }
+
 export const verifyPeriodDaySelectorWithDate = (state: ReduxState, date: Moment) => {
-  if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
-  if (!s(state)[state.auth.user.id]) return {}
-  if (s(state)[state.auth.user.id]?.verifiedDates) {
-    return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)]
-  } else return {}
-  // return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)] || {}
+  const userId = state.auth?.user?.id
+  if (!userId) return {}
+
+  const answers = s(state)?.[userId]
+  if (!answers?.verifiedDates) return {}
+
+  return answers.verifiedDates[toShortISO(date)] || {}
 }
+
 export const allCardAnswersSelector = (state: ReduxState) => {
-  if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
-  if (!s(state)[state.auth.user.id]) return {}
-  return s(state)[state.auth.user.id]?.verifiedDates || {}
+  const userId = state.auth?.user?.id
+  if (!userId) return {}
+
+  const answers = s(state)?.[userId]
+  if (!answers) return {}
+
+  return answers.verifiedDates || {}
 }
 
 export const notesAnswerSelector = (
@@ -70,16 +90,25 @@ export const notesAnswerSelector = (
     notes: '',
   }
   if (!date) return emptyNotes
-  if (!state?.auth?.user?.id) return emptyNotes
-  if (!s(state)[state.auth.user.id]) return emptyNotes
-  return s(state)[state.auth.user.id].notes[toShortISO(date)] || emptyNotes
+
+  const userId = state.auth?.user?.id
+  if (!userId) return emptyNotes
+
+  const answers = s(state)?.[userId]
+  if (!answers) return emptyNotes
+
+  return answers.notes?.[toShortISO(date)] || emptyNotes
 }
 
 export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDate: Moment) => {
-  // @ts-expect-error TODO:
-  if (!s(state)[state.auth.user.id]) return {}
-  // @ts-expect-error TODO:
-  const dates = Object.keys(s(state)[state.auth.user.id].cards)
+  const userId = state.auth?.user?.id
+  if (!userId) return {}
+
+  const answers = s(state)?.[userId]
+  if (!answers?.cards) return {}
+
+  const dates = Object.keys(answers.cards)
+
   const filteredDates = dates.filter((item) => {
     return (
       parseInt(item, 10) > parseInt(startDate.format('YYYYMMDD'), 10) &&
@@ -89,35 +118,41 @@ export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDa
 
   // This creates an array of all the selected moods (now that there are multiple)
   const moodsInDateRange = filteredDates.reduce((acc, filteredDate) => {
-    // @ts-expect-error TODO:
-    return acc.concat(s(state)[state.auth.user.id].cards[filteredDate].mood)
+    const card = answers.cards?.[filteredDate]
+    if (!card) return acc
+
+    return acc.concat(card.mood)
   }, [])
 
   // This counts occurrences of each item
-  const moodCountedObject = _.countBy(moodsInDateRange, (mood) => mood)
+  const moodCountedObject = _.countBy(moodsInDateRange, (mood: any) => mood)
 
   const bodyInDateRange = filteredDates.reduce((acc, filteredDate) => {
-    // @ts-expect-error TODO:
-    return acc.concat(s(state)[state.auth.user.id].cards[filteredDate].body)
+    const card = answers.cards?.[filteredDate]
+    if (!card) return acc
+
+    return acc.concat(card.body)
   }, [])
 
-  const bodyCountedObject = _.countBy(bodyInDateRange, (body) => body)
+  const bodyCountedObject = _.countBy(bodyInDateRange, (body: any) => body)
 
   const activityInDateRange = filteredDates.reduce((acc, filteredDate) => {
-    return acc.concat(
-      // @ts-expect-error TODO:
-      s(state)[state.auth.user.id].cards[filteredDate].activity,
-    )
+    const card = answers.cards?.[filteredDate]
+    if (!card) return acc
+
+    return acc.concat(card.activity)
   }, [])
 
-  const activityCountedObject = _.countBy(activityInDateRange, (activity) => activity)
+  const activityCountedObject = _.countBy(activityInDateRange, (activity: any) => activity)
 
   const flowInDateRange = filteredDates.reduce((acc, filteredDate) => {
-    // @ts-expect-error TODO:
-    return acc.concat(s(state)[state.auth.user.id].cards[filteredDate].flow)
+    const card = answers.cards?.[filteredDate]
+    if (!card) return acc
+
+    return acc.concat(card.flow)
   }, [])
 
-  const flowCountedObject = _.countBy(flowInDateRange, (flow) => flow)
+  const flowCountedObject = _.countBy(flowInDateRange, (flow: any) => flow)
 
   delete moodCountedObject.undefined
   delete bodyCountedObject.undefined
@@ -125,24 +160,20 @@ export const mostAnsweredSelector = (state: ReduxState, startDate: Moment, endDa
   delete flowCountedObject.undefined
 
   const highestMood = Object.keys(moodCountedObject).reduce(
-    // @ts-expect-error TODO:
     (a, b) => (moodCountedObject[a] > moodCountedObject[b] ? a : b),
-    null,
+    null as any,
   )
   const highestBody = Object.keys(bodyCountedObject).reduce(
-    // @ts-expect-error TODO:
     (a, b) => (bodyCountedObject[a] > bodyCountedObject[b] ? a : b),
-    null,
+    null as any,
   )
   const highestActivity = Object.keys(activityCountedObject).reduce(
-    // @ts-expect-error TODO:
     (a, b) => (activityCountedObject[a] > activityCountedObject[b] ? a : b),
-    null,
+    null as any,
   )
   const highestFlow = Object.keys(flowCountedObject).reduce(
-    // @ts-expect-error TODO:
     (a, b) => (flowCountedObject[a] > flowCountedObject[b] ? a : b),
-    null,
+    null as any,
   )
 
   return {

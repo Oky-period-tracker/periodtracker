@@ -3,6 +3,6 @@ node_modules
 .expo
 .expo-shared
 .env
-eas.json
+/eas.json
 android
 ios

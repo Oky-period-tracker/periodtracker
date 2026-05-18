@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Required to run
-resources_path="app/src/resources"
 common_path="packages/core/src/common"
 
 # Required to deploy

@@ -1,0 +1,39 @@
+{
+  "cli": {
+    "version": ">= 11.0.3"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "staging": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "",
+        "EXPO_PUBLIC_API_BASE_CMS_URL": "",
+        "EXPO_PUBLIC_PREDICTION_ENDPOINT": "",
+        "EXPO_PUBLIC_WEBSITE_URL": "",
+        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/staging"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "",
+        "EXPO_PUBLIC_API_BASE_CMS_URL": "",
+        "EXPO_PUBLIC_PREDICTION_ENDPOINT": "",
+        "EXPO_PUBLIC_WEBSITE_URL": "",
+        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/production"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

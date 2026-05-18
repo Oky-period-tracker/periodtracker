@@ -1,0 +1,10 @@
+export type Locale = 'en'
+export const defaultLocale: Locale = 'en'
+
+export * from './app'
+export * from './calendar'
+export * from './content'
+export * from './countries'
+export * from './locales'
+export * from './provinces'
+export * from './themes'

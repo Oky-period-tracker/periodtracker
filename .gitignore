@@ -7,3 +7,5 @@ yarn-error.log
 /bin/modules/urls.sh
 *.env
 .expo
+.cache/
+/app/src/resources-global/

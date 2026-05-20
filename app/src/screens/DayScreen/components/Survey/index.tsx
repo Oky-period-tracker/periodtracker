@@ -46,28 +46,20 @@ export const Survey = () => {
             <Text style={[styles.title, { color: palette.secondary.text }]}>survey</Text>
             <InfoButton title={'survey'} content={'info_button_survey'} />
           </View>
-          <Text>anonymous_answer</Text>
-          <Text>choose_one</Text>
-
           {state.hasAnsweredAll ? (
             <Text style={styles.thanks} status={'danger'}>
               thank_you_msg
             </Text>
           ) : state.consented ? (
             <>
-              <Text
-                style={[styles.question, { color: palette.secondary.text }]}
-                enableTranslate={false}
-              >
+              <Text style={styles.question} enableTranslate={false}>
                 {question}
               </Text>
               <SurveyCollect />
             </>
           ) : (
             <>
-              <Text style={[styles.question, { color: palette.secondary.text }]}>
-                {consentQuestion}
-              </Text>
+              <Text style={styles.question}>{consentQuestion}</Text>
               <SurveyConsent />
             </>
           )}
@@ -85,7 +77,9 @@ export const Survey = () => {
           </>
         )}
         <TouchableOpacity onPress={onConfirm} style={styles.button}>
-          <Text style={styles.buttonText}>{isLastQuestion ? 'submit' : 'confirm'}</Text>
+          <Text style={styles.buttonText}>
+            {state.hasAnsweredAll ? 'end' : isLastQuestion ? 'submit' : 'confirm'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

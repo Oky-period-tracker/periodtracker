@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Keyboard, Pressable, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Button } from '../../components/Button'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
@@ -37,7 +37,7 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
   }
 
   return (
-    <View style={styles.wrapper}>
+    <Pressable onPress={Keyboard.dismiss} accessible={false} style={styles.wrapper}>
       <SafeAreaView style={styles.container}>
         {showBackButton ? (
           <Button onPress={onBackPress} style={styles.button} accessibilityLabel={label}>
@@ -55,7 +55,7 @@ export const Header = ({ navigation, options, route }: HeaderProps) => {
           </Text>
         )}
       </SafeAreaView>
-    </View>
+    </Pressable>
   )
 }
 

@@ -1,5 +1,11 @@
 import React from 'react'
-import { Alert, KeyboardAvoidingView, StyleSheet, TouchableOpacity, View } from 'react-native'
+import {
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native'
 import { Input } from '../../../../components/Input'
 import { Text } from '../../../../components/Text'
 import { Hr } from '../../../../components/Hr'
@@ -54,7 +60,10 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
 
   return (
     <KeyboardAvoidingView style={[styles.container, { backgroundColor }]}>
-      <View style={styles.page}>
+      <ScrollView
+        contentContainerStyle={styles.page}
+        keyboardShouldPersistTaps="handled"
+      >
         <Input value={title} onChangeText={setTitle} placeholder="title" />
         <Input
           value={notes}
@@ -62,7 +71,7 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
           placeholder="daily_note_description"
           multiline={true}
         />
-      </View>
+      </ScrollView>
       <Hr />
       <TouchableOpacity onPress={onPress} style={styles.confirm}>
         <Text style={styles.confirmText}>confirm</Text>
@@ -79,7 +88,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   page: {
-    flex: 1,
+    flexGrow: 1,
     width: '100%',
     flexDirection: 'column',
     paddingHorizontal: 24,

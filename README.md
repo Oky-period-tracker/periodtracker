@@ -78,6 +78,8 @@ If you need a native dev build (for example to test push notifications or Fireba
 
 [Run the project locally](./docs/run_project.md)
 
+[Build the iOS app (local + App Store)](./docs/ios_build.md)
+
 [Test the Project](./docs/tests.md)
 
 [Overview of deployment and architecture](./docs/deployment/deployment_overview.md)

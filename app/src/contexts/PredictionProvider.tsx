@@ -4,11 +4,16 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 import _ from 'lodash'
-import { PredictionState, PredictionEngine } from '../prediction'
+import {
+  PredictionState,
+  PredictionEngine,
+  reconcileHistoryWithVerifiedDates,
+} from '../prediction'
 
 import { useDispatch } from 'react-redux'
 import * as actions from '../redux/actions'
 import { useSelector } from '../redux/useSelector'
+import { allCardAnswersSelector } from '../redux/selectors/answerSelectors'
 
 type PredictionDispatch = typeof PredictionEngine.prototype.userInputDispatch
 
@@ -29,6 +34,9 @@ const defaultState = PredictionState.fromData({
 export function PredictionProvider({ children }) {
   const reduxDispatch = useDispatch()
   const predictionState = useSelector((state) => state.prediction)
+  const verifiedDates = useSelector(allCardAnswersSelector)
+  const currentUserId = useSelector((state) => state.auth.user?.id ?? null)
+  const reconciledUserRef = React.useRef<string | null>(null)
 
   const [predictionSnapshots, setPredictionSnapshots] = React.useState([])
 
@@ -55,6 +63,22 @@ export function PredictionProvider({ children }) {
       reduxDispatch(actions.setPredictionEngineState(nextPredictionState))
     })
   }, [reduxDispatch, predictionEngine])
+
+  // Rebuild missing cycle history from verified period dates.
+  // Some users have many verified period days but a sparse history (data loss
+  // after migration or sync issues). Run once per logged-in user.
+  React.useEffect(() => {
+    if (!currentUserId) return
+    if (reconciledUserRef.current === currentUserId) return
+    if (!predictionState?.currentCycle) return
+    if (!verifiedDates || Object.keys(verifiedDates).length === 0) return
+
+    const rebuilt = reconcileHistoryWithVerifiedDates(predictionState, verifiedDates)
+    if (rebuilt) {
+      reduxDispatch(actions.setPredictionEngineState(rebuilt))
+    }
+    reconciledUserRef.current = currentUserId
+  }, [currentUserId, predictionState, verifiedDates, reduxDispatch])
 
   const undo = React.useCallback(() => {
     if (predictionSnapshots.length > 0) {

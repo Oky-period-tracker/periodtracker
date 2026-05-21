@@ -1,4 +1,5 @@
 import * as React from 'react'
+import _ from 'lodash'
 
 import { EmojiQuestionCard } from './EmojiQuestionCard'
 import { QuizCard } from './QuizCard'
@@ -9,6 +10,8 @@ import { usePredictDay } from '../../../../contexts/PredictionProvider'
 import { ScreenProps } from '../../../../navigation/RootNavigator'
 import { DayModal } from '../../../../components/DayModal'
 import { useToggle } from '../../../../hooks/useToggle'
+import { useSelector } from '../../../../redux/useSelector'
+import { allQuizzesSelectors, allDidYouKnowsSelectors } from '../../../../redux/selectors'
 
 export const DayTracker = ({ navigation, route }: ScreenProps<'Day'>) => {
   const dataEntry = usePredictDay(route.params.date)
@@ -25,6 +28,9 @@ export const DayTracker = ({ navigation, route }: ScreenProps<'Day'>) => {
 
   const isOnPeriod = dataEntry.onPeriod
   const dateIsEven = route.params.date.day() % 2 === 0
+  const hasQuizzes = useSelector((state) => !_.isEmpty(allQuizzesSelectors(state)))
+  const hasDidYouKnows = useSelector((state) => !_.isEmpty(allDidYouKnowsSelectors(state)))
+  const hasContent = dateIsEven ? hasQuizzes : hasDidYouKnows
   const ContentCard = dateIsEven ? <QuizCard dataEntry={dataEntry} /> : <DidYouKnowCard />
 
   const components = [
@@ -35,9 +41,10 @@ export const DayTracker = ({ navigation, route }: ScreenProps<'Day'>) => {
     <NotesCard dataEntry={dataEntry} goBack={goBack} />,
   ]
 
-  // Insert Quiz | DidYouKnow at Start or End
-  const contentIndex = isOnPeriod ? components.length - 1 : 0
-  components.splice(contentIndex, 0, ContentCard)
+  if (hasContent) {
+    const contentIndex = isOnPeriod ? components.length - 1 : 0
+    components.splice(contentIndex, 0, ContentCard)
+  }
 
   // Add key prop
   const pages = components.map((page, i) => React.cloneElement(page, { key: `day-card-${i}` }))

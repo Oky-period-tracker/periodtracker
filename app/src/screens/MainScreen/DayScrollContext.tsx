@@ -133,7 +133,7 @@ const defaultValue: DayScrollContext = {
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue)
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
-  const { UIConfig } = useResponsive()
+  const { UIConfig, width: screenWidth } = useResponsive()
   // Carousel
   const CARD_WIDTH = UIConfig.carousel.cardWidth
   const CARD_MARGIN = UIConfig.carousel.cardMargin
@@ -143,7 +143,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const CARD_SCALED_DIFFERENCE = FULL_SELECTED_WIDTH - FULL_CARD_WIDTH
 
   // Wheel
-  const BUTTON_SIZE = 80
+  const BUTTON_SIZE = screenWidth <= 392 ? 65 : 80
   const NUMBER_OF_BUTTONS = 12
   const ANGLE_FULL_CIRCLE = 2 * Math.PI
   const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS
@@ -196,7 +196,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const onBodyLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout
-    setDiameter(height) //
+    setDiameter(screenWidth > 392 ? height * 0.9 : height)
   }
 
   const [visible, setVisible] = React.useState(false)

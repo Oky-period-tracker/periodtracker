@@ -39,7 +39,9 @@ export const quizAnswerByDate: any = (state: ReduxState, date: Moment) => {
 }
 
 export const quizzesWithoutAnswersSelector = (state: ReduxState) => {
-  return allQuizzesSelectors(state).filter(({ id }) => !quizHasAnswerSelector(state, id))
+  return allQuizzesSelectors(state).filter(
+    (quiz) => quiz && quiz.id && !quizHasAnswerSelector(state, quiz.id),
+  )
 }
 
 export const cardAnswerSelector = (state: ReduxState, date: Moment) => {

@@ -276,6 +276,6 @@ export const AnimatedAvatarPreview: React.FC<BaseAvatarPreviewProps> = (props) =
 
 const styles = StyleSheet.create({
   container: {
-    // Container for animated avatar
+    overflow: 'visible',
   },
 })

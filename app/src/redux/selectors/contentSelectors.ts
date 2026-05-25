@@ -105,28 +105,27 @@ export const allQuizzesSelectors = (state: ReduxState) => {
   // moment()
   //   .utc()
   //   .diff(state.auth.user.dateOfBirth) < 15
-  const tempArr = []
-  const filteredArray = s(state).quizzes.allIds.reduce((acc, id) => {
-    if (
-      (!s(state).quizzes.byId[id]?.isAgeRestricted && isUserYoungerThan15) ||
-      !isUserYoungerThan15
-    ) {
-      tempArr.push(s(state).quizzes.byId[id])
-    }
-    if (
-      (!s(state).quizzes.byId[id].isAgeRestricted && isUserYoungerThan15) ||
-      !isUserYoungerThan15
-    ) {
-      // @ts-expect-error TODO:
-      acc.push(s(state).quizzes.byId[id])
-    }
-    return acc
-  }, [])
+  const quizzes = s(state)?.quizzes
+  if (!quizzes?.allIds || !quizzes?.byId) {
+    return []
+  }
+  const filteredArray = quizzes.allIds.reduce<Array<NonNullable<typeof quizzes.byId[string]>>>(
+    (acc, id) => {
+      const quiz = quizzes.byId?.[id]
+      if (!quiz) return acc
+      if ((!quiz.isAgeRestricted && isUserYoungerThan15) || !isUserYoungerThan15) {
+        acc.push(quiz)
+      }
+      return acc
+    },
+    [],
+  )
 
   // In the extreme event of all content being age restricted return the first quiz/ did you know instead of crashing the app
 
   if (_.isEmpty(filteredArray)) {
-    return [s(state).quizzes.byId[s(state).quizzes.allIds[0]]]
+    const fallback = quizzes.byId?.[quizzes.allIds[0]]
+    return fallback ? [fallback] : []
   }
 
   return filteredArray
@@ -139,20 +138,25 @@ export const allDidYouKnowsSelectors = (state: ReduxState) => {
   // moment()
   //   .utc()
   //   .diff(state.auth.user.dateOfBirth) < 15
-  const filteredArray = s(state).didYouKnows.allIds.reduce((acc, id) => {
-    if (
-      (!s(state).didYouKnows.byId[id]?.isAgeRestricted && isUserYoungerThan15) ||
-      !isUserYoungerThan15
-    ) {
-      // @ts-expect-error TODO:
-      acc.push(s(state).didYouKnows.byId[id])
+  const didYouKnows = s(state)?.didYouKnows
+  if (!didYouKnows?.allIds || !didYouKnows?.byId) {
+    return []
+  }
+  const filteredArray = didYouKnows.allIds.reduce<
+    Array<NonNullable<typeof didYouKnows.byId[string]>>
+  >((acc, id) => {
+    const item = didYouKnows.byId?.[id]
+    if (!item) return acc
+    if ((!item.isAgeRestricted && isUserYoungerThan15) || !isUserYoungerThan15) {
+      acc.push(item)
     }
     return acc
   }, [])
 
   // In the extreme event of all content being age restricted return the first quiz/ did you know instead of crashing the app
   if (_.isEmpty(filteredArray)) {
-    return [s(state).didYouKnows.byId[s(state).didYouKnows.allIds[0]]]
+    const fallback = didYouKnows.byId?.[didYouKnows.allIds[0]]
+    return fallback ? [fallback] : []
   }
 
   return filteredArray

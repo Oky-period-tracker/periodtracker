@@ -148,9 +148,7 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
       setFirstVisitTooltipVisible(true)
       dispatch(setCustomAvatarTutorialActive(false))
 
-      analytics?.().logEvent('CUSTOM_AVATAR_UNLOCK', {
-        userId: currentUser?.id || null,
-      })
+      analytics?.().logEvent('CUSTOM_AVATAR_UNLOCK', {})
     }
   }, [isCustomAvatarTutorialActive, currentUser?.id, dispatch])
 
@@ -310,7 +308,6 @@ const CustomAvatarScreen: ScreenComponent<'CustomAvatar'> = ({ navigation }) => 
       }
 
       analytics?.().logEvent('CUSTOM_AVATAR_UPDATED', {
-        userId: currentUser?.id || null,
         hasBody: !!updatedAvatar.body,
         hasHair: !!updatedAvatar.hair,
         hasEyes: !!updatedAvatar.eyes,

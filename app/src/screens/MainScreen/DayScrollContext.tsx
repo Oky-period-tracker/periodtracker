@@ -6,6 +6,7 @@ import {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
+  withDelay,
   AnimatedStyle,
   runOnJS,
   SharedValue,
@@ -292,6 +293,19 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     return segmentIndex * ANGLE_BETWEEN_BUTTONS
   }
 
+  // Unlock and apply the state change deterministically after animations
+  // settle. Scheduled on the JS thread rather than from the withSpring
+  // "finished" callback because nested timing/spring callbacks become
+  // unreliable on Reanimated v4 + the new architecture, which left
+  // disabled.value stuck at true and blocked subsequent swipes.
+  const finalizePanEnd = (change: number) => {
+    setTimeout(() => {
+      disabled.value = false
+      handleInfiniteData(change)
+      setIsDragging(false)
+    }, SETTLE_DURATION + 200)
+  }
+
   // ================ Handle Gestures ================ //
   const handlePanStart = () => {
     'worklet'
@@ -344,21 +358,12 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     const angle = calculateRotationAngle(displacement)
     const endAngle = calculateClosestSegmentAngle(totalRotation.value + angle)
     totalRotation.value = endAngle
-    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION }, () => {
-      // === Spring Scale === //
-      selectedScale.value = withSpring(
-        SELECTED_SCALE,
-        SPRING_CONFIG,
-        // === Finished - Update state === //
-        (finished) => {
-          if (finished) {
-            disabled.value = false
-            runOnJS(handleInfiniteData)(change)
-            runOnJS(setIsDragging)(false)
-          }
-        },
-      )
-    })
+    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION })
+
+    // === Spring Scale === //
+    selectedScale.value = withDelay(SETTLE_DURATION, withSpring(SELECTED_SCALE, SPRING_CONFIG))
+
+    runOnJS(finalizePanEnd)(change)
   }
 
   const carouselPanGesture = Gesture.Pan()

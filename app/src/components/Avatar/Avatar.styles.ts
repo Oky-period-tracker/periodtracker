@@ -16,6 +16,7 @@ export const getAvatarContainerBottomStyle = (bottomOffset: number): ViewStyle =
 
 export const getCustomAvatarScaleStyle = (scale: number): ViewStyle => ({
   transform: [{ scale }],
+  overflow: 'visible',
 })
 
 export const getLottieViewStyle = (width: number, height: number): ViewStyle => ({

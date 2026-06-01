@@ -183,7 +183,7 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
   }
 
   return (
-    <View style={[styles.container, { width, height }, style]}>
+    <View pointerEvents="none" style={[styles.container, { width, height }, style]}>
       {/* Body layer with skin color */}
       {BodyComponent && (
         <View style={[styles.layer, styles.bodyLayer]}>
@@ -253,6 +253,7 @@ export const AvatarPreview: React.FC<AvatarPreviewProps> = ({
             style={[
               styles.layer,
               isProstheticDevice ? styles.deviceLayerProsthetic : styles.deviceLayer,
+              { overflow: 'visible' },
             ]}
           >
             {renderSvg(svg, { width, height, animatedTransforms })}
@@ -285,6 +286,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'visible',
   },
   layer: {
     position: 'absolute',

@@ -19,10 +19,7 @@ export class HashedName {
       throw new Error(`This name is too short`)
     }
 
-    const hash = crypto
-      .createHash('sha256')
-      .update(name)
-      .digest('hex')
+    const hash = crypto.createHash('sha256').update(name).digest('hex')
 
     return new HashedName(hash)
   }

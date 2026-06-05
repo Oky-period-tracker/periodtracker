@@ -11,8 +11,8 @@ import { dirs } from './dirs'
 import { bootstrap } from './api/bootstrap'
 
 function preloadServices(folders: string[]) {
-  folders.forEach(folder => {
-    fs.readdirSync(folder).forEach(file => {
+  folders.forEach((folder) => {
+    fs.readdirSync(folder).forEach((file) => {
       if (file.endsWith('.ts') || file.endsWith('.js')) {
         require(`${folder}/${file}`)
       }

@@ -5,7 +5,7 @@
 // dispatches the resulting user into the freshly built store.
 import { getActiveBundle, switchToUser } from '../../redux/storeManager'
 import { ANON_USER_ID } from '../storage/storageKeys'
-import { loginSuccess } from '../../redux/actions'
+import { loginSuccess, setLocale, setTheme, setAvatar } from '../../redux/actions'
 import * as registry from '../userMetadata/registry'
 import {
   saveCredential,
@@ -62,6 +62,13 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
   if (existing) {
     throw new Error('name_taken')
   }
+  // Capture the language/theme/avatar the user picked on the auth screen. These live in the
+  // active (anon) store's app slice and would otherwise be lost when we switch to the new
+  // account's fresh store, which resets them to the device/app defaults.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const prevApp = (getActiveBundle()?.store.getState() as any)?.app as
+    | { locale?: string; theme?: string; avatar?: string }
+    | undefined
   const deviceId = await getDeviceId()
   const userId = a.id || uuidv4()
   // Create this account's own Keychain key first. If the Keychain is present but the key did not
@@ -97,6 +104,18 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
   // Dispatch into the bundle we just built (never getActiveBundle(), which a concurrent switch
   // could have replaced). appToken is undefined until the account syncs to the server.
   const bundle = await switchToUser(userId)
+  // Carry the onboarding selections into the new account's store before it renders.
+  if (prevApp?.locale) {
+    bundle.store.dispatch(setLocale(prevApp.locale))
+  }
+  if (prevApp?.theme) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    bundle.store.dispatch(setTheme(prevApp.theme as any))
+  }
+  if (prevApp?.avatar) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    bundle.store.dispatch(setAvatar(prevApp.avatar as any))
+  }
   bundle.store.dispatch(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     loginSuccess({ appToken: undefined as any, user: toUser(userId, a) as any }),

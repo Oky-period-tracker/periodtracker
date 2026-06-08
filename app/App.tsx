@@ -4,7 +4,7 @@ import RootNavigator from './src/navigation/RootNavigator'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Background } from './src/components/Background'
 import { Provider } from 'react-redux'
-import { store, persistor } from './src/redux/store'
+import { StoreManagerProvider } from './src/redux/StoreManagerContext'
 import { PersistGate } from 'redux-persist/integration/react'
 import { useOrientationLock } from './src/hooks/useOrientationLock'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -29,26 +29,30 @@ function App() {
     <SafeAreaProvider>
       <ReducedMotionConfig mode={ReduceMotion.Never} />
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
-            <AuthProvider>
-              <PredictionProvider>
-                <ResponsiveProvider>
-                  <SoundProvider>
-                    <EncyclopediaProvider>
-                      <Background>
-                        <LoadingProvider>
-                          <StatusBar hidden />
-                          <RootNavigator />
-                        </LoadingProvider>
-                      </Background>
-                    </EncyclopediaProvider>
-                  </SoundProvider>
-                </ResponsiveProvider>
-              </PredictionProvider>
-            </AuthProvider>
-          </PersistGate>
-        </Provider>
+        <StoreManagerProvider>
+          {(bundle) => (
+            <Provider store={bundle.store}>
+              <PersistGate key={bundle.userId} loading={null} persistor={bundle.persistor}>
+                <AuthProvider>
+                  <PredictionProvider>
+                    <ResponsiveProvider>
+                      <SoundProvider>
+                        <EncyclopediaProvider>
+                          <Background>
+                            <LoadingProvider>
+                              <StatusBar hidden />
+                              <RootNavigator />
+                            </LoadingProvider>
+                          </Background>
+                        </EncyclopediaProvider>
+                      </SoundProvider>
+                    </ResponsiveProvider>
+                  </PredictionProvider>
+                </AuthProvider>
+              </PersistGate>
+            </Provider>
+          )}
+        </StoreManagerProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   )

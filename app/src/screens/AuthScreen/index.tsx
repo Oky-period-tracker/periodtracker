@@ -5,6 +5,7 @@ import { Button } from '../../components/Button'
 import AnimatedContainer from '../../components/AnimatedContainer'
 import { SignUp } from './components/SignUp'
 import { AuthToggle } from './components/AuthToggle'
+import { AccountSwitcher } from './components/AccountSwitcher'
 import { AuthModeProvider, useAuthMode } from './AuthModeContext'
 import { ScreenProps } from '../../navigation/RootNavigator'
 import { AvatarSelect } from '../AvatarScreen'
@@ -67,6 +68,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
 
       <View style={[styles.wrapper, globalStyles.shadow]}>
         <AnimatedContainer style={[styles.container, { backgroundColor }, globalStyles.elevation]}>
+          {authMode === 'start' && <AccountSwitcher />}
           {authMode === 'start' && <AuthToggle />}
           {authMode === 'log_in' && <LogIn />}
           {authMode === 'sign_up' && <SignUp />}

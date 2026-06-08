@@ -119,12 +119,27 @@ export async function logoutToAnon(): Promise<void> {
   await switchToUser(ANON_USER_ID)
 }
 
-// Remove an account entirely (registry entry, per-user store, credentials) and switch away
-// from it if it was active.
+// Remove an account entirely (registry entry, per-user store, credentials) and return to the
+// logged-out (anon) context.
 export async function deleteAccount(userId: string): Promise<void> {
   await registry.removeUser(userId)
-  const remaining = await registry.listUsers()
-  await switchToUser(remaining.length > 0 ? remaining[0].id : ANON_USER_ID)
+  await switchToUser(ANON_USER_ID)
+}
+
+// Delete a locally registered account after verifying its password. Returns false if no local
+// account matches the name (caller may fall back to an online delete). Throws 'login_failed'
+// if the password is wrong.
+export async function deleteAccountByPassword(name: string, password: string): Promise<boolean> {
+  const account = await registry.findUserByName(name)
+  if (!account) {
+    return false
+  }
+  const ok = await verifyPassword(account.id, password)
+  if (!ok) {
+    throw new Error('login_failed')
+  }
+  await deleteAccount(account.id)
+  return true
 }
 
 export async function listAccounts() {

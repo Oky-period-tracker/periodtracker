@@ -14,6 +14,7 @@ import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { loadPendingSyncData } from '../../../services/pendingSync'
 import { loginToAccount } from '../../../services/auth/accountFlows'
+import { verifyPassword } from '../../../services/auth/credentialVault'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
@@ -50,8 +51,12 @@ export const LogIn = () => {
     const formattedPassword = formatPassword(password)
 
     if (user) {
-      // Passcode re-entry for the account already loaded into the active store.
-      if (user.password === formattedPassword) {
+      // Passcode re-entry for the account already loaded into the active store. Verify against
+      // the credential vault (the source of truth, kept current by offline password resets),
+      // falling back to the plaintext stored on the user for any pre-vault account.
+      const ok =
+        (await verifyPassword(user.id, formattedPassword)) || user.password === formattedPassword
+      if (ok) {
         setIsLoggedIn(true)
         return
       }

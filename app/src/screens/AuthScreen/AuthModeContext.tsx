@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector } from '../../redux/useSelector'
 import { currentUserSelector, hasOpenedSelector } from '../../redux/selectors'
+import { listUsers } from '../../services/userMetadata/registry'
 
 export type AuthMode =
   | 'welcome'
@@ -31,7 +32,47 @@ export const AuthModeProvider = ({ children }: React.PropsWithChildren) => {
   const user = useSelector(currentUserSelector)
   const hasOpened = useSelector(hasOpenedSelector)
 
-  const initialState = !hasOpened ? 'welcome' : user ? 'log_in' : 'start'
+  // hasOpened lives in the per-user (and anon) redux store, so after a logout the fresh anon
+  // store would replay the one-time welcome intro. Gate the intro on the device having no
+  // accounts yet, so it only ever shows on a genuinely fresh device.
+  const [hasAccounts, setHasAccounts] = React.useState<boolean | null>(null)
+  React.useEffect(() => {
+    let mounted = true
+    listUsers()
+      .then((accounts) => {
+        if (mounted) {
+          setHasAccounts(accounts.length > 0)
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setHasAccounts(false)
+        }
+      })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  // Wait for the account check before deciding the initial mode, so the welcome intro never
+  // flashes on a device that already has accounts.
+  if (hasAccounts === null) {
+    return null
+  }
+
+  return (
+    <AuthModeInner showWelcome={!hasOpened && !hasAccounts} hasUser={!!user}>
+      {children}
+    </AuthModeInner>
+  )
+}
+
+const AuthModeInner = ({
+  showWelcome,
+  hasUser,
+  children,
+}: React.PropsWithChildren<{ showWelcome: boolean; hasUser: boolean }>) => {
+  const initialState: AuthMode = showWelcome ? 'welcome' : hasUser ? 'log_in' : 'start'
   const [authMode, setAuthMode] = React.useState<AuthMode>(initialState)
 
   return <AuthContext.Provider value={{ authMode, setAuthMode }}>{children}</AuthContext.Provider>

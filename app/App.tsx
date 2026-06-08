@@ -17,12 +17,18 @@ import { StatusBar } from 'react-native'
 import { analytics } from './src/services/firebase'
 import { ReducedMotionConfig, ReduceMotion } from 'react-native-reanimated'
 import { SoundProvider } from './src/contexts/SoundProvider'
+import { startSyncWatcher } from './src/services/sync/syncManager'
 
 function App() {
   useOrientationLock()
 
   React.useEffect(() => {
     analytics?.().logAppOpen()
+  }, [])
+
+  React.useEffect(() => {
+    // Sync offline-created accounts to the server when online.
+    return startSyncWatcher()
   }, [])
 
   return (

@@ -1,13 +1,12 @@
 // Per-user credential record. Stores the password / secret-answer hashes for offline
-// verification, and (until the account syncs to the server) the AES-encrypted plaintext
-// needed to register the account online later. Everything is AsyncStorage plus pure-JS
-// crypto, so no native rebuild is needed. Keychain (expo-secure-store) is a future
-// hardening step that would require a native build.
+// verification, and (until the account syncs to the server) the plaintext needed to register the
+// account online later, AES-encrypted with that account's per-user key from the Keychain (see
+// encryptionKeys). Stored in AsyncStorage; the protection is the Keychain-held key.
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import CryptoJS from 'crypto-js'
-import { config } from '../../resources/redux'
 import { credentialKey } from '../storage/storageKeys'
 import { hashSecret, verifySecret } from './hashUtils'
+import { getEncryptionKey } from './encryptionKeys'
 
 interface StoredCredential {
   passwordHash: string
@@ -19,18 +18,16 @@ interface StoredCredential {
   encSecretAnswer?: string
 }
 
-const KEY: string = config.REDUX_ENCRYPT_KEY
-
-function encrypt(plain: string): string {
-  return CryptoJS.AES.encrypt(plain, KEY).toString()
+function encrypt(plain: string, key: string): string {
+  return CryptoJS.AES.encrypt(plain, key).toString()
 }
 
-function decrypt(cipher: string | undefined): string | null {
+function decrypt(cipher: string | undefined, key: string): string | null {
   if (!cipher) {
     return null
   }
   try {
-    const text = CryptoJS.AES.decrypt(cipher, KEY).toString(CryptoJS.enc.Utf8)
+    const text = CryptoJS.AES.decrypt(cipher, key).toString(CryptoJS.enc.Utf8)
     return text || null
   } catch {
     return null
@@ -66,9 +63,10 @@ export async function saveCredential(params: {
     secretAnswerSalt: sa ? sa.salt : null,
   }
   if (keepPlainForSync) {
-    record.encPassword = encrypt(password)
+    const key = await getEncryptionKey(userId)
+    record.encPassword = encrypt(password, key)
     if (secretAnswer) {
-      record.encSecretAnswer = encrypt(secretAnswer)
+      record.encSecretAnswer = encrypt(secretAnswer, key)
     }
   }
   await write(userId, record)
@@ -93,12 +91,13 @@ export async function verifySecretAnswer(userId: string, answer: string): Promis
 export async function setNewPassword(userId: string, password: string): Promise<void> {
   const rec = await read(userId)
   const pw = hashSecret(password)
+  const key = await getEncryptionKey(userId)
   await write(userId, {
     passwordHash: pw.hash,
     passwordSalt: pw.salt,
     secretAnswerHash: rec ? rec.secretAnswerHash : null,
     secretAnswerSalt: rec ? rec.secretAnswerSalt : null,
-    encPassword: encrypt(password),
+    encPassword: encrypt(password, key),
     encSecretAnswer: rec ? rec.encSecretAnswer : undefined,
   })
 }
@@ -110,7 +109,11 @@ export async function getSyncSecrets(
   if (!rec) {
     return { password: null, secretAnswer: null }
   }
-  return { password: decrypt(rec.encPassword), secretAnswer: decrypt(rec.encSecretAnswer) }
+  const key = await getEncryptionKey(userId)
+  return {
+    password: decrypt(rec.encPassword, key),
+    secretAnswer: decrypt(rec.encSecretAnswer, key),
+  }
 }
 
 export async function clearSyncSecrets(userId: string): Promise<void> {

@@ -8,6 +8,7 @@ import { ANON_USER_ID } from '../storage/storageKeys'
 import { loginSuccess } from '../../redux/actions'
 import * as registry from '../userMetadata/registry'
 import { saveCredential, verifyPassword, setNewPassword, verifySecretAnswer } from './credentialVault'
+import { createEncryptionKey, deleteEncryptionKey } from './encryptionKeys'
 import { getDeviceId } from '../deviceId'
 import { uuidv4 } from '../uuid'
 
@@ -63,6 +64,8 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
   }
   const deviceId = await getDeviceId()
   const userId = a.id || uuidv4()
+  // Create this account's own encryption key (Keychain) before its store and vault are written.
+  await createEncryptionKey(userId)
   // Throws MAX_ACCOUNTS_ERROR if the device already has the maximum number of accounts.
   await registry.addUser({ id: userId, name: a.name, deviceId, isPendingSync: true, appToken: null })
   await saveCredential({
@@ -123,6 +126,7 @@ export async function logoutToAnon(): Promise<void> {
 // logged-out (anon) context.
 export async function deleteAccount(userId: string): Promise<void> {
   await registry.removeUser(userId)
+  await deleteEncryptionKey(userId)
   await switchToUser(ANON_USER_ID)
 }
 

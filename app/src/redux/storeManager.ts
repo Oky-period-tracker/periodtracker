@@ -8,9 +8,9 @@ import { encryptTransform } from 'redux-persist-transform-encrypt'
 import createSagaMiddleware, { Task } from 'redux-saga'
 import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
-import { config } from '../resources/redux'
 import { reduxMigrations, reduxStoreVersion } from '../optional/reduxMigrations'
 import { setHttpClientStore } from '../services/HttpClient'
+import { getEncryptionKey } from '../services/auth/encryptionKeys'
 import {
   userDataConfigKey,
   userDataStorageKey,
@@ -23,18 +23,19 @@ export interface StoreBundle {
   persistor: Persistor
 }
 
-const encryptor = encryptTransform({
-  secretKey: config.REDUX_ENCRYPT_KEY,
-  onError: function () {
-    // @TODO: handle decryption errors
-  },
-})
-
 let active: StoreBundle | null = null
 let activeSaga: Task | null = null
 const listeners = new Set<(bundle: StoreBundle) => void>()
 
-function buildBundle(userId: string): Promise<StoreBundle> {
+async function buildBundle(userId: string): Promise<StoreBundle> {
+  // Per-account encryptor: keyed by this account's Keychain key (or the global key for legacy
+  // accounts), so accounts never share an encryption key.
+  const encryptor = encryptTransform({
+    secretKey: await getEncryptionKey(userId),
+    onError: function () {
+      // @TODO: handle decryption errors
+    },
+  })
   const persistConfig = {
     version: reduxStoreVersion,
     key: userDataConfigKey(userId),

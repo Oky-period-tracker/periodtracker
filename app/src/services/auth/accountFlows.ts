@@ -5,7 +5,13 @@
 // dispatches the resulting user into the freshly built store.
 import { getActiveBundle, switchToUser } from '../../redux/storeManager'
 import { ANON_USER_ID } from '../storage/storageKeys'
-import { loginSuccess, setLocale, setTheme, setAvatar } from '../../redux/actions'
+import {
+  loginSuccess,
+  setLocale,
+  setTheme,
+  setAvatar,
+  setOnboardingPending,
+} from '../../redux/actions'
 import * as registry from '../userMetadata/registry'
 import {
   saveCredential,
@@ -15,6 +21,7 @@ import {
   deleteCredential,
 } from './credentialVault'
 import { createEncryptionKey, deleteEncryptionKey } from './encryptionKeys'
+import { consumePendingLocale } from './pendingLocale'
 import { getDeviceId } from '../deviceId'
 import { httpClient } from '../HttpClient'
 import { uuidv4 } from '../uuid'
@@ -69,6 +76,9 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
   const prevApp = (getActiveBundle()?.store.getState() as any)?.app as
     | { locale?: string; theme?: string; avatar?: string }
     | undefined
+  // The locale is carried via prevApp below; clear any pending auth-screen pick so it is not also
+  // applied to a later login.
+  consumePendingLocale()
   const deviceId = await getDeviceId()
   const userId = a.id || uuidv4()
   // Create this account's own Keychain key first. If the Keychain is present but the key did not
@@ -116,6 +126,10 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     bundle.store.dispatch(setAvatar(prevApp.avatar as any))
   }
+  // Mark onboarding as pending so the auth screen routes the new account through avatar -> theme ->
+  // period survey before reaching home. The flag lives in the new account's store, so it survives
+  // the store-switch remount and is cleared when the survey is confirmed.
+  bundle.store.dispatch(setOnboardingPending(true))
   bundle.store.dispatch(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     loginSuccess({ appToken: undefined as any, user: toUser(userId, a) as any }),
@@ -135,7 +149,12 @@ export async function loginToAccount(name: string, password: string): Promise<bo
   if (!ok) {
     throw new Error('login_failed')
   }
-  await switchToUser(account.id)
+  const bundle = await switchToUser(account.id)
+  // If the user picked a language on the auth screen, carry it into this account's store.
+  const carriedLocale = consumePendingLocale()
+  if (carriedLocale) {
+    bundle.store.dispatch(setLocale(carriedLocale))
+  }
   return true
 }
 
@@ -158,7 +177,12 @@ export async function resetPasswordOffline(
 }
 
 export async function switchToAccount(userId: string): Promise<void> {
-  await switchToUser(userId)
+  const bundle = await switchToUser(userId)
+  // Carry a language picked on the auth screen into the account being switched to.
+  const carriedLocale = consumePendingLocale()
+  if (carriedLocale) {
+    bundle.store.dispatch(setLocale(carriedLocale))
+  }
 }
 
 // Leave the active account and return to the logged-out (anon) context.

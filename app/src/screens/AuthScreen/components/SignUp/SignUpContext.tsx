@@ -2,7 +2,6 @@ import React from 'react'
 import { User } from '../../../../types'
 import { FAST_SIGN_UP } from '../../../../config/env'
 import { Alert } from 'react-native'
-import { useAuth } from '../../../../contexts/AuthContext'
 import { formatPassword } from '../../../../services/auth'
 import { signupAccount } from '../../../../services/auth/accountFlows'
 import { findUserByName } from '../../../../services/userMetadata/registry'
@@ -276,8 +275,6 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
   const step = steps[state.stepIndex]
   const { isValid, errors } = validateStep(state, step)
 
-  const { setIsLoggedIn } = useAuth()
-
   const [debouncedName] = useDebounce(state.name, 500)
   React.useEffect(() => {
     if (!debouncedName || debouncedName.length < MINIMUM_NAME_LENGTH) {
@@ -345,11 +342,10 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       dateSignedUp: moment.utc().toISOString(),
     }
 
-    // Set the logged-in gate before the account's store is built: AuthProvider lives above the
-    // per-user store, so this survives the store switch that signupAccount performs.
-    setIsLoggedIn(true)
+    // Create the account. signupAccount switches to its store and marks onboarding pending, which
+    // routes the auth screen through avatar -> theme -> period survey. The logged-in gate is set at
+    // the end of onboarding (JourneyReview.onConfirm), not here.
     signupAccount(account).catch((err) => {
-      setIsLoggedIn(false)
       Alert.alert('error', err instanceof Error ? err.message : 'signup_failed')
     })
   }, [step])

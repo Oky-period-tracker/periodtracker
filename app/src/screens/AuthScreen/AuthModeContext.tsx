@@ -1,6 +1,10 @@
 import React from 'react'
 import { useSelector } from '../../redux/useSelector'
-import { currentUserSelector, hasOpenedSelector } from '../../redux/selectors'
+import {
+  currentUserSelector,
+  hasOpenedSelector,
+  onboardingPendingSelector,
+} from '../../redux/selectors'
 import { listUsers } from '../../services/userMetadata/registry'
 
 export type AuthMode =
@@ -31,6 +35,8 @@ const AuthContext = React.createContext<AuthModeContext>(defaultValue)
 export const AuthModeProvider = ({ children }: React.PropsWithChildren) => {
   const user = useSelector(currentUserSelector)
   const hasOpened = useSelector(hasOpenedSelector)
+  // Set on the just-created account's store by signupAccount; routes straight into onboarding.
+  const onboardingPending = useSelector(onboardingPendingSelector)
 
   // hasOpened lives in the per-user (and anon) redux store, so after a logout the fresh anon
   // store would replay the one-time welcome intro. Gate the intro on the device having no
@@ -61,18 +67,33 @@ export const AuthModeProvider = ({ children }: React.PropsWithChildren) => {
   }
 
   return (
-    <AuthModeInner showWelcome={!hasOpened && !hasAccounts} hasUser={!!user}>
+    <AuthModeInner
+      onboardingPending={!!onboardingPending}
+      showWelcome={!hasOpened && !hasAccounts}
+      hasUser={!!user}
+    >
       {children}
     </AuthModeInner>
   )
 }
 
 const AuthModeInner = ({
+  onboardingPending,
   showWelcome,
   hasUser,
   children,
-}: React.PropsWithChildren<{ showWelcome: boolean; hasUser: boolean }>) => {
-  const initialState: AuthMode = showWelcome ? 'welcome' : hasUser ? 'log_in' : 'start'
+}: React.PropsWithChildren<{
+  onboardingPending: boolean
+  showWelcome: boolean
+  hasUser: boolean
+}>) => {
+  const initialState: AuthMode = onboardingPending
+    ? 'avatar_selection'
+    : showWelcome
+    ? 'welcome'
+    : hasUser
+    ? 'log_in'
+    : 'start'
   const [authMode, setAuthMode] = React.useState<AuthMode>(initialState)
 
   return <AuthContext.Provider value={{ authMode, setAuthMode }}>{children}</AuthContext.Provider>

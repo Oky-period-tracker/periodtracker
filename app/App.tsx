@@ -31,9 +31,9 @@ function App() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <StoreManagerProvider>
           {(bundle) => (
-            <Provider store={bundle.store}>
-              <PersistGate key={bundle.userId} loading={null} persistor={bundle.persistor}>
-                <AuthProvider>
+            <AuthProvider>
+              <Provider store={bundle.store}>
+                <PersistGate key={bundle.userId} loading={null} persistor={bundle.persistor}>
                   <PredictionProvider>
                     <ResponsiveProvider>
                       <SoundProvider>
@@ -48,9 +48,9 @@ function App() {
                       </SoundProvider>
                     </ResponsiveProvider>
                   </PredictionProvider>
-                </AuthProvider>
-              </PersistGate>
-            </Provider>
+                </PersistGate>
+              </Provider>
+            </AuthProvider>
           )}
         </StoreManagerProvider>
       </GestureHandlerRootView>

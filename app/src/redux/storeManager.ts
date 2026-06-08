@@ -34,7 +34,7 @@ let active: StoreBundle | null = null
 let activeSaga: Task | null = null
 const listeners = new Set<(bundle: StoreBundle) => void>()
 
-function buildBundle(userId: string): StoreBundle {
+function buildBundle(userId: string): Promise<StoreBundle> {
   const persistConfig = {
     version: reduxStoreVersion,
     key: userDataConfigKey(userId),
@@ -53,9 +53,14 @@ function buildBundle(userId: string): StoreBundle {
   // @ts-ignore redux-persist reducer typing
   const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware))
   activeSaga = sagaMiddleware.run(rootSaga)
-  const persistor = persistStore(store)
   setHttpClientStore(store as Parameters<typeof setHttpClientStore>[0])
-  return { userId, store, persistor }
+  // Resolve only after rehydration finishes, so callers (e.g. signup) can dispatch into the
+  // store without a late REHYDRATE overwriting what they dispatched.
+  return new Promise<StoreBundle>((resolve) => {
+    const persistor = persistStore(store, null, () => {
+      resolve({ userId, store, persistor })
+    })
+  })
 }
 
 export function getActiveBundle(): StoreBundle | null {
@@ -100,7 +105,7 @@ export async function initStoreManager(): Promise<StoreBundle> {
     getActiveUserId: () => Promise<string | null>
   }
   const userId = (await getActiveUserId()) || ANON_USER_ID
-  active = buildBundle(userId)
+  active = await buildBundle(userId)
   notify(active)
   return active
 }
@@ -117,7 +122,7 @@ export async function switchToUser(userId: string): Promise<StoreBundle> {
     }
     await setActiveUser(userId)
   }
-  active = buildBundle(userId)
+  active = await buildBundle(userId)
   notify(active)
   return active
 }

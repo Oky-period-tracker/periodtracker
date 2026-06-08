@@ -1,10 +1,10 @@
 import React from 'react'
 import { User } from '../../../../types'
 import { FAST_SIGN_UP } from '../../../../config/env'
-import { useAuthMode } from '../../AuthModeContext'
-import { useDispatch } from 'react-redux'
-import { createAccountRequest } from '../../../../redux/actions'
+import { Alert } from 'react-native'
+import { useAuth } from '../../../../contexts/AuthContext'
 import { formatPassword } from '../../../../services/auth'
+import { signupAccount } from '../../../../services/auth/accountFlows'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { httpClient } from '../../../../services/HttpClient'
@@ -275,9 +275,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
   const step = steps[state.stepIndex]
   const { isValid, errors } = validateStep(state, step)
 
-  const { setAuthMode } = useAuthMode()
-
-  const reduxDispatch = useDispatch()
+  const { setIsLoggedIn } = useAuth()
 
   const [debouncedName] = useDebounce(state.name, 500)
   React.useEffect(() => {
@@ -320,7 +318,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       return
     }
 
-    const user = {
+    const account = {
       id: uuidv4(),
       name: state.name,
       password: formatPassword(state.password),
@@ -333,12 +331,15 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       dateOfBirth: state.dateOfBirth,
       metadata: state.metadata,
       dateSignedUp: moment.utc().toISOString(),
-      isGuest: false,
     }
 
-    reduxDispatch(createAccountRequest(user))
-    // TODO: wait for success
-    setAuthMode('avatar_selection')
+    // Set the logged-in gate before the account's store is built: AuthProvider lives above the
+    // per-user store, so this survives the store switch that signupAccount performs.
+    setIsLoggedIn(true)
+    signupAccount(account).catch((err) => {
+      setIsLoggedIn(false)
+      Alert.alert('error', err instanceof Error ? err.message : 'signup_failed')
+    })
   }, [step])
 
   return (

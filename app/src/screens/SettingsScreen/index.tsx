@@ -7,7 +7,8 @@ import { TouchableRow, TouchableRowProps } from '../../components/TouchableRow'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Switch } from '../../components/Switch'
 import { useDispatch } from 'react-redux'
-import { deleteAccountRequest, logoutRequest } from '../../redux/actions'
+import { deleteAccountRequest } from '../../redux/actions'
+import { logoutToAnon } from '../../services/auth/accountFlows'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
@@ -24,7 +25,8 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const { palette, backgroundColor } = useColor()
 
   const logOut = () => {
-    dispatch(logoutRequest())
+    // Leave the active account for the logged-out (anon) context, keeping its data saved.
+    void logoutToAnon()
     setIsLoggedIn(false)
   }
 

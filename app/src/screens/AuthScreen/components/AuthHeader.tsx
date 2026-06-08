@@ -3,22 +3,22 @@ import { StyleSheet, View } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Button } from '../../../components/Button'
 import { useAuthMode } from '../AuthModeContext'
-import { useDispatch } from 'react-redux'
 import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector } from '../../../redux/selectors'
-import { logoutRequest } from '../../../redux/actions'
+import { logoutToAnon } from '../../../services/auth/accountFlows'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
 
 export const AuthHeader = ({ title }: { title: string }) => {
   const user = useSelector(currentUserSelector)
-  const dispatch = useDispatch()
   const { setAuthMode } = useAuthMode()
   const { palette } = useColor()
 
   const onClose = () => {
     if (user) {
-      dispatch(logoutRequest())
+      // Leave this account for the logged-out (anon) context without wiping its saved data.
+      void logoutToAnon()
+      return
     }
 
     setAuthMode('start')

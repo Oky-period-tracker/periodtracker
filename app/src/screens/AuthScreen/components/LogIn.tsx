@@ -13,6 +13,7 @@ import { loginRequest } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { loadPendingSyncData } from '../../../services/pendingSync'
+import { loginToAccount } from '../../../services/auth/accountFlows'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
@@ -40,26 +41,36 @@ export const LogIn = () => {
     })
   }, [])
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     if (errors.length) {
       setErrorsVisible(true)
       return
     }
 
-    if (user) {
-      const formattedPassword = formatPassword(password)
-      const success = user.password === formattedPassword
+    const formattedPassword = formatPassword(password)
 
-      if (success) {
+    if (user) {
+      // Passcode re-entry for the account already loaded into the active store.
+      if (user.password === formattedPassword) {
         setIsLoggedIn(true)
         return
       }
-
       setSuccess(false)
       return
     }
 
-    dispatch(loginRequest({ name, password: formatPassword(password) }))
+    // Fresh login: try a locally registered account first (works offline), then fall back to
+    // an online login if no local account matches this name.
+    try {
+      const loggedIn = await loginToAccount(name, formattedPassword)
+      if (loggedIn) {
+        setIsLoggedIn(true)
+        return
+      }
+      dispatch(loginRequest({ name, password: formattedPassword }))
+    } catch {
+      setSuccess(false)
+    }
   }
 
   React.useEffect(() => {

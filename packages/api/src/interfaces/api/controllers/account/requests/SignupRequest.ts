@@ -47,4 +47,6 @@ export class SignupRequest {
   public readonly metadata?: UserMetadata
 
   public readonly avatar?: AvatarConfig | null
+
+  public readonly deviceId?: string
 }

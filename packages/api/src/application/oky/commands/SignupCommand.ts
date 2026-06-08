@@ -15,4 +15,5 @@ export interface SignupCommand {
   dateAccountSaved: string
   metadata: UserMetadata
   avatar?: AvatarConfig | null
+  deviceId?: string
 }

@@ -7,9 +7,16 @@ import { getActiveBundle, switchToUser } from '../../redux/storeManager'
 import { ANON_USER_ID } from '../storage/storageKeys'
 import { loginSuccess } from '../../redux/actions'
 import * as registry from '../userMetadata/registry'
-import { saveCredential, verifyPassword, setNewPassword, verifySecretAnswer } from './credentialVault'
+import {
+  saveCredential,
+  verifyPassword,
+  setNewPassword,
+  verifySecretAnswer,
+  deleteCredential,
+} from './credentialVault'
 import { createEncryptionKey, deleteEncryptionKey } from './encryptionKeys'
 import { getDeviceId } from '../deviceId'
+import { httpClient } from '../HttpClient'
 import { uuidv4 } from '../uuid'
 
 export const MAX_ACCOUNTS = registry.MAX_ACCOUNTS_ERROR
@@ -48,13 +55,6 @@ function toUser(id: string, a: NewAccount) {
   }
 }
 
-function dispatchUser(user: ReturnType<typeof toUser>): void {
-  const bundle = getActiveBundle()
-  // appToken is undefined until the account syncs to the server.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  bundle?.store.dispatch(loginSuccess({ appToken: undefined as any, user: user as any }))
-}
-
 // Create a new account: register it, store its credentials, give it its own store, and make
 // it active and logged in. Marked pending-sync so the server registration can happen later.
 export async function signupAccount(a: NewAccount): Promise<{ userId: string }> {
@@ -64,18 +64,43 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
   }
   const deviceId = await getDeviceId()
   const userId = a.id || uuidv4()
-  // Create this account's own encryption key (Keychain) before its store and vault are written.
-  await createEncryptionKey(userId)
-  // Throws MAX_ACCOUNTS_ERROR if the device already has the maximum number of accounts.
-  await registry.addUser({ id: userId, name: a.name, deviceId, isPendingSync: true, appToken: null })
-  await saveCredential({
-    userId,
-    password: a.password,
-    secretAnswer: a.secretAnswer ?? null,
-    keepPlainForSync: true,
-  })
-  await switchToUser(userId)
-  dispatchUser(toUser(userId, a))
+  // Create this account's own Keychain key first. If the Keychain is present but the key did not
+  // durably persist, abort rather than encrypt the account's data under a key lost on restart.
+  const keyResult = await createEncryptionKey(userId)
+  if (keyResult.secureStoreAvailable && !keyResult.persisted) {
+    await deleteEncryptionKey(userId)
+    throw new Error('keystore_unavailable')
+  }
+  try {
+    await saveCredential({
+      userId,
+      password: a.password,
+      secretAnswer: a.secretAnswer ?? null,
+      keepPlainForSync: true,
+    })
+    // The registry entry is written LAST and throws MAX_ACCOUNTS_ERROR if the device is full, so a
+    // registered account always implies a usable credential record and encryption key.
+    await registry.addUser({
+      id: userId,
+      name: a.name,
+      deviceId,
+      isPendingSync: true,
+      appToken: null,
+      hasEncryptionKey: keyResult.persisted,
+    })
+  } catch (err) {
+    // Roll back the partial writes so a failed signup never leaves an orphaned half-created account.
+    await deleteCredential(userId).catch(() => undefined)
+    await deleteEncryptionKey(userId).catch(() => undefined)
+    throw err
+  }
+  // Dispatch into the bundle we just built (never getActiveBundle(), which a concurrent switch
+  // could have replaced). appToken is undefined until the account syncs to the server.
+  const bundle = await switchToUser(userId)
+  bundle.store.dispatch(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    loginSuccess({ appToken: undefined as any, user: toUser(userId, a) as any }),
+  )
   return { userId }
 }
 
@@ -128,6 +153,29 @@ export async function deleteAccount(userId: string): Promise<void> {
   await registry.removeUser(userId)
   await deleteEncryptionKey(userId)
   await switchToUser(ANON_USER_ID)
+}
+
+// Delete the currently active (logged-in) account. Best-effort server delete, then full local
+// teardown (registry entry, encryption key, credential vault, store blob) and return to anon.
+// Lives here, outside the per-user saga, because the store teardown cancels that saga; the in-app
+// Settings delete must call this directly rather than dispatching into the saga.
+export async function deleteActiveAccount(credentials?: {
+  name: string
+  password: string
+}): Promise<void> {
+  const userId = getActiveBundle()?.userId
+  if (credentials) {
+    try {
+      await httpClient.deleteUserFromPassword(credentials)
+    } catch {
+      // Offline, or the account was never registered on the server: the local teardown still runs.
+    }
+  }
+  if (userId && userId !== ANON_USER_ID) {
+    await deleteAccount(userId)
+  } else {
+    await switchToUser(ANON_USER_ID)
+  }
 }
 
 // Delete a locally registered account after verifying its password. Returns false if no local

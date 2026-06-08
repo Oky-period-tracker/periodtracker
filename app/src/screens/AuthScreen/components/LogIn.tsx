@@ -32,6 +32,23 @@ export const LogIn = () => {
 
   const [margin, setMargin] = React.useState(0)
 
+  // The online login path resolves in the saga (loginFailure increments this), so surface its
+  // failures here too — otherwise a wrong password / network error for a server-only account
+  // (e.g. after a reinstall) gives no feedback at all.
+  const loginFailedCount = useSelector((state) => state.auth.loginFailedCount)
+  const prevFailedCount = React.useRef(loginFailedCount)
+  React.useEffect(() => {
+    if (loginFailedCount > prevFailedCount.current) {
+      setSuccess(false)
+    }
+    prevFailedCount.current = loginFailedCount
+  }, [loginFailedCount])
+
+  // Clear a stale "incorrect" message as soon as the user edits either field.
+  React.useEffect(() => {
+    setSuccess(null)
+  }, [name, password])
+
   // Pre-fill username from pending sync data after a forced logout
   React.useEffect(() => {
     if (user || name) return

@@ -15,33 +15,36 @@ import { loginSuccess } from '../../redux/actions'
 let syncing = false
 
 export async function syncActiveAccount(): Promise<void> {
+  // Set the single-flight guard synchronously, before any await, so two triggers firing close
+  // together (e.g. the initial run plus a NetInfo online event) cannot both pass the check and
+  // double-register the same account.
   if (syncing) {
     return
   }
-  const bundle = getActiveBundle()
-  if (!bundle || bundle.userId === ANON_USER_ID) {
-    return
-  }
-
-  const account = await registry.getUser(bundle.userId)
-  if (!account || !account.isPendingSync) {
-    return
-  }
-
-  const net = await NetInfo.fetch().catch(() => ({ isConnected: false }))
-  if (!net.isConnected) {
-    return
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const user = (bundle.store.getState() as any)?.auth?.user
-  // The API rejects account creation when country is unset / '00' (old-variant guard).
-  if (!user || !user.country || user.country === '00') {
-    return
-  }
-
   syncing = true
   try {
+    const bundle = getActiveBundle()
+    if (!bundle || bundle.userId === ANON_USER_ID) {
+      return
+    }
+
+    const account = await registry.getUser(bundle.userId)
+    if (!account || !account.isPendingSync) {
+      return
+    }
+
+    const net = await NetInfo.fetch().catch(() => ({ isConnected: false }))
+    if (!net.isConnected) {
+      return
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const user = (bundle.store.getState() as any)?.auth?.user
+    // The API rejects account creation when country is unset / '00' (old-variant guard).
+    if (!user || !user.country || user.country === '00') {
+      return
+    }
+
     const secrets = await getSyncSecrets(account.id)
     const deviceId = await getDeviceId()
     const response = await httpClient.signup({
@@ -64,7 +67,13 @@ export async function syncActiveAccount(): Promise<void> {
       // The local id stays the store key; the server id is recorded separately in the registry.
       await registry.markSynced(account.id, response.user.id, response.appToken)
       await clearSyncSecrets(account.id)
-      bundle.store.dispatch(loginSuccess({ appToken: response.appToken, user }))
+      // Only reflect the token in the live store if this account is still the active one — the
+      // user may have switched (or logged out) during the network round-trip, which would have
+      // torn down the captured store.
+      const current = getActiveBundle()
+      if (current && current.userId === account.id) {
+        current.store.dispatch(loginSuccess({ appToken: response.appToken, user }))
+      }
     }
   } catch {
     // Leave the account pending; it retries on the next online event or account switch.

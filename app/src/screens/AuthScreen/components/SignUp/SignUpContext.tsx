@@ -5,6 +5,7 @@ import { Alert } from 'react-native'
 import { useAuth } from '../../../../contexts/AuthContext'
 import { formatPassword } from '../../../../services/auth'
 import { signupAccount } from '../../../../services/auth/accountFlows'
+import { findUserByName } from '../../../../services/userMetadata/registry'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { httpClient } from '../../../../services/HttpClient'
@@ -285,6 +286,17 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
 
     let cleanup = false
     const checkUserNameAvailability = async () => {
+      // Check the local registry first: a name already used by another offline account on this
+      // device is taken regardless of the server, and this works offline (where getUserInfo
+      // throws and would otherwise mark every name available).
+      const localMatch = await findUserByName(debouncedName)
+      if (cleanup) {
+        return
+      }
+      if (localMatch) {
+        dispatch({ type: 'nameAvailable', value: false })
+        return
+      }
       try {
         await httpClient.getUserInfo(debouncedName)
         if (cleanup) {

@@ -1,7 +1,7 @@
 import { UserMetadata, AvatarConfig } from 'domain/oky/OkyUser'
 
 export interface SignupCommand {
-  preferredId: string
+  preferredId?: string
   name: string
   dateOfBirth: Date
   gender: 'Male' | 'Female' | 'Other'

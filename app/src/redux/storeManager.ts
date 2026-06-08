@@ -1,6 +1,12 @@
 // Per-user redux store manager. Replaces the old single static store. Each user gets their
 // own redux-persist store keyed 'user:{id}:data', so accounts never share or overwrite state.
 // Switching tears down the active store (after flushing it) and builds the selected user's.
+//
+// All transitions (init / switch / purge) are serialized through a single promise chain so that
+// concurrent account operations (e.g. a double-tap on the switcher, or a logout firing during a
+// signup) can never interleave and corrupt the module state or write one account's data into
+// another's store. Each bundle also owns its own saga task, so an overlapping build can never
+// orphan a still-running saga.
 import { applyMiddleware, createStore, Store } from 'redux'
 import { persistStore, persistReducer, PersistedState, Persistor } from 'redux-persist'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -10,7 +16,7 @@ import { rootReducer } from './reducers'
 import { rootSaga } from './sagas'
 import { reduxMigrations, reduxStoreVersion } from '../optional/reduxMigrations'
 import { setHttpClientStore } from '../services/HttpClient'
-import { getEncryptionKey } from '../services/auth/encryptionKeys'
+import { getEncryptionKey, EncryptionKeyUnavailableError } from '../services/auth/encryptionKeys'
 import {
   userDataConfigKey,
   userDataStorageKey,
@@ -21,19 +27,35 @@ export interface StoreBundle {
   userId: string
   store: Store
   persistor: Persistor
+  // The saga task for this bundle's store, owned by the bundle so it is always the one cancelled
+  // on teardown (never overwritten by an overlapping build).
+  saga: Task
 }
 
 let active: StoreBundle | null = null
-let activeSaga: Task | null = null
 const listeners = new Set<(bundle: StoreBundle) => void>()
+
+// Serialize every store-manager transition. enqueue runs fn only after the previous transition
+// has fully settled, so `active` is never mutated by two transitions at once.
+let opChain: Promise<unknown> = Promise.resolve()
+function enqueue<T>(fn: () => Promise<T>): Promise<T> {
+  const run = opChain.then(fn, fn)
+  opChain = run.then(
+    () => undefined,
+    () => undefined,
+  )
+  return run
+}
 
 async function buildBundle(userId: string): Promise<StoreBundle> {
   // Per-account encryptor: keyed by this account's Keychain key (or the global key for legacy
-  // accounts), so accounts never share an encryption key.
+  // accounts). Resolving the key first means a key-unavailable error aborts the build BEFORE any
+  // store/persistor exists, so a wrong-key store can never be created and then overwrite the blob.
+  const secretKey = await getEncryptionKey(userId)
   const encryptor = encryptTransform({
-    secretKey: await getEncryptionKey(userId),
+    secretKey,
     onError: function () {
-      // @TODO: handle decryption errors
+      // @TODO: surface decryption errors
     },
   })
   const persistConfig = {
@@ -53,15 +75,29 @@ async function buildBundle(userId: string): Promise<StoreBundle> {
   const sagaMiddleware = createSagaMiddleware()
   // @ts-ignore redux-persist reducer typing
   const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware))
-  activeSaga = sagaMiddleware.run(rootSaga)
+  const saga = sagaMiddleware.run(rootSaga)
   setHttpClientStore(store as Parameters<typeof setHttpClientStore>[0])
   // Resolve only after rehydration finishes, so callers (e.g. signup) can dispatch into the
   // store without a late REHYDRATE overwriting what they dispatched.
   return new Promise<StoreBundle>((resolve) => {
     const persistor = persistStore(store, null, () => {
-      resolve({ userId, store, persistor })
+      resolve({ userId, store, persistor, saga })
     })
   })
+}
+
+// Build the requested user's bundle, falling back to a fresh anon bundle if that account's
+// encryption key cannot be read right now (a transient Keychain failure). The fallback never
+// touches the account's persisted blob, so the data stays intact for a later successful open.
+async function buildBundleSafe(userId: string): Promise<StoreBundle> {
+  try {
+    return await buildBundle(userId)
+  } catch (err) {
+    if (err instanceof EncryptionKeyUnavailableError && userId !== ANON_USER_ID) {
+      return buildBundle(ANON_USER_ID)
+    }
+    throw err
+  }
 }
 
 export function getActiveBundle(): StoreBundle | null {
@@ -83,60 +119,64 @@ async function teardownActive(): Promise<void> {
   if (!active) {
     return
   }
+  const bundle = active
+  active = null
   try {
-    await active.persistor.flush()
+    await bundle.persistor.flush()
   } catch {
     // ignore flush errors during teardown
   }
-  if (activeSaga) {
-    activeSaga.cancel()
-    activeSaga = null
-  }
-  active = null
+  bundle.saga.cancel()
 }
 
 // Build the store for whoever the registry says is active (or an empty anon store on a
-// fresh device). Idempotent: returns the existing bundle if already built.
-export async function initStoreManager(): Promise<StoreBundle> {
-  if (active) {
+// fresh device). Idempotent: returns the existing bundle if already built. Serialized.
+export function initStoreManager(): Promise<StoreBundle> {
+  return enqueue(async () => {
+    if (active) {
+      return active
+    }
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { getActiveUserId } = require('../services/userMetadata/registry') as {
+      getActiveUserId: () => Promise<string | null>
+    }
+    const userId = (await getActiveUserId()) || ANON_USER_ID
+    active = await buildBundleSafe(userId)
+    notify(active)
     return active
-  }
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { getActiveUserId } = require('../services/userMetadata/registry') as {
-    getActiveUserId: () => Promise<string | null>
-  }
-  const userId = (await getActiveUserId()) || ANON_USER_ID
-  active = await buildBundle(userId)
-  notify(active)
-  return active
+  })
 }
 
-export async function switchToUser(userId: string): Promise<StoreBundle> {
-  if (active && active.userId === userId) {
-    return active
-  }
-  await teardownActive()
-  if (userId !== ANON_USER_ID) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { setActiveUser } = require('../services/userMetadata/registry') as {
-      setActiveUser: (id: string | null) => Promise<void>
+export function switchToUser(userId: string): Promise<StoreBundle> {
+  return enqueue(async () => {
+    if (active && active.userId === userId) {
+      return active
     }
-    await setActiveUser(userId)
-  }
-  active = await buildBundle(userId)
-  notify(active)
-  return active
+    await teardownActive()
+    if (userId !== ANON_USER_ID) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { setActiveUser } = require('../services/userMetadata/registry') as {
+        setActiveUser: (id: string | null) => Promise<void>
+      }
+      await setActiveUser(userId)
+    }
+    active = await buildBundleSafe(userId)
+    notify(active)
+    return active
+  })
 }
 
 // Delete a user's persisted store blob. Tears down the active store first if it belongs to
 // that user. Called by registry.removeUser (lazy-required there to avoid an import cycle).
-export async function purgeUserStorage(userId: string): Promise<void> {
-  if (active && active.userId === userId) {
-    await teardownActive()
-  }
-  try {
-    await AsyncStorage.removeItem(userDataStorageKey(userId))
-  } catch {
-    // already gone
-  }
+export function purgeUserStorage(userId: string): Promise<void> {
+  return enqueue(async () => {
+    if (active && active.userId === userId) {
+      await teardownActive()
+    }
+    try {
+      await AsyncStorage.removeItem(userDataStorageKey(userId))
+    } catch {
+      // already gone
+    }
+  })
 }

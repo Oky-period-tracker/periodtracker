@@ -18,6 +18,9 @@ interface LegacyAuthSlice {
     name?: string
     password?: string
     secretAnswer?: string
+    // Legacy offline-created accounts (a failed online signup) were stored as guests with no
+    // server token; they still need to be registered on the server.
+    isGuest?: boolean
   } | null
 }
 
@@ -54,28 +57,34 @@ export async function runLegacyMigration(): Promise<void> {
     }
 
     const deviceId = await getDeviceId()
+    // A legacy guest (offline-created) account has no server token and must still sync; an
+    // online-created account already has its token and is synced.
+    const isGuest = user.isGuest === true || !auth?.appToken
     // The legacy blob is already encrypted with the same key the per-user store uses, so the
     // new store rehydrates it directly. Copy it verbatim to the user-scoped key.
     await AsyncStorage.setItem(userDataStorageKey(user.id), legacyRaw)
 
     await addUser({
       id: user.id,
-      serverId: user.id,
+      serverId: isGuest ? null : user.id,
       name: user.name,
       deviceId,
-      isPendingSync: false,
+      isPendingSync: isGuest,
       appToken: auth?.appToken ?? null,
+      // Migrated accounts keep using the global key (their blob is already encrypted with it).
+      hasEncryptionKey: false,
     })
     await setActiveUser(user.id)
 
     if (user.password) {
-      // The legacy account was created online, so it is already synced; no plaintext is kept
-      // for re-sync, only the hashes for offline login and the secret answer for reset.
+      // Keep the plaintext for re-sync only when the account still needs to register on the
+      // server (a guest); otherwise store only the hashes for offline login plus the secret
+      // answer for reset.
       await saveCredential({
         userId: user.id,
         password: user.password,
         secretAnswer: user.secretAnswer ?? null,
-        keepPlainForSync: false,
+        keepPlainForSync: isGuest,
       })
     }
 

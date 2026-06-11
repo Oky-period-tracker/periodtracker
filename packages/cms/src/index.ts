@@ -52,11 +52,16 @@ withRetry(() => createConnection(ormconfig), {
             defaultSrc: ["'self'"],
             scriptSrc: [
               "'self'",
+              // The EJS admin views rely on inline <script> blocks (e.g.
+              // Encyclopedia, AnalyticsDash) that are rendered with server data,
+              // so static hashes/nonces are not practical here.
+              "'unsafe-inline'",
               'https://cdnjs.cloudflare.com',
               'https://code.jquery.com',
               'https://maxcdn.bootstrapcdn.com',
               'https://cdn.datatables.net',
               'https://cdn.amcharts.com',
+              'https://www.amcharts.com',
             ],
             styleSrc: [
               "'self'",
@@ -72,7 +77,17 @@ withRetry(() => createConnection(ormconfig), {
               'https://cdnjs.cloudflare.com',
             ],
             imgSrc: ["'self'", 'data:'],
-            connectSrc: ["'self'"],
+            // Allow the CDN origins so the browser can fetch the .map source
+            // maps for the vendored libraries (axios, popper, bootstrap, etc.)
+            // without CSP "connect-src" violations when DevTools is open.
+            connectSrc: [
+              "'self'",
+              'https://cdnjs.cloudflare.com',
+              'https://code.jquery.com',
+              'https://maxcdn.bootstrapcdn.com',
+              'https://stackpath.bootstrapcdn.com',
+              'https://cdn.datatables.net',
+            ],
             frameAncestors: ["'none'"],
           },
         },

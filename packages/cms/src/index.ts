@@ -236,11 +236,6 @@ withRetry(() => createConnection(ormconfig), {
                   message: error?.message,
                   stack: error?.stack,
                 })
-                crashAnalysisService.recordException(req.method, req.originalUrl, error, 500, {
-                  controller: route.controller?.name,
-                  action: route.action,
-                  userId: (req.user as any)?.id,
-                })
                 if (!res.headersSent) {
                   next(error)
                 }

@@ -17,13 +17,7 @@ const isWeb = Platform.OS === 'web'
 // Parameter keys that could identify a user/device and therefore must never be
 // sent to Firebase Analytics (privacy compliance). They are stripped before any
 // analytics event leaves the app.
-const SENSITIVE_ANALYTICS_KEYS = new Set([
-  'userId',
-  'deviceId',
-  'user',
-  'user_id',
-  'device_id',
-])
+const SENSITIVE_ANALYTICS_KEYS = new Set(['userId', 'deviceId', 'user', 'user_id', 'device_id'])
 
 // Recursively walks an analytics payload (object/array/primitive) and removes
 // any property whose key is in SENSITIVE_ANALYTICS_KEYS. Arrays and nested
@@ -59,7 +53,7 @@ const wrapAnalytics = (rawAnalytics: FirebaseAnalyticsFactory): FirebaseAnalytic
     const instance = rawAnalytics?.()
     if (!instance) {
       // Factory yielded nothing (module unavailable) — pass the undefined through.
-      return undefined as unknown as FirebaseAnalyticsTypes.Module
+      return (undefined as unknown) as FirebaseAnalyticsTypes.Module
     }
 
     // Object.create keeps the real instance as the prototype (so all other

@@ -4,11 +4,7 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 import _ from 'lodash'
-import {
-  PredictionState,
-  PredictionEngine,
-  reconcileHistoryWithVerifiedDates,
-} from '../prediction'
+import { PredictionState, PredictionEngine, reconcileHistoryWithVerifiedDates } from '../prediction'
 
 import { useDispatch } from 'react-redux'
 import * as actions from '../redux/actions'

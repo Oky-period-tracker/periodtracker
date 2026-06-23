@@ -12,7 +12,11 @@ import {
 } from '../../redux/selectors'
 import { httpClient } from '../../services/HttpClient'
 import { useDispatch } from 'react-redux'
-import { editUser, setAvatarWithValidation, setCustomAvatarTutorialActive } from '../../redux/actions'
+import {
+  editUser,
+  setAvatarWithValidation,
+  setCustomAvatarTutorialActive,
+} from '../../redux/actions'
 import { AvatarPreview } from '../../components/AvatarPreview'
 import { useFocusEffect, useRoute } from '@react-navigation/native'
 import { useResponsive } from '../../contexts/ResponsiveContext'

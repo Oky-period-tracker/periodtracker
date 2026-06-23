@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  Alert,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native'
+import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import { Input } from '../../../../components/Input'
 import { Text } from '../../../../components/Text'
 import { Hr } from '../../../../components/Hr'
@@ -60,10 +54,7 @@ export const NotesCard = ({ dataEntry, goBack }: { dataEntry?: DayData; goBack?:
 
   return (
     <KeyboardAvoidingView style={[styles.container, { backgroundColor }]}>
-      <ScrollView
-        contentContainerStyle={styles.page}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={styles.page} keyboardShouldPersistTaps="handled">
         <Input value={title} onChangeText={setTitle} placeholder="title" />
         <Input
           value={notes}

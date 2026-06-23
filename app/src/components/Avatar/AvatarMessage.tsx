@@ -78,12 +78,23 @@ export const AvatarMessage = ({ style }: { style?: StyleProp<ViewStyle> }) => {
       pointerEvents="none"
       style={[
         styles.container,
-        { backgroundColor, top: topPosition, left: leftPosition, width: width <= 392 ? 135 : MESSAGE_BUBBLE_CONFIG.width, padding: width <= 392 ? 6 : MESSAGE_BUBBLE_CONFIG.padding },
+        {
+          backgroundColor,
+          top: topPosition,
+          left: leftPosition,
+          width: width <= 392 ? 135 : MESSAGE_BUBBLE_CONFIG.width,
+          padding: width <= 392 ? 6 : MESSAGE_BUBBLE_CONFIG.padding,
+        },
         globalStyles.shadow,
         style,
       ]}
     >
-      <Text enableTranslate={false} accessibilityLabel={message} style={styles.messageText} numberOfLines={3}>
+      <Text
+        enableTranslate={false}
+        accessibilityLabel={message}
+        style={styles.messageText}
+        numberOfLines={3}
+      >
         {message}
       </Text>
       {/* Triangle pointer — colored to match the bubble background */}

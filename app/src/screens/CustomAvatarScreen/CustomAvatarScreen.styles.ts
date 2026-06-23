@@ -397,9 +397,8 @@ export const createCustomAvatarStyles = (
       backgroundColor: '#fff',
       borderRadius: screenWidth && screenWidth >= 840 ? 24 : 20,
       padding: config.spacing.medium * 1.5,
-      paddingTop: screenWidth && screenWidth <= 375
-        ? config.spacing.medium
-        : config.spacing.medium * 3.5,
+      paddingTop:
+        screenWidth && screenWidth <= 375 ? config.spacing.medium : config.spacing.medium * 3.5,
       width:
         screenWidth && screenWidth >= 840
           ? Math.min(screenWidth * 0.9, 600)
@@ -414,9 +413,10 @@ export const createCustomAvatarStyles = (
       fontWeight: 'bold',
       color: '#E91E63',
       textAlign: 'center',
-      marginBottom: screenWidth && screenWidth <= 375
-        ? config.spacing.medium * 2.5
-        : config.spacing.medium * 1.5,
+      marginBottom:
+        screenWidth && screenWidth <= 375
+          ? config.spacing.medium * 2.5
+          : config.spacing.medium * 1.5,
     },
     nameInputContainer: {
       width: '100%',

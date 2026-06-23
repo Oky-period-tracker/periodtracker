@@ -79,9 +79,7 @@ export const Modal = ({
             {children}
           </SafeAreaView>
           {footer && (
-            <View style={[styles.footer, { maxWidth, bottom: 24 + keyboardInset }]}>
-              {footer}
-            </View>
+            <View style={[styles.footer, { maxWidth, bottom: 24 + keyboardInset }]}>{footer}</View>
           )}
         </View>
       </View>

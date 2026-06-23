@@ -2,6 +2,9 @@
 
 This is a period tracker application monorepo, consisting of a React Native app, a CMS and an API.
 
+<a href="https://digitalpublicgoods.net/r/dpg-slug"><img src="https://github.com/DPGAlliance/dpg-resources/blob/main/docs/assets/dpg-badge/dpg-badge.png?raw=true" width="100" alt="Digital Public Goods Badge"></a>  
+The period tracker application is recognized as a digital public good by the Digital Public Goods Alliance
+
 ## Quick start (Expo Go)
 
 The fastest way to see the app running. Assumes Node 20, Yarn, and Docker are already installed. See [dependencies](./docs/dependencies/index.md) if not.

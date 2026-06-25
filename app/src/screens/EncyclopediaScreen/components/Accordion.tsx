@@ -49,7 +49,6 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
     if (hasAccess) {
       analytics?.().logEvent('categoryPressedLoggedIn', {
-        userId: user.id,
         categoryId: category.id,
         categoryName: category.name,
       })
@@ -70,7 +69,6 @@ const AccordionItem = ({ categoryId }: { categoryId: string }) => {
 
       if (hasAccess) {
         analytics?.().logEvent('subCategoryPressedLoggedIn', {
-          userId: user.id,
           subcategoryId,
           subcategoryName,
         })

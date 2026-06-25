@@ -223,7 +223,7 @@ export const DayModal = ({
   }
 
   function onYesPress() {
-    analytics?.().logEvent('periodDayCloudTap', { userId: currentUser.id })
+    analytics?.().logEvent('periodDayCloudTap', {})
 
     if (isFutureDate(inputDay)) {
       setAvatarMessage('too_far_ahead', true)
@@ -291,7 +291,7 @@ export const DayModal = ({
     setPeriodDates(updatedPeriodDates)
   }
   const onNoPress = () => {
-    analytics?.().logEvent('noPeriodDayCloudTap', { userId: currentUser.id })
+    analytics?.().logEvent('noPeriodDayCloudTap', {})
 
     if (moment(inputDay).isAfter(moment())) {
       setAvatarMessage('too_far_ahead', true)

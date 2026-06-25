@@ -151,12 +151,7 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
       }, RANDOM_MESSAGE_INTERVAL)
       return () => clearTimeout(timeout)
     }
-  }, [
-    message,
-    isScreenFocussed,
-    availableMessages,
-    setRandomAvatarMessage,
-  ])
+  }, [message, isScreenFocussed, availableMessages, setRandomAvatarMessage])
 
   // ===== Effect 3: Auto-clear the current message after MESSAGE_DURATION ===== //
   React.useEffect(() => {

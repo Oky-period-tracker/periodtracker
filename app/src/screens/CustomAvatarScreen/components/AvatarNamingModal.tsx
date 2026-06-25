@@ -83,13 +83,9 @@ export const AvatarNamingModal: React.FC<AvatarNamingModalProps> = ({
   const NON_AVATAR_CONTENT = 260
   const FOOTER_AND_MARGINS = 110
   const visibleHeight = windowHeight - keyboardHeight
-  const availableFromWindow =
-    visibleHeight - NON_AVATAR_CONTENT - FOOTER_AND_MARGINS
+  const availableFromWindow = visibleHeight - NON_AVATAR_CONTENT - FOOTER_AND_MARGINS
   const availableFromModalMax = screenHeight * 0.6 - NON_AVATAR_CONTENT
-  const availableForAvatar = Math.max(
-    40,
-    Math.min(availableFromWindow, availableFromModalMax),
-  )
+  const availableForAvatar = Math.max(40, Math.min(availableFromWindow, availableFromModalMax))
 
   // Tighten the result toward a more consistent visual size across devices:
   // shrink by 7% when there is more room than the original size, grow by 7%
@@ -97,9 +93,7 @@ export const AvatarNamingModal: React.FC<AvatarNamingModalProps> = ({
   let adjustedAvatar = availableForAvatar
   if (isKeyboardVisible) {
     adjustedAvatar =
-      availableForAvatar > originalHeight
-        ? availableForAvatar * 0.93
-        : availableForAvatar * 1.07
+      availableForAvatar > originalHeight ? availableForAvatar * 0.93 : availableForAvatar * 1.07
   }
 
   const previewHeight = isKeyboardVisible
@@ -138,10 +132,7 @@ export const AvatarNamingModal: React.FC<AvatarNamingModalProps> = ({
     <Modal
       visible={visible}
       toggleVisible={onClose}
-      style={[
-        styles.nameModal,
-        isKeyboardVisible && { paddingTop: 16, alignSelf: 'flex-start' },
-      ]}
+      style={[styles.nameModal, isKeyboardVisible && { paddingTop: 16, alignSelf: 'flex-start' }]}
       footer={
         <View style={styles.modalButtons}>
           <TouchableOpacity

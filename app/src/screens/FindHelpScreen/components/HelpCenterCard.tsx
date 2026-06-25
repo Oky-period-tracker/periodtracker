@@ -39,7 +39,6 @@ export const HelpCenterCard = ({
 
     if (hasAccess) {
       analytics?.().logEvent('helpCenterPressedLoggedIn', {
-        userId: user.id,
         helpCenterId: helpCenter.id,
         helpCenterTitle: helpCenter.title,
       })

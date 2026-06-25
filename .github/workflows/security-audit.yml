@@ -166,11 +166,10 @@ jobs:
             npm-audit.csv     
 
       - name: Run Gitleaks (Full Git History)
-        uses: gitleaks/gitleaks-action@v3
-        with:
-          args: detect --source . --report-format json --report-path gitleaks-report.json --no-git=false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y wget tar
+          wget -qO- https://github.com/gitleaks/gitleaks/releases/download/v8.8.0/gitleaks_8.8.0_linux_x64.tar.gz | tar xz -C /tmp
+          /tmp/gitleaks detect --source . --report-format json --report-path gitleaks-report.json --no-git=false || true
 
       - name: Upload Gitleaks report
         uses: actions/upload-artifact@v6

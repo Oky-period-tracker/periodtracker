@@ -1,6 +1,8 @@
 import React from 'react'
 import {
+  Keyboard,
   Modal as RNModal,
+  Platform,
   StyleProp,
   StyleSheet,
   TouchableOpacity,
@@ -8,7 +10,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useScreenDimensions } from '../hooks/useScreenDimensions'
 import { useAccessibilityLabel } from '../hooks/useAccessibilityLabel'
 import { Button, ButtonProps } from './Button'
@@ -38,6 +40,21 @@ export const Modal = ({
   const maxWidth = Math.min(width, 800)
   const maxHeight = height * 0.6
 
+  // Track keyboard height to push centered content and the absolute footer
+  // above the soft keyboard on iOS. Android handles this via adjustResize.
+  const [keyboardInset, setKeyboardInset] = React.useState(0)
+  React.useEffect(() => {
+    if (Platform.OS !== 'ios') return
+    const showSub = Keyboard.addListener('keyboardWillShow', (e) =>
+      setKeyboardInset(e.endCoordinates.height),
+    )
+    const hideSub = Keyboard.addListener('keyboardWillHide', () => setKeyboardInset(0))
+    return () => {
+      showSub.remove()
+      hideSub.remove()
+    }
+  }, [])
+
   return (
     <RNModal
       visible={visible}
@@ -48,19 +65,25 @@ export const Modal = ({
       statusBarTranslucent={true}
       supportedOrientations={['portrait', 'landscape']}
     >
-      <View style={styles.container}>
+      <View style={styles.root}>
         <TouchableOpacity
           style={[styles.backDrop, { backgroundColor: modalBackdropColor }]}
           onPress={toggleVisible}
         />
-        <ModalCloseButton onPress={toggleVisible} />
-        <SafeAreaView
-          style={[styles.children, { maxWidth, maxHeight }, style]}
-          pointerEvents="box-none"
-        >
-          {children}
-        </SafeAreaView>
-        {footer && <View style={[styles.footer, { maxWidth }]}>{footer}</View>}
+        <View style={[styles.container, { paddingBottom: keyboardInset }]}>
+          <ModalCloseButton onPress={toggleVisible} />
+          <SafeAreaView
+            style={[styles.children, { maxWidth, maxHeight }, style]}
+            pointerEvents="box-none"
+          >
+            {children}
+          </SafeAreaView>
+          {footer && (
+            <View style={[styles.footer, { maxWidth, bottom: 24 + keyboardInset }]}>
+              {footer}
+            </View>
+          )}
+        </View>
       </View>
     </RNModal>
   )
@@ -69,10 +92,11 @@ export const Modal = ({
 export const ModalCloseButton = (props: ButtonProps) => {
   const getAccessibilityLabel = useAccessibilityLabel()
   const label = getAccessibilityLabel('close')
+  const insets = useSafeAreaInsets()
 
   return (
     <TouchableOpacity
-      style={[styles.closeButton]}
+      style={[styles.closeButton, { top: insets.top + 12 }]}
       onPress={props.onPress}
       accessibilityLabel={label}
     >
@@ -82,6 +106,9 @@ export const ModalCloseButton = (props: ButtonProps) => {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   backDrop: {
     ...StyleSheet.absoluteFillObject,
   },
@@ -104,7 +131,6 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: 'absolute',
-    top: 60,
     right: 24,
     width: 32,
     height: 32,

@@ -18,14 +18,16 @@ To test the app's API-CMS interaction, you will need to build the Docker images 
 - Build the Docker Images by running the following commands:
 
 ```bash
-docker-compose build base
+docker compose build base
 ```
 
 ```bash
-docker-compose build
+docker compose build
 ```
 
 These command will build the required images for development.
+
+> Use `docker compose` (Docker Compose v2 plugin) rather than the legacy `docker-compose` binary. Modern Docker installs no longer ship the v1 binary.
 
 ## Start the backend/website/cms/api
 
@@ -61,10 +63,21 @@ Running services include
 - User Name: periodtracker
 - password: periodtracker
 
-### Run a manual migration
+### Seed the database (one command)
 
-Currently the migration is not automatic and should be run manually.
-Log into adminer using the details above, and go to `SQL command`. Here you will execute some SQL code to create the schema, tables, and a CMS user
+With the backend running (`yarn dev`), from a second terminal run:
+
+```bash
+yarn db:init
+```
+
+This drops and recreates the `periodtracker` schema, applies `sql/initial-setup.sql`, inserts a temporary CMS admin user (`admin` / `admin`), and applies any `insert-content-*.sql` files present in `packages/core/src/common/translations/`.
+
+It is destructive, so only run it on a fresh local database. After logging into the CMS at [http://localhost:5000](http://localhost:5000), create a real user via `/user-management` with a strong password, log out, log back in as the new user, and delete the temporary `admin` account.
+
+### Run the migration manually (alternative)
+
+If you prefer to do it step by step, log into Adminer using the details above, go to `SQL command`, and run the SQL shown below.
 
 Create schema:
 
@@ -72,9 +85,11 @@ Create schema:
 CREATE SCHEMA periodtracker;
 ```
 
-Next, create the tables by copy pasting the SQL from the file `/sql/create-tables.sql`.
+For a **fresh database**, run the consolidated setup file `/sql/initial-setup.sql`. It contains the tables from `create-tables.sql` plus every migration that has been added since, so running it alone is enough.
 
-Check for other SQL files in the same directory and execute them as well.
+Do not run `create-tables.sql` in addition to `initial-setup.sql`; they overlap and you will hit "relation already exists" errors.
+
+The timestamped files (`sql/1*.sql`) are incremental migrations intended for **existing databases** that need to catch up. If you started from `initial-setup.sql` you have already applied them.
 
 If something goes wrong you can drop the schema and start again by executing this sql. Beware that this will delete all data and tables etc that you have in your DB.
 
@@ -147,19 +162,19 @@ To speed up the sign up process in the app, set `EXPO_PUBLIC_FAST_SIGN_UP` to `t
 If you want to install a npm module, without re-building the docker images, just run:
 
 ```bash
-docker-compose exec server yarn add moment
+docker compose exec server yarn add moment
 ```
 
 If you want sync the public folder to dist directory, run:
 
 ```bash
-docker-compose exec server yarn copy-static-assets
+docker compose exec server yarn copy-static-assets
 ```
 
 but, if you pull dependencies changes from other people, remember to:
 
 ```bash
-docker-compose down && docker-compose build
+docker compose down && docker compose build
 ```
 
 and restart it again.

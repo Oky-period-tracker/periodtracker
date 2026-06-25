@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "build": "tsc && yarn run copy-static-assets",
-    "clean": "shx rm -rf dist/*",
+    "clean": "shx rm -rf dist",
     "compile": "yarn run build",
     "copy-static-assets": "ts-node copyStaticAssets.ts",
     "format": "prettier --write '{.,src/**}/*.{js,jsx,ts,tsx}'",

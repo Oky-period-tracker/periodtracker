@@ -18,9 +18,9 @@
     "reinstall": "yarn run rm && yarn",
     "clean": "yarn workspaces run clean",
     "compile": "yarn workspace @oky/core compile && yarn workspaces run compile",
-    "dev": "yarn run clean && yarn run compile && concurrently --kill-others \"docker-compose up\"",
+    "dev": "yarn run clean && yarn run compile && concurrently --kill-others \"docker compose up\"",
     "dev:app": "cd app && npx expo start -c",
-    "prod:web": "docker-compose -f docker-compose.yml build && docker-compose -f docker-compose.yml up",
+    "prod:web": "docker compose -f docker-compose.yml build && docker compose -f docker-compose.yml up",
     "format": "yarn workspaces run format && yarn format:app",
     "format:app": "cd app && prettier --write '{.,src/**}/*.{js,jsx,ts,tsx}'",
     "lint": "yarn workspaces run lint",
@@ -35,6 +35,7 @@
     "modules:checkout": "./bin/modules/checkout.sh",
     "copy-config": "./bin/setup/config.sh",
     "copy-eas": "./bin/setup/eas.sh",
+    "db:init": "./bin/db-init.sh",
     "postinstall": "if [ -z \"$DOCKER_ENV\" ]; then cd app && yarn; fi"
   },
   "workspaces": {

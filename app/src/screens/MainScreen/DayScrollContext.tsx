@@ -6,6 +6,7 @@ import {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
+  withDelay,
   AnimatedStyle,
   runOnJS,
   SharedValue,
@@ -133,7 +134,7 @@ const defaultValue: DayScrollContext = {
 const DayScrollContext = React.createContext<DayScrollContext>(defaultValue)
 
 export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
-  const { UIConfig } = useResponsive()
+  const { UIConfig, width: screenWidth } = useResponsive()
   // Carousel
   const CARD_WIDTH = UIConfig.carousel.cardWidth
   const CARD_MARGIN = UIConfig.carousel.cardMargin
@@ -143,7 +144,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
   const CARD_SCALED_DIFFERENCE = FULL_SELECTED_WIDTH - FULL_CARD_WIDTH
 
   // Wheel
-  const BUTTON_SIZE = 80
+  const BUTTON_SIZE = screenWidth <= 392 ? 65 : 80
   const NUMBER_OF_BUTTONS = 12
   const ANGLE_FULL_CIRCLE = 2 * Math.PI
   const ANGLE_BETWEEN_BUTTONS = ANGLE_FULL_CIRCLE / NUMBER_OF_BUTTONS
@@ -196,7 +197,7 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
 
   const onBodyLayout = (event: LayoutChangeEvent) => {
     const { height } = event.nativeEvent.layout
-    setDiameter(height) //
+    setDiameter(screenWidth > 392 ? height * 0.9 : height)
   }
 
   const [visible, setVisible] = React.useState(false)
@@ -292,6 +293,19 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     return segmentIndex * ANGLE_BETWEEN_BUTTONS
   }
 
+  // Unlock and apply the state change deterministically after animations
+  // settle. Scheduled on the JS thread rather than from the withSpring
+  // "finished" callback because nested timing/spring callbacks become
+  // unreliable on Reanimated v4 + the new architecture, which left
+  // disabled.value stuck at true and blocked subsequent swipes.
+  const finalizePanEnd = (change: number) => {
+    setTimeout(() => {
+      disabled.value = false
+      handleInfiniteData(change)
+      setIsDragging(false)
+    }, SETTLE_DURATION + 200)
+  }
+
   // ================ Handle Gestures ================ //
   const handlePanStart = () => {
     'worklet'
@@ -344,21 +358,12 @@ export const DayScrollProvider = ({ children }: React.PropsWithChildren) => {
     const angle = calculateRotationAngle(displacement)
     const endAngle = calculateClosestSegmentAngle(totalRotation.value + angle)
     totalRotation.value = endAngle
-    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION }, () => {
-      // === Spring Scale === //
-      selectedScale.value = withSpring(
-        SELECTED_SCALE,
-        SPRING_CONFIG,
-        // === Finished - Update state === //
-        (finished) => {
-          if (finished) {
-            disabled.value = false
-            runOnJS(handleInfiniteData)(change)
-            runOnJS(setIsDragging)(false)
-          }
-        },
-      )
-    })
+    rotationAngle.value = withTiming(endAngle, { duration: SETTLE_DURATION })
+
+    // === Spring Scale === //
+    selectedScale.value = withDelay(SETTLE_DURATION, withSpring(SELECTED_SCALE, SPRING_CONFIG))
+
+    runOnJS(finalizePanEnd)(change)
   }
 
   const carouselPanGesture = Gesture.Pan()

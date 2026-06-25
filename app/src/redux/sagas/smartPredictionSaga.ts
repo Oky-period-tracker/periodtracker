@@ -23,16 +23,14 @@ function* onFetchUpdatedPredictedCycles(
     const currentUser = yield select(selectors.currentUserSelector)
     const userId = currentUser?.id || 'anonymous'
 
-    // Compute days_since_menarche from earliest cycle in history
-    let days_since_menarche: number | undefined
-    if (predictionFullState.history && predictionFullState.history.length > 0) {
-      const firstCycleStart = predictionFullState.history[predictionFullState.history.length - 1]?.startDate
-      if (firstCycleStart) {
-        const firstDate = new Date(firstCycleStart)
-        const now = new Date()
-        days_since_menarche = Math.floor((now.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24))
-      }
-    }
+    // Include most recent completed cycle so the model learns from it
+    const mostRecentCycle = predictionFullState.history?.[0]
+    const new_observation = mostRecentCycle
+      ? {
+          cycle_start_date: new Date(mostRecentCycle.startDate || mostRecentCycle.cycleStartDate).toISOString(),
+          observed_cycle_length: mostRecentCycle.cycleLength,
+        }
+      : undefined
 
     // @ts-expect-error TODO:
     const predictionResponse = yield httpClient.getPeriodCycles({
@@ -40,21 +38,29 @@ function* onFetchUpdatedPredictedCycles(
       age,
       period_lengths,
       cycle_lengths,
-      days_since_menarche,
+      new_observation,
     })
 
     // Map new API response to the format PredictionState.fromData expects
     const smaCycleLength = predictionResponse.prediction.predicted_cycle_length
-    const validPeriods = period_lengths ? period_lengths.filter((p: number) => p > 0) : []
+
+    // Compute period length from actual history (not the stale period_lengths array)
+    const historyPeriods = (predictionFullState.history || [])
+      .map((h: any) => h.periodLength)
+      .filter((p: number) => p >= 2)
+    const allPeriods = [
+      ...(predictionFullState.currentCycle.periodLength >= 2 ? [predictionFullState.currentCycle.periodLength] : []),
+      ...historyPeriods,
+    ]
     const smaPeriodLength =
-      validPeriods.length > 0
-        ? validPeriods.reduce((a: number, b: number) => a + b, 0) / validPeriods.length
-        : predictionFullState.currentCycle.periodLength
+      allPeriods.length > 0
+        ? Math.round(allPeriods.reduce((a: number, b: number) => a + b, 0) / allPeriods.length)
+        : 5
 
     const stateToSet = PredictionState.fromData({
       isActive: predictionFullState.isActive,
       startDate: predictionFullState.currentCycle.startDate,
-      periodLength: predictionFullState.currentCycle.periodLength,
+      periodLength: smaPeriodLength,
       cycleLength: predictionFullState.currentCycle.cycleLength,
       smaCycleLength,
       smaPeriodLength,

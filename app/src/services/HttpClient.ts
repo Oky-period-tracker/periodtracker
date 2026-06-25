@@ -375,13 +375,13 @@ export function createHttpClient(
       cycle_lengths,
       period_lengths,
       age,
-      days_since_menarche,
+      new_observation,
     }: {
       user_id: string
       cycle_lengths: number[]
       period_lengths: number[]
       age: number
-      days_since_menarche?: number
+      new_observation?: { cycle_start_date: string; observed_cycle_length: number }
     }) => {
       const response = await axios.post(
         predictionEndpoint,
@@ -390,7 +390,7 @@ export function createHttpClient(
           cycle_history: cycle_lengths,
           period_history: period_lengths,
           age,
-          days_since_menarche,
+          new_observation,
         },
         {
           headers: { 'Content-Type': 'application/json' },

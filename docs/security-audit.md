@@ -1,6 +1,6 @@
 # Security Audit Workflow
 
-This document explains the [Security Audit (Test)](../.github/workflows/security-audit.yml)
+This document explains the [Security Audit](../.github/workflows/security-audit.yml)
 GitHub Actions workflow: what it scans for, when it runs, and how to read the
 reports it produces.
 

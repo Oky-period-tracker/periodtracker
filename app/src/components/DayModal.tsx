@@ -118,8 +118,7 @@ export const DayModal = ({
   // eslint-disable-next-line
   const getPredictedCycles = (flag: boolean): any => {
     if (flag) {
-      // @ts-expect-error TODO: THIS IS ALWAYS TRUE !!!!
-      if (fetchNetworkConnectionStatus()) {
+      {
         const tempHistory = [...history]
         const tempPeriodsCycles = []
         const tempPeriodsLength = []

@@ -45,9 +45,10 @@ function* onFetchUpdatedPredictedCycles(
 
     // Map new API response to the format PredictionState.fromData expects
     const smaCycleLength = predictionResponse.prediction.predicted_cycle_length
+    const validPeriods = period_lengths ? period_lengths.filter((p: number) => p > 0) : []
     const smaPeriodLength =
-      period_lengths && period_lengths.length > 0
-        ? period_lengths.reduce((a: number, b: number) => a + b, 0) / period_lengths.length
+      validPeriods.length > 0
+        ? validPeriods.reduce((a: number, b: number) => a + b, 0) / validPeriods.length
         : predictionFullState.currentCycle.periodLength
 
     const stateToSet = PredictionState.fromData({

@@ -61,7 +61,7 @@ function* onFetchUpdatedPredictedCycles(
       isActive: predictionFullState.isActive,
       startDate: predictionFullState.currentCycle.startDate,
       periodLength: smaPeriodLength,
-      cycleLength: predictionFullState.currentCycle.cycleLength,
+      cycleLength: smaCycleLength,
       smaCycleLength,
       smaPeriodLength,
       history: predictionFullState.history,

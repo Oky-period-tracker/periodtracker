@@ -7,8 +7,10 @@ reports it produces.
 ## What it is
 
 A single CI job (`setup-check`) that runs a battery of free, open-source
-security scanners against the codebase and uploads the results as downloadable
-artifacts. It covers four classes of problem:
+security scanners against the codebase. Results show up in two places: the
+**Security → Code scanning** tab (for Semgrep and Gitleaks, via SARIF) and as
+**downloadable artifacts** (JSON/CSV for every tool). It covers four classes of
+problem:
 
 | Tool | Type of check | What it finds |
 | --- | --- | --- |
@@ -41,20 +43,45 @@ remove the `|| true` from the relevant steps and/or add a threshold gate.)
 - npm audit: `packages/api` and `packages/cms` dependencies
 - Gitleaks & TruffleHog: the entire repository working tree (`.`)
 
-## How to get the results
+## How to view the results
 
-1. Go to the **Actions** tab on GitHub.
-2. Open the **Security Audit** run you care about (e.g. the one for your PR).
-3. Scroll to the **Artifacts** section at the bottom of the run summary.
-4. Download the artifact(s) you need (see below) and unzip.
+### Option A (recommended): the Security tab
 
-### The four artifacts
+Semgrep and Gitleaks upload their findings as **SARIF** to GitHub Code Scanning,
+so you don't need to download anything:
+
+1. Go to the repo's **Security** tab → **Code scanning**.
+2. Each finding is an **alert** with severity, rule, file, and line. Filter by
+   `Tool` (`semgrep` / `gitleaks`) or by branch/PR.
+3. On a **pull request**, the same findings appear **inline on the diff** as
+   annotations, and the PR gets a "Code scanning results" check.
+4. False positive? Open the alert → **Dismiss** with a reason. It stays dismissed
+   and won't re-appear on future runs.
+
+This is the best way to triage day-to-day: alerts are deduplicated, tracked as
+open/fixed over time, and shown on the exact line of code.
+
+> Each tool uploads under its own `category` (`semgrep`, `gitleaks`) so they
+> don't overwrite each other. This works because the repo is **public** (Code
+> scanning is free for public repos; private repos need GitHub Advanced Security).
+> See [GitHub's roadmap](#whats-not-in-the-security-tab-yet) below for npm audit
+> and TruffleHog.
+
+### Option B: downloadable artifacts
+
+Every tool also writes raw JSON (and Semgrep/npm audit a friendly CSV), uploaded
+as run artifacts — useful for offline review, spreadsheets, or the tools not yet
+wired into the Security tab.
+
+1. Go to the **Actions** tab → open the **Security Audit** run you care about.
+2. Scroll to the **Artifacts** section at the bottom of the run summary.
+3. Download the artifact(s) you need and unzip.
 
 | Artifact | Files | Use it for |
 | --- | --- | --- |
 | `semgrep-reports` | `semgrep-report.json`, `semgrep-findings.csv`, `semgrep-summary.csv` | Code-level security findings |
 | `npm-audit-reports` | `api-npm-audit.json`, `cms-npm-audit.json`, `npm-audit.csv` | Vulnerable dependencies |
-| `gitleaks-report` | `gitleaks-report.json` | Leaked secrets |
+| `gitleaks-report` | `gitleaks.sarif`, `gitleaks-report.json` | Leaked secrets |
 | `trufflehog-report` | `trufflehog-report.json` | Leaked secrets (second scanner) |
 
 ## Reading each report
@@ -112,33 +139,51 @@ Note: only `--audit-level=high` and above is recorded.
 
 ### Gitleaks & TruffleHog — secret scanning
 
-Both produce JSON. **An empty result is good news.**
+**Gitleaks** findings show up directly in the **Code scanning** tab (it uploads
+SARIF). To inspect the raw data, the `gitleaks-report` artifact holds both
+`gitleaks.sarif` and `gitleaks-report.json` — an empty `[]` (JSON) or a `runs`
+array with zero results (SARIF) means clean. (If Gitleaks produces no file at
+all, the workflow substitutes empty-but-valid placeholders so the upload still
+succeeds.)
 
-- `gitleaks-report.json` containing `{}` (or an empty array) = no secrets found.
-  The workflow writes `{}` as a fallback if Gitleaks produces no file, so an
-  empty object means "clean / nothing to report".
-- `trufflehog-report.json` works the same way — empty/`{}` means clean.
+**TruffleHog** still produces JSON only (`trufflehog-report.json` in its
+artifact). **An empty result / `{}` is good news** — no secrets found.
 
-If either contains entries, **treat it as urgent**: a real secret in the repo
-should be rotated/revoked immediately (not just deleted from the code, since git
-history retains it). Run both because they catch different things — cross-check
-any hit.
+If either reports a hit, **treat it as urgent**: a real secret in the repo should
+be rotated/revoked immediately (not just deleted from the code, since git history
+retains it). Run both because they catch different things — cross-check any hit.
 
 ## Typical workflow for a reviewer
 
-1. Open the run for the PR in the **Actions** tab.
-2. Download `semgrep-reports` → open `semgrep-summary.csv`. Any **High**? Open
-   `semgrep-findings.csv`, filter to High, review each at `File:Line`.
-3. Download `npm-audit-reports` → open `npm-audit.csv`. Address high/critical
-   deps with `FixAvailable = Yes` first.
-4. Download `gitleaks-report` and `trufflehog-report`. Confirm both are empty.
-   If not, rotate the exposed secret and scrub it.
+1. On the PR, check the **Code scanning results** check / the **Security** tab.
+   Review any new Semgrep or Gitleaks alerts inline on the diff; dismiss false
+   positives with a reason.
+2. For dependency issues, open the `npm-audit-reports` artifact → `npm-audit.csv`.
+   Address high/critical deps with `FixAvailable = Yes` first.
+3. Open the `trufflehog-report` artifact and confirm it's empty. If not, rotate
+   the exposed secret and scrub it.
+
+## What's not in the Security tab yet
+
+Two tools still only produce artifacts. The cleaner long-term move is to replace
+them with GitHub's native, free-for-public-repos features:
+
+- **npm audit → Dependabot.** Enable **Dependabot alerts** (Settings → Code
+  security) to get the same dependency CVEs in the Security tab, plus automatic
+  fix PRs. The `npm audit` steps can then be removed.
+- **TruffleHog → GitHub secret scanning.** Public repos get **secret scanning**
+  and **push protection** automatically (Settings → Code security) — it blocks
+  known secret formats before they're even committed. Keep TruffleHog only if you
+  want a second detector, or convert its output to SARIF and upload it too.
 
 ## FAQ
 
 **The check is green but there are findings — is that a bug?**
-No. By design every scanner uses `|| true`, so the check passes regardless. Green
-means "the scan ran", not "nothing was found". Always open the artifacts.
+No. By design every scanner uses `|| true`, so the workflow check passes
+regardless. Green means "the scan ran", not "nothing was found". Always look at
+the **Code scanning** alerts (Semgrep/Gitleaks) and the artifacts (npm/TruffleHog).
+Note the Code scanning *check* on a PR can still flag new alerts even when the
+workflow job is green.
 
 **Why two secret scanners?**
 Gitleaks (regex/rule-based) and TruffleHog (entropy + verified detectors) have

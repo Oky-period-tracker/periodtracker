@@ -41,7 +41,11 @@ export class ArticleVoiceOverController {
           await existingFile.delete()
           logger.info('Deleted existing voice-over file', { key: target.voiceOverKey })
         } catch (error) {
-          logger.error('Failed to delete existing voice-over file', { key: target.voiceOverKey, message: error?.message, stack: error?.stack })
+          logger.error('Failed to delete existing voice-over file', {
+            key: target.voiceOverKey,
+            message: error?.message,
+            stack: error?.stack,
+          })
         }
       }
 
@@ -53,10 +57,8 @@ export class ArticleVoiceOverController {
       const fileToUpload = storage().bucket().file(Key)
 
       const savePromise = new Promise<void>((resolve, reject) => {
-        fileToUpload.save(
-          file.buffer,
-          { metadata: { contentType: file.mimetype } },
-          (err) => (err ? reject(err) : resolve()),
+        fileToUpload.save(file.buffer, { metadata: { contentType: file.mimetype } }, (err) =>
+          err ? reject(err) : resolve(),
         )
       })
 
@@ -67,7 +69,10 @@ export class ArticleVoiceOverController {
       logger.info('Voice-over uploaded successfully', { articleId: id, key: Key })
       response.status(200).send(target)
     } catch (error) {
-      logger.error('ArticleVoiceOverController.upload failed', { message: error?.message, stack: error?.stack })
+      logger.error('ArticleVoiceOverController.upload failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       response.status(500).send({ error: error?.message })
     }
   }
@@ -86,7 +91,11 @@ export class ArticleVoiceOverController {
           await existingFile.delete()
           logger.info('Deleted voice-over file', { key: target.voiceOverKey })
         } catch (error) {
-          logger.error('Failed to delete voice-over file', { key: target.voiceOverKey, message: error?.message, stack: error?.stack })
+          logger.error('Failed to delete voice-over file', {
+            key: target.voiceOverKey,
+            message: error?.message,
+            stack: error?.stack,
+          })
         }
       }
 
@@ -100,7 +109,10 @@ export class ArticleVoiceOverController {
 
       return newTarget
     } catch (error) {
-      logger.error('ArticleVoiceOverController.remove failed', { message: error?.message, stack: error?.stack })
+      logger.error('ArticleVoiceOverController.remove failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

@@ -43,11 +43,11 @@ export class DataController {
 
   async generateContentTs(request: Request, response: Response, next: NextFunction) {
     try {
-    const live = request.query?.live === 'true'
+      const live = request.query?.live === 'true'
 
-    // ========== Encyclopedia ========== //
-    const encyclopediaRaw = await this.articleRepository.query(
-      `SELECT ar.id, ca.title as category_title, 
+      // ========== Encyclopedia ========== //
+      const encyclopediaRaw = await this.articleRepository.query(
+        `SELECT ar.id, ca.title as category_title, 
       ca.id as cat_id, sc.title as subcategory_title, 
       sc.id as subcat_id, 
       ar.article_heading, 
@@ -65,60 +65,60 @@ export class DataController {
       ${live ? 'AND ar.live = true' : ''}
       ORDER BY ca.title, sc.title ASC
       `,
-      [request.user.lang],
-    )
+        [request.user.lang],
+      )
 
-    const { articles, categories, subCategories } = fromEncyclopedia({
-      encyclopediaResponse: encyclopediaRaw,
-    })
+      const { articles, categories, subCategories } = fromEncyclopedia({
+        encyclopediaResponse: encyclopediaRaw,
+      })
 
-    // ========== Parallel queries ========== //
-    const [
-      quizzesRaw,
-      didYouKnowsRaw,
-      helpCentersRaw,
-      avatarMessagesRaw,
-      latestPrivacyPolicy,
-      latestTermsAndConditions,
-      latestAbout,
-    ] = await Promise.all([
-      this.quizRepository.find({
-        where: { lang: request.user.lang, live },
-        order: { topic: 'ASC' },
-      }),
-      this.didYouKnowRepository.find({
-        where: { lang: request.user.lang, live },
-      }),
-      this.helpCenterRepository.find({
-        where: { lang: request.user.lang },
-      }),
-      this.avatarMessagesRepository.find({
-        where: { lang: request.user.lang, live },
-      }),
-      this.privacyPolicyRepository.findOne({
-        where: { lang: request.user.lang },
-        order: { id: 'DESC' },
-      }),
-      this.termsAndConditionsRepository.findOne({
-        where: { lang: request.user.lang },
-        order: { id: 'DESC' },
-      }),
-      this.aboutRepository.findOne({
-        where: { lang: request.user.lang },
-        order: { id: 'DESC' },
-      }),
-    ])
+      // ========== Parallel queries ========== //
+      const [
+        quizzesRaw,
+        didYouKnowsRaw,
+        helpCentersRaw,
+        avatarMessagesRaw,
+        latestPrivacyPolicy,
+        latestTermsAndConditions,
+        latestAbout,
+      ] = await Promise.all([
+        this.quizRepository.find({
+          where: { lang: request.user.lang, live },
+          order: { topic: 'ASC' },
+        }),
+        this.didYouKnowRepository.find({
+          where: { lang: request.user.lang, live },
+        }),
+        this.helpCenterRepository.find({
+          where: { lang: request.user.lang },
+        }),
+        this.avatarMessagesRepository.find({
+          where: { lang: request.user.lang, live },
+        }),
+        this.privacyPolicyRepository.findOne({
+          where: { lang: request.user.lang },
+          order: { id: 'DESC' },
+        }),
+        this.termsAndConditionsRepository.findOne({
+          where: { lang: request.user.lang },
+          order: { id: 'DESC' },
+        }),
+        this.aboutRepository.findOne({
+          where: { lang: request.user.lang },
+          order: { id: 'DESC' },
+        }),
+      ])
 
-    const { quizzes } = fromQuizzes(quizzesRaw)
-    const { didYouKnows } = fromDidYouKnows(didYouKnowsRaw)
-    const { helpCenters } = fromHelpCenters(helpCentersRaw)
-    const { avatarMessages } = fromAvatarMessages(avatarMessagesRaw)
-    const privacyPolicy = latestPrivacyPolicy?.json_dump
-    const termsAndConditions = latestTermsAndConditions?.json_dump
-    const about = latestAbout?.json_dump
+      const { quizzes } = fromQuizzes(quizzesRaw)
+      const { didYouKnows } = fromDidYouKnows(didYouKnowsRaw)
+      const { helpCenters } = fromHelpCenters(helpCentersRaw)
+      const { avatarMessages } = fromAvatarMessages(avatarMessagesRaw)
+      const privacyPolicy = latestPrivacyPolicy?.json_dump
+      const termsAndConditions = latestTermsAndConditions?.json_dump
+      const about = latestAbout?.json_dump
 
-    // ========== File ========== //
-    const fileContent = `
+      // ========== File ========== //
+      const fileContent = `
       // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
       import { StaticContent } from '../../../types'
 
@@ -138,25 +138,28 @@ export class DataController {
       }
       `
 
-    const fileName = `content-${request.user.lang}-${getDate()}.ts`
+      const fileName = `content-${request.user.lang}-${getDate()}.ts`
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
-    response.setHeader('Content-type', 'text/plain')
-    response.send(fileContent) // Send the file data as a response
-    logger.info('Content TS file generated', { lang: request.user.lang, fileName })
+      // Set the headers to inform the browser about file type and suggested filename
+      response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
+      response.setHeader('Content-type', 'text/plain')
+      response.send(fileContent) // Send the file data as a response
+      logger.info('Content TS file generated', { lang: request.user.lang, fileName })
     } catch (error) {
-      logger.error('DataController.generateContentTs failed', { message: error?.message, stack: error?.stack })
+      logger.error('DataController.generateContentTs failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
 
   async generateContentSheet(request: Request, response: Response, next: NextFunction) {
     try {
-    const shouldFilter = request.query?.filter === 'new'
+      const shouldFilter = request.query?.filter === 'new'
 
-    const encyclopediaRaw = (await this.articleRepository.query(
-      `SELECT 
+      const encyclopediaRaw = (await this.articleRepository.query(
+        `SELECT 
       ar.id, 
       ca.id as cat_id, 
       sc.id as subcat_id, 
@@ -175,351 +178,362 @@ export class DataController {
       WHERE ar.lang = $1
       ORDER BY ca.title, sc.title ASC
       `,
-      [request.user.lang],
-    )) as EncyclopediaResponse
-    // AND ar.live = true
+        [request.user.lang],
+      )) as EncyclopediaResponse
+      // AND ar.live = true
 
-    const encyclopediaRawExtraCols = encyclopediaRaw.map((item) => {
-      return {
-        id: item.id,
-        cat_id: item.cat_id,
-        subcat_id: item.subcat_id,
-        category_title_original: item.category_title,
-        category_title: '',
-        subcategory_title_original: item.subcategory_title,
-        subcategory_title: '',
-        article_heading_original: item.article_heading,
-        article_heading: '',
-        article_text_original: item.article_text,
-        article_text: '',
-        primary_emoji: item.primary_emoji,
-        primary_emoji_name: item.primary_emoji_name,
-        live: item.live,
-      }
-    })
+      const encyclopediaRawExtraCols = encyclopediaRaw.map((item) => {
+        return {
+          id: item.id,
+          cat_id: item.cat_id,
+          subcat_id: item.subcat_id,
+          category_title_original: item.category_title,
+          category_title: '',
+          subcategory_title_original: item.subcategory_title,
+          subcategory_title: '',
+          article_heading_original: item.article_heading,
+          article_heading: '',
+          article_text_original: item.article_text,
+          article_text: '',
+          primary_emoji: item.primary_emoji,
+          primary_emoji_name: item.primary_emoji_name,
+          live: item.live,
+        }
+      })
 
-    const encyclopediaFiltered = encyclopediaRawExtraCols.filter((item) => {
-      // if (shouldFilter) {
-      //   const existsInTs = content[request.user.lang].articles.allIds.includes(item.id)
-      //   return !existsInTs
-      // }
-      return true
-    })
+      const encyclopediaFiltered = encyclopediaRawExtraCols.filter((item) => {
+        // if (shouldFilter) {
+        //   const existsInTs = content[request.user.lang].articles.allIds.includes(item.id)
+        //   return !existsInTs
+        // }
+        return true
+      })
 
-    const encyclopediaByCategory = encyclopediaFiltered.reduce<
-      Record<string, Array<Omit<EncyclopediaResponseItem, 'lang'>>>
-    >((acc, row) => {
-      const title =
-        row.category_title_original.length > 31
-          ? row.category_title_original.replace('and', '&')
-          : row.category_title_original
+      const encyclopediaByCategory = encyclopediaFiltered.reduce<
+        Record<string, Array<Omit<EncyclopediaResponseItem, 'lang'>>>
+      >((acc, row) => {
+        const title =
+          row.category_title_original.length > 31
+            ? row.category_title_original.replace('and', '&')
+            : row.category_title_original
 
-      if (!acc[title]) {
-        acc[title] = [row]
+        if (!acc[title]) {
+          acc[title] = [row]
+          return acc
+        }
+
+        acc[title].push(row)
         return acc
+      }, {})
+
+      // ========== Parallel queries ========== //
+      const [
+        quizzesRaw,
+        didYouKnowsRaw,
+        helpCentersRaw,
+        avatarMessagesRaw,
+        latestPrivacyPolicy,
+        latestTermsAndConditions,
+        latestAbout,
+      ] = await Promise.all([
+        this.quizRepository.find({
+          where: { lang: request.user.lang, live: true },
+          order: { topic: 'ASC' },
+        }),
+        this.didYouKnowRepository.find({
+          where: { lang: request.user.lang },
+        }),
+        this.helpCenterRepository.find({
+          where: { lang: request.user.lang },
+        }),
+        this.avatarMessagesRepository.find({
+          where: { lang: request.user.lang },
+        }),
+        this.privacyPolicyRepository.findOne({
+          where: { lang: request.user.lang },
+          order: { id: 'DESC' },
+        }),
+        this.termsAndConditionsRepository.findOne({
+          where: { lang: request.user.lang },
+          order: { id: 'DESC' },
+        }),
+        this.aboutRepository.findOne({
+          where: { lang: request.user.lang },
+          order: { id: 'DESC' },
+        }),
+      ])
+
+      const quizzesRawExtraCols = quizzesRaw.map((item) => {
+        return {
+          id: item.id,
+          topic_original: item.topic,
+          topic: '',
+          question_original: item.question,
+          question: '',
+          option1_original: item.option1,
+          option1: '',
+          option2_original: item.option2,
+          option2: '',
+          option3_original: item.option3,
+          option3: '',
+          right_answer_original: item.right_answer,
+          right_answer: '',
+          wrong_answer_response_original: item.wrong_answer_response,
+          wrong_answer_response: '',
+          right_answer_response_original: item.right_answer_response,
+          right_answer_response: '',
+          answer: '',
+          isAgeRestricted: item.isAgeRestricted,
+          live: item.live,
+        }
+      })
+
+      const quizzesFiltered = quizzesRawExtraCols.filter((item) => {
+        // if (shouldFilter) {
+        //   const existsInTs = content[request.user.lang].quizzes.allIds.includes(item.id)
+        //   return !existsInTs
+        // }
+        return true
+      })
+
+      // ========== Did you know ========== //
+
+      const didYouKnowsRawExtraCols = didYouKnowsRaw.map((item) => {
+        return {
+          id: item.id,
+          title_original: item.title,
+          title: '',
+          content_original: item.content,
+          content: '',
+          isAgeRestricted: item.isAgeRestricted,
+        }
+      })
+
+      const didYouKnowsFiltered = didYouKnowsRawExtraCols.filter((item) => {
+        // if (shouldFilter) {
+        //   const existsInTs = content[request.user.lang].didYouKnows.allIds.includes(item.id)
+        //   return !existsInTs
+        // }
+        return true
+      })
+
+      // ========== Help ========== //
+
+      // ========== Avatars ========== //
+
+      const avatarMessagesExtraCols = avatarMessagesRaw.map((item) => {
+        return {
+          id: item.id,
+          content_original: item.content,
+          content: '',
+        }
+      })
+
+      const avatarMessagesFiltered = avatarMessagesExtraCols.filter((item) => {
+        // if (shouldFilter) {
+        //   const existsInTs = content[request.user.lang].avatarMessages
+        //     .map((message) => message.id)
+        //     .includes(item.id)
+        //   return !existsInTs
+        // }
+        return true
+      })
+
+      // ========== Privacy / Terms / About ========== //
+      const privacyPolicy = safeJsonParse(
+        latestPrivacyPolicy?.json_dump || '[]',
+        [],
+        'PrivacyPolicy',
+      )
+      const termsAndConditions = safeJsonParse(
+        latestTermsAndConditions?.json_dump || '[]',
+        [],
+        'TermsAndConditions',
+      )
+      const about = safeJsonParse(latestAbout?.json_dump || '[]', [], 'About')
+
+      // ========== Spread sheet ========== //
+      const encyclopediaIdColumns = [0, 1, 2]
+      const encyclopediaSheets = Object.entries(encyclopediaByCategory).reduce(
+        (acc, [key, value]) => {
+          const worksheet = xlsx.utils.json_to_sheet(value)
+          const maxColumns = value[0] ? Object.keys(value[0]).length : 0
+          worksheet['!cols'] = Array(maxColumns)
+            .fill({})
+            .map((col, index) => {
+              if (encyclopediaIdColumns.includes(index)) {
+                return { hidden: true }
+              }
+              return col
+            })
+
+          acc[key] = worksheet
+          return acc
+        },
+        {},
+      )
+
+      const otherContentWithIds = {
+        Quizzes: quizzesFiltered,
+        'Did you know': didYouKnowsFiltered,
+        Avatars: avatarMessagesFiltered,
       }
 
-      acc[title].push(row)
-      return acc
-    }, {})
-
-    // ========== Parallel queries ========== //
-    const [
-      quizzesRaw,
-      didYouKnowsRaw,
-      helpCentersRaw,
-      avatarMessagesRaw,
-      latestPrivacyPolicy,
-      latestTermsAndConditions,
-      latestAbout,
-    ] = await Promise.all([
-      this.quizRepository.find({
-        where: { lang: request.user.lang, live: true },
-        order: { topic: 'ASC' },
-      }),
-      this.didYouKnowRepository.find({
-        where: { lang: request.user.lang },
-      }),
-      this.helpCenterRepository.find({
-        where: { lang: request.user.lang },
-      }),
-      this.avatarMessagesRepository.find({
-        where: { lang: request.user.lang },
-      }),
-      this.privacyPolicyRepository.findOne({
-        where: { lang: request.user.lang },
-        order: { id: 'DESC' },
-      }),
-      this.termsAndConditionsRepository.findOne({
-        where: { lang: request.user.lang },
-        order: { id: 'DESC' },
-      }),
-      this.aboutRepository.findOne({
-        where: { lang: request.user.lang },
-        order: { id: 'DESC' },
-      }),
-    ])
-
-    const quizzesRawExtraCols = quizzesRaw.map((item) => {
-      return {
-        id: item.id,
-        topic_original: item.topic,
-        topic: '',
-        question_original: item.question,
-        question: '',
-        option1_original: item.option1,
-        option1: '',
-        option2_original: item.option2,
-        option2: '',
-        option3_original: item.option3,
-        option3: '',
-        right_answer_original: item.right_answer,
-        right_answer: '',
-        wrong_answer_response_original: item.wrong_answer_response,
-        wrong_answer_response: '',
-        right_answer_response_original: item.right_answer_response,
-        right_answer_response: '',
-        answer: '',
-        isAgeRestricted: item.isAgeRestricted,
-        live: item.live,
-      }
-    })
-
-    const quizzesFiltered = quizzesRawExtraCols.filter((item) => {
-      // if (shouldFilter) {
-      //   const existsInTs = content[request.user.lang].quizzes.allIds.includes(item.id)
-      //   return !existsInTs
-      // }
-      return true
-    })
-
-    // ========== Did you know ========== //
-
-    const didYouKnowsRawExtraCols = didYouKnowsRaw.map((item) => {
-      return {
-        id: item.id,
-        title_original: item.title,
-        title: '',
-        content_original: item.content,
-        content: '',
-        isAgeRestricted: item.isAgeRestricted,
-      }
-    })
-
-    const didYouKnowsFiltered = didYouKnowsRawExtraCols.filter((item) => {
-      // if (shouldFilter) {
-      //   const existsInTs = content[request.user.lang].didYouKnows.allIds.includes(item.id)
-      //   return !existsInTs
-      // }
-      return true
-    })
-
-    // ========== Help ========== //
-
-    // ========== Avatars ========== //
-
-    const avatarMessagesExtraCols = avatarMessagesRaw.map((item) => {
-      return {
-        id: item.id,
-        content_original: item.content,
-        content: '',
-      }
-    })
-
-    const avatarMessagesFiltered = avatarMessagesExtraCols.filter((item) => {
-      // if (shouldFilter) {
-      //   const existsInTs = content[request.user.lang].avatarMessages
-      //     .map((message) => message.id)
-      //     .includes(item.id)
-      //   return !existsInTs
-      // }
-      return true
-    })
-
-    // ========== Privacy / Terms / About ========== //
-    const privacyPolicy = safeJsonParse(latestPrivacyPolicy?.json_dump || '[]', [], 'PrivacyPolicy')
-    const termsAndConditions = safeJsonParse(latestTermsAndConditions?.json_dump || '[]', [], 'TermsAndConditions')
-    const about = safeJsonParse(latestAbout?.json_dump || '[]', [], 'About')
-
-    // ========== Spread sheet ========== //
-    const encyclopediaIdColumns = [0, 1, 2]
-    const encyclopediaSheets = Object.entries(encyclopediaByCategory).reduce(
-      (acc, [key, value]) => {
+      const idColumn = 0
+      const otherSheetsWithIds = Object.entries(otherContentWithIds).reduce((acc, [key, value]) => {
         const worksheet = xlsx.utils.json_to_sheet(value)
         const maxColumns = value[0] ? Object.keys(value[0]).length : 0
         worksheet['!cols'] = Array(maxColumns)
           .fill({})
           .map((col, index) => {
-            if (encyclopediaIdColumns.includes(index)) {
+            if (idColumn === index) {
               return { hidden: true }
             }
             return col
           })
-
         acc[key] = worksheet
         return acc
-      },
-      {},
-    )
+      }, {})
 
-    const otherContentWithIds = {
-      Quizzes: quizzesFiltered,
-      'Did you know': didYouKnowsFiltered,
-      Avatars: avatarMessagesFiltered,
-    }
+      const otherData = {
+        Privacy: privacyPolicy.map((item) => ({
+          type: item.type,
+          content_original: item.content,
+          content: '',
+        })),
+        Terms: termsAndConditions.map((item) => ({
+          type: item.type,
+          content_original: item.content,
+          content: '',
+        })),
+        About: about.map((item) => ({
+          type: item.type,
+          content_original: item.content,
+          content: '',
+        })),
+      }
 
-    const idColumn = 0
-    const otherSheetsWithIds = Object.entries(otherContentWithIds).reduce((acc, [key, value]) => {
-      const worksheet = xlsx.utils.json_to_sheet(value)
-      const maxColumns = value[0] ? Object.keys(value[0]).length : 0
-      worksheet['!cols'] = Array(maxColumns)
-        .fill({})
-        .map((col, index) => {
-          if (idColumn === index) {
-            return { hidden: true }
-          }
-          return col
-        })
-      acc[key] = worksheet
-      return acc
-    }, {})
+      const otherSheets = Object.entries(otherData).reduce((acc, [key, value]) => {
+        const worksheet = xlsx.utils.json_to_sheet(value)
+        acc[key] = worksheet
+        return acc
+      }, {})
 
-    const otherData = {
-      Privacy: privacyPolicy.map((item) => ({
-        type: item.type,
-        content_original: item.content,
-        content: '',
-      })),
-      Terms: termsAndConditions.map((item) => ({
-        type: item.type,
-        content_original: item.content,
-        content: '',
-      })),
-      About: about.map((item) => ({
-        type: item.type,
-        content_original: item.content,
-        content: '',
-      })),
-    }
+      const allSheets = {
+        ...encyclopediaSheets,
+        ...otherSheetsWithIds,
+        ...otherSheets,
+        Help: helpCentersRaw,
+      }
 
-    const otherSheets = Object.entries(otherData).reduce((acc, [key, value]) => {
-      const worksheet = xlsx.utils.json_to_sheet(value)
-      acc[key] = worksheet
-      return acc
-    }, {})
+      // Create a new workbook
+      const workbook = {
+        SheetNames: Object.keys(allSheets),
+        Sheets: allSheets,
+      }
 
-    const allSheets = {
-      ...encyclopediaSheets,
-      ...otherSheetsWithIds,
-      ...otherSheets,
-      Help: helpCentersRaw,
-    }
+      // Get the buffer
+      const buffer = xlsx.write(workbook, { type: 'buffer' })
 
-    // Create a new workbook
-    const workbook = {
-      SheetNames: Object.keys(allSheets),
-      Sheets: allSheets,
-    }
+      const filename = `content-${request.user.lang}-${getDate()}.xlsx`
 
-    // Get the buffer
-    const buffer = xlsx.write(workbook, { type: 'buffer' })
-
-    const filename = `content-${request.user.lang}-${getDate()}.xlsx`
-
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', `attachment; filename=${filename}`)
-    response.setHeader(
-      'Content-type',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    )
-    response.send(buffer) // Send the file data as a response
-    logger.info('Content sheet generated', { lang: request.user.lang })
+      // Set the headers to inform the browser about file type and suggested filename
+      response.setHeader('Content-disposition', `attachment; filename=${filename}`)
+      response.setHeader(
+        'Content-type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      )
+      response.send(buffer) // Send the file data as a response
+      logger.info('Content sheet generated', { lang: request.user.lang })
     } catch (error) {
-      logger.error('DataController.generateContentSheet failed', { message: error?.message, stack: error?.stack })
+      logger.error('DataController.generateContentSheet failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
 
   async uploadContentSheet(request: Request, response: Response, next: NextFunction) {
     try {
-    // Ensure a file was uploaded
-    if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
-    }
-
-    const locale = request.body.locale?.length ? request.body.locale : request.user.lang
-
-    // Create a workbook from the xlsx data
-    const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
-
-    const otherSheetNames = [
-      'Quizzes',
-      'Did you know',
-      'Help',
-      'Avatars',
-      'Privacy',
-      'Terms',
-      'About',
-    ]
-
-    const encyclopediaSheetNames = workbook.SheetNames.filter(
-      (name) => !otherSheetNames.includes(name),
-    )
-
-    const encyclopediaJson = encyclopediaSheetNames.reduce((acc, name) => {
-      const worksheet = workbook.Sheets[name]
-      if (!worksheet) {
-        return acc
+      // Ensure a file was uploaded
+      if (!request.file || !request.file.buffer) {
+        return response.status(400).send('No file was uploaded.')
       }
-      const sheetJson = xlsx.utils.sheet_to_json(worksheet)
-      return [...acc, ...sheetJson]
-    }, [])
 
-    const otherJson = otherSheetNames.reduce((acc, name) => {
-      const worksheet = workbook.Sheets[name]
-      if (!worksheet) {
-        return acc
-      }
-      const sheetJson = xlsx.utils.sheet_to_json(worksheet)
-      const json = removeOriginals(sheetJson)
-      return { ...acc, [name]: json }
-    }, {})
+      const locale = request.body.locale?.length ? request.body.locale : request.user.lang
 
-    // Generate new Ids for everything if it is a new locale
-    // const isNewLocale = !content[locale] TODO:
-    const isNewLocale = true
+      // Create a workbook from the xlsx data
+      const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
 
-    const { articles, categories, subCategories } = formatEncyclopediaData(
-      encyclopediaJson,
-      isNewLocale,
-    )
+      const otherSheetNames = [
+        'Quizzes',
+        'Did you know',
+        'Help',
+        'Avatars',
+        'Privacy',
+        'Terms',
+        'About',
+      ]
 
-    const quizzesJson = replaceIdsInJson(
-      otherJson['Quizzes'],
-      otherJson['Quizzes'].map((item) => item.id),
-      isNewLocale,
-    )
+      const encyclopediaSheetNames = workbook.SheetNames.filter(
+        (name) => !otherSheetNames.includes(name),
+      )
 
-    const { quizzes } = fromQuizzes(quizzesJson)
+      const encyclopediaJson = encyclopediaSheetNames.reduce((acc, name) => {
+        const worksheet = workbook.Sheets[name]
+        if (!worksheet) {
+          return acc
+        }
+        const sheetJson = xlsx.utils.sheet_to_json(worksheet)
+        return [...acc, ...sheetJson]
+      }, [])
 
-    const didYouKnowsJson = replaceIdsInJson(
-      otherJson['Did you know'],
-      otherJson['Did you know'].map((item) => item.id),
-      isNewLocale,
-    )
+      const otherJson = otherSheetNames.reduce((acc, name) => {
+        const worksheet = workbook.Sheets[name]
+        if (!worksheet) {
+          return acc
+        }
+        const sheetJson = xlsx.utils.sheet_to_json(worksheet)
+        const json = removeOriginals(sheetJson)
+        return { ...acc, [name]: json }
+      }, {})
 
-    const { didYouKnows } = fromDidYouKnows(didYouKnowsJson)
+      // Generate new Ids for everything if it is a new locale
+      // const isNewLocale = !content[locale] TODO:
+      const isNewLocale = true
 
-    const avatarMessagesJson = replaceIdsInJson(
-      otherJson['Avatars'],
-      otherJson['Avatars'].map((item) => item.id),
-      isNewLocale,
-    )
+      const { articles, categories, subCategories } = formatEncyclopediaData(
+        encyclopediaJson,
+        isNewLocale,
+      )
 
-    const { avatarMessages } = fromAvatarMessages(avatarMessagesJson)
+      const quizzesJson = replaceIdsInJson(
+        otherJson['Quizzes'],
+        otherJson['Quizzes'].map((item) => item.id),
+        isNewLocale,
+      )
 
-    // ========== File ========== //
-    const fileContent = `
+      const { quizzes } = fromQuizzes(quizzesJson)
+
+      const didYouKnowsJson = replaceIdsInJson(
+        otherJson['Did you know'],
+        otherJson['Did you know'].map((item) => item.id),
+        isNewLocale,
+      )
+
+      const { didYouKnows } = fromDidYouKnows(didYouKnowsJson)
+
+      const avatarMessagesJson = replaceIdsInJson(
+        otherJson['Avatars'],
+        otherJson['Avatars'].map((item) => item.id),
+        isNewLocale,
+      )
+
+      const { avatarMessages } = fromAvatarMessages(avatarMessagesJson)
+
+      // ========== File ========== //
+      const fileContent = `
       // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
       import { StaticContent } from '../../../types'
 
@@ -539,15 +553,18 @@ export class DataController {
       }
       `
 
-    const fileName = `${locale}.ts`
+      const fileName = `${locale}.ts`
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
-    response.setHeader('Content-type', 'text/plain')
-    response.send(fileContent) // Send the file data as a response
-    logger.info('Content sheet uploaded and processed', { locale })
+      // Set the headers to inform the browser about file type and suggested filename
+      response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
+      response.setHeader('Content-type', 'text/plain')
+      response.send(fileContent) // Send the file data as a response
+      logger.info('Content sheet uploaded and processed', { locale })
     } catch (error) {
-      logger.error('DataController.uploadContentSheet failed', { message: error?.message, stack: error?.stack })
+      logger.error('DataController.uploadContentSheet failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

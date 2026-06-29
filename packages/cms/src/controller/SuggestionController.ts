@@ -24,7 +24,10 @@ export class SuggestionController {
       logger.info('Suggestion saved', { id: suggestionToSave.id })
       return suggestionToSave
     } catch (error) {
-      logger.error('SuggestionController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('SuggestionController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -39,10 +42,17 @@ export class SuggestionController {
       }
       suggestionToUpdate.status = request.body.status === '1' ? 'open' : 'close'
       await this.suggestionRepository.save(suggestionToUpdate)
-      logger.info('Suggestion status updated', { id: request.body.id, status: suggestionToUpdate.status })
+      logger.info('Suggestion status updated', {
+        id: request.body.id,
+        status: suggestionToUpdate.status,
+      })
       return suggestionToUpdate
     } catch (error) {
-      logger.error('SuggestionController.updateStatus failed', { id: request.body.id, message: error?.message, stack: error?.stack })
+      logger.error('SuggestionController.updateStatus failed', {
+        id: request.body.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -59,7 +69,11 @@ export class SuggestionController {
       logger.info('Suggestion removed', { id: request.params.id })
       return surveyToRemove
     } catch (error) {
-      logger.error('SuggestionController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('SuggestionController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

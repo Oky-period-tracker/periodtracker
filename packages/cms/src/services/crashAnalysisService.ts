@@ -94,7 +94,16 @@ class CrashAnalysisService {
   private exceptions: ExceptionRecord[] = []
   private memorySnapshots: MemorySnapshot[] = []
   private timeouts: TimeoutRecord[] = []
-  private requestStats: Map<string, { total: number; failed: number; durations: number[]; errors: Map<string, number>; lastFailure?: string }> = new Map()
+  private requestStats: Map<
+    string,
+    {
+      total: number
+      failed: number
+      durations: number[]
+      errors: Map<string, number>
+      lastFailure?: string
+    }
+  > = new Map()
   private startTime = Date.now()
   private memorySampler: ReturnType<typeof setInterval> | null = null
   private timeoutThresholdMs: number
@@ -111,7 +120,9 @@ class CrashAnalysisService {
     if (this.memorySampler.unref) {
       this.memorySampler.unref()
     }
-    logger.info('Crash analysis: memory sampling started', { intervalMs: MEMORY_SAMPLE_INTERVAL_MS })
+    logger.info('Crash analysis: memory sampling started', {
+      intervalMs: MEMORY_SAMPLE_INTERVAL_MS,
+    })
   }
 
   /** Stop periodic memory sampling */
@@ -350,9 +361,10 @@ class CrashAnalysisService {
       if (stats.total < minRequests) continue
       if (stats.failed === 0) continue
 
-      const avgDuration = stats.durations.length > 0
-        ? Math.round(stats.durations.reduce((a, b) => a + b, 0) / stats.durations.length)
-        : 0
+      const avgDuration =
+        stats.durations.length > 0
+          ? Math.round(stats.durations.reduce((a, b) => a + b, 0) / stats.durations.length)
+          : 0
       const maxDuration = stats.durations.length > 0 ? Math.max(...stats.durations) : 0
 
       const errors = Array.from(stats.errors.entries())
@@ -375,13 +387,21 @@ class CrashAnalysisService {
   }
 
   /** Get endpoints sorted by load (request count) */
-  getHighLoadEndpoints(limit = 10): Array<{ route: string; totalRequests: number; avgDuration: number; failureRate: number }> {
-    const results: Array<{ route: string; totalRequests: number; avgDuration: number; failureRate: number }> = []
+  getHighLoadEndpoints(
+    limit = 10,
+  ): Array<{ route: string; totalRequests: number; avgDuration: number; failureRate: number }> {
+    const results: Array<{
+      route: string
+      totalRequests: number
+      avgDuration: number
+      failureRate: number
+    }> = []
 
     for (const [route, stats] of this.requestStats) {
-      const avgDuration = stats.durations.length > 0
-        ? Math.round(stats.durations.reduce((a, b) => a + b, 0) / stats.durations.length)
-        : 0
+      const avgDuration =
+        stats.durations.length > 0
+          ? Math.round(stats.durations.reduce((a, b) => a + b, 0) / stats.durations.length)
+          : 0
 
       results.push({
         route,

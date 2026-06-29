@@ -39,7 +39,10 @@ export class CategoryController {
       logger.info('Category created', { title: request.body.title })
       return request.body
     } catch (error) {
-      logger.error('CategoryController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('CategoryController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -66,7 +69,11 @@ export class CategoryController {
       logger.info('Category updated', { id: request.params.id, title: request.body.title })
       return categoryToUpdate
     } catch (error) {
-      logger.error('CategoryController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('CategoryController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -92,10 +99,18 @@ export class CategoryController {
       await this.categoryRepository.remove(categoryToRemove)
       await this.subcategoryRepository.remove(subcategoriesToRemove)
       await this.articleRepository.remove(articlesToRemove)
-      logger.info('Category removed with cascade', { id: request.params.id, subcategoriesRemoved: subcategoriesToRemove.length, articlesRemoved: articlesToRemove.length })
+      logger.info('Category removed with cascade', {
+        id: request.params.id,
+        subcategoriesRemoved: subcategoriesToRemove.length,
+        articlesRemoved: articlesToRemove.length,
+      })
       return categoryToRemove
     } catch (error) {
-      logger.error('CategoryController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('CategoryController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -115,7 +130,10 @@ export class CategoryController {
         },
       })
     } catch (error) {
-      logger.error('CategoryController.reorderRows failed', { message: error?.message, stack: error?.stack })
+      logger.error('CategoryController.reorderRows failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

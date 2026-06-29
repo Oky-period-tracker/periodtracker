@@ -12,7 +12,12 @@ export class SlowQueryLogger implements TypeORMLogger {
     }
   }
 
-  logQueryError(error: string | Error, query: string, parameters?: any[], queryRunner?: QueryRunner) {
+  logQueryError(
+    error: string | Error,
+    query: string,
+    parameters?: any[],
+    queryRunner?: QueryRunner,
+  ) {
     logger.error('Query error', {
       error: typeof error === 'string' ? error : error.message,
       stack: typeof error === 'string' ? undefined : error.stack,

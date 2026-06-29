@@ -11,10 +11,7 @@ interface RetryOptions {
  * Retries an async operation with exponential backoff.
  * Jitter is added to prevent thundering herd.
  */
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions = {},
-): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, options: RetryOptions = {}): Promise<T> {
   const { maxRetries = 3, baseDelay = 1000, maxDelay = 30000, label = 'Operation' } = options
 
   let lastError: Error
@@ -36,9 +33,14 @@ export async function withRetry<T>(
       const delay = Math.min(baseDelay * Math.pow(2, attempt), maxDelay)
       const jitter = delay * (0.5 + Math.random() * 0.5)
 
-      logger.warn(`${label} failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${Math.round(jitter)}ms`, {
-        message: lastError.message,
-      })
+      logger.warn(
+        `${label} failed (attempt ${attempt + 1}/${maxRetries + 1}), retrying in ${Math.round(
+          jitter,
+        )}ms`,
+        {
+          message: lastError.message,
+        },
+      )
 
       await new Promise((resolve) => setTimeout(resolve, jitter))
     }

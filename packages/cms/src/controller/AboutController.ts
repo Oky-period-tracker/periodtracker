@@ -51,7 +51,11 @@ export class AboutController {
       logger.info('About updated', { id: request.params.id })
       return aboutToUpdate
     } catch (error) {
-      logger.error('AboutController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('AboutController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -68,7 +72,11 @@ export class AboutController {
       logger.info('About removed', { id: request.params.id })
       return aboutToRemove
     } catch (error) {
-      logger.error('AboutController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('AboutController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

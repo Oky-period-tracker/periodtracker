@@ -31,7 +31,10 @@ export class AvatarMessageController {
       logger.info('Avatar message created', { id: avatarMessageToSave.id })
       return avatarMessageToSave
     } catch (error) {
-      logger.error('AvatarMessageController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('AvatarMessageController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -53,7 +56,11 @@ export class AvatarMessageController {
       logger.info('Avatar message updated', { id: request.params.id })
       return avatarMessageToUpdate
     } catch (error) {
-      logger.error('AvatarMessageController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('AvatarMessageController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -70,7 +77,11 @@ export class AvatarMessageController {
       logger.info('Avatar message removed', { id: request.params.id })
       return avatarMessageToRemove
     } catch (error) {
-      logger.error('AvatarMessageController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('AvatarMessageController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

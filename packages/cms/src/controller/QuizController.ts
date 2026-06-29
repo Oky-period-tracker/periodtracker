@@ -76,7 +76,11 @@ export class QuizController {
       logger.info('Quiz updated', { id: request.params.id })
       return quizToUpdate
     } catch (error) {
-      logger.error('QuizController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('QuizController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -93,7 +97,11 @@ export class QuizController {
       logger.info('Quiz removed', { id: request.params.id })
       return quizToRemove
     } catch (error) {
-      logger.error('QuizController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('QuizController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

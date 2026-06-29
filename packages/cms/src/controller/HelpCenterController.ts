@@ -43,7 +43,10 @@ export class HelpCenterController {
       logger.info('Help center created', { title: toSave.title })
       return toSave
     } catch (error) {
-      logger.error('HelpCenterController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('HelpCenterController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -61,7 +64,11 @@ export class HelpCenterController {
       logger.info('Help center updated', { id: request.params.id })
       return helpCenterToUpdate
     } catch (error) {
-      logger.error('HelpCenterController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('HelpCenterController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -81,7 +88,10 @@ export class HelpCenterController {
         },
       })
     } catch (error) {
-      logger.error('HelpCenterController.bulkUpdate failed', { message: error?.message, stack: error?.stack })
+      logger.error('HelpCenterController.bulkUpdate failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -98,7 +108,11 @@ export class HelpCenterController {
       logger.info('Help center removed', { id: request.params.id })
       return helpCenterToRemove
     } catch (error) {
-      logger.error('HelpCenterController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('HelpCenterController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

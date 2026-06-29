@@ -67,10 +67,16 @@ export class ArticleController {
       articleToSave.lang = request.user.lang
       articleToSave.id = uuid()
       await this.articleRepository.save(articleToSave)
-      logger.info('Article created', { id: articleToSave.id, heading: articleToSave.article_heading })
+      logger.info('Article created', {
+        id: articleToSave.id,
+        heading: articleToSave.article_heading,
+      })
       return articleToSave
     } catch (error) {
-      logger.error('ArticleController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('ArticleController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -91,20 +97,24 @@ export class ArticleController {
         return
       }
       articleToUpdate.category = request.body.category
-    articleToUpdate.subcategory = request.body.subcategory
-    articleToUpdate.article_heading = request.body.article_heading
-    articleToUpdate.article_text = request.body.article_text
-    articleToUpdate.contentFilter = request.body.contentFilter
-    articleToUpdate.ageRestrictionLevel = Number(request.body.ageRestrictionLevel)
-    // TODO:PH isAgeRestricted is redundant?
-    articleToUpdate.isAgeRestricted = request.body.ageRestrictionLevel === '0' ? false : true
-    articleToUpdate.live = booleanFromString
-    articleToUpdate.lang = request.user.lang
-    await this.articleRepository.save(articleToUpdate)
-    logger.info('Article updated', { id: request.params.id })
-    return articleToUpdate
+      articleToUpdate.subcategory = request.body.subcategory
+      articleToUpdate.article_heading = request.body.article_heading
+      articleToUpdate.article_text = request.body.article_text
+      articleToUpdate.contentFilter = request.body.contentFilter
+      articleToUpdate.ageRestrictionLevel = Number(request.body.ageRestrictionLevel)
+      // TODO:PH isAgeRestricted is redundant?
+      articleToUpdate.isAgeRestricted = request.body.ageRestrictionLevel === '0' ? false : true
+      articleToUpdate.live = booleanFromString
+      articleToUpdate.lang = request.user.lang
+      await this.articleRepository.save(articleToUpdate)
+      logger.info('Article updated', { id: request.params.id })
+      return articleToUpdate
     } catch (error) {
-      logger.error('ArticleController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('ArticleController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -121,7 +131,11 @@ export class ArticleController {
       logger.info('Article removed', { id: request.params.id })
       return articleToRemove
     } catch (error) {
-      logger.error('ArticleController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('ArticleController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

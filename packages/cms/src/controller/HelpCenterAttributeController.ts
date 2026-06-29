@@ -25,7 +25,10 @@ export class HelpCenterAttributeController {
       logger.info('Help center attribute saved')
       return helpCenterAttributeToSave
     } catch (error) {
-      logger.error('HelpCenterAttributeController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('HelpCenterAttributeController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -45,7 +48,11 @@ export class HelpCenterAttributeController {
       logger.info('Help center attribute updated', { id: request.params.id })
       return helpCenterAttributeToUpdate
     } catch (error) {
-      logger.error('HelpCenterAttributeController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('HelpCenterAttributeController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -64,7 +71,11 @@ export class HelpCenterAttributeController {
       logger.info('Help center attribute removed', { id: request.params.id })
       return helpCenterAttributeToRemove
     } catch (error) {
-      logger.error('HelpCenterAttributeController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('HelpCenterAttributeController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

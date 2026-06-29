@@ -18,7 +18,10 @@ export class AnalyticsController {
       await this.analyticsRepository.save(analyticsEntry)
       return analyticsEntry
     } catch (error) {
-      logger.error('AnalyticsController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('AnalyticsController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

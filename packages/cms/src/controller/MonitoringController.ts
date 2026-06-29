@@ -7,10 +7,14 @@ export class MonitoringController {
   async health(_req: Request, res: Response, _next: NextFunction) {
     try {
       const health = await monitoringService.getHealthStatus()
-      const httpStatus = health.status === 'healthy' ? 200 : health.status === 'degraded' ? 200 : 503
+      const httpStatus =
+        health.status === 'healthy' ? 200 : health.status === 'degraded' ? 200 : 503
       res.status(httpStatus).json(health)
     } catch (error) {
-      logger.error('MonitoringController.health failed', { message: error?.message, stack: error?.stack })
+      logger.error('MonitoringController.health failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       res.status(503).json({ status: 'unhealthy', error: 'Health check failed' })
     }
   }
@@ -21,7 +25,10 @@ export class MonitoringController {
       const overview = monitoringService.getOverviewMetrics()
       res.json(overview)
     } catch (error) {
-      logger.error('MonitoringController.metrics failed', { message: error?.message, stack: error?.stack })
+      logger.error('MonitoringController.metrics failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       res.status(500).json({ error: 'Failed to retrieve metrics' })
     }
   }
@@ -32,7 +39,10 @@ export class MonitoringController {
       const routeMetrics = monitoringService.getRouteMetrics()
       res.json(routeMetrics)
     } catch (error) {
-      logger.error('MonitoringController.routes failed', { message: error?.message, stack: error?.stack })
+      logger.error('MonitoringController.routes failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       res.status(500).json({ error: 'Failed to retrieve route metrics' })
     }
   }
@@ -44,7 +54,10 @@ export class MonitoringController {
       const slowest = monitoringService.getSlowestRoutes(limit)
       res.json(slowest)
     } catch (error) {
-      logger.error('MonitoringController.slowRoutes failed', { message: error?.message, stack: error?.stack })
+      logger.error('MonitoringController.slowRoutes failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       res.status(500).json({ error: 'Failed to retrieve slow routes' })
     }
   }

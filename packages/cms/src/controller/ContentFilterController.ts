@@ -44,7 +44,10 @@ export class ContentFilterController {
       logger.info('Content filter updated', { id, source, level })
       return updated
     } catch (error) {
-      logger.error('ContentFilterController.update failed', { message: error?.message, stack: error?.stack })
+      logger.error('ContentFilterController.update failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

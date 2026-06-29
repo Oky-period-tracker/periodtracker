@@ -29,7 +29,10 @@ export class DidYouKnowController {
       logger.info('DidYouKnow created', { id: didYouKnowToSave.id, title: didYouKnowToSave.title })
       return didYouKnowToSave
     } catch (error) {
-      logger.error('DidYouKnowController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('DidYouKnowController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -54,7 +57,11 @@ export class DidYouKnowController {
       logger.info('DidYouKnow updated', { id: request.params.id })
       return didYouKnowToUpdate
     } catch (error) {
-      logger.error('DidYouKnowController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('DidYouKnowController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -71,7 +78,11 @@ export class DidYouKnowController {
       logger.info('DidYouKnow removed', { id: request.params.id })
       return didYouKnowToRemove
     } catch (error) {
-      logger.error('DidYouKnowController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('DidYouKnowController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

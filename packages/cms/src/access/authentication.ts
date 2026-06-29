@@ -21,7 +21,11 @@ export class Authentication {
       logger.info('Login successful', { username, userId: user.id })
       return done(null, user)
     } catch (error) {
-      logger.error('Authentication error', { username, message: error?.message, stack: error?.stack })
+      logger.error('Authentication error', {
+        username,
+        message: error?.message,
+        stack: error?.stack,
+      })
       return done(error)
     }
   }
@@ -38,7 +42,11 @@ export class Authentication {
       }
       done(null, user)
     } catch (error) {
-      logger.error('Deserialize error', { userId: id, message: error?.message, stack: error?.stack })
+      logger.error('Deserialize error', {
+        userId: id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       done(error)
     }
   }

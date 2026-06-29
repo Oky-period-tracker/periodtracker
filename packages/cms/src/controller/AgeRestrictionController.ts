@@ -46,7 +46,10 @@ export class AgeRestrictionController {
       logger.info('Age restriction updated', { id, source, level })
       return updated
     } catch (error) {
-      logger.error('AgeRestrictionController.update failed', { message: error?.message, stack: error?.stack })
+      logger.error('AgeRestrictionController.update failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

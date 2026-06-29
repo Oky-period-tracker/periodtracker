@@ -32,7 +32,10 @@ export class PrivacyPolicyController {
       logger.info('Privacy policy saved', { lang: request.user.lang })
       return aboutToSave
     } catch (error) {
-      logger.error('PrivacyPolicyController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('PrivacyPolicyController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -51,7 +54,11 @@ export class PrivacyPolicyController {
       logger.info('Privacy policy updated', { id: request.params.id })
       return aboutToUpdate
     } catch (error) {
-      logger.error('PrivacyPolicyController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('PrivacyPolicyController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -68,7 +75,11 @@ export class PrivacyPolicyController {
       logger.info('Privacy policy removed', { id: request.params.id })
       return aboutToRemove
     } catch (error) {
-      logger.error('PrivacyPolicyController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('PrivacyPolicyController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

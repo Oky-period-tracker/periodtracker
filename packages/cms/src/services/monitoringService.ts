@@ -160,13 +160,15 @@ class MonitoringService {
     const p50 = sorted[Math.floor(sorted.length * 0.5)] || 0
     const p95 = sorted[Math.floor(sorted.length * 0.95)] || 0
     const p99 = sorted[Math.floor(sorted.length * 0.99)] || 0
-    const avg = durations.length > 0 ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0
+    const avg =
+      durations.length > 0 ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : 0
 
     return {
       uptime: Math.floor((Date.now() - this.startTime) / 1000),
       totalRequests: this.requestCount,
       totalErrors: this.errorCount,
-      errorRate: this.requestCount > 0 ? Math.round((this.errorCount / this.requestCount) * 10000) / 100 : 0,
+      errorRate:
+        this.requestCount > 0 ? Math.round((this.errorCount / this.requestCount) * 10000) / 100 : 0,
       statusCodeCounts: { ...this.statusCodeCounts },
       responseTime: {
         window: '1h',

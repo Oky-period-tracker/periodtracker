@@ -38,7 +38,10 @@ export class UserController {
         return
       }
       if (!accessControlList.can(request.user.type, creationAction)) {
-        logger.warn('User creation denied: insufficient permissions', { requestingUser: request.user.id, requestedType: request.body.type })
+        logger.warn('User creation denied: insufficient permissions', {
+          requestingUser: request.user.id,
+          requestedType: request.body.type,
+        })
         response.status(400).send({ error: 'No permission rights to do that' })
         return
       }
@@ -66,7 +69,7 @@ export class UserController {
         response.status(404).send({ error: 'User not found' })
         return
       }
-      await bcrypt.hash(request.body.password, saltRounds).then(async hash => {
+      await bcrypt.hash(request.body.password, saltRounds).then(async (hash) => {
         userToUpdate.username = request.body.username
         userToUpdate.password = hash
         userToUpdate.lang = request.body.lang
@@ -76,7 +79,11 @@ export class UserController {
       logger.info('CMS user updated', { id: request.params.id, username: request.body.username })
       return userToUpdate
     } catch (error) {
-      logger.error('UserController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('UserController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -93,7 +100,11 @@ export class UserController {
       logger.info('CMS user removed', { id: request.params.id })
       return userToRemove
     } catch (error) {
-      logger.error('UserController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('UserController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -116,7 +127,10 @@ export class UserController {
       logger.info('User language changed', { userId: request.user.id, lang: request.body.lang })
       return ''
     } catch (error) {
-      logger.error('UserController.changeLocation failed', { message: error?.message, stack: error?.stack })
+      logger.error('UserController.changeLocation failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

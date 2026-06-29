@@ -50,7 +50,10 @@ export class AboutBannerController {
         shouldUpdate: false,
       }
     } catch (error) {
-      logger.error('AboutBannerController.mobileAboutBannerByLanguageConditional failed', { message: error?.message, stack: error?.stack })
+      logger.error('AboutBannerController.mobileAboutBannerByLanguageConditional failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -72,7 +75,10 @@ export class AboutBannerController {
       logger.info('About banner saved/updated', { lang: request.user.lang })
       return aboutToUpdate
     } catch (error) {
-      logger.error('AboutBannerController.saveOrUpdate failed', { message: error?.message, stack: error?.stack })
+      logger.error('AboutBannerController.saveOrUpdate failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -89,7 +95,11 @@ export class AboutBannerController {
       logger.info('About banner removed', { id: request.params.id })
       return aboutToRemove
     } catch (error) {
-      logger.error('AboutBannerController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('AboutBannerController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

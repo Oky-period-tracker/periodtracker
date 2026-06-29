@@ -68,7 +68,11 @@ export class VideoController {
       logger.info('Video updated', { id: request.params.id })
       return videoToUpdate
     } catch (error) {
-      logger.error('VideoController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('VideoController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -85,7 +89,11 @@ export class VideoController {
       logger.info('Video removed', { id: request.params.id })
       return itemToRemove
     } catch (error) {
-      logger.error('VideoController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('VideoController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -105,7 +113,10 @@ export class VideoController {
         },
       })
     } catch (error) {
-      logger.error('VideoController.reorderRows failed', { message: error?.message, stack: error?.stack })
+      logger.error('VideoController.reorderRows failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

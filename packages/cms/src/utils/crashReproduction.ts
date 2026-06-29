@@ -17,7 +17,8 @@
 
 import http from 'http'
 
-const BASE_URL = process.argv.find((a) => a.startsWith('--base-url='))?.split('=')[1] || 'http://localhost:5000'
+const BASE_URL =
+  process.argv.find((a) => a.startsWith('--base-url='))?.split('=')[1] || 'http://localhost:5000'
 const scenario = process.argv[2]
 
 // ─── HTTP helpers ─────────────────────────────────────────────────
@@ -46,7 +47,11 @@ async function healthCheck() {
     try {
       const { status, body } = await get('/health')
       const data = JSON.parse(body)
-      console.log(`[${i + 1}/10] Status: ${data.status} (HTTP ${status}) | DB: ${data.checks?.database?.status} | Uptime: ${data.uptime}s`)
+      console.log(
+        `[${i + 1}/10] Status: ${data.status} (HTTP ${status}) | DB: ${
+          data.checks?.database?.status
+        } | Uptime: ${data.uptime}s`,
+      )
     } catch (error) {
       console.log(`[${i + 1}/10] FAILED: ${(error as Error).message}`)
     }
@@ -158,7 +163,9 @@ async function fullDiagnostic() {
     if (report.failingEndpoints.length > 0) {
       console.log('\n--- Failing Endpoints ---')
       for (const ep of report.failingEndpoints) {
-        console.log(`  ${ep.route}: ${ep.failureRate}% failure (${ep.failedRequests}/${ep.totalRequests})`)
+        console.log(
+          `  ${ep.route}: ${ep.failureRate}% failure (${ep.failedRequests}/${ep.totalRequests})`,
+        )
       }
     }
 

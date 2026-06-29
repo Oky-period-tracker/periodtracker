@@ -36,7 +36,10 @@ export class TermsAndConditionsController {
       logger.info('Terms and conditions saved', { lang: request.user.lang })
       return aboutToSave
     } catch (error) {
-      logger.error('TermsAndConditionsController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('TermsAndConditionsController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -55,7 +58,11 @@ export class TermsAndConditionsController {
       logger.info('Terms and conditions updated', { id: request.params.id })
       return aboutToUpdate
     } catch (error) {
-      logger.error('TermsAndConditionsController.update failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('TermsAndConditionsController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -72,7 +79,11 @@ export class TermsAndConditionsController {
       logger.info('Terms and conditions removed', { id: request.params.id })
       return aboutToRemove
     } catch (error) {
-      logger.error('TermsAndConditionsController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('TermsAndConditionsController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

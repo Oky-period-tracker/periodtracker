@@ -14,10 +14,9 @@ export function responseTimeTracker(req: Request, res: Response, next: NextFunct
 
     // Normalise route: strip query string, collapse IDs/UUIDs into :id
     const baseUrl = req.originalUrl.split('?')[0]
-    const normalised = baseUrl.replace(
-      /\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
-      '/:id',
-    ).replace(/\/\d+/g, '/:id')
+    const normalised = baseUrl
+      .replace(/\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, '/:id')
+      .replace(/\/\d+/g, '/:id')
 
     monitoringService.recordResponseTime(req.method, normalised, res.statusCode, durationMs)
   })

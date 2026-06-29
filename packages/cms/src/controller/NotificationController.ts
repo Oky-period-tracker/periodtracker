@@ -33,7 +33,10 @@ export class NotificationController {
       }
       return { message: '', isPermanent: false }
     } catch (error) {
-      logger.error('NotificationController.mobilePermanentNotifications failed', { message: error?.message, stack: error?.stack })
+      logger.error('NotificationController.mobilePermanentNotifications failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -50,7 +53,10 @@ export class NotificationController {
       logger.info('Permanent alert saved', { lang: request.user.lang })
       return permanentNotificationToAdd
     } catch (error) {
-      logger.error('NotificationController.savePermanentAlert failed', { message: error?.message, stack: error?.stack })
+      logger.error('NotificationController.savePermanentAlert failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -68,10 +74,16 @@ export class NotificationController {
       notificationToAdd.status = 'sent'
       notificationToAdd.lang = request.user.lang
       await this.notificationRepository.save(notificationToAdd)
-      logger.info('Notification sent and saved', { title: request.body.title, lang: request.user.lang })
+      logger.info('Notification sent and saved', {
+        title: request.body.title,
+        lang: request.user.lang,
+      })
       return notificationToAdd
     } catch (error) {
-      logger.error('NotificationController.save failed', { message: error?.message, stack: error?.stack })
+      logger.error('NotificationController.save failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -98,7 +110,11 @@ export class NotificationController {
       logger.info('Permanent alert updated', { id: request.params.id })
       return permanentNotificationToUpdate
     } catch (error) {
-      logger.error('NotificationController.updatePermanentAlert failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('NotificationController.updatePermanentAlert failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -115,7 +131,11 @@ export class NotificationController {
       logger.info('Notification removed', { id: request.params.id })
       return notificationToRemove
     } catch (error) {
-      logger.error('NotificationController.remove failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('NotificationController.remove failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -132,7 +152,11 @@ export class NotificationController {
       logger.info('Permanent alert removed', { id: request.params.id })
       return itemToRemove
     } catch (error) {
-      logger.error('NotificationController.removePermanentAlert failed', { id: request.params.id, message: error?.message, stack: error?.stack })
+      logger.error('NotificationController.removePermanentAlert failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }
@@ -147,16 +171,24 @@ export class NotificationController {
     }
     try {
       const response = await withRetry(
-        () => withTimeout(
-          admin.messaging().send(message),
-          DEFAULT_EXTERNAL_TIMEOUT,
-          'Firebase notification send',
-        ),
+        () =>
+          withTimeout(
+            admin.messaging().send(message),
+            DEFAULT_EXTERNAL_TIMEOUT,
+            'Firebase notification send',
+          ),
         { maxRetries: 2, baseDelay: 1000, label: 'Firebase send' },
       )
-      logger.info('Firebase notification sent', { messageId: response, topic: `oky_${lang}_notifications` })
+      logger.info('Firebase notification sent', {
+        messageId: response,
+        topic: `oky_${lang}_notifications`,
+      })
     } catch (error) {
-      logger.error('Firebase notification failed', { topic: `oky_${lang}_notifications`, message: error?.message, stack: error?.stack })
+      logger.error('Firebase notification failed', {
+        topic: `oky_${lang}_notifications`,
+        message: error?.message,
+        stack: error?.stack,
+      })
       throw error
     }
   }

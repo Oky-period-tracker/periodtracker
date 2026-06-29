@@ -1,5 +1,5 @@
 import { getRepository, createQueryBuilder, getManager, Not } from 'typeorm'
-import { subMonths } from 'date-fns'
+import { subMonths, differenceInYears } from 'date-fns'
 import { NextFunction, Request, Response } from 'express'
 import { Survey } from '../entity/Survey'
 import { Question } from '../entity/Question'
@@ -47,12 +47,22 @@ export class SurveyController {
       completedSurveys.length > 0
         ? completedSurveys.map((surveyAnswer: any) => surveyAnswer.id)
         : [uuid()]
-    return await createQueryBuilder('survey')
+
+    // oky_user lives in the configured schema and is not a CMS entity, so we
+    // can't join it via the query builder (a schema-qualified table name is
+    // parsed as an alias path). Fetch the user's age separately and apply the
+    // age restriction in JS instead.
+    const userRows = await entityManager.query(
+      `SELECT date_of_birth FROM ${env.db.schema}.oky_user WHERE id = $1`,
+      [request.query.user_id],
+    )
+    const dateOfBirth = userRows[0]?.date_of_birth
+    const isOver14 = dateOfBirth ? differenceInYears(new Date(), new Date(dateOfBirth)) > 14 : false
+
+    const query = createQueryBuilder('survey')
       .from(Survey, 'survey')
       .where(
-        `survey.lang=:lang and survey.live=:live AND survey.date_created BETWEEN :start_date AND :end_date AND survey.id NOT IN (:...ids)
-      AND (survey.isAgeRestricted=true AND DATE_PART('year', age(:end_date, oky_user.date_of_birth)) > 14 OR survey.isAgeRestricted=false)
-      `,
+        `survey.lang=:lang and survey.live=:live AND survey.date_created BETWEEN :start_date AND :end_date AND survey.id NOT IN (:...ids)`,
         {
           lang: request.params.lang,
           live: true,
@@ -61,7 +71,13 @@ export class SurveyController {
           ids,
         },
       )
-      .leftJoin('oky_user', 'oky_user', 'oky_user.id = :id', { id: request.query.user_id })
+
+    // Age-restricted surveys are only shown to users older than 14.
+    if (!isOver14) {
+      query.andWhere('survey.isAgeRestricted = false')
+    }
+
+    return await query
       .leftJoinAndMapMany('survey.questions', Question, 'question', 'question.surveyId = survey.id')
       .select(['survey', 'question'])
       .getMany()

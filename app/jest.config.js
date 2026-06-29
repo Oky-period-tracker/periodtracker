@@ -19,6 +19,8 @@ const esModules = [
   'react-native-size-matters',
   'react-native-calendars',
   'expo-constants',
+  'expo-device',
+  'expo-application',
 ].join('|')
 
 module.exports = {

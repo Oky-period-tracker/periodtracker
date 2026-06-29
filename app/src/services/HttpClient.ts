@@ -124,6 +124,7 @@ export function createHttpClient(
       dateSignedUp,
       metadata,
       preferredId = null,
+      deviceId,
     }: // TODO:
     // eslint-disable-next-line
     any) => {
@@ -142,6 +143,7 @@ export function createHttpClient(
           dateSignedUp,
           metadata,
           preferredId,
+          deviceId,
           dateAccountSaved: new Date().toISOString(),
         },
       )

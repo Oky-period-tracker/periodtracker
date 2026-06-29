@@ -8,16 +8,19 @@ import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector } from '../../../redux/selectors'
 import { useAuth } from '../../../contexts/AuthContext'
 import { formatPassword } from '../../../services/auth'
-import { useDispatch } from 'react-redux'
-import { loginRequest } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { loadPendingSyncData } from '../../../services/pendingSync'
+import {
+  loginToAccount,
+  loginOnlineToAccount,
+  MAX_ACCOUNTS,
+} from '../../../services/auth/accountFlows'
+import { verifyPassword } from '../../../services/auth/credentialVault'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
   const [wasPreLoggedIn] = React.useState(!!user)
-  const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
 
   const [name, setName] = React.useState(user ? user.name : '')
@@ -27,8 +30,17 @@ export const LogIn = () => {
   const { errors } = validateCredentials(name, password)
 
   const [success, setSuccess] = React.useState<boolean | null>(null)
+  // Which error to show when success === false. Defaults to a wrong-passcode message; the online
+  // login can instead fail because the device is full (MAX_ACCOUNTS), which is not a bad password.
+  const [errorKey, setErrorKey] = React.useState('password_incorrect')
 
   const [margin, setMargin] = React.useState(0)
+
+  // Clear a stale "incorrect" message as soon as the user edits either field.
+  React.useEffect(() => {
+    setSuccess(null)
+    setErrorKey('password_incorrect')
+  }, [name, password])
 
   // Pre-fill username from pending sync data after a forced logout
   React.useEffect(() => {
@@ -40,26 +52,47 @@ export const LogIn = () => {
     })
   }, [])
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     if (errors.length) {
       setErrorsVisible(true)
       return
     }
 
-    if (user) {
-      const formattedPassword = formatPassword(password)
-      const success = user.password === formattedPassword
+    const formattedPassword = formatPassword(password)
 
-      if (success) {
+    if (user) {
+      // Passcode re-entry for the account already loaded into the active store. Verify against
+      // the credential vault (the source of truth, kept current by offline password resets),
+      // falling back to the plaintext stored on the user for any pre-vault account.
+      const ok =
+        (await verifyPassword(user.id, formattedPassword)) || user.password === formattedPassword
+      if (ok) {
         setIsLoggedIn(true)
         return
       }
-
       setSuccess(false)
       return
     }
 
-    dispatch(loginRequest({ name, password: formatPassword(password) }))
+    // Fresh login: try a locally registered account first (works offline), then fall back to an
+    // online login if no local account matches this name. The online path registers the account
+    // and gives it its own store, so it joins the account switcher instead of landing in the
+    // shared anon store.
+    try {
+      const loggedIn =
+        (await loginToAccount(name, formattedPassword)) ||
+        (await loginOnlineToAccount(name, formattedPassword))
+      if (loggedIn) {
+        setIsLoggedIn(true)
+        return
+      }
+      setSuccess(false)
+    } catch (err) {
+      if (err instanceof Error && err.message === MAX_ACCOUNTS) {
+        setErrorKey('max_accounts_reached')
+      }
+      setSuccess(false)
+    }
   }
 
   React.useEffect(() => {
@@ -100,7 +133,7 @@ export const LogIn = () => {
           errorKeys={['password_too_short']}
           errorsVisible={errorsVisible}
         />
-        {success === false && <ErrorText>password_incorrect</ErrorText>}
+        {success === false && <ErrorText>{errorKey}</ErrorText>}
       </AuthCardBody>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={[styles.confirm, { marginBottom: margin }]}>

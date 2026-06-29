@@ -6,8 +6,7 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { TouchableRow, TouchableRowProps } from '../../components/TouchableRow'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Switch } from '../../components/Switch'
-import { useDispatch } from 'react-redux'
-import { deleteAccountRequest, logoutRequest } from '../../redux/actions'
+import { logoutToAnon, deleteActiveAccount } from '../../services/auth/accountFlows'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
@@ -18,13 +17,13 @@ import { useColor } from '../../hooks/useColor'
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
-  const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
 
   const logOut = () => {
-    dispatch(logoutRequest())
+    // Leave the active account for the logged-out (anon) context, keeping its data saved.
+    void logoutToAnon()
     setIsLoggedIn(false)
   }
 
@@ -32,13 +31,14 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
     if (!currentUser) {
       return
     }
-    dispatch(
-      deleteAccountRequest({
-        name: currentUser.name,
-        password: currentUser.password,
-        // setLoading, TODO: ?
-      }),
-    )
+    // Leave the logged-in gate first (AuthProvider lives above the per-user store), then tear the
+    // account down (server delete + registry entry + encryption key + credential vault + store
+    // blob) outside the saga, mirroring the AuthScreen delete flow.
+    setIsLoggedIn(false)
+    void deleteActiveAccount({
+      name: currentUser.name,
+      password: currentUser.password,
+    })
   }
 
   const logOutAlert = () => {

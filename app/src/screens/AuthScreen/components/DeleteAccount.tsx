@@ -6,6 +6,7 @@ import { Input } from '../../../components/Input'
 import { Text } from '../../../components/Text'
 import { httpClient } from '../../../services/HttpClient'
 import { formatPassword } from '../../../services/auth'
+import { deleteAccountByPassword } from '../../../services/auth/accountFlows'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
@@ -32,14 +33,16 @@ export const DeleteAccount = () => {
     }
 
     try {
-      // Check user exists
-      await httpClient.getUserInfo(name)
+      // Delete a locally registered account first (works offline), then fall back to the server.
+      const deletedLocally = await deleteAccountByPassword(name, formatPassword(password))
 
-      // Delete
-      await httpClient.deleteUserFromPassword({
-        name,
-        password: formatPassword(password),
-      })
+      if (!deletedLocally) {
+        await httpClient.getUserInfo(name)
+        await httpClient.deleteUserFromPassword({
+          name,
+          password: formatPassword(password),
+        })
+      }
 
       Alert.alert('success', 'delete_account_completed', [
         {

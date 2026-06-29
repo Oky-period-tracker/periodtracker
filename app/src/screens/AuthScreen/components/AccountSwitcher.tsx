@@ -7,6 +7,9 @@ import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { useColor } from '../../../hooks/useColor'
 import { listAccounts, switchToAccount } from '../../../services/auth/accountFlows'
+import { useSelector } from '../../../redux/useSelector'
+import { currentUserSelector } from '../../../redux/selectors'
+import { useAuthMode } from '../AuthModeContext'
 
 // The dropdown trigger: looks like the app's input boxes (rounded, filled) with a chevron, so it
 // reads as a dropdown. Renders "Select a user" directly to avoid the translate fallback.
@@ -31,6 +34,8 @@ const SelectUserToggle: React.FC<{ onPress: () => void }> = ({ onPress }) => {
 // start screen; renders nothing when there are no saved accounts.
 export const AccountSwitcher = () => {
   const [options, setOptions] = React.useState<WheelPickerOption[]>([])
+  const currentUser = useSelector(currentUserSelector)
+  const { setAuthMode } = useAuthMode()
 
   React.useEffect(() => {
     let mounted = true
@@ -49,9 +54,16 @@ export const AccountSwitcher = () => {
   }
 
   const onSelect = (option?: WheelPickerOption) => {
-    if (option) {
-      void switchToAccount(option.value)
+    if (!option) {
+      return
     }
+    // If the chosen account is already the one loaded in the active store, switchToUser would
+    // short-circuit (no remount) and nothing would happen. Show its passcode screen directly.
+    if (currentUser && option.value === currentUser.id) {
+      setAuthMode('log_in')
+      return
+    }
+    void switchToAccount(option.value)
   }
 
   return (

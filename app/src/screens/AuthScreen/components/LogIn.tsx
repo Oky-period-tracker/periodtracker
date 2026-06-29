@@ -8,18 +8,15 @@ import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector } from '../../../redux/selectors'
 import { useAuth } from '../../../contexts/AuthContext'
 import { formatPassword } from '../../../services/auth'
-import { useDispatch } from 'react-redux'
-import { loginRequest } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { loadPendingSyncData } from '../../../services/pendingSync'
-import { loginToAccount } from '../../../services/auth/accountFlows'
+import { loginToAccount, loginOnlineToAccount } from '../../../services/auth/accountFlows'
 import { verifyPassword } from '../../../services/auth/credentialVault'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
   const [wasPreLoggedIn] = React.useState(!!user)
-  const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
 
   const [name, setName] = React.useState(user ? user.name : '')
@@ -31,18 +28,6 @@ export const LogIn = () => {
   const [success, setSuccess] = React.useState<boolean | null>(null)
 
   const [margin, setMargin] = React.useState(0)
-
-  // The online login path resolves in the saga (loginFailure increments this), so surface its
-  // failures here too — otherwise a wrong password / network error for a server-only account
-  // (e.g. after a reinstall) gives no feedback at all.
-  const loginFailedCount = useSelector((state) => state.auth.loginFailedCount)
-  const prevFailedCount = React.useRef(loginFailedCount)
-  React.useEffect(() => {
-    if (loginFailedCount > prevFailedCount.current) {
-      setSuccess(false)
-    }
-    prevFailedCount.current = loginFailedCount
-  }, [loginFailedCount])
 
   // Clear a stale "incorrect" message as soon as the user edits either field.
   React.useEffect(() => {
@@ -81,15 +66,19 @@ export const LogIn = () => {
       return
     }
 
-    // Fresh login: try a locally registered account first (works offline), then fall back to
-    // an online login if no local account matches this name.
+    // Fresh login: try a locally registered account first (works offline), then fall back to an
+    // online login if no local account matches this name. The online path registers the account
+    // and gives it its own store, so it joins the account switcher instead of landing in the
+    // shared anon store.
     try {
-      const loggedIn = await loginToAccount(name, formattedPassword)
+      const loggedIn =
+        (await loginToAccount(name, formattedPassword)) ||
+        (await loginOnlineToAccount(name, formattedPassword))
       if (loggedIn) {
         setIsLoggedIn(true)
         return
       }
-      dispatch(loginRequest({ name, password: formattedPassword }))
+      setSuccess(false)
     } catch {
       setSuccess(false)
     }

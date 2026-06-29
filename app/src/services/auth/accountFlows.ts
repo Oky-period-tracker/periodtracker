@@ -11,7 +11,9 @@ import {
   setTheme,
   setAvatar,
   setOnboardingPending,
+  refreshStore,
 } from '../../redux/actions'
+import { loadPendingSyncData, clearPendingSyncData, PendingSyncData } from '../pendingSync'
 import * as registry from '../userMetadata/registry'
 import {
   saveCredential,
@@ -152,6 +154,112 @@ export async function loginToAccount(name: string, password: string): Promise<bo
   const bundle = await switchToUser(account.id)
   // If the user picked a language on the auth screen, carry it into this account's store.
   const carriedLocale = consumePendingLocale()
+  if (carriedLocale) {
+    bundle.store.dispatch(setLocale(carriedLocale))
+  }
+  return true
+}
+
+// Re-upload data that was queued before a 431-forced logout. Best-effort: a failure here must
+// never block the login. Mirrors the saga's resendPendingSyncDataToServer.
+async function resendPendingSyncData(appToken: string, pending: PendingSyncData): Promise<void> {
+  try {
+    await httpClient.replaceStore({
+      storeVersion: pending.replaceStore.storeVersion,
+      appState: pending.replaceStore.appState,
+      appToken,
+    })
+    await httpClient.editUserInfo({ appToken, ...pending.editInfo })
+    await clearPendingSyncData()
+  } catch {
+    // Best-effort: keep the pending data for the next attempt.
+  }
+}
+
+// Online login for an account that is NOT yet registered on this device. Authenticates against the
+// server, then creates a proper local account (registry entry, credential vault, per-account
+// encryption key) and switches to its OWN store — mirroring loginToAccount/signupAccount. This is
+// what makes a server account appear in the account switcher and keeps its data out of the shared
+// anon store. Returns false if the server returns no usable user; throws on auth/network failure so
+// the caller can surface it. Runs outside the saga because switchToUser tears the saga down.
+export async function loginOnlineToAccount(name: string, password: string): Promise<boolean> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { appToken, user, store }: any = await httpClient.login({ name, password })
+  if (!user?.id) {
+    return false
+  }
+  const userId: string = user.id
+
+  // A language picked on the auth screen, to carry into the new account's store.
+  const carriedLocale = consumePendingLocale()
+
+  // Data saved before a 431-forced logout for THIS user takes precedence over the server snapshot.
+  const pendingData = await loadPendingSyncData()
+  const hasPendingData = !!pendingData && pendingData.userId === userId
+
+  const deviceId = await getDeviceId()
+  // Per-account Keychain key, with the same durability guard as signup: never encrypt the account's
+  // data under a key that did not persist (it would be unrecoverable on restart).
+  const keyResult = await createEncryptionKey(userId)
+  if (keyResult.secureStoreAvailable && !keyResult.persisted) {
+    await deleteEncryptionKey(userId)
+    throw new Error('keystore_unavailable')
+  }
+  try {
+    await saveCredential({ userId, password, secretAnswer: null, keepPlainForSync: true })
+    // Already on the server, so not pending-sync; record the server id and token.
+    await registry.addUser({
+      id: userId,
+      name,
+      deviceId,
+      isPendingSync: false,
+      serverId: user.id,
+      appToken: appToken ?? null,
+      hasEncryptionKey: keyResult.persisted,
+    })
+  } catch (err) {
+    await deleteCredential(userId).catch(() => undefined)
+    await deleteEncryptionKey(userId).catch(() => undefined)
+    throw err
+  }
+
+  // Build (and switch to) this account's own store, then populate it. Dispatch into the returned
+  // bundle, never getActiveBundle(), which a concurrent switch could have replaced.
+  const bundle = await switchToUser(userId)
+  const userForState = hasPendingData
+    ? { ...user, ...pendingData!.editInfo, name, password, isGuest: false as const }
+    : { ...user, name, password, isGuest: false as const }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  bundle.store.dispatch(loginSuccess({ appToken, user: userForState as any }))
+
+  if (hasPendingData) {
+    const pendingAppState = pendingData!.replaceStore.appState
+    bundle.store.dispatch(
+      refreshStore({
+        userID: userId,
+        ...pendingAppState,
+        ...(pendingAppState.app
+          ? { app: { ...pendingAppState.app, ...(carriedLocale ? { locale: carriedLocale } : {}) } }
+          : {}),
+      }),
+    )
+    void resendPendingSyncData(appToken, pendingData!)
+  } else {
+    if (pendingData) {
+      // Pending data belongs to a different user: discard it.
+      await clearPendingSyncData()
+    }
+    if (store && store.storeVersion >= 0 && store.appState) {
+      bundle.store.dispatch(
+        refreshStore({
+          userID: userId,
+          ...store.appState,
+          app: { ...store.appState.app, ...(carriedLocale ? { locale: carriedLocale } : {}) },
+        }),
+      )
+    }
+  }
+
   if (carriedLocale) {
     bundle.store.dispatch(setLocale(carriedLocale))
   }

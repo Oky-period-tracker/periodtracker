@@ -9,7 +9,7 @@ function submitJson() {
   for (let i = 0; i < children.length; i++) {
     let child = children[i]
     const plainTextFromChildren = Array.from(child.children[2].childNodes)
-      .map(node => node.textContent)
+      .map((node) => node.textContent)
       .join('\n')
 
     const current = {
@@ -32,10 +32,10 @@ function submitJson() {
     url: '/about',
     type: 'POST',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -61,7 +61,7 @@ $('#cancelButton').on('click', () => {
 
 function readURL(input) {
   if (input.files && input.files[0]) {
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       $('#aboutBanner').attr('src', e.target.result)
       const image = e.target.result // base64 image
       const time = new Date()
@@ -74,10 +74,10 @@ function readURL(input) {
         url: '/about-banner-management',
         type: 'POST',
         data: data,
-        success: result => {
+        success: (result) => {
           location.reload()
         },
-        error: error => {
+        error: (error) => {
           console.log(error)
         },
       })
@@ -87,6 +87,6 @@ function readURL(input) {
   }
 }
 
-$('#file-input').change(function() {
+$('#file-input').change(function () {
   readURL(this)
 })

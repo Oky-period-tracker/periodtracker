@@ -6,6 +6,7 @@ import { formatPassword } from '../../../../services/auth'
 import { signupAccount, MAX_ACCOUNTS } from '../../../../services/auth/accountFlows'
 import { findUserByName } from '../../../../services/userMetadata/registry'
 import { useTranslate } from '../../../../hooks/useTranslate'
+import { useLoading } from '../../../../contexts/LoadingProvider'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { httpClient } from '../../../../services/HttpClient'
@@ -273,6 +274,7 @@ const SignUpContext = React.createContext<SignUpContext>(defaultValue)
 export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState)
   const translate = useTranslate()
+  const { setLoading } = useLoading()
 
   const step = steps[state.stepIndex]
   const { isValid, errors } = validateStep(state, step)
@@ -347,7 +349,18 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
     // Create the account. signupAccount switches to its store and marks onboarding pending, which
     // routes the auth screen through avatar -> theme -> period survey. The logged-in gate is set at
     // the end of onboarding (JourneyReview.onConfirm), not here.
+    //
+    // This takes a couple of seconds on device (per-account Keychain key creation + read-back, then
+    // the per-user store build). Show the full-screen loading overlay over that gap, otherwise the
+    // sign-up card sits empty (just its "confirm" button) until the store switch remounts into
+    // onboarding. On success the store switch remounts the whole tree (overlay included), so the
+    // overlay only needs clearing on failure.
+    setLoading(true)
     signupAccount(account).catch((err) => {
+      setLoading(false)
+      // Restore the last step so a failure doesn't strand the user on the empty form shell (just
+      // its "confirm" button). They can fix input and retry.
+      dispatch({ type: 'stepIndex', value: steps.length - 1 })
       const message =
         err instanceof Error && err.message === MAX_ACCOUNTS
           ? translate('max_accounts_reached')

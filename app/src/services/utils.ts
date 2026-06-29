@@ -4,7 +4,7 @@ export function recordToArray<T extends object>(obj?: T) {
   if (!obj) {
     return []
   }
-  return Object.entries(obj) as Array<[key: keyof T, value: ValueOf<T>]>
+  return Object.entries(obj) as Array<[keyof T, ValueOf<T>]>
 }
 
 export const generateRange = (start: number, end: number) => {

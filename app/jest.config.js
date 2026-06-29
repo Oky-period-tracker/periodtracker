@@ -14,6 +14,9 @@ const esModules = [
   'expo-asset',
   'expo-linking',
   'react-native-reanimated',
+  'react-native-worklets',
+  'react-native-gesture-handler',
+  'react-native-size-matters',
   'react-native-calendars',
   'expo-constants',
 ].join('|')

@@ -66,7 +66,6 @@ CREATE INDEX IF NOT EXISTS idx_suggestion_lang ON suggestion(lang);
 CREATE INDEX IF NOT EXISTS idx_oky_user_gender ON oky_user(gender);
 CREATE INDEX IF NOT EXISTS idx_oky_user_location ON oky_user(location);
 CREATE INDEX IF NOT EXISTS idx_oky_user_country ON oky_user(country);
-CREATE INDEX IF NOT EXISTS idx_oky_user_lang ON oky_user(lang);
 
 -- Analytics
 CREATE INDEX IF NOT EXISTS idx_analytics_type ON analytics(type);

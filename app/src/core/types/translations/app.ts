@@ -275,6 +275,7 @@ export interface AppTranslations {
   mood: string
   music: string
   name: string
+  max_accounts_reached: string
   name_info_label: string
   name_input: string
   name_taken_error: string

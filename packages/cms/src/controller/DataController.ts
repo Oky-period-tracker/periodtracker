@@ -31,6 +31,31 @@ import {
 import { env } from '../env'
 import { logger } from '../logger'
 
+const XLSX_CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+/**
+ * Streams generated content to the client as a file download, centralizing the
+ * security headers for every export endpoint:
+ *  - `attachment` disposition with a sanitized filename, so user-influenced
+ *    values (lang/locale) can't inject CRLF or break out of the header.
+ *  - `X-Content-Type-Options: nosniff`, so the browser can't MIME-sniff a
+ *    text/plain download as HTML — this neutralizes the XSS vector Semgrep
+ *    flags on `response.send()` of dynamic content. These responses are file
+ *    downloads, never rendered HTML pages, so `res.render()` does not apply.
+ */
+const sendDownload = (
+  response: Response,
+  content: string | Buffer,
+  fileName: string,
+  contentType = 'text/plain; charset=utf-8',
+) => {
+  const safeFileName = fileName.replace(/[^\w.\-]+/g, '_')
+  response.setHeader('Content-Disposition', `attachment; filename="${safeFileName}"`)
+  response.setHeader('Content-Type', contentType)
+  response.setHeader('X-Content-Type-Options', 'nosniff')
+  response.send(content)
+}
+
 export class DataController {
   private articleRepository = getRepository(Article)
   private quizRepository = getRepository(Quiz)
@@ -140,10 +165,7 @@ export class DataController {
 
       const fileName = `content-${request.user.lang}-${getDate()}.ts`
 
-      // Set the headers to inform the browser about file type and suggested filename
-      response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
-      response.setHeader('Content-type', 'text/plain')
-      response.send(fileContent) // Send the file data as a response
+      sendDownload(response, fileContent, fileName)
       logger.info('Content TS file generated', { lang: request.user.lang, fileName })
     } catch (error) {
       logger.error('DataController.generateContentTs failed', {
@@ -437,13 +459,7 @@ export class DataController {
 
       const filename = `content-${request.user.lang}-${getDate()}.xlsx`
 
-      // Set the headers to inform the browser about file type and suggested filename
-      response.setHeader('Content-disposition', `attachment; filename=${filename}`)
-      response.setHeader(
-        'Content-type',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      )
-      response.send(buffer) // Send the file data as a response
+      sendDownload(response, buffer, filename, XLSX_CONTENT_TYPE)
       logger.info('Content sheet generated', { lang: request.user.lang })
     } catch (error) {
       logger.error('DataController.generateContentSheet failed', {
@@ -555,10 +571,7 @@ export class DataController {
 
       const fileName = `${locale}.ts`
 
-      // Set the headers to inform the browser about file type and suggested filename
-      response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
-      response.setHeader('Content-type', 'text/plain')
-      response.send(fileContent) // Send the file data as a response
+      sendDownload(response, fileContent, fileName)
       logger.info('Content sheet uploaded and processed', { locale })
     } catch (error) {
       logger.error('DataController.uploadContentSheet failed', {
@@ -621,10 +634,7 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
 
     const fileName = `${locale}.ts`
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
-    response.setHeader('Content-type', 'text/plain')
-    response.send(fileContent) // Send the file data as a response
+    sendDownload(response, fileContent, fileName)
   }
 
   async uploadCmsTranslationsSheet(request: Request, response: Response, next: NextFunction) {
@@ -641,10 +651,7 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
 
     const fileName = `${locale}.json`
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
-    response.setHeader('Content-type', 'text/plain')
-    response.send(fileContent) // Send the file data as a response
+    sendDownload(response, fileContent, fileName)
   }
 
   async generateCountriesSheet(request: Request, response: Response, next: NextFunction) {
@@ -674,13 +681,7 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
 
     const filename = 'countries.xlsx'
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', `attachment; filename=${filename}`)
-    response.setHeader(
-      'Content-type',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    )
-    response.send(buffer) // Send the file data as a response
+    sendDownload(response, buffer, filename, XLSX_CONTENT_TYPE)
   }
 
   async generateProvincesSheet(request: Request, response: Response, next: NextFunction) {
@@ -688,13 +689,7 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
 
     const filename = 'provinces.xlsx'
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', `attachment; filename=${filename}`)
-    response.setHeader(
-      'Content-type',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    )
-    response.send(buffer) // Send the file data as a response
+    sendDownload(response, buffer, filename, XLSX_CONTENT_TYPE)
   }
 
   async uploadCountriesSheet(request: Request, response: Response, next: NextFunction) {
@@ -749,10 +744,7 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
 
     const fileName = `countries.ts`
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
-    response.setHeader('Content-type', 'text/plain')
-    response.send(fileContent) // Send the file data as a response
+    sendDownload(response, fileContent, fileName)
   }
 
   async uploadProvincesSheet(request: Request, response: Response, next: NextFunction) {
@@ -805,10 +797,7 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
 
     const fileName = `provinces.ts`
 
-    // Set the headers to inform the browser about file type and suggested filename
-    response.setHeader('Content-disposition', 'attachment; filename=' + fileName)
-    response.setHeader('Content-type', 'text/plain')
-    response.send(fileContent) // Send the file data as a response
+    sendDownload(response, fileContent, fileName)
   }
 }
 

@@ -8,44 +8,57 @@ This document describes the database query optimizations applied to the CMS back
 
 ## 1. Database Indexes
 
-### SQL Migration File
-
-**File:** `sql/1742860800000-add-indexes.sql`
-
-~40 indexes added across all tables. Key indexes:
-
-| Table | Index | Columns | Purpose |
-|-------|-------|---------|---------|
-| article | `idx_article_lang_live` | (lang, live) | Filter by language + live status |
-| article | `idx_article_sorting` | (lang, sortingKey) | Ordered listings |
-| article | `idx_article_category` | (category) | JOIN with category table |
-| article | `idx_article_subcategory` | (subcategory) | JOIN with subcategory table |
-| category | `idx_category_sorting` | (lang, sortingKey) | Ordered listings |
-| subcategory | `idx_subcategory_parent` | (parent_category) | Filter by parent |
-| question | `idx_question_survey_id` | (surveyId) | FK JOIN with survey |
-| survey | `idx_survey_lang_live_date` | (lang, live, date_created) | Mobile survey queries |
-| oky_user | `idx_oky_user_country` | (country) | Analytics grouping |
-| answered_surveys | `idx_answered_surveys_user_id` | (user_id) | User survey lookups |
-| analytics | `idx_analytics_type_date` | (type, date_created) | Analytics filtering |
+Indexes are defined directly on the TypeORM entities using `@Index()` decorators
+(see `src/entity/`). There is no standalone SQL migration file — the index
+definitions live with the entity classes and are the single source of truth.
 
 ### Entity-Level Index Decorators
 
-TypeORM `@Index()` decorators added to all 14 entities so indexes are created automatically via `synchronize: true`:
+The following `@Index()` decorators exist in the entity classes:
 
-- **Article** — `(lang)`, `(lang, live)`, `(category)`, `(subcategory)`, `(lang, sortingKey)`
-- **Category** — `(lang)`, `(lang, sortingKey)`
-- **Subcategory** — `(lang)`, `(parent_category)`, `(lang, sortingKey)`
-- **Quiz** — `(lang)`, `(lang, live)`
-- **DidYouKnow** — `(lang)`, `(lang, live)`
-- **Survey** — `(lang)`, `(lang, live)`, `(lang, live, date_created)`
-- **Question** — `(surveyId)`
-- **HelpCenter** — `(region)`
-- **HelpCenterAttribute** — `(lang)`
-- **Video** — `(lang)`, `(lang, live)`, `(lang, sortingKey)`
-- **Notification** — `(lang)`
-- **About** — `(lang)`
-- **TermsAndConditions** — `(lang)`
-- **PrivacyPolicy** — `(lang)`
+| Entity (file) | Index name | Columns | Purpose |
+|---------------|-----------|---------|---------|
+| Article (`Article.ts`) | `idx_article_lang` | (lang) | Filter by language |
+| Article | `idx_article_lang_live` | (lang, live) | Filter by language + live status |
+| Article | `idx_article_category` | (category) | JOIN with category table |
+| Article | `idx_article_subcategory` | (subcategory) | JOIN with subcategory table |
+| Article | `idx_article_sorting` | (lang, sortingKey) | Ordered listings |
+| Category (`Category.ts`) | `idx_category_lang` | (lang) | Filter by language |
+| Category | `idx_category_sorting` | (lang, sortingKey) | Ordered listings |
+| Subcategory (`Subcategory.ts`) | `idx_subcategory_lang` | (lang) | Filter by language |
+| Subcategory | `idx_subcategory_parent` | (parent_category) | Filter by parent |
+| Subcategory | `idx_subcategory_sorting` | (lang, sortingKey) | Ordered listings |
+| Quiz (`Quiz.ts`) | `idx_quiz_lang` | (lang) | Filter by language |
+| Quiz | `idx_quiz_lang_live` | (lang, live) | Filter by language + live status |
+| DidYouKnow (`DidYouKnow.ts`) | `idx_did_you_know_lang` | (lang) | Filter by language |
+| DidYouKnow | `idx_did_you_know_lang_live` | (lang, live) | Filter by language + live status |
+| Survey (`Survey.ts`) | `idx_survey_lang` | (lang) | Filter by language |
+| Survey | `idx_survey_lang_live` | (lang, live) | Filter by language + live status |
+| Survey | `idx_survey_lang_live_date` | (lang, live, date_created) | Mobile survey queries |
+| Question (`Question.ts`) | `idx_question_survey_id` | (surveyId) | FK JOIN with survey |
+| HelpCenter (`HelpCenter.ts`) | `idx_help_center_region` | (region) | Filter by region |
+| HelpCenterAttribute (`HelpCenterAttribute.ts`) | `idx_help_center_attribute_lang` | (lang) | Filter by language |
+| Video (`Video.ts`) | `idx_video_lang` | (lang) | Filter by language |
+| Video | `idx_video_lang_live` | (lang, live) | Filter by language + live status |
+| Video | `idx_video_sorting` | (lang, sortingKey) | Ordered listings |
+| Notification (`Notification.ts`) | `idx_notification_lang` | (lang) | Filter by language |
+| About (`About.ts`) | `idx_about_lang` | (lang) | Filter by language |
+| TermsAndConditions (`TermsAndConditions.ts`) | `idx_terms_and_conditions_lang` | (lang) | Filter by language |
+| PrivacyPolicy (`PrivacyPolicy.ts`) | `idx_privacy_policy_lang` | (lang) | Filter by language |
+
+> Note: Some entities (e.g. `User`, `Analytics`, `AvatarMessages`) currently
+> carry no `@Index()` decorators.
+
+### How indexes are created
+
+These indexes are created by TypeORM only when schema synchronization is
+enabled. Synchronization is controlled by the `DATABASE_SYNCHRONIZE` environment
+variable (read in `src/env.ts` and passed to `ormconfig.ts` as
+`env.db.synchronize`). The default in `.env.dist` is
+`DATABASE_SYNCHRONIZE=false`, so indexes are **not** auto-created by default.
+To have TypeORM apply the entity indexes against the database, set
+`DATABASE_SYNCHRONIZE=true` (typically only in a controlled environment), or
+create the indexes manually to match the decorators above.
 
 ---
 
@@ -152,7 +165,7 @@ Same optimization — 7 independent queries run in parallel.
 | `renderSurvey()` | answeredSurveys + surveys |
 | `renderEncyclopedia()` | articles + categories + subcategories |
 | `renderCategoryManagement()` | categories + subcategories |
-| `renderNotification()` | notifications + users |
+| `renderNotification()` | notifications + permanentNotifications |
 
 ---
 
@@ -183,12 +196,23 @@ const parsed = safeJsonParse(aboutContent, {}, 'About content')
 
 ---
 
-## 7. Applying the Index Migration
+## 7. Applying the Indexes
 
-Run the SQL migration manually or via the database migration script:
+There is no SQL migration file for these indexes. They are declared via
+`@Index()` decorators on the entity classes (see Section 1).
 
-```bash
-psql -U <user> -d <database> -f sql/1742860800000-add-indexes.sql
-```
+Because the default configuration is `DATABASE_SYNCHRONIZE=false` (see
+`.env.dist` and `src/env.ts`), TypeORM does **not** create these indexes
+automatically on startup. To apply them you can either:
 
-Or, since `synchronize: true` is enabled, the entity-level `@Index()` decorators will auto-create indexes on next server startup.
+- Set `DATABASE_SYNCHRONIZE=true` in a controlled (non-production) environment
+  so TypeORM synchronizes the schema and creates the indexes from the
+  decorators, or
+- Create the indexes manually in the database so they match the names and
+  columns listed in Section 1.
+
+## 8. Slow Query Logging
+
+Queries that exceed the `SLOW_QUERY_THRESHOLD` environment variable (in
+milliseconds, default `1000` per `.env.dist`) are logged so slow queries can be
+identified and investigated.

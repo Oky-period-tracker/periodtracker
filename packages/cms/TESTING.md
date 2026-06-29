@@ -109,6 +109,7 @@ npx jest --testPathPattern="crash" --verbose
 | Always returns 200 with alive status | `GET /health/live` | Liveness probe always succeeds if process is running |
 | Returns 200 when ready | `GET /health/ready` | Readiness probe succeeds when DB is connected and service is initialized |
 | Returns 503 when not ready | `GET /health/ready` | Readiness probe fails when service not yet initialized or DB unreachable |
+| Returns 503 when readiness check throws | `GET /health/ready` | Graceful error handling — returns 503 instead of crashing when the readiness check throws |
 
 **Approach:** Creates a minimal Express app with `HealthController`, mocks `healthCheckService` to simulate different scenarios.
 
@@ -354,19 +355,19 @@ Snapshots:   0 total
 
 | Suite | Tests |
 |-------|-------|
-| Health endpoints | 7 |
+| Health endpoints | 8 |
 | Monitoring endpoints | 7 |
 | Monitoring service | 11 |
-| Diagnostics endpoints | 7 |
+| Diagnostics endpoints | 6 |
 | Crash analysis service | 13 |
 | Crash detector middleware | 5 |
-| Error logger middleware | 5 |
+| Error logger middleware | 6 |
 | Timeout utility | 6 |
 | Retry utility | 7 |
-| Safe utilities | 12 |
+| Safe utilities | 13 |
 | Request timeout middleware | 5 |
 | Load tests | 8 |
-| Helmet security headers (pre-existing) | 14 |
+| Helmet security headers (pre-existing) | 13 |
 | Authentication (pre-existing) | 3 |
 | **Total** | **111** |
 

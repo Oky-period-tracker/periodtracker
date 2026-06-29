@@ -41,15 +41,27 @@ Added to `.env.dist` and `src/env.ts`:
 
 ### Request Logger (`src/middleware/requestLogger.ts`)
 
-Logs every incoming HTTP request and its response:
+Logs every incoming HTTP request and its response as structured JSON:
 
-- **Incoming** — method, URL, IP address
-- **Completed** — status code, duration in ms
+- **Incoming** (`info`) — method, URL, IP address, user agent, user ID
+- **Completed** — status code and duration in ms (logged at `warn` level when the status is 4xx/5xx, otherwise `info`)
 - **Slow requests** — warns when duration exceeds `SLOW_REQUEST_THRESHOLD`
 
-```
-→ POST /api/article 192.168.1.1
-← POST /api/article 200 45ms
+```ts
+logger.info('Incoming request', {
+  method: 'POST',
+  url: '/api/article',
+  ip: '192.168.1.1',
+  userAgent: 'Mozilla/5.0 ...',
+  userId: '123',
+})
+
+logger.info('Request completed', {
+  method: 'POST',
+  url: '/api/article',
+  statusCode: 200,
+  duration: '45ms',
+})
 ```
 
 ### Error Logger (`src/middleware/errorLogger.ts`)
@@ -65,14 +77,16 @@ Custom TypeORM logger implementation:
 
 - Logs all query errors with the failing SQL
 - Warns on queries exceeding `SLOW_QUERY_THRESHOLD`
-- Logs schema builds and migrations at debug level
+- Logs schema builds and migrations at info level
 
 Configured in `ormconfig.ts`:
 
 ```ts
 maxQueryExecutionTime: env.logging.slowQueryThreshold,
-logger: new SlowQueryLogger(),
+logger: env.db.logging ? new SlowQueryLogger() : undefined,
 ```
+
+The `SlowQueryLogger` is only attached when DB logging is enabled (the `DATABASE_LOGGING` env var); otherwise the logger is left `undefined`.
 
 ---
 
@@ -133,7 +147,15 @@ admin.messaging().send(message)
 **After:**
 ```ts
 try {
-  const response = await admin.messaging().send(message)
+  const response = await withRetry(
+    () =>
+      withTimeout(
+        admin.messaging().send(message),
+        DEFAULT_EXTERNAL_TIMEOUT,
+        'Firebase notification send',
+      ),
+    { maxRetries: 2, baseDelay: 1000, label: 'Firebase send' },
+  )
   logger.info('Firebase notification sent', { messageId: response, topic })
 } catch (error) {
   logger.error('Firebase notification failed', { topic, message: error?.message })
@@ -141,11 +163,13 @@ try {
 }
 ```
 
+The send is wrapped in `withRetry` (up to 2 retries with backoff) and `withTimeout` (bounded by `DEFAULT_EXTERNAL_TIMEOUT`) so a slow or transient Firebase failure is retried and time-bounded rather than hanging or failing immediately.
+
 ---
 
 ## Controllers Updated
 
-All 20 CMS controllers received logging and error handling:
+All 24 CMS controllers received logging and error handling:
 
 | Controller | Logging | Null Checks | Try/Catch | Notes |
 |---|---|---|---|---|
@@ -230,4 +254,4 @@ All 20 CMS controllers received logging and error handling:
 | `ormconfig.ts` | Added SlowQueryLogger, maxQueryExecutionTime |
 | `.env.dist` | Added logging environment variables |
 | `src/access/authentication.ts` | Login/auth logging |
-| All 20 controllers | Logger import, try/catch, null checks |
+| All 24 controllers | Logger import, try/catch, null checks |

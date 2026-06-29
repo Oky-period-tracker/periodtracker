@@ -112,12 +112,12 @@ The healthcheck uses Node.js (already available in the container) to make an HTT
 
 ```yaml
 cms:
-  restart: on-failure:5
+  restart: unless-stopped
 ```
 
-- **`on-failure:5`** — Docker restarts the CMS container up to 5 times if it exits with a non-zero exit code
-- Prevents infinite restart loops while still recovering from transient failures
-- Container will not restart if stopped manually (`docker stop`)
+- **`unless-stopped`** — Docker keeps restarting the CMS container automatically regardless of its exit code
+- Ensures the service recovers from crashes and is restarted on Docker daemon restart
+- Container will not restart if stopped manually (`docker stop`), and it stays stopped until started again
 
 ### Dockerfile HEALTHCHECK
 

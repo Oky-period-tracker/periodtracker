@@ -75,7 +75,10 @@ export function shouldReconcileHistory(
 export function buildPredictionFromVerifiedDates(
   verifiedDates: VerifiedDates | undefined,
   existingState?: Partial<
-    Pick<PredictionSerializableState, 'isActive' | 'futurePredictionStatus' | 'actualCurrentStartDate'>
+    Pick<
+      PredictionSerializableState,
+      'isActive' | 'futurePredictionStatus' | 'actualCurrentStartDate'
+    >
   >,
 ): PredictionState | null {
   const clusters = detectPeriodClusters(verifiedDates)

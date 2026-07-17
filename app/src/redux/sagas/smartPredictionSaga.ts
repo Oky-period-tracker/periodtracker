@@ -42,7 +42,9 @@ function* onFetchUpdatedPredictedCycles(
     })
 
     // Map new API response to the format PredictionState.fromData expects
-    const smaCycleLength = predictionResponse.prediction.predicted_cycle_length
+    // Round the Bayesian model's posterior mean - it is almost never an integer
+    // and the app displays this value directly to users (e.g. "28.437 days").
+    const smaCycleLength = Math.round(predictionResponse.prediction.predicted_cycle_length)
 
     // Compute period length from actual history (not the stale period_lengths array)
     const historyPeriods = (predictionFullState.history || [])

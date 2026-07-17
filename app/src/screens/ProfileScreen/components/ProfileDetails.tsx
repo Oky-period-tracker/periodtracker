@@ -66,8 +66,10 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
 
   const days = translate('days')
 
-  const cycleLength = todayInfo.cycleLength === 100 ? '-' : `${todayInfo.cycleLength} ${days}`
-  const periodLength = todayInfo.periodLength === 0 ? '-' : `${todayInfo.periodLength} ${days}`
+  const cycleLength =
+    todayInfo.cycleLength === 100 ? '-' : `${Math.round(todayInfo.cycleLength)} ${days}`
+  const periodLength =
+    todayInfo.periodLength === 0 ? '-' : `${Math.round(todayInfo.periodLength)} ${days}`
 
   return (
     <View style={styles.wrapper}>

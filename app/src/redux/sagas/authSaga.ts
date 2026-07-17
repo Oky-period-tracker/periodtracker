@@ -259,6 +259,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
     try {
       // @ts-expect-error TODO:
       periodResult = yield httpClient.getPeriodCycles({
+        user_id: currentUser?.id || 'anonymous',
         age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
         period_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, periodLength],
         cycle_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, cycleLength],
@@ -268,19 +269,20 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
     }
   }
 
+  // The new Bayesian API returns { prediction: { predicted_cycle_length: number } }
+  // (not the old predicted_cycles/predicted_periods arrays).
+  const smaCycleLength = periodResult?.prediction?.predicted_cycle_length
+    ? Math.round(periodResult.prediction.predicted_cycle_length)
+    : cycleLength
+  const smaPeriodLength = periodLength // API doesn't return period length; use user's input
+
   const stateToSet = PredictionState.fromData({
     isActive,
     startDate,
     periodLength,
     cycleLength,
-    smaCycleLength: periodResult
-      ? // @ts-expect-error TODO:
-        periodResult.predicted_cycles[0]
-      : cycleLength,
-    smaPeriodLength: periodResult
-      ? // @ts-expect-error TODO:
-        periodResult.predicted_periods[0]
-      : periodLength,
+    smaCycleLength,
+    smaPeriodLength,
     history: [],
   })
 

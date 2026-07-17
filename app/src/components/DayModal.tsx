@@ -94,12 +94,10 @@ export const DayModal = ({
     return <View />
   }
 
-  // TODO:
-  // eslint-disable-next-line
   const errorCallBack = (err: string) => {
-    // if (err) {
-    //   setAvatarMessage(err);
-    // }
+    if (err) {
+      setAvatarMessage(err, true)
+    }
     return null
   }
 

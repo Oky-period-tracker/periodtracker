@@ -15,12 +15,11 @@ export class AccessController {
   async logout(request: Request, response: Response, next: NextFunction) {
     const userId = (request.user as any)?.id
     logger.info('User logout', { userId })
-    request.logout((err) => {
-      if (err) {
-        logger.error('Logout error', { userId, message: err?.message, stack: err?.stack })
-        return next(err)
-      }
-      response.redirect('/login')
-    })
+    // passport 0.5.x `req.logout()` is synchronous and takes no callback, so the
+    // redirect must run right after it (see package.json: passport ^0.5.2). The
+    // installed @types/passport ships 0.6 signatures that require a callback, so
+    // we cast to the actual 0.5.x signature to avoid a false type error.
+    ;(request.logout as unknown as () => void)()
+    response.redirect('/login')
   }
 }

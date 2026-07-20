@@ -373,9 +373,7 @@ export class PredictionEngine {
       const daysAheadOfCurrentCycleEnd = diffDays - currentCycleLength
       if (daysAheadOfCurrentCycleEnd < this.state.smartPrediction.smaCycleLength) {
         // only if we are one cycle ahead
-        const dayToCheck = this.state.currentCycle.startDate
-          .clone()
-          .add(currentCycleLength, 'days')
+        const dayToCheck = this.state.currentCycle.startDate.clone().add(currentCycleLength, 'days')
         const completionDay = this.predictDay(dayToCheck).cycleStart
         this._cycleCompletion(completionDay, null)
         return
@@ -389,10 +387,7 @@ export class PredictionEngine {
         // loop through completing all cycles that have been missed and add to history
         const dayToCheck = startingPoint
           .clone()
-          .add(
-            currentCycleLength + i * this.state.smartPrediction.smaCycleLength,
-            'days',
-          )
+          .add(currentCycleLength + i * this.state.smartPrediction.smaCycleLength, 'days')
         if (
           (!this.state.futurePredictionStatus &&
             moment(dayToCheck).isSameOrBefore(moment(tempCurrentCycle.cycleStart), 'day')) ||

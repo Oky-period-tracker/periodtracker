@@ -27,7 +27,9 @@ function* onFetchUpdatedPredictedCycles(
     const mostRecentCycle = predictionFullState.history?.[0]
     const new_observation = mostRecentCycle
       ? {
-          cycle_start_date: new Date(mostRecentCycle.startDate || mostRecentCycle.cycleStartDate).toISOString(),
+          cycle_start_date: new Date(
+            mostRecentCycle.startDate || mostRecentCycle.cycleStartDate,
+          ).toISOString(),
           observed_cycle_length: mostRecentCycle.cycleLength,
         }
       : undefined
@@ -51,7 +53,9 @@ function* onFetchUpdatedPredictedCycles(
       .map((h: any) => h.periodLength)
       .filter((p: number) => p >= 2)
     const allPeriods = [
-      ...(predictionFullState.currentCycle.periodLength >= 2 ? [predictionFullState.currentCycle.periodLength] : []),
+      ...(predictionFullState.currentCycle.periodLength >= 2
+        ? [predictionFullState.currentCycle.periodLength]
+        : []),
       ...historyPeriods,
     ]
     const smaPeriodLength =

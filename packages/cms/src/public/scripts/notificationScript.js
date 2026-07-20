@@ -21,10 +21,10 @@ $('#btnEditConfirm').on('click', () => {
     url: '/permanent-alert' + (permanentAlertID === '0' ? '' : '/' + permanentAlertID),
     type: permanentAlertID === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -42,7 +42,7 @@ $('.permanentCheckbox').on('click', () => {
   changeRelevantPermanentNotification(permanentAlertID, 'isPermanent', button.prop('checked'))
 })
 
-$('.deletePermanentNotification').on('click', event => {
+$('.deletePermanentNotification').on('click', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var permanentAlertID = button.data('value') // Extract info from data-* attributes
   var result = confirm('Are you sure? This will permanently delete the item')
@@ -50,10 +50,10 @@ $('.deletePermanentNotification').on('click', event => {
     $.ajax({
       url: '/permanent-alert/' + permanentAlertID,
       type: 'DELETE',
-      success: result => {
+      success: (result) => {
         location.reload()
       },
-      error: error => {
+      error: (error) => {
         console.log(error)
       },
     })
@@ -62,7 +62,7 @@ $('.deletePermanentNotification').on('click', event => {
 
 function changeRelevantPermanentNotification(permanentAlertID, key, value) {
   var permanentAlerts = JSON.parse($('#permanentAlertsJSON').text())
-  var permanentAlertInfo = permanentAlerts.find(item => {
+  var permanentAlertInfo = permanentAlerts.find((item) => {
     return item.id === permanentAlertID
   })
   const data = {
@@ -76,10 +76,10 @@ function changeRelevantPermanentNotification(permanentAlertID, key, value) {
     url: '/permanent-alert/' + permanentAlertID,
     type: 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })

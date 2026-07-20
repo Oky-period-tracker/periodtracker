@@ -12,7 +12,7 @@ export const userRoles = {
   },
 }
 
-export const typeToAction = value => {
+export const typeToAction = (value) => {
   switch (value) {
     case 'superAdmin':
       return 'createSuperAdmin'

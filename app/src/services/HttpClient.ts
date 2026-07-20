@@ -370,22 +370,30 @@ export function createHttpClient(
       )
       return response.data
     },
-    // TODO:
-    // eslint-disable-next-line
-    getPeriodCycles: async ({ cycle_lengths, period_lengths, age }: any) => {
-      // TODO:
-      // eslint-disable-next-line
-      const response: AxiosResponse<{}> = await axios.post(
+    getPeriodCycles: async ({
+      user_id,
+      cycle_lengths,
+      period_lengths,
+      age,
+      new_observation,
+    }: {
+      user_id: string
+      cycle_lengths: number[]
+      period_lengths: number[]
+      age: number
+      new_observation?: { cycle_start_date: string; observed_cycle_length: number }
+    }) => {
+      const response = await axios.post(
         predictionEndpoint,
         {
-          cycle_lengths,
-          period_lengths,
+          user_id,
+          cycle_history: cycle_lengths,
+          period_history: period_lengths,
           age,
+          new_observation,
         },
         {
-          headers: {
-            'content-type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
         },
       )
 

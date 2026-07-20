@@ -94,12 +94,10 @@ export const DayModal = ({
     return <View />
   }
 
-  // TODO:
-  // eslint-disable-next-line
   const errorCallBack = (err: string) => {
-    // if (err) {
-    //   setAvatarMessage(err);
-    // }
+    if (err) {
+      setAvatarMessage(err, true)
+    }
     return null
   }
 
@@ -118,8 +116,7 @@ export const DayModal = ({
   // eslint-disable-next-line
   const getPredictedCycles = (flag: boolean): any => {
     if (flag) {
-      // @ts-expect-error TODO: THIS IS ALWAYS TRUE !!!!
-      if (fetchNetworkConnectionStatus()) {
+      {
         const tempHistory = [...history]
         const tempPeriodsCycles = []
         const tempPeriodsLength = []

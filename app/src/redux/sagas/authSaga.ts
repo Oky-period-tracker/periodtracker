@@ -259,6 +259,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
     try {
       // @ts-expect-error TODO:
       periodResult = yield httpClient.getPeriodCycles({
+        user_id: currentUser?.id || 'anonymous',
         age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
         period_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, periodLength],
         cycle_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 0, cycleLength],
@@ -268,19 +269,24 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
     }
   }
 
+  // getPeriodCycles normalises both engine versions into
+  // { predictedCycleLength, predictedPeriodLength }.
+  const smaCycleLength = periodResult?.predictedCycleLength
+    ? Math.round(periodResult.predictedCycleLength)
+    : cycleLength
+  // v1 returns a predicted period length; v2 does not, so fall back to the
+  // user's input in that case.
+  const smaPeriodLength = periodResult?.predictedPeriodLength
+    ? Math.round(periodResult.predictedPeriodLength)
+    : periodLength
+
   const stateToSet = PredictionState.fromData({
     isActive,
     startDate,
     periodLength,
     cycleLength,
-    smaCycleLength: periodResult
-      ? // @ts-expect-error TODO:
-        periodResult.predicted_cycles[0]
-      : cycleLength,
-    smaPeriodLength: periodResult
-      ? // @ts-expect-error TODO:
-        periodResult.predicted_periods[0]
-      : periodLength,
+    smaCycleLength,
+    smaPeriodLength,
     history: [],
   })
 

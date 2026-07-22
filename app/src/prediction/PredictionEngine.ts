@@ -40,8 +40,12 @@ export class PredictionEngine {
     let onPeriod = false
     let onFertile = false
     let daysLeftOnPeriod = 0
-    let periodLength = this.state.currentCycle.periodLength
-    let cycleLength = this.state.currentCycle.cycleLength
+    // Defensive rounding: smartPrediction values can arrive as non-integers
+    // (e.g. a Bayesian model's posterior mean) from the API or from
+    // migrated/persisted state. Round here so every downstream calculation
+    // and all UI displays only ever see whole-day cycle/period lengths.
+    let periodLength = Math.round(this.state.currentCycle.periodLength)
+    let cycleLength = Math.round(this.state.currentCycle.cycleLength)
     if (!this.state.isActive) {
       // user case where child has not started her period yet
       return {
@@ -65,29 +69,15 @@ export class PredictionEngine {
 
     if (diffDays >= cycleLength && diffDays > 0) {
       // Future Predictions
-      periodLength = this.state.smartPrediction.smaPeriodLength
-      const numberOfCyclesAheadOfCurrent = Math.floor(
-        (diffDays - cycleLength) / this.state.smartPrediction.smaCycleLength,
-      )
+      periodLength = Math.round(this.state.smartPrediction.smaPeriodLength)
+      const smaCycleLength = Math.round(this.state.smartPrediction.smaCycleLength)
+      const numberOfCyclesAheadOfCurrent = Math.floor((diffDays - cycleLength) / smaCycleLength)
 
       cycleStart = moment(cycleStart)
         .clone()
-        .add(
-          cycleLength + numberOfCyclesAheadOfCurrent * this.state.smartPrediction.smaCycleLength,
-          'days',
-        )
+        .add(cycleLength + numberOfCyclesAheadOfCurrent * smaCycleLength, 'days')
 
-      cycleDay =
-        diffDays -
-        cycleLength -
-        numberOfCyclesAheadOfCurrent * this.state.smartPrediction.smaCycleLength +
-        1
-
-      cycleDay =
-        diffDays -
-        cycleLength -
-        numberOfCyclesAheadOfCurrent * this.state.smartPrediction.smaCycleLength +
-        1
+      cycleDay = diffDays - cycleLength - numberOfCyclesAheadOfCurrent * smaCycleLength + 1
     }
 
     if (diffDays < 0) {
@@ -120,8 +110,8 @@ export class PredictionEngine {
         }
       }
       cycleStart = relevantCycleHistoryEntry.cycleStartDate
-      cycleLength = relevantCycleHistoryEntry.cycleLength
-      periodLength = relevantCycleHistoryEntry.periodLength
+      cycleLength = Math.round(relevantCycleHistoryEntry.cycleLength)
+      periodLength = Math.round(relevantCycleHistoryEntry.periodLength)
       const diffFromRelevantStart = inputDay.diff(relevantCycleHistoryEntry.cycleStartDate, 'days')
       cycleDay = diffFromRelevantStart + 1
     }
@@ -130,7 +120,7 @@ export class PredictionEngine {
     // if we are outside our current cycle we need to calculate the fertile period relative to the smart prediction length not the
     // current cycle length therefore overwrite it for the following calculation
     if (diffDays >= cycleLength && diffDays > 0) {
-      cycleLength = this.state.smartPrediction.smaCycleLength
+      cycleLength = Math.round(this.state.smartPrediction.smaCycleLength)
     }
     const midCycle = Math.floor(cycleLength / 2)
     const fertileDayStart = midCycle - Math.floor(this._fertileLength(cycleLength) / 2)
@@ -172,7 +162,10 @@ export class PredictionEngine {
     hasFuturePredictionActive: boolean,
   ) {
     const loop = moment(startDate)
-    let markedDates = {}
+    // Mutating a single object instead of spreading (`{ ...markedDates, [key]: value }`)
+    // on every iteration avoids O(n^2) behaviour - each spread previously copied every
+    // key accumulated so far, so a ~1000 day range did on the order of 1000^2 key copies.
+    const markedDates: Record<string, any> = {}
     const today = moment().startOf('day')
     while (loop <= endDate) {
       const newDate = moment(loop.date(loop.date() + 1)).startOf('day')
@@ -180,40 +173,26 @@ export class PredictionEngine {
       const isToday = newDate.isSame(today)
 
       const { onPeriod, onFertile, date } = this.predictDay(newDate)
+      const newEntry = date.format('YYYY-MM-DD')
 
       if (isToday) {
-        const todayValue = {
+        markedDates[newEntry] = {
           selected: true,
           selectedColor: '#FF8C00',
           selectedTextColor: '#fff',
-        }
-
-        const newEntry = date.format('YYYY-MM-DD')
-        markedDates = {
-          ...markedDates,
-          [newEntry]: todayValue,
         }
         continue
       }
 
       if (onPeriod || onFertile) {
-        const tempArr = Object.keys(verifiedPeriodsData)
-        const tempValuesArr = Object.values(verifiedPeriodsData)
-        let dateExists = false
-        tempArr.forEach((element, index) => {
-          if (moment(element).isSame(moment(date).format('YYYY-MM-DD'))) {
-            let periodDayValue: any = {}
-            periodDayValue = tempValuesArr[index]
-            if (Object.keys(periodDayValue).includes('periodDay')) {
-              if (periodDayValue?.periodDay) {
-                dateExists = true
-              }
-            }
-          }
-        })
+        // O(1) lookup by date key instead of scanning every verified date and
+        // re-parsing it through moment() on every day of the range (O(range * verifiedDates)).
+        // verifiedPeriodsData is keyed by 'YYYYMMDD' (toShortISO format, no dashes).
+        const shortKey = date.format('YYYYMMDD')
+        const periodDayValue = verifiedPeriodsData[shortKey]
+        const dateExists = !!periodDayValue?.periodDay
 
         // feed back relevant styling information for Calendar shape {'2019-05-12': { styles...}}
-        const newEntry = date.format('YYYY-MM-DD')
         let newValue = {
           selected: true,
           selectedColor: '#91d9e2',
@@ -270,19 +249,12 @@ export class PredictionEngine {
           }
         }
 
-        markedDates = {
-          ...markedDates,
-          [newEntry]: newValue,
-        }
+        markedDates[newEntry] = newValue
       } else {
-        const newEntry = date.format('YYYY-MM-DD')
-        markedDates = {
-          ...markedDates,
-          [newEntry]: {
-            selected: true,
-            selectedColor: '#91d9e2',
-            selectedTextColor: '#fff',
-          },
+        markedDates[newEntry] = {
+          selected: true,
+          selectedColor: '#91d9e2',
+          selectedTextColor: '#fff',
         }
       }
     }
@@ -327,33 +299,50 @@ export class PredictionEngine {
     getPredictedCycles = (flag: boolean) => null,
   }) {
     this.state.isActive = true
-    switch (type) {
-      case 'adjust-mens-end':
-        this._adjustMenstruatingHandler(inputDay, errorCallBack, getPredictedCycles)
-        break
-      case 'start-next-cycle':
-        this._startedEarlyHandler(inputDay, errorCallBack, getPredictedCycles)
-        break
-      case 'current-start-adjust':
-        this._adjustCurrentStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
-        break
-      case 'history-start-adjust':
-        this._adjustHistoryStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
-        break
-      case 'adjust-mens-end-history':
-        this._adjustMenstruatingHistoryHandler(inputDay, errorCallBack, getPredictedCycles)
-        break
-      case 'future-start-adjust':
-        this._adjustFutureStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
-        break
-      case 'adjust-future-mens-end':
-        this._adjustFutureMenstruatingHandler(inputDay, errorCallBack, getPredictedCycles)
-        break
-      case 'add-new-cycle-history':
-        this._addNewCycleInHistory(inputDay, errorCallBack, getPredictedCycles)
-        break
-      default:
-        break
+    // Snapshot state before mutating, so that if a handler throws partway through
+    // (e.g. an unguarded array access on sparse/edge-case history), we can roll
+    // back instead of persisting corrupted state. A corrupted persisted state is
+    // what causes the app to crash on every subsequent render/launch, not just
+    // once - since components read this same broken state on next app open.
+    const stateSnapshot = this.state.toJSON ? this.state.toJSON() : null
+    try {
+      switch (type) {
+        case 'adjust-mens-end':
+          this._adjustMenstruatingHandler(inputDay, errorCallBack, getPredictedCycles)
+          break
+        case 'start-next-cycle':
+          this._startedEarlyHandler(inputDay, errorCallBack, getPredictedCycles)
+          break
+        case 'current-start-adjust':
+          this._adjustCurrentStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          break
+        case 'history-start-adjust':
+          this._adjustHistoryStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          break
+        case 'adjust-mens-end-history':
+          this._adjustMenstruatingHistoryHandler(inputDay, errorCallBack, getPredictedCycles)
+          break
+        case 'future-start-adjust':
+          this._adjustFutureStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          break
+        case 'adjust-future-mens-end':
+          this._adjustFutureMenstruatingHandler(inputDay, errorCallBack, getPredictedCycles)
+          break
+        case 'add-new-cycle-history':
+          this._addNewCycleInHistory(inputDay, errorCallBack, getPredictedCycles)
+          break
+        default:
+          break
+      }
+    } catch (error) {
+      // Roll back to the last known-good state and surface an error message
+      // instead of crashing the app or persisting corrupted prediction state.
+      if (stateSnapshot) {
+        this.state = PredictionState.fromJSON(stateSnapshot)
+      }
+      errorCallBack('something_went_wrong')
+      this.listener(this.state)
+      return
     }
     this.listener(this.state)
   }
@@ -375,14 +364,16 @@ export class PredictionEngine {
     if (!this.state.isActive) {
       this.state.currentCycle.startDate = todayDate
     }
-    if (diffDays >= this.state.currentCycle.cycleLength) {
+    // Round cycle length consistently with predictDay to avoid mismatch
+    // (e.g. cycleLength=28.4: _currentDayChecking wouldn't trigger at day 28 but
+    // predictDay would route into the future-prediction branch)
+    const currentCycleLength = Math.round(this.state.currentCycle.cycleLength)
+    if (diffDays >= currentCycleLength) {
       // Check how far ahead we are of the assumed current cycle in number of cycles
-      const daysAheadOfCurrentCycleEnd = diffDays - this.state.currentCycle.cycleLength
+      const daysAheadOfCurrentCycleEnd = diffDays - currentCycleLength
       if (daysAheadOfCurrentCycleEnd < this.state.smartPrediction.smaCycleLength) {
         // only if we are one cycle ahead
-        const dayToCheck = this.state.currentCycle.startDate
-          .clone()
-          .add(this.state.currentCycle.cycleLength, 'days')
+        const dayToCheck = this.state.currentCycle.startDate.clone().add(currentCycleLength, 'days')
         const completionDay = this.predictDay(dayToCheck).cycleStart
         this._cycleCompletion(completionDay, null)
         return
@@ -396,10 +387,7 @@ export class PredictionEngine {
         // loop through completing all cycles that have been missed and add to history
         const dayToCheck = startingPoint
           .clone()
-          .add(
-            this.state.currentCycle.cycleLength + i * this.state.smartPrediction.smaCycleLength,
-            'days',
-          )
+          .add(currentCycleLength + i * this.state.smartPrediction.smaCycleLength, 'days')
         if (
           (!this.state.futurePredictionStatus &&
             moment(dayToCheck).isSameOrBefore(moment(tempCurrentCycle.cycleStart), 'day')) ||
@@ -1031,6 +1019,14 @@ export class PredictionEngine {
     const indexMorePresent = closestIndex - 1
     const indexMorePast = closestIndex + 1
     if (_.isEmpty(closetCycle)) {
+      // No history entries exist yet (or none are relevant to this date) - there is
+      // nothing to adjust. Without this guard, `history[-1]` is undefined and the
+      // next line throws, crashing the app (e.g. editing a date before any history,
+      // such as scrolling back to March with no history recorded yet).
+      if (!this.state.history.length) {
+        errorCallBack('too_far_behind')
+        return
+      }
       const daysFromStart = inputDay.diff(
         this.state.history[this.state.history.length - 1].cycleStartDate,
         'days',

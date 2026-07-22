@@ -269,12 +269,16 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
     }
   }
 
-  // The new Bayesian API returns { prediction: { predicted_cycle_length: number } }
-  // (not the old predicted_cycles/predicted_periods arrays).
-  const smaCycleLength = periodResult?.prediction?.predicted_cycle_length
-    ? Math.round(periodResult.prediction.predicted_cycle_length)
+  // getPeriodCycles normalises both engine versions into
+  // { predictedCycleLength, predictedPeriodLength }.
+  const smaCycleLength = periodResult?.predictedCycleLength
+    ? Math.round(periodResult.predictedCycleLength)
     : cycleLength
-  const smaPeriodLength = periodLength // API doesn't return period length; use user's input
+  // v1 returns a predicted period length; v2 does not, so fall back to the
+  // user's input in that case.
+  const smaPeriodLength = periodResult?.predictedPeriodLength
+    ? Math.round(periodResult.predictedPeriodLength)
+    : periodLength
 
   const stateToSet = PredictionState.fromData({
     isActive,

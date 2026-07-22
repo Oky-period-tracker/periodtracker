@@ -43,12 +43,14 @@ function* onFetchUpdatedPredictedCycles(
       new_observation,
     })
 
-    // Map new API response to the format PredictionState.fromData expects
-    // Round the Bayesian model's posterior mean - it is almost never an integer
+    // getPeriodCycles normalises both engine versions into
+    // { predictedCycleLength, predictedPeriodLength }.
+    // Round the (Bayesian, v2) posterior mean - it is almost never an integer
     // and the app displays this value directly to users (e.g. "28.437 days").
-    const smaCycleLength = Math.round(predictionResponse.prediction.predicted_cycle_length)
+    const smaCycleLength = Math.round(predictionResponse.predictedCycleLength)
 
-    // Compute period length from actual history (not the stale period_lengths array)
+    // v1 returns a predicted period length; v2 does not, so we fall back to
+    // computing it from actual history (not the stale period_lengths array).
     const historyPeriods = (predictionFullState.history || [])
       .map((h: any) => h.periodLength)
       .filter((p: number) => p >= 2)
@@ -59,7 +61,9 @@ function* onFetchUpdatedPredictedCycles(
       ...historyPeriods,
     ]
     const smaPeriodLength =
-      allPeriods.length > 0
+      predictionResponse.predictedPeriodLength != null
+        ? Math.round(predictionResponse.predictedPeriodLength)
+        : allPeriods.length > 0
         ? Math.round(allPeriods.reduce((a: number, b: number) => a + b, 0) / allPeriods.length)
         : 5
 

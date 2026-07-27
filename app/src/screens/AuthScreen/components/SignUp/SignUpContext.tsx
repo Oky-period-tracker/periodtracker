@@ -3,12 +3,13 @@ import { User } from '../../../../types'
 import { FAST_SIGN_UP } from '../../../../config/env'
 import { Alert } from 'react-native'
 import { formatPassword } from '../../../../services/auth'
-import { signupAccount } from '../../../../services/auth/accountFlows'
+import { signupAccount, MAX_ACCOUNTS } from '../../../../services/auth/accountFlows'
 import { findUserByName } from '../../../../services/userMetadata/registry'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { httpClient } from '../../../../services/HttpClient'
 import { useDebounce } from '../../../../hooks/useDebounce'
+import { useTranslate } from '../../../../hooks/useTranslate'
 
 export type SignUpStep = 'confirmation' | 'information' | 'secret' | 'age' | 'location'
 
@@ -271,6 +272,7 @@ const SignUpContext = React.createContext<SignUpContext>(defaultValue)
 
 export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
   const [state, dispatch] = React.useReducer(reducer, initialState)
+  const translate = useTranslate()
 
   const step = steps[state.stepIndex]
   const { isValid, errors } = validateStep(state, step)
@@ -346,7 +348,11 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
     // routes the auth screen through avatar -> theme -> period survey. The logged-in gate is set at
     // the end of onboarding (JourneyReview.onConfirm), not here.
     signupAccount(account).catch((err) => {
-      Alert.alert('error', err instanceof Error ? err.message : 'signup_failed')
+      if (err instanceof Error && err.message === MAX_ACCOUNTS) {
+        Alert.alert(translate('alert'), translate('max_accounts_reached'))
+      } else {
+        Alert.alert(translate('error'), err instanceof Error ? err.message : translate('signup_failed'))
+      }
     })
   }, [step])
 

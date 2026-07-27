@@ -17,6 +17,7 @@ export type AuthMode =
   | 'log_in'
   | 'forgot_password'
   | 'delete_account'
+  | 'manage_offline_users'
 
 export type AuthModeContext = {
   authMode: AuthMode

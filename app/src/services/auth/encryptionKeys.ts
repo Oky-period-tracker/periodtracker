@@ -34,15 +34,16 @@ export class EncryptionKeyUnavailableError extends Error {
   }
 }
 
-// Does the registry record this account as having its own durable Keychain key? Lazy-required to
-// avoid the encryptionKeys -> registry -> credentialVault -> encryptionKeys import cycle.
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { USERS_REGISTRY_KEY } from '../storage/storageKeys'
+
+// Does the registry record this account as having its own durable Keychain key?
 async function accountExpectsOwnKey(userId: string): Promise<boolean> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { getUser } = require('../userMetadata/registry') as {
-      getUser: (id: string) => Promise<{ hasEncryptionKey?: boolean } | null>
-    }
-    const account = await getUser(userId)
+    const raw = await AsyncStorage.getItem(USERS_REGISTRY_KEY)
+    if (!raw) return false
+    const parsed = JSON.parse(raw) as { users?: Array<{ id: string; hasEncryptionKey?: boolean }> }
+    const account = parsed.users?.find((u) => u.id === userId)
     return account?.hasEncryptionKey === true
   } catch {
     return false

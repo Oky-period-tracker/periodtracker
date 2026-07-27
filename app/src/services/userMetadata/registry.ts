@@ -110,13 +110,11 @@ export async function markPendingDelete(id: string): Promise<void> {
   await updateUser(id, { isPendingDelete: true })
 }
 
+import { purgeUserStorage } from '../../redux/storeManager'
+
 // Fully remove an account: registry entry, its encrypted per-user store blob, and its
-// credentials. purgeUserStorage is lazy-required to avoid an import cycle with storeManager.
+// credentials.
 export async function removeUser(id: string): Promise<void> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { purgeUserStorage } = require('../../redux/storeManager') as {
-    purgeUserStorage: (userId: string) => Promise<void>
-  }
   await purgeUserStorage(id)
   await deleteCredential(id)
   await mutate((reg) => {

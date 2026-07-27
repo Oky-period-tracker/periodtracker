@@ -20,6 +20,7 @@ import { getEncryptionKey, EncryptionKeyUnavailableError } from '../services/aut
 import {
   userDataConfigKey,
   userDataStorageKey,
+  USERS_REGISTRY_KEY,
   ANON_USER_ID,
 } from '../services/storage/storageKeys'
 
@@ -129,6 +130,34 @@ async function teardownActive(): Promise<void> {
   bundle.saga.cancel()
 }
 
+async function getActiveUserIdFromStorage(): Promise<string | null> {
+  try {
+    const raw = await AsyncStorage.getItem(USERS_REGISTRY_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { activeUserId?: string | null }
+    return parsed.activeUserId ?? null
+  } catch {
+    return null
+  }
+}
+
+async function setActiveUserInStorage(userId: string): Promise<void> {
+  try {
+    const raw = await AsyncStorage.getItem(USERS_REGISTRY_KEY)
+    if (!raw) return
+    const parsed = JSON.parse(raw)
+    parsed.activeUserId = userId
+    parsed.users = (parsed.users || []).map((u: any) => ({
+      ...u,
+      isActive: u.id === userId,
+      lastActiveAt: u.id === userId ? new Date().toISOString() : u.lastActiveAt,
+    }))
+    await AsyncStorage.setItem(USERS_REGISTRY_KEY, JSON.stringify(parsed))
+  } catch {
+    // ignore
+  }
+}
+
 // Build the store for whoever the registry says is active (or an empty anon store on a
 // fresh device). Idempotent: returns the existing bundle if already built. Serialized.
 export function initStoreManager(): Promise<StoreBundle> {
@@ -136,11 +165,7 @@ export function initStoreManager(): Promise<StoreBundle> {
     if (active) {
       return active
     }
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { getActiveUserId } = require('../services/userMetadata/registry') as {
-      getActiveUserId: () => Promise<string | null>
-    }
-    const userId = (await getActiveUserId()) || ANON_USER_ID
+    const userId = (await getActiveUserIdFromStorage()) || ANON_USER_ID
     active = await buildBundleSafe(userId)
     notify(active)
     return active
@@ -154,11 +179,7 @@ export function switchToUser(userId: string): Promise<StoreBundle> {
     }
     await teardownActive()
     if (userId !== ANON_USER_ID) {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { setActiveUser } = require('../services/userMetadata/registry') as {
-        setActiveUser: (id: string | null) => Promise<void>
-      }
-      await setActiveUser(userId)
+      await setActiveUserInStorage(userId)
     }
     active = await buildBundleSafe(userId)
     notify(active)

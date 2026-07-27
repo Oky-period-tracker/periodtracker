@@ -13,6 +13,8 @@ import { loginRequest } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { loadPendingSyncData } from '../../../services/pendingSync'
+import { loginToAccount } from '../../../services/auth/accountFlows'
+import { verifyPassword } from '../../../services/auth/credentialVault'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
@@ -30,6 +32,23 @@ export const LogIn = () => {
 
   const [margin, setMargin] = React.useState(0)
 
+  // The online login path resolves in the saga (loginFailure increments this), so surface its
+  // failures here too — otherwise a wrong password / network error for a server-only account
+  // (e.g. after a reinstall) gives no feedback at all.
+  const loginFailedCount = useSelector((state) => state.auth.loginFailedCount)
+  const prevFailedCount = React.useRef(loginFailedCount)
+  React.useEffect(() => {
+    if (loginFailedCount > prevFailedCount.current) {
+      setSuccess(false)
+    }
+    prevFailedCount.current = loginFailedCount
+  }, [loginFailedCount])
+
+  // Clear a stale "incorrect" message as soon as the user edits either field.
+  React.useEffect(() => {
+    setSuccess(null)
+  }, [name, password])
+
   // Pre-fill username from pending sync data after a forced logout
   React.useEffect(() => {
     if (user || name) return
@@ -40,26 +59,40 @@ export const LogIn = () => {
     })
   }, [])
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     if (errors.length) {
       setErrorsVisible(true)
       return
     }
 
-    if (user) {
-      const formattedPassword = formatPassword(password)
-      const success = user.password === formattedPassword
+    const formattedPassword = formatPassword(password)
 
-      if (success) {
+    if (user) {
+      // Passcode re-entry for the account already loaded into the active store. Verify against
+      // the credential vault (the source of truth, kept current by offline password resets),
+      // falling back to the plaintext stored on the user for any pre-vault account.
+      const ok =
+        (await verifyPassword(user.id, formattedPassword)) || user.password === formattedPassword
+      if (ok) {
         setIsLoggedIn(true)
         return
       }
-
       setSuccess(false)
       return
     }
 
-    dispatch(loginRequest({ name, password: formatPassword(password) }))
+    // Fresh login: try a locally registered account first (works offline), then fall back to
+    // an online login if no local account matches this name.
+    try {
+      const loggedIn = await loginToAccount(name, formattedPassword)
+      if (loggedIn) {
+        setIsLoggedIn(true)
+        return
+      }
+      dispatch(loginRequest({ name, password: formattedPassword }))
+    } catch {
+      setSuccess(false)
+    }
   }
 
   React.useEffect(() => {

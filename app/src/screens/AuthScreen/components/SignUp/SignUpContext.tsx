@@ -1,10 +1,10 @@
 import React from 'react'
 import { User } from '../../../../types'
 import { FAST_SIGN_UP } from '../../../../config/env'
-import { useAuthMode } from '../../AuthModeContext'
-import { useDispatch } from 'react-redux'
-import { createAccountRequest } from '../../../../redux/actions'
+import { Alert } from 'react-native'
 import { formatPassword } from '../../../../services/auth'
+import { signupAccount } from '../../../../services/auth/accountFlows'
+import { findUserByName } from '../../../../services/userMetadata/registry'
 import { uuidv4 } from '../../../../services/uuid'
 import moment from 'moment'
 import { httpClient } from '../../../../services/HttpClient'
@@ -275,10 +275,6 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
   const step = steps[state.stepIndex]
   const { isValid, errors } = validateStep(state, step)
 
-  const { setAuthMode } = useAuthMode()
-
-  const reduxDispatch = useDispatch()
-
   const [debouncedName] = useDebounce(state.name, 500)
   React.useEffect(() => {
     if (!debouncedName || debouncedName.length < MINIMUM_NAME_LENGTH) {
@@ -287,6 +283,17 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
 
     let cleanup = false
     const checkUserNameAvailability = async () => {
+      // Check the local registry first: a name already used by another offline account on this
+      // device is taken regardless of the server, and this works offline (where getUserInfo
+      // throws and would otherwise mark every name available).
+      const localMatch = await findUserByName(debouncedName)
+      if (cleanup) {
+        return
+      }
+      if (localMatch) {
+        dispatch({ type: 'nameAvailable', value: false })
+        return
+      }
       try {
         await httpClient.getUserInfo(debouncedName)
         if (cleanup) {
@@ -320,7 +327,7 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       return
     }
 
-    const user = {
+    const account = {
       id: uuidv4(),
       name: state.name,
       password: formatPassword(state.password),
@@ -333,12 +340,14 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       dateOfBirth: state.dateOfBirth,
       metadata: state.metadata,
       dateSignedUp: moment.utc().toISOString(),
-      isGuest: false,
     }
 
-    reduxDispatch(createAccountRequest(user))
-    // TODO: wait for success
-    setAuthMode('avatar_selection')
+    // Create the account. signupAccount switches to its store and marks onboarding pending, which
+    // routes the auth screen through avatar -> theme -> period survey. The logged-in gate is set at
+    // the end of onboarding (JourneyReview.onConfirm), not here.
+    signupAccount(account).catch((err) => {
+      Alert.alert('error', err instanceof Error ? err.message : 'signup_failed')
+    })
   }, [step])
 
   return (

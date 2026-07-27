@@ -1,6 +1,5 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useAuthMode } from '../AuthModeContext'
 import { Text } from '../../../components/Text'
 
@@ -15,6 +14,10 @@ export const AuthLinks = () => {
     setAuthMode('delete_account')
   }
 
+  const goToManageOffline = () => {
+    setAuthMode('manage_offline_users')
+  }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={goToForgot} style={styles.link}>
@@ -23,6 +26,10 @@ export const AuthLinks = () => {
 
       <TouchableOpacity onPress={goToDelete} style={styles.link}>
         <Text style={styles.text}>delete_account</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={goToManageOffline} style={styles.link}>
+        <Text style={styles.text}>manage_offline_users</Text>
       </TouchableOpacity>
     </View>
   )

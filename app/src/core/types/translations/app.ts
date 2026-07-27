@@ -202,6 +202,9 @@ export interface AppTranslations {
   delete_account_completed: string
   delete_account_description: string
   delete_account_fail: string
+  manage_offline_users: string
+  max_accounts_reached: string
+  no_offline_users: string
   didYouKnow: string
   dont_remember: string
   empty: string

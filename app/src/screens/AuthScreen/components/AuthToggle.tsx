@@ -1,13 +1,24 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Hr } from '../../../components/Hr'
 import { useAuthMode } from '../AuthModeContext'
 import { Text } from '../../../components/Text'
+import { useTranslate } from '../../../hooks/useTranslate'
+import { userCount } from '../../../services/userMetadata/registry'
+import { MAX_ACCOUNTS_PER_DEVICE } from '../../../services/userMetadata/types'
 
 export const AuthToggle = () => {
   const { setAuthMode } = useAuthMode()
+  const translate = useTranslate()
   const onLogInPress = () => setAuthMode('log_in')
-  const onSignUpPress = () => setAuthMode('sign_up')
+  const onSignUpPress = async () => {
+    const count = await userCount()
+    if (count >= MAX_ACCOUNTS_PER_DEVICE) {
+      Alert.alert(translate('alert'), translate('max_accounts_reached'))
+      return
+    }
+    setAuthMode('sign_up')
+  }
 
   return (
     <View style={styles.container}>

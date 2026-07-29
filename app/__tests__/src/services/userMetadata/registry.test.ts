@@ -1,5 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { MAX_ACCOUNTS_PER_DEVICE } from '../../../../src/services/userMetadata/types'
+import {
+  ENFORCE_ACCOUNT_LIMIT,
+  MAX_ACCOUNTS_PER_DEVICE,
+} from '../../../../src/services/userMetadata/types'
+
+// The limit tests only apply when enforcement is compiled in; when the flag is off the
+// registry must instead accept accounts beyond the limit.
+const itWhenEnforced = ENFORCE_ACCOUNT_LIMIT ? it : it.skip
+const itWhenNotEnforced = ENFORCE_ACCOUNT_LIMIT ? it.skip : it
 
 // credentialVault pulls in the Keychain/crypto native modules at import time (via encryptionKeys),
 // and is only used by removeUser — not the per-device limit path under test. Stub it out.
@@ -41,7 +49,7 @@ describe('account registry per-device limit', () => {
     expect(await userCount()).toBe(MAX_ACCOUNTS_PER_DEVICE)
   })
 
-  it('throws MAX_ACCOUNTS_ERROR when adding one account over the limit', async () => {
+  itWhenEnforced('throws MAX_ACCOUNTS_ERROR when adding one account over the limit', async () => {
     for (let i = 0; i < MAX_ACCOUNTS_PER_DEVICE; i++) {
       await addUser(makeUser(`u${i}`))
     }
@@ -50,6 +58,15 @@ describe('account registry per-device limit', () => {
     // The rejected add must not be persisted.
     expect(await userCount()).toBe(MAX_ACCOUNTS_PER_DEVICE)
     expect(await getUser('overflow')).toBeNull()
+  })
+
+  itWhenNotEnforced('allows adding accounts beyond the limit while enforcement is disabled', async () => {
+    for (let i = 0; i < MAX_ACCOUNTS_PER_DEVICE; i++) {
+      await addUser(makeUser(`u${i}`))
+    }
+
+    await expect(addUser(makeUser('overflow'))).resolves.toMatchObject({ id: 'overflow' })
+    expect(await userCount()).toBe(MAX_ACCOUNTS_PER_DEVICE + 1)
   })
 
   it('does not count re-adding an existing account against the limit', async () => {
@@ -67,7 +84,7 @@ describe('account registry per-device limit', () => {
     expect(users.find((u) => u.id === 'u0')?.name).toBe('Renamed')
   })
 
-  it('frees a slot after removing an account', async () => {
+  itWhenEnforced('frees a slot after removing an account', async () => {
     for (let i = 0; i < MAX_ACCOUNTS_PER_DEVICE; i++) {
       await addUser(makeUser(`u${i}`))
     }

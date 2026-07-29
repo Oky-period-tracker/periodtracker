@@ -106,9 +106,7 @@ export const allQuizzesSelectors = (state: ReduxState) => {
   if (!quizzes?.allIds || !quizzes?.byId) {
     return []
   }
-  // moment()
-  //   .utc()
-  //   .diff(state.auth.user.dateOfBirth) < 15
+
   const filteredArray = quizzes.allIds.reduce<Array<NonNullable<typeof quizzes.byId[string]>>>(
     (acc, id) => {
       const quiz = quizzes.byId?.[id]
@@ -139,9 +137,7 @@ export const allDidYouKnowsSelectors = (state: ReduxState) => {
   if (!didYouKnows?.allIds || !didYouKnows?.byId) {
     return []
   }
-  // moment()
-  //   .utc()
-  //   .diff(state.auth.user.dateOfBirth) < 15
+
   const filteredArray = didYouKnows.allIds.reduce<
     Array<NonNullable<typeof didYouKnows.byId[string]>>
   >((acc, id) => {

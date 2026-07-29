@@ -38,7 +38,7 @@
     "axios": "^1.7.2",
     "babel-preset-expo": "~54.0.10",
     "circular-buffer": "^1.0.2",
-    "expo": "~54.0.35",
+    "expo": "~54.0.36",
     "expo-application": "~7.0.8",
     "expo-av": "~16.0.8",
     "expo-build-properties": "~1.0.10",

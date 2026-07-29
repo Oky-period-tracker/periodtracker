@@ -29,7 +29,7 @@ export const AuthLinks = () => {
       </TouchableOpacity>
 
       <TouchableOpacity onPress={goToManageOffline} style={styles.link}>
-        <Text style={styles.text}>manage_offline_users</Text>
+        <Text style={styles.text}>manage_accounts</Text>
       </TouchableOpacity>
     </View>
   )

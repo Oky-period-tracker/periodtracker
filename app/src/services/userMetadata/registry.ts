@@ -4,7 +4,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { USERS_REGISTRY_KEY } from '../storage/storageKeys'
 import { deleteCredential } from '../auth/credentialVault'
-import { MAX_ACCOUNTS_PER_DEVICE, RegisteredUser, UsersRegistry } from './types'
+import {
+  ENFORCE_ACCOUNT_LIMIT,
+  MAX_ACCOUNTS_PER_DEVICE,
+  RegisteredUser,
+  UsersRegistry,
+} from './types'
 
 export const MAX_ACCOUNTS_ERROR = 'MAX_ACCOUNTS'
 
@@ -64,7 +69,7 @@ export async function addUser(
 ): Promise<RegisteredUser> {
   return mutate((reg) => {
     const exists = reg.users.some((u) => u.id === user.id)
-    if (!exists && reg.users.length >= MAX_ACCOUNTS_PER_DEVICE) {
+    if (ENFORCE_ACCOUNT_LIMIT && !exists && reg.users.length >= MAX_ACCOUNTS_PER_DEVICE) {
       throw new Error(MAX_ACCOUNTS_ERROR)
     }
     const record: RegisteredUser = {

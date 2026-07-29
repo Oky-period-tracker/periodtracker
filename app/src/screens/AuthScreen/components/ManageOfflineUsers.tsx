@@ -24,21 +24,17 @@ export const ManageOfflineUsers = () => {
   }, [loadAccounts])
 
   const handleDelete = (account: RegisteredUser) => {
-    Alert.alert(
-      translate('are_you_sure'),
-      `${translate('delete_account')} (${account.name})?`,
-      [
-        { text: translate('cancel'), style: 'cancel' },
-        {
-          text: translate('delete_account'),
-          style: 'destructive',
-          onPress: async () => {
-            await deleteAccount(account.id)
-            await loadAccounts()
-          },
+    Alert.alert(translate('are_you_sure'), `${translate('delete_account')} (${account.name})?`, [
+      { text: translate('cancel'), style: 'cancel' },
+      {
+        text: translate('delete_account'),
+        style: 'destructive',
+        onPress: async () => {
+          await deleteAccount(account.id)
+          await loadAccounts()
         },
-      ],
-    )
+      },
+    ])
   }
 
   return (

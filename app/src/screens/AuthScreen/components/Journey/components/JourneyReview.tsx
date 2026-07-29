@@ -35,9 +35,10 @@ export const JourneyReview = () => {
 
     const answers = {
       isActive: state.isActive,
-      startDate: moment.isMoment(state.startDate) && state.startDate.isValid()
-        ? state.startDate
-        : moment(state.startDate),
+      startDate:
+        moment.isMoment(state.startDate) && state.startDate.isValid()
+          ? state.startDate
+          : moment(state.startDate),
       periodLength,
       cycleLength,
     }

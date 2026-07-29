@@ -351,7 +351,10 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
       if (err instanceof Error && err.message === MAX_ACCOUNTS) {
         Alert.alert(translate('alert'), translate('max_accounts_reached'))
       } else {
-        Alert.alert(translate('error'), err instanceof Error ? err.message : translate('signup_failed'))
+        Alert.alert(
+          translate('error'),
+          err instanceof Error ? err.message : translate('signup_failed'),
+        )
       }
     })
   }, [step])

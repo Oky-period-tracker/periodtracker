@@ -154,7 +154,15 @@ const EditProfileScreen: ScreenComponent<'EditProfile'> = ({ navigation }) => {
 
   const [state, dispatch] = React.useReducer(
     reducer,
-    initialState ?? ({ name: '', gender: '', month: NaN, year: 0, dateOfBirth: '', location: '' } as EditProfileState),
+    initialState ??
+      ({
+        name: '',
+        gender: '',
+        month: NaN,
+        year: 0,
+        dateOfBirth: '',
+        location: '',
+      } as EditProfileState),
   )
 
   const onChangeName = (value: string) => {

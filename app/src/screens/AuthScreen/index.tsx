@@ -5,7 +5,6 @@ import { Button } from '../../components/Button'
 import AnimatedContainer from '../../components/AnimatedContainer'
 import { SignUp } from './components/SignUp'
 import { AuthToggle } from './components/AuthToggle'
-import { ManageOfflineUsers } from './components/ManageOfflineUsers'
 import { AuthModeProvider, useAuthMode } from './AuthModeContext'
 import { ScreenProps } from '../../navigation/RootNavigator'
 import { AvatarSelect } from '../AvatarScreen'
@@ -14,8 +13,8 @@ import { Welcome } from './components/Welcome'
 import { Journey } from './components/Journey'
 import { AuthLinks } from './components/AuthLinks'
 import { LogIn } from './components/LogIn'
-import { DeleteAccount } from './components/DeleteAccount'
 import { ForgotPassword } from './components/ForgotPassword'
+import { ManageUsers } from './components/ManageUsers'
 import { LanguageSelector } from '../../components/LanguageSelector'
 import { useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AuthScreenHeader } from './components/AuthScreenHeader'
@@ -72,8 +71,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
           {authMode === 'log_in' && <LogIn />}
           {authMode === 'sign_up' && <SignUp />}
           {authMode === 'forgot_password' && <ForgotPassword />}
-          {authMode === 'delete_account' && <DeleteAccount />}
-          {authMode === 'manage_offline_users' && <ManageOfflineUsers />}
+          {authMode === 'manage_users' && <ManageUsers />}
         </AnimatedContainer>
       </View>
 

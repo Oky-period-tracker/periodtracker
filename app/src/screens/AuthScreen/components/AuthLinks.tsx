@@ -10,12 +10,8 @@ export const AuthLinks = () => {
     setAuthMode('forgot_password')
   }
 
-  const goToDelete = () => {
-    setAuthMode('delete_account')
-  }
-
-  const goToManageOffline = () => {
-    setAuthMode('manage_offline_users')
+  const goToManageUsers = () => {
+    setAuthMode('manage_users')
   }
 
   return (
@@ -24,12 +20,8 @@ export const AuthLinks = () => {
         <Text style={styles.text}>forgot_password</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={goToDelete} style={styles.link}>
-        <Text style={styles.text}>delete_account</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={goToManageOffline} style={styles.link}>
-        <Text style={styles.text}>manage_accounts</Text>
+      <TouchableOpacity onPress={goToManageUsers} style={styles.link}>
+        <Text style={styles.text}>manage_users</Text>
       </TouchableOpacity>
     </View>
   )

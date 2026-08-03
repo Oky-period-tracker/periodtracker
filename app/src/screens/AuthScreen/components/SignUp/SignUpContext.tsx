@@ -3,7 +3,7 @@ import { User } from '../../../../types'
 import { FAST_SIGN_UP } from '../../../../config/env'
 import { Alert } from 'react-native'
 import { formatPassword } from '../../../../services/auth'
-import { signupAccount, MAX_ACCOUNTS } from '../../../../services/auth/accountFlows'
+import { signupAccount } from '../../../../services/auth/accountFlows'
 import { findUserByName } from '../../../../services/userMetadata/registry'
 import { useTranslate } from '../../../../hooks/useTranslate'
 import { useLoading } from '../../../../contexts/LoadingProvider'
@@ -356,16 +356,12 @@ export const SignUpProvider = ({ children }: React.PropsWithChildren) => {
     // onboarding. On success the store switch remounts the whole tree (overlay included), so the
     // overlay only needs clearing on failure.
     setLoading(true)
-    signupAccount(account).catch((err) => {
+    signupAccount(account).catch(() => {
       setLoading(false)
       // Restore the last step so a failure doesn't strand the user on the empty form shell (just
       // its "confirm" button). They can fix input and retry.
       dispatch({ type: 'stepIndex', value: steps.length - 1 })
-      const message =
-        err instanceof Error && err.message === MAX_ACCOUNTS
-          ? translate('max_accounts_reached')
-          : translate('something_went_wrong')
-      Alert.alert(translate('error'), message)
+      Alert.alert(translate('error'), translate('something_went_wrong'))
     })
   }, [step])
 

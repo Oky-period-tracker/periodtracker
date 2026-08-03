@@ -1,7 +1,3 @@
-export const MAX_ACCOUNTS_PER_DEVICE = 3
-// Enforcement of MAX_ACCOUNTS_PER_DEVICE is disabled for this build; flip to true to restore it.
-export const ENFORCE_ACCOUNT_LIMIT = false
-
 export interface RegisteredUser {
   // Immutable local id. Used to key the per-user persisted store and credentials.
   // Never changes, even after the account syncs and the server assigns its own id.

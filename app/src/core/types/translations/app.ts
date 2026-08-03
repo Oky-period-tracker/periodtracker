@@ -282,6 +282,10 @@ export interface AppTranslations {
   mood: string
   music: string
   name: string
+  manage_users: string
+  no_users: string
+  offline_account: string
+  synced_account: string
   name_info_label: string
   name_input: string
   name_taken_error: string

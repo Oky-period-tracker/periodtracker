@@ -14,7 +14,6 @@ import { loadPendingSyncData } from '../../../services/pendingSync'
 import {
   loginToAccount,
   loginOnlineToAccount,
-  MAX_ACCOUNTS,
 } from '../../../services/auth/accountFlows'
 import { verifyPassword } from '../../../services/auth/credentialVault'
 
@@ -30,16 +29,11 @@ export const LogIn = () => {
   const { errors } = validateCredentials(name, password)
 
   const [success, setSuccess] = React.useState<boolean | null>(null)
-  // Which error to show when success === false. Defaults to a wrong-passcode message; the online
-  // login can instead fail because the device is full (MAX_ACCOUNTS), which is not a bad password.
-  const [errorKey, setErrorKey] = React.useState('password_incorrect')
-
   const [margin, setMargin] = React.useState(0)
 
   // Clear a stale "incorrect" message as soon as the user edits either field.
   React.useEffect(() => {
     setSuccess(null)
-    setErrorKey('password_incorrect')
   }, [name, password])
 
   // Pre-fill username from pending sync data after a forced logout
@@ -87,10 +81,7 @@ export const LogIn = () => {
         return
       }
       setSuccess(false)
-    } catch (err) {
-      if (err instanceof Error && err.message === MAX_ACCOUNTS) {
-        setErrorKey('max_accounts_reached')
-      }
+    } catch {
       setSuccess(false)
     }
   }
@@ -133,7 +124,7 @@ export const LogIn = () => {
           errorKeys={['password_too_short']}
           errorsVisible={errorsVisible}
         />
-        {success === false && <ErrorText>{errorKey}</ErrorText>}
+        {success === false && <ErrorText>password_incorrect</ErrorText>}
       </AuthCardBody>
       <Hr />
       <TouchableOpacity onPress={onConfirm} style={[styles.confirm, { marginBottom: margin }]}>

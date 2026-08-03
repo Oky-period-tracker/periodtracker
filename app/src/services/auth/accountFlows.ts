@@ -28,8 +28,6 @@ import { getDeviceId } from '../deviceId'
 import { httpClient } from '../HttpClient'
 import { uuidv4 } from '../uuid'
 
-export const MAX_ACCOUNTS = registry.MAX_ACCOUNTS_ERROR
-
 export interface NewAccount {
   id?: string
   name: string
@@ -97,8 +95,8 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
       secretAnswer: a.secretAnswer ?? null,
       keepPlainForSync: true,
     })
-    // The registry entry is written LAST and throws MAX_ACCOUNTS_ERROR if the device is full, so a
-    // registered account always implies a usable credential record and encryption key.
+    // The registry entry is written last, so a registered account always implies a usable
+    // credential record and encryption key.
     await registry.addUser({
       id: userId,
       name: a.name,

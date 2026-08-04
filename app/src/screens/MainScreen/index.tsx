@@ -15,7 +15,7 @@ import { TutorialProvider, useTutorial } from './TutorialContext'
 import { TutorialTextbox } from './components/TutorialTextbox'
 import { TutorialArrow } from './components/TutorialArrow'
 import { TutorialFeature } from './components/TutorialFeature'
-import { useFocusEffect, useIsFocused } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
 import { useFetchSurvey } from '../../hooks/useFetchSurvey'
 import { useLoading, useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AvatarMessageProvider } from '../../contexts/AvatarMessageContext'
@@ -29,6 +29,11 @@ import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
 import { usePeriodDateUpdate } from '../../hooks/usePeriodDateUpdate'
 import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
+import { PeriodReminderModal } from '../DayScreen/components/PeriodReminderModal'
+import { getNextPredictedPeriodDate, isReminderDay } from '../../services/notificationScheduler'
+import moment from 'moment'
+import { notificationsEnabledSelector, notificationReminderFrequencySelector } from '../../redux/selectors'
+import { syncPeriodReminderLocalNotification } from '../../services/periodReminderLocalNotification'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -61,13 +66,18 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const currentUser = useSelector(currentUserSelector) as User
   const cyclesNumber = useSelector(cyclesNumberSelector)
   const appToken = useSelector(appTokenSelector)
+  const notificationsEnabled = useSelector(notificationsEnabledSelector)
+  const reminderFrequency = useSelector(notificationReminderFrequencySelector)
   const reduxDispatch = useDispatch()
   const { handleDayModalResponse, initPeriodDatesIfEmpty } = usePeriodDateUpdate()
   const predictionFullState = usePredictionEngineState()
   const isAvatarCustomizationEnabled = useAvatarCustomization()
   const isFocused = useIsFocused()
+  const screenNavigation = useNavigation()
   const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
+  const [reminderModalVisible, setReminderModalVisible] = React.useState(false)
   const friendUnlockModalShownRef = React.useRef(false)
+  const reminderModalShownRef = React.useRef(false)
 
   // Check if friend unlock modal should be shown
   const shouldShowFriendUnlockModal = React.useMemo(() => {
@@ -102,6 +112,56 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     }
   }, [shouldShowFriendUnlockModal, isFocused])
 
+  // Check when to trigger the period reminder modal
+  const shouldShowReminderModal = React.useMemo(() => {
+    try {
+      // Don't check until prediction data is loaded
+      if (!notificationsEnabled) return false
+      if (!reminderFrequency) return false
+
+      const nextPeriodDate = getNextPredictedPeriodDate(predictionFullState)
+
+      if (!nextPeriodDate) return false
+
+      return isReminderDay(nextPeriodDate, reminderFrequency)
+    } catch (error) {
+      console.error('Error calculating reminder modal:', error)
+      return false
+    }
+  }, [notificationsEnabled, reminderFrequency, predictionFullState])
+
+  React.useEffect(() => {
+    const reconcileOuterPeriodReminder = async () => {
+      if (!isFocused) {
+        return
+      }
+
+      const nextPeriodDate = getNextPredictedPeriodDate(predictionFullState)
+
+      await syncPeriodReminderLocalNotification({
+        isEnabled: notificationsEnabled,
+        reminderFrequency,
+        predictedPeriodDate: nextPeriodDate,
+      })
+    }
+
+    reconcileOuterPeriodReminder()
+  }, [
+    isFocused,
+    notificationsEnabled,
+    reminderFrequency,
+    predictionFullState?.isActive,
+    predictionFullState?.currentCycle?.startDate,
+    predictionFullState?.currentCycle?.cycleLength,
+  ])
+
+  React.useEffect(() => {
+    if (shouldShowReminderModal && isFocused && !reminderModalShownRef.current) {
+      reminderModalShownRef.current = true
+      setReminderModalVisible(true)
+    }
+  }, [shouldShowReminderModal, isFocused])
+
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
       const data = generatePeriodDates(predictionFullState)
@@ -123,6 +183,15 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   const editUserReduxState = (changes: Partial<User>) => {
     reduxDispatch(editUser(changes))
+  }
+
+  const handleReminderModalClose = () => {
+    setReminderModalVisible(false)
+  }
+
+  const handleReminderNavigateToEncyclopedia = () => {
+    setReminderModalVisible(false)
+    screenNavigation.navigate('encyclopedia' as never)
   }
 
   const avatarHidden = state.isPlaying && step !== 'avatar'
@@ -186,6 +255,13 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
         <FriendUnlockModal
           visible={friendUnlockModalVisible && isFocused}
           toggleVisible={() => setFriendUnlockModalVisible(false)}
+        />
+      </View>
+      <View>
+        <PeriodReminderModal
+          visible={reminderModalVisible && isFocused}
+          onClose={handleReminderModalClose}
+          onNavigateToEncyclopedia={handleReminderNavigateToEncyclopedia}
         />
       </View>
     </>

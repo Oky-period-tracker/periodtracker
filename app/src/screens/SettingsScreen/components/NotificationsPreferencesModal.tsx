@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Modal, TouchableOpacity, ScrollView, Switch as RNSwitch } from 'react-native'
+import { View, StyleSheet, Modal, TouchableOpacity, ScrollView, Switch as RNSwitch, Alert } from 'react-native'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
 import { useTranslate } from '../../../hooks/useTranslate'
@@ -8,6 +8,13 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from '../../../redux/useSelector'
 import { setNotificationReminder, setNotificationsEnabled } from '../../../redux/actions'
 import { notificationReminderFrequencySelector } from '../../../redux/selectors'
+import { usePredictionEngineState } from '../../../contexts/PredictionProvider'
+import { getNextPredictedPeriodDate } from '../../../services/notificationScheduler'
+import {
+  cancelScheduledPeriodReminderNotification,
+  scheduleDebugPeriodReminderNotification,
+  syncPeriodReminderLocalNotification,
+} from '../../../services/periodReminderLocalNotification'
 
 interface NotificationsPreferencesModalProps {
   visible: boolean
@@ -22,6 +29,7 @@ export const NotificationsPreferencesModal = ({
   const t = useTranslate()
   const dispatch = useDispatch()
   const savedReminderFrequency = useSelector(notificationReminderFrequencySelector)
+  const predictionFullState = usePredictionEngineState()
 
   const [selectedReminder, setSelectedReminder] = React.useState<'fiveDays' | 'threeDays' | 'oneDay' | null>(
     savedReminderFrequency,
@@ -37,15 +45,57 @@ export const NotificationsPreferencesModal = ({
 
   const handleSetNotifications = async () => {
     if (!selectedReminder) return
+
     dispatch(setNotificationsEnabled(true))
     dispatch(setNotificationReminder(selectedReminder))
+
+    const nextPredictedPeriodDate = getNextPredictedPeriodDate(predictionFullState)
+
+    try {
+      await syncPeriodReminderLocalNotification({
+        isEnabled: true,
+        reminderFrequency: selectedReminder,
+        predictedPeriodDate: nextPredictedPeriodDate,
+      })
+    } catch (error) {
+      // Do not block closing the modal if scheduling fails in the background.
+    } finally {
+      onClose()
+    }
+  }
+
+  const handleDisableNotifications = async () => {
+    dispatch(setNotificationsEnabled(false))
+    dispatch(setNotificationReminder(null))
+
+    await cancelScheduledPeriodReminderNotification()
+
     onClose()
   }
 
-  const handleDisableNotifications = () => {
-    dispatch(setNotificationsEnabled(false))
-    dispatch(setNotificationReminder(null))
-    onClose()
+  const handleDebugNotification = async () => {
+    try {
+      const result = await scheduleDebugPeriodReminderNotification(2)
+
+      if (!result) {
+        Alert.alert(
+          'Debug reminder not scheduled',
+          'Notification permission is not granted. Please allow notifications in system settings and try again.',
+        )
+        return
+      }
+
+      Alert.alert(
+        'Debug reminder scheduled',
+        `Notification ID: ${result.notificationId}\nScheduled for: ${result.scheduledFor}`,
+      )
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error while scheduling debug notification.'
+      Alert.alert(
+        'Debug reminder failed',
+        errorMessage,
+      )
+    }
   }
 
   return (
@@ -125,6 +175,19 @@ export const NotificationsPreferencesModal = ({
               </Text>
             </TouchableOpacity>
           </View>
+
+          {__DEV__ && (
+            <View style={styles.debugContainer}>
+              <TouchableOpacity
+                style={[styles.debugButton, { borderColor: palette.primary.base }]}
+                onPress={handleDebugNotification}
+              >
+                <Text style={[styles.debugButtonText, { color: palette.primary.base }]}> 
+                  Debug: outer notification in 2 min
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     </Modal>
@@ -202,6 +265,23 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  debugContainer: {
+    width: '100%',
+    marginTop: 12,
+  },
+  debugButton: {
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  debugButtonText: {
+    fontSize: 12,
     fontWeight: '600',
     textAlign: 'center',
   },

@@ -103,3 +103,27 @@ export const getDaysUntilReminder = (
   return reminderDate.diff(today, 'days')
 }
 
+/**
+ * Resolve next predicted period date from prediction engine state
+ */
+export const getNextPredictedPeriodDate = (predictionFullState: any): Moment | null => {
+  if (!predictionFullState?.isActive) {
+    return null
+  }
+
+  if (!predictionFullState?.currentCycle?.startDate) {
+    return null
+  }
+
+  const cycleLength = Number(predictionFullState?.currentCycle?.cycleLength)
+
+  if (!Number.isFinite(cycleLength) || cycleLength <= 0) {
+    return null
+  }
+
+  return moment(predictionFullState.currentCycle.startDate)
+    .clone()
+    .add(cycleLength, 'days')
+    .startOf('day')
+}
+

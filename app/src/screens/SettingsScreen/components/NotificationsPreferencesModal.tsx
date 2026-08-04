@@ -43,6 +43,8 @@ export const NotificationsPreferencesModal = ({
     setSelectedReminder(key)
   }
 
+  const isSetNotificationDisabled = !selectedReminder
+
   const handleSetNotifications = async () => {
     if (!selectedReminder) return
 
@@ -159,8 +161,13 @@ export const NotificationsPreferencesModal = ({
 
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
-              style={[styles.button, { backgroundColor: palette.secondary.base }]}
+              style={[
+                styles.button,
+                { backgroundColor: isSetNotificationDisabled ? palette.basic.dark : palette.secondary.base },
+                isSetNotificationDisabled && styles.disabledButton,
+              ]}
               onPress={handleSetNotifications}
+              disabled={isSetNotificationDisabled}
             >
               <Text style={styles.buttonText}>
                 {t('notification_set_button')}
@@ -261,6 +268,9 @@ const styles = StyleSheet.create({
   },
   disableButton: {
     backgroundColor: 'transparent',
+  },
+  disabledButton: {
+    opacity: 0.6,
   },
   buttonText: {
     color: '#fff',

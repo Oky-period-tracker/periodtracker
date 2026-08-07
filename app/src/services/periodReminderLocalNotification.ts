@@ -31,7 +31,7 @@ const ensureAndroidNotificationChannel = async () => {
   })
 }
 
-const ensureNotificationPermission = async () => {
+export const requestAppNotificationPermission = async () => {
   const existingPermissions = await Notifications.getPermissionsAsync()
 
   if (existingPermissions.granted) {
@@ -86,7 +86,7 @@ const schedulePeriodReminderNotification = async (
   predictedPeriodDate: Moment | Date | string,
   reminderFrequency: Exclude<ReminderFrequency, null>,
 ) => {
-  const hasPermission = await ensureNotificationPermission()
+  const hasPermission = await requestAppNotificationPermission()
 
   if (!hasPermission) {
     return null
@@ -139,7 +139,7 @@ export const syncPeriodReminderLocalNotification = async ({
 }
 
 export const scheduleDebugPeriodReminderNotification = async (minutesFromNow = 2) => {
-  const hasPermission = await ensureNotificationPermission()
+  const hasPermission = await requestAppNotificationPermission()
 
   if (!hasPermission) {
     return null

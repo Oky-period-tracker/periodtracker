@@ -9,6 +9,7 @@ import { Switch } from '../../components/Switch'
 import { useDispatch } from 'react-redux'
 import { deleteAccountRequest, logoutRequest } from '../../redux/actions'
 import { useAuth } from '../../contexts/AuthContext'
+import { NotificationsPreferencesModal } from './components/NotificationsPreferencesModal'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
 import { useTranslate } from '../../hooks/useTranslate'
@@ -22,6 +23,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
+  const [notificationsModalVisible, setNotificationsModalVisible] = React.useState(false)
 
   const logOut = () => {
     dispatch(logoutRequest())
@@ -103,6 +105,12 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       component: <ArrowRight color={palette.basic.base} />,
     },
     {
+      title: 'Notifications',
+      description: 'Manage reminder preferences',
+      onPress: () => setNotificationsModalVisible(true),
+      component: <ArrowRight color={palette.basic.base} />,
+    },
+    {
       title: 'future_prediciton',
       description: 'future_prediciton_info',
       component: <PredictionControls />,
@@ -123,6 +131,11 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
           )
         })}
       </View>
+
+      <NotificationsPreferencesModal
+        visible={notificationsModalVisible}
+        onClose={() => setNotificationsModalVisible(false)}
+      />
 
       <View style={styles.buttonContainer}>
         <Button onPress={logOutAlert} status={'secondary'} style={styles.button}>

@@ -3,23 +3,43 @@ import { ReduxState } from '../reducers'
 import { isDefined } from '../../services/utils'
 
 const s = (state: ReduxState) => state.content
+const EMPTY_ARRAY: [] = []
+
+const createIdsByIdSelector = <T>() => {
+  let lastIds: string[] | undefined
+  let lastById: Record<string, T | undefined> | undefined
+  let lastResult: T[] = EMPTY_ARRAY
+
+  return (ids?: string[], byId?: Record<string, T | undefined>) => {
+    if (!ids || !byId) return EMPTY_ARRAY
+    if (ids === lastIds && byId === lastById) return lastResult
+
+    lastIds = ids
+    lastById = byId
+    lastResult = ids.map((id) => byId[id]).filter(isDefined)
+    return lastResult
+  }
+}
+
+const selectAllArticles = createIdsByIdSelector<NonNullable<ReduxState['content']['articles']['byId'][string]>>()
+const selectAllVideos = createIdsByIdSelector<NonNullable<ReduxState['content']['videos']['byId'][string]>>()
+const selectAllCategories = createIdsByIdSelector<
+  NonNullable<ReduxState['content']['categories']['byId'][string]>
+>()
+const selectAllSubCategories = createIdsByIdSelector<
+  NonNullable<ReduxState['content']['subCategories']['byId'][string]>
+>()
 
 export const articlesSelector = (state: ReduxState) => s(state).articles
 
 export const allArticlesSelector = (state: ReduxState) => {
   const articles = s(state)?.articles
-  if (!articles?.allIds || !articles?.byId) {
-    return []
-  }
-  return articles.allIds.map((id) => articles.byId?.[id]).filter(isDefined)
+  return selectAllArticles(articles?.allIds, articles?.byId)
 }
 
 export const allVideosSelector = (state: ReduxState) => {
   const videos = s(state)?.videos
-  if (!videos?.allIds || !videos?.byId) {
-    return []
-  }
-  return videos.allIds.map((id) => videos.byId?.[id]).filter(isDefined)
+  return selectAllVideos(videos?.allIds, videos?.byId)
 }
 
 export const articleByIDSelector = (state: ReduxState, id: string) => {
@@ -45,18 +65,12 @@ export const helpCenterAttributesSelector = (state: ReduxState) => {
 
 export const allCategoriesSelector = (state: ReduxState) => {
   const categories = s(state)?.categories
-  if (!categories?.allIds || !categories?.byId) {
-    return []
-  }
-  return categories.allIds.map((id) => categories?.byId?.[id]).filter(isDefined)
+  return selectAllCategories(categories?.allIds, categories?.byId)
 }
 
 export const allSubCategoriesSelector = (state: ReduxState) => {
   const subCategories = s(state)?.subCategories
-  if (!subCategories?.byId || !subCategories?.allIds) {
-    return []
-  }
-  return subCategories?.allIds.map((id) => subCategories.byId?.[id]).filter(isDefined)
+  return selectAllSubCategories(subCategories?.allIds, subCategories?.byId)
 }
 
 export const allSubCategoriesByIdSelector = (state: ReduxState) => {

@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { ReduxState } from '../reducers'
 
 const s = (state: ReduxState) => state.answer
+const EMPTY_OBJECT = {}
 
 export const surveyHasAnswerSelector = (state: ReduxState, id: string) => {
   // @ts-expect-error TODO:
@@ -58,9 +59,9 @@ export const verifyPeriodDaySelectorWithDate = (state: ReduxState, date: Moment)
   // return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)] || {}
 }
 export const allCardAnswersSelector = (state: ReduxState) => {
-  if (!state.auth.user) return {} // for the use case on info screen where there is no authed user
-  if (!s(state)[state.auth.user.id]) return {}
-  return s(state)[state.auth.user.id]?.verifiedDates || {}
+  if (!state.auth.user) return EMPTY_OBJECT // for the use case on info screen where there is no authed user
+  if (!s(state)[state.auth.user.id]) return EMPTY_OBJECT
+  return s(state)[state.auth.user.id]?.verifiedDates || EMPTY_OBJECT
 }
 
 export const notesAnswerSelector = (

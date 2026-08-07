@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Modal, TouchableOpacity, ScrollView, Switch as RNSwitch, Alert } from 'react-native'
+import { View, StyleSheet, Modal, TouchableOpacity, ScrollView, Switch as RNSwitch, Alert, Linking } from 'react-native'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
 import { useTranslate } from '../../../hooks/useTranslate'
@@ -12,6 +12,7 @@ import { usePredictionEngineState } from '../../../contexts/PredictionProvider'
 import { getNextPredictedPeriodDate } from '../../../services/notificationScheduler'
 import {
   cancelScheduledPeriodReminderNotification,
+  requestAppNotificationPermission,
   scheduleDebugPeriodReminderNotification,
   syncPeriodReminderLocalNotification,
 } from '../../../services/periodReminderLocalNotification'
@@ -47,6 +48,26 @@ export const NotificationsPreferencesModal = ({
 
   const handleSetNotifications = async () => {
     if (!selectedReminder) return
+
+    const hasPermission = await requestAppNotificationPermission()
+
+    if (!hasPermission) {
+      Alert.alert(
+        'Allow notifications first',
+        'Turn on notifications in your device settings before enabling period reminders.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Open settings',
+            onPress: () => Linking.openSettings(),
+          },
+        ],
+      )
+      return
+    }
 
     dispatch(setNotificationsEnabled(true))
     dispatch(setNotificationReminder(selectedReminder))

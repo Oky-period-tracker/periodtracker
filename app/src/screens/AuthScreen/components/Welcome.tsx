@@ -2,16 +2,23 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { FontAwesome } from '@expo/vector-icons'
 import { Swiper } from '../../../components/Swiper'
-import { Button } from '../../../components/Button'
 import { useAuthMode } from '../AuthModeContext'
 import { UserIcon } from '../../../components/icons/UserIcon'
 import { WelcomeCard } from './WelcomeCard'
+import { NotificationCard } from './NotificationCard'
 import { useDispatch } from 'react-redux'
 import { setHasOpened } from '../../../redux/actions'
 import { FullScreen } from '../../../components/Screen'
 
 export const Welcome = () => {
   const [index, setIndex] = React.useState(0)
+  const dispatch = useDispatch()
+  const { setAuthMode } = useAuthMode()
+
+  const completeWelcomeFlow = React.useCallback(() => {
+    dispatch(setHasOpened(true))
+    setAuthMode('start')
+  }, [dispatch, setAuthMode])
 
   const pages = [
     <WelcomeCard
@@ -29,43 +36,16 @@ export const Welcome = () => {
       subtitle={'friend'}
       description={'friends_onboard'}
     />,
+    <NotificationCard onYes={completeWelcomeFlow} onNo={completeWelcomeFlow} />,
   ]
 
   return (
     <FullScreen>
-      <Swiper
-        index={index}
-        setIndex={setIndex}
-        pages={pages}
-        renderActionRight={renderActionRight}
-      />
+      <Swiper index={index} setIndex={setIndex} pages={pages} />
     </FullScreen>
-  )
-}
-
-const renderActionRight = (currentPage: number, total: number) => {
-  const dispatch = useDispatch()
-  const { setAuthMode } = useAuthMode()
-
-  const onPress = () => {
-    dispatch(setHasOpened(true))
-    setAuthMode('start')
-  }
-
-  const isLastPage = currentPage === total - 1
-  const opacity = isLastPage ? 1 : 0
-
-  return (
-    <Button onPress={onPress} style={[styles.button, { opacity }]} status={'secondary'}>
-      continue
-    </Button>
   )
 }
 
 const ICON_SIZE = 40
 
-const styles = StyleSheet.create({
-  button: {
-    marginLeft: 'auto',
-  },
-})
+const styles = StyleSheet.create({})

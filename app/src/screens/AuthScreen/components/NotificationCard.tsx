@@ -2,11 +2,9 @@ import React from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
-import { useTranslate } from '../../../hooks/useTranslate'
 import { FontAwesome } from '@expo/vector-icons'
-import { DisplayButton } from '../../../components/Button'
-import { requestPermission } from '../../../hooks/useMessaging'
 import { NotificationsPreferencesModal } from '../../SettingsScreen/components/NotificationsPreferencesModal'
+import { requestAppNotificationPermission } from '../../../services/periodReminderLocalNotification'
 
 interface NotificationCardProps {
   onYes: () => void
@@ -14,64 +12,72 @@ interface NotificationCardProps {
 }
 
 export const NotificationCard = ({ onYes, onNo }: NotificationCardProps) => {
-  const { palette, backgroundColor } = useColor()
-  const t = useTranslate()
+  const { backgroundColor } = useColor()
   const [loading, setLoading] = React.useState(false)
   const [modalVisible, setModalVisible] = React.useState(false)
 
   const handleYes = async () => {
     setLoading(true)
+
     try {
-      // Request notification permission from user when they click Yes
-      await requestPermission()
+      await requestAppNotificationPermission()
     } catch (error) {
-      // Error requesting notification permission
+      // Allow the user to continue configuring period reminders even if the OS prompt fails.
     } finally {
       setLoading(false)
-      // Open the reminder preferences modal
       setModalVisible(true)
     }
   }
 
   const handleModalClose = () => {
     setModalVisible(false)
-    // After modal closes, proceed to next step (Sign Up/Log In)
     onYes()
   }
 
   return (
     <View style={[styles.page, { backgroundColor }]}>
-      <View style={styles.content}>
-        <DisplayButton status={'primary'} style={styles.icon}>
-          <FontAwesome name={'bell'} size={40} color="white" />
-        </DisplayButton>
+      <View style={styles.card}>
+        <View style={styles.content}>
+          <View style={styles.artworkContainer}>
+            <View style={[styles.dot, styles.dotGreen]} />
+            <View style={[styles.dot, styles.dotPink]} />
+            <View style={[styles.dot, styles.dotYellow]} />
 
-        <Text style={styles.title}>{t('notification_permission_title')}</Text>
-        <Text style={styles.description}>{t('notification_permission_description')}</Text>
+            <View style={styles.avatarBubble}>
+              <View style={styles.avatarInnerCircle}>
+                <FontAwesome name={'user'} size={34} color={'#5c3f99'} />
+              </View>
+            </View>
+          </View>
 
-        <View style={styles.footer}>
-          <Text style={[styles.hint, { color: '#000' }]}>
-            {t('notification_permission_hint')}
+          <Text style={styles.title}>Turn on notifications{`\n`}and reminders?</Text>
+          <Text style={styles.description}>
+            Oky can send you gentle reminders to help you follow your period and take care of
+            yourself.
           </Text>
-        </View>
-      </View>
 
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={styles.buttonLeft}
-          onPress={onNo}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>{t('no')}</Text>
-        </TouchableOpacity>
-        <View style={styles.buttonDivider} />
-        <TouchableOpacity
-          style={styles.buttonRight}
-          onPress={handleYes}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>{t('yes')}</Text>
-        </TouchableOpacity>
+          <View style={styles.footer}>
+            <Text style={styles.hint}>You can always change your mind in the Settings page</Text>
+          </View>
+        </View>
+
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.buttonLeft}
+            onPress={onNo}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>no</Text>
+          </TouchableOpacity>
+          <View style={styles.buttonDivider} />
+          <TouchableOpacity
+            style={styles.buttonRight}
+            onPress={handleYes}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>yes</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <NotificationsPreferencesModal
@@ -84,75 +90,141 @@ export const NotificationCard = ({ onYes, onNo }: NotificationCardProps) => {
 
 const styles = StyleSheet.create({
   page: {
-    maxWidth: 800,
-    borderRadius: 20,
     flex: 1,
     width: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 0,
+    paddingHorizontal: 4,
+  },
+  card: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 16,
+    backgroundColor: '#ffffff',
     overflow: 'hidden',
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 24,
-    paddingVertical: 24,
+    paddingTop: 52,
+    paddingBottom: 20,
   },
-  icon: {
-    height: 80,
-    width: 80,
-    marginBottom: 24,
+  artworkContainer: {
+    width: 190,
+    height: 105,
+    marginBottom: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarBubble: {
+    width: 86,
+    height: 86,
+    borderRadius: 43,
+    backgroundColor: '#f8f8f8',
+    borderWidth: 1,
+    borderColor: '#d9d9d9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  avatarInnerCircle: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dot: {
+    position: 'absolute',
+    borderRadius: 999,
+  },
+  dotGreen: {
+    width: 56,
+    height: 56,
+    right: 36,
+    top: 12,
+    backgroundColor: '#a9d533',
+    zIndex: 1,
+  },
+  dotPink: {
+    width: 46,
+    height: 46,
+    right: 0,
+    top: 30,
+    backgroundColor: '#e55ea4',
+    zIndex: 1,
+  },
+  dotYellow: {
+    width: 30,
+    height: 30,
+    right: 46,
+    bottom: 8,
+    backgroundColor: '#ffd400',
+    zIndex: 2,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    lineHeight: 30,
+    fontWeight: '700',
+    marginBottom: 18,
     textAlign: 'center',
+    color: '#121212',
   },
   description: {
-    fontSize: 16,
+    fontSize: 14,
+    lineHeight: 22,
     textAlign: 'center',
-    marginBottom: 24,
+    marginBottom: 18,
     fontWeight: '400',
+    color: '#1e1e1e',
   },
   footer: {
-    marginTop: 16,
+    marginTop: 2,
+    paddingHorizontal: 8,
   },
   hint: {
     fontSize: 14,
+    lineHeight: 22,
     textAlign: 'center',
-    fontStyle: 'italic',
+    color: '#1e1e1e',
   },
   buttonsContainer: {
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#ececec',
+    borderTopWidth: 1,
+    borderTopColor: '#d8d8d8',
   },
   buttonLeft: {
     flex: 1,
-    paddingVertical: 16,
+    minHeight: 72,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#ececec',
   },
   buttonRight: {
     flex: 1,
-    paddingVertical: 16,
+    minHeight: 72,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#ececec',
   },
   buttonDivider: {
     width: 1,
-    backgroundColor: '#d0d0d0',
+    backgroundColor: '#cfcfcf',
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '700',
     textAlign: 'center',
-    color: '#333',
+    color: '#111',
   },
 })

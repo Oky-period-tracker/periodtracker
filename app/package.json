@@ -15,6 +15,7 @@
     "remove-unused-assets": "ts-node --transpile-only removeUnusedAssets.ts",
     "rm": "shx rm -rf node_modules",
     "postinstall": "patch-package",
+    "eas-build-pre-install": "bash -c \"[ ! -z \\\"$EAS_BUILD_NPM_CACHE_URL\\\" ] && sed -i -e \\\"s#https://registry.yarnpkg.com#$EAS_BUILD_NPM_CACHE_URL#g\\\" yarn.lock\" || true",
     "test": "jest"
   },
   "dependencies": {

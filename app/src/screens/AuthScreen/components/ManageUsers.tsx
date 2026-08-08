@@ -31,7 +31,7 @@ export const ManageUsers = () => {
   return (
     <>
       <AuthHeader title={'manage_users'} />
-      <AuthCardBody>
+      <AuthCardBody style={styles.cardBody}>
         {isLoading ? (
           <ActivityIndicator color={palette.secondary.base} style={styles.loading} />
         ) : accounts.length === 0 ? (
@@ -73,11 +73,14 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     fontSize: 16,
   },
+  cardBody: {
+    height: 320,
+  },
   loading: {
     marginVertical: 20,
   },
   usersList: {
-    maxHeight: 320,
+    flex: 1,
   },
   userRow: {
     flexDirection: 'row',

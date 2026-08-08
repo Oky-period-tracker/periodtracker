@@ -2,9 +2,9 @@ import React from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
-import { FontAwesome } from '@expo/vector-icons'
 import { NotificationsPreferencesModal } from '../../SettingsScreen/components/NotificationsPreferencesModal'
 import { requestAppNotificationPermission } from '../../../services/periodReminderLocalNotification'
+import { getStandardAvatarSvg } from '../../../resources/assets/friendAssets'
 
 interface NotificationCardProps {
   onYes: () => void
@@ -15,6 +15,7 @@ export const NotificationCard = ({ onYes, onNo }: NotificationCardProps) => {
   const { backgroundColor } = useColor()
   const [loading, setLoading] = React.useState(false)
   const [modalVisible, setModalVisible] = React.useState(false)
+  const AnuAvatarSvg = getStandardAvatarSvg('julia')
 
   const handleYes = async () => {
     setLoading(true)
@@ -45,12 +46,14 @@ export const NotificationCard = ({ onYes, onNo }: NotificationCardProps) => {
 
             <View style={styles.avatarBubble}>
               <View style={styles.avatarInnerCircle}>
-                <FontAwesome name={'user'} size={34} color={'#5c3f99'} />
+                {AnuAvatarSvg
+                  ? React.createElement(AnuAvatarSvg, { width: 48, height: 66 })
+                  : null}
               </View>
             </View>
           </View>
 
-          <Text style={styles.title}>Turn on notifications{`\n`}and reminders?</Text>
+          <Text style={styles.title}>Turn on notifications and reminders?</Text>
           <Text style={styles.description}>
             Oky can send you gentle reminders to help you follow your period and take care of
             yourself.
@@ -94,12 +97,16 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: 0,
   },
   card: {
     width: '100%',
+    alignSelf: 'stretch',
     height: '100%',
-    borderRadius: 16,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     backgroundColor: '#ffffff',
     overflow: 'hidden',
   },
@@ -176,6 +183,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 18,
     textAlign: 'center',
+    alignSelf: 'center',
+    width: '92%',
     color: '#121212',
   },
   description: {
@@ -199,20 +208,21 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: 'row',
     width: '100%',
+    height: 82,
     backgroundColor: '#ececec',
     borderTopWidth: 1,
     borderTopColor: '#d8d8d8',
   },
   buttonLeft: {
     flex: 1,
-    minHeight: 72,
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ececec',
   },
   buttonRight: {
     flex: 1,
-    minHeight: 72,
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ececec',

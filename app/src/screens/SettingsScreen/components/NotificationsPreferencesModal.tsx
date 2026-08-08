@@ -1,8 +1,6 @@
 import React from 'react'
-import { View, StyleSheet, Modal, TouchableOpacity, ScrollView, Switch as RNSwitch, Alert, Linking } from 'react-native'
+import { View, StyleSheet, Modal, TouchableOpacity, Switch as RNSwitch, Alert, Linking } from 'react-native'
 import { Text } from '../../../components/Text'
-import { useColor } from '../../../hooks/useColor'
-import { useTranslate } from '../../../hooks/useTranslate'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useDispatch } from 'react-redux'
 import { useSelector } from '../../../redux/useSelector'
@@ -13,7 +11,6 @@ import { getNextPredictedPeriodDate } from '../../../services/notificationSchedu
 import {
   cancelScheduledPeriodReminderNotification,
   requestAppNotificationPermission,
-  scheduleDebugPeriodReminderNotification,
   syncPeriodReminderLocalNotification,
 } from '../../../services/periodReminderLocalNotification'
 
@@ -26,8 +23,6 @@ export const NotificationsPreferencesModal = ({
   visible,
   onClose,
 }: NotificationsPreferencesModalProps) => {
-  const { palette, backgroundColor } = useColor()
-  const t = useTranslate()
   const dispatch = useDispatch()
   const savedReminderFrequency = useSelector(notificationReminderFrequencySelector)
   const predictionFullState = usePredictionEngineState()
@@ -56,14 +51,8 @@ export const NotificationsPreferencesModal = ({
         'Allow notifications first',
         'Turn on notifications in your device settings before enabling period reminders.',
         [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Open settings',
-            onPress: () => Linking.openSettings(),
-          },
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Open settings', onPress: () => Linking.openSettings() },
         ],
       )
       return
@@ -80,8 +69,6 @@ export const NotificationsPreferencesModal = ({
         reminderFrequency: selectedReminder,
         predictedPeriodDate: nextPredictedPeriodDate,
       })
-    } catch (error) {
-      // Do not block closing the modal if scheduling fails in the background.
     } finally {
       onClose()
     }
@@ -92,130 +79,68 @@ export const NotificationsPreferencesModal = ({
     dispatch(setNotificationReminder(null))
 
     await cancelScheduledPeriodReminderNotification()
-
     onClose()
-  }
-
-  const handleDebugNotification = async () => {
-    try {
-      const result = await scheduleDebugPeriodReminderNotification(2)
-
-      if (!result) {
-        Alert.alert(
-          'Debug reminder not scheduled',
-          'Notification permission is not granted. Please allow notifications in system settings and try again.',
-        )
-        return
-      }
-
-      Alert.alert(
-        'Debug reminder scheduled',
-        `Notification ID: ${result.notificationId}\nScheduled for: ${result.scheduledFor}`,
-      )
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error while scheduling debug notification.'
-      Alert.alert(
-        'Debug reminder failed',
-        errorMessage,
-      )
-    }
   }
 
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={[styles.modal, { backgroundColor }]}>
-          {/* Close button and reminder options */}
+        <View style={styles.modal}>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <FontAwesome name="times" size={24} color={palette.primary.base} />
+            <FontAwesome name="times-circle" size={24} color="#9BC53D" />
           </TouchableOpacity>
 
-          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-            <Text style={[styles.title, { color: palette.danger.text }]}>
-              {t('notification_preference_title')}
-            </Text>
+          <Text style={styles.title}>
+            Choose how often you want your reminders before your period is likely to start
+          </Text>
 
-            <Text style={[styles.subtitle, { color: palette.basic.text }]}>
-              {t('notification_preference_subtitle')}
-            </Text>
+          <Text style={styles.subtitle}>Set yourself reminders for</Text>
 
-            {/* Select reminder frequency: 1, 3, or 5 days before period */}
-            <View style={styles.remindersContainer}>
-              <View style={styles.reminderRow}>
-                <Text style={[styles.reminderText, { color: palette.basic.text }]}>
-                  {t('notification_5_days')}
-                </Text>
-                <RNSwitch
-                  value={selectedReminder === 'fiveDays'}
-                  onValueChange={() => handleReminderToggle('fiveDays')}
-                  trackColor={{ false: palette.basic.dark, true: palette.primary.base }}
-                  thumbColor={selectedReminder === 'fiveDays' ? palette.primary.base : palette.basic.base}
-                />
-              </View>
-
-              {/* 3 Days Before */}
-              <View style={styles.reminderRow}>
-                <Text style={[styles.reminderText, { color: palette.basic.text }]}>
-                  {t('notification_3_days')}
-                </Text>
-                <RNSwitch
-                  value={selectedReminder === 'threeDays'}
-                  onValueChange={() => handleReminderToggle('threeDays')}
-                  trackColor={{ false: palette.basic.dark, true: palette.primary.base }}
-                  thumbColor={selectedReminder === 'threeDays' ? palette.primary.base : palette.basic.base}
-                />
-              </View>
-
-              <View style={styles.reminderRow}>
-                <Text style={[styles.reminderText, { color: palette.basic.text }]}>
-                  {t('notification_1_day')}
-                </Text>
-                <RNSwitch
-                  value={selectedReminder === 'oneDay'}
-                  onValueChange={() => handleReminderToggle('oneDay')}
-                  trackColor={{ false: palette.basic.dark, true: palette.primary.base }}
-                  thumbColor={selectedReminder === 'oneDay' ? palette.primary.base : palette.basic.base}
-                />
-              </View>
+          <View style={styles.remindersContainer}>
+            <View style={styles.reminderRow}>
+              <Text style={styles.reminderText}>5 days before</Text>
+              <RNSwitch
+                value={selectedReminder === 'fiveDays'}
+                onValueChange={() => handleReminderToggle('fiveDays')}
+                trackColor={{ false: '#D6D6D6', true: '#9BC53D' }}
+                thumbColor="#FFFFFF"
+              />
             </View>
-          </ScrollView>
+
+            <View style={styles.reminderRow}>
+              <Text style={styles.reminderText}>3 days before</Text>
+              <RNSwitch
+                value={selectedReminder === 'threeDays'}
+                onValueChange={() => handleReminderToggle('threeDays')}
+                trackColor={{ false: '#D6D6D6', true: '#9BC53D' }}
+                thumbColor="#FFFFFF"
+              />
+            </View>
+
+            <View style={styles.reminderRow}>
+              <Text style={styles.reminderText}>1 day before</Text>
+              <RNSwitch
+                value={selectedReminder === 'oneDay'}
+                onValueChange={() => handleReminderToggle('oneDay')}
+                trackColor={{ false: '#D6D6D6', true: '#9BC53D' }}
+                thumbColor="#FFFFFF"
+              />
+            </View>
+          </View>
 
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
-              style={[
-                styles.button,
-                { backgroundColor: isSetNotificationDisabled ? palette.basic.dark : palette.secondary.base },
-                isSetNotificationDisabled && styles.disabledButton,
-              ]}
+              style={[styles.button, isSetNotificationDisabled && styles.disabledButton]}
               onPress={handleSetNotifications}
               disabled={isSetNotificationDisabled}
             >
-              <Text style={styles.buttonText}>
-                {t('notification_set_button')}
-              </Text>
+              <Text style={styles.buttonText}>Set notifications</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.disableButton, { borderColor: palette.danger.base, borderWidth: 1 }]}
-              onPress={handleDisableNotifications}
-            >
-              <Text style={[styles.buttonText, { color: palette.danger.base }]}>
-                {t('disable')}
-              </Text>
+
+            <TouchableOpacity style={styles.disableButton} onPress={handleDisableNotifications}>
+              <Text style={styles.disableButtonText}>Disable</Text>
             </TouchableOpacity>
           </View>
-
-          {__DEV__ && (
-            <View style={styles.debugContainer}>
-              <TouchableOpacity
-                style={[styles.debugButton, { borderColor: palette.primary.base }]}
-                onPress={handleDebugNotification}
-              >
-                <Text style={[styles.debugButtonText, { color: palette.primary.base }]}> 
-                  Debug: outer notification in 2 min
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
       </View>
     </Modal>
@@ -230,89 +155,94 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modal: {
-    borderRadius: 20,
-    padding: 24,
-    width: '85%',
-    maxHeight: '80%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    paddingTop: 28,
+    paddingBottom: 16,
+    paddingHorizontal: 18,
+    width: '86%',
   },
   closeButton: {
     position: 'absolute',
-    top: 12,
-    right: 12,
+    top: 10,
+    right: 10,
     zIndex: 10,
-    padding: 8,
-  },
-  content: {
-    marginTop: 16,
+    padding: 4,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 16,
+    fontSize: 17,
+    fontWeight: '700',
+    marginTop: 24,
+    marginBottom: 18,
     textAlign: 'center',
     lineHeight: 24,
+    color: '#EB3F87',
+    alignSelf: 'center',
+    width: '94%',
   },
   subtitle: {
-    fontSize: 14,
-    marginBottom: 20,
-    textAlign: 'center',
+    fontSize: 13,
+    fontWeight: '700',
+    textAlign: 'left',
+    marginBottom: 6,
+    color: '#242424',
   },
   remindersContainer: {
-    marginBottom: 24,
+    marginBottom: 14,
   },
   reminderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 7,
   },
   reminderText: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '500',
+    color: '#333333',
   },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 12,
-    marginTop: 24,
+    marginTop: 4,
     width: '100%',
+    gap: 10,
   },
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FF9800',
+    minHeight: 42,
     flex: 1,
-    minHeight: 48,
-  },
-  disableButton: {
-    backgroundColor: 'transparent',
   },
   disabledButton: {
-    opacity: 0.6,
+    opacity: 0.45,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
   },
-  debugContainer: {
-    width: '100%',
-    marginTop: 12,
-  },
-  debugButton: {
-    borderWidth: 1,
-    borderRadius: 14,
-    paddingVertical: 10,
+  disableButton: {
+    paddingVertical: 9,
     paddingHorizontal: 12,
-    alignItems: 'center',
+    borderRadius: 12,
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#EB3F87',
+    minHeight: 40,
+    flex: 1,
   },
-  debugButtonText: {
-    fontSize: 12,
+  disableButtonText: {
+    color: '#EB3F87',
+    fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
   },

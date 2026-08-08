@@ -105,8 +105,8 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       component: <ArrowRight color={palette.basic.base} />,
     },
     {
-      title: 'Notifications',
-      description: 'Manage reminder preferences',
+      title: 'Period Notifications & Reminders',
+      description: 'Oky will send you messages to remind\nyou to log in to Oky and to take care of yourself',
       onPress: () => setNotificationsModalVisible(true),
       component: <ArrowRight color={palette.basic.base} />,
     },

@@ -31,7 +31,7 @@ export const JourneyReview = () => {
 
     const periodLength = parseInt(state.periodLength)
     const cycleLengthDays = parseInt(state.cycleLength) * 7
-    const cycleLength = cycleLengthDays + periodLength
+    const cycleLength = cycleLengthDays
 
     const answers = {
       isActive: state.isActive,

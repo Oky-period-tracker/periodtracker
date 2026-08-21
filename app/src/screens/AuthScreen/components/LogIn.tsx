@@ -16,19 +16,22 @@ import {
   loginOnlineToAccount,
 } from '../../../services/auth/accountFlows'
 import { verifyPassword } from '../../../services/auth/credentialVault'
+import { useAuthMode } from '../AuthModeContext'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
   const [wasPreLoggedIn] = React.useState(!!user)
   const { setIsLoggedIn } = useAuth()
+  const { loginName } = useAuthMode()
 
-  const [name, setName] = React.useState(user ? user.name : '')
+  const [name, setName] = React.useState(user ? user.name : loginName)
   const [password, setPassword] = React.useState('')
 
   const [errorsVisible, setErrorsVisible] = React.useState(false)
   const { errors } = validateCredentials(name, password)
 
   const [success, setSuccess] = React.useState<boolean | null>(null)
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false)
   const [margin, setMargin] = React.useState(0)
 
   // Clear a stale "incorrect" message as soon as the user edits either field.
@@ -47,32 +50,32 @@ export const LogIn = () => {
   }, [])
 
   const onConfirm = async () => {
+    if (isLoggingIn) return
     if (errors.length) {
       setErrorsVisible(true)
       return
     }
 
     const formattedPassword = formatPassword(password)
+    setIsLoggingIn(true)
 
-    if (user) {
-      // Passcode re-entry for the account already loaded into the active store. Verify against
-      // the credential vault (the source of truth, kept current by offline password resets),
-      // falling back to the plaintext stored on the user for any pre-vault account.
-      const ok =
-        (await verifyPassword(user.id, formattedPassword)) || user.password === formattedPassword
-      if (ok) {
-        setIsLoggedIn(true)
+    try {
+      if (user) {
+        // Passcode re-entry for the account already loaded into the active store. Verify against
+        // the credential vault (the source of truth, kept current by offline password resets),
+        // falling back to the plaintext stored on the user for any pre-vault account.
+        const ok =
+          (await verifyPassword(user.id, formattedPassword)) || user.password === formattedPassword
+        if (ok) {
+          setIsLoggedIn(true)
+          return
+        }
+        setSuccess(false)
         return
       }
-      setSuccess(false)
-      return
-    }
 
-    // Fresh login: try a locally registered account first (works offline), then fall back to an
-    // online login if no local account matches this name. The online path registers the account
-    // and gives it its own store, so it joins the account switcher instead of landing in the
-    // shared anon store.
-    try {
+      // Fresh login: try a locally registered account first (works offline), then fall back to an
+      // online login if no local account matches this name.
       const loggedIn =
         (await loginToAccount(name, formattedPassword)) ||
         (await loginOnlineToAccount(name, formattedPassword))
@@ -83,6 +86,8 @@ export const LogIn = () => {
       setSuccess(false)
     } catch {
       setSuccess(false)
+    } finally {
+      setIsLoggingIn(false)
     }
   }
 
@@ -124,10 +129,15 @@ export const LogIn = () => {
           errorKeys={['password_too_short']}
           errorsVisible={errorsVisible}
         />
-        {success === false && <ErrorText>password_incorrect</ErrorText>}
+        {isLoggingIn && <Text style={styles.status}>logging_in</Text>}
+        {success === false && <ErrorText>incorrect_username_or_passcode</ErrorText>}
       </AuthCardBody>
       <Hr />
-      <TouchableOpacity onPress={onConfirm} style={[styles.confirm, { marginBottom: margin }]}>
+      <TouchableOpacity
+        onPress={onConfirm}
+        disabled={isLoggingIn}
+        style={[styles.confirm, { marginBottom: margin }]}
+      >
         <Text style={styles.confirmText}>confirm</Text>
       </TouchableOpacity>
     </>
@@ -156,5 +166,8 @@ const styles = StyleSheet.create({
   confirmText: {
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  status: {
+    textAlign: 'center',
   },
 })

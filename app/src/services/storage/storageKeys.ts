@@ -15,6 +15,8 @@ export const USERS_REGISTRY_KEY = 'metadata:oky:users'
 
 // Encrypted per-user credential record (hashes plus sync secrets).
 export const credentialKey = (userId: string): string => `metadata:oky:cred:${userId}`
+// Encrypted, retryable server snapshot for an account.
+export const syncSnapshotKey = (userId: string): string => `metadata:oky:sync:${userId}`
 
 // Stable per-install device id, used to scope the per-device account limit.
 export const DEVICE_ID_KEY = 'metadata:oky:deviceId'

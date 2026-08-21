@@ -27,18 +27,22 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
     setIsLoggedIn(false)
   }
 
-  const deleteAccount = () => {
+  const deleteAccount = async () => {
     if (!currentUser) {
       return
     }
     // Leave the logged-in gate first (AuthProvider lives above the per-user store), then tear the
     // account down (server delete + registry entry + encryption key + credential vault + store
     // blob) outside the saga, mirroring the AuthScreen delete flow.
-    setIsLoggedIn(false)
-    void deleteActiveAccount({
-      name: currentUser.name,
-      password: currentUser.password,
-    })
+    try {
+      await deleteActiveAccount({
+        name: currentUser.name,
+        password: currentUser.password,
+      })
+      setIsLoggedIn(false)
+    } catch {
+      Alert.alert(translate('error'), translate('delete_account_fail'))
+    }
   }
 
   const logOutAlert = () => {
@@ -70,7 +74,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
         },
         {
           text: translate('yes'),
-          onPress: deleteAccount,
+          onPress: () => void deleteAccount(),
         },
       ],
       { cancelable: false },

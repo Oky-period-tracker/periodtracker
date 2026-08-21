@@ -10,7 +10,16 @@ jest.mock('../../../../src/redux/storeManager', () => ({
   purgeUserStorage: jest.fn(),
 }))
 
-import { addUser, listUsers, userCount, removeUser, getUser, markSynced } from '../../../../src/services/userMetadata/registry'
+import {
+  addUser,
+  listUsers,
+  userCount,
+  removeUser,
+  getUser,
+  markSynced,
+  markPendingDelete,
+  listAllUsers,
+} from '../../../../src/services/userMetadata/registry'
 
 const makeUser = (id: string) => ({
   id,
@@ -62,5 +71,14 @@ describe('account registry', () => {
     await removeUser('u0')
 
     expect(await getUser('u0')).toBeNull()
+  })
+
+  it('hides pending deletions while retaining their retry record', async () => {
+    await addUser(makeUser('u0'))
+    await markPendingDelete('u0')
+
+    expect(await listUsers()).toEqual([])
+    expect(await userCount()).toBe(0)
+    expect(await listAllUsers()).toHaveLength(1)
   })
 })

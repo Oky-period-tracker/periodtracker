@@ -1,11 +1,13 @@
 import {
   deleteActiveAccount,
+  deleteAccountFromLogin,
   loginOnlineToAccount,
 } from '../../../../src/services/auth/accountFlows'
 import * as registry from '../../../../src/services/userMetadata/registry'
 import { httpClient } from '../../../../src/services/HttpClient'
 import { deleteEncryptionKey } from '../../../../src/services/auth/encryptionKeys'
 import { purgeUserStorage, switchToUser } from '../../../../src/redux/storeManager'
+import { verifyPassword } from '../../../../src/services/auth/credentialVault'
 
 jest.mock('../../../../src/redux/storeManager', () => ({
   getActiveBundle: jest.fn(() => ({ userId: 'u1' })),
@@ -16,6 +18,7 @@ jest.mock('../../../../src/redux/storeManager', () => ({
 jest.mock('../../../../src/services/userMetadata/registry')
 jest.mock('../../../../src/services/auth/credentialVault', () => ({
   saveCredential: jest.fn(),
+  verifyPassword: jest.fn(),
   deleteCredential: jest.fn(),
 }))
 jest.mock('../../../../src/services/auth/encryptionKeys', () => ({
@@ -37,6 +40,49 @@ jest.mock('../../../../src/services/deviceId', () => ({ getDeviceId: jest.fn(() 
 jest.mock('../../../../src/services/auth/pendingLocale', () => ({
   consumePendingLocale: jest.fn(() => null),
 }))
+
+describe('deleteAccountFromLogin', () => {
+  beforeEach(() => jest.clearAllMocks())
+
+  it('deletes a verified local-only account without contacting the server', async () => {
+    ;(registry.findUserByName as jest.Mock).mockResolvedValue({
+      id: 'u1',
+      name: 'Ana',
+      isPendingSync: true,
+    })
+    ;(verifyPassword as jest.Mock).mockResolvedValue(true)
+
+    await expect(deleteAccountFromLogin('Ana', 'formatted')).resolves.toBe('deleted')
+    expect(httpClient.deleteUserFromPassword).not.toHaveBeenCalled()
+    expect(registry.removeUser).toHaveBeenCalledWith('u1')
+  })
+
+  it('queues a verified synced account when offline', async () => {
+    ;(registry.findUserByName as jest.Mock).mockResolvedValue({
+      id: 'u1',
+      name: 'Ana',
+      isPendingSync: false,
+    })
+    ;(verifyPassword as jest.Mock).mockResolvedValue(true)
+    ;(httpClient.deleteUserFromPassword as jest.Mock).mockRejectedValue(new Error('offline'))
+
+    await expect(deleteAccountFromLogin('Ana', 'formatted')).resolves.toBe('queued')
+    expect(registry.markPendingDelete).toHaveBeenCalledWith('u1')
+    expect(purgeUserStorage).toHaveBeenCalledWith('u1')
+    expect(registry.removeUser).not.toHaveBeenCalled()
+  })
+
+  it('deletes an online-only account through the server', async () => {
+    ;(registry.findUserByName as jest.Mock).mockResolvedValue(null)
+    ;(httpClient.deleteUserFromPassword as jest.Mock).mockResolvedValue(undefined)
+
+    await expect(deleteAccountFromLogin('Ana', 'formatted')).resolves.toBe('deleted')
+    expect(httpClient.deleteUserFromPassword).toHaveBeenCalledWith({
+      name: 'Ana',
+      password: 'formatted',
+    })
+  })
+})
 
 describe('deleteActiveAccount', () => {
   beforeEach(() => jest.clearAllMocks())

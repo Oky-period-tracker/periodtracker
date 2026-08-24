@@ -6,6 +6,7 @@ jest.mock('../../../../../src/hooks/useTranslate', () => ({
   useTranslate: jest.fn(() => (key: string) => {
     const translations: Record<string, string> = {
       forgot_password: 'forgot_password',
+      delete_account: 'delete_account',
       manage_users: 'manage_users',
     }
     return translations[key] || key
@@ -16,7 +17,7 @@ describe('<AuthLinks />', () => {
   it('renders the component', () => {
     render(<AuthLinks />)
     expect(screen.getByText('forgot_password')).toBeTruthy()
-    expect(screen.queryByText('delete_account')).toBeNull()
+    expect(screen.getByText('delete_account')).toBeTruthy()
     expect(screen.getByText('manage_users')).toBeTruthy()
   })
 })

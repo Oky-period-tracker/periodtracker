@@ -330,6 +330,39 @@ export async function deleteAccount(userId: string): Promise<void> {
   await switchToUser(ANON_USER_ID)
 }
 
+export async function deleteAccountFromLogin(
+  name: string,
+  password: string,
+): Promise<'deleted' | 'queued'> {
+  const account = await registry.findUserByName(name)
+
+  if (!account) {
+    await httpClient.deleteUserFromPassword({ name, password })
+    return 'deleted'
+  }
+  if (!(await verifyPassword(account.id, password))) throw new Error('invalid_credentials')
+  if (account.isPendingSync) {
+    await deleteAccount(account.id)
+    return 'deleted'
+  }
+
+  await saveCredential({ userId: account.id, password, keepPlainForSync: true })
+  try {
+    await httpClient.deleteUserFromPassword({ name, password })
+  } catch (error) {
+    const status = (error as { response?: { status?: number } })?.response?.status
+    if (status !== 404) {
+      await registry.markPendingDelete(account.id)
+      await purgeUserStorage(account.id)
+      await switchToUser(ANON_USER_ID)
+      void syncAllAccounts()
+      return 'queued'
+    }
+  }
+  await deleteAccount(account.id)
+  return 'deleted'
+}
+
 // Delete the currently active (logged-in) account. Best-effort server delete, then full local
 // teardown (registry entry, encryption key, credential vault, store blob) and return to anon.
 // Lives here, outside the per-user saga, because the store teardown cancels that saga; the in-app

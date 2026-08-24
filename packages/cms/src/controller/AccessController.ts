@@ -17,6 +17,7 @@ export class AccessController {
       }
       return
     })
+    request.session = null
     response.redirect('/login')
   }
 }

@@ -129,6 +129,7 @@ withRetry(() => createConnection(ormconfig), {
       ),
       defaultLocale,
       cookie: 'i18n',
+      updateFiles: false,
     })
 
     app.use(i18n.init)

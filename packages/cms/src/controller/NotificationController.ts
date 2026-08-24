@@ -7,6 +7,12 @@ import { env } from '../env'
 import { logger } from '../logger'
 import { withTimeout, DEFAULT_EXTERNAL_TIMEOUT } from '../helpers/timeout'
 import { withRetry } from '../helpers/retry'
+import {
+  NOTIFICATION_STATUS,
+  describeDeliveryError,
+  isDeliveryOutcomeUnknown,
+  isRetriableFirebaseError,
+} from '../helpers/notificationDelivery'
 
 export class NotificationController {
   private notificationRepository = getRepository(Notification)
@@ -16,7 +22,7 @@ export class NotificationController {
     return this.notificationRepository.findOne({
       where: {
         lang: request.params.lang,
-        status: 'sent',
+        status: NOTIFICATION_STATUS.SENT,
       },
     })
   }
@@ -61,30 +67,99 @@ export class NotificationController {
     }
   }
 
+  /**
+   * Broadcasts a notification and records what actually happened.
+   *
+   * The record is written *before* contacting Firebase so that a crash during
+   * the send can never leave a delivered alert with no trace in the CMS — an
+   * admin seeing nothing would simply send it again, notifying everyone twice.
+   * The row starts as `unknown` and is only promoted to `sent` once Firebase
+   * has confirmed it.
+   */
   async save(request: Request, response: Response, next: NextFunction) {
-    try {
-      const notificationToAdd = request.body
+    const lang = request.user.lang
+    const title = typeof request.body.title === 'string' ? request.body.title.trim() : ''
+    const content = typeof request.body.content === 'string' ? request.body.content.trim() : ''
 
-      await this.firebaseSend({
-        title: request.body.title,
-        body: request.body.content,
-        lang: request.user.lang,
-      })
-      notificationToAdd.date_sent = new Date().getTime()
-      notificationToAdd.status = 'sent'
-      notificationToAdd.lang = request.user.lang
-      await this.notificationRepository.save(notificationToAdd)
-      logger.info('Notification sent and saved', {
-        title: request.body.title,
-        lang: request.user.lang,
-      })
-      return notificationToAdd
+    if (!title || !content) {
+      if (!response.headersSent) {
+        response.status(400).send({
+          status: NOTIFICATION_STATUS.FAILED,
+          error: 'A title and a message are required to send a notification.',
+        })
+      }
+      return
+    }
+
+    let notification: Notification
+    try {
+      notification = await this.notificationRepository.save(
+        this.notificationRepository.create({
+          title,
+          content,
+          lang,
+          date_sent: String(Date.now()),
+          status: NOTIFICATION_STATUS.UNKNOWN,
+        }),
+      )
     } catch (error) {
-      logger.error('NotificationController.save failed', {
+      logger.error('NotificationController.save could not record the attempt', {
+        title,
+        lang,
         message: error?.message,
         stack: error?.stack,
       })
       throw error
+    }
+
+    try {
+      const messageId = await this.firebaseSend({ title, body: content, lang })
+
+      notification.status = NOTIFICATION_STATUS.SENT
+      await this.notificationRepository.save(notification)
+
+      logger.info('Notification sent and saved', {
+        id: notification.id,
+        title,
+        lang,
+        messageId,
+      })
+      return { ...notification, messageId }
+    } catch (error) {
+      const outcomeUnknown = isDeliveryOutcomeUnknown(error)
+      notification.status = outcomeUnknown
+        ? NOTIFICATION_STATUS.UNKNOWN
+        : NOTIFICATION_STATUS.FAILED
+
+      // Best effort: a failed status write must not hide the delivery error.
+      try {
+        await this.notificationRepository.save(notification)
+      } catch (writeError) {
+        logger.error('NotificationController.save could not persist the failed status', {
+          id: notification.id,
+          message: writeError?.message,
+          stack: writeError?.stack,
+        })
+      }
+
+      logger.error('NotificationController.save failed to deliver the notification', {
+        id: notification.id,
+        title,
+        lang,
+        topic: this.topicFor(lang),
+        status: notification.status,
+        message: error?.message,
+        stack: error?.stack,
+      })
+
+      // The requestTimeout middleware may already have answered with a 503.
+      if (!response.headersSent) {
+        response.status(502).send({
+          status: notification.status,
+          error: describeDeliveryError(error),
+        })
+      }
+      return
     }
   }
 
@@ -161,35 +236,43 @@ export class NotificationController {
     }
   }
 
-  private async firebaseSend({ title, body, lang }) {
+  private topicFor(lang: string) {
+    return `oky_${lang}_notifications`
+  }
+
+  /**
+   * Sends the message to the language topic and returns the Firebase message id.
+   * Throws when Firebase rejects the message or never answers.
+   */
+  private async firebaseSend({ title, body, lang }): Promise<string> {
+    const topic = this.topicFor(lang)
     const message = {
       notification: {
         title,
         body,
       },
-      topic: `oky_${lang}_notifications`,
+      topic,
     }
-    try {
-      const response = await withRetry(
-        () =>
-          withTimeout(
-            admin.messaging().send(message),
-            DEFAULT_EXTERNAL_TIMEOUT,
-            'Firebase notification send',
-          ),
-        { maxRetries: 2, baseDelay: 1000, label: 'Firebase send' },
-      )
-      logger.info('Firebase notification sent', {
-        messageId: response,
-        topic: `oky_${lang}_notifications`,
-      })
-    } catch (error) {
-      logger.error('Firebase notification failed', {
-        topic: `oky_${lang}_notifications`,
-        message: error?.message,
-        stack: error?.stack,
-      })
-      throw error
-    }
+
+    const messageId = await withRetry(
+      () =>
+        withTimeout(
+          admin.messaging().send(message),
+          DEFAULT_EXTERNAL_TIMEOUT,
+          'Firebase notification send',
+        ),
+      {
+        maxRetries: 2,
+        baseDelay: 1000,
+        label: 'Firebase send',
+        // A timed-out send is not cancelled on Firebase's side, so blindly
+        // retrying it can push the same alert to every user two or three
+        // times. Only repeat errors Firebase reports as a clean rejection.
+        shouldRetry: isRetriableFirebaseError,
+      },
+    )
+
+    logger.info('Firebase notification sent', { messageId, topic })
+    return messageId
   }
 }

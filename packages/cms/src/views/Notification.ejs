@@ -1,6 +1,25 @@
 <%- include('partials/Header') %> 
 <%- include('modals/NotificationModal', {headings: [__('Title'),__('Content')]}) %>
 <%- include('modals/PermanentNotificationModal') %>
+<%
+  // The mobile app only ever reads notifications whose status is 'sent', so the
+  // status below is the real delivery outcome, not just "the CMS accepted it".
+  var statusLabels = {
+    sent: __('Sent'),
+    failed: __('Failed'),
+    unknown: __('Unknown'),
+  }
+  var statusClasses = {
+    sent: 'badge-success',
+    failed: 'badge-danger',
+    unknown: 'badge-warning',
+  }
+  var statusTitles = {
+    sent: __('Firebase confirmed this notification was accepted for delivery.'),
+    failed: __('Firebase rejected this notification. Nobody received it.'),
+    unknown: __('Delivery could not be confirmed. It may or may not have reached users - check Firebase before sending it again.'),
+  }
+%>
 <div class="homePageContainer">
   <div class="sideBar">
     <%- include('partials/SideTab') %> 
@@ -33,17 +52,25 @@
         <thead >
             <tr>
                 <th class="pointer"style="width: 15%"><%= __('Date pushed')%></th>
-                <th style="width: 40%"><%= __('Title')%></th>
-                <th style="width: 40%"><%= __('Content')%></th>
-                <th style="width: 15%"><%= __('Remove')%></th>
+                <th style="width: 30%"><%= __('Title')%></th>
+                <th style="width: 30%"><%= __('Content')%></th>
+                <th style="width: 15%"><%= __('Status')%></th>
+                <th style="width: 10%"><%= __('Remove')%></th>
             </tr>
         </thead>
         <tbody style="overflow-y: scroll" id="notifications-table-body">
           <% notifications.forEach((notification, index) => { %>
+          <% var status = notification.status || 'unknown' %>
           <tr>
             <td><%= notification.date_sent ? moment(parseInt(notification.date_sent)).format('D/M/YY') : ''%></td>
             <td><%= notification.title %></td>
             <td><%= notification.content %></td>
+            <td>
+              <span
+                class="badge <%= statusClasses[status] || 'badge-secondary' %>"
+                title="<%= statusTitles[status] || '' %>"
+              ><%= statusLabels[status] || status %></span>
+            </td>
             <td>
               <button type="button" class="btn deleteNotification" data-value="<%= notification.id %>">
                 <i class="fas fa-trash" aria-hidden="true"></i>
@@ -104,15 +131,65 @@
   <span id="permanentAlertsJSON" hidden>
     <%= JSON.stringify(permanentNotifications); %>
   </span>
+  <!--
+    Translated strings are handed to the script through data attributes: EJS
+    escapes them safely for an HTML attribute, whereas interpolating them into a
+    JS string literal would break on any quote or apostrophe.
+  -->
+  <span
+    id="notificationStrings"
+    hidden
+    data-missing-fields="<%= __('Please fill in both a title and a content before sending.') %>"
+    data-confirm="<%= __('This notification will be sent out to all users immediately, do you wish to proceed?') %>"
+    data-generic-error="<%= __('The notification could not be sent. Please check the logs and try again.') %>"
+    data-network-error="<%= __('The CMS could not be reached, so it is unclear whether the notification was sent. Reload this page to check its status before trying again.') %>"
+  ></span>
   <script>
+    var notificationStrings = $('#notificationStrings').data()
+
+    // A failed send still writes a row (the attempt is recorded before Firebase
+    // is contacted), but the modal stays open to show the reason instead of
+    // reloading. Refresh on close so the new row shows up in the table without
+    // the admin having to reload the page by hand.
+    var notificationRecordCreated = false
+
+    $('#dynamicModal').on('show.bs.modal', function () {
+      $('#notificationSendError').hide().text('')
+      $('#notificationSendPending').hide()
+      $('#btnAddConfirm').prop('disabled', false)
+      notificationRecordCreated = false
+    })
+
+    $('#dynamicModal').on('hidden.bs.modal', function () {
+      if (notificationRecordCreated) {
+        location.reload()
+      }
+    })
+
     $('#btnAddConfirm').on('click', function (e) {
         e.preventDefault();
+        var confirmButton = $(this)
+        var errorBox = $('#notificationSendError')
+        var pendingBox = $('#notificationSendPending')
         var titleInput = $('#col0TableModal');
         var contentInput = $('#col1TableModal')
-        var title = titleInput.val();
-        var content = contentInput.val();
-        var result = confirm('This notification will be sent out to all users immediately, do you wish to proceed?')
+        var title = (titleInput.val() || '').trim();
+        var content = (contentInput.val() || '').trim();
+
+        errorBox.hide().text('')
+
+        if (!title || !content) {
+          errorBox.text(notificationStrings.missingFields).show()
+          return
+        }
+
+        var result = confirm(notificationStrings.confirm)
         if (result) {
+          // Block the button while the request is in flight: a second click
+          // would broadcast the same alert to every user twice.
+          confirmButton.prop('disabled', true)
+          pendingBox.show()
+
           $.ajax({
               url: '/notification',
               method: 'POST',
@@ -122,6 +199,23 @@
               },
               success: function () {
                   location.reload()
+              },
+              error: function (xhr) {
+                  confirmButton.prop('disabled', false)
+                  pendingBox.hide()
+                  // A 400 is rejected before anything is written; every other
+                  // failure means the attempt was already recorded.
+                  if (xhr.status !== 400) {
+                    notificationRecordCreated = true
+                  }
+                  // The server explains exactly why Firebase refused it; fall
+                  // back to a generic message when it never answered at all.
+                  var message =
+                    (xhr.responseJSON && xhr.responseJSON.error) ||
+                    (xhr.status === 0
+                      ? notificationStrings.networkError
+                      : notificationStrings.genericError)
+                  errorBox.text(message).show()
               }
           })
         }

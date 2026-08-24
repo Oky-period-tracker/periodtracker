@@ -49,7 +49,7 @@ const initialState: JourneyState = {
   isActive: false,
   startDate: twoWeeksAgo,
   periodLength: '5',
-  cycleLength: '3',
+  cycleLength: '4',
   hasSkipped: false,
 }
 

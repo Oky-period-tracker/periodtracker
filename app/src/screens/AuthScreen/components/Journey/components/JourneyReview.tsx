@@ -30,7 +30,8 @@ export const JourneyReview = () => {
     }
 
     const periodLength = parseInt(state.periodLength)
-    const cycleLength = Math.max(parseInt(state.cycleLength) * 7, periodLength + 2)
+    const cycleLengthDays = parseInt(state.cycleLength) * 7
+    const cycleLength = cycleLengthDays + periodLength
 
     const answers = {
       isActive: state.isActive,

@@ -46,9 +46,10 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   }
 
   const logOutAlert = () => {
+    const isOfflineAccount = currentUser?.isGuest || !appToken
     Alert.alert(
-      translate('are_you_sure'),
-      currentUser?.isGuest || !appToken ? translate('logout_account_description') : '',
+      translate(isOfflineAccount ? 'logout_account_title' : 'are_you_sure'),
+      isOfflineAccount ? translate('logout_account_description') : '',
       [
         {
           text: translate('cancel'),

@@ -47,7 +47,7 @@ describe('<ManageUsers />', () => {
     expect(mockSetAuthMode).toHaveBeenCalledWith('log_in')
   })
 
-  it('uses design-system blue for both cloud states', async () => {
+  it('explains cloud states and distinguishes offline accounts', async () => {
     ;(listUsers as jest.Mock).mockResolvedValue([
       { id: '1', name: 'Offline', isPendingSync: true },
       { id: '2', name: 'Online', isPendingSync: false },
@@ -55,10 +55,13 @@ describe('<ManageUsers />', () => {
     render(<ManageUsers />)
 
     await screen.findByText('Online')
+    expect(screen.getByText('cloud_icon_explainer_title')).toBeTruthy()
+    expect(screen.getByText('cloud_icon_explainer')).toBeTruthy()
     const icons = screen
       .UNSAFE_getAllByType(FontAwesome)
       .filter((icon) => icon.props.name === 'cloud' || icon.props.name === 'cloud-upload')
     expect(icons).toHaveLength(2)
-    expect(icons.every((icon) => icon.props.color === '#91D9E2')).toBe(true)
+    expect(icons.find((icon) => icon.props.name === 'cloud')?.props.color).toBe('#91D9E2')
+    expect(icons.find((icon) => icon.props.name === 'cloud-upload')?.props.color).toBe('#FF8C00')
   })
 })

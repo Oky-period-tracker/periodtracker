@@ -318,6 +318,11 @@ export interface AppTranslations {
   password_error_content: string
   password_error_heading: string
   incorrect_username_or_passcode: string
+  sync_account_in_progress: string
+  account_saved_confirmation: string
+  logout_account_title: string
+  cloud_icon_explainer_title: string
+  cloud_icon_explainer: string
   password_request: string
   password_too_short: string
   period: string

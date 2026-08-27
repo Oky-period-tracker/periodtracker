@@ -39,7 +39,8 @@ export const ManageUsers = () => {
         ) : accounts.length === 0 ? (
           <Text style={styles.emptyText}>no_users</Text>
         ) : (
-          <ScrollView style={styles.usersList} showsVerticalScrollIndicator={true}>
+          <>
+            <ScrollView style={styles.usersList} showsVerticalScrollIndicator={true}>
             {accounts.map((account, index) => (
               <React.Fragment key={account.id}>
                 {index > 0 && <View style={styles.separator} />}
@@ -59,7 +60,7 @@ export const ManageUsers = () => {
                   <FontAwesome
                     name={account.isPendingSync ? 'cloud-upload' : 'cloud'}
                     size={18}
-                    color={palette.neutral.base}
+                    color={account.isPendingSync ? palette.secondary.base : palette.neutral.base}
                     style={styles.syncIcon}
                     accessibilityLabel={
                       account.isPendingSync ? translate('offline_account') : translate('synced_account')
@@ -69,6 +70,11 @@ export const ManageUsers = () => {
               </React.Fragment>
             ))}
           </ScrollView>
+          <View style={styles.legend}>
+            <Text style={styles.legendTitle}>cloud_icon_explainer_title</Text>
+            <Text style={styles.legendText}>cloud_icon_explainer</Text>
+          </View>
+          </>
         )}
       </AuthCardBody>
     </>
@@ -82,7 +88,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   cardBody: {
-    height: 320,
+    height: 380,
   },
   loading: {
     marginVertical: 20,
@@ -110,6 +116,16 @@ const styles = StyleSheet.create({
   },
   syncIcon: {
     marginHorizontal: 12,
+  },
+  legend: {
+    marginTop: 12,
+  },
+  legendTitle: {
+    fontWeight: 'bold',
+    marginBottom: 6,
+  },
+  legendText: {
+    lineHeight: 20,
   },
   separator: {
     height: 1,

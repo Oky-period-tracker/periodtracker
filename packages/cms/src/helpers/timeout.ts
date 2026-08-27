@@ -1,10 +1,28 @@
 /**
+ * Raised when a promise wrapped by {@link withTimeout} does not settle in time.
+ *
+ * The timer does not cancel the underlying work: it only stops us waiting for
+ * it. Callers therefore have to treat this as "outcome unknown" rather than
+ * "the operation did not happen".
+ */
+export class TimeoutError extends Error {
+  readonly timeoutMs: number
+
+  constructor(label: string, ms: number) {
+    super(`${label} timed out after ${ms}ms`)
+    this.name = 'TimeoutError'
+    this.timeoutMs = ms
+    Object.setPrototypeOf(this, TimeoutError.prototype)
+  }
+}
+
+/**
  * Wraps a promise with a timeout. Rejects if the promise doesn't resolve within the given time.
  */
 export function withTimeout<T>(promise: Promise<T>, ms: number, label = 'Operation'): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => {
-      reject(new Error(`${label} timed out after ${ms}ms`))
+      reject(new TimeoutError(label, ms))
     }, ms)
 
     promise

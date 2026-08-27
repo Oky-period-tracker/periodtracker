@@ -112,19 +112,9 @@ export class NotificationController {
       throw error
     }
 
+    let messageId: string
     try {
-      const messageId = await this.firebaseSend({ title, body: content, lang })
-
-      notification.status = NOTIFICATION_STATUS.SENT
-      await this.notificationRepository.save(notification)
-
-      logger.info('Notification sent and saved', {
-        id: notification.id,
-        title,
-        lang,
-        messageId,
-      })
-      return { ...notification, messageId }
+      messageId = await this.firebaseSend({ title, body: content, lang })
     } catch (error) {
       const outcomeUnknown = isDeliveryOutcomeUnknown(error)
       notification.status = outcomeUnknown
@@ -161,6 +151,28 @@ export class NotificationController {
       }
       return
     }
+
+    notification.status = NOTIFICATION_STATUS.SENT
+    try {
+      await this.notificationRepository.save(notification)
+    } catch (error) {
+      logger.error('NotificationController.save delivered but could not persist sent status', {
+        id: notification.id,
+        title,
+        lang,
+        messageId,
+        message: error?.message,
+        stack: error?.stack,
+      })
+    }
+
+    logger.info('Notification sent', {
+      id: notification.id,
+      title,
+      lang,
+      messageId,
+    })
+    return { ...notification, messageId }
   }
 
   async updatePermanentAlert(request: Request, response: Response, next: NextFunction) {

@@ -322,7 +322,8 @@ export interface AppTranslations {
   account_saved_confirmation: string
   logout_account_title: string
   cloud_icon_explainer_title: string
-  cloud_icon_explainer: string
+  cloud_icon_explainer_synced: string
+  cloud_icon_explainer_offline: string
   password_request: string
   password_too_short: string
   period: string

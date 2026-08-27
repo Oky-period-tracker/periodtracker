@@ -56,12 +56,17 @@ describe('<ManageUsers />', () => {
 
     await screen.findByText('Online')
     expect(screen.getByText('cloud_icon_explainer_title')).toBeTruthy()
-    expect(screen.getByText('cloud_icon_explainer')).toBeTruthy()
     const icons = screen
       .UNSAFE_getAllByType(FontAwesome)
       .filter((icon) => icon.props.name === 'cloud' || icon.props.name === 'cloud-upload')
-    expect(icons).toHaveLength(2)
-    expect(icons.find((icon) => icon.props.name === 'cloud')?.props.color).toBe('#91D9E2')
-    expect(icons.find((icon) => icon.props.name === 'cloud-upload')?.props.color).toBe('#FF8C00')
+    expect(icons).toHaveLength(4)
+    expect(icons.filter((icon) => icon.props.name === 'cloud').every((icon) => icon.props.color === '#91D9E2')).toBe(
+      true,
+    )
+    expect(
+      icons.filter((icon) => icon.props.name === 'cloud-upload').every((icon) => icon.props.color === '#FF8C00'),
+    ).toBe(true)
+    expect(screen.getByText('cloud_icon_explainer_synced')).toBeTruthy()
+    expect(screen.getByText('cloud_icon_explainer_offline')).toBeTruthy()
   })
 })

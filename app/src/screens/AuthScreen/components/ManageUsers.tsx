@@ -72,7 +72,26 @@ export const ManageUsers = () => {
           </ScrollView>
           <View style={styles.legend}>
             <Text style={styles.legendTitle}>cloud_icon_explainer_title</Text>
-            <Text style={styles.legendText}>cloud_icon_explainer</Text>
+            <View style={styles.legendRow}>
+              <FontAwesome
+                name="cloud"
+                size={18}
+                color={palette.neutral.base}
+                style={styles.legendStatusIcon}
+                accessibilityLabel={translate('synced_account')}
+              />
+              <Text style={styles.legendText}>cloud_icon_explainer_synced</Text>
+            </View>
+            <View style={styles.legendRow}>
+              <FontAwesome
+                name="cloud-upload"
+                size={18}
+                color={palette.secondary.base}
+                style={styles.legendStatusIcon}
+                accessibilityLabel={translate('offline_account')}
+              />
+              <Text style={styles.legendText}>cloud_icon_explainer_offline</Text>
+            </View>
           </View>
           </>
         )}
@@ -124,7 +143,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 6,
   },
+  legendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  legendStatusIcon: {
+    width: 30,
+  },
   legendText: {
+    flex: 1,
     lineHeight: 20,
   },
   separator: {

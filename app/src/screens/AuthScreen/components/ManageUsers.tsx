@@ -1,5 +1,5 @@
 import React from 'react'
-import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { AuthHeader } from './AuthHeader'
 import { AuthCardBody } from './AuthCardBody'
@@ -8,12 +8,14 @@ import { listUsers } from '../../../services/userMetadata/registry'
 import { RegisteredUser } from '../../../services/userMetadata/types'
 import { useColor } from '../../../hooks/useColor'
 import { useTranslate } from '../../../hooks/useTranslate'
+import { useAuthMode } from '../AuthModeContext'
 
 export const ManageUsers = () => {
   const [accounts, setAccounts] = React.useState<RegisteredUser[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const { color, palette } = useColor()
   const translate = useTranslate()
+  const { setAuthMode, setLoginName } = useAuthMode()
 
   const loadAccounts = React.useCallback(async () => {
     try {
@@ -37,11 +39,18 @@ export const ManageUsers = () => {
         ) : accounts.length === 0 ? (
           <Text style={styles.emptyText}>no_users</Text>
         ) : (
-          <ScrollView style={styles.usersList} showsVerticalScrollIndicator={true}>
+          <>
+            <ScrollView style={styles.usersList} showsVerticalScrollIndicator={true}>
             {accounts.map((account, index) => (
               <React.Fragment key={account.id}>
                 {index > 0 && <View style={styles.separator} />}
-                <View style={styles.userRow}>
+                <TouchableOpacity
+                  style={styles.userRow}
+                  onPress={() => {
+                    setLoginName(account.name)
+                    setAuthMode('log_in')
+                  }}
+                >
                   <View style={styles.userInfo}>
                     <FontAwesome name="user-circle" size={24} color={color} style={styles.icon} />
                     <Text style={styles.userName} enableTranslate={false}>
@@ -51,16 +60,40 @@ export const ManageUsers = () => {
                   <FontAwesome
                     name={account.isPendingSync ? 'cloud-upload' : 'cloud'}
                     size={18}
-                    color={account.isPendingSync ? palette.secondary.base : color}
+                    color={account.isPendingSync ? palette.secondary.base : palette.neutral.base}
                     style={styles.syncIcon}
                     accessibilityLabel={
                       account.isPendingSync ? translate('offline_account') : translate('synced_account')
                     }
                   />
-                </View>
+                </TouchableOpacity>
               </React.Fragment>
             ))}
           </ScrollView>
+          <View style={styles.legend}>
+            <Text style={styles.legendTitle}>cloud_icon_explainer_title</Text>
+            <View style={styles.legendRow}>
+              <FontAwesome
+                name="cloud"
+                size={18}
+                color={palette.neutral.base}
+                style={styles.legendStatusIcon}
+                accessibilityLabel={translate('synced_account')}
+              />
+              <Text style={styles.legendText}>cloud_icon_explainer_synced</Text>
+            </View>
+            <View style={styles.legendRow}>
+              <FontAwesome
+                name="cloud-upload"
+                size={18}
+                color={palette.secondary.base}
+                style={styles.legendStatusIcon}
+                accessibilityLabel={translate('offline_account')}
+              />
+              <Text style={styles.legendText}>cloud_icon_explainer_offline</Text>
+            </View>
+          </View>
+          </>
         )}
       </AuthCardBody>
     </>
@@ -74,7 +107,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   cardBody: {
-    height: 320,
+    height: 380,
   },
   loading: {
     marginVertical: 20,
@@ -102,6 +135,25 @@ const styles = StyleSheet.create({
   },
   syncIcon: {
     marginHorizontal: 12,
+  },
+  legend: {
+    marginTop: 12,
+  },
+  legendTitle: {
+    fontWeight: 'bold',
+    marginBottom: 6,
+  },
+  legendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  legendStatusIcon: {
+    width: 30,
+  },
+  legendText: {
+    flex: 1,
+    lineHeight: 20,
   },
   separator: {
     height: 1,

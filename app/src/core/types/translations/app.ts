@@ -269,6 +269,7 @@ export interface AppTranslations {
   light: string
   location: string
   log_in: string
+  logging_in: string
   logout: string
   logout_account_description: string
   Male: string
@@ -316,7 +317,13 @@ export interface AppTranslations {
   password_change_fail_description: string
   password_error_content: string
   password_error_heading: string
-  password_incorrect: string
+  incorrect_username_or_passcode: string
+  sync_account_in_progress: string
+  account_saved_confirmation: string
+  logout_account_title: string
+  cloud_icon_explainer_title: string
+  cloud_icon_explainer_synced: string
+  cloud_icon_explainer_offline: string
   password_request: string
   password_too_short: string
   period: string

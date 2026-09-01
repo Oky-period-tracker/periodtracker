@@ -37,6 +37,10 @@ function mutate<T>(fn: (reg: UsersRegistry) => { next: UsersRegistry; result: T 
 }
 
 export async function listUsers(): Promise<RegisteredUser[]> {
+  return (await load()).users.filter((u) => !u.isPendingDelete)
+}
+
+export async function listAllUsers(): Promise<RegisteredUser[]> {
   return (await load()).users
 }
 
@@ -50,11 +54,20 @@ export async function getUser(id: string): Promise<RegisteredUser | null> {
 
 export async function findUserByName(name: string): Promise<RegisteredUser | null> {
   const target = name.trim().toLowerCase()
+  return (
+    (await load()).users.find(
+      (u) => !u.isPendingDelete && u.name.trim().toLowerCase() === target,
+    ) ?? null
+  )
+}
+
+export async function findAnyUserByName(name: string): Promise<RegisteredUser | null> {
+  const target = name.trim().toLowerCase()
   return (await load()).users.find((u) => u.name.trim().toLowerCase() === target) ?? null
 }
 
 export async function userCount(): Promise<number> {
-  return (await load()).users.length
+  return (await listUsers()).length
 }
 
 export async function addUser(
@@ -101,7 +114,15 @@ export async function markSynced(
 }
 
 export async function markPendingDelete(id: string): Promise<void> {
-  await updateUser(id, { isPendingDelete: true })
+  await mutate((reg) => ({
+    next: {
+      activeUserId: reg.activeUserId === id ? null : reg.activeUserId,
+      users: reg.users.map((u) =>
+        u.id === id ? { ...u, isPendingDelete: true, isActive: false } : u,
+      ),
+    },
+    result: undefined,
+  }))
 }
 
 import { purgeUserStorage } from '../../redux/storeManager'

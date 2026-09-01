@@ -9,7 +9,6 @@ export const AuthLinks = () => {
   const goToForgot = () => {
     setAuthMode('forgot_password')
   }
-
   const goToDelete = () => {
     setAuthMode('delete_account')
   }
@@ -23,7 +22,6 @@ export const AuthLinks = () => {
       <TouchableOpacity onPress={goToForgot} style={styles.link}>
         <Text style={styles.text}>forgot_password</Text>
       </TouchableOpacity>
-
       <TouchableOpacity onPress={goToDelete} style={styles.link}>
         <Text style={styles.text}>delete_account</Text>
       </TouchableOpacity>

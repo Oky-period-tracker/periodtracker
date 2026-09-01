@@ -3,7 +3,12 @@
 // down and rebuilds the active store (cancelling the saga that called it). The UI calls these
 // directly. Each updates the registry and credential vault, switches the per-user store, and
 // dispatches the resulting user into the freshly built store.
-import { getActiveBundle, switchToUser } from '../../redux/storeManager'
+import {
+  flushActiveSyncSnapshot,
+  getActiveBundle,
+  purgeUserStorage,
+  switchToUser,
+} from '../../redux/storeManager'
 import { ANON_USER_ID } from '../storage/storageKeys'
 import {
   loginSuccess,
@@ -27,6 +32,8 @@ import { consumePendingLocale } from './pendingLocale'
 import { getDeviceId } from '../deviceId'
 import { httpClient } from '../HttpClient'
 import { uuidv4 } from '../uuid'
+import { syncAllAccounts } from '../sync/syncManager'
+import { clearSyncSnapshot } from '../sync/syncSnapshot'
 
 export interface NewAccount {
   id?: string
@@ -65,7 +72,7 @@ function toUser(id: string, a: NewAccount) {
 // Create a new account: register it, store its credentials, give it its own store, and make
 // it active and logged in. Marked pending-sync so the server registration can happen later.
 export async function signupAccount(a: NewAccount): Promise<{ userId: string }> {
-  const existing = await registry.findUserByName(a.name)
+  const existing = await registry.findAnyUserByName(a.name)
   if (existing) {
     throw new Error('name_taken')
   }
@@ -134,6 +141,8 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     loginSuccess({ appToken: undefined as any, user: toUser(userId, a) as any }),
   )
+  await bundle.flushSyncSnapshot()
+  void syncAllAccounts()
   return { userId }
 }
 
@@ -141,6 +150,13 @@ export async function signupAccount(a: NewAccount): Promise<{ userId: string }> 
 // account exists for that name (caller may then fall back to an online login). Throws
 // 'login_failed' if the account exists but the password is wrong.
 export async function loginToAccount(name: string, password: string): Promise<boolean> {
+  const anyAccount = await registry.findAnyUserByName(name)
+  if (anyAccount?.isPendingDelete) {
+    await syncAllAccounts()
+    if ((await registry.getUser(anyAccount.id))?.isPendingDelete) {
+      throw new Error('account_pending_deletion')
+    }
+  }
   const account = await registry.findUserByName(name)
   if (!account) {
     return false
@@ -181,6 +197,13 @@ async function resendPendingSyncData(appToken: string, pending: PendingSyncData)
 // anon store. Returns false if the server returns no usable user; throws on auth/network failure so
 // the caller can surface it. Runs outside the saga because switchToUser tears the saga down.
 export async function loginOnlineToAccount(name: string, password: string): Promise<boolean> {
+  const pendingDelete = await registry.findAnyUserByName(name)
+  if (pendingDelete?.isPendingDelete) {
+    await syncAllAccounts()
+    if ((await registry.getUser(pendingDelete.id))?.isPendingDelete) {
+      throw new Error('account_pending_deletion')
+    }
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { appToken, user, store }: any = await httpClient.login({ name, password })
   if (!user?.id) {
@@ -293,6 +316,8 @@ export async function switchToAccount(userId: string): Promise<void> {
 
 // Leave the active account and return to the logged-out (anon) context.
 export async function logoutToAnon(): Promise<void> {
+  await flushActiveSyncSnapshot()
+  await syncAllAccounts()
   await switchToUser(ANON_USER_ID)
 }
 
@@ -300,8 +325,42 @@ export async function logoutToAnon(): Promise<void> {
 // logged-out (anon) context.
 export async function deleteAccount(userId: string): Promise<void> {
   await registry.removeUser(userId)
+  await clearSyncSnapshot(userId)
   await deleteEncryptionKey(userId)
   await switchToUser(ANON_USER_ID)
+}
+
+export async function deleteAccountFromLogin(
+  name: string,
+  password: string,
+): Promise<'deleted' | 'queued'> {
+  const account = await registry.findUserByName(name)
+
+  if (!account) {
+    await httpClient.deleteUserFromPassword({ name, password })
+    return 'deleted'
+  }
+  if (!(await verifyPassword(account.id, password))) throw new Error('invalid_credentials')
+  if (account.isPendingSync) {
+    await deleteAccount(account.id)
+    return 'deleted'
+  }
+
+  await saveCredential({ userId: account.id, password, keepPlainForSync: true })
+  try {
+    await httpClient.deleteUserFromPassword({ name, password })
+  } catch (error) {
+    const status = (error as { response?: { status?: number } })?.response?.status
+    if (status !== 404) {
+      await registry.markPendingDelete(account.id)
+      await purgeUserStorage(account.id)
+      await switchToUser(ANON_USER_ID)
+      void syncAllAccounts()
+      return 'queued'
+    }
+  }
+  await deleteAccount(account.id)
+  return 'deleted'
 }
 
 // Delete the currently active (logged-in) account. Best-effort server delete, then full local
@@ -311,13 +370,28 @@ export async function deleteAccount(userId: string): Promise<void> {
 export async function deleteActiveAccount(credentials?: {
   name: string
   password: string
-}): Promise<void> {
+}): Promise<'deleted' | 'queued'> {
   const userId = getActiveBundle()?.userId
-  if (credentials) {
+  const account = userId ? await registry.getUser(userId) : null
+
+  if (account && !account.isPendingSync && credentials) {
+    await flushActiveSyncSnapshot()
+    await saveCredential({
+      userId: account.id,
+      password: credentials.password,
+      keepPlainForSync: true,
+    })
     try {
       await httpClient.deleteUserFromPassword(credentials)
-    } catch {
-      // Offline, or the account was never registered on the server: the local teardown still runs.
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status
+      if (status !== 404) {
+        await registry.markPendingDelete(account.id)
+        await purgeUserStorage(account.id)
+        await switchToUser(ANON_USER_ID)
+        void syncAllAccounts()
+        return 'queued'
+      }
     }
   }
   if (userId && userId !== ANON_USER_ID) {
@@ -325,22 +399,7 @@ export async function deleteActiveAccount(credentials?: {
   } else {
     await switchToUser(ANON_USER_ID)
   }
-}
-
-// Delete a locally registered account after verifying its password. Returns false if no local
-// account matches the name (caller may fall back to an online delete). Throws 'login_failed'
-// if the password is wrong.
-export async function deleteAccountByPassword(name: string, password: string): Promise<boolean> {
-  const account = await registry.findUserByName(name)
-  if (!account) {
-    return false
-  }
-  const ok = await verifyPassword(account.id, password)
-  if (!ok) {
-    throw new Error('login_failed')
-  }
-  await deleteAccount(account.id)
-  return true
+  return 'deleted'
 }
 
 export async function listAccounts() {

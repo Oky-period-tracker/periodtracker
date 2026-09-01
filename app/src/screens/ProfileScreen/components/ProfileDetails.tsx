@@ -11,6 +11,7 @@ import {
   currentAvatarSelector,
   currentThemeSelector,
   currentUserSelector,
+  isCreatingAccountSelector,
 } from '../../../redux/selectors'
 import { useTodayPrediction } from '../../../contexts/PredictionProvider'
 import { getAsset } from '../../../services/asset'
@@ -31,6 +32,9 @@ import { useAvatarCustomization } from '../../../hooks/useAvatarCustomization'
 
 export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const currentUser = useSelector(currentUserSelector)
+  const isCreatingAccount = useSelector(isCreatingAccountSelector)
+  const [accountSaved, setAccountSaved] = React.useState(false)
+  const wasCreatingAccount = React.useRef(false)
   const avatar = useSelector(currentAvatarSelector)
   const theme = useSelector(currentThemeSelector)
   const todayInfo = useTodayPrediction()
@@ -44,6 +48,13 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
   const avatarData = useAvatar()
   const isAvatarCustomizationEnabled = useAvatarCustomization()
   const styles = createProfileDetailsStyles(avatarConfig)
+
+  React.useEffect(() => {
+    if (wasCreatingAccount.current && !isCreatingAccount && !currentUser?.isGuest) {
+      setAccountSaved(true)
+    }
+    wasCreatingAccount.current = Boolean(isCreatingAccount)
+  }, [currentUser?.isGuest, isCreatingAccount])
 
   // Hide header when navigating to the page
   React.useLayoutEffect(() => {
@@ -76,6 +87,7 @@ export const ProfileDetails = ({ navigation }: ScreenProps<'Profile'>) => {
         <Text style={[styles.title, { color: '#000000' }]}>profile_title</Text>
         <Text style={[styles.subtitle, { color: '#000000' }]}>profile_subtitle</Text>
       </View>
+      {accountSaved && <Text style={styles.infoLabel}>account_saved_confirmation</Text>}
       <View style={[styles.container, { backgroundColor }, globalStyles.shadow]}>
         {currentUser?.isGuest && (
           <>

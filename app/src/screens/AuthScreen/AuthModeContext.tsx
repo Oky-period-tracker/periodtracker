@@ -22,11 +22,17 @@ export type AuthMode =
 export type AuthModeContext = {
   authMode: AuthMode
   setAuthMode: React.Dispatch<React.SetStateAction<AuthMode>>
+  loginName: string
+  setLoginName: React.Dispatch<React.SetStateAction<string>>
 }
 
 const defaultValue: AuthModeContext = {
   authMode: 'start',
   setAuthMode: () => {
+    //
+  },
+  loginName: '',
+  setLoginName: () => {
     //
   },
 }
@@ -96,8 +102,13 @@ const AuthModeInner = ({
     ? 'log_in'
     : 'start'
   const [authMode, setAuthMode] = React.useState<AuthMode>(initialState)
+  const [loginName, setLoginName] = React.useState('')
 
-  return <AuthContext.Provider value={{ authMode, setAuthMode }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ authMode, setAuthMode, loginName, setLoginName }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export const useAuthMode = () => {

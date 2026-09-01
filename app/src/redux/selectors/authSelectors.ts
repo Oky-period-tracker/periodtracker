@@ -12,5 +12,8 @@ export const currentUserSelector = (state: ReduxState) => s(state)?.user
 export const connectAccountAttemptsSelector = (state: ReduxState) =>
   s(state)?.connectAccountAttempts
 
+export const isCreatingAccountSelector = (state: ReduxState) =>
+  s(state)?.isCreatingAccount
+
 export const cyclesNumberSelector = (state: ReduxState) =>
   calculateCycles(s(state)?.user?.metadata).cyclesNumber

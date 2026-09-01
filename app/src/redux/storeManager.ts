@@ -12,11 +12,12 @@ import { persistStore, persistReducer, PersistedState, Persistor } from 'redux-p
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { encryptTransform } from 'redux-persist-transform-encrypt'
 import createSagaMiddleware, { Task } from 'redux-saga'
-import { rootReducer } from './reducers'
+import { rootReducer, ReduxState } from './reducers'
 import { rootSaga } from './sagas'
 import { reduxMigrations, reduxStoreVersion } from '../optional/reduxMigrations'
 import { setHttpClientStore } from '../services/HttpClient'
 import { getEncryptionKey, EncryptionKeyUnavailableError } from '../services/auth/encryptionKeys'
+import { saveSyncSnapshot } from '../services/sync/syncSnapshot'
 import {
   userDataConfigKey,
   userDataStorageKey,
@@ -31,6 +32,8 @@ export interface StoreBundle {
   // The saga task for this bundle's store, owned by the bundle so it is always the one cancelled
   // on teardown (never overwritten by an overlapping build).
   saga: Task
+  flushSyncSnapshot: () => Promise<void>
+  unsubscribeSnapshot: () => void
 }
 
 let active: StoreBundle | null = null
@@ -71,10 +74,10 @@ async function buildBundle(userId: string): Promise<StoreBundle> {
       return Promise.resolve(state)
     },
   }
-  // @ts-ignore redux-persist reducer typing
+  // @ts-expect-error redux-persist reducer typing
   const persistedReducer = persistReducer(persistConfig, rootReducer)
   const sagaMiddleware = createSagaMiddleware()
-  // @ts-ignore redux-persist reducer typing
+  // @ts-expect-error redux-persist reducer typing
   const store = createStore(persistedReducer, applyMiddleware(sagaMiddleware))
   const saga = sagaMiddleware.run(rootSaga)
   setHttpClientStore(store as Parameters<typeof setHttpClientStore>[0])
@@ -82,7 +85,28 @@ async function buildBundle(userId: string): Promise<StoreBundle> {
   // store without a late REHYDRATE overwriting what they dispatched.
   return new Promise<StoreBundle>((resolve) => {
     const persistor = persistStore(store, null, () => {
-      resolve({ userId, store, persistor, saga })
+      let timer: ReturnType<typeof setTimeout> | null = null
+      const flushSyncSnapshot = async () => {
+        if (userId === ANON_USER_ID) return
+        try {
+          await saveSyncSnapshot(userId, store.getState() as ReduxState)
+        } catch (error) {
+          console.warn('Unable to save account sync snapshot', userId, error)
+        }
+      }
+      const unsubscribeStore = store.subscribe(() => {
+        if (userId === ANON_USER_ID) return
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+          timer = null
+          void flushSyncSnapshot()
+        }, 300)
+      })
+      const unsubscribeSnapshot = () => {
+        if (timer) clearTimeout(timer)
+        unsubscribeStore()
+      }
+      resolve({ userId, store, persistor, saga, flushSyncSnapshot, unsubscribeSnapshot })
     })
   })
 }
@@ -123,11 +147,17 @@ async function teardownActive(): Promise<void> {
   const bundle = active
   active = null
   try {
+    await bundle.flushSyncSnapshot()
     await bundle.persistor.flush()
   } catch {
     // ignore flush errors during teardown
   }
   bundle.saga.cancel()
+  bundle.unsubscribeSnapshot()
+}
+
+export async function flushActiveSyncSnapshot(): Promise<void> {
+  await active?.flushSyncSnapshot()
 }
 
 async function getActiveUserIdFromStorage(): Promise<string | null> {
@@ -141,13 +171,16 @@ async function getActiveUserIdFromStorage(): Promise<string | null> {
   }
 }
 
-async function setActiveUserInStorage(userId: string): Promise<void> {
+async function setActiveUserInStorage(userId: string | null): Promise<void> {
   try {
     const raw = await AsyncStorage.getItem(USERS_REGISTRY_KEY)
     if (!raw) return
-    const parsed = JSON.parse(raw)
+    const parsed = JSON.parse(raw) as {
+      activeUserId?: string | null
+      users?: Array<Record<string, unknown> & { id: string; lastActiveAt?: string | null }>
+    }
     parsed.activeUserId = userId
-    parsed.users = (parsed.users || []).map((u: any) => ({
+    parsed.users = (parsed.users || []).map((u) => ({
       ...u,
       isActive: u.id === userId,
       lastActiveAt: u.id === userId ? new Date().toISOString() : u.lastActiveAt,
@@ -178,9 +211,7 @@ export function switchToUser(userId: string): Promise<StoreBundle> {
       return active
     }
     await teardownActive()
-    if (userId !== ANON_USER_ID) {
-      await setActiveUserInStorage(userId)
-    }
+    await setActiveUserInStorage(userId === ANON_USER_ID ? null : userId)
     active = await buildBundleSafe(userId)
     notify(active)
     return active

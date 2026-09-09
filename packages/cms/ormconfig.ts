@@ -1,6 +1,5 @@
 import { env } from './src/env'
 import { ConnectionOptions } from 'typeorm'
-import { SlowQueryLogger } from './src/middleware/slowQueryLogger'
 
 const ormconfig: ConnectionOptions = {
   type: env.db.type as any,
@@ -11,9 +10,7 @@ const ormconfig: ConnectionOptions = {
   database: env.db.database,
   synchronize: env.db.synchronize,
   schema: env.db.schema,
-  logging: env.db.logging ? 'all' : false,
-  maxQueryExecutionTime: env.logging.slowQueryThreshold,
-  logger: env.db.logging ? new SlowQueryLogger() : undefined,
+  logging: env.db.logging,
   entities: [__dirname + '/src/entity/**/*{.ts,.js}'],
   subscribers: [__dirname + '/src/subscriber/**/*{.ts,.js}'],
   migrations: [__dirname + '/src/migrations/**/*{.ts,.js}'],

@@ -1,7 +1,6 @@
 import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { Analytics } from '../entity/Analytics'
-import { logger } from '../logger'
 
 export class AnalyticsController {
   private analyticsRepository = getRepository(Analytics)
@@ -11,18 +10,10 @@ export class AnalyticsController {
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
-    try {
-      const analyticsEntry = request.body
-      analyticsEntry.payload = request.body.payload ? request.body.payload : {}
-      analyticsEntry.metadata = request.body.metadata ? request.body.metadata : {}
-      await this.analyticsRepository.save(analyticsEntry)
-      return analyticsEntry
-    } catch (error) {
-      logger.error('AnalyticsController.save failed', {
-        message: error?.message,
-        stack: error?.stack,
-      })
-      throw error
-    }
+    const analyticsEntry = request.body
+    analyticsEntry.payload = request.body.payload ? request.body.payload : {}
+    analyticsEntry.metadata = request.body.metadata ? request.body.metadata : {}
+    await this.analyticsRepository.save(analyticsEntry)
+    return analyticsEntry
   }
 }

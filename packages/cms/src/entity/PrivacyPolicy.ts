@@ -1,7 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 
 @Entity()
-@Index('idx_privacy_policy_lang', ['lang'])
 export class PrivacyPolicy {
   @PrimaryGeneratedColumn()
   id: number

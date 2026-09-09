@@ -63,7 +63,7 @@ export const CycleCard = ({
               {` ${cycleNumber}   `}
             </Text>
             <Text enableTranslate={false} style={[styles.headerText, styles.bold]}>
-              {`${item.cycleLength} `}
+              {`${Math.round(item.cycleLength)} `}
             </Text>
             <Text style={styles.headerText}>day_cycle</Text>
             <Text enableTranslate={false} style={styles.headerText}>
@@ -89,7 +89,7 @@ export const CycleCard = ({
           <View style={styles.cycleCardBodyLeft}>
             <Text>
               <Text enableTranslate={false} style={styles.bold}>
-                {`${item.periodLength} `}
+                {`${Math.round(item.periodLength)} `}
               </Text>
               <Text>day_period</Text>
             </Text>

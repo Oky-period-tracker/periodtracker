@@ -115,4 +115,6 @@ If you need a native dev build (for example to test push notifications or Fireba
 
 [Understanding the CMS & API routes](./docs/code/routes.md)
 
+[Prediction engine (v1 / v2 switch)](./docs/code/prediction_engine.md)
+
 [Recommended reading for developers](./docs/code/recommended_reading.md)

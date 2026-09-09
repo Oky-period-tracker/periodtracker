@@ -6,7 +6,8 @@ import { useTodayPrediction } from '../../../contexts/PredictionProvider'
 import PieChart from 'react-native-pie-chart'
 
 export const CircleProgress = ({ size = 52, style, onPress }: ButtonProps & { size?: number }) => {
-  const { cycleDay, cycleLength } = useTodayPrediction()
+  const { cycleDay, cycleLength: rawCycleLength } = useTodayPrediction()
+  const cycleLength = Math.round(rawCycleLength)
   const series = [cycleDay, cycleLength - cycleDay]
 
   return (

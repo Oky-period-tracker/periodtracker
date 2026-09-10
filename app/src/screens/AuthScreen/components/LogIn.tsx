@@ -8,27 +8,36 @@ import { useSelector } from '../../../redux/useSelector'
 import { currentUserSelector } from '../../../redux/selectors'
 import { useAuth } from '../../../contexts/AuthContext'
 import { formatPassword } from '../../../services/auth'
-import { useDispatch } from 'react-redux'
-import { loginRequest } from '../../../redux/actions'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { loadPendingSyncData } from '../../../services/pendingSync'
+import {
+  loginToAccount,
+  loginOnlineToAccount,
+} from '../../../services/auth/accountFlows'
+import { verifyPassword } from '../../../services/auth/credentialVault'
+import { useAuthMode } from '../AuthModeContext'
 
 export const LogIn = () => {
   const user = useSelector(currentUserSelector)
   const [wasPreLoggedIn] = React.useState(!!user)
-  const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
+  const { loginName } = useAuthMode()
 
-  const [name, setName] = React.useState(user ? user.name : '')
+  const [name, setName] = React.useState(user ? user.name : loginName)
   const [password, setPassword] = React.useState('')
 
   const [errorsVisible, setErrorsVisible] = React.useState(false)
   const { errors } = validateCredentials(name, password)
 
   const [success, setSuccess] = React.useState<boolean | null>(null)
-
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false)
   const [margin, setMargin] = React.useState(0)
+
+  // Clear a stale "incorrect" message as soon as the user edits either field.
+  React.useEffect(() => {
+    setSuccess(null)
+  }, [name, password])
 
   // Pre-fill username from pending sync data after a forced logout
   React.useEffect(() => {
@@ -40,26 +49,46 @@ export const LogIn = () => {
     })
   }, [])
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
+    if (isLoggingIn) return
     if (errors.length) {
       setErrorsVisible(true)
       return
     }
 
-    if (user) {
-      const formattedPassword = formatPassword(password)
-      const success = user.password === formattedPassword
+    const formattedPassword = formatPassword(password)
+    setIsLoggingIn(true)
 
-      if (success) {
-        setIsLoggedIn(true)
+    try {
+      if (user) {
+        // Passcode re-entry for the account already loaded into the active store. Verify against
+        // the credential vault (the source of truth, kept current by offline password resets),
+        // falling back to the plaintext stored on the user for any pre-vault account.
+        const ok =
+          (await verifyPassword(user.id, formattedPassword)) || user.password === formattedPassword
+        if (ok) {
+          setIsLoggedIn(true)
+          return
+        }
+        setSuccess(false)
         return
       }
 
+      // Fresh login: try a locally registered account first (works offline), then fall back to an
+      // online login if no local account matches this name.
+      const loggedIn =
+        (await loginToAccount(name, formattedPassword)) ||
+        (await loginOnlineToAccount(name, formattedPassword))
+      if (loggedIn) {
+        setIsLoggedIn(true)
+        return
+      }
       setSuccess(false)
-      return
+    } catch {
+      setSuccess(false)
+    } finally {
+      setIsLoggingIn(false)
     }
-
-    dispatch(loginRequest({ name, password: formatPassword(password) }))
   }
 
   React.useEffect(() => {
@@ -100,10 +129,15 @@ export const LogIn = () => {
           errorKeys={['password_too_short']}
           errorsVisible={errorsVisible}
         />
-        {success === false && <ErrorText>password_incorrect</ErrorText>}
+        {isLoggingIn && <Text style={styles.status}>logging_in</Text>}
+        {success === false && <ErrorText>incorrect_username_or_passcode</ErrorText>}
       </AuthCardBody>
       <Hr />
-      <TouchableOpacity onPress={onConfirm} style={[styles.confirm, { marginBottom: margin }]}>
+      <TouchableOpacity
+        onPress={onConfirm}
+        disabled={isLoggingIn}
+        style={[styles.confirm, { marginBottom: margin }]}
+      >
         <Text style={styles.confirmText}>confirm</Text>
       </TouchableOpacity>
     </>
@@ -132,5 +166,8 @@ const styles = StyleSheet.create({
   confirmText: {
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  status: {
+    textAlign: 'center',
   },
 })

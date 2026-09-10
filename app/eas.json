@@ -1,0 +1,42 @@
+{
+  "cli": {
+    "version": ">= 11.0.3"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "staging": {
+      "environment": "preview",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EAS_USE_CACHE": "1",
+        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/staging",
+        "EXPO_PUBLIC_ENV": "dev",
+        "EXPO_PUBLIC_API_BASE_URL": "https://api-dev.okyapp.info",
+        "EXPO_PUBLIC_API_BASE_CMS_URL": "https://cms-dev.okyapp.info"
+      }
+    },
+    "quick": {
+      "extends": "staging",
+      "android": {
+        "gradleCommand": ":app:assembleDebugOptimized"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/production"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

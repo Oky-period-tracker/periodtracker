@@ -1,6 +1,5 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useAuthMode } from '../AuthModeContext'
 import { Text } from '../../../components/Text'
 
@@ -10,9 +9,12 @@ export const AuthLinks = () => {
   const goToForgot = () => {
     setAuthMode('forgot_password')
   }
-
   const goToDelete = () => {
     setAuthMode('delete_account')
+  }
+
+  const goToManageUsers = () => {
+    setAuthMode('manage_users')
   }
 
   return (
@@ -20,9 +22,12 @@ export const AuthLinks = () => {
       <TouchableOpacity onPress={goToForgot} style={styles.link}>
         <Text style={styles.text}>forgot_password</Text>
       </TouchableOpacity>
-
       <TouchableOpacity onPress={goToDelete} style={styles.link}>
         <Text style={styles.text}>delete_account</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={goToManageUsers} style={styles.link}>
+        <Text style={styles.text}>manage_users</Text>
       </TouchableOpacity>
     </View>
   )

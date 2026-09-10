@@ -19,6 +19,8 @@ export const currentAvatarSelector = (state: ReduxState) => s(state).avatar
 
 export const hasOpenedSelector = (state: ReduxState) => s(state).hasOpened
 
+export const onboardingPendingSelector = (state: ReduxState) => s(state).onboardingPending
+
 export const isTutorialOneActiveSelector = (state: ReduxState) => s(state).isTutorialOneActive
 
 export const isTutorialTwoActiveSelector = (state: ReduxState) => s(state).isTutorialTwoActive

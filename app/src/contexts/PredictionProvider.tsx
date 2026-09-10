@@ -31,7 +31,7 @@ export function PredictionProvider({ children }) {
   const reduxDispatch = useDispatch()
   const predictionState = useSelector((state) => state.prediction)
   const verifiedDates = useSelector(allCardAnswersSelector)
-  const currentUserId = useSelector((state) => state.auth.user?.id ?? null)
+  const currentUserId = useSelector((state) => state?.auth?.user?.id ?? null)
   const reconciledUserRef = React.useRef<string | null>(null)
 
   const [predictionSnapshots, setPredictionSnapshots] = React.useState([])
@@ -156,11 +156,22 @@ export function useCalculatePeriodDates() {
   return React.useMemo(() => {
     const periodDates: PeriodDate[] = []
 
+    const parseDate = (d: any) => {
+      if (!d) return null
+      if (moment.isMoment(d)) return d.clone()
+      if (typeof d === 'string') return moment(d)
+      if (d._i) return moment(d._i)
+      return moment(d)
+    }
+
     // Helper function to add multiple period days
-    const addPeriodDays = (startDate: string, days: number) => {
+    const addPeriodDays = (startDateInput: any, days: number) => {
+      const baseDate = parseDate(startDateInput)
+      if (!baseDate || !baseDate.isValid()) return
+
       for (let i = 0; i < days; i++) {
         periodDates.push({
-          date: moment(startDate).add(i, 'days').format('DD-MM-YYYY'),
+          date: baseDate.clone().add(i, 'days').format('DD-MM-YYYY'),
           'ML-generated': true,
           'user-verified': null,
         })
@@ -168,9 +179,11 @@ export function useCalculatePeriodDates() {
     }
 
     // Ensure history is available and add its dates
-    if (predictionEngine.state.history?.length) {
+    if (predictionEngine?.state?.history?.length) {
       predictionEngine.state.history.forEach((cycle) => {
-        addPeriodDays(cycle.cycleStartDate._i, cycle.periodLength)
+        if (cycle) {
+          addPeriodDays(cycle.cycleStartDate ?? cycle.startDate, cycle.periodLength || 5)
+        }
       })
     }
 
@@ -178,22 +191,24 @@ export function useCalculatePeriodDates() {
     periodDates.sort((a, b) => moment(a.date, 'DD-MM-YYYY').diff(moment(b.date, 'DD-MM-YYYY')))
 
     // Add current cycle period days
-    if (predictionEngine.state.currentCycle?.startDate) {
+    if (predictionEngine?.state?.currentCycle?.startDate) {
       addPeriodDays(
-        predictionEngine.state.currentCycle.startDate._i,
-        predictionEngine.state.currentCycle.periodLength,
+        predictionEngine.state.currentCycle.startDate,
+        predictionEngine.state.currentCycle.periodLength || 5,
       )
     }
 
     // Predict future period cycles for the next 12 months
-    if (predictionEngine.state.currentCycle?.startDate) {
-      let lastDate = moment(predictionEngine.state.currentCycle.startDate._i)
-      const cycleLength = predictionEngine.state.smartPrediction.smaCycleLength || 28 // Default cycle length
-      const periodDays = predictionEngine.state.smartPrediction.smaPeriodLength || 5 // Default period days
+    if (predictionEngine?.state?.currentCycle?.startDate) {
+      let lastDate = parseDate(predictionEngine.state.currentCycle.startDate)
+      if (lastDate && lastDate.isValid()) {
+        const cycleLength = predictionEngine.state.smartPrediction?.smaCycleLength || 28
+        const periodDays = predictionEngine.state.smartPrediction?.smaPeriodLength || 5
 
-      for (let i = 0; i < 12; i++) {
-        lastDate = lastDate.add(cycleLength, 'days') // Predict next cycle
-        addPeriodDays(lastDate.format('YYYY-MM-DD'), periodDays)
+        for (let i = 0; i < 12; i++) {
+          lastDate = lastDate.clone().add(cycleLength, 'days')
+          addPeriodDays(lastDate.format('YYYY-MM-DD'), periodDays)
+        }
       }
     }
 

@@ -7,7 +7,7 @@ import { journeyConfig } from '../journeyConfig'
 import { DisplayButton } from '../../../../../components/Button'
 import { useDispatch } from 'react-redux'
 import moment from 'moment'
-import { journeyCompletion } from '../../../../../redux/actions'
+import { journeyCompletion, setOnboardingPending } from '../../../../../redux/actions'
 import { useAuth } from '../../../../../contexts/AuthContext'
 import { Text } from '../../../../../components/Text'
 import { useColor } from '../../../../../hooks/useColor'
@@ -34,14 +34,19 @@ export const JourneyReview = () => {
 
     const answers = {
       isActive: state.isActive,
-      startDate: moment(state.startDate, 'DD-MMM-YYYY'),
+      startDate:
+        moment.isMoment(state.startDate) && state.startDate.isValid()
+          ? state.startDate
+          : moment(state.startDate),
       periodLength,
       cycleLength,
     }
 
     reduxDispatch(journeyCompletion(answers))
 
-    // TODO: wait for success
+    // Onboarding is complete: clear the pending flag (so a later login doesn't re-enter the
+    // onboarding flow) and enter the app.
+    reduxDispatch(setOnboardingPending(false))
     setIsLoggedIn(true)
   }
 

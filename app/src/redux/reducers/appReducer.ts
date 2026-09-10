@@ -15,6 +15,10 @@ export interface AppState {
   appVersionCode: string
   firebaseToken: string
   hasOpened: boolean
+  // True between creating an account and finishing its onboarding (avatar/theme/period survey).
+  // Drives the auth screen into the onboarding flow for the new account's store, and survives the
+  // store-switch remount that signup performs.
+  onboardingPending: boolean
   isTutorialOneActive: boolean
   isTutorialTwoActive: boolean
   isCustomAvatarTutorialActive: boolean
@@ -46,6 +50,7 @@ const initialState: AppState = {
   firebaseToken: null,
   locale: initialLocale,
   hasOpened: false,
+  onboardingPending: false,
   isTutorialOneActive: true,
   isTutorialTwoActive: true,
   isCustomAvatarTutorialActive: true,
@@ -111,6 +116,11 @@ export function appReducer(state = initialState, action: Actions | RehydrateActi
       return {
         ...state,
         hasOpened: action.payload.hasOpened,
+      }
+    case 'SET_ONBOARDING_PENDING':
+      return {
+        ...state,
+        onboardingPending: action.payload.onboardingPending,
       }
     case 'SET_TUTORIAL_ONE_ACTIVE':
       return {

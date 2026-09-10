@@ -6,8 +6,7 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { TouchableRow, TouchableRowProps } from '../../components/TouchableRow'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Switch } from '../../components/Switch'
-import { useDispatch } from 'react-redux'
-import { deleteAccountRequest, logoutRequest } from '../../redux/actions'
+import { logoutToAnon, deleteActiveAccount } from '../../services/auth/accountFlows'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSelector } from '../../redux/useSelector'
 import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
@@ -18,33 +17,39 @@ import { useColor } from '../../hooks/useColor'
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
-  const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
 
   const logOut = () => {
-    dispatch(logoutRequest())
+    // Leave the active account for the logged-out (anon) context, keeping its data saved.
+    void logoutToAnon()
     setIsLoggedIn(false)
   }
 
-  const deleteAccount = () => {
+  const deleteAccount = async () => {
     if (!currentUser) {
       return
     }
-    dispatch(
-      deleteAccountRequest({
+    // Leave the logged-in gate first (AuthProvider lives above the per-user store), then tear the
+    // account down (server delete + registry entry + encryption key + credential vault + store
+    // blob) outside the saga, mirroring the AuthScreen delete flow.
+    try {
+      await deleteActiveAccount({
         name: currentUser.name,
         password: currentUser.password,
-        // setLoading, TODO: ?
-      }),
-    )
+      })
+      setIsLoggedIn(false)
+    } catch {
+      Alert.alert(translate('error'), translate('delete_account_fail'))
+    }
   }
 
   const logOutAlert = () => {
+    const isOfflineAccount = currentUser?.isGuest || !appToken
     Alert.alert(
-      translate('are_you_sure'),
-      currentUser?.isGuest || !appToken ? translate('logout_account_description') : '',
+      translate(isOfflineAccount ? 'logout_account_title' : 'are_you_sure'),
+      isOfflineAccount ? translate('logout_account_description') : '',
       [
         {
           text: translate('cancel'),
@@ -70,7 +75,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
         },
         {
           text: translate('yes'),
-          onPress: deleteAccount,
+          onPress: () => void deleteAccount(),
         },
       ],
       { cancelable: false },

@@ -48,9 +48,26 @@ export class OkyUserApplicationService {
     dateAccountSaved,
     metadata,
     avatar,
+    deviceId,
   }: SignupCommand) {
+    // Reject a malformed preferredId at the boundary with a clean 400 rather than letting a
+    // non-uuid reach the uuid primary-key column and surface as an opaque 500. (Belt-and-suspenders
+    // alongside SignupRequest's @IsUUID, since request-body validation is not enforced here.)
+    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (preferredId && !UUID_RE.test(preferredId)) {
+      throw new HttpError(400, `preferredId must be a valid UUID`)
+    }
     const id = preferredId || (await this.okyUserRepository.nextIdentity())
-    if (await this.okyUserRepository.byId(id)) {
+    const existingById = await this.okyUserRepository.byId(id)
+    if (existingById) {
+      // Idempotent re-sync: an offline-created account retries with its own preferredId after a
+      // lost/dropped first response. If the supplied password matches the existing row, return it
+      // (the controller re-issues a token) instead of erroring, so a dropped response no longer
+      // wedges the account in a permanent failing-retry loop. A mismatched password is a genuine
+      // id conflict and still fails.
+      if (preferredId && (await existingById.verifyPassword(plainPassword))) {
+        return existingById
+      }
       throw new HttpError(400, `User with this id already exists`)
     }
 
@@ -74,6 +91,7 @@ export class OkyUserApplicationService {
       dateAccountSaved,
       metadata,
       avatar,
+      deviceId,
     })
     return this.okyUserRepository.save(user)
   }

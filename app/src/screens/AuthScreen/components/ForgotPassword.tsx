@@ -6,6 +6,7 @@ import { Input } from '../../../components/Input'
 import { Text } from '../../../components/Text'
 import { httpClient } from '../../../services/HttpClient'
 import { formatPassword } from '../../../services/auth'
+import { resetPasswordOffline } from '../../../services/auth/accountFlows'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useAuthMode } from '../AuthModeContext'
 import { AuthCardBody } from './AuthCardBody'
@@ -64,15 +65,22 @@ export const ForgotPassword = () => {
     }
 
     try {
-      // Check exists
-      await httpClient.getUserInfo(name)
-
-      // Reset
-      await httpClient.resetPassword({
+      // Try a locally registered account first (works offline via the secret answer).
+      const resetLocally = await resetPasswordOffline(
         name,
-        secretAnswer: formatPassword(answer),
-        password: formatPassword(password),
-      })
+        formatPassword(answer),
+        formatPassword(password),
+      )
+
+      if (!resetLocally) {
+        // No local account with this name: reset on the server instead.
+        await httpClient.getUserInfo(name)
+        await httpClient.resetPassword({
+          name,
+          secretAnswer: formatPassword(answer),
+          password: formatPassword(password),
+        })
+      }
 
       successAlert()
     } catch (e) {

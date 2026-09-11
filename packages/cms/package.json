@@ -51,6 +51,7 @@
     "clean": "shx rm -rf dist",
     "compile": "yarn run build",
     "copy-static-assets": "ts-node copyStaticAssets.ts",
+    "format": "prettier --write '{.,src/**}/*.{js,jsx,ts,tsx}'",
     "serve": "NODE_PATH=./dist node dist/src/index.js",
     "start": "nodemon --legacy-watch -e ts --exec ts-node --files src/index",
     "migrate-up": "ts-node ../../node_modules/typeorm/cli -f /ormconfig.ts migration:run",

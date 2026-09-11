@@ -11,6 +11,7 @@ import { Strategy } from 'passport-local'
 import cookieParser from 'cookie-parser'
 import session from 'cookie-session'
 import { Authentication } from './access/authentication'
+import { enforceSessionExpiry, sessionOptions } from './access/session'
 import * as admin from 'firebase-admin'
 import { env } from './env'
 import ormconfig from '../ormconfig'
@@ -24,6 +25,7 @@ import helmet from 'helmet'
 createConnection(ormconfig)
   .then(() => {
     const app = express()
+    app.set('trust proxy', 1)
     app.set('view engine', 'ejs')
     app.set('views', __dirname + '/views')
 
@@ -84,17 +86,8 @@ createConnection(ormconfig)
     app.use(i18n.init)
     // ======================= Passport Configuration =============================
     app.use(cookieParser())
-    app.use(
-      session({
-        secret: env.app.secret,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-          sameSite: 'strict',
-          secure: process.env.NODE_ENV === 'production',
-        },
-      }),
-    )
+    app.use(session(sessionOptions))
+    app.use(enforceSessionExpiry)
     app.use(passport.initialize())
     app.use(passport.session())
     app.use(flash())
@@ -181,5 +174,9 @@ createConnection(ormconfig)
 
     app.listen(5000)
     console.log('Server started on port 5000')
+    console.log(
+      `Session cookie: secure=${sessionOptions.secure} sameSite=${sessionOptions.sameSite} ` +
+        `httpOnly=${sessionOptions.httpOnly} maxAge=${sessionOptions.maxAge}ms`,
+    )
   })
   .catch((error) => console.log(error))

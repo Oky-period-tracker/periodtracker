@@ -12,7 +12,21 @@ export class HealthController {
     try {
       const health = await healthCheckService.getHealth()
       const httpStatus = health.status === 'unhealthy' ? 503 : 200
-      res.status(httpStatus).json(health)
+      // Public probes expose status, not internal database error details.
+      const { database, service } = health.checks
+      res.status(httpStatus).json({
+        status: health.status,
+        uptime: health.uptime,
+        timestamp: health.timestamp,
+        checks: {
+          database: {
+            status: database.status,
+            latency: database.latency,
+            lastChecked: database.lastChecked,
+          },
+          service: { status: service.status, lastChecked: service.lastChecked },
+        },
+      })
     } catch (error) {
       logger.error('HealthController.health failed', { message: error?.message })
       res.status(503).json({ status: 'unhealthy', error: 'Health check failed' })

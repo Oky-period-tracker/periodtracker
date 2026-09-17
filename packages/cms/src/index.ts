@@ -1,4 +1,6 @@
 import 'reflect-metadata'
+import { randomBytes } from 'crypto'
+import { safeRequestPath } from './helpers/safeUtils'
 import { createConnection, getConnection } from 'typeorm'
 import express, { Request, Response } from 'express'
 import * as bodyParser from 'body-parser'
@@ -45,6 +47,11 @@ withRetry(() => createConnection(ormconfig), {
     app.set('views', __dirname + '/views')
 
     // Security headers
+    app.use((_req, res, next) => {
+      res.locals.cspNonce = randomBytes(18).toString('base64')
+      next()
+    })
+
     app.use(
       helmet({
         contentSecurityPolicy: {
@@ -52,10 +59,7 @@ withRetry(() => createConnection(ormconfig), {
             defaultSrc: ["'self'"],
             scriptSrc: [
               "'self'",
-              // The EJS admin views rely on inline <script> blocks (e.g.
-              // Encyclopedia, AnalyticsDash) that are rendered with server data,
-              // so static hashes/nonces are not practical here.
-              "'unsafe-inline'",
+              (_req, res) => `'nonce-${(res as Response).locals.cspNonce}'`,
               'https://cdnjs.cloudflare.com',
               'https://code.jquery.com',
               'https://maxcdn.bootstrapcdn.com',
@@ -230,7 +234,7 @@ withRetry(() => createConnection(ormconfig), {
               .catch((error: Error) => {
                 logger.error('Route handler error', {
                   method: req.method,
-                  url: req.originalUrl,
+                  url: safeRequestPath(req.originalUrl),
                   action: route.action,
                   controller: route.controller?.name,
                   message: error?.message,
@@ -246,7 +250,7 @@ withRetry(() => createConnection(ormconfig), {
         } catch (syncError) {
           logger.error('Route handler sync error', {
             method: req.method,
-            url: req.originalUrl,
+            url: safeRequestPath(req.originalUrl),
             action: route.action,
             controller: route.controller?.name,
             message: (syncError as Error)?.message,
@@ -259,6 +263,18 @@ withRetry(() => createConnection(ormconfig), {
     })
 
     // ======================= Monitoring Endpoints ====================
+    app.use(['/monitoring', '/diagnostics'], (req, res, next) => {
+      res.setHeader('Cache-Control', 'private, no-store')
+      if (!req.isAuthenticated()) {
+        res.status(401).json({ error: 'Authentication required' })
+        return
+      }
+      if (req.user?.type !== 'superAdmin') {
+        res.status(403).json({ error: 'Super admin access required' })
+        return
+      }
+      next()
+    })
     const monitoringController = new MonitoringController()
     app.get('/monitoring/health', (req, res, next) => monitoringController.health(req, res, next))
     app.get('/monitoring/metrics', (req, res, next) => monitoringController.metrics(req, res, next))

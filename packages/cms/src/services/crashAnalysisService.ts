@@ -87,6 +87,9 @@ const MAX_TIMEOUTS = 500
 const MEMORY_SAMPLE_INTERVAL_MS = 30_000 // 30 seconds
 const HEAP_SPIKE_THRESHOLD_PERCENT = 85
 const DEFAULT_TIMEOUT_THRESHOLD_MS = 10_000
+const MAX_TRACKED_ROUTES = 500
+const MAX_ERRORS_PER_ROUTE = 50
+const ROUTE_MAX_IDLE_MS = 60 * 60 * 1000
 
 // ─── Service ─────────────────────────────────────────────────────────
 
@@ -101,6 +104,7 @@ class CrashAnalysisService {
       failed: number
       durations: number[]
       errors: Map<string, number>
+      lastSeen: number
       lastFailure?: string
     }
   > = new Map()
@@ -141,7 +145,7 @@ class CrashAnalysisService {
     url: string,
     error: Error | { message?: string; stack?: string },
     statusCode: number,
-    meta?: { controller?: string; action?: string; userId?: string },
+    meta?: { controller?: string; action?: string; userId?: string; route?: string },
   ) {
     const record: ExceptionRecord = {
       timestamp: new Date().toISOString(),
@@ -161,7 +165,7 @@ class CrashAnalysisService {
     }
 
     // Update per-route failure stats
-    const routeKey = `${method.toUpperCase()} ${this.normaliseRoute(url)}`
+    const routeKey = `${method.toUpperCase()} ${this.normaliseRoute(meta?.route ?? url)}`
     this.trackRouteFailure(routeKey, error?.message || 'Unknown error')
   }
 
@@ -323,11 +327,7 @@ class CrashAnalysisService {
   /** Record a request completion (success or failure) */
   recordRequest(method: string, url: string, statusCode: number, duration: number) {
     const routeKey = `${method.toUpperCase()} ${this.normaliseRoute(url)}`
-    let stats = this.requestStats.get(routeKey)
-    if (!stats) {
-      stats = { total: 0, failed: 0, durations: [], errors: new Map() }
-      this.requestStats.set(routeKey, stats)
-    }
+    const stats = this.getRouteStats(routeKey)
 
     stats.total++
     stats.durations.push(duration)
@@ -343,18 +343,47 @@ class CrashAnalysisService {
   }
 
   private trackRouteFailure(routeKey: string, errorMessage: string) {
-    let stats = this.requestStats.get(routeKey)
-    if (!stats) {
-      stats = { total: 0, failed: 0, durations: [], errors: new Map() }
-      this.requestStats.set(routeKey, stats)
+    const stats = this.getRouteStats(routeKey)
+    const message = errorMessage.slice(0, 512)
+    const count = stats.errors.get(message) || 0
+    stats.errors.delete(message)
+    stats.errors.set(message, count + 1)
+    if (stats.errors.size > MAX_ERRORS_PER_ROUTE) {
+      stats.errors.delete(stats.errors.keys().next().value)
     }
+  }
 
-    const count = stats.errors.get(errorMessage) || 0
-    stats.errors.set(errorMessage, count + 1)
+  private getRouteStats(routeKey: string) {
+    this.pruneIdleRoutes()
+    const key = routeKey.slice(0, 512)
+    const stats = this.requestStats.get(key) || {
+      total: 0,
+      failed: 0,
+      durations: [],
+      errors: new Map<string, number>(),
+      lastSeen: 0,
+    }
+    stats.lastSeen = Date.now()
+    // Map insertion order tracks recency for idle and capacity eviction.
+    this.requestStats.delete(key)
+    this.requestStats.set(key, stats)
+    if (this.requestStats.size > MAX_TRACKED_ROUTES) {
+      this.requestStats.delete(this.requestStats.keys().next().value)
+    }
+    return stats
+  }
+
+  private pruneIdleRoutes() {
+    const cutoff = Date.now() - ROUTE_MAX_IDLE_MS
+    for (const [key, stats] of this.requestStats) {
+      if (stats.lastSeen > cutoff) break
+      this.requestStats.delete(key)
+    }
   }
 
   /** Get endpoints with highest failure rates */
   getFailingEndpoints(minRequests = 5): EndpointFailureStats[] {
+    this.pruneIdleRoutes()
     const results: EndpointFailureStats[] = []
 
     for (const [route, stats] of this.requestStats) {
@@ -390,6 +419,7 @@ class CrashAnalysisService {
   getHighLoadEndpoints(
     limit = 10,
   ): Array<{ route: string; totalRequests: number; avgDuration: number; failureRate: number }> {
+    this.pruneIdleRoutes()
     const results: Array<{
       route: string
       totalRequests: number

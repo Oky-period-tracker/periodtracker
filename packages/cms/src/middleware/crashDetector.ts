@@ -1,3 +1,4 @@
+import { safeRequestPath } from '../helpers/safeUtils'
 import { Request, Response, NextFunction } from 'express'
 import { crashAnalysisService } from '../services/crashAnalysisService'
 
@@ -14,11 +15,12 @@ export function crashDetector(req: Request, res: Response, next: NextFunction) {
     const durationMs = Math.round(durationNs / 1e6)
 
     // Record every request for endpoint stats
-    crashAnalysisService.recordRequest(req.method, req.originalUrl, res.statusCode, durationMs)
+    const route = typeof req.route?.path === 'string' ? req.route.path : '<unmatched>'
+    crashAnalysisService.recordRequest(req.method, route, res.statusCode, durationMs)
 
     // Detect timeout (request exceeded threshold but still completed)
     if (durationMs >= crashAnalysisService.getTimeoutThreshold()) {
-      crashAnalysisService.recordTimeout(req.method, req.originalUrl, durationMs)
+      crashAnalysisService.recordTimeout(req.method, safeRequestPath(req.originalUrl), durationMs)
     }
   })
 
@@ -32,11 +34,12 @@ export function crashDetector(req: Request, res: Response, next: NextFunction) {
 export function crashExceptionCapture(err: Error, req: Request, res: Response, next: NextFunction) {
   crashAnalysisService.recordException(
     req.method,
-    req.originalUrl,
+    safeRequestPath(req.originalUrl),
     err,
     res.statusCode >= 400 ? res.statusCode : 500,
     {
       userId: (req.user as any)?.id,
+      route: typeof req.route?.path === 'string' ? req.route.path : '<unmatched>',
     },
   )
 

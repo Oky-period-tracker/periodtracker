@@ -7,6 +7,7 @@ export class MonitoringController {
   async health(_req: Request, res: Response, _next: NextFunction) {
     try {
       const health = await monitoringService.getHealthStatus()
+      if (res.headersSent || res.destroyed) return
       const httpStatus =
         health.status === 'healthy' ? 200 : health.status === 'degraded' ? 200 : 503
       res.status(httpStatus).json(health)
@@ -15,6 +16,7 @@ export class MonitoringController {
         message: error?.message,
         stack: error?.stack,
       })
+      if (res.headersSent || res.destroyed) return
       res.status(503).json({ status: 'unhealthy', error: 'Health check failed' })
     }
   }

@@ -1,3 +1,4 @@
+import { safeRequestPath } from '../helpers/safeUtils'
 import { User } from '../entity/User'
 import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
@@ -55,7 +56,7 @@ export class Authentication {
     if (request.isAuthenticated()) {
       return next()
     }
-    logger.info('Unauthenticated access attempt', { url: request.originalUrl, ip: request.ip })
+    logger.info('Unauthenticated access attempt', { url: safeRequestPath(request.originalUrl), ip: request.ip })
     response.redirect('/login')
   }
 }

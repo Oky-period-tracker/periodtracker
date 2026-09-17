@@ -4,6 +4,7 @@ import { Article } from '../entity/Article'
 import { storage } from 'firebase-admin'
 import { logger } from '../logger'
 import { withTimeout, DEFAULT_EXTERNAL_TIMEOUT } from '../helpers/timeout'
+import { v4 as uuid } from 'uuid'
 
 export class ArticleVoiceOverController {
   constructor() {
@@ -34,22 +35,9 @@ export class ArticleVoiceOverController {
       const target = await this.articleRepository.findOne(id)
       if (typeof target === 'undefined') throw new Error('Target not found.')
 
-      // Delete existing file in Firebase Storage if exists
-      if (target.voiceOverKey) {
-        const existingFile = storage().bucket().file(target.voiceOverKey)
-        try {
-          await existingFile.delete()
-          logger.info('Deleted existing voice-over file', { key: target.voiceOverKey })
-        } catch (error) {
-          logger.error('Failed to delete existing voice-over file', {
-            key: target.voiceOverKey,
-            message: error?.message,
-            stack: error?.stack,
-          })
-        }
-      }
-
-      const Key = `${target.id.trim()}-${file.originalname.replace(
+      const previousKey = target.voiceOverKey
+      // A timed-out upload can still finish. Never overwrite the current audio.
+      const Key = `${target.id.trim()}-${uuid()}-${file.originalname.replace(
         /[^a-z0-9.-_]/gim,
         '',
       )}`.toLowerCase()
@@ -62,18 +50,49 @@ export class ArticleVoiceOverController {
         )
       })
 
-      await withTimeout(savePromise, DEFAULT_EXTERNAL_TIMEOUT, 'Voice-over upload')
+      try {
+        await withTimeout(savePromise, DEFAULT_EXTERNAL_TIMEOUT, 'Voice-over upload')
+      } catch (error) {
+        // If the upload completes after the timeout, remove only its unused object.
+        savePromise
+          .then(() => fileToUpload.delete())
+          .catch((cleanupError) => {
+            logger.warn('Failed to clean up unused voice-over upload', {
+              key: Key,
+              message: cleanupError?.message,
+            })
+          })
+        throw error
+      }
 
       target.voiceOverKey = Key
       await this.articleRepository.save(target)
+      if (previousKey) {
+        try {
+          await withTimeout(
+            storage().bucket().file(previousKey).delete(),
+            DEFAULT_EXTERNAL_TIMEOUT,
+            'Old voice-over cleanup',
+          )
+        } catch (error) {
+          logger.warn('Failed to delete old voice-over file', {
+            key: previousKey,
+            message: error?.message,
+          })
+        }
+      }
       logger.info('Voice-over uploaded successfully', { articleId: id, key: Key })
-      response.status(200).send(target)
+      if (!response.headersSent) response.status(200).send(target)
     } catch (error) {
       logger.error('ArticleVoiceOverController.upload failed', {
         message: error?.message,
         stack: error?.stack,
       })
-      response.status(500).send({ error: error?.message })
+      if (response.headersSent) {
+        next(error)
+      } else {
+        response.status(500).send({ error: error?.message })
+      }
     }
   }
 

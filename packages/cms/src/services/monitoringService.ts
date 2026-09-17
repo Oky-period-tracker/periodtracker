@@ -1,6 +1,7 @@
 import os from 'os'
 import { getConnection } from 'typeorm'
 import { logger } from '../logger'
+import { withTimeout } from '../helpers/timeout'
 
 interface ResponseTimeEntry {
   method: string
@@ -72,7 +73,7 @@ class MonitoringService {
       if (!connection.isConnected) {
         return { status: 'disconnected' }
       }
-      await connection.query('SELECT 1')
+      await withTimeout(connection.query('SELECT 1'), 5000, 'Monitoring database check')
       return { status: 'connected', latency: Date.now() - start }
     } catch (error) {
       return { status: 'error', error: error?.message }

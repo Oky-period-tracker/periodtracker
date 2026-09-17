@@ -112,17 +112,22 @@ export class SurveyController {
       surveyToSave.live = request.body.live
       surveyToSave.lang = request.user.lang
       surveyToSave.id = uuid()
-      const survay = await this.surveyRepository.save(surveyToSave)
-      await Promise.all(
-        request.body.questions.map(async (question: any) => {
-          await this.questionRepository.save({
+      if (!Array.isArray(request.body.questions)) {
+        response.status(400).send({ error: 'Questions must be an array' })
+        return
+      }
+      await getManager().transaction(async (manager) => {
+        const survey = await manager.getRepository(Survey).save(surveyToSave)
+        const questions = manager.getRepository(Question)
+        for (const question of request.body.questions) {
+          await questions.save({
             ...question,
             id: uuid(),
-            surveyId: survay.id,
+            surveyId: survey.id,
             is_multiple: question.is_multiple === 'true',
           })
-        }),
-      )
+        }
+      })
       logger.info('Survey created', {
         id: surveyToSave.id,
         questionsCount: request.body.questions?.length,
@@ -136,60 +141,51 @@ export class SurveyController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      if (request.body.questions && request.body.questions.length) {
-        await Promise.all(
-          request.body.questions.map(async (question: any) => {
-            if (!question.id || question.id === '') {
-              delete question.id
-              await this.questionRepository.save({
-                ...question,
-                id: uuid(),
-                surveyId: request.params.id,
-                is_multiple: question.is_multiple === 'true',
-              })
-            } else {
-              const questionToUpdate = await this.questionRepository.findOne(question.id)
-              if (!questionToUpdate) {
-                logger.warn('Question not found for update', {
-                  questionId: question.id,
-                  surveyId: request.params.id,
-                })
-                return
-              }
-              delete question.id
-              await this.questionRepository.save({
-                ...questionToUpdate,
-                ...question,
-                is_multiple: question.is_multiple === 'true',
-              })
-            }
-          }),
-        )
-        if (request.body.deletedQuestion) {
-          await Promise.all(
-            request.body.deletedQuestion.map(async (id) => {
-              const question = await this.questionRepository.findOne(id)
-              if (question) {
-                await this.questionRepository.remove(question)
-              } else {
-                logger.warn('Question not found for deletion', { questionId: id })
-              }
-            }),
-          )
-        }
+      const questions = request.body.questions || []
+      const deletedQuestions = request.body.deletedQuestion || []
+      if (!Array.isArray(questions) || !Array.isArray(deletedQuestions)) {
+        response.status(400).send({ error: 'Questions and deletedQuestion must be arrays' })
+        return
       }
-      const surveyToUpdate = await this.surveyRepository.findOne(request.params.id)
-      if (!surveyToUpdate) {
-        logger.warn('Survey not found for update', { id: request.params.id })
+      const updated = await getManager().transaction(async (manager) => {
+        const surveys = manager.getRepository(Survey)
+        const questionRepository = manager.getRepository(Question)
+        const survey = await surveys.findOne(request.params.id, { lock: { mode: 'pessimistic_write' } })
+        if (!survey) return false
+        for (const question of questions) {
+          if (!question.id) {
+            await questionRepository.save({
+              ...question, id: uuid(), surveyId: survey.id,
+              is_multiple: question.is_multiple === 'true',
+            })
+          } else {
+            const existing = await questionRepository.findOne({ id: question.id, surveyId: survey.id })
+            if (!existing) {
+              throw Object.assign(new Error('Question not found in this survey'), { statusCode: 404 })
+            }
+            await questionRepository.save({
+              ...existing, ...question, id: existing.id, surveyId: survey.id,
+              is_multiple: question.is_multiple === 'true',
+            })
+          }
+        }
+        for (const id of deletedQuestions) {
+          const question = await questionRepository.findOne({ id, surveyId: survey.id })
+          if (!question) {
+            throw Object.assign(new Error('Question not found in this survey'), { statusCode: 404 })
+          }
+          await questionRepository.remove(question)
+        }
+        survey.lang = request.user.lang
+        if (request.body.live) survey.live = request.body.live === 'true'
+        if (request.body.isAgeRestricted) survey.isAgeRestricted = request.body.isAgeRestricted === 'true'
+        await surveys.save(survey)
+        return true
+      })
+      if (!updated) {
         response.status(404).send({ error: 'Survey not found' })
         return
       }
-      surveyToUpdate.lang = request.user.lang
-      if (request.body.live) surveyToUpdate.live = request.body.live === 'true'
-      else surveyToUpdate.live = surveyToUpdate.live
-      if (request.body.isAgeRestricted)
-        surveyToUpdate.isAgeRestricted = request.body.isAgeRestricted === 'true'
-      await this.surveyRepository.save(surveyToUpdate)
       logger.info('Survey updated', { id: request.params.id })
       return true
     } catch (error) {
@@ -204,19 +200,22 @@ export class SurveyController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const questions = await this.questionRepository.find({
-        where: { surveyId: request.params.id },
+      const removed = await getManager().transaction(async (manager) => {
+        const surveys = manager.getRepository(Survey)
+        const questions = manager.getRepository(Question)
+        const survey = await surveys.findOne(request.params.id, { lock: { mode: 'pessimistic_write' } })
+        if (!survey) return undefined
+        const children = await questions.find({ where: { surveyId: survey.id } })
+        await questions.remove(children)
+        await surveys.remove(survey)
+        return { survey, questionsRemoved: children.length }
       })
-      await this.questionRepository.remove(questions)
-      const surveyToRemove = await this.surveyRepository.findOne(request.params.id)
-      if (!surveyToRemove) {
-        logger.warn('Survey not found for removal', { id: request.params.id })
+      if (!removed) {
         response.status(404).send({ error: 'Survey not found' })
         return
       }
-      await this.surveyRepository.remove(surveyToRemove)
-      logger.info('Survey removed', { id: request.params.id, questionsRemoved: questions.length })
-      return surveyToRemove
+      logger.info('Survey removed', { id: request.params.id, questionsRemoved: removed.questionsRemoved })
+      return removed.survey
     } catch (error) {
       logger.error('SurveyController.remove failed', {
         id: request.params.id,

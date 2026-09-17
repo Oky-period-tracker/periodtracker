@@ -6,7 +6,6 @@ import * as admin from 'firebase-admin'
 import { env } from '../env'
 import { logger } from '../logger'
 import { withTimeout, DEFAULT_EXTERNAL_TIMEOUT } from '../helpers/timeout'
-import { withRetry } from '../helpers/retry'
 
 export class NotificationController {
   private notificationRepository = getRepository(Notification)
@@ -170,14 +169,11 @@ export class NotificationController {
       topic: `oky_${lang}_notifications`,
     }
     try {
-      const response = await withRetry(
-        () =>
-          withTimeout(
-            admin.messaging().send(message),
-            DEFAULT_EXTERNAL_TIMEOUT,
-            'Firebase notification send',
-          ),
-        { maxRetries: 2, baseDelay: 1000, label: 'Firebase send' },
+      // A timeout does not cancel Firebase delivery; retrying could send it twice.
+      const response = await withTimeout(
+        admin.messaging().send(message),
+        DEFAULT_EXTERNAL_TIMEOUT,
+        'Firebase notification send',
       )
       logger.info('Firebase notification sent', {
         messageId: response,

@@ -198,21 +198,19 @@ const parsed = safeJsonParse(aboutContent, {}, 'About content')
 
 ## 7. Applying the Indexes
 
-There is no SQL migration file for these indexes. They are declared via
-`@Index()` decorators on the entity classes (see Section 1).
+Apply `sql/1742860800000-add-indexes.sql` manually when
+`DATABASE_SYNCHRONIZE=false` (the default). The script explicitly targets the
+`periodtracker` schema, regardless of the session's `search_path`. For a custom
+`DATABASE_SCHEMA`, replace the `periodtracker` qualifiers before applying it.
+Run with `psql -v ON_ERROR_STOP=1 --single-transaction -f <script>` using your
+normal database connection options. Reapplying the script skips existing indexes.
 
-Because the default configuration is `DATABASE_SYNCHRONIZE=false` (see
-`.env.dist` and `src/env.ts`), TypeORM does **not** create these indexes
-automatically on startup. To apply them you can either:
-
-- Set `DATABASE_SYNCHRONIZE=true` in a controlled (non-production) environment
-  so TypeORM synchronizes the schema and creates the indexes from the
-  decorators, or
-- Create the indexes manually in the database so they match the names and
-  columns listed in Section 1.
+The entity `@Index()` decorators also create indexes when synchronization is
+enabled; use `DATABASE_SYNCHRONIZE=true` only in controlled non-production environments.
 
 ## 8. Slow Query Logging
 
 Queries that exceed the `SLOW_QUERY_THRESHOLD` environment variable (in
-milliseconds, default `1000` per `.env.dist`) are logged so slow queries can be
-identified and investigated.
+milliseconds, default `1000` per `.env.dist`) emit timing metadata only when
+`DATABASE_LOGGING=true`. Raw SQL, parameter values, and driver error messages
+are omitted to avoid logging personal data.

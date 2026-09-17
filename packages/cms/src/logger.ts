@@ -16,11 +16,26 @@ const minLevel = LOG_LEVELS[env.logging.level] ?? LOG_LEVELS.info
 let logStream: fs.WriteStream | null = null
 
 if (env.logging.filePath) {
-  const dir = path.dirname(env.logging.filePath)
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
+  try {
+    const dir = path.dirname(env.logging.filePath)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true })
+    }
+    logStream = fs.createWriteStream(env.logging.filePath, { flags: 'a' })
+    logStream.on('error', disableFileLogging)
+  } catch (error) {
+    disableFileLogging(error as Error)
   }
-  logStream = fs.createWriteStream(env.logging.filePath, { flags: 'a' })
+}
+
+function disableFileLogging(error: Error) {
+  logStream?.destroy()
+  logStream = null
+  console.error(
+    formatEntry('error', 'File logging disabled; continuing with console output', {
+      message: error.message,
+    }),
+  )
 }
 
 function formatEntry(level: LogLevel, message: string, meta?: Record<string, unknown>): string {
@@ -53,7 +68,8 @@ function write(level: LogLevel, message: string, meta?: Record<string, unknown>)
   }
 
   // File output
-  if (logStream) {
+  // Console output remains available while a slow file destination drains.
+  if (logStream && !logStream.writableNeedDrain) {
     logStream.write(line + '\n')
   }
 }

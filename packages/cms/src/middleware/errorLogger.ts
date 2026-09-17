@@ -1,3 +1,4 @@
+import { safeRequestPath } from '../helpers/safeUtils'
 import { Request, Response, NextFunction } from 'express'
 import { logger } from '../logger'
 
@@ -6,7 +7,7 @@ export function errorLogger(err: Error, req: Request, res: Response, next: NextF
     message: err.message,
     stack: err.stack,
     method: req.method,
-    url: req.originalUrl,
+    url: safeRequestPath(req.originalUrl),
     ip: req.ip,
     userId: (req.user as any)?.id ?? null,
   })

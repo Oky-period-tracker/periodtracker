@@ -2,7 +2,7 @@
 
 ## Overview
 
-Basic monitoring has been added to the CMS backend to provide service health metrics and response time tracking. All monitoring endpoints are accessible without authentication so they can be used by load balancers, orchestration tools (Kubernetes), and external monitoring systems.
+Basic monitoring has been added to the CMS backend to provide service health metrics and response time tracking. Detailed monitoring endpoints require an authenticated super-admin session. Load balancers and orchestration tools should use the public `/health`, `/health/live`, and `/health/ready` probes.
 
 ---
 
@@ -251,12 +251,13 @@ The `/monitoring/health` endpoint actively checks database connectivity by:
 
 ### Authentication
 
-All `/monitoring/*` endpoints are **public** (no authentication required). This is intentional:
-- `/monitoring/health` must be accessible to Kubernetes probes and load balancers
-- No sensitive data is exposed through metrics endpoints
-- The Routes array in `routes.ts` does not include `/monitoring`, so the `isLoggedIn` middleware is not applied
+All `/monitoring/*` and `/diagnostics/*` endpoints require an authenticated super-admin session. Anonymous requests receive 401; other CMS roles receive 403. Responses use `Cache-Control: private, no-store`.
+
+Use `/health/live` for liveness and `/health/ready` for readiness. These probes remain public.
 
 ---
+
+Curl examples for protected endpoints require a valid super-admin session cookie (for example, `curl -b cookies.txt ...`).
 
 ## Usage Examples
 
@@ -265,14 +266,14 @@ All `/monitoring/*` endpoints are **public** (no authentication required). This 
 ```yaml
 livenessProbe:
   httpGet:
-    path: /monitoring/health
+    path: /health/live
     port: 5000
   initialDelaySeconds: 15
   periodSeconds: 30
 
 readinessProbe:
   httpGet:
-    path: /monitoring/health
+    path: /health/ready
     port: 5000
   initialDelaySeconds: 5
   periodSeconds: 10
@@ -311,3 +312,7 @@ fi
 P95=$(curl -s http://localhost:5000/monitoring/metrics | jq '.responseTime.p95')
 echo "p95 response time: ${P95}ms"
 ```
+
+The monitoring database check has a five-second application deadline. Late results
+do not write another HTTP response after a timeout or disconnect. This deadline
+does not cancel the underlying PostgreSQL query.

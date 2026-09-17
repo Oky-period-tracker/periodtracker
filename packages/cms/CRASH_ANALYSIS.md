@@ -54,7 +54,11 @@ A crash analysis and diagnostics system for the CMS that continuously tracks exc
 
 ## Diagnostics Endpoints
 
-All diagnostics endpoints are **public** (no authentication) for operational access.
+All diagnostics endpoints require an authenticated super-admin session (401 for anonymous requests, 403 for other CMS roles). Responses must not be cached.
+
+Endpoint statistics group requests by registered route pattern and combine unmatched URLs into one key. They retain at most 500 routes, 1,000 durations per route, and 50 distinct error messages per route. Routes expire after one hour without activity; capacity eviction removes the least recently used entry. Route keys and grouped error messages are limited to 512 characters.
+
+Curl examples for protected endpoints require a valid super-admin session cookie (for example, `curl -b cookies.txt ...`).
 
 ### `GET /diagnostics/report` — Full Crash Report
 
@@ -280,6 +284,16 @@ Failing and high-load endpoint analysis.
 
 A CLI utility for reproducing crash scenarios consistently.
 
+For `memory-check` and `full-diagnostic`, the CLI prompts for your CMS username and password. Password input is hidden. It logs in through the existing `/login` endpoint and keeps the returned signed session cookies in memory; the password and cookies are not saved or printed. A super-admin account is required. The full diagnostic scenario checks access before generating traffic.
+
+```bash
+npx ts-node src/utils/crashReproduction.ts memory-check --base-url=https://cms.example.com
+```
+
+For non-interactive scripts, `CMS_SESSION_COOKIE` remains available: supply the complete `Cookie` header from a valid super-admin session, including `session` and `session.sig`. Without a terminal or an existing cookie, diagnostic commands fail with instructions.
+
+Remote login and diagnostics require HTTPS; HTTP is allowed for localhost. Cookies are sent only to `/diagnostics/*`, not health checks or error-generation requests. Failed login, HTTP 401/403, and other failed diagnostic requests exit with code 1.
+
 ### Usage
 
 ```bash
@@ -361,7 +375,7 @@ The `crashDetector` is placed first to capture the full request lifecycle. The `
 |---|---|
 | `src/middleware/requestTimeout.ts` | Request-level timeout middleware (60s default) — sends 503 on timeout |
 | `src/helpers/timeout.ts` | `withTimeout()` promise wrapper — used in health checks and external service calls |
-| `src/helpers/retry.ts` | `withRetry()` with exponential backoff — used for DB connection and external calls |
+| `src/helpers/retry.ts` | `withRetry()` with exponential backoff — used for DB connection; notification sends are not automatically retried |
 
 ---
 

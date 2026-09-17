@@ -85,7 +85,7 @@ describe('Health Check Endpoints', () => {
         uptime: 100,
         timestamp: new Date().toISOString(),
         checks: {
-          database: { status: 'down', error: 'Connection refused', lastChecked: new Date().toISOString() },
+          database: { status: 'down', error: 'getaddrinfo ENOTFOUND private-database.internal', lastChecked: new Date().toISOString() },
           service: { status: 'up', lastChecked: new Date().toISOString() },
         },
       })
@@ -93,6 +93,9 @@ describe('Health Check Endpoints', () => {
       const res = await request(app).get('/health')
       expect(res.status).toBe(503)
       expect(res.body.status).toBe('unhealthy')
+      expect(res.body.checks.database.status).toBe('down')
+      expect(res.body.checks.database).not.toHaveProperty('error')
+      expect(res.text).not.toContain('private-database.internal')
     })
 
     it('returns 503 when health check throws', async () => {

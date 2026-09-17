@@ -16,21 +16,58 @@
  */
 
 import http from 'http'
+import https from 'https'
+import readline from 'readline'
+import { Writable } from 'stream'
 
 const BASE_URL =
   process.argv.find((a) => a.startsWith('--base-url='))?.split('=')[1] || 'http://localhost:5000'
 const scenario = process.argv[2]
+let sessionCookie = process.env.CMS_SESSION_COOKIE || ''
 
 // ─── HTTP helpers ─────────────────────────────────────────────────
 
-function get(path: string, timeout = 30000): Promise<{ status: number; body: string }> {
+function requestCms(
+  path: string,
+  timeout = 30000,
+  form?: string,
+): Promise<{
+  status: number
+  body: string
+  headers: http.IncomingHttpHeaders
+}> {
   return new Promise((resolve, reject) => {
-    const url = `${BASE_URL}${path}`
-    const req = http.get(url, (res) => {
-      let body = ''
-      res.on('data', (chunk) => (body += chunk))
-      res.on('end', () => resolve({ status: res.statusCode || 0, body }))
-    })
+    const url = new URL(`${BASE_URL}${path}`)
+    const diagnostic = path.startsWith('/diagnostics/')
+    const cookie = diagnostic ? sessionCookie : undefined
+    const transport = url.protocol === 'https:' ? https : http
+    const req = transport.request(
+      url,
+      {
+        method: form === undefined ? 'GET' : 'POST',
+        headers: {
+          ...(cookie ? { Cookie: cookie } : {}),
+          ...(form === undefined ? {} : { 'Content-Type': 'application/x-www-form-urlencoded' }),
+        },
+      },
+      (res) => {
+        let body = ''
+        res.on('data', (chunk) => (body += chunk))
+        res.on('end', () => {
+          const status = res.statusCode || 0
+          if (diagnostic && (status < 200 || status >= 300)) {
+            const advice =
+              status === 401 || status === 403
+                ? ' Set CMS_SESSION_COOKIE to the complete Cookie header from a valid super-admin session.'
+                : ''
+            reject(new Error(`HTTP ${status} from ${path}.${advice}`))
+            return
+          }
+          resolve({ status, body, headers: res.headers })
+        })
+      },
+    )
+    req.end(form)
     req.on('error', reject)
     req.setTimeout(timeout, () => {
       req.destroy()
@@ -39,13 +76,68 @@ function get(path: string, timeout = 30000): Promise<{ status: number; body: str
   })
 }
 
+function promptCredentials(): Promise<{ username: string; password: string }> {
+  if (!process.stdin.isTTY || !process.stdout.isTTY) {
+    return Promise.reject(
+      new Error(
+        'Interactive login requires a terminal. Set CMS_SESSION_COOKIE for non-interactive use.',
+      ),
+    )
+  }
+  return new Promise((resolve, reject) => {
+    let hidden = false
+    const output = new Writable({
+      write(chunk, encoding, callback) {
+        if (!hidden) process.stdout.write(chunk, encoding)
+        callback()
+      },
+    })
+    const input = readline.createInterface({ input: process.stdin, output, terminal: true })
+    input.on('close', () => reject(new Error('Login cancelled.')))
+    input.on('SIGINT', () => {
+      process.stdout.write('\n')
+      input.close()
+    })
+    input.question('CMS username: ', (username) => {
+      process.stdout.write('CMS password: ')
+      hidden = true
+      input.question('', (password) => {
+        process.stdout.write('\n')
+        resolve({ username, password })
+        input.close()
+      })
+    })
+  })
+}
+
+async function login() {
+  const credentials = await promptCredentials()
+  const { status, headers } = await requestCms(
+    '/login',
+    30000,
+    new URLSearchParams(credentials).toString(),
+  )
+  // Failed login can also set a flash-message cookie. Check the success redirect.
+  if (status !== 302 || headers.location !== '/encyclopedia') {
+    throw new Error('Login failed. Check your CMS username and password.')
+  }
+  const cookies = (headers['set-cookie'] || []).map((cookie) => cookie.split(';')[0])
+  if (
+    !cookies.some((cookie) => cookie.startsWith('session=')) ||
+    !cookies.some((cookie) => cookie.startsWith('session.sig='))
+  ) {
+    throw new Error('Login failed: the CMS did not return a signed session.')
+  }
+  sessionCookie = cookies.join('; ')
+}
+
 // ─── Scenarios ────────────────────────────────────────────────────
 
 async function healthCheck() {
   console.log('\n=== Health Check Monitor ===')
   for (let i = 0; i < 10; i++) {
     try {
-      const { status, body } = await get('/health')
+      const { status, body } = await requestCms('/health')
       const data = JSON.parse(body)
       console.log(
         `[${i + 1}/10] Status: ${data.status} (HTTP ${status}) | DB: ${
@@ -74,7 +166,7 @@ async function rapidErrors() {
   for (let i = 0; i < 20; i++) {
     const path = badPaths[i % badPaths.length]
     try {
-      const { status } = await get(path)
+      const { status } = await requestCms(path)
       if (status >= 400) errorCount++
       process.stdout.write(`  Request ${i + 1}/20: ${path} → ${status}\n`)
     } catch {
@@ -101,7 +193,7 @@ async function timeoutSimulation() {
   for (const path of endpoints) {
     const start = Date.now()
     try {
-      const { status } = await get(path, 15000)
+      const { status } = await requestCms(path, 15000)
       const duration = Date.now() - start
       console.log(`  ${path} → ${status} (${duration}ms)`)
     } catch (error) {
@@ -116,7 +208,7 @@ async function timeoutSimulation() {
 async function memoryCheck() {
   console.log('\n=== Memory Analysis ===')
   try {
-    const { body } = await get('/diagnostics/memory')
+    const { body } = await requestCms('/diagnostics/memory')
     const data = JSON.parse(body)
     console.log(`Current Memory:`)
     console.log(`  Heap Used: ${data.current.heapUsedFormatted} (${data.current.heapUsedPercent}%)`)
@@ -129,6 +221,7 @@ async function memoryCheck() {
     }
   } catch (error) {
     console.log(`Failed to get memory data: ${(error as Error).message}`)
+    process.exitCode = 1
   }
 }
 
@@ -144,7 +237,7 @@ async function fullDiagnostic() {
   // Pull the full report
   console.log('\n=== Fetching Full Report ===')
   try {
-    const { body } = await get('/diagnostics/report')
+    const { body } = await requestCms('/diagnostics/report')
     const report = JSON.parse(body)
 
     console.log('\n--- Summary ---')
@@ -178,6 +271,7 @@ async function fullDiagnostic() {
     console.log('\nFull report available at: GET /diagnostics/report')
   } catch (error) {
     console.log(`Failed to fetch report: ${(error as Error).message}`)
+    process.exitCode = 1
   }
 }
 
@@ -201,6 +295,14 @@ Scenarios:
 
 Options:
   --base-url=URL      CMS base URL (default: http://localhost:5000)
+
+Login:
+  Diagnostic commands prompt for CMS username and password (hidden input).
+  A super-admin account is required. Session cookies stay in memory.
+
+Environment:
+  CMS_SESSION_COOKIE Optional existing session for non-interactive use, including
+                     session and session.sig. Sent only to diagnostics endpoints.
 `)
 }
 
@@ -211,6 +313,21 @@ async function main() {
   }
 
   console.log(`Target: ${BASE_URL}`)
+
+  if (scenario === 'memory-check' || scenario === 'full-diagnostic') {
+    const target = new URL(BASE_URL)
+    if (
+      target.protocol !== 'https:' &&
+      !(
+        target.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(target.hostname)
+      )
+    ) {
+      throw new Error('Use HTTPS for remote CMS login and diagnostics.')
+    }
+    if (!sessionCookie) await login()
+    // Check permission before the full scenario generates traffic.
+    if (scenario === 'full-diagnostic') await requestCms('/diagnostics/memory')
+  }
 
   switch (scenario) {
     case 'health-check':

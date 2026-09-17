@@ -35,6 +35,8 @@ Added to `.env.dist` and `src/env.ts`:
 | `SLOW_QUERY_THRESHOLD` | `1000` | DB query duration (ms) to trigger a warning |
 | `SLOW_REQUEST_THRESHOLD` | `3000` | HTTP request duration (ms) to trigger a warning |
 
+File output is optional: filesystem errors disable it while console logging continues. If the file stream is backpressured, new entries go to the console only until it drains.
+
 ---
 
 ## Middleware
@@ -75,18 +77,18 @@ Catches unhandled errors in the Express pipeline:
 
 Custom TypeORM logger implementation:
 
-- Logs all query errors with the failing SQL
+- Logs query error codes without raw SQL, bind values, or driver messages
 - Warns on queries exceeding `SLOW_QUERY_THRESHOLD`
 - Logs schema builds and migrations at info level
 
 Configured in `ormconfig.ts`:
 
 ```ts
-maxQueryExecutionTime: env.logging.slowQueryThreshold,
+maxQueryExecutionTime: env.db.logging ? env.logging.slowQueryThreshold : undefined,
 logger: env.db.logging ? new SlowQueryLogger() : undefined,
 ```
 
-The `SlowQueryLogger` is only attached when DB logging is enabled (the `DATABASE_LOGGING` env var); otherwise the logger is left `undefined`.
+Both the slow-query threshold and `SlowQueryLogger` are enabled only when `DATABASE_LOGGING=true`. Query logs retain duration, threshold, parameter count, and PostgreSQL error codes; SQL text, parameter values, and driver error messages/stacks are omitted because they may contain personal data.
 
 ---
 
@@ -147,14 +149,10 @@ admin.messaging().send(message)
 **After:**
 ```ts
 try {
-  const response = await withRetry(
-    () =>
-      withTimeout(
-        admin.messaging().send(message),
-        DEFAULT_EXTERNAL_TIMEOUT,
-        'Firebase notification send',
-      ),
-    { maxRetries: 2, baseDelay: 1000, label: 'Firebase send' },
+  const response = await withTimeout(
+    admin.messaging().send(message),
+    DEFAULT_EXTERNAL_TIMEOUT,
+    'Firebase notification send',
   )
   logger.info('Firebase notification sent', { messageId: response, topic })
 } catch (error) {
@@ -163,9 +161,13 @@ try {
 }
 ```
 
-The send is wrapped in `withRetry` (up to 2 retries with backoff) and `withTimeout` (bounded by `DEFAULT_EXTERNAL_TIMEOUT`) so a slow or transient Firebase failure is retried and time-bounded rather than hanging or failing immediately.
+The send uses `withTimeout` (bounded by `DEFAULT_EXTERNAL_TIMEOUT`) with no automatic retries. A timeout does not cancel Firebase delivery, so retrying could duplicate a notification. After a timeout, delivery status is unknown; the notification is not recorded as sent. Confirm delivery before manually resending.
 
 ---
+
+## Voice-over replacement
+
+Replacement uploads use a unique object key. Existing audio is deleted only after the replacement upload and database update succeed. If the upload times out but later completes, its unused object is removed. Cleanup errors are logged without changing a confirmed successful replacement.
 
 ## Controllers Updated
 
@@ -255,3 +257,16 @@ All 24 CMS controllers received logging and error handling:
 | `.env.dist` | Added logging environment variables |
 | `src/access/authentication.ts` | Login/auth logging |
 | All 24 controllers | Logger import, try/catch, null checks |
+
+Request logs and diagnostic URL fields omit query strings and fragments. This
+applies to incoming/completed requests, timeouts, authentication failures, and
+route errors. Paths are capped at 512 characters.
+
+Inline EJS scripts use a fresh per-response CSP nonce. Untrusted banner values
+are escaped in HTML, and new banner writes accept only HTTP(S), root-relative,
+or supported raster-image data URLs. Script `unsafe-inline` is disabled.
+
+Survey creation, updates, and deletion use a database transaction for the parent
+and its questions. Question writes run sequentially; updates/deletions verify
+that question IDs belong to the target survey. Parent updates and deletions lock
+the survey row while the transaction is active.

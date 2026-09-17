@@ -1,3 +1,4 @@
+import { isSafeBannerImage } from '../helpers/safeUtils'
 import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { AboutBanner } from '../entity/AboutBanner'
@@ -60,6 +61,10 @@ export class AboutBannerController {
 
   async saveOrUpdate(request: Request, response: Response, next: NextFunction) {
     try {
+      if (!isSafeBannerImage(request.body.image)) {
+        response.status(400).send({ error: 'Invalid banner image URL' })
+        return
+      }
       let aboutToUpdate = await this.aboutBannerRepository.findOne({
         where: { lang: request.user.lang },
       })

@@ -1,3 +1,4 @@
+import { safeRequestPath } from '../helpers/safeUtils'
 import { Request, Response, NextFunction } from 'express'
 import { logger } from '../logger'
 import { env } from '../env'
@@ -8,7 +9,7 @@ export function requestLogger(req: Request, res: Response, next: NextFunction) {
   // Log the incoming request
   logger.info('Incoming request', {
     method: req.method,
-    url: req.originalUrl,
+    url: safeRequestPath(req.originalUrl),
     ip: req.ip,
     userAgent: req.get('user-agent'),
     userId: (req.user as any)?.id ?? null,
@@ -19,7 +20,7 @@ export function requestLogger(req: Request, res: Response, next: NextFunction) {
     const duration = Date.now() - start
     const meta: Record<string, unknown> = {
       method: req.method,
-      url: req.originalUrl,
+      url: safeRequestPath(req.originalUrl),
       statusCode: res.statusCode,
       duration: `${duration}ms`,
     }

@@ -116,6 +116,52 @@ describe('CrashAnalysisService', () => {
     })
   })
 
+  describe('Bounded endpoint statistics', () => {
+    it('evicts old routes when many distinct requests arrive', () => {
+      for (let i = 0; i < 1200; i++) service.recordRequest('GET', `/missing-${i}`, 404, 1)
+      const routes = service.getHighLoadEndpoints(2000)
+      expect(routes.length).toBeLessThanOrEqual(500)
+      expect(routes.some((entry) => entry.route === 'GET /missing-1199')).toBe(true)
+      expect(routes.some((entry) => entry.route === 'GET /missing-0')).toBe(false)
+    })
+
+    it('bounds routes created by exceptions before requests complete', () => {
+      for (let i = 0; i < 1200; i++) {
+        service.recordException('GET', `/failed-${i}`, new Error('failure'), 500)
+      }
+      expect(service.getHighLoadEndpoints(2000).length).toBeLessThanOrEqual(500)
+    })
+
+    it('bounds distinct error messages while retaining counts', () => {
+      for (let i = 0; i < 100; i++) {
+        service.recordRequest('GET', '/failure', 500, 1)
+        service.recordException('GET', '/failure', new Error(`failure-${i}`), 500)
+      }
+      service.recordException('GET', '/failure', new Error('failure-99'), 500)
+      const [endpoint] = service.getFailingEndpoints()
+      expect(endpoint.errors.length).toBeLessThanOrEqual(50)
+      expect(endpoint.errors).toContainEqual({ message: 'failure-99', count: 2 })
+      expect(endpoint.totalRequests).toBe(100)
+    })
+
+    it('expires idle routes but retains recently active routes', () => {
+      const clock = jest.spyOn(Date, 'now')
+      try {
+        clock.mockReturnValue(0)
+        service.recordRequest('GET', '/idle', 200, 1)
+        service.recordRequest('GET', '/active', 200, 1)
+        clock.mockReturnValue(30 * 60 * 1000)
+        service.recordRequest('GET', '/active', 200, 1)
+        clock.mockReturnValue(61 * 60 * 1000)
+        const routes = service.getHighLoadEndpoints()
+        expect(routes.map((entry) => entry.route)).toEqual(['GET /active'])
+        expect(routes[0].totalRequests).toBe(2)
+      } finally {
+        clock.mockRestore()
+      }
+    })
+  })
+
   describe('Timeout Tracking', () => {
     it('records timeouts', () => {
       service.recordTimeout('GET', '/data/generate-content-sheet', 15000)

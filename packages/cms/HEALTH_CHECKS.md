@@ -76,7 +76,7 @@ Returns `503` with `{ "status": "not_ready" }` if the service is starting up or 
 
 - Verifies `connection.isConnected` via TypeORM
 - Executes `SELECT 1` to measure actual round-trip latency, wrapped in `withTimeout(5000)` to prevent hanging queries
-- Reports `up` / `down` status with latency and error details
+- Public responses report `up` / `down` status and latency; raw database errors remain internal
 - Triggers `unhealthy` status if database is unreachable
 
 ### Database Connection Resilience
@@ -99,7 +99,7 @@ Returns `503` with `{ "status": "not_ready" }` if the service is starting up or 
 ```yaml
 cms:
   healthcheck:
-    test: ["CMD", "node", "-e", "const http = require('http'); const req = http.get('http://localhost:5000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.setTimeout(5000, () => { req.destroy(); process.exit(1); });"]
+    test: ["CMD", "node", "-e", "const http = require('http'); const req = http.get({ hostname: 'localhost', port: parseInt(process.env.CMS_PORT, 10) || 5000, path: '/health' }, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.setTimeout(5000, () => { req.destroy(); process.exit(1); });"]
     interval: 30s      # Check every 30 seconds
     timeout: 10s       # Fail if no response within 10 seconds
     retries: 3         # Mark unhealthy after 3 consecutive failures
@@ -125,7 +125,7 @@ Both development and production stages include the same `HEALTHCHECK` instructio
 
 ```dockerfile
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD node -e "const http = require('http'); const req = http.get('http://localhost:5000/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.setTimeout(5000, () => { req.destroy(); process.exit(1); });"
+  CMD node -e "const http = require('http'); const req = http.get({ hostname: 'localhost', port: parseInt(process.env.CMS_PORT, 10) || 5000, path: '/health' }, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.setTimeout(5000, () => { req.destroy(); process.exit(1); });"
 ```
 
 ---
@@ -155,7 +155,7 @@ This ensures:
 Container starts
       │
       ▼
-Express binds to port 5000
+Express binds to CMS_PORT (default 5000)
       │
       ▼
 healthCheckService.markServiceReady()
@@ -281,3 +281,8 @@ docker exec <cms-container-id> kill 1
 # Docker should restart the container automatically (check Status column)
 docker ps --format "table {{.Names}}\t{{.Status}}"
 ```
+
+The production image launches Node directly so Docker SIGTERM reaches the CMS
+shutdown handler. The handler marks readiness false, drains HTTP requests, closes
+the database, and has a 30-second forced-exit fallback. Container stop grace must
+allow that drain window when long requests are expected.

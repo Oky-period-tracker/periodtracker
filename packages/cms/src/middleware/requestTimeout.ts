@@ -1,3 +1,4 @@
+import { safeRequestPath } from '../helpers/safeUtils'
 import { Request, Response, NextFunction } from 'express'
 import { logger } from '../logger'
 import { DEFAULT_REQUEST_TIMEOUT } from '../helpers/timeout'
@@ -13,7 +14,7 @@ export const requestTimeout = (timeoutMs = DEFAULT_REQUEST_TIMEOUT) => {
       if (!res.headersSent) {
         logger.error('Request timeout', {
           method: req.method,
-          url: req.originalUrl,
+          url: safeRequestPath(req.originalUrl),
           timeoutMs,
         })
         res.status(503).json({ error: 'Request timed out' })

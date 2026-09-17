@@ -67,11 +67,7 @@ describe('crashDetector middleware', () => {
     await request(app).get('/slow')
 
     expect(mockedService.recordTimeout).toHaveBeenCalledTimes(1)
-    expect(mockedService.recordTimeout).toHaveBeenCalledWith(
-      'GET',
-      '/slow',
-      expect.any(Number),
-    )
+    expect(mockedService.recordTimeout).toHaveBeenCalledWith('GET', '/slow', expect.any(Number))
   })
 
   it('does not record timeout for fast requests', async () => {
@@ -112,6 +108,53 @@ describe('crashExceptionCapture middleware', () => {
       expect.any(Error),
       500,
       expect.objectContaining({}),
+    )
+  })
+})
+
+describe('route aggregation', () => {
+  afterEach(() => jest.clearAllMocks())
+
+  it('uses the registered pattern for variable route segments', async () => {
+    const app = express()
+    app.use(crashDetector)
+    app.get('/articles/:slug', (_req, res) => res.sendStatus(200))
+    await request(app).get('/articles/first')
+    await request(app).get('/articles/second?query=value')
+    expect(mockedService.recordRequest).toHaveBeenNthCalledWith(
+      1,
+      'GET',
+      '/articles/:slug',
+      200,
+      expect.any(Number),
+    )
+    expect(mockedService.recordRequest).toHaveBeenNthCalledWith(
+      2,
+      'GET',
+      '/articles/:slug',
+      200,
+      expect.any(Number),
+    )
+  })
+
+  it('groups unmatched paths under one key', async () => {
+    const app = express()
+    app.use(crashDetector)
+    await request(app).get('/missing-one')
+    await request(app).get('/missing-two')
+    expect(mockedService.recordRequest).toHaveBeenNthCalledWith(
+      1,
+      'GET',
+      '<unmatched>',
+      404,
+      expect.any(Number),
+    )
+    expect(mockedService.recordRequest).toHaveBeenNthCalledWith(
+      2,
+      'GET',
+      '<unmatched>',
+      404,
+      expect.any(Number),
     )
   })
 })

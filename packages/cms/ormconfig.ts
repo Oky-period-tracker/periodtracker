@@ -12,7 +12,7 @@ const ormconfig: ConnectionOptions = {
   synchronize: env.db.synchronize,
   schema: env.db.schema,
   logging: env.db.logging ? 'all' : false,
-  maxQueryExecutionTime: env.logging.slowQueryThreshold,
+  maxQueryExecutionTime: env.db.logging ? env.logging.slowQueryThreshold : undefined,
   logger: env.db.logging ? new SlowQueryLogger() : undefined,
   entities: [__dirname + '/src/entity/**/*{.ts,.js}'],
   subscribers: [__dirname + '/src/subscriber/**/*{.ts,.js}'],

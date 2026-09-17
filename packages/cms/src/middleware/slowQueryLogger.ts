@@ -6,8 +6,7 @@ export class SlowQueryLogger implements TypeORMLogger {
   logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner) {
     if (env.logging.level === 'debug') {
       logger.debug('Query', {
-        query,
-        parameters: parameters?.length ? parameters : undefined,
+        parameterCount: parameters?.length || 0,
       })
     }
   }
@@ -18,11 +17,11 @@ export class SlowQueryLogger implements TypeORMLogger {
     parameters?: any[],
     queryRunner?: QueryRunner,
   ) {
+    // SQL, bind values and driver messages can all contain personal data.
+    const code = typeof error === 'string' ? undefined : (error as any).code
     logger.error('Query error', {
-      error: typeof error === 'string' ? error : error.message,
-      stack: typeof error === 'string' ? undefined : error.stack,
-      query,
-      parameters: parameters?.length ? parameters : undefined,
+      code: typeof code === 'string' && /^[0-9A-Z]{5}$/.test(code) ? code : undefined,
+      parameterCount: parameters?.length || 0,
     })
   }
 
@@ -30,8 +29,7 @@ export class SlowQueryLogger implements TypeORMLogger {
     logger.warn('Slow query detected', {
       duration: `${time}ms`,
       threshold: `${env.logging.slowQueryThreshold}ms`,
-      query,
-      parameters: parameters?.length ? parameters : undefined,
+      parameterCount: parameters?.length || 0,
     })
   }
 

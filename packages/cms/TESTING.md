@@ -92,6 +92,25 @@ npx jest --testPathPattern="crash" --verbose
 
 ---
 
+## Review regression tests
+
+The follow-up tests and their limitations are summarized in [REVIEW_FIXES.md](REVIEW_FIXES.md). The suite currently contains 199 tests; six survey transaction tests require an isolated PostgreSQL instance and are skipped otherwise.
+
+Use the CMS dependency's TypeScript **4.7.4** with `ts-jest`. A shared workspace installation can expose a different TypeScript version through hoisting; verify compiler resolution if tests fail before execution.
+
+For database tests, provide `CMS_TEST_DATABASE_SOCKET` (a Unix socket directory or test host) and `CMS_TEST_DATABASE_PORT`. The tests connect to database `postgres` as the operating-system `USER`, create a unique `survey_test_*` schema, and remove that schema afterward. Use a disposable test database with suitable authentication and schema-creation privileges.
+
+```bash
+cd packages/cms
+CMS_TEST_DATABASE_SOCKET=/path/to/test-postgres/socket \
+CMS_TEST_DATABASE_PORT=55468 \
+yarn test --runInBand
+```
+
+The review's final run enabled these tests against PostgreSQL 16. Existing tests for Firebase and cloud storage use mocks; passing them does not establish live-service behavior.
+
+---
+
 ## Test Suites Explained
 
 ### 1. Health Check Endpoints (`__tests__/health/healthEndpoints.test.ts`)

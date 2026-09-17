@@ -2,10 +2,13 @@ import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { Article } from '../entity/Article'
 import { storage } from 'firebase-admin'
+import { logger } from '../logger'
+import { withTimeout, DEFAULT_EXTERNAL_TIMEOUT } from '../helpers/timeout'
+import { v4 as uuid } from 'uuid'
 
 export class ArticleVoiceOverController {
   constructor() {
-    this.upload = this.upload.bind(this) // Explicitly bind this
+    this.upload = this.upload.bind(this)
   }
 
   private articleRepository = getRepository(Article)
@@ -21,80 +24,115 @@ export class ArticleVoiceOverController {
   }
 
   async upload(request: Request, response: Response, next: NextFunction) {
-    const id = request.body.id
-    // @TODO:PH
-    // @ts-ignore
-    const file = request.file
+    try {
+      const id = request.body.id
+      // @ts-ignore
+      const file = request.file
 
-    if (typeof id !== 'string') throw new Error('ID is not a string.')
-    if (typeof file === 'undefined') throw new Error('No file uploaded.')
+      if (typeof id !== 'string') throw new Error('ID is not a string.')
+      if (typeof file === 'undefined') throw new Error('No file uploaded.')
 
-    const target = await this.articleRepository.findOne(id)
+      const target = await this.articleRepository.findOne(id)
+      if (typeof target === 'undefined') throw new Error('Target not found.')
 
-    if (typeof target === 'undefined') throw new Error('Target not found.')
+      const previousKey = target.voiceOverKey
+      // A timed-out upload can still finish. Never overwrite the current audio.
+      const Key = `${target.id.trim()}-${uuid()}-${file.originalname.replace(
+        /[^a-z0-9.-_]/gim,
+        '',
+      )}`.toLowerCase()
 
-    // Delete existing file in Firebase Storage if exists
-    if (target.voiceOverKey) {
-      const existingFile = storage().bucket().file(target.voiceOverKey)
+      const fileToUpload = storage().bucket().file(Key)
+
+      const savePromise = new Promise<void>((resolve, reject) => {
+        fileToUpload.save(file.buffer, { metadata: { contentType: file.mimetype } }, (err) =>
+          err ? reject(err) : resolve(),
+        )
+      })
+
       try {
-        await existingFile.delete()
+        await withTimeout(savePromise, DEFAULT_EXTERNAL_TIMEOUT, 'Voice-over upload')
       } catch (error) {
-        console.error('Failed to delete existing file:', error)
+        // If the upload completes after the timeout, remove only its unused object.
+        savePromise
+          .then(() => fileToUpload.delete())
+          .catch((cleanupError) => {
+            logger.warn('Failed to clean up unused voice-over upload', {
+              key: Key,
+              message: cleanupError?.message,
+            })
+          })
+        throw error
+      }
+
+      target.voiceOverKey = Key
+      await this.articleRepository.save(target)
+      if (previousKey) {
+        try {
+          await withTimeout(
+            storage().bucket().file(previousKey).delete(),
+            DEFAULT_EXTERNAL_TIMEOUT,
+            'Old voice-over cleanup',
+          )
+        } catch (error) {
+          logger.warn('Failed to delete old voice-over file', {
+            key: previousKey,
+            message: error?.message,
+          })
+        }
+      }
+      logger.info('Voice-over uploaded successfully', { articleId: id, key: Key })
+      if (!response.headersSent) response.status(200).send(target)
+    } catch (error) {
+      logger.error('ArticleVoiceOverController.upload failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
+      if (response.headersSent) {
+        next(error)
+      } else {
+        response.status(500).send({ error: error?.message })
       }
     }
-
-    const Key = `${target.id.trim()}-${file.originalname.replace(
-      /[^a-z0-9.-_]/gim,
-      '',
-    )}`.toLowerCase()
-
-    const fileToUpload = storage().bucket().file(Key)
-
-    fileToUpload.save(
-      file.buffer,
-      {
-        metadata: {
-          contentType: file.mimetype,
-        },
-      },
-      (err) => {
-        if (err) {
-          response.status(500).send(err.toString())
-        } else {
-          // Update the article with the new voice over key
-          target.voiceOverKey = Key
-          this.articleRepository
-            .save(target)
-            .then(() => response.status(200).send(target))
-            .catch((saveErr) => response.status(500).send(saveErr.toString()))
-        }
-      },
-    )
   }
 
   async remove(request: Request, response: Response, next: NextFunction) {
-    const id = request.body.id
-    if (typeof id !== 'string') throw new Error('ID is not a string.')
+    try {
+      const id = request.body.id
+      if (typeof id !== 'string') throw new Error('ID is not a string.')
 
-    const target = await this.articleRepository.findOne(id)
-    if (typeof target === 'undefined') throw new Error('Target not found.')
+      const target = await this.articleRepository.findOne(id)
+      if (typeof target === 'undefined') throw new Error('Target not found.')
 
-    if (typeof target.voiceOverKey === 'string' && target.voiceOverKey.length > 0) {
-      const existingFile = storage().bucket().file(target.voiceOverKey)
-      try {
-        await existingFile.delete()
-      } catch (error) {
-        console.error('Failed to delete existing file:', error)
+      if (typeof target.voiceOverKey === 'string' && target.voiceOverKey.length > 0) {
+        const existingFile = storage().bucket().file(target.voiceOverKey)
+        try {
+          await existingFile.delete()
+          logger.info('Deleted voice-over file', { key: target.voiceOverKey })
+        } catch (error) {
+          logger.error('Failed to delete voice-over file', {
+            key: target.voiceOverKey,
+            message: error?.message,
+            stack: error?.stack,
+          })
+        }
       }
+
+      const newTarget = {
+        ...target,
+        voiceOverKey: null,
+      }
+
+      await this.articleRepository.save(newTarget)
+      logger.info('Voice-over removed from article', { articleId: id })
+
+      return newTarget
+    } catch (error) {
+      logger.error('ArticleVoiceOverController.remove failed', {
+        message: error?.message,
+        stack: error?.stack,
+      })
+      throw error
     }
-
-    const newTarget = {
-      ...target,
-      voiceOverKey: null,
-    }
-
-    await this.articleRepository.save(newTarget)
-
-    return newTarget
   }
 }

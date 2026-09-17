@@ -1,4 +1,4 @@
-$('.languageChange').on('click', event => {
+$('.languageChange').on('click', (event) => {
   var button = $(event.currentTarget) // Button that triggered the modal
   var lang = button.data('value') // Extract info from data-* attributes
   // if the article ID is 0 we are creating a new entry
@@ -6,10 +6,10 @@ $('.languageChange').on('click', event => {
     url: '/user/change-location',
     type: 'PUT',
     data: { lang: lang },
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })

@@ -1,6 +1,9 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm'
+import { Entity, PrimaryColumn, Column, Index } from 'typeorm'
 
 @Entity()
+@Index('idx_subcategory_lang', ['lang'])
+@Index('idx_subcategory_parent', ['parent_category'])
+@Index('idx_subcategory_sorting', ['lang', 'sortingKey'])
 export class Subcategory {
   @PrimaryColumn('uuid')
   id: string

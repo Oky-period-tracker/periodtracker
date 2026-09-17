@@ -1,6 +1,11 @@
-import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn } from 'typeorm'
+import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn, Index } from 'typeorm'
 
 @Entity()
+@Index('idx_article_lang', ['lang'])
+@Index('idx_article_lang_live', ['lang', 'live'])
+@Index('idx_article_category', ['category'])
+@Index('idx_article_subcategory', ['subcategory'])
+@Index('idx_article_sorting', ['lang', 'sortingKey'])
 export class Article {
   @PrimaryColumn('uuid')
   id: string

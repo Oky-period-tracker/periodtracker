@@ -38,7 +38,7 @@ export class ArticleVoiceOverController {
       const previousKey = target.voiceOverKey
       // A timed-out upload can still finish. Never overwrite the current audio.
       const Key = `${target.id.trim()}-${uuid()}-${file.originalname.replace(
-        /[^a-z0-9.-_]/gim,
+        /[^a-z0-9.\-_]/gim,
         '',
       )}`.toLowerCase()
 

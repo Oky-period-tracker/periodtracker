@@ -12,7 +12,6 @@ export function requestLogger(req: Request, res: Response, next: NextFunction) {
     url: safeRequestPath(req.originalUrl),
     ip: req.ip,
     userAgent: req.get('user-agent'),
-    userId: (req.user as any)?.id ?? null,
   })
 
   // Capture the response on finish
@@ -23,6 +22,9 @@ export function requestLogger(req: Request, res: Response, next: NextFunction) {
       url: safeRequestPath(req.originalUrl),
       statusCode: res.statusCode,
       duration: `${duration}ms`,
+      // This middleware runs before passport.session(), so `req.user` is only
+      // populated by the time the response finishes.
+      userId: (req.user as any)?.id ?? null,
     }
 
     if (res.statusCode >= 400) {

@@ -91,7 +91,7 @@ export class ArticleVoiceOverController {
       if (response.headersSent) {
         next(error)
       } else {
-        response.status(500).send({ error: error?.message })
+        response.status(500).send({ error: 'Voice-over upload failed' })
       }
     }
   }

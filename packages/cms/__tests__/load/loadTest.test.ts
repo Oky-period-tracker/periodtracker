@@ -82,9 +82,7 @@ describe('Basic Load Testing', () => {
   describe('Concurrent GET requests', () => {
     it('handles 50 concurrent health check requests', async () => {
       const concurrency = 50
-      const requests = Array.from({ length: concurrency }, () =>
-        request(app).get('/health/live'),
-      )
+      const requests = Array.from({ length: concurrency }, () => request(app).get('/health/live'))
 
       const responses = await Promise.all(requests)
 
@@ -99,9 +97,7 @@ describe('Basic Load Testing', () => {
 
     it('handles 50 concurrent API data requests', async () => {
       const concurrency = 50
-      const requests = Array.from({ length: concurrency }, () =>
-        request(app).get('/api/data'),
-      )
+      const requests = Array.from({ length: concurrency }, () => request(app).get('/api/data'))
 
       const responses = await Promise.all(requests)
 
@@ -114,7 +110,10 @@ describe('Basic Load Testing', () => {
         ...Array.from({ length: 40 }, () => request(app).get('/health/live')),
         ...Array.from({ length: 40 }, () => request(app).get('/api/data')),
         ...Array.from({ length: 20 }, () =>
-          request(app).post('/api/data').send({ name: 'test' }).set('Content-Type', 'application/json'),
+          request(app)
+            .post('/api/data')
+            .send({ name: 'test' })
+            .set('Content-Type', 'application/json'),
         ),
       ]
 
@@ -146,10 +145,7 @@ describe('Basic Load Testing', () => {
     it('returns 400 for invalid POST requests under load', async () => {
       const concurrency = 20
       const requests = Array.from({ length: concurrency }, () =>
-        request(app)
-          .post('/api/data')
-          .send({})
-          .set('Content-Type', 'application/json'),
+        request(app).post('/api/data').send({}).set('Content-Type', 'application/json'),
       )
 
       const responses = await Promise.all(requests)
@@ -200,9 +196,7 @@ describe('Basic Load Testing', () => {
       const concurrency = 30
       const startTime = Date.now()
 
-      const requests = Array.from({ length: concurrency }, () =>
-        request(app).get('/health/live'),
-      )
+      const requests = Array.from({ length: concurrency }, () => request(app).get('/health/live'))
 
       await Promise.all(requests)
 

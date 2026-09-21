@@ -150,21 +150,33 @@ export class SurveyController {
       const updated = await getManager().transaction(async (manager) => {
         const surveys = manager.getRepository(Survey)
         const questionRepository = manager.getRepository(Question)
-        const survey = await surveys.findOne(request.params.id, { lock: { mode: 'pessimistic_write' } })
+        const survey = await surveys.findOne(request.params.id, {
+          lock: { mode: 'pessimistic_write' },
+        })
         if (!survey) return false
         for (const question of questions) {
           if (!question.id) {
             await questionRepository.save({
-              ...question, id: uuid(), surveyId: survey.id,
+              ...question,
+              id: uuid(),
+              surveyId: survey.id,
               is_multiple: question.is_multiple === 'true',
             })
           } else {
-            const existing = await questionRepository.findOne({ id: question.id, surveyId: survey.id })
+            const existing = await questionRepository.findOne({
+              id: question.id,
+              surveyId: survey.id,
+            })
             if (!existing) {
-              throw Object.assign(new Error('Question not found in this survey'), { statusCode: 404 })
+              throw Object.assign(new Error('Question not found in this survey'), {
+                statusCode: 404,
+              })
             }
             await questionRepository.save({
-              ...existing, ...question, id: existing.id, surveyId: survey.id,
+              ...existing,
+              ...question,
+              id: existing.id,
+              surveyId: survey.id,
               is_multiple: question.is_multiple === 'true',
             })
           }
@@ -178,7 +190,8 @@ export class SurveyController {
         }
         survey.lang = request.user.lang
         if (request.body.live) survey.live = request.body.live === 'true'
-        if (request.body.isAgeRestricted) survey.isAgeRestricted = request.body.isAgeRestricted === 'true'
+        if (request.body.isAgeRestricted)
+          survey.isAgeRestricted = request.body.isAgeRestricted === 'true'
         await surveys.save(survey)
         return true
       })
@@ -203,7 +216,9 @@ export class SurveyController {
       const removed = await getManager().transaction(async (manager) => {
         const surveys = manager.getRepository(Survey)
         const questions = manager.getRepository(Question)
-        const survey = await surveys.findOne(request.params.id, { lock: { mode: 'pessimistic_write' } })
+        const survey = await surveys.findOne(request.params.id, {
+          lock: { mode: 'pessimistic_write' },
+        })
         if (!survey) return undefined
         const children = await questions.find({ where: { surveyId: survey.id } })
         await questions.remove(children)
@@ -214,7 +229,10 @@ export class SurveyController {
         response.status(404).send({ error: 'Survey not found' })
         return
       }
-      logger.info('Survey removed', { id: request.params.id, questionsRemoved: removed.questionsRemoved })
+      logger.info('Survey removed', {
+        id: request.params.id,
+        questionsRemoved: removed.questionsRemoved,
+      })
       return removed.survey
     } catch (error) {
       logger.error('SurveyController.remove failed', {

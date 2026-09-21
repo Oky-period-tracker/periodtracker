@@ -102,7 +102,16 @@ describe('Monitoring Endpoints', () => {
         totalErrors: 5,
         errorRate: 0.5,
         statusCodeCounts: { 200: 990, 500: 5, 404: 5 },
-        responseTime: { window: '1h', sampleCount: 1000, avg: 45, p50: 32, p95: 120, p99: 450, min: 1, max: 3200 },
+        responseTime: {
+          window: '1h',
+          sampleCount: 1000,
+          avg: 45,
+          p50: 32,
+          p95: 120,
+          p99: 450,
+          min: 1,
+          max: 3200,
+        },
       }
       mockedService.getOverviewMetrics.mockReturnValue(mockMetrics)
 
@@ -146,7 +155,12 @@ describe('Monitoring Endpoints', () => {
   describe('GET /monitoring/slow-routes', () => {
     it('returns slowest routes array', async () => {
       mockedService.getSlowestRoutes.mockReturnValue([
-        { route: 'GET /data/generate-content-sheet', avgDuration: 2500, maxDuration: 8200, count: 5 },
+        {
+          route: 'GET /data/generate-content-sheet',
+          avgDuration: 2500,
+          maxDuration: 8200,
+          count: 5,
+        },
         { route: 'POST /articles', avgDuration: 200, maxDuration: 900, count: 50 },
       ])
 

@@ -10,20 +10,36 @@ jest.mock('typeorm', () => ({
 }))
 jest.mock('../../ormconfig', () => ({ __esModule: true, default: {} }))
 jest.mock('../../src/routes', () => ({
-  Routes: [{
-    method: 'get', route: '/test/security', action: 'page', isPublic: true,
-    controller: class { page(_req: any, res: any) { res.render('Login', { contentFilterOptions: [], cmsLanguages: [{ locale: 'en', name: 'English' }] }) } },
-  }, {
-    method: 'put', route: '/test/reorder', action: 'reorder',
-    controller: class {
-      async reorder(req: any) {
-        const { bulkUpdateRowReorder } = require('../../src/helpers/common')
-        return await bulkUpdateRowReorder(
-          { update: async () => ({ affected: 1 }) }, req.body.rowReorderResult,
-        )
-      }
+  Routes: [
+    {
+      method: 'get',
+      route: '/test/security',
+      action: 'page',
+      isPublic: true,
+      controller: class {
+        page(_req: any, res: any) {
+          res.render('Login', {
+            contentFilterOptions: [],
+            cmsLanguages: [{ locale: 'en', name: 'English' }],
+          })
+        }
+      },
     },
-  }],
+    {
+      method: 'put',
+      route: '/test/reorder',
+      action: 'reorder',
+      controller: class {
+        async reorder(req: any) {
+          const { bulkUpdateRowReorder } = require('../../src/helpers/common')
+          return await bulkUpdateRowReorder(
+            { update: async () => ({ affected: 1 }) },
+            req.body.rowReorderResult,
+          )
+        }
+      },
+    },
+  ],
 }))
 jest.mock('../../src/entity/User', () => ({ User: class {} }))
 jest.mock('@oky/core', () => ({ cmsLocales: ['en'], defaultLocale: 'en' }))
@@ -116,7 +132,8 @@ describe('production operational route access', () => {
 
   it('sends completed reorder results through the production route wrapper', async () => {
     role = 'superAdmin'
-    const response = await request(app).put('/test/reorder')
+    const response = await request(app)
+      .put('/test/reorder')
       .send({ rowReorderResult: [{ id: 'test-row', sortingKey: 1 }] })
       .timeout({ response: 1000, deadline: 2000 })
     expect(response.status).toBe(200)

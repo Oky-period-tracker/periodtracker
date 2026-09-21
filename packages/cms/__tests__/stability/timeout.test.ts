@@ -6,7 +6,12 @@ jest.mock('../../src/logger', () => ({
   },
 }))
 
-import { withTimeout, DEFAULT_QUERY_TIMEOUT, DEFAULT_REQUEST_TIMEOUT, DEFAULT_EXTERNAL_TIMEOUT } from '../../src/helpers/timeout'
+import {
+  withTimeout,
+  DEFAULT_QUERY_TIMEOUT,
+  DEFAULT_REQUEST_TIMEOUT,
+  DEFAULT_EXTERNAL_TIMEOUT,
+} from '../../src/helpers/timeout'
 
 describe('withTimeout', () => {
   it('resolves when promise completes before timeout', async () => {

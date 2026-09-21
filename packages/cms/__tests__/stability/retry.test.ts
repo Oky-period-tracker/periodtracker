@@ -17,7 +17,8 @@ describe('withRetry', () => {
   })
 
   it('retries on failure and succeeds eventually', async () => {
-    const fn = jest.fn()
+    const fn = jest
+      .fn()
       .mockRejectedValueOnce(new Error('fail 1'))
       .mockRejectedValueOnce(new Error('fail 2'))
       .mockResolvedValue('success')
@@ -30,9 +31,9 @@ describe('withRetry', () => {
   it('throws after exhausting all retries', async () => {
     const fn = jest.fn().mockRejectedValue(new Error('always fails'))
 
-    await expect(
-      withRetry(fn, { maxRetries: 2, baseDelay: 10, label: 'Test' }),
-    ).rejects.toThrow('always fails')
+    await expect(withRetry(fn, { maxRetries: 2, baseDelay: 10, label: 'Test' })).rejects.toThrow(
+      'always fails',
+    )
 
     // initial attempt + 2 retries = 3 total
     expect(fn).toHaveBeenCalledTimes(3)
@@ -61,9 +62,9 @@ describe('withRetry', () => {
   it('converts non-Error rejections to Error objects', async () => {
     const fn = jest.fn().mockRejectedValue('string error')
 
-    await expect(
-      withRetry(fn, { maxRetries: 0, baseDelay: 10, label: 'Test' }),
-    ).rejects.toThrow('string error')
+    await expect(withRetry(fn, { maxRetries: 0, baseDelay: 10, label: 'Test' })).rejects.toThrow(
+      'string error',
+    )
   })
 
   it('uses default options when none provided', async () => {

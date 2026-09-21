@@ -56,7 +56,10 @@ export class Authentication {
     if (request.isAuthenticated()) {
       return next()
     }
-    logger.info('Unauthenticated access attempt', { url: safeRequestPath(request.originalUrl), ip: request.ip })
+    logger.info('Unauthenticated access attempt', {
+      url: safeRequestPath(request.originalUrl),
+      ip: request.ip,
+    })
     response.redirect('/login')
   }
 }

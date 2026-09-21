@@ -85,7 +85,11 @@ describe('Health Check Endpoints', () => {
         uptime: 100,
         timestamp: new Date().toISOString(),
         checks: {
-          database: { status: 'down', error: 'getaddrinfo ENOTFOUND private-database.internal', lastChecked: new Date().toISOString() },
+          database: {
+            status: 'down',
+            error: 'getaddrinfo ENOTFOUND private-database.internal',
+            lastChecked: new Date().toISOString(),
+          },
           service: { status: 'up', lastChecked: new Date().toISOString() },
         },
       })

@@ -35,9 +35,7 @@ describe('errorLogger middleware', () => {
     it('returns JSON for API requests (Accept: application/json)', async () => {
       const app = createApp()
 
-      const res = await request(app)
-        .get('/crash')
-        .set('Accept', 'application/json')
+      const res = await request(app).get('/crash').set('Accept', 'application/json')
 
       expect(res.status).toBe(500)
       expect(res.body.error).toBe('Internal server error')
@@ -59,9 +57,7 @@ describe('errorLogger middleware', () => {
     it('returns text for web requests', async () => {
       const app = createApp()
 
-      const res = await request(app)
-        .get('/crash')
-        .set('Accept', 'text/html')
+      const res = await request(app).get('/crash').set('Accept', 'text/html')
 
       expect(res.status).toBe(500)
       expect(res.text).toBe('Internal server error')
@@ -89,9 +85,7 @@ describe('errorLogger middleware', () => {
       const { logger } = require('../../src/logger')
       const app = createApp()
 
-      await request(app)
-        .get('/crash')
-        .set('Accept', 'application/json')
+      await request(app).get('/crash').set('Accept', 'application/json')
 
       expect(logger.error).toHaveBeenCalledWith(
         'Unhandled error',
@@ -112,9 +106,7 @@ describe('errorLogger middleware', () => {
       })
       app.use(errorLogger)
 
-      const res = await request(app)
-        .get('/async-crash')
-        .set('Accept', 'application/json')
+      const res = await request(app).get('/async-crash').set('Accept', 'application/json')
 
       expect(res.status).toBe(500)
       expect(res.body.error).toBe('Internal server error')

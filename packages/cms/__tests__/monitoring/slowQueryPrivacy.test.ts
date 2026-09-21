@@ -15,7 +15,9 @@ describe('SQL logging privacy', () => {
   it.each([false, true])('respects DATABASE_LOGGING=%s in TypeORM configuration', (enabled) => {
     env.db.logging = enabled
     let config: any
-    jest.isolateModules(() => { config = require('../../ormconfig') })
+    jest.isolateModules(() => {
+      config = require('../../ormconfig')
+    })
     expect(config.logging).toBe(enabled ? 'all' : false)
     expect(config.maxQueryExecutionTime).toBe(enabled ? 1000 : undefined)
     expect(Boolean(config.logger)).toBe(enabled)
@@ -36,7 +38,13 @@ describe('SQL logging privacy', () => {
       expect(JSON.stringify(calls)).not.toContain(secret)
       expect(calls[0][1]).toEqual(expect.objectContaining({ parameterCount: 1 }))
     }
-    expect(logger.warn).toHaveBeenCalledWith('Slow query detected', expect.objectContaining({ duration: '1200ms' }))
-    expect(logger.error).toHaveBeenCalledWith('Query error', expect.objectContaining({ code: '23505' }))
+    expect(logger.warn).toHaveBeenCalledWith(
+      'Slow query detected',
+      expect.objectContaining({ duration: '1200ms' }),
+    )
+    expect(logger.error).toHaveBeenCalledWith(
+      'Query error',
+      expect.objectContaining({ code: '23505' }),
+    )
   })
 })

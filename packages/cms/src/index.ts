@@ -75,11 +75,7 @@ withRetry(() => createConnection(ormconfig), {
               'https://fonts.googleapis.com',
               'https://cdn.datatables.net',
             ],
-            fontSrc: [
-              "'self'",
-              'https://fonts.gstatic.com',
-              'https://cdnjs.cloudflare.com',
-            ],
+            fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdnjs.cloudflare.com'],
             imgSrc: ["'self'", 'data:'],
             // Allow the CDN origins so the browser can fetch the .map source
             // maps for the vendored libraries (axios, popper, bootstrap, etc.)
@@ -279,7 +275,9 @@ withRetry(() => createConnection(ormconfig), {
     app.get('/monitoring/health', (req, res, next) => monitoringController.health(req, res, next))
     app.get('/monitoring/metrics', (req, res, next) => monitoringController.metrics(req, res, next))
     app.get('/monitoring/routes', (req, res, next) => monitoringController.routes(req, res, next))
-    app.get('/monitoring/slow-routes', (req, res, next) => monitoringController.slowRoutes(req, res, next))
+    app.get('/monitoring/slow-routes', (req, res, next) =>
+      monitoringController.slowRoutes(req, res, next),
+    )
 
     // ======================= Diagnostics Endpoints ====================
     const diagnosticsController = new DiagnosticsController()
@@ -345,4 +343,6 @@ withRetry(() => createConnection(ormconfig), {
       crashAnalysisService.recordException('PROCESS', 'unhandledRejection', error, 500)
     })
   })
-  .catch((error) => logger.error('Failed to start server', { error: error?.message, stack: error?.stack }))
+  .catch((error) =>
+    logger.error('Failed to start server', { error: error?.message, stack: error?.stack }),
+  )

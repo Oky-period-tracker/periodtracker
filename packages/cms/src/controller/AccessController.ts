@@ -19,7 +19,7 @@ export class AccessController {
     // redirect must run right after it (see package.json: passport ^0.5.2). The
     // installed @types/passport ships 0.6 signatures that require a callback, so
     // we cast to the actual 0.5.x signature to avoid a false type error.
-    ;(request.logout as unknown as () => void)()
+    ;((request.logout as unknown) as () => void)()
     response.redirect('/login')
   }
 }

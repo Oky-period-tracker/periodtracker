@@ -32,7 +32,8 @@ export function safeRequestPath(url: string): string {
 export function isSafeBannerImage(image: unknown): image is string {
   if (typeof image !== 'string' || /[<>"'\s]/.test(image)) return false
   if (image === '') return true
-  if (/^data:image\/(png|jpeg|gif|webp|avif|bmp);base64,[a-z0-9+/]+={0,2}$/i.test(image)) return true
+  if (/^data:image\/(png|jpeg|gif|webp|avif|bmp);base64,[a-z0-9+/]+={0,2}$/i.test(image))
+    return true
   if (image.startsWith('/') && !image.startsWith('//') && !image.includes('\\')) return true
   try {
     const url = new URL(image)

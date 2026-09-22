@@ -4,6 +4,7 @@ import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
 import { bulkUpdateRowReorder } from '../helpers/common'
+import { toLevel } from '../helpers/safeUtils'
 import { logger } from '../logger'
 
 export class ArticleController {
@@ -66,6 +67,9 @@ export class ArticleController {
       const articleToSave = request.body
       articleToSave.lang = request.user.lang
       articleToSave.id = uuid()
+      articleToSave.contentFilter = toLevel(request.body.contentFilter)
+      articleToSave.ageRestrictionLevel = toLevel(request.body.ageRestrictionLevel)
+      articleToSave.isAgeRestricted = articleToSave.ageRestrictionLevel > 0
       await this.articleRepository.save(articleToSave)
       logger.info('Article created', {
         id: articleToSave.id,
@@ -100,10 +104,15 @@ export class ArticleController {
       articleToUpdate.subcategory = request.body.subcategory
       articleToUpdate.article_heading = request.body.article_heading
       articleToUpdate.article_text = request.body.article_text
-      articleToUpdate.contentFilter = request.body.contentFilter
-      articleToUpdate.ageRestrictionLevel = Number(request.body.ageRestrictionLevel)
-      // TODO:PH isAgeRestricted is redundant?
-      articleToUpdate.isAgeRestricted = request.body.ageRestrictionLevel === '0' ? false : true
+      // The Live toggle sends no levels: keep the stored ones instead of resetting them.
+      if (request.body.contentFilter !== undefined) {
+        articleToUpdate.contentFilter = toLevel(request.body.contentFilter)
+      }
+      if (request.body.ageRestrictionLevel !== undefined) {
+        articleToUpdate.ageRestrictionLevel = toLevel(request.body.ageRestrictionLevel)
+        // TODO:PH isAgeRestricted is redundant?
+        articleToUpdate.isAgeRestricted = articleToUpdate.ageRestrictionLevel > 0
+      }
       articleToUpdate.live = booleanFromString
       articleToUpdate.lang = request.user.lang
       await this.articleRepository.save(articleToUpdate)

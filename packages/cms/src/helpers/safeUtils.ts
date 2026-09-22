@@ -24,6 +24,16 @@ export function toError(value: unknown): Error {
   return new Error(String(value))
 }
 
+/**
+ * Parse a content filter or age restriction level sent by a form. A blank or
+ * invalid value means "no restriction" (0), so it never reaches an integer
+ * column as "" or NaN.
+ */
+export function toLevel(value: unknown): number {
+  const level = Number(value)
+  return Number.isInteger(level) && level >= 0 ? level : 0
+}
+
 /** Keep URL query values out of request logs and diagnostics. */
 export function safeRequestPath(url: string): string {
   return (url || '').split(/[?#]/, 1)[0].slice(0, 512)

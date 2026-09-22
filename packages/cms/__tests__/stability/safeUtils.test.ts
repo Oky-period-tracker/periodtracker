@@ -6,7 +6,24 @@ jest.mock('../../src/logger', () => ({
   },
 }))
 
-import { safeJsonParse, toError } from '../../src/helpers/safeUtils'
+import { safeJsonParse, toError, toLevel } from '../../src/helpers/safeUtils'
+
+describe('toLevel', () => {
+  it('keeps valid levels sent as strings or numbers', () => {
+    expect(toLevel('18')).toBe(18)
+    expect(toLevel(3)).toBe(3)
+    expect(toLevel('0')).toBe(0)
+  })
+
+  it('treats blank, missing and invalid values as no restriction', () => {
+    expect(toLevel('')).toBe(0)
+    expect(toLevel(undefined)).toBe(0)
+    expect(toLevel(null)).toBe(0)
+    expect(toLevel('abc')).toBe(0)
+    expect(toLevel('1.5')).toBe(0)
+    expect(toLevel('-2')).toBe(0)
+  })
+})
 
 describe('safeJsonParse', () => {
   it('parses valid JSON correctly', () => {

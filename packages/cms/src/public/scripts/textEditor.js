@@ -35,12 +35,12 @@ $('#cancelButton').on('click', () => {
 
 function populateEditor(editorData) {
   if (!editorData[editorData.length - 1]) {
-    ;[{ type: 'HEADING', content: '' }].map(item => {
+    ;[{ type: 'HEADING', content: '' }].map((item) => {
       createEditor(item.content, item.type)
     })
   } else {
     var json = JSON.parse(editorData[editorData.length - 1].json_dump)
-    json.map(item => {
+    json.map((item) => {
       createEditor(item.content, item.type)
     })
   }
@@ -100,7 +100,7 @@ function createEditor(initialContent, type) {
   var addIcon = document.createElement('i')
   addIcon.className = 'fas fa-plus'
   addButton.appendChild(addIcon)
-  addButton.onclick = event => {
+  addButton.onclick = (event) => {
     lastActiveEditorElement = event.currentTarget
     addRow(event)
   }

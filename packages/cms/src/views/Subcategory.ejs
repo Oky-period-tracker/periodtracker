@@ -12,7 +12,7 @@
   <div class="mainContentContainer">
     <%- currentUser.lang %>
     <div class="homeTopTextContainer">
-      <a href="javascript:history.back()">
+      <a href="/categories-management" class="history-back">
         <i class="fas fa-arrow-left back_arrow" aria-hidden="true"></i>
       </a>
       <h2><%= subcategories[0]?.title%></h2> 
@@ -52,7 +52,7 @@
   <span id="subcategoriesJSON" hidden><%= JSON.stringify(subcategories); %> </span>
   <script type="application/javascript" src="/scripts/voiceOvers.js"></script>
   <!-- VOICE OVER SETUP -->
-  <script>
+  <script nonce="<%= cspNonce %>">
     window.VOICE_OVER_BASE_URL = "<%= VOICE_OVER_BASE_URL %>"
   </script>
   <script type="application/javascript" src="/scripts/subcategoryViewScript.js"></script>

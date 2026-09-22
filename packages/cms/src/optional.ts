@@ -13,23 +13,31 @@ try {
   //
 }
 
-let contentFilterOptions = [
+// Deployments can define their own options in @oky/core. Without them, keep a
+// single "All" option (level 0 = no filter / no age restriction) so the CMS
+// forms never render an empty dropdown and always send a valid level.
+const defaultLevelOptions = [
   {
     value: 0,
     description: 'All',
   },
 ]
 
+const withDefault = (options) =>
+  Array.isArray(options) && options.length > 0 ? options : defaultLevelOptions
+
+let contentFilterOptions = defaultLevelOptions
+
 try {
-  contentFilterOptions = require('@oky/core')?.contentFilterOptions ?? []
+  contentFilterOptions = withDefault(require('@oky/core')?.contentFilterOptions)
 } catch (e) {
   //
 }
 
-let ageRestrictionOptions = []
+let ageRestrictionOptions = defaultLevelOptions
 
 try {
-  ageRestrictionOptions = require('@oky/core')?.ageRestrictionOptions ?? []
+  ageRestrictionOptions = withDefault(require('@oky/core')?.ageRestrictionOptions)
 } catch (e) {
   //
 }

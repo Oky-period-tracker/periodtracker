@@ -490,7 +490,7 @@ const initializeDataTable = (result) => {
         searchable: false,
         render: (_, __, row) => {
           return `
-              <button type="button" onclick="deleteArticle('${row.id}')" class="btn btn-sm">
+              <button type="button" class="btn btn-sm deleteArticleRow" data-id="${row.id}">
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
            `
@@ -547,6 +547,7 @@ const initializeDataTable = (result) => {
 const saveReorder = (isSave) => {
   if (!isSave) {
     location.reload()
+    return
   }
 
   $.ajax({
@@ -568,3 +569,12 @@ function makeLinksClickable(text) {
     '<a href="$1" target="_blank" style="color: #0056b3">$1</a>',
   )
 }
+
+// The CMS content security policy blocks inline onclick attributes, so the
+// delete and reorder buttons are wired here instead.
+$('#articleTable').on('click', '.deleteArticleRow', (event) => {
+  deleteArticle($(event.currentTarget).attr('data-id'))
+})
+$('#rowReorderModal').on('click', '.saveReorder', (event) => {
+  saveReorder($(event.currentTarget).data('save'))
+})

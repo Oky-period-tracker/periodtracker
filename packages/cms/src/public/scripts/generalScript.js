@@ -14,3 +14,12 @@ $('.languageChange').on('click', (event) => {
     },
   })
 })
+
+// Back arrows go to the previous page. The link's own href is the fallback
+// when the page was opened directly (javascript: URLs are blocked by the CSP).
+$(document).on('click', '.history-back', (event) => {
+  if (window.history.length > 1) {
+    event.preventDefault()
+    window.history.back()
+  }
+})

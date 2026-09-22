@@ -31,21 +31,12 @@
       >
         <%= __('Sort by Date') %>
       </button>
-      <button
-        type="button"
-        class="btn btn-primary"
-        onclick="location.href='/categories-management';"
-      >
-      <%= __('Category Management') %>
-      </button>
-      <button
-      type="button"
-      class="btn btn-primary"
-      onclick="location.href='/video-management';"
-
-    >
-    <%= __('Video Management') %>
-    </button>
+      <a class="btn btn-primary" href="/categories-management" role="button">
+        <%= __('Category Management') %>
+      </a>
+      <a class="btn btn-primary" href="/video-management" role="button">
+        <%= __('Video Management') %>
+      </a>
       <button
         type="button"
         class="btn btn-primary"

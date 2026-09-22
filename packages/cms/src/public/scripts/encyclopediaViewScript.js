@@ -278,43 +278,25 @@ var sort = function (child) {
 //=================== Sorting =====================
 
 var sortDateStatus = false
-var filteredItems = false
-var sortDate = function ({ column }) {
-  filteredItems = filteredItems ? filteredItems : articles
-
-  if (!sortDateStatus) {
-    var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function (a, b) {
-      var aText = new Date(a.children[column].innerHTML)
-      var bText = new Date(b.children[column].innerHTML)
-      if (aText < bText) {
-        return -1
-      }
-      if (aText > bText) {
-        return 1
-      }
-      return 0
-    })
-    sortDateStatus = true
-  } else {
-    var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function (a, b) {
-      var aText = new Date(a.children[column].innerHTML)
-      var bText = new Date(b.children[column].innerHTML)
-      if (aText > bText) {
-        return -1
-      }
-      if (aText < bText) {
-        return 1
-      }
-      return 0
-    })
-    sortDateStatus = false
-  }
-  articleList.append(filteredItems)
+// The date cell is looked up by class: its column index shifts whenever the
+// table gains columns (voice over, content filter, one per age restriction).
+var createdTime = function (row) {
+  var cell = row.querySelector('td.date-created')
+  var time = cell ? new Date(cell.textContent.trim()).getTime() : NaN
+  return isNaN(time) ? 0 : time
+}
+var sortDate = function () {
+  var rows = filteredArticles ? filteredArticles : articles
+  var direction = sortDateStatus ? -1 : 1
+  var sortList = Array.prototype.sort.bind(rows)
+  sortList(function (a, b) {
+    return (createdTime(a) - createdTime(b)) * direction
+  })
+  sortDateStatus = !sortDateStatus
+  articleList.append(rows)
 }
 
-$('#dateSort').click(() => sortDate({ column: 7 }))
+$('#dateSort').click(() => sortDate())
 $('#categoryTag').click(() => sort(0))
 $('#subCategoryTag').click(() => sort(1))
 
@@ -327,6 +309,7 @@ filterButton.click((event) => {
   var filterText = $('#filterInput').val().toLowerCase().trim()
   if (filterText == '') {
     articleList.empty().prepend(articles)
+    filteredArticles = false
     return
   }
   filteredArticles = articles.filter((index, elem) =>

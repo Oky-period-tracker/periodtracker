@@ -97,6 +97,22 @@ To set up Firebase for this project, you will need the following files:
 
 - /`packages/cms/firebase-config.json` (CMS)
 
+### Separate projects for production and development
+
+To keep test data, crashes and push notifications out of production, use one Firebase project per environment. The files above are the production ones. Add the files of the development project next to them, with a `.dev` suffix:
+
+- `/app/src/resources/google-services.json.dev`
+
+- `/app/src/resources/GoogleService-Info.plist.dev`
+
+`app/app.config.js` picks the file from `EXPO_PUBLIC_ENV`. Production is the default: the files named in `app.json` are used when the variable is unset or `production`, any other value uses the `.dev` files. If a `.dev` file does not exist, the file named in `app.json` is used, so a single Firebase project still works.
+
+- EAS builds: set `EXPO_PUBLIC_ENV` in the non-production build profiles of `eas.json` (for example `dev`). A profile without it builds against the production project.
+
+- Local native builds: set `EXPO_PUBLIC_ENV=development` in `app/.env` (unset means production), then run `npx expo prebuild --clean`, because the file is copied into `/android` and `/ios` at prebuild.
+
+- CMS: the project is the one of the service account in `firebase-config.json`. Give each deployment (local, dev, production) the key of the matching project, and set `STORAGE_BUCKET` / `STORAGE_BASE_URL` to that project's bucket.
+
 ### Initial Setup
 
 If you are setting up this project for the first time, follow these steps:

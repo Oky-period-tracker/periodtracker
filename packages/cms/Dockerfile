@@ -6,6 +6,9 @@ ENV NODE_ENV=development
 ENV GOOGLE_APPLICATION_CREDENTIALS=/usr/src/app/packages/cms/firebase-config.json
 WORKDIR /usr/src/app/packages/cms
 
+# Run as the unprivileged user shipped with the node image
+USER node
+
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD node -e "const http = require('http'); const req = http.get({ hostname: 'localhost', port: parseInt(process.env.CMS_PORT, 10) || 5000, path: '/health' }, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.setTimeout(5000, () => { req.destroy(); process.exit(1); });"
 
@@ -26,6 +29,8 @@ COPY --from=oky/base /usr/src/app/packages/core/package.json ./packages/core/pac
 COPY --from=oky/base /usr/src/app/packages/core/dist ./packages/core/dist
 COPY --from=oky/base /usr/src/app/packages/core/src/common/translations ./packages/core/src/common/translations
 
+# Run as the unprivileged user shipped with the node image
+USER node
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
   CMD node -e "const http = require('http'); const req = http.get({ hostname: 'localhost', port: parseInt(process.env.CMS_PORT, 10) || 5000, path: '/health' }, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.setTimeout(5000, () => { req.destroy(); process.exit(1); });"

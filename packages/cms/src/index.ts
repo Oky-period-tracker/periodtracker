@@ -34,6 +34,7 @@ import { crashDetector, crashExceptionCapture } from './middleware/crashDetector
 import { requestTimeout } from './middleware/requestTimeout'
 import { requireFeature } from './middleware/featureFlag'
 import { withRetry } from './helpers/retry'
+import { firebaseCredential } from './helpers/firebaseCredential'
 import { logger } from './logger'
 
 withRetry(() => createConnection(ormconfig), {
@@ -180,7 +181,7 @@ withRetry(() => createConnection(ormconfig), {
       app.use('/mobile/suggestions', cors())
     }
     admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
+      credential: firebaseCredential(env.firebase.serviceAccountBase64),
       storageBucket: env.storage.bucket,
       // databaseURL: 'https://oky-app.firebaseio.com', // @TODO:PH
     })

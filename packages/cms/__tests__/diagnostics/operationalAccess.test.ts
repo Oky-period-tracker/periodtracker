@@ -54,6 +54,7 @@ jest.mock('../../src/env', () => ({
   env: {
     app: { secret: 'test-secret' },
     storage: {},
+    firebase: {},
     features: { voiceOver: false, contentFilter: false },
     api: { port: 5000 },
     logging: {},

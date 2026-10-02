@@ -37,6 +37,11 @@ export const env = {
     bucket: process.env.STORAGE_BUCKET,
     baseUrl: process.env.STORAGE_BASE_URL,
   },
+  firebase: {
+    // Service account JSON, base64 encoded. Used instead of the key file named
+    // by GOOGLE_APPLICATION_CREDENTIALS when set, see docs/setup.md.
+    serviceAccountBase64: process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
+  },
   // Features that are not live yet. Off unless explicitly set to 'true',
   // see FEATURE_FLAGS.md.
   features: {

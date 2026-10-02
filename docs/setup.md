@@ -164,6 +164,26 @@ For the CMS, follow these steps:
 
   - Place it in the /cms folder which is located at /packages/cms in the project.
 
+#### Without a key file (AWS ECS and other env-only deployments)
+
+Some deployments can only pass environment variables to the CMS, not files. This is the case on AWS ECS, where the configuration is an env file stored in S3. There, pass the same JSON key through the `FIREBASE_SERVICE_ACCOUNT_BASE64` variable instead:
+
+- Encode the downloaded key on a single line:
+
+```bash
+base64 -i firebase-config.json | tr -d '\n'
+```
+
+- Add the result to the environment of the CMS:
+
+```env
+FIREBASE_SERVICE_ACCOUNT_BASE64=<encoded key>
+```
+
+- Restart the CMS. On ECS, force a new deployment of the service, the env file is only read when a task starts.
+
+When the variable is set it takes priority over the key file. When it is empty, the CMS keeps using the file named by `GOOGLE_APPLICATION_CREDENTIALS`. The value is a secret, store it like the database password.
+
 ### Push Notifications
 
 The app uses Firebase Messaging to handle push notifications sent from the CMS.

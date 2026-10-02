@@ -41,58 +41,60 @@ export const ManageUsers = () => {
         ) : (
           <>
             <ScrollView style={styles.usersList} showsVerticalScrollIndicator={true}>
-            {accounts.map((account, index) => (
-              <React.Fragment key={account.id}>
-                {index > 0 && <View style={styles.separator} />}
-                <TouchableOpacity
-                  style={styles.userRow}
-                  onPress={() => {
-                    setLoginName(account.name)
-                    setAuthMode('log_in')
-                  }}
-                >
-                  <View style={styles.userInfo}>
-                    <FontAwesome name="user-circle" size={24} color={color} style={styles.icon} />
-                    <Text style={styles.userName} enableTranslate={false}>
-                      {account.name}
-                    </Text>
-                  </View>
-                  <FontAwesome
-                    name={account.isPendingSync ? 'cloud-upload' : 'cloud'}
-                    size={18}
-                    color={account.isPendingSync ? palette.secondary.base : palette.neutral.base}
-                    style={styles.syncIcon}
-                    accessibilityLabel={
-                      account.isPendingSync ? translate('offline_account') : translate('synced_account')
-                    }
-                  />
-                </TouchableOpacity>
-              </React.Fragment>
-            ))}
-          </ScrollView>
-          <View style={styles.legend}>
-            <Text style={styles.legendTitle}>cloud_icon_explainer_title</Text>
-            <View style={styles.legendRow}>
-              <FontAwesome
-                name="cloud"
-                size={18}
-                color={palette.neutral.base}
-                style={styles.legendStatusIcon}
-                accessibilityLabel={translate('synced_account')}
-              />
-              <Text style={styles.legendText}>cloud_icon_explainer_synced</Text>
+              {accounts.map((account, index) => (
+                <React.Fragment key={account.id}>
+                  {index > 0 && <View style={styles.separator} />}
+                  <TouchableOpacity
+                    style={styles.userRow}
+                    onPress={() => {
+                      setLoginName(account.name)
+                      setAuthMode('log_in')
+                    }}
+                  >
+                    <View style={styles.userInfo}>
+                      <FontAwesome name="user-circle" size={24} color={color} style={styles.icon} />
+                      <Text style={styles.userName} enableTranslate={false}>
+                        {account.name}
+                      </Text>
+                    </View>
+                    <FontAwesome
+                      name={account.isPendingSync ? 'cloud-upload' : 'cloud'}
+                      size={18}
+                      color={account.isPendingSync ? palette.secondary.base : palette.neutral.base}
+                      style={styles.syncIcon}
+                      accessibilityLabel={
+                        account.isPendingSync
+                          ? translate('offline_account')
+                          : translate('synced_account')
+                      }
+                    />
+                  </TouchableOpacity>
+                </React.Fragment>
+              ))}
+            </ScrollView>
+            <View style={styles.legend}>
+              <Text style={styles.legendTitle}>cloud_icon_explainer_title</Text>
+              <View style={styles.legendRow}>
+                <FontAwesome
+                  name="cloud"
+                  size={18}
+                  color={palette.neutral.base}
+                  style={styles.legendStatusIcon}
+                  accessibilityLabel={translate('synced_account')}
+                />
+                <Text style={styles.legendText}>cloud_icon_explainer_synced</Text>
+              </View>
+              <View style={styles.legendRow}>
+                <FontAwesome
+                  name="cloud-upload"
+                  size={18}
+                  color={palette.secondary.base}
+                  style={styles.legendStatusIcon}
+                  accessibilityLabel={translate('offline_account')}
+                />
+                <Text style={styles.legendText}>cloud_icon_explainer_offline</Text>
+              </View>
             </View>
-            <View style={styles.legendRow}>
-              <FontAwesome
-                name="cloud-upload"
-                size={18}
-                color={palette.secondary.base}
-                style={styles.legendStatusIcon}
-                accessibilityLabel={translate('offline_account')}
-              />
-              <Text style={styles.legendText}>cloud_icon_explainer_offline</Text>
-            </View>
-          </View>
           </>
         )}
       </AuthCardBody>

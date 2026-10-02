@@ -11,10 +11,7 @@ import { formatPassword } from '../../../services/auth'
 import { Text } from '../../../components/Text'
 import { AuthCardBody } from './AuthCardBody'
 import { loadPendingSyncData } from '../../../services/pendingSync'
-import {
-  loginToAccount,
-  loginOnlineToAccount,
-} from '../../../services/auth/accountFlows'
+import { loginToAccount, loginOnlineToAccount } from '../../../services/auth/accountFlows'
 import { verifyPassword } from '../../../services/auth/credentialVault'
 import { useAuthMode } from '../AuthModeContext'
 

@@ -76,7 +76,8 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
             <th style="width: 2%"><%= __('Data')%></th>
             <th style="width: 2.5%"><%= __('Response')%></th>
             <th style="width: 1%"><%= __('View')%></th>
-            <th style="width: 2.5%" class="pointer contentFilter"><%= __('Filter')%></th>
+            <%# Stays in the DOM, hidden, while the content filter is disabled: the page scripts address columns by index. %>
+            <th style="width: 2.5%" class="pointer contentFilter" <% if (!features.contentFilter) { %>hidden<% } %>><%= __('Filter')%></th>
             <th style="width: 1%"><%= __('Edit')%></th>
             <th style="width: 1%"><%= __('Delete')%></th>
             <th style="width: 1%"><%= __('Live')%></th>
@@ -112,13 +113,15 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
                 <i class="fas fa-eye" aria-hidden="true"></i>
               </button>
             </td>
-            <td>
+            <td <% if (!features.contentFilter) { %>hidden<% } %>>
+              <% if (features.contentFilter) { %>
               <select 
                 class="content-filter-dropdown"
                 data-source="survey"
                 data-id="<%= item.id %>"
                 data-level="<%= item.contentFilter %>"
                 data></select>
+              <% } %>
             </td>
             <td>
               <button

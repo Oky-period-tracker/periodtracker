@@ -6,8 +6,8 @@ import { useSelector } from '../../../redux/useSelector'
 import {
   authError,
   connectAccountAttemptsSelector,
-    currentUserSelector,
-    isCreatingAccountSelector,
+  currentUserSelector,
+  isCreatingAccountSelector,
 } from '../../../redux/selectors'
 import { ErrorText } from '../../../components/ErrorText'
 import { Text } from '../../../components/Text'
@@ -16,8 +16,8 @@ import { StyleSheet, View } from 'react-native'
 export const SaveAccountButton = () => {
   const currentUser = useSelector(currentUserSelector)
   const connectAccountCount = useSelector(connectAccountAttemptsSelector)
-    const errorCode = useSelector(authError)
-    const isCreatingAccount = useSelector(isCreatingAccountSelector)
+  const errorCode = useSelector(authError)
+  const isCreatingAccount = useSelector(isCreatingAccountSelector)
   const dispatch = useDispatch()
 
   const [pressed, setPressed] = React.useState(false)
@@ -69,8 +69,8 @@ export const SaveAccountButton = () => {
       <Button onPress={onPress} style={styles.button}>
         connect_account
       </Button>
-            {pressed && isCreatingAccount && <Text>sync_account_in_progress</Text>}
-            {error && (
+      {pressed && isCreatingAccount && <Text>sync_account_in_progress</Text>}
+      {error && (
         <ErrorText style={styles.error}>
           {errorCode === 409 ? 'error_same_name' : 'error_connect_guest'}
         </ErrorText>

@@ -1,6 +1,9 @@
-import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn } from 'typeorm'
+import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn, Index } from 'typeorm'
 
 @Entity()
+@Index('idx_video_lang', ['lang'])
+@Index('idx_video_lang_live', ['lang', 'live'])
+@Index('idx_video_sorting', ['lang', 'sortingKey'])
 export class Video {
   @PrimaryColumn('uuid')
   id: string

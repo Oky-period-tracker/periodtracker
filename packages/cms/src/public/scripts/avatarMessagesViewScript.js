@@ -1,5 +1,5 @@
 // Update variable content in Modal when it shows from the edit button
-$('#dynamicModal').on('show.bs.modal', event => {
+$('#dynamicModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var avatarMessageID = button.data('value') // Extract info from data-* attributes
   if (avatarMessageID === 0) {
@@ -9,7 +9,7 @@ $('#dynamicModal').on('show.bs.modal', event => {
     return
   }
   var avatarMessages = JSON.parse($('#avatarMessagesJSON').text())
-  var avatarMessageInfo = avatarMessages.find(item => {
+  var avatarMessageInfo = avatarMessages.find((item) => {
     return item.id === avatarMessageID
   })
 
@@ -35,12 +35,12 @@ $('#btnEditConfirm').on('click', () => {
     url: '/avatar-message' + (avatarMessageID === '0' ? '' : '/' + avatarMessageID),
     type: avatarMessageID === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       $('#dynamicModal').modal('hide')
       $('#infoArticleModal').modal('show')
       setTimeout(() => location.reload(), 1500)
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -55,7 +55,7 @@ $('.liveCheckbox').on('click', () => {
 
 function changeRelevantAvatarMessage(avatarMessageID, key, value) {
   var avatarMessages = JSON.parse($('#avatarMessagesJSON').text())
-  var avatarMessageInfo = avatarMessages.find(item => {
+  var avatarMessageInfo = avatarMessages.find((item) => {
     return item.id === avatarMessageID
   })
 
@@ -68,10 +68,10 @@ function changeRelevantAvatarMessage(avatarMessageID, key, value) {
     url: '/avatar-message/' + avatarMessageID,
     type: 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -79,7 +79,7 @@ function changeRelevantAvatarMessage(avatarMessageID, key, value) {
 
 // ==================== Delete =============================
 
-$('.deleteAvatarMessage').on('click', event => {
+$('.deleteAvatarMessage').on('click', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var avatarMessageID = button.data('value') // Extract info from data-* attributes
   var result = confirm('Are you sure? This will permanently delete the item')
@@ -87,10 +87,10 @@ $('.deleteAvatarMessage').on('click', event => {
     $.ajax({
       url: '/avatar-message/' + avatarMessageID,
       type: 'DELETE',
-      success: result => {
+      success: (result) => {
         location.reload()
       },
-      error: error => {
+      error: (error) => {
         console.log(error)
       },
     })
@@ -102,12 +102,12 @@ var items = filterList.children()
 var filteredItems = false
 var sortAlphabetStatus = false
 
-var sortAlphabetically = function({ column }) {
+var sortAlphabetically = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : items
   if (!sortAlphabetStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
 
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].innerHTML
       var bText = b.children[column].innerHTML
       if (aText < bText) {
@@ -121,7 +121,7 @@ var sortAlphabetically = function({ column }) {
     sortAlphabetStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].innerHTML
       var bText = b.children[column].innerHTML
       if (aText > bText) {
@@ -146,7 +146,7 @@ function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
     countdownElement.text(remaining + ' characters remaining.')
   }
 
-  $(document).ready(function($) {
+  $(document).ready(function ($) {
     updateCountdown()
     tableElement.change(updateCountdown)
     tableElement.keyup(updateCountdown)

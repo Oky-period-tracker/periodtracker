@@ -26,7 +26,8 @@
           <tr>
             <th style="width: 35%" class="pointer" id="didYouKnowTopic"><%= __('Topic')%></th>
             <th style="width: 55%" class="pointer" id="didYouKnowContent"><%= __('Content')%></th>
-            <th style="width: 2.5%" class="pointer contentFilter"><%= __('Filter')%></th>
+            <%# Stays in the DOM, hidden, while the content filter is disabled: the page scripts address columns by index. %>
+            <th style="width: 2.5%" class="pointer contentFilter" <% if (!features.contentFilter) { %>hidden<% } %>><%= __('Filter')%></th>
             <th style="width: 5%"><%= __('Edit')%></th>
             <th style="width: 5%"><%= __('Delete')%></th>
 
@@ -42,13 +43,15 @@
           <tr>
             <td><%= item.title %></td>
             <td><%= item.content %></td>
-            <td>
+            <td <% if (!features.contentFilter) { %>hidden<% } %>>
+              <% if (features.contentFilter) { %>
               <select 
                 class="content-filter-dropdown"
                 data-source="did-you-know"
                 data-id="<%= item.id %>"
                 data-level="<%= item.contentFilter %>"
                 data></select>
+              <% } %>
             </td>
             <td>
               <button

@@ -413,7 +413,12 @@ const initializeDataTable = (result) => {
         return new Date(rowPayload.date_created).toLocaleDateString() // Formatting the date
       },
     },
-    {
+  ]
+
+  // voiceOvers.js is only loaded while the voice over feature is enabled
+  const voiceOverEnabled = typeof initializeVoiceOver === 'function'
+  if (voiceOverEnabled) {
+    columns.push({
       data: 'voiceOverKey',
       render: (_, __, rowPayload) => {
         return `
@@ -435,8 +440,8 @@ const initializeDataTable = (result) => {
         $(td).attr('id', `article-${rowData.id}`)
         $(td)[0].firstElementChild.setAttribute('id', `upload-${rowData.id}`)
       },
-    },
-  ]
+    })
+  }
 
   $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
 
@@ -458,7 +463,7 @@ const initializeDataTable = (result) => {
 
       api.columns().eq(0)
 
-      initializeVoiceOver(articles)
+      if (voiceOverEnabled) initializeVoiceOver(articles)
     },
     columnDefs: [
       {
@@ -490,7 +495,7 @@ const initializeDataTable = (result) => {
         searchable: false,
         render: (_, __, row) => {
           return `
-              <button type="button" onclick="deleteArticle('${row.id}')" class="btn btn-sm">
+              <button type="button" class="btn btn-sm deleteArticleRow" data-id="${row.id}">
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
            `
@@ -547,6 +552,7 @@ const initializeDataTable = (result) => {
 const saveReorder = (isSave) => {
   if (!isSave) {
     location.reload()
+    return
   }
 
   $.ajax({
@@ -568,3 +574,12 @@ function makeLinksClickable(text) {
     '<a href="$1" target="_blank" style="color: #0056b3">$1</a>',
   )
 }
+
+// The CMS content security policy blocks inline onclick attributes, so the
+// delete and reorder buttons are wired here instead.
+$('#articleTable').on('click', '.deleteArticleRow', (event) => {
+  deleteArticle($(event.currentTarget).attr('data-id'))
+})
+$('#rowReorderModal').on('click', '.saveReorder', (event) => {
+  saveReorder($(event.currentTarget).data('save'))
+})

@@ -1,8 +1,12 @@
   </body>
+  <% if (features.contentFilter) { %>
   <span id="contentFilterJSON">
     <%= JSON.stringify(contentFilterOptions) %>
   </span>
+  <% } %>
   <script type="application/javascript" src="/scripts/ageRestriction.js"></script>
+  <% if (features.contentFilter) { %>
   <script type="application/javascript" src="/scripts/contentFilter.js"></script>
+  <% } %>
   <script type="application/javascript" src="/scripts/generalScript.js"></script>
 </html>

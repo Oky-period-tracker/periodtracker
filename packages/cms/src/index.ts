@@ -32,6 +32,7 @@ import { healthCheckService } from './services/healthCheckService'
 import { crashAnalysisService } from './services/crashAnalysisService'
 import { crashDetector, crashExceptionCapture } from './middleware/crashDetector'
 import { requestTimeout } from './middleware/requestTimeout'
+import { requireFeature } from './middleware/featureFlag'
 import { withRetry } from './helpers/retry'
 import { logger } from './logger'
 
@@ -45,6 +46,8 @@ withRetry(() => createConnection(ormconfig), {
     const app = express()
     app.set('view engine', 'ejs')
     app.set('views', __dirname + '/views')
+    // Views read the feature flags to hide what is not live yet
+    app.locals.features = env.features
 
     // Security headers
     app.use((_req, res, next) => {
@@ -181,6 +184,10 @@ withRetry(() => createConnection(ormconfig), {
       storageBucket: env.storage.bucket,
       // databaseURL: 'https://oky-app.firebaseio.com', // @TODO:PH
     })
+    // ============================ Feature flags  ================================
+    app.use('/api/voice-over', requireFeature('voiceOver'))
+    app.use('/api/content-filter', requireFeature('contentFilter'))
+
     // ============================ Upload  =======================================
 
     const upload = multer({ storage: multer.memoryStorage() })

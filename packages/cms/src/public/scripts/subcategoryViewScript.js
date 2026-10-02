@@ -413,7 +413,12 @@ const initializeDataTable = (result) => {
         return new Date(rowPayload.date_created).toLocaleDateString() // Formatting the date
       },
     },
-    {
+  ]
+
+  // voiceOvers.js is only loaded while the voice over feature is enabled
+  const voiceOverEnabled = typeof initializeVoiceOver === 'function'
+  if (voiceOverEnabled) {
+    columns.push({
       data: 'voiceOverKey',
       render: (_, __, rowPayload) => {
         return `
@@ -435,8 +440,8 @@ const initializeDataTable = (result) => {
         $(td).attr('id', `article-${rowData.id}`)
         $(td)[0].firstElementChild.setAttribute('id', `upload-${rowData.id}`)
       },
-    },
-  ]
+    })
+  }
 
   $('#articleTable thead tr').clone(true).addClass('filters').appendTo('#articleTable thead')
 
@@ -458,7 +463,7 @@ const initializeDataTable = (result) => {
 
       api.columns().eq(0)
 
-      initializeVoiceOver(articles)
+      if (voiceOverEnabled) initializeVoiceOver(articles)
     },
     columnDefs: [
       {

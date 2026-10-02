@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import { Quiz } from '../entity/Quiz'
 import { v4 as uuid } from 'uuid'
 import { logger } from '../logger'
+import { withoutDisabledFeatures } from '../helpers/features'
 
 export class QuizController {
   private quizRepository = getRepository(Quiz)
@@ -17,7 +18,7 @@ export class QuizController {
   }
 
   async mobileQuizzesByLanguage(request: Request, response: Response, next: NextFunction) {
-    return this.quizRepository.find({
+    const quizzes = await this.quizRepository.find({
       where: {
         lang: request.params.lang,
         live: true,
@@ -26,6 +27,7 @@ export class QuizController {
         topic: 'ASC',
       },
     })
+    return withoutDisabledFeatures(quizzes)
   }
 
   async one(request: Request, response: Response, next: NextFunction) {

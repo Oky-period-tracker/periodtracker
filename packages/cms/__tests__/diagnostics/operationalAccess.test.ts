@@ -51,7 +51,13 @@ jest.mock('../../src/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },
 }))
 jest.mock('../../src/env', () => ({
-  env: { app: { secret: 'test-secret' }, storage: {}, api: { port: 5000 }, logging: {} },
+  env: {
+    app: { secret: 'test-secret' },
+    storage: {},
+    features: { voiceOver: false, contentFilter: false },
+    api: { port: 5000 },
+    logging: {},
+  },
 }))
 jest.mock('../../src/controller/DataController', () => ({
   DataController: class {

@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import { DidYouKnow } from '../entity/DidYouKnow'
 import { v4 as uuid } from 'uuid'
 import { logger } from '../logger'
+import { withoutDisabledFeatures } from '../helpers/features'
 
 export class DidYouKnowController {
   private didYouKnowRepository = getRepository(DidYouKnow)
@@ -11,10 +12,11 @@ export class DidYouKnowController {
     return this.didYouKnowRepository.find({ where: { lang: request.user.lang } })
   }
   async mobileDidYouKnowByLanguage(request: Request, response: Response, next: NextFunction) {
-    return this.didYouKnowRepository.find({
+    const didYouKnows = await this.didYouKnowRepository.find({
       where: { lang: request.params.lang, live: true },
       order: { title: 'ASC' },
     })
+    return withoutDisabledFeatures(didYouKnows)
   }
   async one(request: Request, response: Response, next: NextFunction) {
     return this.didYouKnowRepository.findOne(request.params.id)

@@ -365,5 +365,8 @@ const handleSubCategorySelect = (catId) => {
     })
 }
 
-var articlesJSON = $('#articlesJSON').text()
-initializeVoiceOver(articlesJSON)
+// voiceOvers.js is only loaded while the voice over feature is enabled
+if (typeof initializeVoiceOver === 'function') {
+  var articlesJSON = $('#articlesJSON').text()
+  initializeVoiceOver(articlesJSON)
+}

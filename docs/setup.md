@@ -176,6 +176,8 @@ Notifications can also be customised eg the colour, via the `app.json`
 
 Add audio recordings for encyclopedia articles
 
+Voice over is behind a feature flag and is disabled by default. Set `FEATURE_VOICE_OVER=true` in your cms .env file to enable it, see [Feature flags](../packages/cms/FEATURE_FLAGS.md)
+
 In the firebase console, set up cloud storage
 
 Update your cms .env file with the following
@@ -224,4 +226,6 @@ For example:
     value: 'gs://periodtracker-example.appspot.com'
 - name: STORAGE_BASE_URL
     value: 'https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com'
+- name: FEATURE_VOICE_OVER
+    value: 'true'
 ```

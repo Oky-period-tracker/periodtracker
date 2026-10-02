@@ -6,6 +6,7 @@ import { Question } from '../entity/Question'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
 import { logger } from '../logger'
+import { withoutDisabledFeatures } from '../helpers/features'
 
 // TODO_ALEX: survey
 const reformatSurveyData = (res: any) => {
@@ -81,13 +82,14 @@ export class SurveyController {
       .leftJoinAndMapMany('survey.questions', Question, 'question', 'question.surveyId = survey.id')
       .select(['survey', 'question'])
       .getMany()
-      .then((res) => reformatSurveyData(res))
+      .then((res) => withoutDisabledFeatures(reformatSurveyData(res)))
   }
   async mobileSurveysByLanguage(request: Request, response: Response, next: NextFunction) {
-    return this.surveyRepository.find({
+    const surveys = await this.surveyRepository.find({
       where: { lang: request.params.lang, live: true, question: Not('') },
       order: { question: 'ASC' },
     })
+    return withoutDisabledFeatures(surveys)
   }
   async one(request: Request, response: Response, next: NextFunction) {
     return this.surveyRepository.findOne(request.params.id)

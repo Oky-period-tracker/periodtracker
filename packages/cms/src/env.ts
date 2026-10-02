@@ -37,6 +37,12 @@ export const env = {
     bucket: process.env.STORAGE_BUCKET,
     baseUrl: process.env.STORAGE_BASE_URL,
   },
+  // Features that are not live yet. Off unless explicitly set to 'true',
+  // see FEATURE_FLAGS.md.
+  features: {
+    voiceOver: toBool(process.env.FEATURE_VOICE_OVER),
+    contentFilter: toBool(process.env.FEATURE_CONTENT_FILTER),
+  },
   logging: {
     level: (process.env.LOG_LEVEL || 'info') as 'debug' | 'info' | 'warn' | 'error',
     filePath: process.env.LOG_FILE_PATH || '',

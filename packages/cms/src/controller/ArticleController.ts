@@ -5,6 +5,7 @@ import { v4 as uuid } from 'uuid'
 import { env } from '../env'
 import { bulkUpdateRowReorder } from '../helpers/common'
 import { toLevel } from '../helpers/safeUtils'
+import { withoutDisabledFeatures } from '../helpers/features'
 import { logger } from '../logger'
 
 export class ArticleController {
@@ -26,7 +27,7 @@ export class ArticleController {
     }
   }
   async mobileArticlesByLanguage(request: Request, response: Response, next: NextFunction) {
-    return this.articleRepository.query(
+    const articles = await this.articleRepository.query(
       `SELECT ar.id, ca.title as category_title, 
       ca.id as cat_id, sc.title as subcategory_title, 
       sc.id as subcat_id, 
@@ -50,6 +51,7 @@ export class ArticleController {
       `,
       [request.params.lang],
     )
+    return withoutDisabledFeatures(articles)
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
@@ -67,7 +69,9 @@ export class ArticleController {
       const articleToSave = request.body
       articleToSave.lang = request.user.lang
       articleToSave.id = uuid()
-      articleToSave.contentFilter = toLevel(request.body.contentFilter)
+      articleToSave.contentFilter = env.features.contentFilter
+        ? toLevel(request.body.contentFilter)
+        : 0
       articleToSave.ageRestrictionLevel = toLevel(request.body.ageRestrictionLevel)
       articleToSave.isAgeRestricted = articleToSave.ageRestrictionLevel > 0
       await this.articleRepository.save(articleToSave)
@@ -105,7 +109,7 @@ export class ArticleController {
       articleToUpdate.article_heading = request.body.article_heading
       articleToUpdate.article_text = request.body.article_text
       // The Live toggle sends no levels: keep the stored ones instead of resetting them.
-      if (request.body.contentFilter !== undefined) {
+      if (env.features.contentFilter && request.body.contentFilter !== undefined) {
         articleToUpdate.contentFilter = toLevel(request.body.contentFilter)
       }
       if (request.body.ageRestrictionLevel !== undefined) {

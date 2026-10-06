@@ -64,9 +64,11 @@
             <% } %>
             <th style="width: 2.5%"><%= __('Edit') %></th>
             <th style="width: 2.5%"><%= __('Delete') %></th>
+            <% if (features.ageRestrictionLevels) { %>
             <% ageRestrictionOptions.forEach((option) =>{ %>
               <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= option.description %></th>
             <% }) %>
+            <% } %>
             <th style="width: 2.5%"><%= __('Live') %></th>
           </tr>
         </thead>
@@ -114,6 +116,7 @@
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
             </td>
+            <% if (features.ageRestrictionLevels) { %>
             <% ageRestrictionOptions.forEach((option) =>{ %>
               <td>
                 <input 
@@ -125,6 +128,7 @@
                   name="age-<%= article.id %>" <%if(article.ageRestrictionLevel == option.value){%>checked<%}%>/>
               </td>
               <% }) %>
+            <% } %>
             <td>
               <label class="switch">
                 <input data-value="<%= article.id %>" class='liveCheckbox' type="checkbox" 

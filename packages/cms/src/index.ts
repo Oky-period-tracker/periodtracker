@@ -188,6 +188,7 @@ withRetry(() => createConnection(ormconfig), {
     // ============================ Feature flags  ================================
     app.use('/api/voice-over', requireFeature('voiceOver'))
     app.use('/api/content-filter', requireFeature('contentFilter'))
+    app.use('/api/age-restriction', requireFeature('ageRestrictionLevels'))
 
     // ============================ Upload  =======================================
 

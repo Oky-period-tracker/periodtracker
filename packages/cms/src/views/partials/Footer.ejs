@@ -4,7 +4,9 @@
     <%= JSON.stringify(contentFilterOptions) %>
   </span>
   <% } %>
+  <% if (features.ageRestrictionLevels) { %>
   <script type="application/javascript" src="/scripts/ageRestriction.js"></script>
+  <% } %>
   <% if (features.contentFilter) { %>
   <script type="application/javascript" src="/scripts/contentFilter.js"></script>
   <% } %>

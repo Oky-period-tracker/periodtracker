@@ -47,6 +47,10 @@ export const env = {
   features: {
     voiceOver: toBool(process.env.FEATURE_VOICE_OVER),
     contentFilter: toBool(process.env.FEATURE_CONTENT_FILTER),
+    // Age restriction levels (minimum age per item, encyclopedia included).
+    // Off: a single age restricted toggle on quizzes, surveys and did you
+    // knows, and no age restriction on encyclopedia articles.
+    ageRestrictionLevels: toBool(process.env.FEATURE_AGE_RESTRICTION_LEVELS),
   },
   logging: {
     level: (process.env.LOG_LEVEL || 'info') as 'debug' | 'info' | 'warn' | 'error',

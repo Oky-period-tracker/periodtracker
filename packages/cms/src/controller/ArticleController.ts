@@ -51,7 +51,7 @@ export class ArticleController {
       `,
       [request.params.lang],
     )
-    return withoutDisabledFeatures(articles)
+    return withoutDisabledFeatures(articles, { articles: true })
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
@@ -72,7 +72,9 @@ export class ArticleController {
       articleToSave.contentFilter = env.features.contentFilter
         ? toLevel(request.body.contentFilter)
         : 0
-      articleToSave.ageRestrictionLevel = toLevel(request.body.ageRestrictionLevel)
+      articleToSave.ageRestrictionLevel = env.features.ageRestrictionLevels
+        ? toLevel(request.body.ageRestrictionLevel)
+        : 0
       articleToSave.isAgeRestricted = articleToSave.ageRestrictionLevel > 0
       await this.articleRepository.save(articleToSave)
       logger.info('Article created', {
@@ -112,7 +114,7 @@ export class ArticleController {
       if (env.features.contentFilter && request.body.contentFilter !== undefined) {
         articleToUpdate.contentFilter = toLevel(request.body.contentFilter)
       }
-      if (request.body.ageRestrictionLevel !== undefined) {
+      if (env.features.ageRestrictionLevels && request.body.ageRestrictionLevel !== undefined) {
         articleToUpdate.ageRestrictionLevel = toLevel(request.body.ageRestrictionLevel)
         // TODO:PH isAgeRestricted is redundant?
         articleToUpdate.isAgeRestricted = articleToUpdate.ageRestrictionLevel > 0

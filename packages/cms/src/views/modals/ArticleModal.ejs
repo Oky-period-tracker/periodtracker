@@ -26,7 +26,9 @@
               <% if (features.contentFilter) { %>
               <th style="width: 40%"><%= __('Filter')%> </th>
               <% } %>
+              <% if (features.ageRestrictionLevels) { %>
               <th style="width: 40%"><%= __('Age Restriction')%> </th>
+              <% } %>
               <th style="width: 10%"><%= __('Live')%></th>
             </tr>
           </thead>
@@ -71,6 +73,7 @@
             </select>
           </td>
           <% } %>
+          <% if (features.ageRestrictionLevels) { %>
           <td>
             <select class="ageRestrictionLevel" id="ageRestrictionLevelForm" data-source="article">
                 <% ageRestrictionOptions.forEach((item) =>{ %>
@@ -78,6 +81,7 @@
                 <% }) %>
             </select>
           </td>
+          <% } %>
           
             <td >
                 <label class="switch">

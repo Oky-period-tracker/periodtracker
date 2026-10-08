@@ -5,7 +5,10 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_ENV": "dev"
+      }
     },
     "staging": {
       "environment": "preview",
@@ -32,7 +35,8 @@
         "buildType": "app-bundle"
       },
       "env": {
-        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/production"
+        "EAS_LOCAL_BUILD_ARTIFACTS_DIR": "./src/resources/builds/production",
+        "EXPO_PUBLIC_ENV": "production"
       }
     }
   },

@@ -43,7 +43,10 @@ export function saveSyncSnapshot(userId: string, state: ReduxState): Promise<voi
     const encrypted = CryptoJS.AES.encrypt(JSON.stringify(snapshot), key).toString()
     await AsyncStorage.setItem(syncSnapshotKey(userId), encrypted)
   })
-  writes.set(userId, next.catch(() => undefined))
+  writes.set(
+    userId,
+    next.catch(() => undefined),
+  )
   return next
 }
 

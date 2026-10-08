@@ -1,7 +1,7 @@
 var chartOne
 var chartTwo
 
-$('#dynamicModal').on('show.bs.modal', event => {
+$('#dynamicModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var quizId = button.data('value') // Extract info from data-* attributes
   $('#error1').hide()
@@ -27,7 +27,7 @@ $('#dynamicModal').on('show.bs.modal', event => {
     return
   }
   var quizzes = JSON.parse($('#quizzesJSON').text())
-  var quizInfo = quizzes.find(item => {
+  var quizInfo = quizzes.find((item) => {
     return item.id === quizId
   })
 
@@ -91,10 +91,10 @@ $('#btnEditConfirm').on('click', () => {
     url: '/quiz' + (quizID === '0' ? '' : '/' + quizID),
     type: quizID === '0' ? 'POST' : 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
@@ -114,7 +114,7 @@ $('.ageRestrictionCheckbox').on('click', () => {
 
 function changeRelevantQuiz(quizId, key, value) {
   var quizzes = JSON.parse($('#quizzesJSON').text())
-  var quizInfo = quizzes.find(item => {
+  var quizInfo = quizzes.find((item) => {
     return item.id === quizId
   })
   const data = {
@@ -134,20 +134,20 @@ function changeRelevantQuiz(quizId, key, value) {
     url: '/quiz/' + quizId,
     type: 'PUT',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })
 }
 
-$('#graphModal').on('show.bs.modal', event => {
+$('#graphModal').on('show.bs.modal', (event) => {
   var button = $(event.relatedTarget) // Button that triggered the modal
   var answeredQuizzes = JSON.parse($('#answeredQuizzesJSON').text())
   var quizID = button.data('value') // Extract info from data-* attributes
-  var quizAnswered = answeredQuizzes.find(item => {
+  var quizAnswered = answeredQuizzes.find((item) => {
     return item.id === quizID
   })
   if (!quizAnswered) {
@@ -171,12 +171,12 @@ $('#graphModal').on('show.bs.modal', event => {
   )
 })
 
-$('#graphModal').on('hide.bs.modal', event => {
+$('#graphModal').on('hide.bs.modal', (event) => {
   !!chartOne ? chartOne.dispose() : null
   !!chartTwo ? chartTwo.dispose() : null
 })
 
-$('.deleteQuiz').on('click', event => {
+$('.deleteQuiz').on('click', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var quizId = button.data('value') // Extract info from data-* attributes
   var result = confirm('Are you sure? This will permanently delete the item')
@@ -184,10 +184,10 @@ $('.deleteQuiz').on('click', event => {
     $.ajax({
       url: '/quiz/' + quizId,
       type: 'DELETE',
-      success: result => {
+      success: (result) => {
         location.reload()
       },
-      error: error => {
+      error: (error) => {
         console.log(error)
       },
     })
@@ -200,7 +200,7 @@ $('#downloadCSV').on('click', () => {
   var relevantQuiz = ''
   var rows = []
   answeredQuizzes.forEach((item, index) => {
-    relevantQuiz = quizzes.find(innerItem => {
+    relevantQuiz = quizzes.find((innerItem) => {
       return innerItem.id === item.id
     })
     if (!relevantQuiz) return
@@ -225,7 +225,7 @@ $('#downloadCSV').on('click', () => {
 })
 
 exportToCsv = (filename, rows) => {
-  var processRow = function(row) {
+  var processRow = function (row) {
     var finalVal = ''
     for (var j = 0; j < row.length; j++) {
       var innerValue = row[j] === null ? '' : row[j].toString()
@@ -314,19 +314,16 @@ var filterButton = $('#filterButton')
 var filterList = $('#quizzesContainer')
 var items = filterList.children()
 
-filterButton.click(e => {
+filterButton.click((e) => {
   e.preventDefault()
-  var filterText = $('#filterInput')
-    .val()
-    .toLowerCase()
-    .trim()
+  var filterText = $('#filterInput').val().toLowerCase().trim()
   var filtered = items.filter((index, elem) =>
     elem.children[0].innerText.toLowerCase().includes(filterText),
   )
   filterList.empty().prepend(filtered)
 })
 
-$('#clearFilter').click(e => {
+$('#clearFilter').click((e) => {
   $('#filterInput').val('')
   filterList.empty().prepend(items)
 })
@@ -338,11 +335,11 @@ var sortAlphabetStatus = false
 var sortAgeStatus = false
 var filteredItems = false
 
-var sortAge = function({ column }) {
+var sortAge = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : items
   if (!sortAgeStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
       var bText = b.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
       if (aText < bText) {
@@ -356,7 +353,7 @@ var sortAge = function({ column }) {
     sortAgeStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
       var bText = b.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
       if (aText > bText) {
@@ -372,12 +369,12 @@ var sortAge = function({ column }) {
   filterList.append(filteredItems)
 }
 
-var sortDate = function({ column }) {
+var sortDate = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : items
 
   if (!sortDateStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = new Date(a.children[column].innerHTML)
       var bText = new Date(b.children[column].innerHTML)
       if (aText < bText) {
@@ -391,7 +388,7 @@ var sortDate = function({ column }) {
     sortDateStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = new Date(a.children[column].innerHTML)
       var bText = new Date(b.children[column].innerHTML)
       if (aText > bText) {
@@ -407,12 +404,12 @@ var sortDate = function({ column }) {
   filterList.append(filteredItems)
 }
 
-var sortAlphabetically = function({ column }) {
+var sortAlphabetically = function ({ column }) {
   filteredItems = filteredItems ? filteredItems : items
   if (!sortAlphabetStatus) {
     var sortList = Array.prototype.sort.bind(filteredItems)
 
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].innerHTML
       var bText = b.children[column].innerHTML
       if (aText < bText) {
@@ -426,7 +423,7 @@ var sortAlphabetically = function({ column }) {
     sortAlphabetStatus = true
   } else {
     var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function(a, b) {
+    sortList(function (a, b) {
       var aText = a.children[column].innerHTML
       var bText = b.children[column].innerHTML
       if (aText > bText) {
@@ -474,7 +471,7 @@ function makeUpdateCountdown({ countdownElement, tableElement, maxLength }) {
     countdownElement.text(remaining + ' characters remaining.')
   }
 
-  $(document).ready(function($) {
+  $(document).ready(function ($) {
     updateCountdown()
     tableElement.change(updateCountdown)
     tableElement.keyup(updateCountdown)

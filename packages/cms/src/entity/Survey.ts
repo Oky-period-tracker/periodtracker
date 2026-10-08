@@ -1,6 +1,9 @@
-import { Entity, Column, PrimaryColumn, OneToMany } from 'typeorm'
+import { Entity, Column, PrimaryColumn, OneToMany, Index } from 'typeorm'
 import { Question } from './Question'
 @Entity()
+@Index('idx_survey_lang', ['lang'])
+@Index('idx_survey_lang_live', ['lang', 'live'])
+@Index('idx_survey_lang_live_date', ['lang', 'live', 'date_created'])
 export class Survey {
   @PrimaryColumn('uuid')
   id: string

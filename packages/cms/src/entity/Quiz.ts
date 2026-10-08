@@ -1,6 +1,8 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm'
+import { Entity, PrimaryColumn, Column, Index } from 'typeorm'
 
 @Entity()
+@Index('idx_quiz_lang', ['lang'])
+@Index('idx_quiz_lang_live', ['lang', 'live'])
 export class Quiz {
   @PrimaryColumn('uuid')
   id: string

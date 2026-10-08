@@ -22,10 +22,10 @@ class AccessControl {
     }
 
     // Check child roles until one returns true or all return false
-    return $role.inherits.some(childRole => this.can(childRole, operation))
+    return $role.inherits.some((childRole) => this.can(childRole, operation))
   }
 
-  public typeToRole = value => {
+  public typeToRole = (value) => {
     switch (value) {
       case 'superAdmin':
         return 'createAdmin'

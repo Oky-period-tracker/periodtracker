@@ -1,31 +1,27 @@
 import React, { useState } from 'react'
 import { Calendar, CalendarProps, DateData, LocaleConfig } from 'react-native-calendars'
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { DisplayButton } from '../../components/Button'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { Text } from '../../components/Text'
 import { Modal } from '../../components/Modal'
 import { useToggle } from '../../hooks/useToggle'
-import { useCalculateStatusForDateRange, usePredictDay } from '../../contexts/PredictionProvider'
+import { usePredictDay } from '../../contexts/PredictionProvider'
 import moment from 'moment'
 import { asLocal, isFutureDate } from '../../services/dateUtils'
 import { DayModal } from '../../components/DayModal'
 import { useSelector } from 'react-redux'
-import {
-  allCardAnswersSelector,
-  currentLocaleSelector,
-  isFuturePredictionSelector,
-} from '../../redux/selectors'
+import { currentLocaleSelector } from '../../redux/selectors'
 import { Hr } from '../../components/Hr'
 import { calendarTranslations } from '../../resources/translations'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
 import { usePeriodDateUpdate } from '../../hooks/usePeriodDateUpdate'
-
-// TODO: dynamic start & end dates?
-const startDate = moment().startOf('day').subtract(24, 'months')
-const endDate = moment().startOf('day').add(12, 'months')
+import { CalendarDay } from '../../components/CalendarDay'
+import { useCalendarMarks } from '../../hooks/useCalendarMarks'
+import { PredictionMessage } from './PredictionMessage'
+import { CalendarLegend } from './CalendarLegend'
 
 LocaleConfig.locales = {
   ...LocaleConfig.locales,
@@ -45,7 +41,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
   const date = moment(selected)
   const dataEntry = usePredictDay(date)
 
-  const { palette, backgroundColor } = useColor()
+  const { backgroundColor, calendar } = useColor()
 
   const [choiceModalVisible, toggleChoiceModalVisible] = useToggle()
   const [dayModalVisible, toggleDayModal] = useToggle()
@@ -101,32 +97,21 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
     toggleChoiceModalVisible()
   }
 
-  const hasFuturePredictionActive = useSelector(isFuturePredictionSelector)
-  const verifiedPeriodsData = useSelector((state) =>
-    // @ts-expect-error TODO:
-    allCardAnswersSelector(state),
-  )
-
-  // TODO: this is a massive object that could be reduced via dynamic start & end dates
-  const markedDates = useCalculateStatusForDateRange(
-    startDate,
-    endDate,
-    verifiedPeriodsData,
-    !!hasFuturePredictionActive?.futurePredictionStatus,
-  )
+  const { markedDates, marks } = useCalendarMarks()
 
   const messageOpacity = message ? 1 : 0
 
   const theme: CalendarProps['theme'] = {
-    monthTextColor: palette.secondary.text,
+    monthTextColor: calendar.monthTitle,
     textMonthFontSize: 26,
     textMonthFontWeight: 'bold',
+    textSectionTitleColor: calendar.weekday,
     calendarBackground: backgroundColor,
   }
 
   return (
     <View style={styles.wrapper}>
-      <View style={styles.screen}>
+      <ScrollView style={styles.screen} contentContainerStyle={styles.scrollContent}>
         <View
           style={[styles.messageBoxContainer, globalStyles.shadow, { opacity: messageOpacity }]}
         >
@@ -149,9 +134,13 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
                 </DisplayButton>
               )
             }}
-            markedDates={markedDates}
+            // custom marking fields (kinds, label, isToday) are read by CalendarDay
+            markedDates={markedDates as unknown as CalendarProps['markedDates']}
+            dayComponent={CalendarDay as unknown as CalendarProps['dayComponent']}
           />
         </View>
+        <PredictionMessage status={marks.status} />
+        <CalendarLegend days={marks.days} status={marks.status} />
 
         <Modal
           visible={choiceModalVisible}
@@ -178,7 +167,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
           onHandleResponse={handleDayModalResponse} // Pass the method as a prop
           onLaunchTutorial={() => navigation.navigate('Home', { tutorial: 'tutorial_one' })}
         />
-      </View>
+      </ScrollView>
     </View>
   )
 }
@@ -201,17 +190,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     maxWidth: 800,
   },
+  scrollContent: {
+    paddingBottom: 24,
+  },
   container: {
     borderRadius: 20,
     padding: 12,
     overflow: 'hidden',
-    maxHeight: 400,
   },
   calendar: {
     borderRadius: 20,
     overflow: 'hidden',
     width: '100%',
-    height: '100%',
   },
   arrowButton: {
     width: 24,

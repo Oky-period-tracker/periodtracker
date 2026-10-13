@@ -1,6 +1,6 @@
 // app/__tests__/src/prediction/calendarPrediction.test.ts
 import moment from 'moment'
-import { getCalendarInputs } from '../../../src/prediction/calendarPrediction'
+import { getCalendarInputs, toCalendarDays } from '../../../src/prediction/calendarPrediction'
 import { PredictionState } from '../../../src/prediction/PredictionState'
 
 const state = (s: object) => s as unknown as PredictionState
@@ -36,4 +36,15 @@ describe('getCalendarInputs', () => {
       fallbackAnchor: null,
     })
   })
+})
+
+it('splits card answers into confirmed and denied days, ignoring unanswered ones', () => {
+  expect(
+    toCalendarDays({
+      '20261003': { periodDay: true },
+      '20261004': { periodDay: false },
+      '20261005': { periodDay: null },
+      '20261006': {},
+    }),
+  ).toEqual({ confirmedDays: ['2026-10-03'], deniedDays: ['2026-10-04'] })
 })

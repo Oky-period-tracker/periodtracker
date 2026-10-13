@@ -23,3 +23,14 @@ export function getCalendarInputs(state: PredictionState): {
     fallbackAnchor: start && moment(start).isValid() ? moment(start).format('YYYY-MM-DD') : null,
   }
 }
+
+const isoFromShort = (k: string) => `${k.slice(0, 4)}-${k.slice(4, 6)}-${k.slice(6, 8)}`
+
+// Card answers are keyed 'YYYYMMDD'; Yes = confirmed, No = denied, unanswered ignored.
+export function toCalendarDays(answers: Record<string, { periodDay?: boolean | null }>) {
+  const entries = Object.entries(answers)
+  return {
+    confirmedDays: entries.filter(([, a]) => a?.periodDay === true).map(([k]) => isoFromShort(k)),
+    deniedDays: entries.filter(([, a]) => a?.periodDay === false).map(([k]) => isoFromShort(k)),
+  }
+}

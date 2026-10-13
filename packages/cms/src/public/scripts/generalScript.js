@@ -23,3 +23,23 @@ $(document).on('click', '.history-back', (event) => {
     window.history.back()
   }
 })
+
+// Builds the message shown to editors when a request fails, so errors such as
+// a 403 are not only logged to the console. Called from the page scripts.
+function requestErrorMessage(action, xhr) {
+  if (xhr.status === 0) {
+    return (
+      'Could not ' + action + ': the CMS could not be reached. Check your connection and try again.'
+    )
+  }
+  var reason
+  if (xhr.status === 401 || xhr.status === 403) {
+    reason =
+      'the request was refused. Log out and log back in, and if it still fails ask an admin to check your access.'
+  } else if (xhr.responseJSON && xhr.responseJSON.error) {
+    reason = xhr.responseJSON.error + '.'
+  } else {
+    reason = 'the server returned an error.'
+  }
+  return 'Could not ' + action + ': ' + reason + ' (HTTP ' + xhr.status + ')'
+}

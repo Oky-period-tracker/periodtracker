@@ -218,8 +218,9 @@ function deleteArticle(id) {
       success: (result) => {
         location.reload()
       },
-      error: (error) => {
-        console.log(error)
+      error: (xhr) => {
+        console.error('Article delete failed', xhr.status, xhr.responseText)
+        alert(requestErrorMessage('delete the article', xhr))
       },
     })
   }

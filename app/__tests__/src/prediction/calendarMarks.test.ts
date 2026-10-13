@@ -194,3 +194,21 @@ describe('prediction (direction paper Annex B)', () => {
     expect(m.status).toMatchObject({ kind: 'shown', likelyStart: '2026-10-31' })
   })
 })
+
+describe('stale anchor (final review)', () => {
+  it('message and drawing start at the first cycle whose range has not ended yet', () => {
+    const m = buildCalendarMarks({
+      ...base,
+      confirmedDays: ['2026-06-01'],
+      averagePeriodLength: 1,
+      cycle: { mean: 28, lower: 25, upper: 31 },
+      today: '2026-10-13',
+    })
+    expect(m.status.kind).toBe('shown')
+    if (m.status.kind !== 'shown') return
+    expect(m.status.rangeEnd >= '2026-10-13').toBe(true)
+    expect(m.status.likelyStart).toBe('2026-10-19') // 1 Jun + 5 × 28
+    const pastRings = Object.entries(m.days).filter(([d, k]) => d < '2026-10-13' && k.includes('likelyStart'))
+    expect(pastRings).toEqual([])
+  })
+})

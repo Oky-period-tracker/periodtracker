@@ -48,3 +48,20 @@ it('splits card answers into confirmed and denied days, ignoring unanswered ones
     }),
   ).toEqual({ confirmedDays: ['2026-10-03'], deniedDays: ['2026-10-04'] })
 })
+
+describe('getCalendarInputs guards (final review)', () => {
+  it('no saved prediction state: nothing to predict from', () => {
+    expect(getCalendarInputs(null)).toEqual({ cycle: null, averagePeriodLength: null, fallbackAnchor: null })
+  })
+
+  it('predictions switched off in Settings: no range, period length kept', () => {
+    const r = getCalendarInputs(
+      state({
+        smartPrediction: { smaCycleLength: 30, smaPeriodLength: 4 },
+        currentCycle: { startDate: moment('2026-10-01'), cycleLength: 28 },
+      }),
+      false,
+    )
+    expect(r).toEqual({ cycle: null, averagePeriodLength: 4, fallbackAnchor: null })
+  })
+})

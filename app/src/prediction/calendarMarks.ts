@@ -112,8 +112,12 @@ export function buildCalendarMarks(input: CalendarMarksInput): CalendarMarks {
   }
 
   const extra = config.ovulationExtraDay ? 1 : 0
-  const horizonEnd = toDayIndex(input.today) + config.horizonDays
-  for (let offset = anchor; offset + lower - config.lutealDays <= horizonEnd; offset += mean) {
+  const todayIndex = toDayIndex(input.today)
+  const horizonEnd = todayIndex + config.horizonDays
+  // Skip cycles whose start range is already over, so a stale anchor never shows past dates.
+  let first = anchor
+  while (first + upper < todayIndex) first += mean
+  for (let offset = first; offset + lower - config.lutealDays <= horizonEnd; offset += mean) {
     for (let d = offset + lower - config.lutealDays; d <= offset + upper - config.lutealDays + extra; d++) {
       add(d, 'ovulation')
     }
@@ -126,11 +130,11 @@ export function buildCalendarMarks(input: CalendarMarksInput): CalendarMarks {
     days,
     status: {
       kind: 'shown',
-      likelyStart: fromDayIndex(anchor + mean),
-      rangeStart: fromDayIndex(anchor + lower),
-      rangeEnd: fromDayIndex(anchor + upper),
-      ovulationStart: fromDayIndex(anchor + lower - config.lutealDays),
-      ovulationEnd: fromDayIndex(anchor + upper - config.lutealDays + extra),
+      likelyStart: fromDayIndex(first + mean),
+      rangeStart: fromDayIndex(first + lower),
+      rangeEnd: fromDayIndex(first + upper),
+      ovulationStart: fromDayIndex(first + lower - config.lutealDays),
+      ovulationEnd: fromDayIndex(first + upper - config.lutealDays + extra),
     },
   }
 }

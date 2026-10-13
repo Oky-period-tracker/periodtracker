@@ -8,18 +8,26 @@ import { CycleRange } from './calendarMarks'
 // algorithm work lands (brief §4.1). Only this file should change then.
 export const TEMPORARY_HALF_WIDTH = 3
 
-export function getCalendarInputs(state: PredictionState): {
+// state is null when nothing was ever saved (the provider then runs on a made-up default);
+// predictionsEnabled is the Settings switch for future predictions.
+export function getCalendarInputs(
+  state: PredictionState | null,
+  predictionsEnabled = true,
+): {
   cycle: CycleRange | null
   averagePeriodLength: number | null
   fallbackAnchor: string | null
 } {
+  if (!state) return { cycle: null, averagePeriodLength: null, fallbackAnchor: null }
+  const averagePeriodLength = state.smartPrediction?.smaPeriodLength || null
+  if (!predictionsEnabled) return { cycle: null, averagePeriodLength, fallbackAnchor: null }
   const mean = state.smartPrediction?.smaCycleLength || state.currentCycle?.cycleLength
   const start = state.currentCycle?.startDate
   return {
     cycle: mean
       ? { mean, lower: mean - TEMPORARY_HALF_WIDTH, upper: mean + TEMPORARY_HALF_WIDTH }
       : null,
-    averagePeriodLength: state.smartPrediction?.smaPeriodLength || null,
+    averagePeriodLength,
     fallbackAnchor: start && moment(start).isValid() ? moment(start).format('YYYY-MM-DD') : null,
   }
 }

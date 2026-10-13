@@ -97,7 +97,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
     toggleChoiceModalVisible()
   }
 
-  const { markedDates, marks } = useCalendarMarks()
+  const { markedDates, marks, predictionsEnabled } = useCalendarMarks()
 
   const messageOpacity = message ? 1 : 0
 
@@ -139,7 +139,7 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
             dayComponent={CalendarDay as unknown as CalendarProps['dayComponent']}
           />
         </View>
-        <PredictionMessage status={marks.status} />
+        {predictionsEnabled && <PredictionMessage status={marks.status} />}
         <CalendarLegend days={marks.days} status={marks.status} />
 
         <Modal

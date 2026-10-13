@@ -13,8 +13,8 @@ $('#articleModal').on('show.bs.modal', (event) => {
     $('#col1TableModal').val('')
     $('#col2TableModal').val('')
     $('#col3TableModal').val('')
-    $('#contentFilterDropdownForm').val('0')
-    $('#ageRestrictionLevelForm').val('0')
+    selectLevel($('#contentFilterDropdownForm'), 0)
+    selectLevel($('#ageRestrictionLevelForm'), 0)
     $('#col4TableModal').prop('checked', false)
     $('#itemID').text(0)
     $('#countdown2').text(70 + ' characters remaining.')
@@ -31,8 +31,8 @@ $('#articleModal').on('show.bs.modal', (event) => {
   $('#col1TableModal').val(articleInfo.subcategory_id)
   $('#col2TableModal').val(articleInfo.article_heading)
   $('#col3TableModal').val(articleInfo.article_text)
-  $('#contentFilterDropdownForm').val(articleInfo.contentFilter)
-  $('#ageRestrictionLevelForm').val(articleInfo.ageRestrictionLevel)
+  selectLevel($('#contentFilterDropdownForm'), articleInfo.contentFilter)
+  selectLevel($('#ageRestrictionLevelForm'), articleInfo.ageRestrictionLevel)
   $('#col4TableModal').prop('checked', articleInfo.live)
   $('#itemID').text(articleId)
   $('#countdown2').text(70 - articleInfo.article_heading.length + ' characters remaining.')
@@ -363,6 +363,14 @@ const handleSubCategorySelect = (catId) => {
       if (child.dataset.id == catId) $(child).css('display', 'block')
       else $(child).css('display', 'none')
     })
+}
+
+// Selects a content filter or age restriction level in the article modal.
+// Older articles store null, and a level may not be among the options: both
+// fall back to the first option instead of leaving the dropdown empty.
+const selectLevel = (dropdown, level) => {
+  dropdown.val(String(level))
+  if (dropdown.val() === null) dropdown.prop('selectedIndex', 0)
 }
 
 // voiceOvers.js is only loaded while the voice over feature is enabled

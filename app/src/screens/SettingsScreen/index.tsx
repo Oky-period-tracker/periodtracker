@@ -9,12 +9,17 @@ import { Switch } from '../../components/Switch'
 import { useDispatch } from 'react-redux'
 import { deleteAccountRequest, logoutRequest } from '../../redux/actions'
 import { useAuth } from '../../contexts/AuthContext'
-import { NotificationsPreferencesModal } from './components/NotificationsPreferencesModal'
 import { useSelector } from '../../redux/useSelector'
-import { appTokenSelector, currentUserSelector } from '../../redux/selectors'
+import {
+  appTokenSelector,
+  currentUserSelector,
+  notificationReminderFrequencySelector,
+} from '../../redux/selectors'
 import { useTranslate } from '../../hooks/useTranslate'
 import { globalStyles } from '../../config/theme'
 import { useColor } from '../../hooks/useColor'
+import { NotificationsPermissionModal } from './components/NotificationsPermissionModal'
+import { NotificationsPreferencesModal } from './components/NotificationsPreferencesModal'
 
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
@@ -23,7 +28,9 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
-  const [notificationsModalVisible, setNotificationsModalVisible] = React.useState(false)
+  const reminderFrequency = useSelector(notificationReminderFrequencySelector)
+  const [showPermissionModal, setShowPermissionModal] = React.useState(false)
+  const [showPreferencesModal, setShowPreferencesModal] = React.useState(false)
 
   const logOut = () => {
     dispatch(logoutRequest())
@@ -38,15 +45,15 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       deleteAccountRequest({
         name: currentUser.name,
         password: currentUser.password,
-        // setLoading, TODO: ?
       }),
     )
   }
 
   const logOutAlert = () => {
+    const isOfflineAccount = currentUser?.isGuest || !appToken
     Alert.alert(
-      translate('are_you_sure'),
-      currentUser?.isGuest || !appToken ? translate('logout_account_description') : '',
+      translate(isOfflineAccount ? 'logout_account_title' : 'are_you_sure'),
+      isOfflineAccount ? translate('logout_account_description') : '',
       [
         {
           text: translate('cancel'),
@@ -79,6 +86,15 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
     )
   }
 
+  const openNotificationSettings = () => {
+    if (reminderFrequency) {
+      setShowPreferencesModal(true)
+      return
+    }
+
+    setShowPermissionModal(true)
+  }
+
   const rows: TouchableRowProps[] = [
     {
       title: 'about',
@@ -105,9 +121,9 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       component: <ArrowRight color={palette.basic.base} />,
     },
     {
-      title: 'Period Notifications & Reminders',
-      description: 'Oky will send you messages to remind\nyou to log in to Oky and to take care of yourself',
-      onPress: () => setNotificationsModalVisible(true),
+      title: 'Period notification and reminder',
+      description: 'Oky will send you messages to remind you to log in to Oky and to take care of yourself.',
+      onPress: openNotificationSettings,
       component: <ArrowRight color={palette.basic.base} />,
     },
     {
@@ -119,44 +135,55 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   ]
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
-      <View style={[styles.container, globalStyles.shadow, { backgroundColor }]}>
-        {rows.map((props, i) => {
-          const isLast = i === rows.length - 1
-          return (
-            <React.Fragment key={`settings-${i}`}>
-              <TouchableRow {...props} />
-              {!isLast && <Hr />}
-            </React.Fragment>
-          )
-        })}
-      </View>
+    <>
+      <ScrollView contentContainerStyle={styles.screen}>
+        <View style={[styles.container, globalStyles.shadow, { backgroundColor }]}>
+          {rows.map((props, i) => {
+            const isLast = i === rows.length - 1
+            return (
+              <React.Fragment key={`settings-${i}`}>
+                <TouchableRow {...props} />
+                {!isLast && <Hr />}
+              </React.Fragment>
+            )
+          })}
+        </View>
 
-      <NotificationsPreferencesModal
-        visible={notificationsModalVisible}
-        onClose={() => setNotificationsModalVisible(false)}
+        <View style={styles.buttonContainer}>
+          <Button onPress={logOutAlert} status={'secondary'} style={styles.button}>
+            logout
+          </Button>
+          <Button
+            onPress={deleteAccountAlert}
+            status={'basic'}
+            style={[styles.button, styles.deleteButton]}
+          >
+            delete_account
+          </Button>
+          <Button
+            status={'primary'}
+            style={styles.button}
+            onPress={() => navigation.navigate('Contact')}
+          >
+            contact_us
+          </Button>
+        </View>
+      </ScrollView>
+
+      <NotificationsPermissionModal
+        visible={showPermissionModal}
+        onCancel={() => setShowPermissionModal(false)}
+        onProceed={() => {
+          setShowPermissionModal(false)
+          setShowPreferencesModal(true)
+        }}
       />
 
-      <View style={styles.buttonContainer}>
-        <Button onPress={logOutAlert} status={'secondary'} style={styles.button}>
-          logout
-        </Button>
-        <Button
-          onPress={deleteAccountAlert}
-          status={'basic'}
-          style={[styles.button, styles.deleteButton]}
-        >
-          delete_account
-        </Button>
-        <Button
-          status={'primary'}
-          style={styles.button}
-          onPress={() => navigation.navigate('Contact')}
-        >
-          contact_us
-        </Button>
-      </View>
-    </ScrollView>
+      <NotificationsPreferencesModal
+        visible={showPreferencesModal}
+        onClose={() => setShowPreferencesModal(false)}
+      />
+    </>
   )
 }
 
@@ -173,17 +200,21 @@ const PredictionControls = () => {
 const styles = StyleSheet.create({
   screen: {
     paddingHorizontal: 12,
+    paddingTop: 8,
+    paddingBottom: 8,
   },
   container: {
     borderRadius: 20,
     width: '100%',
+    marginBottom: 4,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    marginTop: 12,
+    marginTop: 8,
+    paddingBottom: 8,
   },
   button: {
     flex: 1,

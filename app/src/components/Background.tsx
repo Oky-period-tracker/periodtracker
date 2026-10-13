@@ -33,10 +33,12 @@ const getBackgroundImage = (theme: ThemeName, onPeriod: boolean) => {
 
 const styles = StyleSheet.create({
   default: {
+    flex: 1,
     width: '100%',
     height: '100%',
   },
   backDrop: {
     ...StyleSheet.absoluteFillObject,
+    flex: 1,
   },
 })

@@ -84,3 +84,113 @@ describe('possible period days (brief §6.4)', () => {
     expect(d['2026-10-06']).toBeUndefined()
   })
 })
+
+const annexB: Partial<CalendarMarksInput> = {
+  confirmedDays: ['2026-10-01', '2026-10-02', '2026-10-03'],
+  averagePeriodLength: 4,
+}
+
+describe('prediction (direction paper Annex B)', () => {
+  it('none: no anchor and no cycle shows nothing predicted', () => {
+    const m = buildCalendarMarks({ ...base })
+    expect(m.status).toEqual({ kind: 'none' })
+    expect(m.days).toEqual({})
+  })
+
+  it('none: a cycle length of 0 never loops', () => {
+    const m = buildCalendarMarks({ ...base, ...annexB, cycle: { mean: 0, lower: 0, upper: 0 } })
+    expect(m.status).toEqual({ kind: 'none' })
+  })
+
+  it('example 1, low variability: ±1', () => {
+    const m = buildCalendarMarks({ ...base, ...annexB, cycle: { mean: 30, lower: 29, upper: 31 } })
+    expect(m.status).toEqual({
+      kind: 'shown',
+      likelyStart: '2026-10-31',
+      rangeStart: '2026-10-30',
+      rangeEnd: '2026-11-01',
+      ovulationStart: '2026-10-16',
+      ovulationEnd: '2026-10-19',
+    })
+    expect(m.days['2026-10-04']).toEqual(['possiblePeriod'])
+    expect(m.days['2026-10-31']).toEqual(['likelyStart'])
+    expect(m.days['2026-10-30']).toEqual(['possiblePeriod'])
+    expect(m.days['2026-11-01']).toEqual(['possiblePeriod'])
+    expect(m.days['2026-10-16']).toEqual(['ovulation'])
+    expect(m.days['2026-10-19']).toEqual(['ovulation'])
+    expect(m.days['2026-10-20']).toBeUndefined()
+  })
+
+  it('example 2, medium variability: ±3 is shown', () => {
+    const m = buildCalendarMarks({ ...base, ...annexB, cycle: { mean: 30, lower: 27, upper: 33 } })
+    expect(m.status).toMatchObject({
+      kind: 'shown',
+      rangeStart: '2026-10-28',
+      rangeEnd: '2026-11-03',
+      ovulationStart: '2026-10-14',
+      ovulationEnd: '2026-10-21',
+    })
+  })
+
+  it('example 3, high variability: ±7 is paused, only her period days remain', () => {
+    const m = buildCalendarMarks({ ...base, ...annexB, cycle: { mean: 30, lower: 23, upper: 37 } })
+    expect(m.status).toEqual({ kind: 'paused' })
+    const all = Object.values(m.days).flat()
+    expect(all).not.toContain('likelyStart')
+    expect(all).not.toContain('ovulation')
+    expect(m.days['2026-10-04']).toEqual(['possiblePeriod'])
+  })
+
+  it('fractional: a 28.4-day mean at the cap draws 7 days, not 8', () => {
+    const m = buildCalendarMarks({
+      ...base,
+      ...annexB,
+      cycle: { mean: 28.4, lower: 25.4, upper: 31.4 },
+    })
+    expect(m.status.kind).toBe('shown')
+    if (m.status.kind !== 'shown') return
+    expect(toDayIndex(m.status.rangeEnd) - toDayIndex(m.status.rangeStart) + 1).toBe(7)
+  })
+
+  it('confirmed inside range: a confirmed day in the ovulation window stays only confirmed', () => {
+    // 1 and 3 Oct are one episode; ovulation window is 3–10 Oct
+    const m = buildCalendarMarks({
+      ...base,
+      confirmedDays: ['2026-10-01', '2026-10-03'],
+      averagePeriodLength: 5,
+      cycle: { mean: 19, lower: 16, upper: 22 },
+    })
+    expect(m.days['2026-10-03']).toEqual(['confirmed'])
+    expect(m.days['2026-10-02']).toEqual(expect.arrayContaining(['possiblePeriod']))
+  })
+
+  it('overlap: a possible period day can also be an ovulation day', () => {
+    const m = buildCalendarMarks({
+      ...base,
+      confirmedDays: ['2026-10-01'],
+      averagePeriodLength: 5,
+      cycle: { mean: 19, lower: 16, upper: 22 },
+    })
+    expect(m.days['2026-10-04']).toEqual(expect.arrayContaining(['possiblePeriod', 'ovulation']))
+  })
+
+  it('later cycles repeat the same range; nothing is drawn past the horizon', () => {
+    const m = buildCalendarMarks({
+      ...base,
+      ...annexB,
+      cycle: { mean: 30, lower: 29, upper: 31 },
+      config: { capDays: 3, lutealDays: 14, ovulationExtraDay: true, maxGapDays: 1, defaultPeriodLength: 5, horizonDays: 60 },
+    })
+    expect(m.days['2026-11-30']).toEqual(['likelyStart'])
+    expect(Object.keys(m.days).every((k) => k <= '2026-12-05')).toBe(true) // today + 60
+  })
+
+  it('uses fallbackAnchor when she has confirmed nothing', () => {
+    const m = buildCalendarMarks({
+      ...base,
+      fallbackAnchor: '2026-10-01',
+      cycle: { mean: 30, lower: 29, upper: 31 },
+    })
+    expect(m.status).toMatchObject({ kind: 'shown', likelyStart: '2026-10-31' })
+  })
+})

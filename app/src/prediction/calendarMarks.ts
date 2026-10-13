@@ -95,5 +95,42 @@ export function buildCalendarMarks(input: CalendarMarksInput): CalendarMarks {
     }
   }
 
-  return { days, status: { kind: 'none' } }
+  const anchor = last
+    ? last.start
+    : input.fallbackAnchor
+      ? toDayIndex(input.fallbackAnchor)
+      : null
+  if (anchor === null || !input.cycle) return { days, status: { kind: 'none' } }
+
+  // Round once, so a fractional mean never widens the window to 8 days.
+  const mean = Math.round(input.cycle.mean)
+  const lower = Math.round(input.cycle.lower)
+  const upper = Math.round(input.cycle.upper)
+  if (mean < 1) return { days, status: { kind: 'none' } }
+  if (Math.max(mean - lower, upper - mean) > config.capDays) {
+    return { days, status: { kind: 'paused' } }
+  }
+
+  const extra = config.ovulationExtraDay ? 1 : 0
+  const horizonEnd = toDayIndex(input.today) + config.horizonDays
+  for (let offset = anchor; offset + lower - config.lutealDays <= horizonEnd; offset += mean) {
+    for (let d = offset + lower - config.lutealDays; d <= offset + upper - config.lutealDays + extra; d++) {
+      add(d, 'ovulation')
+    }
+    for (let d = offset + lower; d <= offset + upper; d++) {
+      add(d, d === offset + mean ? 'likelyStart' : 'possiblePeriod')
+    }
+  }
+
+  return {
+    days,
+    status: {
+      kind: 'shown',
+      likelyStart: fromDayIndex(anchor + mean),
+      rangeStart: fromDayIndex(anchor + lower),
+      rangeEnd: fromDayIndex(anchor + upper),
+      ovulationStart: fromDayIndex(anchor + lower - config.lutealDays),
+      ovulationEnd: fromDayIndex(anchor + upper - config.lutealDays + extra),
+    },
+  }
 }

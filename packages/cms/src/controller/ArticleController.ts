@@ -110,7 +110,7 @@ export class ArticleController {
       articleToUpdate.subcategory = request.body.subcategory
       articleToUpdate.article_heading = request.body.article_heading
       articleToUpdate.article_text = request.body.article_text
-      // The Live toggle sends no levels: keep the stored ones instead of resetting them.
+      // Requests that send no levels keep the stored ones instead of resetting them.
       if (env.features.contentFilter && request.body.contentFilter !== undefined) {
         articleToUpdate.contentFilter = toLevel(request.body.contentFilter)
       }
@@ -126,6 +126,38 @@ export class ArticleController {
       return articleToUpdate
     } catch (error) {
       logger.error('ArticleController.update failed', {
+        id: request.params.id,
+        message: error?.message,
+        stack: error?.stack,
+      })
+      throw error
+    }
+  }
+
+  // The Live toggle only changes the publish status: it must not go through update(), which
+  // rewrites the whole article from the page snapshot and can refuse it as a duplicate title.
+  async updateLive(request: Request, response: Response, next: NextFunction) {
+    try {
+      const { live } = request.body
+      if (![true, false, 'true', 'false'].includes(live)) {
+        response.status(400).send({ error: 'live must be true or false' })
+        return
+      }
+      const articleToUpdate = await this.articleRepository.findOne(request.params.id)
+      if (!articleToUpdate) {
+        logger.warn('Article not found for live update', { id: request.params.id })
+        response.status(404).send({ error: 'Article not found' })
+        return
+      }
+      articleToUpdate.live = String(live) === 'true'
+      await this.articleRepository.save(articleToUpdate)
+      logger.info('Article live status updated', {
+        id: request.params.id,
+        live: articleToUpdate.live,
+      })
+      return { id: articleToUpdate.id, live: articleToUpdate.live }
+    } catch (error) {
+      logger.error('ArticleController.updateLive failed', {
         id: request.params.id,
         message: error?.message,
         stack: error?.stack,

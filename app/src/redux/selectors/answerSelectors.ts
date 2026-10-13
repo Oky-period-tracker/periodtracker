@@ -59,9 +59,13 @@ export const verifyPeriodDaySelectorWithDate = (state: ReduxState, date: Moment)
   // return s(state)[state.auth.user.id]?.verifiedDates[toShortISO(date)] || {}
 }
 export const allCardAnswersSelector = (state: ReduxState) => {
-  if (!state.auth.user) return EMPTY_OBJECT // for the use case on info screen where there is no authed user
-  if (!s(state)[state.auth.user.id]) return EMPTY_OBJECT
-  return s(state)[state.auth.user.id]?.verifiedDates || EMPTY_OBJECT
+  const userId = state.auth?.user?.id
+  if (!userId) return EMPTY_OBJECT
+
+  const answers = s(state)?.[userId]
+  if (!answers) return EMPTY_OBJECT
+
+  return answers.verifiedDates || EMPTY_OBJECT
 }
 
 export const notesAnswerSelector = (

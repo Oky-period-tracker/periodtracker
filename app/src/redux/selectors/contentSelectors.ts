@@ -34,12 +34,18 @@ export const articlesSelector = (state: ReduxState) => s(state).articles
 
 export const allArticlesSelector = (state: ReduxState) => {
   const articles = s(state)?.articles
-  return selectAllArticles(articles?.allIds, articles?.byId)
+  if (!articles?.allIds || !articles?.byId) {
+    return []
+  }
+  return selectAllArticles(articles.allIds, articles.byId)
 }
 
 export const allVideosSelector = (state: ReduxState) => {
   const videos = s(state)?.videos
-  return selectAllVideos(videos?.allIds, videos?.byId)
+  if (!videos?.allIds || !videos?.byId) {
+    return []
+  }
+  return selectAllVideos(videos.allIds, videos.byId)
 }
 
 export const articleByIDSelector = (state: ReduxState, id: string) => {
@@ -65,12 +71,18 @@ export const helpCenterAttributesSelector = (state: ReduxState) => {
 
 export const allCategoriesSelector = (state: ReduxState) => {
   const categories = s(state)?.categories
-  return selectAllCategories(categories?.allIds, categories?.byId)
+  if (!categories?.allIds || !categories?.byId) {
+    return []
+  }
+  return selectAllCategories(categories.allIds, categories.byId)
 }
 
 export const allSubCategoriesSelector = (state: ReduxState) => {
   const subCategories = s(state)?.subCategories
-  return selectAllSubCategories(subCategories?.allIds, subCategories?.byId)
+  if (!subCategories?.allIds || !subCategories?.byId) {
+    return []
+  }
+  return selectAllSubCategories(subCategories.allIds, subCategories.byId)
 }
 
 export const allSubCategoriesByIdSelector = (state: ReduxState) => {

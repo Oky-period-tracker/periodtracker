@@ -122,6 +122,8 @@ const CalendarScreen: ScreenComponent<'Calendar'> = ({ navigation }) => {
 
         <View style={[styles.container, globalStyles.shadow]}>
           <Calendar
+            // remount on light/dark switch: react-native-calendars caches its theme styles on mount
+            key={backgroundColor}
             onDayPress={onDayPress}
             style={[styles.calendar, globalStyles.elevation, { backgroundColor }]}
             theme={theme}

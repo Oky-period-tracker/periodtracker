@@ -23,7 +23,7 @@ export const CalendarLegend = ({
     calendar_legend_today: {},
   }
   return (
-    <View style={styles.list}>
+    <View style={[styles.list, { backgroundColor: c.messageBackground }]}>
       {legendKeys(days, status).map((key) => (
         <View key={key} style={styles.row}>
           <View style={[styles.swatch, swatch[key]]}>
@@ -39,7 +39,7 @@ export const CalendarLegend = ({
 }
 
 const styles = StyleSheet.create({
-  list: { marginTop: 16, marginHorizontal: 6, gap: 10 },
+  list: { marginTop: 12, borderRadius: 14, paddingVertical: 14, paddingHorizontal: 16, gap: 10 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   swatch: { width: 22, height: 22, borderRadius: 11, alignItems: 'center', justifyContent: 'flex-end' },
   dot: { width: 5, height: 5, borderRadius: 2.5, marginBottom: 2 },

@@ -6,3 +6,11 @@ declare global {
     export interface User extends AppUser {}
   }
 }
+
+// req.session is typed by express-session, but filled by cookie-session
+declare module 'express-session' {
+  interface SessionData {
+    passport: { user?: number }
+    loginAt: number
+  }
+}

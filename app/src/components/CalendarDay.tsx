@@ -63,7 +63,8 @@ export const CalendarDay = ({ date, marking, onPress }: Props) => {
       accessibilityRole="button"
       accessibilityLabel={marking?.label ?? date.dateString}
     >
-      <View testID="calendar-day-circle" style={[styles.circle, fill]}>
+      {/* key: rebuild the circle when its look changes; Android left the number undrawn when a ring lost its border */}
+      <View key={look} testID="calendar-day-circle" style={[styles.circle, fill]}>
         {look === 'split' && (
           <View
             testID="calendar-day-split"

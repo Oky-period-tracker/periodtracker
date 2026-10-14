@@ -7,9 +7,15 @@ export class AccessController {
     logger.info('Login attempt', { username: request.body?.username, ip: request.ip })
     return passport.authenticate('local', {
       failureRedirect: '/login',
-      successRedirect: '/encyclopedia',
       failureFlash: 'Invalid username or password.',
-    })(request, response, next)
+    })(request, response, (error?: Error) => {
+      if (error) {
+        return next(error)
+      }
+      // Starts the clock sessionExpiry checks every request against
+      request.session.loginAt = Date.now()
+      response.redirect('/encyclopedia')
+    })
   }
 
   async logout(request: Request, response: Response, next: NextFunction) {

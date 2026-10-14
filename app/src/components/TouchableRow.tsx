@@ -24,13 +24,13 @@ export const TouchableRow = ({
 
   return (
     <TouchableOpacity
-      style={[styles.row, { height, padding }]}
+      style={[styles.row, { minHeight: height, padding: Math.max(padding - 6, 12) }]}
       onPress={onPress}
       disabled={disabled}
     >
       <View style={styles.rowLeft}>
         <Text style={styles.title}>{title}</Text>
-        {description && <Text>{description}</Text>}
+        {description && <Text style={styles.description}>{description}</Text>}
       </View>
       {component && <View style={styles.rowRight}>{component}</View>}
     </TouchableOpacity>
@@ -39,23 +39,30 @@ export const TouchableRow = ({
 
 const styles = StyleSheet.create({
   row: {
-    height: 100,
     width: '100%',
     flexDirection: 'row',
-    padding: 24,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   rowLeft: {
     justifyContent: 'center',
     flex: 1,
-    padding: 8,
+    paddingRight: 8,
   },
   rowRight: {
     alignItems: 'flex-end',
     justifyContent: 'center',
+    marginLeft: 8,
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 2,
+  },
+  description: {
+    fontSize: 12,
+    lineHeight: 18,
     textAlign: 'left',
   },
 })

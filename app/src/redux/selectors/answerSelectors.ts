@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { ReduxState } from '../reducers'
 
 const s = (state: ReduxState) => state.answer
+const EMPTY_OBJECT = {}
 
 export const surveyHasAnswerSelector = (state: ReduxState, id: string) => {
   const userId = state.auth?.user?.id
@@ -73,12 +74,12 @@ export const verifyPeriodDaySelectorWithDate = (state: ReduxState, date: Moment)
 
 export const allCardAnswersSelector = (state: ReduxState) => {
   const userId = state.auth?.user?.id
-  if (!userId) return {}
+  if (!userId) return EMPTY_OBJECT
 
   const answers = s(state)?.[userId]
-  if (!answers) return {}
+  if (!answers) return EMPTY_OBJECT
 
-  return answers.verifiedDates || {}
+  return answers.verifiedDates || EMPTY_OBJECT
 }
 
 export const notesAnswerSelector = (

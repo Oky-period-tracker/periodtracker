@@ -44,6 +44,9 @@
     ],
     "nohoist": []
   },
+  "resolutions": {
+    "@types/node": "17.0.45"
+  },
   "devDependencies": {
     "husky": "^2.3.0",
     "lint-staged": "^8.1.7",

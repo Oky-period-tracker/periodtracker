@@ -93,7 +93,6 @@ export const AvatarMessage = ({ style }: { style?: StyleProp<ViewStyle> }) => {
         enableTranslate={false}
         accessibilityLabel={message}
         style={styles.messageText}
-        numberOfLines={3}
       >
         {message}
       </Text>

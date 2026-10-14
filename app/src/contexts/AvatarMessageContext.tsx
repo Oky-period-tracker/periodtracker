@@ -41,6 +41,11 @@ const AvatarMessageContext = React.createContext<AvatarMessageContext>(defaultVa
 const MESSAGE_DURATION = 5000 // How long each message stays visible (ms)
 const RANDOM_MESSAGE_INTERVAL = 10000 // Delay before showing the next message after the previous one clears (ms)
 
+const GENERAL_REMINDER_MESSAGES = [
+  'The more you log, the better I can predict.',
+  'It’s normal for your period to surprise you sometimes. We’ll keep learning together.',
+] as const
+
 export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => {
   const allMessages = useSelector(allAvatarText) // All regular avatar messages from the content store
   const currentUser = useSelector(currentUserSelector)
@@ -73,7 +78,16 @@ export const AvatarMessageProvider = ({ children }: React.PropsWithChildren) => 
 
   // Regular (non-lock) messages available for random rotation
   const availableMessages = React.useMemo(() => {
-    return [...(allMessages || [])]
+    const messages = [...(allMessages || [])]
+    const existingContents = new Set(messages.map((item) => item.content))
+
+    GENERAL_REMINDER_MESSAGES.forEach((content, index) => {
+      if (!existingContents.has(content)) {
+        messages.push({ id: `general-reminder-${index}`, content })
+      }
+    })
+
+    return messages
   }, [allMessages])
 
   // Public setter — allows other components to push a custom message into the bubble

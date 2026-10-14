@@ -59,13 +59,18 @@
             <th style="width: 27.5%"><%= __('Wrong Answer Response')%></th>
             <th style="width: 27.5%"><%= __('Right Answer Response')%></th>
             <th style="width: 2.5%"><%= __('Data')%></th>
-            <th style="width: 2.5%" class="pointer contentFilter"><%= __('Filter')%></th>
+            <%# Stays in the DOM, hidden, while the content filter is disabled: the page scripts address columns by index. %>
+            <th style="width: 2.5%" class="pointer contentFilter" <% if (!features.contentFilter) { %>hidden<% } %>><%= __('Filter')%></th>
             <th style="width: 2.5%"><%= __('Edit')%></th>
             <th style="width: 2.5%"><%= __('Delete')%></th>
 
+            <% if (features.ageRestrictionLevels) { %>
             <% ageRestrictionOptions.forEach((option) =>{ %>
               <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= option.description %></th>
             <% }) %>
+            <% } else { %>
+            <th style="width: 2.5%"><%= __('Age Restricted')%></th>
+            <% } %>
 
             <th style="width: 2.5%"><%= __('Live')%></th>
           </tr>
@@ -92,13 +97,15 @@
               <i class="fas fa-chart-pie" aria-hidden="true"></i>
               </button>
             </td>
-            <td>
+            <td <% if (!features.contentFilter) { %>hidden<% } %>>
+              <% if (features.contentFilter) { %>
               <select 
                 class="content-filter-dropdown"
                 data-source="quiz"
                 data-id="<%= quiz.id %>"
                 data-level="<%= quiz.contentFilter %>"
                 data></select>
+              <% } %>
             </td>
             <td>
               <button
@@ -116,6 +123,7 @@
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
             </td>
+            <% if (features.ageRestrictionLevels) { %>
             <% ageRestrictionOptions.forEach((option) =>{ %>
               <td>
                 <input 
@@ -127,6 +135,18 @@
                   name="age-<%= quiz.id %>" <%if(quiz.ageRestrictionLevel == option.value){%>checked<%}%>/>
               </td>
               <% }) %>
+            <% } else { %>
+            <td>
+              <label class="switch">
+                <input data-value="<%= quiz.id %>" class='ageRestrictionCheckbox' type="checkbox" 
+                <%if(quiz.isAgeRestricted) {%>
+                  checked
+                <% }%>
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <% } %>
             <td>
               <label class="switch">
                 <input data-value="<%= quiz.id %>" class='liveCheckbox' type="checkbox" 

@@ -8,6 +8,9 @@ import { useDispatch } from 'react-redux'
 import { setLocale } from '../redux/actions'
 import { WheelPickerOption } from './WheelPicker'
 import { analytics } from '../services/firebase'
+import { getActiveBundle } from '../redux/storeManager'
+import { ANON_USER_ID } from '../services/storage/storageKeys'
+import { setPendingLocale } from '../services/auth/pendingLocale'
 
 export const LanguageSelector = (props: ButtonProps) => {
   const locale = useSelector(currentLocaleSelector)
@@ -19,6 +22,13 @@ export const LanguageSelector = (props: ButtonProps) => {
     }
 
     dispatch(setLocale(option.value))
+
+    // When picked on the logged-out auth screen (anon store), remember it as an explicit choice so
+    // it carries into the account the user logs into next instead of being overridden by that
+    // account's saved language.
+    if (getActiveBundle()?.userId === ANON_USER_ID) {
+      setPendingLocale(option.value)
+    }
 
     analytics?.().logEvent('languageChanged', {
       selectedLanguage: option.value,

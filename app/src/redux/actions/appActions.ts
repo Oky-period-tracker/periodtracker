@@ -47,6 +47,10 @@ export function setHasOpened(hasOpened: boolean) {
   return createAction('SET_HAS_OPENED', { hasOpened })
 }
 
+export function setOnboardingPending(onboardingPending: boolean) {
+  return createAction('SET_ONBOARDING_PENDING', { onboardingPending })
+}
+
 export function setTutorialOneActive(isTutorialActive: boolean) {
   return createAction('SET_TUTORIAL_ONE_ACTIVE', { isTutorialActive })
 }

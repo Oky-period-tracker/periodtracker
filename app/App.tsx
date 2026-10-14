@@ -4,7 +4,7 @@ import RootNavigator from './src/navigation/RootNavigator'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Background } from './src/components/Background'
 import { Provider } from 'react-redux'
-import { store, persistor } from './src/redux/store'
+import { StoreManagerProvider } from './src/redux/StoreManagerContext'
 import { PersistGate } from 'redux-persist/integration/react'
 import { useOrientationLock } from './src/hooks/useOrientationLock'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
@@ -17,6 +17,7 @@ import { StatusBar } from 'react-native'
 import { analytics } from './src/services/firebase'
 import { ReducedMotionConfig, ReduceMotion } from 'react-native-reanimated'
 import { SoundProvider } from './src/contexts/SoundProvider'
+import { startSyncWatcher } from './src/services/sync/syncManager'
 
 function App() {
   useOrientationLock()
@@ -25,30 +26,39 @@ function App() {
     analytics?.().logAppOpen()
   }, [])
 
+  React.useEffect(() => {
+    // Sync offline-created accounts to the server when online.
+    return startSyncWatcher()
+  }, [])
+
   return (
     <SafeAreaProvider>
       <ReducedMotionConfig mode={ReduceMotion.Never} />
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
+        <StoreManagerProvider>
+          {(bundle) => (
             <AuthProvider>
-              <PredictionProvider>
-                <ResponsiveProvider>
-                  <SoundProvider>
-                    <EncyclopediaProvider>
-                      <Background>
-                        <LoadingProvider>
-                          <StatusBar hidden />
-                          <RootNavigator />
-                        </LoadingProvider>
-                      </Background>
-                    </EncyclopediaProvider>
-                  </SoundProvider>
-                </ResponsiveProvider>
-              </PredictionProvider>
+              <Provider store={bundle.store}>
+                <PersistGate key={bundle.userId} loading={null} persistor={bundle.persistor}>
+                  <PredictionProvider>
+                    <ResponsiveProvider>
+                      <SoundProvider>
+                        <EncyclopediaProvider>
+                          <Background>
+                            <LoadingProvider>
+                              <StatusBar hidden />
+                              <RootNavigator />
+                            </LoadingProvider>
+                          </Background>
+                        </EncyclopediaProvider>
+                      </SoundProvider>
+                    </ResponsiveProvider>
+                  </PredictionProvider>
+                </PersistGate>
+              </Provider>
             </AuthProvider>
-          </PersistGate>
-        </Provider>
+          )}
+        </StoreManagerProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
   )

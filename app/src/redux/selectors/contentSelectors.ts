@@ -62,7 +62,7 @@ export const articlesObjectByIDSelector = (state: ReduxState) => {
 }
 
 export const allHelpCentersForCurrentLocale = (state: ReduxState) => {
-  return s(state).helpCenters.filter((item) => item.lang === state.app?.locale)
+  return s(state).helpCenters.filter((item: any) => item.lang === state.app?.locale)
 }
 
 export const helpCenterAttributesSelector = (state: ReduxState) => {
@@ -128,13 +128,11 @@ export const aboutBannerSelector = (state: ReduxState) => {
 export const allQuizzesSelectors = (state: ReduxState) => {
   // TODO: FIXME
   const isUserYoungerThan15 = true
-  // moment()
-  //   .utc()
-  //   .diff(state.auth.user.dateOfBirth) < 15
   const quizzes = s(state)?.quizzes
   if (!quizzes?.allIds || !quizzes?.byId) {
     return []
   }
+
   const filteredArray = quizzes.allIds.reduce<Array<NonNullable<typeof quizzes.byId[string]>>>(
     (acc, id) => {
       const quiz = quizzes.byId?.[id]
@@ -161,21 +159,21 @@ export const allDidYouKnowsSelectors = (state: ReduxState) => {
   // TODO: FIXME
   // FYI Age restriction occurs server side now
   const isUserYoungerThan15 = true
-  // moment()
-  //   .utc()
-  //   .diff(state.auth.user.dateOfBirth) < 15
   const didYouKnows = s(state)?.didYouKnows
   if (!didYouKnows?.allIds || !didYouKnows?.byId) {
     return []
   }
+
   const filteredArray = didYouKnows.allIds.reduce<
     Array<NonNullable<typeof didYouKnows.byId[string]>>
   >((acc, id) => {
     const item = didYouKnows.byId?.[id]
     if (!item) return acc
+
     if ((!item.isAgeRestricted && isUserYoungerThan15) || !isUserYoungerThan15) {
       acc.push(item)
     }
+
     return acc
   }, [])
 

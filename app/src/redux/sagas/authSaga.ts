@@ -253,7 +253,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
   const { isActive, startDate, periodLength, cycleLength } = action.payload
   // @ts-expect-error TODO:
   const currentUser = yield select(selectors.currentUserSelector)
-  const periodResult = null
+  let periodResult: any = null
   // @ts-expect-error TODO:
   if (yield fetchNetworkConnectionStatus()) {
     try {

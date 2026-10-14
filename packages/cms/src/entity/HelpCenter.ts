@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm'
 
 @Entity()
+@Index('idx_help_center_region', ['region'])
 export class HelpCenter {
   @PrimaryGeneratedColumn()
   id: number

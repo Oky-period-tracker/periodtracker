@@ -19,6 +19,7 @@ interface OkyUserProps {
   dateAccountSaved: string
   metadata: UserMetadata
   avatar: AvatarConfig | null
+  deviceId?: string
 }
 
 export interface AvatarConfig {
@@ -92,6 +93,9 @@ export class OkyUser {
   @Column({ name: 'avatar', type: 'json', nullable: true, default: null })
   private avatar: AvatarConfig | null
 
+  @Column({ name: 'deviceId', type: 'varchar', nullable: true })
+  private deviceId: string | undefined
+
   private constructor(props?: OkyUserProps) {
     if (props !== undefined) {
       const {
@@ -108,6 +112,7 @@ export class OkyUser {
         dateAccountSaved,
         metadata,
         avatar,
+        deviceId,
       } = props
 
       this.id = id
@@ -123,6 +128,7 @@ export class OkyUser {
       this.dateSignedUp = dateSignedUp
       this.dateAccountSaved = dateAccountSaved
       this.metadata = metadata
+      this.deviceId = deviceId
       // Ensure customAvatarUnlocked is set to false if not provided
       this.avatar = {
         ...avatar,
@@ -146,6 +152,7 @@ export class OkyUser {
     dateAccountSaved,
     metadata,
     avatar = null,
+    deviceId,
   }: {
     id: string
     name: string
@@ -161,6 +168,7 @@ export class OkyUser {
     dateAccountSaved: string
     metadata: UserMetadata
     avatar?: AvatarConfig | null
+    deviceId?: string
   }): Promise<OkyUser> {
     if (!id) {
       throw new Error(`The user id must be provided`)
@@ -188,6 +196,7 @@ export class OkyUser {
       dateAccountSaved,
       metadata,
       avatar,
+      deviceId,
     })
   }
 
@@ -300,6 +309,10 @@ export class OkyUser {
 
   public getAvatar() {
     return this.avatar
+  }
+
+  public getDeviceId() {
+    return this.deviceId
   }
 
   public formatAvatar(avatar: AvatarConfig | null) {

@@ -1,9 +1,22 @@
-import { IsNotEmpty, MinLength, IsIn, IsDateString } from 'class-validator'
+import {
+  IsNotEmpty,
+  MinLength,
+  IsIn,
+  IsDateString,
+  IsOptional,
+  IsUUID,
+  IsString,
+  MaxLength,
+} from 'class-validator'
 import { UserMetadata, AvatarConfig } from 'domain/oky/OkyUser'
 const minNameLength = 3
 const minPasswordLength = 1
 export class SignupRequest {
-  public readonly preferredId: string
+  // Validated as a UUID so a malformed preferredId is rejected with a clean 400 at the boundary
+  // rather than blowing up as a 500 when it reaches the uuid primary-key column.
+  @IsOptional()
+  @IsUUID('4')
+  public readonly preferredId?: string
 
   @IsNotEmpty()
   @MinLength(minNameLength, {
@@ -47,4 +60,9 @@ export class SignupRequest {
   public readonly metadata?: UserMetadata
 
   public readonly avatar?: AvatarConfig | null
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  public readonly deviceId?: string
 }

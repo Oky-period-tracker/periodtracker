@@ -4,7 +4,7 @@ function submitJson() {
   for (let i = 0; i < children.length; i++) {
     let child = children[i]
     const plainTextFromChildren = Array.from(child.children[2].childNodes)
-      .map(node => node.textContent)
+      .map((node) => node.textContent)
       .join('\n')
 
     const current = {
@@ -28,10 +28,10 @@ function submitJson() {
     url: '/terms-and-conditions',
     type: 'POST',
     data: data,
-    success: result => {
+    success: (result) => {
       location.reload()
     },
-    error: error => {
+    error: (error) => {
       console.log(error)
     },
   })

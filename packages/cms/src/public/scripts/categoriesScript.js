@@ -200,7 +200,7 @@ const initializeCategoriesDataTable = (data) => {
         searchable: false,
         render: (_, __, row) => {
           return `
-            <button type="button" onclick="deleteCategory('${row.id}')" class="btn btn-sm">
+            <button type="button" class="btn btn-sm deleteCategoryRow" data-id="${row.id}">
               <i class="fas fa-trash" aria-hidden="true"></i>
             </button>  
          `
@@ -243,6 +243,7 @@ const initializeCategoriesDataTable = (data) => {
 const saveCategoryReorder = (isSave) => {
   if (!isSave) {
     location.reload()
+    return
   }
 
   $.ajax({
@@ -257,3 +258,12 @@ const saveCategoryReorder = (isSave) => {
     },
   })
 }
+
+// The CMS content security policy blocks inline onclick attributes, so the
+// delete and reorder buttons are wired here instead.
+$('#categoryTable').on('click', '.deleteCategoryRow', (event) => {
+  deleteCategory($(event.currentTarget).attr('data-id'))
+})
+$('#categoryRowReorderModal').on('click', '.saveReorder', (event) => {
+  saveCategoryReorder($(event.currentTarget).data('save'))
+})

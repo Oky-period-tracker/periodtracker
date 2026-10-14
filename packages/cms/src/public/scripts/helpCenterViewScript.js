@@ -86,7 +86,8 @@ $('#regionDropdown').on('change', (e, params) => {
   }
 })
 
-$('#add-website-btn').on('click', () => {
+// Delegated: the modal re-creates this button every time it closes.
+$(document).on('click', '#add-website-btn', () => {
   $('#website-input-group').clone().find('input').val('').end().appendTo($('#website-section'))
   if ($('.website-input-group').length > 1) {
     $('.delete-button').removeAttr('style')
@@ -347,14 +348,10 @@ const initializeDataTable = (result) => {
         render: (data, type, row) => {
           return `
           <div class="d-flex">
-              <button
-                type="button"
-                class="btn btn-sm"
-                onclick="prepareEdit(${row.id})"
-              >
+              <button type="button" class="btn btn-sm editHelpCenter" data-id="${row.id}">
                 <i class="fas fa-edit" aria-hidden="true"></i>
               </button>
-              <button type="button" class="btn btn-sm deleteArticle" onclick="deleteHelpCenter(${row.id})">
+              <button type="button" class="btn btn-sm deleteHelpCenter" data-id="${row.id}">
                 <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
           </div>
@@ -367,9 +364,9 @@ const initializeDataTable = (result) => {
         render: (data, type, row) => {
           return `
           <label class="switch">
-            <input onchange="toggleLive(${row.id}, ${
-            row.isActive
-          })" class='liveCheckbox' type="checkbox" ${row.isActive ? 'checked' : ''}/>
+            <input class="liveCheckbox helpCenterLiveToggle" data-id="${row.id}" data-active="${
+            row.isActive ? 'true' : 'false'
+          }" type="checkbox" ${row.isActive ? 'checked' : ''}/>
             <span class="slider round"></span>
           </label>
         `
@@ -409,6 +406,25 @@ const initializeDataTable = (result) => {
   })
   // loadFilters('helpCenters')
 }
+
+// The CMS content security policy blocks inline onclick/onchange attributes,
+// so the table, website and reorder buttons are wired here instead.
+$('#helpCenterTable').on('click', '.editHelpCenter', (event) => {
+  prepareEdit($(event.currentTarget).data('id'))
+})
+$('#helpCenterTable').on('click', '.deleteHelpCenter', (event) => {
+  deleteHelpCenter($(event.currentTarget).data('id'))
+})
+$('#helpCenterTable').on('change', '.helpCenterLiveToggle', (event) => {
+  const toggle = $(event.currentTarget)
+  toggleLive(toggle.data('id'), toggle.data('active'))
+})
+$(document).on('click', '.delete-website', (event) => {
+  deleteWebsite($(event.currentTarget))
+})
+$('#rowReorderModal').on('click', '.saveReorder', (event) => {
+  saveReorder($(event.currentTarget).data('save'))
+})
 
 const deleteWebsite = (action) => {
   action.parent().parent().remove()
@@ -482,7 +498,7 @@ const prepareEdit = (id) => {
                 <input type="text" class="no-validate" class="website" aria-describedby="emailHelp" name="website" value="__REPLACE__">
               </div>
               <div class="col-md-2">
-                <button class="btn btn-danger text-white delete-button" type="button" onclick="deleteWebsite($(this))"><i class="fa-solid fa-trash"></i></button>
+                <button class="btn btn-danger text-white delete-button delete-website" type="button"><i class="fa-solid fa-trash"></i></button>
               </div>
             </div>
           `
@@ -551,7 +567,7 @@ $('#helpCenterModal').on('hidden.bs.modal', function () {
           <input type="text" class="no-validate" class="website" aria-describedby="emailHelp" name="website">
         </div>
         <div class="col-md-2">
-          <button class="btn btn-danger text-white delete-button" type="button" onclick="deleteWebsite($(this))"><i class="fa-solid fa-trash"></i></button>
+          <button class="btn btn-danger text-white delete-button delete-website" type="button"><i class="fa-solid fa-trash"></i></button>
         </div>
       </div>
     </div>
@@ -594,6 +610,7 @@ const prepareAttributes = () => {
 const saveReorder = (isSave) => {
   if (!isSave) {
     location.reload()
+    return
   }
 
   $.ajax({

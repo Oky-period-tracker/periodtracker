@@ -65,6 +65,7 @@ The decision to deploy the backend API and CMS applications using Amazon Elastic
     * Each ECS Service's task definition points to a specific environment file in this bucket.
     * **API Task Configuration:** Copy `project_oky_api_task_configuration.dist.env` to `project_oky_api_task_configuration.env` and populate with values from your deployment
     * **CMS Task Configuration:** Copy `project_oky_cms_task_configuration.dist.env` to `project_oky_cms_task_configuration.env` and populate with values from your deployment
+    * **CMS Firebase credentials:** ECS cannot mount the `firebase-config.json` key file, so set `FIREBASE_SERVICE_ACCOUNT_BASE64` in the CMS environment file to the base64 encoded service account key of the Firebase project for that environment. See [Firebase CMS setup](../setup.md#cms-setup). The CMS also needs outbound access to `googleapis.com` to send push notifications and store voice-over files.
 
 * **RDS Aurora Serverless:**
     * Managed PostgreSQL-compatible database service.

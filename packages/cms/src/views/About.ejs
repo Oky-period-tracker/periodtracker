@@ -1,7 +1,7 @@
-<%- include('partials/Header') %> 
+<%- include('partials/Header') %>
 <div class="homePageContainer">
   <div class="sideBar">
-    <%- include('partials/SideTab') %> 
+    <%- include('partials/SideTab') %>
   </div>
   <div class="mainContentContainer">
     <div class="homeTopTextContainer">
@@ -23,7 +23,7 @@
       </button>
     </div>
     <div role="button" id="aboutBannerContainer">
-      <img id="aboutBanner" alt="Image failed to load" name="aboutBanner" src=<%- image%>>
+      <img id="aboutBanner" alt="Image failed to load" name="aboutBanner" src="<%= image %>">
       <input id="file-input" type="file" name="name" style="display: none;" />
     </div>
     <%- include('partials/TextEditor', { documents: aboutVersions } );%>

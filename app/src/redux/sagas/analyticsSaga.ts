@@ -1,4 +1,4 @@
-import { all, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
+import { all, call, delay, fork, put, select, takeLatest } from 'redux-saga/effects'
 import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
 import { httpClient } from '../../services/HttpClient'
@@ -6,6 +6,7 @@ import * as actions from '../actions'
 import * as selectors from '../selectors'
 import { ActionTypes } from '../types'
 import { fetchNetworkConnectionStatus } from '../../services/network'
+import { getDeviceId } from '../../services/deviceId'
 
 const ACTIONS_TO_TRACK: ActionTypes[] = [
   // app
@@ -30,8 +31,10 @@ const ACTIONS_TO_TRACK: ActionTypes[] = [
 function* onTrackAction(action) {
   // @ts-expect-error TODO:
   const currentUser = yield select(selectors.currentUserSelector)
+  // Use the canonical install-stable device id (AsyncStorage-backed), not the per-account redux
+  // app.deviceId, which is regenerated per store and would tag one device as many.
   // @ts-expect-error TODO:
-  const deviceId = yield select(selectors.currentDeviceId)
+  const deviceId = yield call(getDeviceId)
   yield put(
     actions.queueEvent({
       id: uuidv4(),

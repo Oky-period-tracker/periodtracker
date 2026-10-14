@@ -54,6 +54,7 @@ export class AccountController {
       dateSignedUp,
       metadata,
       avatar,
+      deviceId,
     }: SignupRequest,
   ) {
     if (country === null || country === '00') {
@@ -76,6 +77,7 @@ export class AccountController {
       dateAccountSaved: new Date().toISOString(),
       metadata,
       avatar,
+      deviceId,
     })
 
     return this.signTokenResponse(user)

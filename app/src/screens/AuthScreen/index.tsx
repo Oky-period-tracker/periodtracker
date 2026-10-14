@@ -13,8 +13,9 @@ import { Welcome } from './components/Welcome'
 import { Journey } from './components/Journey'
 import { AuthLinks } from './components/AuthLinks'
 import { LogIn } from './components/LogIn'
-import { DeleteAccount } from './components/DeleteAccount'
 import { ForgotPassword } from './components/ForgotPassword'
+import { DeleteAccount } from './components/DeleteAccount'
+import { ManageUsers } from './components/ManageUsers'
 import { LanguageSelector } from '../../components/LanguageSelector'
 import { useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AuthScreenHeader } from './components/AuthScreenHeader'
@@ -72,6 +73,7 @@ const AuthScreenInner = ({ navigation }: ScreenProps<'Auth'>) => {
           {authMode === 'sign_up' && <SignUp />}
           {authMode === 'forgot_password' && <ForgotPassword />}
           {authMode === 'delete_account' && <DeleteAccount />}
+          {authMode === 'manage_users' && <ManageUsers />}
         </AnimatedContainer>
       </View>
 

@@ -23,8 +23,12 @@
               <th style="width: 20%"><%= __('Subcategory')%></th>
               <th style="width: 20%"><%= __('Article Title')%> </th>
               <th style="width: 40%"><%= __('Article Content')%> </th>
+              <% if (features.contentFilter) { %>
               <th style="width: 40%"><%= __('Filter')%> </th>
+              <% } %>
+              <% if (features.ageRestrictionLevels) { %>
               <th style="width: 40%"><%= __('Age Restriction')%> </th>
+              <% } %>
               <th style="width: 10%"><%= __('Live')%></th>
             </tr>
           </thead>
@@ -56,6 +60,7 @@
               <p id="error4" style="display: none;">required field</p>
             </td>
             
+            <% if (features.contentFilter) { %>
             <td>
               <select 
                 id="contentFilterDropdownForm"
@@ -67,6 +72,8 @@
               <% }) %>
             </select>
           </td>
+          <% } %>
+          <% if (features.ageRestrictionLevels) { %>
           <td>
             <select class="ageRestrictionLevel" id="ageRestrictionLevelForm" data-source="article">
                 <% ageRestrictionOptions.forEach((item) =>{ %>
@@ -74,6 +81,7 @@
                 <% }) %>
             </select>
           </td>
+          <% } %>
           
             <td >
                 <label class="switch">
@@ -107,8 +115,8 @@
         <p>Modal body text goes here.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onclick="saveReorder(1)">Save changes</button>
-        <button type="button" class="btn btn-secondary" onclick="saveReorder(0)" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary saveReorder" data-save="1">Save changes</button>
+        <button type="button" class="btn btn-secondary saveReorder" data-save="0" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

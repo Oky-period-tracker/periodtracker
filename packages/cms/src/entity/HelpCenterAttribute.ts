@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm'
 
 @Entity()
+@Index('idx_help_center_attribute_lang', ['lang'])
 export class HelpCenterAttribute {
   @PrimaryGeneratedColumn()
   id: number

@@ -69,7 +69,7 @@ describe('OkyUserApplicationService', () => {
       ;(okyUserRepository.save as jest.Mock).mockResolvedValue('someValue')
 
       const command: SignupCommand = {
-        preferredId: '123',
+        preferredId: '123e4567-e89b-42d3-a456-426614174000',
         name: 'aaa',
         plainPassword: 'aaa',
         secretQuestion: 'favourite_actor',
@@ -93,7 +93,7 @@ describe('OkyUserApplicationService', () => {
         // Simulate an existing user
       })
       const command: SignupCommand = {
-        preferredId: '123',
+        preferredId: '123e4567-e89b-42d3-a456-426614174000',
         name: 'aaa',
         plainPassword: 'aaa',
         secretQuestion: 'favourite_actor',
@@ -146,7 +146,7 @@ describe('OkyUserApplicationService', () => {
       ;(okyUserRepository.save as jest.Mock).mockResolvedValue(mockOkyUser)
 
       const command: SignupCommand = {
-        preferredId: '123',
+        preferredId: '123e4567-e89b-42d3-a456-426614174000',
         name: 'aaa',
         plainPassword: 'aaa',
         secretQuestion: 'favourite_actor',

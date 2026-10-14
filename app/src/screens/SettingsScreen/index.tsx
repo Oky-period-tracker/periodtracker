@@ -6,8 +6,7 @@ import { ScreenComponent } from '../../navigation/RootNavigator'
 import { TouchableRow, TouchableRowProps } from '../../components/TouchableRow'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Switch } from '../../components/Switch'
-import { useDispatch } from 'react-redux'
-import { deleteAccountRequest, logoutRequest } from '../../redux/actions'
+import { logoutToAnon, deleteActiveAccount } from '../../services/auth/accountFlows'
 import { useAuth } from '../../contexts/AuthContext'
 import { useSelector } from '../../redux/useSelector'
 import {
@@ -24,7 +23,6 @@ import { NotificationsPreferencesModal } from './components/NotificationsPrefere
 const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const currentUser = useSelector(currentUserSelector)
   const appToken = useSelector(appTokenSelector)
-  const dispatch = useDispatch()
   const { setIsLoggedIn } = useAuth()
   const translate = useTranslate()
   const { palette, backgroundColor } = useColor()
@@ -33,20 +31,27 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
   const [showPreferencesModal, setShowPreferencesModal] = React.useState(false)
 
   const logOut = () => {
-    dispatch(logoutRequest())
+    // Leave the active account for the logged-out (anon) context, keeping its data saved.
+    void logoutToAnon()
     setIsLoggedIn(false)
   }
 
-  const deleteAccount = () => {
+  const deleteAccount = async () => {
     if (!currentUser) {
       return
     }
-    dispatch(
-      deleteAccountRequest({
+    // Leave the logged-in gate first (AuthProvider lives above the per-user store), then tear the
+    // account down (server delete + registry entry + encryption key + credential vault + store
+    // blob) outside the saga, mirroring the AuthScreen delete flow.
+    try {
+      await deleteActiveAccount({
         name: currentUser.name,
         password: currentUser.password,
-      }),
-    )
+      })
+      setIsLoggedIn(false)
+    } catch {
+      Alert.alert(translate('error'), translate('delete_account_fail'))
+    }
   }
 
   const logOutAlert = () => {
@@ -79,7 +84,7 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
         },
         {
           text: translate('yes'),
-          onPress: deleteAccount,
+          onPress: () => void deleteAccount(),
         },
       ],
       { cancelable: false },

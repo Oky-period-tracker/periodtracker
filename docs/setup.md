@@ -97,6 +97,22 @@ To set up Firebase for this project, you will need the following files:
 
 - /`packages/cms/firebase-config.json` (CMS)
 
+### Separate projects for production and development
+
+To keep test data, crashes and push notifications out of production, use one Firebase project per environment. The files above are the production ones. Add the files of the development project next to them, with a `.dev` suffix:
+
+- `/app/src/resources/google-services.json.dev`
+
+- `/app/src/resources/GoogleService-Info.plist.dev`
+
+`app/app.config.js` picks the file from `EXPO_PUBLIC_ENV`. Production is the default: the files named in `app.json` are used when the variable is unset or `production`, any other value uses the `.dev` files. If a `.dev` file does not exist, the file named in `app.json` is used, so a single Firebase project still works.
+
+- EAS builds: set `EXPO_PUBLIC_ENV` in the non-production build profiles of `eas.json` (for example `dev`). A profile without it builds against the production project.
+
+- Local native builds: set `EXPO_PUBLIC_ENV=development` in `app/.env` (unset means production), then run `npx expo prebuild --clean`, because the file is copied into `/android` and `/ios` at prebuild.
+
+- CMS: the project is the one of the service account in `firebase-config.json`. Give each deployment (local, dev, production) the key of the matching project, and set `STORAGE_BUCKET` / `STORAGE_BASE_URL` to that project's bucket.
+
 ### Initial Setup
 
 If you are setting up this project for the first time, follow these steps:
@@ -148,6 +164,26 @@ For the CMS, follow these steps:
 
   - Place it in the /cms folder which is located at /packages/cms in the project.
 
+#### Without a key file (AWS ECS and other env-only deployments)
+
+Some deployments can only pass environment variables to the CMS, not files. This is the case on AWS ECS, where the configuration is an env file stored in S3. There, pass the same JSON key through the `FIREBASE_SERVICE_ACCOUNT_BASE64` variable instead:
+
+- Encode the downloaded key on a single line:
+
+```bash
+base64 -i firebase-config.json | tr -d '\n'
+```
+
+- Add the result to the environment of the CMS:
+
+```env
+FIREBASE_SERVICE_ACCOUNT_BASE64=<encoded key>
+```
+
+- Restart the CMS. On ECS, force a new deployment of the service, the env file is only read when a task starts.
+
+When the variable is set it takes priority over the key file. When it is empty, the CMS keeps using the file named by `GOOGLE_APPLICATION_CREDENTIALS`. The value is a secret, store it like the database password.
+
 ### Push Notifications
 
 The app uses Firebase Messaging to handle push notifications sent from the CMS.
@@ -175,6 +211,8 @@ Notifications can also be customised eg the colour, via the `app.json`
 ### Voice Over (optional)
 
 Add audio recordings for encyclopedia articles
+
+Voice over is behind a feature flag and is disabled by default. Set `FEATURE_VOICE_OVER=true` in your cms .env file to enable it, see [Feature flags](../packages/cms/FEATURE_FLAGS.md)
 
 In the firebase console, set up cloud storage
 
@@ -224,4 +262,6 @@ For example:
     value: 'gs://periodtracker-example.appspot.com'
 - name: STORAGE_BASE_URL
     value: 'https://firebasestorage.googleapis.com/v0/b/periodtracker-example.appspot.com'
+- name: FEATURE_VOICE_OVER
+    value: 'true'
 ```

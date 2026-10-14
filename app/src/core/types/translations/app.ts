@@ -201,7 +201,14 @@ export interface AppTranslations {
   delete_account: string
   delete_account_completed: string
   delete_account_description: string
+  delete_account_device_only: string
   delete_account_fail: string
+  delete_account_not_synced: string
+  manage_accounts: string
+  max_accounts_reached: string
+  no_accounts_on_device: string
+  password_manager_warning: string
+  password_manager_warning_title: string
   didYouKnow: string
   dont_remember: string
   empty: string
@@ -262,6 +269,7 @@ export interface AppTranslations {
   light: string
   location: string
   log_in: string
+  logging_in: string
   logout: string
   logout_account_description: string
   Male: string
@@ -275,6 +283,10 @@ export interface AppTranslations {
   mood: string
   music: string
   name: string
+  manage_users: string
+  no_users: string
+  offline_account: string
+  synced_account: string
   name_info_label: string
   name_input: string
   name_taken_error: string
@@ -305,7 +317,13 @@ export interface AppTranslations {
   password_change_fail_description: string
   password_error_content: string
   password_error_heading: string
-  password_incorrect: string
+  incorrect_username_or_passcode: string
+  sync_account_in_progress: string
+  account_saved_confirmation: string
+  logout_account_title: string
+  cloud_icon_explainer_title: string
+  cloud_icon_explainer_synced: string
+  cloud_icon_explainer_offline: string
   password_request: string
   password_too_short: string
   period: string

@@ -229,7 +229,7 @@ const initializeVideoDataTable = (data) => {
         render: (_, __, row) => {
           return `
           <button
-          type="button" onclick="deleteVideo('${row.id}')" class="btn btn-sm"
+          type="button" class="btn btn-sm deleteVideoRow" data-id="${row.id}"
           >
             <i class="fas fa-trash" aria-hidden="true"></i>
           </button>
@@ -287,6 +287,7 @@ const initializeVideoDataTable = (data) => {
 const saveVideoReorder = (isSave) => {
   if (!isSave) {
     location.reload()
+    return
   }
 
   $.ajax({
@@ -301,3 +302,12 @@ const saveVideoReorder = (isSave) => {
     },
   })
 }
+
+// The CMS content security policy blocks inline onclick attributes, so the
+// delete and reorder buttons are wired here instead.
+$('#videoTable').on('click', '.deleteVideoRow', (event) => {
+  deleteVideo($(event.currentTarget).attr('data-id'))
+})
+$('#videoRowReorderModal').on('click', '.saveReorder', (event) => {
+  saveVideoReorder($(event.currentTarget).data('save'))
+})

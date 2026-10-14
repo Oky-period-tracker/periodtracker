@@ -128,7 +128,7 @@
                     <input type="text" class="no-validate" class="website" aria-describedby="emailHelp" name="website">
                   </div>
                   <div class="col-md-2">
-                    <button class="btn btn-danger text-white delete-button" type="button" onclick="deleteWebsite($(this))"><i class="fa-solid fa-trash"></i></button>
+                    <button class="btn btn-danger text-white delete-button delete-website" type="button"><i class="fa-solid fa-trash"></i></button>
                   </div>
                 </div>
               </div>
@@ -198,8 +198,8 @@
         <p>Modal body text goes here.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onclick="saveReorder(1)">Save changes</button>
-        <button type="button" class="btn btn-secondary" onclick="saveReorder(0)" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary saveReorder" data-save="1">Save changes</button>
+        <button type="button" class="btn btn-secondary saveReorder" data-save="0" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

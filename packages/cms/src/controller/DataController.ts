@@ -114,8 +114,9 @@ export class DataController {
         this.didYouKnowRepository.find({
           where: { lang: request.user.lang, live },
         }),
+        // Help centers have no `live` column; their publish toggle is `isActive`.
         this.helpCenterRepository.find({
-          where: { lang: request.user.lang },
+          where: live ? { lang: request.user.lang, isActive: true } : { lang: request.user.lang },
         }),
         this.avatarMessagesRepository.find({
           where: { lang: request.user.lang, live },

@@ -117,6 +117,22 @@ input:checked + .slider:before {
   -ms-transform: translateX(15px);
   transform: translateX(15px);
 }
+
+/* Deactivated (not live) rows stay listed, greyed out, so editors can still edit or delete them */
+tr.inactiveRow td {
+  background-color: #e9ecef;
+  color: #5a6268;
+}
+
+tr.inactiveRow td:first-child {
+  box-shadow: inset 4px 0 0 #6c757d;
+}
+
+.inactiveBadge {
+  display: block;
+  width: fit-content;
+  margin-top: 4px;
+}
 .back_arrow {
   width: 40px;
   margin-left: 25px;

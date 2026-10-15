@@ -8,9 +8,11 @@ import { withoutDisabledFeatures } from '../helpers/features'
 export class QuizController {
   private quizRepository = getRepository(Quiz)
 
+  // Admin list: deactivated quizzes are included so editors can still edit or delete them.
+  // The app reads mobileQuizzesByLanguage, which keeps the live filter.
   async all(request: Request, response: Response, next: NextFunction) {
     return this.quizRepository.find({
-      where: { lang: request.user.lang, live: true },
+      where: { lang: request.user.lang },
       order: {
         topic: 'ASC',
       },

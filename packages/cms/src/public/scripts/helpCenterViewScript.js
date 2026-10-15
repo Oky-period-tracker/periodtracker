@@ -291,6 +291,11 @@ const initializeDataTable = (result) => {
     rowReorder: {
       dataSrc: 'sortingKey',
     },
+    createdRow: (row, data) => {
+      if (!data.isActive) {
+        $(row).addClass('inactiveRow')
+      }
+    },
 
     initComplete: function () {
       var api = this.api()
@@ -369,6 +374,11 @@ const initializeDataTable = (result) => {
           }" type="checkbox" ${row.isActive ? 'checked' : ''}/>
             <span class="slider round"></span>
           </label>
+          ${
+            row.isActive
+              ? ''
+              : '<span class="badge badge-secondary inactiveBadge">Deactivated</span>'
+          }
         `
         },
       },

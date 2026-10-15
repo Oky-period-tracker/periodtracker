@@ -77,7 +77,7 @@
         </thead>
         <tbody style="overflow-y: scroll" id="quizzesContainer">
           <% quizzes.forEach((quiz) =>{ %>
-          <tr>
+          <tr <% if (!quiz.live) { %>class="inactiveRow"<% } %>>
             <td><%= quiz.topic %></td>
             <td><%= quiz.question %></td>
             <td><%= quiz.option1 %></td>
@@ -156,6 +156,9 @@
                 />
                 <span class="slider round"></span>
               </label>
+              <% if (!quiz.live) { %>
+              <span class="badge badge-secondary inactiveBadge"><%= __('Deactivated')%></span>
+              <% } %>
             </td>
             <td hidden><%= quiz.date_created %></td>
           </tr>

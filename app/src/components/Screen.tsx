@@ -32,23 +32,21 @@ export const FullScreen = ({ children, style, ...props }: ViewProps) => {
 
 const styles = StyleSheet.create({
   wrapper: {
-    flex: 1,
     width: '100%',
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   screen: {
     flex: 1,
     width: '100%',
     maxWidth: 800,
-    alignItems: 'stretch',
-    alignSelf: 'center',
+    alignItems: 'center',
   },
   full: {
     flex: 1,
     width: '100%',
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
+    alignItems: 'center',
     paddingHorizontal: 12,
   },
 })

@@ -62,16 +62,16 @@ export const Switch = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: 96,
+    width: 100,
+    height: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 4,
-    paddingHorizontal: 2,
+    padding: 4,
   },
   iconContainer: {
-    width: 38,
-    height: 38,
-    marginHorizontal: 4,
+    width: 40,
+    height: 40,
+    margin: 4,
   },
 })

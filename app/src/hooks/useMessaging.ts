@@ -1,8 +1,9 @@
 import React from 'react'
+import { PermissionsAndroid } from 'react-native'
 import { useSelector } from '../redux/useSelector'
 import { currentLocaleSelector } from '../redux/selectors'
+import { IS_ANDROID } from '../services/device'
 import { messaging } from '../services/firebase'
-import { requestAppNotificationPermission } from '../services/periodReminderLocalNotification'
 
 export const useMessaging = () => {
   const locale = useSelector(currentLocaleSelector)
@@ -17,10 +18,6 @@ export const useMessaging = () => {
         return
       }
 
-      if (!messaging) {
-        return
-      }
-
       messaging?.().subscribeToTopic(topicName)
     }
 
@@ -32,4 +29,45 @@ export const useMessaging = () => {
   }, [locale])
 }
 
-export const requestPermission = requestAppNotificationPermission
+const requestPermission = async () => {
+  if (!messaging) {
+    return false
+  }
+
+  if (IS_ANDROID) {
+    const alreadyGranted = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    )
+
+    if (alreadyGranted) {
+      return true
+    }
+
+    const androidStatus = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    )
+
+    return androidStatus === 'granted'
+  }
+
+  /*
+    NOT_DETERMINED: -1
+    DENIED: 0
+    AUTHORIZED: 1
+    PROVISIONAL: 2
+    EPHEMERAL: 3
+  */
+  const status = await messaging().hasPermission()
+
+  // AUTHORIZED
+  if (status === 1) {
+    return true
+  }
+
+  const authStatus = await messaging().requestPermission()
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL
+
+  return enabled
+}

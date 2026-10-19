@@ -1,6 +1,7 @@
 import React from 'react'
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text } from '../../../components/Text'
+import { useColor } from '../../../hooks/useColor'
 import { ReminderFrequency } from '../../../redux/actions/notificationActions'
 
 export const NOTIFICATIONS_PERMISSION_PROMPT_KEY = 'period_notifications_permission_prompt_seen'
@@ -21,25 +22,33 @@ export const NotificationsPermissionModal = ({
   onCancel,
   onProceed,
 }: NotificationsPermissionModalProps) => {
+  const { color, backgroundColor, palette } = useColor()
+
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={styles.modal}>
+        <View style={[styles.modal, { backgroundColor }]}>
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Turn on notifications and reminder?</Text>
-            <Text style={styles.subtitle}>
+            <Text style={[styles.title, { color } ]}>Turn on notifications and reminders?</Text>
+            <Text style={[styles.subtitle, { color } ]}>
               Oky can send you gentle reminders to help you follow your period and take care of
               yourself. You can always change your mind in the settings page.
             </Text>
           </View>
 
           <View style={styles.buttonRow}>
-            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel}>
-              <Text style={styles.cancelText}>Cancel</Text>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: palette.basic.highlight }]}
+              onPress={onCancel}
+            >
+              <Text style={[styles.cancelText, { color } ]}>Cancel</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.button, styles.proceedButton]} onPress={onProceed}>
-              <Text style={styles.proceedText}>Proceed</Text>
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: palette.danger.base }]}
+              onPress={onProceed}
+            >
+              <Text style={[styles.proceedText, { color: palette.danger.highlight }]}>Proceed</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -58,7 +67,6 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
     borderRadius: 18,
     paddingHorizontal: 20,
     paddingTop: 22,
@@ -70,7 +78,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     lineHeight: 28,
-    color: '#1F1F1F',
     textAlign: 'center',
     marginBottom: 12,
     fontWeight: '700',
@@ -78,7 +85,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     lineHeight: 24,
-    color: '#1F1F1F',
     textAlign: 'left',
   },
   buttonRow: {
@@ -93,19 +99,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cancelButton: {
-    backgroundColor: '#F3F3F3',
-  },
-  proceedButton: {
-    backgroundColor: '#EB3F87',
-  },
   cancelText: {
-    color: '#333333',
     fontSize: 15,
     fontWeight: '600',
   },
   proceedText: {
-    color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '600',
   },

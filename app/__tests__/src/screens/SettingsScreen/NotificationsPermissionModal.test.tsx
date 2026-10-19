@@ -23,9 +23,10 @@ describe('<NotificationsPermissionModal />', () => {
       <NotificationsPermissionModal visible={true} onCancel={onCancel} onProceed={onProceed} />,
     )
 
+    expect(screen.getByText('Turn on notifications and reminders?')).toBeTruthy()
     expect(
       screen.getByText(
-        'Turn on notifications and reminders? Oky can send you gentle reminders to help you follow your period and take care of yourself. You can always change your mind in the settings page.',
+        'Oky can send you gentle reminders to help you follow your period and take care of yourself. You can always change your mind in the settings page.',
       ),
     ).toBeTruthy()
 

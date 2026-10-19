@@ -3,6 +3,7 @@ import { View, StyleSheet, Modal, TouchableOpacity, Switch as RNSwitch, Alert, L
 import { Text } from '../../../components/Text'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useDispatch } from 'react-redux'
+import { useColor } from '../../../hooks/useColor'
 import { useSelector } from '../../../redux/useSelector'
 import { setNotificationReminder, setNotificationsEnabled } from '../../../redux/actions'
 import { notificationReminderFrequencySelector } from '../../../redux/selectors'
@@ -24,6 +25,7 @@ export const NotificationsPreferencesModal = ({
   onClose,
 }: NotificationsPreferencesModalProps) => {
   const dispatch = useDispatch()
+  const { palette, backgroundColor, color } = useColor()
   const savedReminderFrequency = useSelector(notificationReminderFrequencySelector)
   const predictionFullState = usePredictionEngineState()
 
@@ -85,60 +87,67 @@ export const NotificationsPreferencesModal = ({
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={styles.modal}>
+        <View style={[styles.modal, { backgroundColor }]}>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <FontAwesome name="times-circle" size={24} color="#9BC53D" />
+            <FontAwesome name="times-circle" size={24} color={palette.primary.base} />
           </TouchableOpacity>
 
-          <Text style={styles.title}>
+          <Text style={[styles.title, { color: palette.danger.base }]}>
             Choose how often you want your reminders before your period is likely to start
           </Text>
 
-          <Text style={styles.subtitle}>Set yourself reminders for</Text>
+          <Text style={[styles.subtitle, { color }]}>Set yourself reminders for</Text>
 
           <View style={styles.remindersContainer}>
             <View style={styles.reminderRow}>
-              <Text style={styles.reminderText}>5 days before</Text>
+              <Text style={[styles.reminderText, { color }]}>5 days before</Text>
               <RNSwitch
                 value={selectedReminder === 'fiveDays'}
                 onValueChange={() => handleReminderToggle('fiveDays')}
-                trackColor={{ false: '#D6D6D6', true: '#9BC53D' }}
-                thumbColor="#FFFFFF"
+                trackColor={{ false: palette.basic.base, true: palette.primary.base }}
+                thumbColor={backgroundColor}
               />
             </View>
 
             <View style={styles.reminderRow}>
-              <Text style={styles.reminderText}>3 days before</Text>
+              <Text style={[styles.reminderText, { color }]}>3 days before</Text>
               <RNSwitch
                 value={selectedReminder === 'threeDays'}
                 onValueChange={() => handleReminderToggle('threeDays')}
-                trackColor={{ false: '#D6D6D6', true: '#9BC53D' }}
-                thumbColor="#FFFFFF"
+                trackColor={{ false: palette.basic.base, true: palette.primary.base }}
+                thumbColor={backgroundColor}
               />
             </View>
 
             <View style={styles.reminderRow}>
-              <Text style={styles.reminderText}>1 day before</Text>
+              <Text style={[styles.reminderText, { color }]}>1 day before</Text>
               <RNSwitch
                 value={selectedReminder === 'oneDay'}
                 onValueChange={() => handleReminderToggle('oneDay')}
-                trackColor={{ false: '#D6D6D6', true: '#9BC53D' }}
-                thumbColor="#FFFFFF"
+                trackColor={{ false: palette.basic.base, true: palette.primary.base }}
+                thumbColor={backgroundColor}
               />
             </View>
           </View>
 
           <View style={styles.buttonsContainer}>
             <TouchableOpacity
-              style={[styles.button, isSetNotificationDisabled && styles.disabledButton]}
+              style={[
+                styles.button,
+                { backgroundColor: palette.secondary.base },
+                isSetNotificationDisabled && styles.disabledButton,
+              ]}
               onPress={handleSetNotifications}
               disabled={isSetNotificationDisabled}
             >
-              <Text style={styles.buttonText}>Set notifications</Text>
+              <Text style={[styles.buttonText, { color: backgroundColor }]}>Set notifications</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.disableButton} onPress={handleDisableNotifications}>
-              <Text style={styles.disableButtonText}>Disable</Text>
+            <TouchableOpacity
+              style={[styles.disableButton, { borderColor: palette.danger.base }]}
+              onPress={handleDisableNotifications}
+            >
+              <Text style={[styles.disableButtonText, { color: palette.danger.base }]}>Disable</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -155,7 +164,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modal: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 10,
     paddingTop: 28,
     paddingBottom: 16,
@@ -176,7 +184,6 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     textAlign: 'center',
     lineHeight: 24,
-    color: '#EB3F87',
     alignSelf: 'center',
     width: '94%',
   },
@@ -185,7 +192,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'left',
     marginBottom: 6,
-    color: '#242424',
   },
   remindersContainer: {
     marginBottom: 14,
@@ -199,7 +205,6 @@ const styles = StyleSheet.create({
   reminderText: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#333333',
   },
   buttonsContainer: {
     flexDirection: 'row',
@@ -215,7 +220,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FF9800',
     minHeight: 42,
     flex: 1,
   },
@@ -223,7 +227,6 @@ const styles = StyleSheet.create({
     opacity: 0.45,
   },
   buttonText: {
-    color: '#fff',
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
@@ -234,14 +237,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'transparent',
     borderWidth: 1,
-    borderColor: '#EB3F87',
     minHeight: 40,
     flex: 1,
   },
   disableButtonText: {
-    color: '#EB3F87',
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',

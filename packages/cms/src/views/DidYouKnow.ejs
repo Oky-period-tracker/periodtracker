@@ -50,7 +50,7 @@
             <td <% if (!features.contentFilter) { %>hidden<% } %>>
               <% if (features.contentFilter) { %>
               <select 
-                class="content-filter-dropdown"
+                class="content-filter-dropdown custom-select custom-select-sm w-auto"
                 data-source="did-you-know"
                 data-id="<%= item.id %>"
                 data-level="<%= item.contentFilter %>"

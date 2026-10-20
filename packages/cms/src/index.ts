@@ -47,9 +47,9 @@ withRetry(() => createConnection(ormconfig), {
     const app = express()
     app.set('view engine', 'ejs')
     app.set('views', __dirname + '/views')
-    // TLS ends at the load balancer: trust its X-Forwarded-Proto so the
-    // request counts as HTTPS and the secure session cookie can be set
-    app.set('trust proxy', 1)
+    // TLS ends before the CMS: trust the proxies' X-Forwarded-* headers so the
+    // request counts as HTTPS (secure session cookie) and req.ip is the client
+    app.set('trust proxy', env.app.trustProxy)
     // Views read the feature flags to hide what is not live yet
     app.locals.features = env.features
 

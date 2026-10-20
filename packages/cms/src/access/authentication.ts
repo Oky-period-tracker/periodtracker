@@ -31,7 +31,10 @@ export class Authentication {
     }
   }
 
-  static async serializeUser(user: any, done: any) {
+  // Runs on every req.logIn, whatever the login path, so it starts the clock
+  // sessionExpiry checks every request against
+  static async serializeUser(request: Request, user: any, done: any) {
+    request.session.loginAt = Date.now()
     done(null, user.id)
   }
 
@@ -60,6 +63,11 @@ export class Authentication {
       url: safeRequestPath(request.originalUrl),
       ip: request.ip,
     })
+    // AJAX calls would follow the redirect and fail with a misleading 404, so
+    // they get a 401 the page can turn into a "log back in" message
+    if (request.xhr) {
+      return response.status(401).json({ error: 'Authentication required' })
+    }
     response.redirect('/login')
   }
 }

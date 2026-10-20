@@ -1,6 +1,7 @@
 import express from 'express'
 import request from 'supertest'
 import { SESSION_MAX_AGE, sessionCookie, sessionExpiry } from '../../src/middleware/session'
+import { logger } from '../../src/logger'
 
 function createApp(secure = false) {
   const app = express()
@@ -38,6 +39,20 @@ describe('Session cookie', () => {
       .set('X-Forwarded-Proto', 'https')
 
     expect(res.headers['set-cookie'][0]).toContain('; secure')
+  })
+
+  it('logs a warning when a plain HTTP request drops the Secure cookie', async () => {
+    const warn = jest.spyOn(logger, 'warn').mockImplementation(() => undefined)
+    const res = await request(createApp(true))
+      .get(`/login?loginAt=${Date.now()}`)
+      .set('X-Forwarded-Proto', 'http')
+
+    expect(res.headers['set-cookie']).toBeUndefined()
+    expect(warn).toHaveBeenCalledWith(
+      'Insecure request: the secure session cookie will not be set',
+      { url: '/login', forwardedProto: 'http' },
+    )
+    warn.mockRestore()
   })
 })
 

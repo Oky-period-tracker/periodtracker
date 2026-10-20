@@ -5,12 +5,12 @@ declare global {
     // tslint:disable-next-line:no-empty-interface
     export interface User extends AppUser {}
   }
-}
 
-// req.session is typed by express-session, but filled by cookie-session
-declare module 'express-session' {
-  interface SessionData {
-    passport: { user?: number }
-    loginAt: number
+  // What the CMS keeps in the cookie-session session (req.session)
+  namespace CookieSessionInterfaces {
+    interface CookieSessionObject {
+      passport?: { user?: number }
+      loginAt?: number
+    }
   }
 }

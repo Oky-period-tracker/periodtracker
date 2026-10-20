@@ -11,7 +11,6 @@ import i18n from 'i18n'
 import cors from 'cors'
 import { Strategy } from 'passport-local'
 import cookieParser from 'cookie-parser'
-import session from 'cookie-session'
 import { Authentication } from './access/authentication'
 import * as admin from 'firebase-admin'
 import { env } from './env'
@@ -32,6 +31,7 @@ import { healthCheckService } from './services/healthCheckService'
 import { crashAnalysisService } from './services/crashAnalysisService'
 import { crashDetector, crashExceptionCapture } from './middleware/crashDetector'
 import { requestTimeout } from './middleware/requestTimeout'
+import { sessionCookie, sessionExpiry } from './middleware/session'
 import { requireFeature } from './middleware/featureFlag'
 import { withRetry } from './helpers/retry'
 import { firebaseCredential } from './helpers/firebaseCredential'
@@ -47,6 +47,9 @@ withRetry(() => createConnection(ormconfig), {
     const app = express()
     app.set('view engine', 'ejs')
     app.set('views', __dirname + '/views')
+    // TLS ends before the CMS: trust the proxies' X-Forwarded-* headers so the
+    // request counts as HTTPS (secure session cookie) and req.ip is the client
+    app.set('trust proxy', env.app.trustProxy)
     // Views read the feature flags to hide what is not live yet
     app.locals.features = env.features
 
@@ -139,17 +142,8 @@ withRetry(() => createConnection(ormconfig), {
     app.use(i18n.init)
     // ======================= Passport Configuration =============================
     app.use(cookieParser())
-    app.use(
-      session({
-        secret: env.app.secret,
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-          sameSite: 'strict',
-          secure: process.env.NODE_ENV === 'production',
-        },
-      }),
-    )
+    app.use(sessionCookie(env.app.secret, env.isProduction))
+    app.use(sessionExpiry)
     app.use(passport.initialize())
     app.use(passport.session())
     app.use(flash())

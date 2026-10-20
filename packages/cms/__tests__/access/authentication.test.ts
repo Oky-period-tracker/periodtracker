@@ -1,6 +1,10 @@
 import { Authentication } from '../../src/access/authentication'
+import { sessionCookie, sessionExpiry } from '../../src/middleware/session'
 import * as typeorm from 'typeorm'
 import bcrypt from 'bcrypt'
+import express from 'express'
+import passport from 'passport'
+import request from 'supertest'
 
 jest.mock('typeorm', () => {
   return {
@@ -63,5 +67,46 @@ describe('Authentication', () => {
     await Authentication.authenticate('john', 'wrong_password', done)
 
     expect(done).toHaveBeenCalledWith(null, false, { message: 'No password match' })
+  })
+})
+
+describe('Login session', () => {
+  function createApp() {
+    const authenticator = new passport.Passport()
+    authenticator.serializeUser<any, any>(Authentication.serializeUser)
+    authenticator.deserializeUser((id: number, done) => done(null, { id } as any))
+
+    const app = express()
+    app.use(sessionCookie('test-secret', false))
+    app.use(sessionExpiry)
+    app.use(authenticator.initialize())
+    app.use(authenticator.session())
+    // A login path other than AccessController.login
+    app.get('/login', (req, res, next) =>
+      req.logIn({ id: 1 } as any, (error) => (error ? next(error) : res.sendStatus(204))),
+    )
+    app.get('/private', Authentication.isLoggedIn, (_req, res) => res.sendStatus(204))
+    return app
+  }
+
+  it('stamps the login time on any req.logIn, so the session survives sessionExpiry', async () => {
+    const agent = request.agent(createApp())
+    await agent.get('/login')
+
+    expect((await agent.get('/private')).status).toBe(204)
+  })
+
+  it('redirects a page request without a session to /login', async () => {
+    const res = await request(createApp()).get('/private')
+
+    expect(res.status).toBe(302)
+    expect(res.headers.location).toBe('/login')
+  })
+
+  it('answers 401 to an AJAX call without a session', async () => {
+    const res = await request(createApp()).get('/private').set('X-Requested-With', 'XMLHttpRequest')
+
+    expect(res.status).toBe(401)
+    expect(res.body).toEqual({ error: 'Authentication required' })
   })
 })

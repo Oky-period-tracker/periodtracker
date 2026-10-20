@@ -97,9 +97,8 @@ $('#btnArticleEditConfirm').on('click', () => {
     article_heading: $('#col2TableModal').val(),
     article_text: $('#col3TableModal').val(),
     live: $('#col4TableModal').prop('checked'),
-    contentFilter: $('#contentFilterDropdownForm').val(),
-    ageRestrictionLevel: $('#ageRestrictionLevelForm').val(),
   }
+  addSelectedLevels(data)
   if (
     data.category === '' ||
     data.subcategory === '' ||

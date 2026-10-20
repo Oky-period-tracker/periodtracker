@@ -189,14 +189,21 @@ $(document).on('change', '.liveCheckbox', (event) => {
     url: '/articles/' + checkbox.data('value') + '/live',
     type: 'PUT',
     data: { live: live },
-    success: () => {
-      location.reload()
+    success: (result) => {
+      // No reload, so the editor keeps their scroll and filters. The edit modal reads
+      // #articlesJSON, so it gets the stored status too or saving the modal would undo it
+      checkbox.prop('checked', result.live).prop('disabled', false)
+      var articles = JSON.parse($('#articlesJSON').text())
+      articles.forEach((item) => {
+        if (item.id === result.id) item.live = result.live
+      })
+      $('#articlesJSON').text(JSON.stringify(articles))
     },
-    error: (error) => {
-      console.log(error)
+    error: (xhr) => {
+      console.error('Article live update failed', xhr.status, xhr.responseText)
       // Nothing was saved: put the switch back to the stored status
       checkbox.prop('checked', !live).prop('disabled', false)
-      alert('Something went wrong. Could not update the live status.')
+      alert(requestErrorMessage('update the live status', xhr))
     },
   })
 })

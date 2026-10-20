@@ -13,10 +13,10 @@ describe('article live toggle', () => {
   let save: jest.Mock
   let response: any
   let controller: ArticleController
-  const request = (live: any, id = 'article'): any => ({
+  const request = (live: any, id = 'article', lang = 'en'): any => ({
     body: { live },
     params: { id },
-    user: { lang: 'en' },
+    user: { lang },
   })
 
   beforeEach(() => {
@@ -31,7 +31,9 @@ describe('article live toggle', () => {
     }
     save = jest.fn(async (article) => article)
     ;(getRepository as jest.Mock).mockReturnValue({
-      findOne: jest.fn(async (id) => (id === stored.id ? { ...stored } : undefined)),
+      findOne: jest.fn(async ({ id, lang }) =>
+        id === stored.id && lang === stored.lang ? { ...stored } : undefined,
+      ),
       save,
     })
     response = { status: jest.fn().mockReturnThis(), send: jest.fn() }
@@ -68,6 +70,13 @@ describe('article live toggle', () => {
 
   it('answers 404 for an unknown article', async () => {
     await controller.updateLive(request('true', 'missing'), response, jest.fn())
+
+    expect(response.status).toHaveBeenCalledWith(404)
+    expect(save).not.toHaveBeenCalled()
+  })
+
+  it("answers 404 for an article in another editor's language", async () => {
+    await controller.updateLive(request('true', 'article', 'fr'), response, jest.fn())
 
     expect(response.status).toHaveBeenCalledWith(404)
     expect(save).not.toHaveBeenCalled()

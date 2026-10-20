@@ -143,9 +143,17 @@ export class ArticleController {
         response.status(400).send({ error: 'live must be true or false' })
         return
       }
-      const articleToUpdate = await this.articleRepository.findOne(request.params.id)
+      // Scoped to the editor's language: the page only lists those articles, so an
+      // article in another language is treated as not found
+      const articleToUpdate = await this.articleRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!articleToUpdate) {
-        logger.warn('Article not found for live update', { id: request.params.id })
+        logger.warn('Article not found for live update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Article not found' })
         return
       }

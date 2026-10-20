@@ -1,6 +1,10 @@
 var locale = JSON.parse($('#localeJSON').text()).locale
 var regions = JSON.parse($('#regionsJSON').text())
 var subRegions = JSON.parse($('#subRegionsJSON').text())
+// The label is translated in HelpCenter.ejs; .text() keeps it from being parsed as HTML
+var deactivatedBadge = $('<span class="badge badge-secondary inactiveBadge">')
+  .text($('#deactivatedLabel').text())
+  .prop('outerHTML')
 
 $(document).ready(() => {
   'use strict'
@@ -374,11 +378,7 @@ const initializeDataTable = (result) => {
           }" type="checkbox" ${row.isActive ? 'checked' : ''}/>
             <span class="slider round"></span>
           </label>
-          ${
-            row.isActive
-              ? ''
-              : '<span class="badge badge-secondary inactiveBadge">Deactivated</span>'
-          }
+          ${row.isActive ? '' : deactivatedBadge}
         `
         },
       },

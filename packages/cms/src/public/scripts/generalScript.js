@@ -43,3 +43,19 @@ function requestErrorMessage(action, xhr) {
   }
   return 'Could not ' + action + ': ' + reason + ' (HTTP ' + xhr.status + ')'
 }
+
+// Selects a content filter or age restriction level in the article modal.
+// Older articles store null, which means level 0. A stored level that is not
+// among the options leaves the dropdown empty instead of showing another level.
+function selectLevel(dropdown, level) {
+  dropdown.val(String(level == null ? 0 : level))
+}
+
+// Adds the article modal's levels to the request data. An empty dropdown is
+// left out, so the server keeps the stored level instead of saving level 0.
+function addSelectedLevels(data) {
+  var contentFilter = $('#contentFilterDropdownForm').val()
+  var ageRestrictionLevel = $('#ageRestrictionLevelForm').val()
+  if (contentFilter != null) data.contentFilter = contentFilter
+  if (ageRestrictionLevel != null) data.ageRestrictionLevel = ageRestrictionLevel
+}

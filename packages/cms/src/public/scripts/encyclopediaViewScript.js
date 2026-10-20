@@ -97,9 +97,8 @@ $('#btnArticleEditConfirm').on('click', () => {
     article_heading: $('#col2TableModal').val(),
     article_text: $('#col3TableModal').val(),
     live: $('#col4TableModal').prop('checked'),
-    contentFilter: $('#contentFilterDropdownForm').val(),
-    ageRestrictionLevel: $('#ageRestrictionLevelForm').val(),
   }
+  addSelectedLevels(data)
   if (
     data.category === '' ||
     data.subcategory === '' ||
@@ -364,14 +363,6 @@ const handleSubCategorySelect = (catId) => {
       if (child.dataset.id == catId) $(child).css('display', 'block')
       else $(child).css('display', 'none')
     })
-}
-
-// Selects a content filter or age restriction level in the article modal.
-// Older articles store null, and a level may not be among the options: both
-// fall back to the first option instead of leaving the dropdown empty.
-const selectLevel = (dropdown, level) => {
-  dropdown.val(String(level))
-  if (dropdown.val() === null) dropdown.prop('selectedIndex', 0)
 }
 
 // voiceOvers.js is only loaded while the voice over feature is enabled

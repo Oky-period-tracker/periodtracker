@@ -366,14 +366,6 @@ const handleSubCategorySelect = (catId) => {
     })
 }
 
-// Selects a content filter or age restriction level in the article modal.
-// Older articles store null, and a level may not be among the options: both
-// fall back to the first option instead of leaving the dropdown empty.
-const selectLevel = (dropdown, level) => {
-  dropdown.val(String(level))
-  if (dropdown.val() === null) dropdown.prop('selectedIndex', 0)
-}
-
 // voiceOvers.js is only loaded while the voice over feature is enabled
 if (typeof initializeVoiceOver === 'function') {
   var articlesJSON = $('#articlesJSON').text()

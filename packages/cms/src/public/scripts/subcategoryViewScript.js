@@ -186,30 +186,30 @@ $('#btnSubcategoryConfirm').on('click', () => {
 })
 
 // ==================== Live check =============================
-$(document).on('click', '.liveCheckbox', () => {
-  var button = $(event.target) // Button that triggered the modal
-  var articleId = button.data('value') // Extract info from data-* attributes
-  var articles = JSON.parse($('#articlesJSON').text())
-  var articleInfo = articles.find((item) => {
-    return item.id === articleId
-  })
-  const data = {
-    category: articleInfo.category,
-    subcategory: articleInfo.subcategory,
-    article_heading: articleInfo.article_heading,
-    article_text: articleInfo.article_text,
-    live: button.prop('checked'),
-  }
-  // if the ID is 0 we are creating a new entry
+$(document).on('change', '.liveCheckbox', (event) => {
+  var checkbox = $(event.currentTarget)
+  var live = checkbox.prop('checked')
+  // Locked until the server answers, so quick clicks can't race each other
+  checkbox.prop('disabled', true)
   $.ajax({
-    url: '/articles/' + articleId,
+    url: '/articles/' + checkbox.data('value') + '/live',
     type: 'PUT',
-    data: data,
+    data: { live: live },
     success: (result) => {
-      location.reload()
+      // No reload, so the editor keeps their scroll and filters. The edit modal reads
+      // #articlesJSON, so it gets the stored status too or saving the modal would undo it
+      checkbox.prop('checked', result.live).prop('disabled', false)
+      var articles = JSON.parse($('#articlesJSON').text())
+      articles.forEach((item) => {
+        if (item.id === result.id) item.live = result.live
+      })
+      $('#articlesJSON').text(JSON.stringify(articles))
     },
-    error: (error) => {
-      console.log(error)
+    error: (xhr) => {
+      console.error('Article live update failed', xhr.status, xhr.responseText)
+      // Nothing was saved: put the switch back to the stored status
+      checkbox.prop('checked', !live).prop('disabled', false)
+      alert(requestErrorMessage('update the live status', xhr))
     },
   })
 })

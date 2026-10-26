@@ -2,14 +2,6 @@ import React from 'react'
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
-import { ReminderFrequency } from '../../../redux/actions/notificationActions'
-
-export const NOTIFICATIONS_PERMISSION_PROMPT_KEY = 'period_notifications_permission_prompt_seen'
-
-export const shouldShowNotificationsPermissionPrompt = (
-  reminderFrequency: ReminderFrequency,
-  hasSeenPrompt = false,
-): boolean => !reminderFrequency && !hasSeenPrompt
 
 interface NotificationsPermissionModalProps {
   visible: boolean

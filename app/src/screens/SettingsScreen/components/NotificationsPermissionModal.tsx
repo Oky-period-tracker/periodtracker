@@ -21,10 +21,9 @@ export const NotificationsPermissionModal = ({
       <View style={styles.overlay}>
         <View style={[styles.modal, { backgroundColor }]}>
           <View style={styles.textContainer}>
-            <Text style={[styles.title, { color } ]}>Turn on notifications and reminders?</Text>
+            <Text style={[styles.title, { color }]}>notifications_permission_prompt_title</Text>
             <Text style={[styles.subtitle, { color } ]}>
-              Oky can send you gentle reminders to help you follow your period and take care of
-              yourself. You can always change your mind in the settings page.
+              notifications_permission_prompt_description
             </Text>
           </View>
 
@@ -33,14 +32,14 @@ export const NotificationsPermissionModal = ({
               style={[styles.button, { backgroundColor: palette.basic.highlight }]}
               onPress={onCancel}
             >
-              <Text style={[styles.cancelText, { color } ]}>Cancel</Text>
+              <Text style={[styles.cancelText, { color }]}>cancel</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.button, { backgroundColor: palette.danger.base }]}
               onPress={onProceed}
             >
-              <Text style={[styles.proceedText, { color: palette.danger.highlight }]}>Proceed</Text>
+              <Text style={[styles.proceedText, { color: palette.danger.highlight }]}>proceed</Text>
             </TouchableOpacity>
           </View>
         </View>

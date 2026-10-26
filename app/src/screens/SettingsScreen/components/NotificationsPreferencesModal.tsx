@@ -4,6 +4,7 @@ import { Text } from '../../../components/Text'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useDispatch } from 'react-redux'
 import { useColor } from '../../../hooks/useColor'
+import { useTranslate } from '../../../hooks/useTranslate'
 import { useSelector } from '../../../redux/useSelector'
 import { setNotificationReminder, setNotificationsEnabled } from '../../../redux/actions'
 import { notificationReminderFrequencySelector } from '../../../redux/selectors'
@@ -25,6 +26,7 @@ export const NotificationsPreferencesModal = ({
   onClose,
 }: NotificationsPreferencesModalProps) => {
   const dispatch = useDispatch()
+  const translate = useTranslate()
   const { palette, backgroundColor, color } = useColor()
   const savedReminderFrequency = useSelector(notificationReminderFrequencySelector)
   const predictionFullState = usePredictionEngineState()
@@ -50,11 +52,11 @@ export const NotificationsPreferencesModal = ({
 
     if (!hasPermission) {
       Alert.alert(
-        'Allow notifications first',
-        'Turn on notifications in your device settings before enabling period reminders.',
+        translate('notifications_permission_required'),
+        translate('notifications_enable_in_device_settings'),
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Open settings', onPress: () => Linking.openSettings() },
+          { text: translate('cancel'), style: 'cancel' },
+          { text: translate('open_settings'), onPress: () => Linking.openSettings() },
         ],
       )
       return
@@ -93,14 +95,14 @@ export const NotificationsPreferencesModal = ({
           </TouchableOpacity>
 
           <Text style={[styles.title, { color: palette.danger.base }]}>
-            Choose how often you want your reminders before your period is likely to start
+            notifications_choose_reminder_title
           </Text>
 
-          <Text style={[styles.subtitle, { color }]}>Set yourself reminders for</Text>
+          <Text style={[styles.subtitle, { color }]}>notifications_set_reminders_for</Text>
 
           <View style={styles.remindersContainer}>
             <View style={styles.reminderRow}>
-              <Text style={[styles.reminderText, { color }]}>5 days before</Text>
+              <Text style={[styles.reminderText, { color }]}>notifications_five_days_before</Text>
               <RNSwitch
                 value={selectedReminder === 'fiveDays'}
                 onValueChange={() => handleReminderToggle('fiveDays')}
@@ -110,7 +112,7 @@ export const NotificationsPreferencesModal = ({
             </View>
 
             <View style={styles.reminderRow}>
-              <Text style={[styles.reminderText, { color }]}>3 days before</Text>
+              <Text style={[styles.reminderText, { color }]}>notifications_three_days_before</Text>
               <RNSwitch
                 value={selectedReminder === 'threeDays'}
                 onValueChange={() => handleReminderToggle('threeDays')}
@@ -120,7 +122,7 @@ export const NotificationsPreferencesModal = ({
             </View>
 
             <View style={styles.reminderRow}>
-              <Text style={[styles.reminderText, { color }]}>1 day before</Text>
+              <Text style={[styles.reminderText, { color }]}>notifications_one_day_before</Text>
               <RNSwitch
                 value={selectedReminder === 'oneDay'}
                 onValueChange={() => handleReminderToggle('oneDay')}
@@ -140,14 +142,18 @@ export const NotificationsPreferencesModal = ({
               onPress={handleSetNotifications}
               disabled={isSetNotificationDisabled}
             >
-              <Text style={[styles.buttonText, { color: backgroundColor }]}>Set notifications</Text>
+              <Text style={[styles.buttonText, { color: backgroundColor }]}>
+                notifications_set
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.disableButton, { borderColor: palette.danger.base }]}
               onPress={handleDisableNotifications}
             >
-              <Text style={[styles.disableButtonText, { color: palette.danger.base }]}>Disable</Text>
+              <Text style={[styles.disableButtonText, { color: palette.danger.base }]}>
+                notifications_disable
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

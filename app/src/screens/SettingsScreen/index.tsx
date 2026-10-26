@@ -126,8 +126,8 @@ const SettingsScreen: ScreenComponent<'Settings'> = ({ navigation }) => {
       component: <ArrowRight color={palette.basic.base} />,
     },
     {
-      title: 'Period notification and reminder',
-      description: 'Oky will send you messages to remind you to log in to Oky and to take care of yourself.',
+      title: 'period_notification_reminder',
+      description: 'period_notification_reminder_info',
       onPress: openNotificationSettings,
       component: <ArrowRight color={palette.basic.base} />,
     },

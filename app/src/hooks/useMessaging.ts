@@ -50,7 +50,7 @@ const requestPermission = async () => {
     return androidStatus === 'granted'
   }
 
-  /* 
+  /*
     NOT_DETERMINED: -1
     DENIED: 0
     AUTHORIZED: 1

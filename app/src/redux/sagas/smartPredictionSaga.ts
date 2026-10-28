@@ -10,6 +10,10 @@ import { PredictionState } from '../../prediction'
 // Offline the phone predicts from the average of her last cycles (brief: last 6)
 const LOCAL_WINDOW = 6
 
+// What a prediction is based on: her past cycles and when the current one started
+const cyclesKey = (state: { history: unknown; currentCycle: { startDate: unknown } }) =>
+  JSON.stringify([state.history, state.currentCycle.startDate])
+
 function localCycleLength(predictionFullState: PredictionState) {
   const lengths = (predictionFullState.history || [])
     .slice(0, LOCAL_WINDOW)
@@ -32,6 +36,7 @@ function* onFetchUpdatedPredictedCycles(
       futurePredictionStatus,
     } = action.payload
 
+    const requestedFor = cyclesKey(predictionFullState.toJSON())
     // @ts-expect-error TODO:
     const currentUser = yield select(selectors.currentUserSelector)
     const userId = currentUser?.id || 'anonymous'
@@ -76,6 +81,12 @@ function* onFetchUpdatedPredictedCycles(
       ? Math.round(predictionResponse.predictedCycleLength)
       : localCycleLength(predictionFullState)
     if (!Number.isFinite(smaCycleLength)) {
+      return
+    }
+    // She edited her cycles while this answer was on its way: it is for old data
+    // @ts-expect-error TODO:
+    const saved = yield select((state) => state.prediction)
+    if (saved?.currentCycle && cyclesKey(saved) !== requestedFor) {
       return
     }
 

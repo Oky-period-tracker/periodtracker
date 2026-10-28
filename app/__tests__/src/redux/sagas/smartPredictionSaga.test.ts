@@ -27,11 +27,15 @@ function fullState() {
   })
 }
 
-async function runRequest() {
+async function runRequest(savedPrediction?: object) {
   const dispatched: { type: string; payload?: any }[] = []
   const channel = stdChannel()
   runSaga(
-    { channel, dispatch: (a: { type: string }) => dispatched.push(a), getState: () => ({}) },
+    {
+      channel,
+      dispatch: (a: { type: string }) => dispatched.push(a),
+      getState: () => ({ prediction: savedPrediction }),
+    },
     smartPredictionbSaga,
   )
   channel.put({
@@ -60,6 +64,26 @@ describe('smartPredictionSaga', () => {
     expect(saved.smartPrediction.smaCycleLength).toBe(31)
     expect(saved.currentCycle.cycleLength).toBe(31)
     expect(saved.smartPrediction.serverRange).toBeUndefined()
+  })
+
+  it('drops the answer when her cycles changed while waiting for it', async () => {
+    mockGetPeriodCycles.mockResolvedValue({
+      predictedCycleLength: 29.6,
+      predictedPeriodLength: undefined,
+    })
+    const edited = fullState().toJSON()
+    edited.currentCycle.startDate = '2026-10-16T00:00:00.000Z'
+    const { types } = await runRequest(edited)
+    expect(types).not.toContain('SET_PREDICTION_ENGINE_STATE')
+  })
+
+  it('saves the answer when the saved cycles are still the ones it asked about', async () => {
+    mockGetPeriodCycles.mockResolvedValue({
+      predictedCycleLength: 29.6,
+      predictedPeriodLength: undefined,
+    })
+    const { saved } = await runRequest(fullState().toJSON())
+    expect(saved.smartPrediction.smaCycleLength).toBe(30)
   })
 
   it('falls back the same way when the answer has no cycle length', async () => {

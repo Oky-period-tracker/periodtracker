@@ -11,6 +11,9 @@ const saltRounds = 10
 export class UserController {
   private userRepository = getRepository(User)
 
+  // The only account fields a response may carry, whatever the entity holds
+  private toPublic = ({ id, username, type, lang }: User) => ({ id, username, type, lang })
+
   async all(request: Request, response: Response, next: NextFunction) {
     try {
       return await this.userRepository.find({
@@ -46,7 +49,7 @@ export class UserController {
         return
       }
       const hash = await bcrypt.hash(request.body.password, saltRounds)
-      await this.userRepository.save({
+      const createdUser = await this.userRepository.save({
         username: request.body.username,
         password: hash,
         lang: request.body.lang,
@@ -54,7 +57,7 @@ export class UserController {
         type: request.body.type,
       })
       logger.info('CMS user created', { username: request.body.username, type: request.body.type })
-      return request.body
+      return this.toPublic(createdUser)
     } catch (error) {
       logger.error('UserController.save failed', { message: error?.message, stack: error?.stack })
       throw error
@@ -77,7 +80,7 @@ export class UserController {
       })
       await this.userRepository.save(userToUpdate)
       logger.info('CMS user updated', { id: request.params.id, username: request.body.username })
-      return userToUpdate
+      return this.toPublic(userToUpdate)
     } catch (error) {
       logger.error('UserController.update failed', {
         id: request.params.id,
@@ -98,7 +101,7 @@ export class UserController {
       }
       await this.userRepository.remove(userToRemove)
       logger.info('CMS user removed', { id: request.params.id })
-      return userToRemove
+      return this.toPublic(userToRemove)
     } catch (error) {
       logger.error('UserController.remove failed', {
         id: request.params.id,

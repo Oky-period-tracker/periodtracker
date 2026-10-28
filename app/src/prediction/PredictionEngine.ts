@@ -305,31 +305,36 @@ export class PredictionEngine {
     // what causes the app to crash on every subsequent render/launch, not just
     // once - since components read this same broken state on next app open.
     const stateSnapshot = this.state.toJSON ? this.state.toJSON() : null
+    let askedForPrediction = false
+    const askForPrediction = (flag: boolean) => {
+      askedForPrediction = true
+      return getPredictedCycles(flag)
+    }
     try {
       switch (type) {
         case 'adjust-mens-end':
-          this._adjustMenstruatingHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustMenstruatingHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'start-next-cycle':
-          this._startedEarlyHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._startedEarlyHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'current-start-adjust':
-          this._adjustCurrentStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustCurrentStartDateHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'history-start-adjust':
-          this._adjustHistoryStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustHistoryStartDateHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'adjust-mens-end-history':
-          this._adjustMenstruatingHistoryHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustMenstruatingHistoryHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'future-start-adjust':
-          this._adjustFutureStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustFutureStartDateHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'adjust-future-mens-end':
-          this._adjustFutureMenstruatingHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustFutureMenstruatingHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'add-new-cycle-history':
-          this._addNewCycleInHistory(inputDay, errorCallBack, getPredictedCycles)
+          this._addNewCycleInHistory(inputDay, errorCallBack, askForPrediction)
           break
         default:
           break
@@ -343,6 +348,14 @@ export class PredictionEngine {
       errorCallBack('something_went_wrong')
       this.listener(this.state)
       return
+    }
+    // Some edit branches never ask the server, which would keep its answer for her old history
+    if (
+      !askedForPrediction &&
+      stateSnapshot &&
+      cyclesKey(stateSnapshot) !== cyclesKey(this.state.toJSON())
+    ) {
+      getPredictedCycles(true)
     }
     this.listener(this.state)
   }
@@ -1225,6 +1238,8 @@ export class PredictionEngine {
   }
 }
 // +=+=+=+=+==+=+=+=+=+=+=+=+= Array Average +=+=+=++=+=+=+=+=+==+=+==+=+==+=+=
+
+const cyclesKey = (state) => JSON.stringify([state.history, state.currentCycle.startDate])
 
 const arrayAverage = (arr) => {
   return arr.reduce((a, b) => a + b, 0) / arr.length

@@ -186,3 +186,54 @@ describe('PredictionEngine - calculateStatusForDateRange', () => {
     expect(markedDates[dayOne].selectedColor).toBe('#fff')
   })
 })
+
+describe('PredictionEngine - asking for a new prediction after an edit', () => {
+  afterEach(() => jest.useRealTimers())
+
+  function engineWithHistory() {
+    jest.useFakeTimers().setSystemTime(new Date('2026-10-28T12:00:00'))
+    const state = PredictionState.fromData({
+      startDate: moment('2026-10-28'),
+      periodLength: 5,
+      cycleLength: 30,
+      smaCycleLength: 30,
+      history: [
+        {
+          cycleStartDate: moment('2026-09-25'),
+          cycleEndDate: moment('2026-10-27'),
+          periodLength: 5,
+          cycleLength: 33,
+        },
+      ],
+    })
+    return PredictionEngine.fromState(state)
+  }
+
+  it('asks once when an edit moves her cycle start, even if the handler did not', () => {
+    const engine = engineWithHistory()
+    const getPredictedCycles = jest.fn()
+    engine.userInputDispatch({
+      type: 'current-start-adjust',
+      inputDay: moment('2026-10-26'),
+      getPredictedCycles,
+    })
+
+    expect(engine.getPredictorState().currentCycle.startDate.format('YYYY-MM-DD')).toBe(
+      '2026-10-26',
+    )
+    expect(getPredictedCycles).toHaveBeenCalledTimes(1)
+    expect(getPredictedCycles).toHaveBeenCalledWith(true)
+  })
+
+  it('does not ask when nothing about her cycles changed', () => {
+    const engine = engineWithHistory()
+    const getPredictedCycles = jest.fn()
+    engine.userInputDispatch({
+      type: 'future-start-adjust',
+      inputDay: moment('2026-10-29'),
+      getPredictedCycles,
+    })
+
+    expect(getPredictedCycles).not.toHaveBeenCalled()
+  })
+})

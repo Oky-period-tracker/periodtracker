@@ -932,6 +932,12 @@ export class PredictionEngine {
         this.state.currentCycle.startDate = inputDay
         this.state.currentCycle.cycleLength += -daysFromStart
         this.state.currentCycle.periodLength += -daysFromStart
+        // The previous cycle now ends the day before, as in the move-forward branch below
+        this.state.history[0] = {
+          ...this.state.history[0],
+          cycleEndDate: inputDay.clone().subtract(1, 'days'),
+          cycleLength: inputDay.diff(this.state.history[0].cycleStartDate, 'days'),
+        }
       } else {
         if (
           inputDay.diff(this.state.history[0].cycleStartDate, 'days') -

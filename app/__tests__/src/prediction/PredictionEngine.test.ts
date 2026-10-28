@@ -270,6 +270,15 @@ describe('PredictionEngine - asking for a new prediction after an edit', () => {
     expect(getPredictedCycles).toHaveBeenCalledWith(true)
   })
 
+  it('shortens the previous cycle when her current start moves earlier', () => {
+    const engine = engineWithHistory()
+    engine.userInputDispatch({ type: 'current-start-adjust', inputDay: moment('2026-10-26') })
+
+    const previous = engine.getPredictorState().history[0]
+    expect(previous.cycleLength).toBe(31)
+    expect(previous.cycleEndDate.format('YYYY-MM-DD')).toBe('2026-10-25')
+  })
+
   it('does not ask when nothing about her cycles changed', () => {
     const engine = engineWithHistory()
     const getPredictedCycles = jest.fn()

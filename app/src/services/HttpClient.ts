@@ -422,8 +422,11 @@ export function createHttpClient(
 
         // v2 responds with { prediction: { predicted_cycle_length } } and does
         // not return a period length.
+        // axios leaves some valid bodies unparsed on device (seen with emoji escapes)
+        const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data
+        const prediction = data?.prediction
         return {
-          predictedCycleLength: response.data?.prediction?.predicted_cycle_length,
+          predictedCycleLength: prediction?.predicted_cycle_length,
           predictedPeriodLength: undefined,
         }
       }

@@ -12,4 +12,18 @@ describe('getPeriodCycles (v2)', () => {
     expect(result.predictedCycleLength).toBe(28)
     expect(result.serverRange).toEqual({ mean: 28, lower: 25, upper: 31, useBaseline: true, samplesTrained: 5 })
   })
+
+  it('sends only her real cycles, without the zeros the v1 engine needs', async () => {
+    ;(axios.post as jest.Mock).mockResolvedValue({ data: { prediction: { predicted_cycle_length: 30 } } })
+    const client = createHttpClient('', '', { predictionEndpoint: 'http://x', predictionEngineVersion: 'v2' })
+    await client.getPeriodCycles({
+      user_id: 'u',
+      age: 15,
+      cycle_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 29, 31],
+      period_lengths: [0, 0, 0, 0, 0, 0, 0, 0, 5, 4],
+    })
+    const sent = (axios.post as jest.Mock).mock.calls.at(-1)[1]
+    expect(sent.cycle_history).toEqual([29, 31])
+    expect(sent.period_history).toEqual([5, 4])
+  })
 })

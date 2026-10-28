@@ -2,10 +2,8 @@
 import moment from 'moment'
 import { PredictionState } from './PredictionState'
 import { CycleRange } from './calendarMarks'
+import { localRange } from './localRange'
 
-// honey: without a v2 server answer (v1 engine, offline, or a stale answer) the calendar uses the
-// agreed baseline ±3 (direction 2b). Replace with the per-user cache when it lands (brief §4.1).
-export const TEMPORARY_HALF_WIDTH = 3
 export const MIN_TRAINED_CYCLES = 3
 
 // state is null when nothing was ever saved (the provider then runs on a made-up default);
@@ -25,7 +23,8 @@ export function getCalendarInputs(
   const mean = state.smartPrediction?.smaCycleLength || state.currentCycle?.cycleLength
   // isActive false (no period logged yet): the saved start is a default or today, never hers
   const start = state.isActive === false ? null : state.currentCycle?.startDate
-  const fallbackAnchor = start && moment(start).isValid() ? moment(start).format('YYYY-MM-DD') : null
+  const fallbackAnchor =
+    start && moment(start).isValid() ? moment(start).format('YYYY-MM-DD') : null
   // The server's displayed range, only while it still matches the cycle length in use
   const server = state.smartPrediction?.serverRange
   if (mean && server && Math.round(server.mean) === Math.round(mean)) {
@@ -39,13 +38,13 @@ export function getCalendarInputs(
       fallbackAnchor,
     }
   }
-  return {
-    cycle: mean
-      ? { mean, lower: mean - TEMPORARY_HALF_WIDTH, upper: mean + TEMPORARY_HALF_WIDTH }
-      : null,
-    averagePeriodLength,
-    fallbackAnchor,
-  }
+  // No usable server answer (v1 engine, offline, or a stale answer): the phone calculates
+  if (!mean) return { cycle: null, averagePeriodLength, fallbackAnchor }
+  const intervals = state.smartPrediction?.circularCycleLength?.toarray?.() ?? []
+  const local = localRange(mean, intervals)
+  return local.irregular
+    ? { cycle: null, averagePeriodLength, fallbackAnchor, irregular: true }
+    : { cycle: local.cycle, averagePeriodLength, fallbackAnchor }
 }
 
 const isoFromShort = (k: string) => `${k.slice(0, 4)}-${k.slice(4, 6)}-${k.slice(6, 8)}`

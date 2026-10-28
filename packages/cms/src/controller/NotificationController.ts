@@ -179,9 +179,13 @@ export class NotificationController {
     try {
       const permanentNotificationToUpdate = await this.permanentNotificationRepository.findOne(
         request.params.id,
+        { where: { lang: request.user.lang } },
       )
       if (!permanentNotificationToUpdate) {
-        logger.warn('Permanent alert not found for update', { id: request.params.id })
+        logger.warn('Permanent alert not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Permanent alert not found' })
         return
       }
@@ -192,7 +196,6 @@ export class NotificationController {
       permanentNotificationToUpdate.isPermanent = booleanFromStringIsPermanent
       permanentNotificationToUpdate.versions = request.body.versions
       permanentNotificationToUpdate.live = booleanFromStringLive
-      permanentNotificationToUpdate.lang = request.user.lang
       await this.permanentNotificationRepository.save(permanentNotificationToUpdate)
       logger.info('Permanent alert updated', { id: request.params.id })
       return permanentNotificationToUpdate
@@ -208,9 +211,14 @@ export class NotificationController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const notificationToRemove = await this.notificationRepository.findOne(request.params.id)
+      const notificationToRemove = await this.notificationRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!notificationToRemove) {
-        logger.warn('Notification not found for removal', { id: request.params.id })
+        logger.warn('Notification not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Notification not found' })
         return
       }
@@ -229,9 +237,14 @@ export class NotificationController {
 
   async removePermanentAlert(request: Request, response: Response, next: NextFunction) {
     try {
-      const itemToRemove = await this.permanentNotificationRepository.findOne(request.params.id)
+      const itemToRemove = await this.permanentNotificationRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!itemToRemove) {
-        logger.warn('Permanent alert not found for removal', { id: request.params.id })
+        logger.warn('Permanent alert not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Permanent alert not found' })
         return
       }

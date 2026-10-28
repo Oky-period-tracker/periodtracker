@@ -90,9 +90,14 @@ export class AboutBannerController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToRemove = await this.aboutBannerRepository.findOne(request.params.id)
+      const aboutToRemove = await this.aboutBannerRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToRemove) {
-        logger.warn('About banner not found for removal', { id: request.params.id })
+        logger.warn('About banner not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'About banner not found' })
         return
       }

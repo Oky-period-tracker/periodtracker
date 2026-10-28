@@ -3,6 +3,8 @@ import { ArticleController } from '../../src/controller/ArticleController'
 
 jest.mock('typeorm', () => ({ getRepository: jest.fn() }))
 jest.mock('../../src/entity/Article', () => ({ Article: class {} }))
+jest.mock('../../src/entity/Category', () => ({ Category: class {} }))
+jest.mock('../../src/entity/Subcategory', () => ({ Subcategory: class {} }))
 jest.mock('../../src/env', () => ({ env: { db: { schema: 'public' }, features: {} } }))
 jest.mock('../../src/logger', () => ({
   logger: { info: jest.fn(), warn: jest.fn(), error: jest.fn() },

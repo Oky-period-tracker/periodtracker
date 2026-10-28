@@ -19,7 +19,12 @@ export class AvatarMessageController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.avatarMessageRepository.findOne(request.params.id)
+    const avatarMessage = await this.avatarMessageRepository.findOne({
+      id: request.params.id,
+      lang: request.user.lang,
+    })
+    if (!avatarMessage) response.status(404).send({ error: 'Avatar message not found' })
+    return avatarMessage
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
@@ -43,14 +48,19 @@ export class AvatarMessageController {
     try {
       const booleanFromStringLive = request.body.live === 'true'
 
-      const avatarMessageToUpdate = await this.avatarMessageRepository.findOne(request.params.id)
+      const avatarMessageToUpdate = await this.avatarMessageRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!avatarMessageToUpdate) {
-        logger.warn('Avatar message not found for update', { id: request.params.id })
+        logger.warn('Avatar message not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Avatar message not found' })
         return
       }
       avatarMessageToUpdate.content = request.body.content
-      avatarMessageToUpdate.lang = request.user.lang
       avatarMessageToUpdate.live = booleanFromStringLive
       await this.avatarMessageRepository.save(avatarMessageToUpdate)
       logger.info('Avatar message updated', { id: request.params.id })
@@ -67,9 +77,15 @@ export class AvatarMessageController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const avatarMessageToRemove = await this.avatarMessageRepository.findOne(request.params.id)
+      const avatarMessageToRemove = await this.avatarMessageRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!avatarMessageToRemove) {
-        logger.warn('Avatar message not found for removal', { id: request.params.id })
+        logger.warn('Avatar message not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Avatar message not found' })
         return
       }

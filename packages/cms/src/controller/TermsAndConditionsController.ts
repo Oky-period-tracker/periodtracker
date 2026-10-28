@@ -25,7 +25,11 @@ export class TermsAndConditionsController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.termsAndConditionsRepository.findOne(request.params.id)
+    const termsAndConditions = await this.termsAndConditionsRepository.findOne(request.params.id, {
+      where: { lang: request.user.lang },
+    })
+    if (!termsAndConditions) response.status(404).send({ error: 'Terms and conditions not found' })
+    return termsAndConditions
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
@@ -46,14 +50,18 @@ export class TermsAndConditionsController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToUpdate = await this.termsAndConditionsRepository.findOne(request.params.id)
+      const aboutToUpdate = await this.termsAndConditionsRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToUpdate) {
-        logger.warn('Terms and conditions not found for update', { id: request.params.id })
+        logger.warn('Terms and conditions not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Terms and conditions not found' })
         return
       }
       aboutToUpdate.json_dump = request.body.json_dump
-      aboutToUpdate.lang = request.user.lang
       await this.termsAndConditionsRepository.save(aboutToUpdate)
       logger.info('Terms and conditions updated', { id: request.params.id })
       return aboutToUpdate
@@ -69,9 +77,14 @@ export class TermsAndConditionsController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToRemove = await this.termsAndConditionsRepository.findOne(request.params.id)
+      const aboutToRemove = await this.termsAndConditionsRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToRemove) {
-        logger.warn('Terms and conditions not found for removal', { id: request.params.id })
+        logger.warn('Terms and conditions not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Terms and conditions not found' })
         return
       }

@@ -20,6 +20,7 @@ describe('voice-over replacement', () => {
   let controller: ArticleVoiceOverController
   const request = {
     body: { id: 'article' },
+    user: { lang: 'en' },
     file: { originalname: 'audio.mp3', buffer: Buffer.from('audio'), mimetype: 'audio/mpeg' },
   }
 

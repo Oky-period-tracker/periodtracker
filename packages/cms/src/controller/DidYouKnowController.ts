@@ -19,7 +19,12 @@ export class DidYouKnowController {
     return withoutDisabledFeatures(didYouKnows)
   }
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.didYouKnowRepository.findOne(request.params.id)
+    const didYouKnow = await this.didYouKnowRepository.findOne({
+      id: request.params.id,
+      lang: request.user.lang,
+    })
+    if (!didYouKnow) response.status(404).send({ error: 'DidYouKnow not found' })
+    return didYouKnow
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
@@ -44,15 +49,20 @@ export class DidYouKnowController {
       const booleanFromStringLive = request.body.live === 'true'
       const booleanFromStringAge = request.body.isAgeRestricted === 'true'
 
-      const didYouKnowToUpdate = await this.didYouKnowRepository.findOne(request.params.id)
+      const didYouKnowToUpdate = await this.didYouKnowRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!didYouKnowToUpdate) {
-        logger.warn('DidYouKnow not found for update', { id: request.params.id })
+        logger.warn('DidYouKnow not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'DidYouKnow not found' })
         return
       }
       didYouKnowToUpdate.title = request.body.title
       didYouKnowToUpdate.content = request.body.content
-      didYouKnowToUpdate.lang = request.user.lang
       didYouKnowToUpdate.isAgeRestricted = booleanFromStringAge
       didYouKnowToUpdate.live = booleanFromStringLive
       await this.didYouKnowRepository.save(didYouKnowToUpdate)
@@ -70,9 +80,15 @@ export class DidYouKnowController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const didYouKnowToRemove = await this.didYouKnowRepository.findOne(request.params.id)
+      const didYouKnowToRemove = await this.didYouKnowRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!didYouKnowToRemove) {
-        logger.warn('DidYouKnow not found for removal', { id: request.params.id })
+        logger.warn('DidYouKnow not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'DidYouKnow not found' })
         return
       }

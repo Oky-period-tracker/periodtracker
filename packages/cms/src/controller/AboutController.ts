@@ -21,7 +21,11 @@ export class AboutController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.aboutRepository.findOne(request.params.id)
+    const about = await this.aboutRepository.findOne(request.params.id, {
+      where: { lang: request.user.lang },
+    })
+    if (!about) response.status(404).send({ error: 'About not found' })
+    return about
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
@@ -39,14 +43,18 @@ export class AboutController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToUpdate = await this.aboutRepository.findOne(request.params.id)
+      const aboutToUpdate = await this.aboutRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToUpdate) {
-        logger.warn('About not found for update', { id: request.params.id })
+        logger.warn('About not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'About not found' })
         return
       }
       aboutToUpdate.json_dump = request.body.json_dump
-      aboutToUpdate.lang = request.user.lang
       await this.aboutRepository.save(aboutToUpdate)
       logger.info('About updated', { id: request.params.id })
       return aboutToUpdate
@@ -62,9 +70,14 @@ export class AboutController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToRemove = await this.aboutRepository.findOne(request.params.id)
+      const aboutToRemove = await this.aboutRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToRemove) {
-        logger.warn('About not found for removal', { id: request.params.id })
+        logger.warn('About not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'About not found' })
         return
       }

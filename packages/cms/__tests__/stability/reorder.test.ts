@@ -19,7 +19,7 @@ describe('row reorder response', () => {
       { id: 'second', sortingKey: 1 },
     ]
     let completed = false
-    const result = bulkUpdateRowReorder(repository, rows).then((value) => {
+    const result = bulkUpdateRowReorder(repository, rows, 'en').then((value) => {
       completed = true
       return value
     })
@@ -27,14 +27,22 @@ describe('row reorder response', () => {
     expect(completed).toBe(false)
     finish!({ affected: 1 })
     await expect(result).resolves.toEqual([{ affected: 1 }, { affected: 1 }])
-    expect(repository.update).toHaveBeenNthCalledWith(1, { id: 'first' }, { sortingKey: 2 })
-    expect(repository.update).toHaveBeenNthCalledWith(2, { id: 'second' }, { sortingKey: 1 })
+    expect(repository.update).toHaveBeenNthCalledWith(
+      1,
+      { id: 'first', lang: 'en' },
+      { sortingKey: 2 },
+    )
+    expect(repository.update).toHaveBeenNthCalledWith(
+      2,
+      { id: 'second', lang: 'en' },
+      { sortingKey: 1 },
+    )
   })
 
   it('propagates database failures instead of returning success', async () => {
     const repository = { update: jest.fn().mockRejectedValue(new Error('update failed')) }
     await expect(
-      bulkUpdateRowReorder(repository, [{ id: 'first', sortingKey: 2 }]),
+      bulkUpdateRowReorder(repository, [{ id: 'first', sortingKey: 2 }], 'en'),
     ).rejects.toThrow('update failed')
   })
 })

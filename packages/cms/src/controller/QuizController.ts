@@ -31,7 +31,12 @@ export class QuizController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.quizRepository.findOne(request.params.id)
+    const quiz = await this.quizRepository.findOne({
+      id: request.params.id,
+      lang: request.user.lang,
+    })
+    if (!quiz) response.status(404).send({ error: 'Quiz not found' })
+    return quiz
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
@@ -57,9 +62,12 @@ export class QuizController {
       const booleanFromStringLive = request.body.live === 'true'
       const booleanFromStringAge = request.body.isAgeRestricted === 'true'
 
-      const quizToUpdate = await this.quizRepository.findOne(request.params.id)
+      const quizToUpdate = await this.quizRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!quizToUpdate) {
-        logger.warn('Quiz not found for update', { id: request.params.id })
+        logger.warn('Quiz not found for update', { id: request.params.id, lang: request.user.lang })
         response.status(404).send({ error: 'Quiz not found' })
         return
       }
@@ -73,7 +81,6 @@ export class QuizController {
       quizToUpdate.right_answer_response = request.body.right_answer_response
       quizToUpdate.live = booleanFromStringLive
       quizToUpdate.isAgeRestricted = booleanFromStringAge
-      quizToUpdate.lang = request.user.lang
       await this.quizRepository.save(quizToUpdate)
       logger.info('Quiz updated', { id: request.params.id })
       return quizToUpdate
@@ -89,9 +96,15 @@ export class QuizController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const quizToRemove = await this.quizRepository.findOne(request.params.id)
+      const quizToRemove = await this.quizRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!quizToRemove) {
-        logger.warn('Quiz not found for removal', { id: request.params.id })
+        logger.warn('Quiz not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Quiz not found' })
         return
       }

@@ -28,15 +28,25 @@ jest.mock('bcrypt', () => ({
 }))
 
 describe('Authentication', () => {
+  const mockUserLookup = (user) => {
+    const queryBuilder = {
+      addSelect: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      getOne: jest.fn().mockResolvedValue(user),
+    }
+    ;(typeorm.getRepository as jest.Mock).mockReturnValue({
+      createQueryBuilder: jest.fn().mockReturnValue(queryBuilder),
+    })
+    return queryBuilder
+  }
+
   afterEach(() => {
     jest.clearAllMocks()
   })
 
   it('should authenticate successfully', async () => {
     const mockUser = { username: 'john', password: 'hashed_password' }
-    ;(typeorm.getRepository as jest.Mock).mockReturnValue({
-      findOne: jest.fn().mockResolvedValue(mockUser),
-    })
+    mockUserLookup(mockUser)
     ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
     const done = jest.fn()
@@ -45,10 +55,21 @@ describe('Authentication', () => {
     expect(done).toHaveBeenCalledWith(null, mockUser)
   })
 
-  it('should fail authentication if user not found', async () => {
-    ;(typeorm.getRepository as jest.Mock).mockReturnValue({
-      findOne: jest.fn().mockResolvedValue(null),
+  it('asks for the password hash, which is not selected by default', async () => {
+    const queryBuilder = mockUserLookup({ username: 'john', password: 'hashed_password' })
+    ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+
+    await Authentication.authenticate('john', 'password', jest.fn())
+
+    expect(queryBuilder.addSelect).toHaveBeenCalledWith('user.password')
+    expect(queryBuilder.where).toHaveBeenCalledWith('user.username = :username', {
+      username: 'john',
     })
+    expect(bcrypt.compare).toHaveBeenCalledWith('password', 'hashed_password')
+  })
+
+  it('should fail authentication if user not found', async () => {
+    mockUserLookup(undefined)
 
     const done = jest.fn()
     await Authentication.authenticate('john', 'password', done)
@@ -58,9 +79,7 @@ describe('Authentication', () => {
 
   it('should fail authentication if password does not match', async () => {
     const mockUser = { username: 'john', password: 'hashed_password' }
-    ;(typeorm.getRepository as jest.Mock).mockReturnValue({
-      findOne: jest.fn().mockResolvedValue(mockUser),
-    })
+    mockUserLookup(mockUser)
     ;(bcrypt.compare as jest.Mock).mockResolvedValue(false)
 
     const done = jest.fn()

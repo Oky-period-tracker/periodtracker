@@ -7,15 +7,36 @@ import { typeToAction } from '../access/role-definitions'
 import moment from 'moment'
 import { logger } from '../logger'
 const saltRounds = 10
+const publicFields: Array<keyof User> = ['id', 'username', 'type', 'lang']
+
+// Same hierarchy as the user management page: an account can only be managed
+// by someone allowed to create its role, and only superAdmins work across
+// languages. Checked against the stored account and against the requested
+// type/lang, so nobody can promote themselves or reach a higher account
+const canManage = (actor: User, type: string, lang: string) =>
+  accessControlList.can(actor.type, typeToAction(type)) &&
+  (accessControlList.can(actor.type, 'toggleLanguages') || lang === actor.lang)
+
+// Admins only manage their own language, whatever the form sends
+const requestedLang = (actor: User, lang: string) =>
+  accessControlList.can(actor.type, 'toggleLanguages') ? lang : actor.lang
+
+const deny = (request: Request, response: Response, action: string) => {
+  logger.warn(`User ${action} denied: insufficient permissions`, {
+    requestingUser: request.user.id,
+    target: request.params.id,
+    requestedType: request.body?.type,
+  })
+  response.status(403).send({ error: 'No permission rights to do that' })
+}
 
 export class UserController {
   private userRepository = getRepository(User)
 
   async all(request: Request, response: Response, next: NextFunction) {
     try {
-      return await this.userRepository.find({
-        select: ['id', 'username', 'type', 'lang'],
-      })
+      const users = await this.userRepository.find({ select: publicFields })
+      return users.filter((user) => canManage(request.user, user.type, user.lang))
     } catch (error) {
       logger.error('UserController.all failed', { message: error?.message, stack: error?.stack })
       throw error
@@ -23,12 +44,25 @@ export class UserController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.userRepository.findOne(request.params.id)
+    const user = await this.userRepository.findOne(request.params.id, { select: publicFields })
+    if (!user) {
+      response.status(404).send({ error: 'User not found' })
+      return
+    }
+    if (!canManage(request.user, user.type, user.lang)) {
+      deny(request, response, 'read')
+      return
+    }
+    return user
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
     try {
-      const creationAction = typeToAction(request.body.type)
+      const lang = requestedLang(request.user, request.body.lang)
+      if (!canManage(request.user, request.body.type, lang)) {
+        deny(request, response, 'creation')
+        return
+      }
       const user = await this.userRepository.findOne({
         where: { username: request.body.username },
       })
@@ -37,19 +71,11 @@ export class UserController {
         response.status(409).send({ error: 'username is not unique' })
         return
       }
-      if (!accessControlList.can(request.user.type, creationAction)) {
-        logger.warn('User creation denied: insufficient permissions', {
-          requestingUser: request.user.id,
-          requestedType: request.body.type,
-        })
-        response.status(400).send({ error: 'No permission rights to do that' })
-        return
-      }
       const hash = await bcrypt.hash(request.body.password, saltRounds)
       await this.userRepository.save({
         username: request.body.username,
         password: hash,
-        lang: request.body.lang,
+        lang,
         date_created: moment.utc().toISOString(),
         type: request.body.type,
       })
@@ -69,12 +95,22 @@ export class UserController {
         response.status(404).send({ error: 'User not found' })
         return
       }
-      await bcrypt.hash(request.body.password, saltRounds).then(async (hash) => {
-        userToUpdate.username = request.body.username
-        userToUpdate.password = hash
-        userToUpdate.lang = request.body.lang
-        userToUpdate.type = request.body.type
-      })
+      const lang = requestedLang(request.user, request.body.lang)
+      if (
+        !canManage(request.user, userToUpdate.type, userToUpdate.lang) ||
+        !canManage(request.user, request.body.type, lang)
+      ) {
+        deny(request, response, 'update')
+        return
+      }
+      userToUpdate.username = request.body.username
+      userToUpdate.lang = lang
+      userToUpdate.type = request.body.type
+      // The edit form has no password field and sends it empty, which used to
+      // overwrite the stored hash and lock the account out
+      if (request.body.password) {
+        userToUpdate.password = await bcrypt.hash(request.body.password, saltRounds)
+      }
       await this.userRepository.save(userToUpdate)
       logger.info('CMS user updated', { id: request.params.id, username: request.body.username })
       return userToUpdate
@@ -94,6 +130,10 @@ export class UserController {
       if (!userToRemove) {
         logger.warn('User not found for removal', { id: request.params.id })
         response.status(404).send({ error: 'User not found' })
+        return
+      }
+      if (!canManage(request.user, userToRemove.type, userToRemove.lang)) {
+        deny(request, response, 'removal')
         return
       }
       await this.userRepository.remove(userToRemove)

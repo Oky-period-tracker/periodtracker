@@ -288,7 +288,8 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
     smaCycleLength,
     smaPeriodLength,
     history: [],
-    serverRange: periodResult?.serverRange,
+    // Based on an empty history: still usable for her first cycle
+    serverRange: periodResult?.serverRange && { ...periodResult.serverRange, basedOn: [] },
   })
 
   yield put(actions.setPredictionEngineState(stateToSet))

@@ -1,6 +1,7 @@
 import moment from 'moment'
 import { runSaga, stdChannel } from 'redux-saga'
 import { PredictionState } from '../../../../src/prediction/PredictionState'
+import { cycleEntries } from '../../../../src/prediction/serverCache'
 
 const mockGetPeriodCycles = jest.fn()
 jest.mock('../../../../src/services/HttpClient', () => ({
@@ -18,16 +19,16 @@ const cycle = (start: string, cycleLength: number) => ({
 })
 
 // Last cycles of 30 and 32 days, with a server answer of 26 saved from before her edit
-function fullState() {
+function fullState(basedOn?: string[]) {
   return PredictionState.fromData({
     startDate: moment('2026-10-18'),
     smaCycleLength: 26,
     history: [cycle('2026-09-16', 32), cycle('2026-08-17', 30)],
-    serverRange: { mean: 26, lower: 25, upper: 27, useBaseline: false, samplesTrained: 4 },
+    serverRange: { mean: 26, lower: 25, upper: 27, useBaseline: false, samplesTrained: 4, basedOn },
   })
 }
 
-async function runRequest(savedPrediction?: object) {
+async function runRequest(savedPrediction?: object, predictionFullState = fullState()) {
   const dispatched: { type: string; payload?: any }[] = []
   const channel = stdChannel()
   runSaga(
@@ -40,7 +41,7 @@ async function runRequest(savedPrediction?: object) {
   )
   channel.put({
     type: 'SMART_PREDICTION_REQUEST',
-    payload: { predictionFullState: fullState(), futurePredictionStatus: true },
+    payload: { predictionFullState, futurePredictionStatus: true },
   })
   await new Promise((resolve) => setImmediate(resolve))
   const saved = dispatched.find((a) => a.type === 'SET_PREDICTION_ENGINE_STATE')
@@ -64,6 +65,24 @@ describe('smartPredictionSaga', () => {
     expect(saved.smartPrediction.smaCycleLength).toBe(31)
     expect(saved.currentCycle.cycleLength).toBe(31)
     expect(saved.smartPrediction.serverRange).toBeUndefined()
+  })
+
+  it('offline, keeps a saved answer that is still based on her cycles', async () => {
+    mockGetPeriodCycles.mockRejectedValue(new Error('Network Error'))
+    const history = fullState().history
+    const { saved } = await runRequest(undefined, fullState(cycleEntries(history)))
+    expect(saved.smartPrediction.smaCycleLength).toBe(26)
+    expect(saved.smartPrediction.serverRange.mean).toBe(26)
+  })
+
+  it('records which cycles a fresh answer was based on', async () => {
+    mockGetPeriodCycles.mockResolvedValue({
+      predictedCycleLength: 29.6,
+      predictedPeriodLength: undefined,
+      serverRange: { mean: 29.6, lower: 27, upper: 32, useBaseline: false, samplesTrained: 5 },
+    })
+    const { saved } = await runRequest()
+    expect(saved.smartPrediction.serverRange.basedOn).toEqual(['2026-09-16:32', '2026-08-17:30'])
   })
 
   it('drops the answer when her cycles changed while waiting for it', async () => {

@@ -112,6 +112,7 @@ export type ServerRange = {
   upper: number
   useBaseline: boolean
   samplesTrained: number
+  basedOn?: string[] // her cycles when the server answered; see serverCache
 }
 
 export function createHttpClient(

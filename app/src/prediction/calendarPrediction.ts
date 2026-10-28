@@ -3,6 +3,7 @@ import moment from 'moment'
 import { PredictionState } from './PredictionState'
 import { CycleRange } from './calendarMarks'
 import { localRange } from './localRange'
+import { cachedAnswerUsable } from './serverCache'
 
 export const MIN_TRAINED_CYCLES = 3
 
@@ -27,7 +28,8 @@ export function getCalendarInputs(
     start && moment(start).isValid() ? moment(start).format('YYYY-MM-DD') : null
   // The server's displayed range, only while it still matches the cycle length in use
   const server = state.smartPrediction?.serverRange
-  if (mean && server && Math.round(server.mean) === Math.round(mean)) {
+  const usable = server && (!server.basedOn || cachedAnswerUsable(server, state.history))
+  if (mean && usable && Math.round(server.mean) === Math.round(mean)) {
     // §6.6: trained but too irregular for a personal prediction -> the message, not 28 ± 3
     if (server.useBaseline && server.samplesTrained >= MIN_TRAINED_CYCLES) {
       return { cycle: null, averagePeriodLength, fallbackAnchor, irregular: true }

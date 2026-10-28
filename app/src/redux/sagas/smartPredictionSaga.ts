@@ -6,6 +6,7 @@ import { httpClient } from '../../services/HttpClient'
 import * as actions from '../actions'
 import * as selectors from '../selectors'
 import { PredictionState } from '../../prediction'
+import { cachedAnswerUsable, cycleEntries } from '../../prediction/serverCache'
 
 // Offline the phone predicts from the average of her last cycles (brief: last 6)
 const LOCAL_WINDOW = 6
@@ -76,9 +77,23 @@ function* onFetchUpdatedPredictedCycles(
     // { predictedCycleLength, predictedPeriodLength }.
     // Round the (Bayesian, v2) posterior mean - it is almost never an integer
     // and the app displays this value directly to users (e.g. "28.437 days").
-    // Without a server answer, the saved one was for her old history, so use her own cycles.
+    // Without a fresh answer, keep the saved one while it is still usable (re-anchored to her
+    // new start); after an edit, or once it is stale, the phone calculates from her own cycles.
+    const savedRange = predictionFullState.smartPrediction?.serverRange
+    const reuseSaved =
+      !predictionResponse && cachedAnswerUsable(savedRange, predictionFullState.history)
+    const serverRange = predictionResponse
+      ? predictionResponse.serverRange && {
+          ...predictionResponse.serverRange,
+          basedOn: cycleEntries(predictionFullState.history),
+        }
+      : reuseSaved
+      ? savedRange
+      : undefined
     const smaCycleLength = predictionResponse
       ? Math.round(predictionResponse.predictedCycleLength)
+      : reuseSaved
+      ? Math.round(savedRange.mean)
       : localCycleLength(predictionFullState)
     if (!Number.isFinite(smaCycleLength)) {
       return
@@ -117,7 +132,7 @@ function* onFetchUpdatedPredictedCycles(
       smaPeriodLength,
       history: predictionFullState.history,
       actualCurrentStartDate: predictionFullState.currentCycle,
-      serverRange: predictionResponse?.serverRange,
+      serverRange,
     })
     // fromData starts with empty six-cycle buffers; keep the ones the engine already has
     for (const key of ['circularPeriodLength', 'circularCycleLength'] as const) {

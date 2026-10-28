@@ -120,6 +120,17 @@ describe('getCalendarInputs with a v2 server answer (brief §6.2, §6.6)', () =>
     expect(r.cycle).toEqual({ mean: 30, lower: 27, upper: 33 })
   })
 
+  it('trained but too irregular: the message, not the generic range', () => {
+    const r = getCalendarInputs(
+      withServer({ mean: 28, lower: 25, upper: 31, useBaseline: true, samplesTrained: 3 }, 28),
+    )
+    expect(r).toEqual({
+      cycle: null,
+      averagePeriodLength: 4,
+      fallbackAnchor: '2026-10-01',
+      irregular: true,
+    })
+  })
 
   it('fewer than 3 trained cycles: the generic range is shown', () => {
     const r = getCalendarInputs(

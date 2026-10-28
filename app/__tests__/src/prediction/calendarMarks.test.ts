@@ -141,6 +141,13 @@ describe('prediction (direction paper Annex B)', () => {
     expect(m.days['2026-10-04']).toEqual(['possiblePeriod'])
   })
 
+  it('irregular (brief §6.6): paused, only her period days remain', () => {
+    const m = buildCalendarMarks({ ...base, ...annexB, cycle: null, irregular: true })
+    expect(m.status).toEqual({ kind: 'paused' })
+    expect(Object.values(m.days).flat()).not.toContain('ovulation')
+    expect(m.days['2026-10-04']).toEqual(['possiblePeriod'])
+  })
+
   it('fractional: a 28.4-day mean at the cap draws 7 days, not 8', () => {
     const m = buildCalendarMarks({
       ...base,

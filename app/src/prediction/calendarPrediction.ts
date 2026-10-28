@@ -6,6 +6,7 @@ import { CycleRange } from './calendarMarks'
 // honey: without a v2 server answer (v1 engine, offline, or a stale answer) the calendar uses the
 // agreed baseline ±3 (direction 2b). Replace with the per-user cache when it lands (brief §4.1).
 export const TEMPORARY_HALF_WIDTH = 3
+export const MIN_TRAINED_CYCLES = 3
 
 // state is null when nothing was ever saved (the provider then runs on a made-up default);
 // predictionsEnabled is the Settings switch for future predictions.
@@ -16,6 +17,7 @@ export function getCalendarInputs(
   cycle: CycleRange | null
   averagePeriodLength: number | null
   fallbackAnchor: string | null
+  irregular?: boolean
 } {
   if (!state) return { cycle: null, averagePeriodLength: null, fallbackAnchor: null }
   const averagePeriodLength = state.smartPrediction?.smaPeriodLength || null
@@ -27,6 +29,10 @@ export function getCalendarInputs(
   // The server's displayed range, only while it still matches the cycle length in use
   const server = state.smartPrediction?.serverRange
   if (mean && server && Math.round(server.mean) === Math.round(mean)) {
+    // §6.6: trained but too irregular for a personal prediction -> the message, not 28 ± 3
+    if (server.useBaseline && server.samplesTrained >= MIN_TRAINED_CYCLES) {
+      return { cycle: null, averagePeriodLength, fallbackAnchor, irregular: true }
+    }
     return {
       cycle: { mean: server.mean, lower: server.lower, upper: server.upper },
       averagePeriodLength,

@@ -15,9 +15,17 @@ import {
   useCalculatePeriodDates,
 } from '../contexts/PredictionProvider'
 import { useSelector } from '../redux/useSelector'
-import { decisionProcessNonPeriod, decisionProcessPeriod } from '../prediction/predictionLogic'
+import {
+  decisionProcessNonPeriod,
+  decisionProcessPeriod,
+  isLateStart,
+} from '../prediction/predictionLogic'
 import { useDispatch } from 'react-redux'
-import { currentUserSelector, isFuturePredictionSelector } from '../redux/selectors'
+import {
+  currentUserSelector,
+  isFuturePredictionSelector,
+  verifyPeriodDaySelectorWithDate,
+} from '../redux/selectors'
 import { answerVerifyDates, smartPredictionRequest, updateFuturePrediction } from '../redux/actions'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import { User } from '../redux/reducers/authReducer'
@@ -67,6 +75,14 @@ export const DayModal = ({
   // );
 
   const predictionFullState = usePredictionEngineState()
+  const startConfirmed = useSelector(
+    (state) =>
+      !!(
+        verifyPeriodDaySelectorWithDate(state, predictionFullState.currentCycle.startDate) as {
+          periodDay?: boolean
+        }
+      ).periodDay,
+  )
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
   const hasFuturePredictionActive = useSelector(isFuturePredictionSelector)
   const futurePredictionStatus = hasFuturePredictionActive?.futurePredictionStatus
@@ -169,9 +185,23 @@ export const DayModal = ({
     isActive,
   })
 
+  const lateStart = isLateStart({
+    inputDay,
+    currentCycle: predictionFullState.currentCycle,
+    startConfirmed,
+  })
+
   const checkForDay = () => {
+    if (lateStart) {
+      dispatch({
+        type: 'confirm-late-start',
+        inputDay,
+        errorCallBack,
+        getPredictedCycles,
+      })
+    }
     // For Current day
-    if (moment(inputDayStr).isSame(moment(todayStr))) {
+    else if (moment(inputDayStr).isSame(moment(todayStr))) {
       if (
         !selectedDayInfo.onPeriod &&
         inputDay.diff(moment().startOf('day'), 'days') === 0 &&
@@ -258,7 +288,8 @@ export const DayModal = ({
         onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
       }
     } else {
-      if (selectedDayInfo.onPeriod) {
+      // A late period can land inside the period days the engine made up
+      if (selectedDayInfo.onPeriod && !lateStart) {
         reduxDispatch(
           answerVerifyDates({
             userID,

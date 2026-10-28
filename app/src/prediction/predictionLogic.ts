@@ -1,6 +1,16 @@
 // TODO:
 // eslint-disable-next-line
 // @ts-nocheck
+// When her period is late the engine starts the next cycle by itself on the predicted day.
+// A period day she confirms after that made-up start (which she never confirmed) is the real start.
+export function isLateStart({ inputDay, currentCycle, startConfirmed }) {
+  return (
+    Boolean(currentCycle?.autoStarted) &&
+    !startConfirmed &&
+    inputDay.isAfter(currentCycle.startDate, 'day')
+  )
+}
+
 export function decisionProcessPeriod({
   inputDay, // moment.Moment
   selectedDayInfo, // PredictionDayInfo

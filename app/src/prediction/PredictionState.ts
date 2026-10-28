@@ -9,6 +9,8 @@ interface CurrentCycle {
   startDate: Moment
   periodLength: number
   cycleLength: number
+  // Started by the engine on the predicted day because her period was late
+  autoStarted?: boolean
 }
 // fpr  user verified period dtaes
 interface UserVerified {
@@ -117,6 +119,7 @@ export class PredictionState {
       serverRange,
     })
 
+    state.currentCycle.autoStarted = currentCycle.autoStarted
     for (const circularBufferKey of ['circularPeriodLength', 'circularCycleLength']) {
       if (!(circularBufferKey in state.smartPrediction)) {
         continue

@@ -187,6 +187,51 @@ describe('PredictionEngine - calculateStatusForDateRange', () => {
   })
 })
 
+describe('PredictionEngine - late period', () => {
+  afterEach(() => jest.useRealTimers())
+
+  // Period started Sep 20 (28-day cycles) and today is Oct 23: the engine has
+  // already started a new cycle by itself on the predicted day, Oct 18.
+  function lateEngine() {
+    jest.useFakeTimers().setSystemTime(new Date('2026-10-23T12:00:00'))
+    const state = PredictionState.fromData({
+      startDate: moment('2026-09-20'),
+      periodLength: 5,
+      cycleLength: 28,
+      smaCycleLength: 28,
+      smaPeriodLength: 5,
+      history: [],
+    })
+    return PredictionEngine.fromState(PredictionState.fromJSON(state.toJSON()))
+  }
+
+  it('marks a cycle it started by itself, and keeps the mark across a save and restore', () => {
+    const state = lateEngine().getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-18')
+    expect(state.currentCycle.autoStarted).toBe(true)
+    expect(PredictionState.fromJSON(state.toJSON()).currentCycle.autoStarted).toBe(true)
+  })
+
+  it('replaces the made-up start with the confirmed one and records the real cycle length', () => {
+    const engine = lateEngine()
+    const getPredictedCycles = jest.fn()
+    engine.userInputDispatch({
+      type: 'confirm-late-start',
+      inputDay: moment('2026-10-23'),
+      getPredictedCycles,
+    })
+
+    const state = engine.getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-23')
+    expect(state.currentCycle.autoStarted).toBeFalsy()
+    expect(state.history).toHaveLength(1)
+    expect(state.history[0].cycleStartDate.format('YYYY-MM-DD')).toBe('2026-09-20')
+    expect(state.history[0].cycleLength).toBe(33)
+    expect(state.smartPrediction.circularCycleLength.toarray()).toEqual([33])
+    expect(getPredictedCycles).toHaveBeenCalledWith(true)
+  })
+})
+
 describe('PredictionEngine - asking for a new prediction after an edit', () => {
   afterEach(() => jest.useRealTimers())
 

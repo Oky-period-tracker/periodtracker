@@ -336,6 +336,9 @@ export class PredictionEngine {
         case 'add-new-cycle-history':
           this._addNewCycleInHistory(inputDay, errorCallBack, askForPrediction)
           break
+        case 'confirm-late-start':
+          this._lateStartHandler(inputDay, askForPrediction)
+          break
         default:
           break
       }
@@ -389,6 +392,7 @@ export class PredictionEngine {
         const dayToCheck = this.state.currentCycle.startDate.clone().add(currentCycleLength, 'days')
         const completionDay = this.predictDay(dayToCheck).cycleStart
         this._cycleCompletion(completionDay, null)
+        this.state.currentCycle.autoStarted = true
         return
       }
       const numberOfCyclesAheadOfCurrent = Math.ceil(
@@ -408,6 +412,7 @@ export class PredictionEngine {
         ) {
           const completionDay = this.predictDay(dayToCheck).cycleStart
           this._cycleCompletion(completionDay, numberOfCyclesAheadOfCurrent)
+          this.state.currentCycle.autoStarted = true
         } else {
           this.state.currentCycle = {
             startDate: moment(tempCurrentCycle.cycleStart),
@@ -997,6 +1002,7 @@ export class PredictionEngine {
   }
 
   private async _cycleCompletion(completionDate, getPredictedCycles) {
+    this.state.currentCycle.autoStarted = false
     const adjustedCycleLength = completionDate.diff(this.state.currentCycle.startDate, 'days')
     this.state.history.unshift({
       cycleStartDate: this.state.currentCycle.startDate,
@@ -1023,6 +1029,20 @@ export class PredictionEngine {
     this.state.currentCycle.cycleLength = this.state.smartPrediction.smaCycleLength
     // TODO: this is sometimes null ?
     getPredictedCycles?.(true)
+  }
+
+  // The engine started the current cycle by itself when her period was late, and she has now
+  // confirmed a later day: undo the made-up cycle and complete the real one on that day.
+  private _lateStartHandler(inputDay, getPredictedCycles) {
+    const previous = this.state.history.shift()
+    this.state.smartPrediction.circularCycleLength.pop()
+    this.state.smartPrediction.circularPeriodLength.pop()
+    this.state.currentCycle = {
+      startDate: previous.cycleStartDate,
+      periodLength: previous.periodLength,
+      cycleLength: previous.cycleLength,
+    }
+    this._cycleCompletion(moment(inputDay).startOf('day'), getPredictedCycles)
   }
 
   // +=+=+=+=+==+=+=+=+= History Adjust Methods +=+=+=+=+=+=+=+=++=+=+=+=+=+=+=+==+=+=+=+=+

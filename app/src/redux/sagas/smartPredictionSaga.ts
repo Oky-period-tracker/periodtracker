@@ -7,6 +7,19 @@ import * as actions from '../actions'
 import * as selectors from '../selectors'
 import { PredictionState } from '../../prediction'
 
+// Offline the phone predicts from the average of her last cycles (brief: last 6)
+const LOCAL_WINDOW = 6
+
+function localCycleLength(predictionFullState: PredictionState) {
+  const lengths = (predictionFullState.history || [])
+    .slice(0, LOCAL_WINDOW)
+    .map((h) => h.cycleLength)
+    .filter((l) => l > 15)
+  return lengths.length > 0
+    ? Math.round(lengths.reduce((a, b) => a + b, 0) / lengths.length)
+    : predictionFullState.smartPrediction.smaCycleLength
+}
+
 function* onFetchUpdatedPredictedCycles(
   action: ExtractActionFromActionType<'SMART_PREDICTION_REQUEST'>,
 ) {
@@ -34,23 +47,36 @@ function* onFetchUpdatedPredictedCycles(
         }
       : undefined
 
-    // @ts-expect-error TODO:
-    const predictionResponse = yield httpClient.getPeriodCycles({
-      user_id: userId,
-      age,
-      period_lengths,
-      cycle_lengths,
-      new_observation,
-    })
+    let predictionResponse = null
+    try {
+      // @ts-expect-error TODO:
+      predictionResponse = yield httpClient.getPeriodCycles({
+        user_id: userId,
+        age,
+        period_lengths,
+        cycle_lengths,
+        new_observation,
+      })
+      // A NaN length would be persisted as null and freeze the engine on next launch
+      if (!Number.isFinite(Math.round(predictionResponse.predictedCycleLength))) {
+        throw new Error('Prediction response has no cycle length')
+      }
+    } catch (error) {
+      // @ts-expect-error TODO:
+      yield put(actions.setSmartPredictionFailure(error))
+      predictionResponse = null
+    }
 
     // getPeriodCycles normalises both engine versions into
     // { predictedCycleLength, predictedPeriodLength }.
     // Round the (Bayesian, v2) posterior mean - it is almost never an integer
     // and the app displays this value directly to users (e.g. "28.437 days").
-    const smaCycleLength = Math.round(predictionResponse.predictedCycleLength)
-    // A NaN length would be persisted as null and freeze the engine on next launch
+    // Without a server answer, the saved one was for her old history, so use her own cycles.
+    const smaCycleLength = predictionResponse
+      ? Math.round(predictionResponse.predictedCycleLength)
+      : localCycleLength(predictionFullState)
     if (!Number.isFinite(smaCycleLength)) {
-      throw new Error('Prediction response has no cycle length')
+      return
     }
 
     // v1 returns a predicted period length; v2 does not, so we fall back to
@@ -65,7 +91,7 @@ function* onFetchUpdatedPredictedCycles(
       ...historyPeriods,
     ]
     const smaPeriodLength =
-      predictionResponse.predictedPeriodLength != null
+      predictionResponse?.predictedPeriodLength != null
         ? Math.round(predictionResponse.predictedPeriodLength)
         : allPeriods.length > 0
         ? Math.round(allPeriods.reduce((a: number, b: number) => a + b, 0) / allPeriods.length)
@@ -80,7 +106,7 @@ function* onFetchUpdatedPredictedCycles(
       smaPeriodLength,
       history: predictionFullState.history,
       actualCurrentStartDate: predictionFullState.currentCycle,
-      serverRange: predictionResponse.serverRange,
+      serverRange: predictionResponse?.serverRange,
     })
     // fromData starts with empty six-cycle buffers; keep the ones the engine already has
     for (const key of ['circularPeriodLength', 'circularCycleLength'] as const) {

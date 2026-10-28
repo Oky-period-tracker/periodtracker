@@ -77,6 +77,12 @@ function* onFetchUpdatedPredictedCycles(
       history: predictionFullState.history,
       actualCurrentStartDate: predictionFullState.currentCycle,
     })
+    // fromData starts with empty six-cycle buffers; keep the ones the engine already has
+    for (const key of ['circularPeriodLength', 'circularCycleLength'] as const) {
+      predictionFullState.smartPrediction?.[key]?.toarray().forEach((v: number) => {
+        stateToSet.smartPrediction[key].push(v)
+      })
+    }
     yield put(actions.setPredictionEngineState(stateToSet))
     yield put(
       actions.updateFuturePrediction(futurePredictionStatus, predictionFullState.currentCycle),

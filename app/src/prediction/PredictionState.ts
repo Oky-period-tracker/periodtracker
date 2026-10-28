@@ -109,7 +109,7 @@ export class PredictionState {
       actualCurrentStartDate,
     })
 
-    for (const circularBufferKey in ['circularPeriodLength', 'circularCycleLength']) {
+    for (const circularBufferKey of ['circularPeriodLength', 'circularCycleLength']) {
       if (!(circularBufferKey in state.smartPrediction)) {
         continue
       }

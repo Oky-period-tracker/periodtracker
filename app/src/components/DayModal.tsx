@@ -20,6 +20,7 @@ import {
   decisionProcessPeriod,
   isLateStart,
 } from '../prediction/predictionLogic'
+import { requestLengths } from '../prediction/predictionRequest'
 import { useDispatch } from 'react-redux'
 import {
   currentUserSelector,
@@ -132,35 +133,14 @@ export const DayModal = ({
   // eslint-disable-next-line
   const getPredictedCycles = (flag: boolean): any => {
     if (flag) {
-      {
-        const tempHistory = [...history]
-        const tempPeriodsCycles = []
-        const tempPeriodsLength = []
-        tempPeriodsCycles.push(predictionFullState.currentCycle.cycleLength)
-        tempPeriodsLength.push(predictionFullState.currentCycle.periodLength)
-        tempHistory.forEach((item) => {
-          tempPeriodsCycles.push(item.cycleLength)
-          tempPeriodsLength.push(item.periodLength)
-        })
-        tempPeriodsCycles.reverse()
-        tempPeriodsLength.reverse()
-        for (let i = 0; i < 10; i++) {
-          if (tempPeriodsCycles.length < 10) {
-            tempPeriodsCycles.unshift(0)
-            tempPeriodsLength.unshift(0)
-          }
-        }
-
-        reduxDispatch(
-          smartPredictionRequest({
-            cycle_lengths: tempPeriodsCycles,
-            period_lengths: tempPeriodsLength,
-            age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
-            predictionFullState,
-            futurePredictionStatus,
-          }),
-        )
-      }
+      reduxDispatch(
+        smartPredictionRequest({
+          ...requestLengths(predictionFullState.currentCycle, history),
+          age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
+          predictionFullState,
+          futurePredictionStatus,
+        }),
+      )
     }
     reduxDispatch(
       updateFuturePrediction(Boolean(futurePredictionStatus), predictionFullState.currentCycle),

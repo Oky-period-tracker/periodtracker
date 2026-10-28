@@ -1,15 +1,29 @@
-import { all, put, select, takeLatest } from 'redux-saga/effects'
+import moment from 'moment'
+import { AppState } from 'react-native'
+import NetInfo from '@react-native-community/netinfo'
+import { REHYDRATE } from 'redux-persist'
+import { EventChannel, eventChannel } from 'redux-saga'
+import { all, call, debounce, fork, put, select, take, takeLatest } from 'redux-saga/effects'
 import { ExtractActionFromActionType } from '../types'
 
+import { PREDICTION_ENGINE_VERSION } from '../../config/env'
 import { httpClient } from '../../services/HttpClient'
+import { fetchNetworkConnectionStatus } from '../../services/network'
 
 import * as actions from '../actions'
 import * as selectors from '../selectors'
 import { PredictionState } from '../../prediction'
+import { requestLengths } from '../../prediction/predictionRequest'
 import { cachedAnswerUsable, cycleEntries } from '../../prediction/serverCache'
 
 // Offline the phone predicts from the average of her last cycles (brief: last 6)
 const LOCAL_WINDOW = 6
+
+// v2: her taps are saved at once; the server is asked once she pauses this long
+export const SYNC_PAUSE_MS = 3000
+
+// The last request failed, so it is retried when she is back online
+let lastSyncFailed = false
 
 // What a prediction is based on: her past cycles and when the current one started
 const cyclesKey = (state: { history: unknown; currentCycle: { startDate: unknown } }) =>
@@ -67,10 +81,12 @@ function* onFetchUpdatedPredictedCycles(
       if (!Number.isFinite(Math.round(predictionResponse.predictedCycleLength))) {
         throw new Error('Prediction response has no cycle length')
       }
+      lastSyncFailed = false
     } catch (error) {
       // @ts-expect-error TODO:
       yield put(actions.setSmartPredictionFailure(error))
       predictionResponse = null
+      lastSyncFailed = true
     }
 
     // getPeriodCycles normalises both engine versions into
@@ -150,6 +166,73 @@ function* onFetchUpdatedPredictedCycles(
   }
 }
 
+// Ask the server again from what is saved on the phone. Resending a cycle is safe:
+// the server replaces a cycle it already has instead of counting it twice.
+function* syncSavedPrediction() {
+  // @ts-expect-error TODO:
+  if (!(yield call(fetchNetworkConnectionStatus))) return
+  // @ts-expect-error TODO:
+  const saved = yield select((state) => state.prediction)
+  // @ts-expect-error TODO:
+  const currentUser = yield select(selectors.currentUserSelector)
+  if (!saved?.currentCycle || !currentUser) return
+  const predictionFullState = PredictionState.fromJSON(saved)
+  // @ts-expect-error TODO:
+  const futurePredictionStatus = yield select(selectors.isFuturePredictionActiveSelector)
+  yield put(
+    actions.smartPredictionRequest({
+      ...requestLengths(predictionFullState.currentCycle, predictionFullState.history),
+      age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
+      predictionFullState,
+      futurePredictionStatus,
+    }),
+  )
+}
+
+function* retryFailedSync() {
+  if (lastSyncFailed) yield call(syncSavedPrediction)
+}
+
+const appOpened = () =>
+  eventChannel<true>((emit) => {
+    const subscription = AppState.addEventListener('change', (s) => s === 'active' && emit(true))
+    return () => subscription.remove()
+  })
+
+const backOnline = () =>
+  eventChannel<true>((emit) => NetInfo.addEventListener((s) => s.isConnected && emit(true)))
+
+function* syncWhen(trigger: string | EventChannel<true>, sync: () => Generator) {
+  while (true) {
+    // @ts-expect-error take accepts a pattern or a channel
+    yield take(trigger)
+    yield call(sync)
+  }
+}
+
+// v2 sync triggers: app open (start and return to the foreground), and back online after a failure
+function* syncTriggers() {
+  const opened: EventChannel<true> = yield call(appOpened)
+  const online: EventChannel<true> = yield call(backOnline)
+  try {
+    yield all([
+      call(syncWhen, REHYDRATE, syncSavedPrediction),
+      call(syncWhen, opened, syncSavedPrediction),
+      call(syncWhen, online, retryFailedSync),
+    ])
+  } finally {
+    opened.close()
+    online.close()
+  }
+}
+
 export function* smartPredictionbSaga() {
-  yield all([takeLatest('SMART_PREDICTION_REQUEST', onFetchUpdatedPredictedCycles)])
+  if (PREDICTION_ENGINE_VERSION !== 'v2') {
+    yield all([takeLatest('SMART_PREDICTION_REQUEST', onFetchUpdatedPredictedCycles)])
+    return
+  }
+  yield all([
+    debounce(SYNC_PAUSE_MS, 'SMART_PREDICTION_REQUEST', onFetchUpdatedPredictedCycles),
+    fork(syncTriggers),
+  ])
 }

@@ -102,6 +102,16 @@ export const httpClient = createHttpClient(API_BASE_URL, API_BASE_CMS_URL, {
 export type PredictionResult = {
   predictedCycleLength: number | undefined
   predictedPeriodLength: number | undefined
+  // v2 only, when the server returns the displayed range (brief §6.2, §6.6)
+  serverRange?: ServerRange
+}
+
+export type ServerRange = {
+  mean: number
+  lower: number
+  upper: number
+  useBaseline: boolean
+  samplesTrained: number
 }
 
 export function createHttpClient(
@@ -428,6 +438,16 @@ export function createHttpClient(
         return {
           predictedCycleLength: prediction?.predicted_cycle_length,
           predictedPeriodLength: undefined,
+          serverRange:
+            prediction?.display_lower_bound != null && prediction?.display_upper_bound != null
+              ? {
+                  mean: prediction.predicted_cycle_length,
+                  lower: prediction.display_lower_bound,
+                  upper: prediction.display_upper_bound,
+                  useBaseline: !!prediction.should_use_baseline,
+                  samplesTrained: prediction.n_samples_trained ?? 0,
+                }
+              : undefined,
         }
       }
 

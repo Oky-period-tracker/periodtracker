@@ -97,3 +97,34 @@ describe('getCalendarInputs guards (final review)', () => {
     expect(r).toEqual({ cycle: null, averagePeriodLength: 4, fallbackAnchor: null })
   })
 })
+
+describe('getCalendarInputs with a v2 server answer (brief §6.2, §6.6)', () => {
+  const withServer = (serverRange: object, smaCycleLength = 30) =>
+    state({
+      smartPrediction: { smaCycleLength, smaPeriodLength: 4, serverRange },
+      currentCycle: { startDate: moment('2026-10-01'), cycleLength: 28 },
+    })
+
+  it('uses the server displayed range', () => {
+    const r = getCalendarInputs(
+      withServer({ mean: 30.2, lower: 28.5, upper: 31.9, useBaseline: false, samplesTrained: 5 }),
+    )
+    expect(r.cycle).toEqual({ mean: 30.2, lower: 28.5, upper: 31.9 })
+    expect(r.irregular).toBeUndefined()
+  })
+
+  it('ignores a stale answer whose length no longer matches', () => {
+    const r = getCalendarInputs(
+      withServer({ mean: 26, lower: 24, upper: 28, useBaseline: false, samplesTrained: 5 }),
+    )
+    expect(r.cycle).toEqual({ mean: 30, lower: 27, upper: 33 })
+  })
+
+
+  it('fewer than 3 trained cycles: the generic range is shown', () => {
+    const r = getCalendarInputs(
+      withServer({ mean: 28, lower: 25, upper: 31, useBaseline: true, samplesTrained: 2 }, 28),
+    )
+    expect(r.cycle).toEqual({ mean: 28, lower: 25, upper: 31 })
+  })
+})

@@ -3,6 +3,7 @@
 import moment, { Moment } from 'moment'
 import { AppState } from '../redux/reducers/appReducer'
 import CircularBuffer from 'circular-buffer'
+import type { ServerRange } from '../services/HttpClient'
 
 interface CurrentCycle {
   startDate: Moment
@@ -21,6 +22,7 @@ interface SmartPrediction {
   circularCycleLength: any // CircularBuffer number[] array of number of days
   smaPeriodLength: number
   smaCycleLength: number
+  serverRange?: ServerRange // last v2 answer; see calendarPrediction
 }
 
 type History = Array<{
@@ -51,6 +53,7 @@ export class PredictionState {
     history = [],
     futurePredictionStatus = true,
     actualCurrentStartDate = null,
+    serverRange,
   }: {
     startDate?: Moment
     isActive?: boolean
@@ -61,6 +64,7 @@ export class PredictionState {
     history?: History
     futurePredictionStatus?: boolean
     actualCurrentStartDate?: any
+    serverRange?: ServerRange
   }) {
     const state = new PredictionState()
     state.currentCycle = {
@@ -73,6 +77,7 @@ export class PredictionState {
       circularCycleLength: new CircularBuffer(6),
       smaPeriodLength,
       smaCycleLength,
+      ...(serverRange && { serverRange }),
     }
 
     state.isActive = isActive
@@ -91,7 +96,7 @@ export class PredictionState {
     actualCurrentStartDate,
   }: PredictionSerializableState) {
     const { startDate, periodLength, cycleLength } = currentCycle
-    const { smaPeriodLength, smaCycleLength } = smartPrediction
+    const { smaPeriodLength, smaCycleLength, serverRange } = smartPrediction
     // Older builds could persist NaN (saved as null); fall back to fromData defaults
     const finiteOrDefault = (value: number) => (Number.isFinite(value) ? value : undefined)
     const state = PredictionState.fromData({
@@ -109,6 +114,7 @@ export class PredictionState {
       })),
       futurePredictionStatus,
       actualCurrentStartDate,
+      serverRange,
     })
 
     for (const circularBufferKey of ['circularPeriodLength', 'circularCycleLength']) {

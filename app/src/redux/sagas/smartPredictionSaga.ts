@@ -80,6 +80,7 @@ function* onFetchUpdatedPredictedCycles(
       smaPeriodLength,
       history: predictionFullState.history,
       actualCurrentStartDate: predictionFullState.currentCycle,
+      serverRange: predictionResponse.serverRange,
     })
     // fromData starts with empty six-cycle buffers; keep the ones the engine already has
     for (const key of ['circularPeriodLength', 'circularCycleLength'] as const) {

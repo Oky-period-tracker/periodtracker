@@ -10,5 +10,6 @@ describe('getPeriodCycles (v2)', () => {
     const client = createHttpClient('', '', { predictionEndpoint: 'http://x', predictionEngineVersion: 'v2' })
     const result = await client.getPeriodCycles({ user_id: 'u' } as never)
     expect(result.predictedCycleLength).toBe(28)
+    expect(result.serverRange).toEqual({ mean: 28, lower: 25, upper: 31, useBaseline: true, samplesTrained: 5 })
   })
 })

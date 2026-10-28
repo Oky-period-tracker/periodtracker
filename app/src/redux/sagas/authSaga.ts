@@ -288,6 +288,7 @@ function* onJourneyCompletion(action: ExtractActionFromActionType<'JOURNEY_COMPL
     smaCycleLength,
     smaPeriodLength,
     history: [],
+    serverRange: periodResult?.serverRange,
   })
 
   yield put(actions.setPredictionEngineState(stateToSet))

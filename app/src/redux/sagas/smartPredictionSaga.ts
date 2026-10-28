@@ -48,6 +48,10 @@ function* onFetchUpdatedPredictedCycles(
     // Round the (Bayesian, v2) posterior mean - it is almost never an integer
     // and the app displays this value directly to users (e.g. "28.437 days").
     const smaCycleLength = Math.round(predictionResponse.predictedCycleLength)
+    // A NaN length would be persisted as null and freeze the engine on next launch
+    if (!Number.isFinite(smaCycleLength)) {
+      throw new Error('Prediction response has no cycle length')
+    }
 
     // v1 returns a predicted period length; v2 does not, so we fall back to
     // computing it from actual history (not the stale period_lengths array).

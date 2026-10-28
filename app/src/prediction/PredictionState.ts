@@ -92,13 +92,15 @@ export class PredictionState {
   }: PredictionSerializableState) {
     const { startDate, periodLength, cycleLength } = currentCycle
     const { smaPeriodLength, smaCycleLength } = smartPrediction
+    // Older builds could persist NaN (saved as null); fall back to fromData defaults
+    const finiteOrDefault = (value: number) => (Number.isFinite(value) ? value : undefined)
     const state = PredictionState.fromData({
       startDate: moment(startDate),
       isActive,
-      periodLength,
-      cycleLength,
-      smaPeriodLength,
-      smaCycleLength,
+      periodLength: finiteOrDefault(periodLength),
+      cycleLength: finiteOrDefault(cycleLength),
+      smaPeriodLength: finiteOrDefault(smaPeriodLength),
+      smaCycleLength: finiteOrDefault(smaCycleLength),
       history: (history || []).map((entry) => ({
         cycleStartDate: moment(entry.cycleStartDate),
         cycleEndDate: moment(entry.cycleEndDate),

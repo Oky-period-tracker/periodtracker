@@ -103,13 +103,20 @@ export class UserController {
         deny(request, response, 'update')
         return
       }
+      // The password only changes when the request carries a replacement on
+      // purpose; a blank one is refused instead of locking the account out
+      const { password } = request.body
+      const changesPassword = password !== undefined
+      if (changesPassword && (typeof password !== 'string' || !password.trim())) {
+        logger.warn('User update rejected: empty password', { id: request.params.id })
+        response.status(400).send({ error: 'Password cannot be empty' })
+        return
+      }
       userToUpdate.username = request.body.username
       userToUpdate.lang = lang
       userToUpdate.type = request.body.type
-      // The edit form has no password field and sends it empty, which used to
-      // overwrite the stored hash and lock the account out
-      if (request.body.password) {
-        userToUpdate.password = await bcrypt.hash(request.body.password, saltRounds)
+      if (changesPassword) {
+        userToUpdate.password = await bcrypt.hash(password, saltRounds)
       }
       await this.userRepository.save(userToUpdate)
       logger.info('CMS user updated', { id: request.params.id, username: request.body.username })

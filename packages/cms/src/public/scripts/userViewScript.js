@@ -20,6 +20,8 @@ $('#dynamicModal').on('show.bs.modal', (event) => {
   })
   $('.modal-title').text(userInfo.username)
   $('#col0TableModal').val(userInfo.username)
+  // Hidden while editing, so drop anything typed earlier in the Add modal
+  $('#col1TableModal').val('')
   $('#col1TableEntry').hide()
   $('#col1TableHeading').hide()
   $('#col2TableModal').val(userInfo.type)
@@ -31,9 +33,13 @@ $('#btnEditConfirm').on('click', () => {
   const userID = $('#itemID').text()
   const data = {
     username: $('#col0TableModal').val(),
-    password: $('#col1TableModal').val(),
     type: $('#col2TableModal').val(),
     lang: 'en',
+  }
+  // Only a new user gets a password from this form. An edit never sends one,
+  // so the server keeps the stored password
+  if (userID === '0') {
+    data.password = $('#col1TableModal').val()
   }
   // if the article ID is 0 we are creating a new entry
   $.ajax({

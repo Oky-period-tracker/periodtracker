@@ -79,6 +79,10 @@ function readURL(input) {
         },
         error: (error) => {
           console.log(error)
+          if (error.status === 413) {
+            alert('This image is too large for the banner, please use one under 3 MB.')
+            location.reload()
+          }
         },
       })
     }

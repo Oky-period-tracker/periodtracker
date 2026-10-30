@@ -147,6 +147,34 @@ describe('production operational route access', () => {
     expect(response.body).toEqual([{ affected: 1 }])
   })
 
+  it('checks the login before reading a body, then limits its size', async () => {
+    const body = { rowReorderResult: [{ id: 'x'.repeat(2 * 1024 * 1024), sortingKey: 1 }] }
+    role = undefined
+    const anonymous = await request(app).put('/test/reorder').send(body)
+    expect(anonymous.status).toBe(302)
+    expect(anonymous.headers.location).toBe('/login')
+    role = 'superAdmin'
+    expect((await request(app).put('/test/reorder').send(body)).status).toBe(413)
+  })
+
+  it('answers 413 to a spreadsheet over the upload limit', async () => {
+    role = 'superAdmin'
+    const response = await request(app)
+      .post('/data/upload-content-sheet')
+      .attach('spreadsheet', Buffer.alloc(10 * 1024 * 1024 + 1), 'content.xlsx')
+    expect(response.status).toBe(413)
+  })
+
+  it('rate limits public suggestions', async () => {
+    role = undefined
+    for (let i = 0; i < 10; i++) {
+      expect((await request(app).post('/mobile/suggestions').send({})).status).not.toBe(429)
+    }
+    const limited = await request(app).post('/mobile/suggestions').send({})
+    expect(limited.status).toBe(429)
+    expect(limited.headers['retry-after']).toBe('900')
+  })
+
   it.each(paths)('rejects anonymous access to %s', async (url) => {
     role = undefined
     const response = await request(app).get(url)

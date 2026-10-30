@@ -6,7 +6,7 @@ import { logger } from '../logger'
 
 // Longest value stored per field. The message is the only free text, the app
 // sends `reason` as a { label, value } option and `dateRec` as an ISO date.
-export const SUGGESTION_FIELD_LIMITS = {
+export const SUGGESTION_FIELD_LIMITS: Record<Exclude<keyof Suggestion, 'id'>, number> = {
   name: 255,
   dateRec: 255,
   organization: 255,
@@ -45,14 +45,28 @@ export class SuggestionController {
         response.status(400).send({ error: 'Invalid suggestion' })
         return
       }
-      const suggestionToSave: Partial<Suggestion> = { id: uuid() }
-      for (const [field, maxLength] of Object.entries(SUGGESTION_FIELD_LIMITS)) {
-        if (fieldLength(body[field]) > maxLength) {
-          logger.warn('Suggestion rejected: field too long', { field })
-          response.status(400).send({ error: `${field} is longer than ${maxLength} characters` })
-          return
-        }
-        suggestionToSave[field] = body[field]
+      // Only these fields are stored, whatever else the body holds
+      const { name, dateRec, organization, platform, reason, email, status, content, lang } = body
+      const suggestionToSave: Suggestion = {
+        id: uuid(),
+        name,
+        dateRec,
+        organization,
+        platform,
+        reason,
+        email,
+        status,
+        content,
+        lang,
+      }
+      const tooLong = Object.entries(SUGGESTION_FIELD_LIMITS).find(
+        ([field, maxLength]) => fieldLength(suggestionToSave[field]) > maxLength,
+      )
+      if (tooLong) {
+        const [field, maxLength] = tooLong
+        logger.warn('Suggestion rejected: field too long', { field })
+        response.status(400).send({ error: `${field} is longer than ${maxLength} characters` })
+        return
       }
       await this.suggestionRepository.save(suggestionToSave)
       logger.info('Suggestion saved', { id: suggestionToSave.id })

@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm'
+import { getManager, getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { Category } from '../entity/Category'
 import { Subcategory } from '../entity/Subcategory'
@@ -10,8 +10,6 @@ import { logger } from '../logger'
 
 export class CategoryController {
   private categoryRepository = getRepository(Category)
-  private subcategoryRepository = getRepository(Subcategory)
-  private articleRepository = getRepository(Article)
 
   async all(request: Request, response: Response, next: NextFunction) {
     return this.categoryRepository.find()
@@ -80,31 +78,37 @@ export class CategoryController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const categoryToRemove = await this.categoryRepository.findOne(request.params.id)
-      if (!categoryToRemove) {
+      // One transaction for the whole hierarchy: if any delete fails, the category,
+      // its subcategories and its articles all survive. The row lock makes concurrent
+      // edits or deletes of this category wait until the removal commits or rolls back.
+      const removed = await getManager().transaction(async (manager) => {
+        const categories = manager.getRepository(Category)
+        const category = await categories.findOne(request.params.id, {
+          lock: { mode: 'pessimistic_write' },
+        })
+        if (!category) return undefined
+        const articles = await manager.getRepository(Article).delete({ category: category.id })
+        const subcategories = await manager
+          .getRepository(Subcategory)
+          .delete({ parent_category: category.id })
+        await categories.remove(category)
+        return {
+          category,
+          subcategoriesRemoved: subcategories.affected,
+          articlesRemoved: articles.affected,
+        }
+      })
+      if (!removed) {
         logger.warn('Category not found for removal', { id: request.params.id })
         response.status(404).send({ error: 'Category not found' })
         return
       }
-      const subcategoriesToRemove = await this.subcategoryRepository.find({
-        where: {
-          parent_category: categoryToRemove.id,
-        },
-      })
-      const articlesToRemove = await this.articleRepository.find({
-        where: {
-          category: categoryToRemove.id,
-        },
-      })
-      await this.categoryRepository.remove(categoryToRemove)
-      await this.subcategoryRepository.remove(subcategoriesToRemove)
-      await this.articleRepository.remove(articlesToRemove)
       logger.info('Category removed with cascade', {
         id: request.params.id,
-        subcategoriesRemoved: subcategoriesToRemove.length,
-        articlesRemoved: articlesToRemove.length,
+        subcategoriesRemoved: removed.subcategoriesRemoved,
+        articlesRemoved: removed.articlesRemoved,
       })
-      return categoryToRemove
+      return removed.category
     } catch (error) {
       logger.error('CategoryController.remove failed', {
         id: request.params.id,

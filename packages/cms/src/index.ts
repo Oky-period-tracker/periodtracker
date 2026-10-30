@@ -16,7 +16,6 @@ import * as admin from 'firebase-admin'
 import { env } from './env'
 import ormconfig from '../ormconfig'
 import { DataController } from './controller/DataController'
-import multer from 'multer'
 import path from 'path'
 import { cmsLocales, defaultLocale } from '@oky/core'
 import { ArticleVoiceOverController } from './controller/ArticleVoiceOverController'
@@ -31,6 +30,19 @@ import { healthCheckService } from './services/healthCheckService'
 import { crashAnalysisService } from './services/crashAnalysisService'
 import { crashDetector, crashExceptionCapture } from './middleware/crashDetector'
 import { requestTimeout } from './middleware/requestTimeout'
+import {
+  BANNER_BODY_LIMIT,
+  BODY_LIMIT,
+  BODY_PARAMETER_LIMIT,
+  MOBILE_BODY_LIMIT,
+  payloadTooLarge,
+  rateLimit,
+  singleFileUpload,
+  SPREADSHEET_MAX_BYTES,
+  SUGGESTION_RATE_MAX,
+  SUGGESTION_RATE_WINDOW,
+  VOICE_OVER_MAX_BYTES,
+} from './middleware/requestLimits'
 import { sessionCookie, sessionExpiry } from './middleware/session'
 import { requireFeature } from './middleware/featureFlag'
 import { withRetry } from './helpers/retry'
@@ -119,14 +131,6 @@ withRetry(() => createConnection(ormconfig), {
     // ======================= Logging =============================
     app.use(requestLogger)
 
-    app.use(bodyParser.json({ limit: '50mb' }))
-    app.use(
-      bodyParser.urlencoded({
-        limit: '50mb',
-        extended: true,
-        parameterLimit: 50000,
-      }),
-    )
     app.use(express.static(__dirname + '/public'))
     i18n.configure({
       locales: cmsLocales,
@@ -168,6 +172,30 @@ withRetry(() => createConnection(ormconfig), {
       app.use(route.route, Authentication.isLoggedIn)
     })
 
+    // ======================= Body parsing =============================
+    // After the login check, so a protected route never reads an anonymous body
+    app.post(
+      '/mobile/suggestions',
+      rateLimit({ windowMs: SUGGESTION_RATE_WINDOW, max: SUGGESTION_RATE_MAX }),
+    )
+    app.use(
+      '/mobile',
+      bodyParser.json({ limit: MOBILE_BODY_LIMIT }),
+      bodyParser.urlencoded({ limit: MOBILE_BODY_LIMIT, extended: true }),
+    )
+    app.use(
+      '/about-banner-management',
+      bodyParser.urlencoded({ limit: BANNER_BODY_LIMIT, extended: true }),
+    )
+    app.use(bodyParser.json({ limit: BODY_LIMIT }))
+    app.use(
+      bodyParser.urlencoded({
+        limit: BODY_LIMIT,
+        extended: true,
+        parameterLimit: BODY_PARAMETER_LIMIT,
+      }),
+    )
+
     if (env.isDevelopment) {
       // Enable web to use all routes
       app.use('/mobile', cors())
@@ -186,38 +214,30 @@ withRetry(() => createConnection(ormconfig), {
 
     // ============================ Upload  =======================================
 
-    const upload = multer({ storage: multer.memoryStorage() })
+    const spreadsheetUpload = singleFileUpload(SPREADSHEET_MAX_BYTES).single('spreadsheet')
     const dataController = new DataController()
-    app.post(
-      '/data/upload-content-sheet',
-      upload.single('spreadsheet'),
-      dataController.uploadContentSheet,
-    )
+    app.post('/data/upload-content-sheet', spreadsheetUpload, dataController.uploadContentSheet)
     app.post(
       '/data/upload-app-translations-sheet',
-      upload.single('spreadsheet'),
+      spreadsheetUpload,
       dataController.uploadAppTranslationsSheet,
     )
     app.post(
       '/data/upload-cms-translations-sheet',
-      upload.single('spreadsheet'),
+      spreadsheetUpload,
       dataController.uploadCmsTranslationsSheet,
     )
-    app.post(
-      '/data/upload-countries-sheet',
-      upload.single('spreadsheet'),
-      dataController.uploadCountriesSheet,
-    )
-    app.post(
-      '/data/upload-provinces-sheet',
-      upload.single('spreadsheet'),
-      dataController.uploadProvincesSheet,
-    )
+    app.post('/data/upload-countries-sheet', spreadsheetUpload, dataController.uploadCountriesSheet)
+    app.post('/data/upload-provinces-sheet', spreadsheetUpload, dataController.uploadProvincesSheet)
 
     const voiceOverController = new ArticleVoiceOverController()
 
     // Audio
-    app.post('/api/voice-over/article/upload', upload.single('file'), voiceOverController.upload)
+    app.post(
+      '/api/voice-over/article/upload',
+      singleFileUpload(VOICE_OVER_MAX_BYTES).single('file'),
+      voiceOverController.upload,
+    )
 
     // ============================ Routes  =======================================
     Routes.forEach((route) => {
@@ -290,6 +310,9 @@ withRetry(() => createConnection(ormconfig), {
     app.get('/diagnostics/memory', (req, res) => diagnosticsController.memory(req, res))
     app.get('/diagnostics/timeouts', (req, res) => diagnosticsController.timeouts(req, res))
     app.get('/diagnostics/endpoints', (req, res) => diagnosticsController.endpoints(req, res))
+
+    // ======================= Request Limits =============================
+    app.use(payloadTooLarge)
 
     // ======================= Crash Exception Capture ====================
     app.use(crashExceptionCapture)

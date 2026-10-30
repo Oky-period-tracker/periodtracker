@@ -11,6 +11,7 @@ declare global {
     interface CookieSessionObject {
       passport?: { user?: number }
       loginAt?: number
+      sessionVersion?: number
     }
   }
 }

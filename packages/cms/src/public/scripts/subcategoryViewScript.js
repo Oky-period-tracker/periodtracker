@@ -126,8 +126,9 @@ $('#btnArticleEditConfirm').on('click', () => {
         setTimeout(() => location.reload(), 1500)
       }
     },
-    error: (error) => {
-      console.log(error)
+    error: (xhr) => {
+      console.error('Article save failed', xhr.status, xhr.responseText)
+      alert(requestErrorMessage('save the article', xhr))
     },
   })
 })

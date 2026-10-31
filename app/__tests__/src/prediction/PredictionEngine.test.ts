@@ -230,6 +230,19 @@ describe('PredictionEngine - late period', () => {
     expect(state.smartPrediction.circularCycleLength.toarray()).toEqual([33])
     expect(getPredictedCycles).toHaveBeenCalledWith(true)
   })
+
+  it('still confirms the late start when the six-cycle buffers were emptied since', () => {
+    const engine = lateEngine()
+    const empty = PredictionState.fromData({ startDate: moment('2026-10-18'), history: [] })
+    const { smartPrediction } = engine.getPredictorState()
+    smartPrediction.circularCycleLength = empty.smartPrediction.circularCycleLength
+    smartPrediction.circularPeriodLength = empty.smartPrediction.circularPeriodLength
+    engine.userInputDispatch({ type: 'confirm-late-start', inputDay: moment('2026-10-23') })
+
+    const state = engine.getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-23')
+    expect(state.history[0].cycleLength).toBe(33)
+  })
 })
 
 describe('PredictionEngine - asking for a new prediction after an edit', () => {

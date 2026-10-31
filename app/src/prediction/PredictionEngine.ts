@@ -1042,8 +1042,13 @@ export class PredictionEngine {
   // confirmed a later day: undo the made-up cycle and complete the real one on that day.
   private _lateStartHandler(inputDay, getPredictedCycles) {
     const previous = this.state.history.shift()
-    this.state.smartPrediction.circularCycleLength.pop()
-    this.state.smartPrediction.circularPeriodLength.pop()
+    // Undo the auto-start's push; a buffer rebuilt since then can be empty
+    for (const buffer of [
+      this.state.smartPrediction.circularCycleLength,
+      this.state.smartPrediction.circularPeriodLength,
+    ]) {
+      if (buffer.size() > 0) buffer.pop()
+    }
     this.state.currentCycle = {
       startDate: previous.cycleStartDate,
       periodLength: previous.periodLength,

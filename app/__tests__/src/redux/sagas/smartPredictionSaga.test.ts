@@ -85,6 +85,14 @@ describe('smartPredictionSaga', () => {
     expect(saved.smartPrediction.serverRange.basedOn).toEqual(['2026-09-16:32', '2026-08-17:30'])
   })
 
+  it('keeps the flag for a cycle the engine started by itself', async () => {
+    mockGetPeriodCycles.mockResolvedValue({ predictedCycleLength: 30 })
+    const state = fullState()
+    state.currentCycle.autoStarted = true
+    const { saved } = await runRequest(undefined, state)
+    expect(saved.currentCycle.autoStarted).toBe(true)
+  })
+
   it('sends her latest cycle only when the last answer was not based on it', async () => {
     mockGetPeriodCycles.mockResolvedValue({ predictedCycleLength: 30 })
     await runRequest()

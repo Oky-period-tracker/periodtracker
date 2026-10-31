@@ -155,7 +155,8 @@ function* onFetchUpdatedPredictedCycles(
       actualCurrentStartDate: predictionFullState.currentCycle,
       serverRange,
     })
-    // fromData starts with empty six-cycle buffers; keep the ones the engine already has
+    // fromData starts with empty six-cycle buffers and no late-start flag; keep the engine's
+    stateToSet.currentCycle.autoStarted = predictionFullState.currentCycle.autoStarted
     for (const key of ['circularPeriodLength', 'circularCycleLength'] as const) {
       predictionFullState.smartPrediction?.[key]?.toarray().forEach((v: number) => {
         stateToSet.smartPrediction[key].push(v)

@@ -85,6 +85,20 @@ describe('smartPredictionSaga', () => {
     expect(saved.smartPrediction.serverRange.basedOn).toEqual(['2026-09-16:32', '2026-08-17:30'])
   })
 
+  it('sends her latest cycle only when the last answer was not based on it', async () => {
+    mockGetPeriodCycles.mockResolvedValue({ predictedCycleLength: 30 })
+    await runRequest()
+    expect(mockGetPeriodCycles.mock.calls.at(-1)[0].new_observation.observed_cycle_length).toBe(32)
+
+    const history = fullState().history
+    await runRequest(undefined, fullState(cycleEntries(history)))
+    expect(mockGetPeriodCycles.mock.calls.at(-1)[0].new_observation).toBeUndefined()
+
+    // She edited that cycle: the server must learn the new value
+    await runRequest(undefined, fullState(['2026-09-16:31', '2026-08-17:30']))
+    expect(mockGetPeriodCycles.mock.calls.at(-1)[0].new_observation.observed_cycle_length).toBe(32)
+  })
+
   it('drops the answer when her cycles changed while waiting for it', async () => {
     mockGetPeriodCycles.mockResolvedValue({
       predictedCycleLength: 29.6,

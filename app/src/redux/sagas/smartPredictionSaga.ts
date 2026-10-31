@@ -52,9 +52,14 @@ function* onFetchUpdatedPredictedCycles(
     const currentUser = yield select(selectors.currentUserSelector)
     const userId = currentUser?.id || 'anonymous'
 
-    // Include most recent completed cycle so the model learns from it
+    // Include most recent completed cycle so the model learns from it, unless the server's last
+    // answer was already based on it unchanged (the app also asks on every open)
     const mostRecentCycle = predictionFullState.history?.[0]
-    const new_observation = mostRecentCycle
+    const alreadyLearned =
+      !!mostRecentCycle &&
+      cycleEntries([mostRecentCycle])[0] ===
+        predictionFullState.smartPrediction?.serverRange?.basedOn?.[0]
+    const new_observation = mostRecentCycle && !alreadyLearned
       ? {
           cycle_start_date: new Date(
             mostRecentCycle.startDate || mostRecentCycle.cycleStartDate,

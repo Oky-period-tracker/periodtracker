@@ -5,15 +5,24 @@ import type { ServerRange } from '../services/HttpClient'
 // A server answer is too old after this many completed cycles without a fresh one
 const STALE_AFTER_CYCLES = 2
 
-type HistoryEntry = { cycleStartDate: MomentInput; cycleLength: number }
+type HistoryEntry = { cycleStartDate: MomentInput; cycleLength: number; periodLength?: number }
 
-// What a prediction is based on: her past cycles and when the current one started
-export const cyclesKey = (state: { history: unknown; currentCycle: { startDate: unknown } }) =>
-  JSON.stringify([state.history, state.currentCycle.startDate])
+const day = (date: MomentInput) => moment(date).format('YYYY-MM-DD')
+
+// What a prediction is based on: her past cycles and when the current one started. Built from
+// these fields only, so it does not depend on how a saved cycle's fields are ordered.
+export const cyclesKey = (state: {
+  history: HistoryEntry[]
+  currentCycle: { startDate: MomentInput }
+}) =>
+  JSON.stringify([
+    state.history.map((h) => [day(h.cycleStartDate), h.periodLength, h.cycleLength]),
+    day(state.currentCycle.startDate),
+  ])
 
 // The cycles an answer was based on, newest first
 export const cycleEntries = (history: HistoryEntry[] = []) =>
-  history.map((h) => `${moment(h.cycleStartDate).format('YYYY-MM-DD')}:${h.cycleLength}`)
+  history.map((h) => `${day(h.cycleStartDate)}:${h.cycleLength}`)
 
 // The saved answer can still be used (re-anchored to her latest start) when her history only
 // grew by fewer than STALE_AFTER_CYCLES new cycles. An edit to any cycle it was based on

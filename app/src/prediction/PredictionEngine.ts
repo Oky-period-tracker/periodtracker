@@ -1041,6 +1041,11 @@ export class PredictionEngine {
   // The engine started the current cycle by itself when her period was late, and she has now
   // confirmed a later day: undo the made-up cycle and complete the real one on that day.
   private _lateStartHandler(inputDay, getPredictedCycles) {
+    // No made-up cycle left to undo (her history was replaced since): just start the real one
+    if (!this.state.history.length) {
+      this._cycleCompletion(moment(inputDay).startOf('day'), getPredictedCycles)
+      return
+    }
     const previous = this.state.history.shift()
     // Undo the auto-start's push; a buffer rebuilt since then can be empty
     for (const buffer of [

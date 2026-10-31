@@ -231,6 +231,13 @@ describe('PredictionEngine - late period', () => {
     expect(getPredictedCycles).toHaveBeenCalledWith(true)
   })
 
+  it('starts the real cycle when no made-up cycle is left in her history', () => {
+    const engine = lateEngine()
+    engine.getPredictorState().history = []
+    engine.userInputDispatch({ type: 'confirm-late-start', inputDay: moment('2026-10-23') })
+    expect(engine.getPredictorState().currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-23')
+  })
+
   it('still confirms the late start when the six-cycle buffers were emptied since', () => {
     const engine = lateEngine()
     const empty = PredictionState.fromData({ startDate: moment('2026-10-18'), history: [] })

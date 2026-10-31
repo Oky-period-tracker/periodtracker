@@ -1,16 +1,17 @@
 // app/src/screens/CalendarScreen/PredictionMessage.tsx
 import React from 'react'
-import moment from 'moment'
 import { StyleSheet, Text, View } from 'react-native'
 import { useColor } from '../../hooks/useColor'
 import { useTranslate } from '../../hooks/useTranslate'
+import { useFormatDate } from '../../hooks/useFormatDate'
 import { PredictionStatus } from '../../prediction/calendarMarks'
 import { messageText } from './calendarText'
 
 export const PredictionMessage = ({ status }: { status: PredictionStatus }) => {
   const { calendar: c } = useColor()
   const t = useTranslate()
-  const { title, body } = messageText(status, t, (iso) => moment(iso).format('D MMMM'))
+  const { formatDayFullMonth } = useFormatDate()
+  const { title, body } = messageText(status, t, formatDayFullMonth)
   return (
     <View style={[styles.box, { backgroundColor: c.messageBackground }]} accessibilityRole="summary">
       <Text style={[styles.title, { color: c.messageTitle }]}>{title}</Text>

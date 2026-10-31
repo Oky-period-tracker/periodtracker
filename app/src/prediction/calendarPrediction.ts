@@ -2,10 +2,8 @@
 import moment from 'moment'
 import { PredictionState } from './PredictionState'
 import { CycleRange } from './calendarMarks'
-import { localRange } from './localRange'
+import { localRange, MIN_TRAINED_CYCLES } from './localRange'
 import { cachedAnswerUsable } from './serverCache'
-
-export const MIN_TRAINED_CYCLES = 3
 
 // state is null when nothing was ever saved (the provider then runs on a made-up default);
 // predictionsEnabled is the Settings switch for future predictions.
@@ -43,10 +41,7 @@ export function getCalendarInputs(
   // No usable server answer (v1 engine, offline, or a stale answer): the phone calculates
   if (!mean) return { cycle: null, averagePeriodLength, fallbackAnchor }
   const intervals = state.smartPrediction?.circularCycleLength?.toarray?.() ?? []
-  const local = localRange(mean, intervals)
-  return local.irregular
-    ? { cycle: null, averagePeriodLength, fallbackAnchor, irregular: true }
-    : { cycle: local.cycle, averagePeriodLength, fallbackAnchor }
+  return { ...localRange(mean, intervals), averagePeriodLength, fallbackAnchor }
 }
 
 const isoFromShort = (k: string) => `${k.slice(0, 4)}-${k.slice(4, 6)}-${k.slice(6, 8)}`

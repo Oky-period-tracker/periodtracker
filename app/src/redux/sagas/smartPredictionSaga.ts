@@ -14,7 +14,7 @@ import * as actions from '../actions'
 import * as selectors from '../selectors'
 import { PredictionState } from '../../prediction'
 import { requestLengths } from '../../prediction/predictionRequest'
-import { cachedAnswerUsable, cycleEntries } from '../../prediction/serverCache'
+import { cachedAnswerUsable, cycleEntries, cyclesKey } from '../../prediction/serverCache'
 
 // Offline the phone predicts from the average of her last cycles (brief: last 6)
 const LOCAL_WINDOW = 6
@@ -24,10 +24,6 @@ export const SYNC_PAUSE_MS = 3000
 
 // The last request failed, so it is retried when she is back online
 let lastSyncFailed = false
-
-// What a prediction is based on: her past cycles and when the current one started
-const cyclesKey = (state: { history: unknown; currentCycle: { startDate: unknown } }) =>
-  JSON.stringify([state.history, state.currentCycle.startDate])
 
 function localCycleLength(predictionFullState: PredictionState) {
   const lengths = (predictionFullState.history || [])

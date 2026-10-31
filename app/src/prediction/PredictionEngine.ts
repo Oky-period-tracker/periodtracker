@@ -4,6 +4,7 @@
 import _ from 'lodash'
 import moment, { Moment } from 'moment'
 import { PredictionState } from './PredictionState'
+import { cyclesKey } from './serverCache'
 
 export interface PredictionDayInfo {
   onPeriod: boolean
@@ -1264,8 +1265,6 @@ export class PredictionEngine {
   }
 }
 // +=+=+=+=+==+=+=+=+=+=+=+=+= Array Average +=+=+=++=+=+=+=+=+==+=+==+=+==+=+=
-
-const cyclesKey = (state) => JSON.stringify([state.history, state.currentCycle.startDate])
 
 const arrayAverage = (arr) => {
   return arr.reduce((a, b) => a + b, 0) / arr.length

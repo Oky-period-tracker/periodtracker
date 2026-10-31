@@ -3,9 +3,13 @@ import moment, { MomentInput } from 'moment'
 import type { ServerRange } from '../services/HttpClient'
 
 // A server answer is too old after this many completed cycles without a fresh one
-export const STALE_AFTER_CYCLES = 2
+const STALE_AFTER_CYCLES = 2
 
 type HistoryEntry = { cycleStartDate: MomentInput; cycleLength: number }
+
+// What a prediction is based on: her past cycles and when the current one started
+export const cyclesKey = (state: { history: unknown; currentCycle: { startDate: unknown } }) =>
+  JSON.stringify([state.history, state.currentCycle.startDate])
 
 // The cycles an answer was based on, newest first
 export const cycleEntries = (history: HistoryEntry[] = []) =>

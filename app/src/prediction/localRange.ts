@@ -1,16 +1,17 @@
 // app/src/prediction/localRange.ts
-import { CycleRange } from './calendarMarks'
+import { CycleRange, DEFAULT_CALENDAR_CONFIG } from './calendarMarks'
+
+// Below this many trained cycles the generic range is shown, as on the server
+export const MIN_TRAINED_CYCLES = 3
 
 // The phone's own possible start range, used when there is no usable server answer.
 // Same levels as the server, so both engines draw comparable ranges.
-// honey: Annex A weights are not agreed yet, so every interval counts fully for now.
-export const LOCAL_RANGE = {
+// Pending: Annex A weights are not agreed yet, so every interval counts fully for now.
+const LOCAL_RANGE = {
   baselineSd: 3, // generic spread: 28 ± 3
   baselineWeight: 3, // the baseline counts as about three cycles
   displayZ: 1.0, // ~68% displayed (90% is kept internally on the server)
   sdFloor: 1, // never imply certainty from a few identical intervals
-  displayCapDays: 3, // wider than this: the message instead of a range
-  minTrainedCycles: 3, // below this the generic range is shown, as on the server
 }
 
 export function localRange(
@@ -22,12 +23,14 @@ export function localRange(
   const ownWeight = n >= 2 ? n : 0
   const ownMean = n ? intervals.reduce((a, b) => a + b, 0) / n : 0
   const ownVariance = n >= 2 ? intervals.reduce((a, b) => a + (b - ownMean) ** 2, 0) / (n - 1) : 0
-  const { baselineSd, baselineWeight, displayZ, sdFloor, displayCapDays } = LOCAL_RANGE
+  const { baselineSd, baselineWeight, displayZ, sdFloor } = LOCAL_RANGE
+  // Wider than the calendar's cap: the message instead of a range
+  const displayCapDays = DEFAULT_CALENDAR_CONFIG.capDays
   const variance =
     (ownWeight * ownVariance + baselineWeight * baselineSd ** 2) / (ownWeight + baselineWeight)
   const halfWidth = displayZ * Math.max(Math.sqrt(variance), sdFloor)
 
-  if (halfWidth > displayCapDays && n >= LOCAL_RANGE.minTrainedCycles) {
+  if (halfWidth > displayCapDays && n >= MIN_TRAINED_CYCLES) {
     return { cycle: null, irregular: true }
   }
   const half = Math.min(halfWidth, displayCapDays)

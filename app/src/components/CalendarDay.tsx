@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useColor } from '../hooks/useColor'
 import { DayKind } from '../prediction/calendarMarks'
 
-export const DAY_SIZE = 36
+const DAY_SIZE = 36
 
 export type CalendarDayMarking = { kinds?: DayKind[]; isToday?: boolean; label?: string }
 

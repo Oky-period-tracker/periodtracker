@@ -130,26 +130,6 @@ export function useCalculateFullInfoForDateRange(startDate: Moment, endDate: Mom
   // }, [predictionEngine, startDate, endDate]);
 }
 
-export function useCalculateStatusForDateRange(
-  startDate: Moment,
-  endDate: Moment,
-  // TODO:
-  // eslint-disable-next-line
-  verifiedPeriodsData: any,
-  hasFuturePredictionActive: boolean,
-) {
-  const predictionEngine = usePredictionEngine()
-
-  return React.useMemo(() => {
-    return predictionEngine.calculateStatusForDateRange(
-      startDate,
-      endDate,
-      verifiedPeriodsData,
-      hasFuturePredictionActive,
-    )
-  }, [predictionEngine, startDate, endDate, verifiedPeriodsData, hasFuturePredictionActive])
-}
-
 export function useCalculatePeriodDates() {
   const predictionEngine = usePredictionEngine()
 

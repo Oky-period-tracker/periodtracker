@@ -16,6 +16,10 @@ import { PredictionState } from '../../prediction'
 import { requestLengths } from '../../prediction/predictionRequest'
 import { cachedAnswerUsable, cycleEntries, cyclesKey } from '../../prediction/serverCache'
 
+// The same cycles can be saved with their fields in another order: compare them rebuilt
+const normalisedKey = (json: Parameters<typeof PredictionState.fromJSON>[0]) =>
+  cyclesKey(PredictionState.fromJSON(json).toJSON())
+
 // Offline the phone predicts from the average of her last cycles (brief: last 6)
 const LOCAL_WINDOW = 6
 
@@ -47,7 +51,7 @@ function* onFetchUpdatedPredictedCycles(
       futurePredictionStatus,
     } = action.payload
 
-    const requestedFor = cyclesKey(predictionFullState.toJSON())
+    const requestedFor = normalisedKey(predictionFullState.toJSON())
     // @ts-expect-error TODO:
     const currentUser = yield select(selectors.currentUserSelector)
     const userId = currentUser?.id || 'anonymous'
@@ -118,7 +122,7 @@ function* onFetchUpdatedPredictedCycles(
     // She edited her cycles while this answer was on its way: it is for old data
     // @ts-expect-error TODO:
     const saved = yield select((state) => state.prediction)
-    if (saved?.currentCycle && cyclesKey(saved) !== requestedFor) {
+    if (saved?.currentCycle && normalisedKey(saved) !== requestedFor) {
       return
     }
 
@@ -170,24 +174,30 @@ function* onFetchUpdatedPredictedCycles(
 // Ask the server again from what is saved on the phone. Resending a cycle is safe:
 // the server replaces a cycle it already has instead of counting it twice.
 function* syncSavedPrediction() {
-  // @ts-expect-error TODO:
-  if (!(yield call(fetchNetworkConnectionStatus))) return
-  // @ts-expect-error TODO:
-  const saved = yield select((state) => state.prediction)
-  // @ts-expect-error TODO:
-  const currentUser = yield select(selectors.currentUserSelector)
-  if (!saved?.currentCycle || !currentUser) return
-  const predictionFullState = PredictionState.fromJSON(saved)
-  // @ts-expect-error TODO:
-  const futurePredictionStatus = yield select(selectors.isFuturePredictionActiveSelector)
-  yield put(
-    actions.smartPredictionRequest({
-      ...requestLengths(predictionFullState.currentCycle, predictionFullState.history),
-      age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
-      predictionFullState,
-      futurePredictionStatus,
-    }),
-  )
+  // An error here must not stop the other sagas the root saga runs
+  try {
+    // @ts-expect-error TODO:
+    if (!(yield call(fetchNetworkConnectionStatus))) return
+    // @ts-expect-error TODO:
+    const saved = yield select((state) => state.prediction)
+    // @ts-expect-error TODO:
+    const currentUser = yield select(selectors.currentUserSelector)
+    if (!saved?.currentCycle || !currentUser) return
+    const predictionFullState = PredictionState.fromJSON(saved)
+    // @ts-expect-error TODO:
+    const futurePredictionStatus = yield select(selectors.isFuturePredictionActiveSelector)
+    yield put(
+      actions.smartPredictionRequest({
+        ...requestLengths(predictionFullState.currentCycle, predictionFullState.history),
+        age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
+        predictionFullState,
+        futurePredictionStatus,
+      }),
+    )
+  } catch (error) {
+    // @ts-expect-error TODO:
+    yield put(actions.setSmartPredictionFailure(error))
+  }
 }
 
 function* retryFailedSync() {

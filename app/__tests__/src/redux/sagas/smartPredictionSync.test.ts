@@ -105,6 +105,37 @@ describe('smartPredictionSaga sync (v2)', () => {
     expect(sent.new_observation.observed_cycle_length).toBe(32)
   })
 
+  it('on app open, keeps the answer when her saved cycles were stored in another field order', async () => {
+    const reordered = {
+      ...saved,
+      history: saved.history.map(({ cycleLength, periodLength, ...rest }: any) => ({
+        ...rest,
+        cycleLength,
+        periodLength,
+      })),
+    }
+    const channel = stdChannel()
+    const dispatched: string[] = []
+    runSaga(
+      {
+        channel,
+        dispatch: (a: { type: string }) => {
+          dispatched.push(a.type)
+          channel.put(a)
+        },
+        getState: () => ({
+          prediction: reordered,
+          auth: { user: { id: 'u1', dateOfBirth: moment().subtract(15, 'years').toISOString() } },
+        }),
+      },
+      smartPredictionbSaga,
+    )
+    channel.put({ type: REHYDRATE })
+    await afterPause()
+    expect(mockGetPeriodCycles).toHaveBeenCalledTimes(1)
+    expect(dispatched).toContain('SET_PREDICTION_ENGINE_STATE')
+  })
+
   it('on app open without a connection, does not try', async () => {
     mockConnected.mockResolvedValue(false)
     const { channel } = start()

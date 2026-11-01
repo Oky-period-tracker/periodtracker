@@ -4,6 +4,7 @@ import { Article } from '../entity/Article'
 import { storage } from 'firebase-admin'
 import { logger } from '../logger'
 import { withTimeout, DEFAULT_EXTERNAL_TIMEOUT } from '../helpers/timeout'
+import { withRetry } from '../helpers/retry'
 import { v4 as uuid } from 'uuid'
 
 export class ArticleVoiceOverController {
@@ -104,27 +105,19 @@ export class ArticleVoiceOverController {
       const target = await this.articleRepository.findOne(id)
       if (typeof target === 'undefined') throw new Error('Target not found.')
 
-      if (typeof target.voiceOverKey === 'string' && target.voiceOverKey.length > 0) {
-        const existingFile = storage().bucket().file(target.voiceOverKey)
-        try {
-          await existingFile.delete()
-          logger.info('Deleted voice-over file', { key: target.voiceOverKey })
-        } catch (error) {
-          logger.error('Failed to delete voice-over file', {
-            key: target.voiceOverKey,
-            message: error?.message,
-            stack: error?.stack,
-          })
-        }
-      }
-
+      const previousKey = target.voiceOverKey
       const newTarget = {
         ...target,
         voiceOverKey: null,
       }
 
+      // Clear the reference before touching storage. If the save fails, the article still points to audio that exists.
       await this.articleRepository.save(newTarget)
       logger.info('Voice-over removed from article', { articleId: id })
+
+      if (typeof previousKey === 'string' && previousKey.length > 0) {
+        this.deleteUnusedFile(previousKey)
+      }
 
       return newTarget
     } catch (error) {
@@ -134,5 +127,23 @@ export class ArticleVoiceOverController {
       })
       throw error
     }
+  }
+
+  // Runs in the background: no article uses this object any more, so a failure only leaves an orphan to delete by hand.
+  private deleteUnusedFile(key: string) {
+    withRetry(
+      () =>
+        withTimeout(
+          // A timed-out attempt can still finish, so a retry may find the object already gone.
+          storage().bucket().file(key).delete({ ignoreNotFound: true }),
+          DEFAULT_EXTERNAL_TIMEOUT,
+          'Voice-over cleanup',
+        ),
+      { maxRetries: 2, label: 'Voice-over cleanup' },
+    )
+      .then(() => logger.info('Deleted voice-over file', { key }))
+      .catch((error) => {
+        logger.error('Failed to delete unused voice-over file', { key, message: error?.message })
+      })
   }
 }

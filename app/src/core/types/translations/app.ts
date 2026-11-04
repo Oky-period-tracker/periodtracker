@@ -430,6 +430,17 @@ export interface AppTranslations {
   to_go: string
   too_close: string
   too_far_ahead: string
+  calendar_msg_none_title: string
+  calendar_msg_none_body: string
+  calendar_msg_paused_title: string
+  calendar_msg_paused_body: string
+  calendar_msg_shown_title: string
+  calendar_msg_shown_body: string
+  calendar_legend_confirmed: string
+  calendar_legend_possible_period: string
+  calendar_legend_likely_start: string
+  calendar_legend_ovulation: string
+  calendar_legend_today: string
   too_far_behind: string
   torrential: string
   track_regularly_cycle_updates: string

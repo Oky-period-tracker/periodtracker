@@ -39,13 +39,35 @@ export type Palette = Record<
   }
 >
 
+export type CalendarColors = {
+  confirmed: string
+  confirmedText: string
+  ring: string
+  ringCenter: string
+  ringText: string
+  periodWash: string
+  periodText: string
+  ovulationWash: string
+  ovulationText: string
+  dayText: string
+  todayDot: string
+  monthTitle: string
+  weekday: string
+  messageBackground: string
+  messageTitle: string
+  messageBody: string
+  legendText: string
+}
+
 export const useColor = (): {
   palette: Palette
+  calendar: CalendarColors
 } & ColorSchemeBase => {
   const colorSchemeName = useColorScheme() ?? 'light'
 
   return {
     palette: palettes[colorSchemeName],
+    calendar: calendarColors[colorSchemeName],
     ...schemes[colorSchemeName],
   }
 }
@@ -183,5 +205,47 @@ const palettes: Record<ColorSchemeName, Palette> = {
       dark: '#6b1244',
       text: '#E3629B',
     },
+  },
+}
+
+// Light values from the new-prediction prototype (Annex B grammar); dark values proposed, to be signed off.
+export const calendarColors: Record<ColorSchemeName, CalendarColors> = {
+  light: {
+    confirmed: '#D9508A',
+    confirmedText: '#FFFFFF',
+    ring: '#D9508A',
+    ringCenter: '#FFFFFF',
+    ringText: '#B8336F',
+    periodWash: '#F9D2E3',
+    periodText: '#B8336F',
+    ovulationWash: '#CDEAF5',
+    ovulationText: '#1D6A9A',
+    dayText: '#4A5260',
+    todayDot: '#4A5260',
+    monthTitle: '#F28A22',
+    weekday: '#9AA1AC',
+    messageBackground: '#F1F2F4',
+    messageTitle: '#2C3340',
+    messageBody: '#68707D',
+    legendText: '#4A5260',
+  },
+  dark: {
+    confirmed: '#D9508A',
+    confirmedText: '#FFFFFF',
+    ring: '#E86AA3',
+    ringCenter: '#1B1B1F',
+    ringText: '#F7A8CB',
+    periodWash: '#5C2141',
+    periodText: '#FFC2DD',
+    ovulationWash: '#163E52',
+    ovulationText: '#B5E2F7',
+    dayText: '#E7EAF0',
+    todayDot: '#E7EAF0',
+    monthTitle: '#F28A22',
+    weekday: '#8C93A0',
+    messageBackground: '#2A2A30',
+    messageTitle: '#F2F3F5',
+    messageBody: '#B4B8C0',
+    legendText: '#D0D3D9',
   },
 }

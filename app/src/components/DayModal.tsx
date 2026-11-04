@@ -268,7 +268,6 @@ export const DayModal = ({
         )
         getUpdatedData()
         // incFlowerProgress();
-        toggleVisible()
         if (onHandleResponse) {
           onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
         }

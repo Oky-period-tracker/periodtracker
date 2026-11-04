@@ -238,6 +238,18 @@ describe('PredictionEngine - late period', () => {
     expect(engine.getPredictorState().currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-23')
   })
 
+  it('clears the mark when she undoes the made-up start, so a later tap cannot merge real cycles', () => {
+    const engine = lateEngine()
+    engine.userInputDispatch({
+      type: 'current-start-adjust',
+      inputDay: moment('2026-10-18'),
+      getPredictedCycles: jest.fn(),
+    })
+    const state = engine.getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-09-20')
+    expect(state.currentCycle.autoStarted).toBe(false)
+  })
+
   it('still confirms the late start when the six-cycle buffers were emptied since', () => {
     const engine = lateEngine()
     const empty = PredictionState.fromData({ startDate: moment('2026-10-18'), history: [] })

@@ -353,6 +353,14 @@ export class PredictionEngine {
       this.listener(this.state)
       return
     }
+    // The engine makes up a start only on launch, never during an edit: once an edit moves her
+    // current start, it is no longer the made-up one (so a later tap is not a late start)
+    if (
+      stateSnapshot &&
+      !moment(stateSnapshot.currentCycle.startDate).isSame(this.state.currentCycle.startDate, 'day')
+    ) {
+      this.state.currentCycle.autoStarted = false
+    }
     // Some edit branches never ask the server, which would keep its answer for her old history
     if (
       !askedForPrediction &&
@@ -905,7 +913,6 @@ export class PredictionEngine {
     const daysFromStart = inputDay.diff(this.state.currentCycle.startDate, 'days')
     if (!this.state.history[0]) {
       this.state.currentCycle.startDate = inputDay
-      this.state.currentCycle.autoStarted = false
       this.state.currentCycle.cycleLength += -daysFromStart
       this.state.currentCycle.periodLength += -daysFromStart
       getPredictedCycles(true)
@@ -915,8 +922,6 @@ export class PredictionEngine {
     // MARK:- If selected day is 1st day of current cycle
     if (daysFromStart === 0) {
       this.state.currentCycle.startDate = this.state.history[0].cycleStartDate
-      // Her current cycle is now a past one again, not the start the engine made up
-      this.state.currentCycle.autoStarted = false
       this.state.currentCycle.cycleLength = this.state.history[0].cycleLength + 1
       this.state.currentCycle.periodLength = this.state.history[0].periodLength
       this.state.history.shift()
@@ -934,7 +939,6 @@ export class PredictionEngine {
         inputDay.diff(this.state.currentCycle.startDate, 'days') > -5
       ) {
         this.state.currentCycle.startDate = inputDay
-        this.state.currentCycle.autoStarted = false
         this.state.currentCycle.cycleLength += -daysFromStart
         this.state.currentCycle.periodLength += -daysFromStart
         // The previous cycle now ends the day before, as in the move-forward branch below
@@ -962,10 +966,8 @@ export class PredictionEngine {
     }
     // --------- if between current cycle start and next cycle start ----------
     else if (daysFromStart > 0 && daysFromStart < this.state.currentCycle.cycleLength) {
-      if (this.state.currentCycle.periodLength + -daysFromStart < 1) {
+      if (this.state.currentCycle.periodLength + -daysFromStart < 1)
         this.state.currentCycle.startDate = inputDay
-        this.state.currentCycle.autoStarted = false
-      }
       this.state.currentCycle.cycleLength += -daysFromStart
       this.state.currentCycle.periodLength += -daysFromStart
       const updateHistory = {

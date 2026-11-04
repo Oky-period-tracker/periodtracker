@@ -250,6 +250,18 @@ describe('PredictionEngine - late period', () => {
     expect(state.currentCycle.autoStarted).toBe(false)
   })
 
+  it('keeps the mark after an edit that does not move her current start', () => {
+    const engine = lateEngine()
+    engine.userInputDispatch({
+      type: 'history-start-adjust',
+      inputDay: moment('2026-09-21'),
+      getPredictedCycles: jest.fn(),
+    })
+    const state = engine.getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-18')
+    expect(state.currentCycle.autoStarted).toBe(true)
+  })
+
   it('still confirms the late start when the six-cycle buffers were emptied since', () => {
     const engine = lateEngine()
     const empty = PredictionState.fromData({ startDate: moment('2026-10-18'), history: [] })

@@ -421,9 +421,10 @@ export function createHttpClient(
           predictionEndpoint,
           {
             user_id,
-            // Callers pad to ten entries with leading zeros for v1; v2 takes her real cycles only
-            cycle_history: cycle_lengths?.filter((l) => l > 0),
-            period_history: period_lengths?.filter((l) => l > 0),
+            // Callers pad to ten entries with leading zeros for v1; v2 takes her real cycles only.
+            // Filter both lists by the same index so each cycle keeps its own period length.
+            cycle_history: cycle_lengths?.filter((l, i) => l > 0 && period_lengths?.[i] > 0),
+            period_history: period_lengths?.filter((l, i) => l > 0 && cycle_lengths?.[i] > 0),
             age,
             new_observation,
           },

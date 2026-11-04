@@ -55,10 +55,12 @@ function* onFetchUpdatedPredictedCycles(
     // Include most recent completed cycle so the model learns from it, unless the server's last
     // answer was already based on it unchanged (the app also asks on every open)
     const mostRecentCycle = predictionFullState.history?.[0]
-    const alreadyLearned =
-      !!mostRecentCycle &&
-      cycleEntries([mostRecentCycle])[0] ===
-        predictionFullState.smartPrediction?.serverRange?.basedOn?.[0]
+    const mostRecentEntry = mostRecentCycle && cycleEntries([mostRecentCycle])[0]
+    // Tracked apart from serverRange: an answer without display bounds (the current server) has none
+    const previouslyLearned =
+      predictionFullState.smartPrediction?.learnedFrom ??
+      predictionFullState.smartPrediction?.serverRange?.basedOn?.[0]
+    const alreadyLearned = !!mostRecentEntry && mostRecentEntry === previouslyLearned
     const new_observation = mostRecentCycle && !alreadyLearned
       ? {
           cycle_start_date: new Date(
@@ -150,6 +152,8 @@ function* onFetchUpdatedPredictedCycles(
       history: predictionFullState.history,
       actualCurrentStartDate: predictionFullState.currentCycle,
       serverRange,
+      // After a successful answer the server has her latest cycle (sent now or before)
+      learnedFrom: predictionResponse ? mostRecentEntry : previouslyLearned,
     })
     // fromData starts with empty six-cycle buffers and no late-start flag; keep the engine's
     stateToSet.currentCycle.autoStarted = predictionFullState.currentCycle.autoStarted

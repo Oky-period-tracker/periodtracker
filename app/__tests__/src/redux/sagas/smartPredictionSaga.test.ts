@@ -107,6 +107,25 @@ describe('smartPredictionSaga', () => {
     expect(mockGetPeriodCycles.mock.calls.at(-1)[0].new_observation.observed_cycle_length).toBe(32)
   })
 
+  it('does not resend her latest cycle after an answer without display bounds', async () => {
+    // The server currently deployed answers with a cycle length only, so there is no serverRange
+    mockGetPeriodCycles.mockResolvedValue({ predictedCycleLength: 30 })
+    const { saved } = await runRequest(undefined, fullState())
+    expect(mockGetPeriodCycles.mock.calls.at(-1)[0].new_observation.observed_cycle_length).toBe(32)
+    expect(saved.smartPrediction.serverRange).toBeUndefined()
+
+    await runRequest(undefined, PredictionState.fromJSON(saved))
+    expect(mockGetPeriodCycles.mock.calls.at(-1)[0].new_observation).toBeUndefined()
+  })
+
+  it('keeps what the server learned when a request fails', async () => {
+    mockGetPeriodCycles.mockResolvedValueOnce({ predictedCycleLength: 30 })
+    const { saved } = await runRequest(undefined, fullState())
+    mockGetPeriodCycles.mockRejectedValueOnce(new Error('Network Error'))
+    const { saved: afterFailure } = await runRequest(undefined, PredictionState.fromJSON(saved))
+    expect(afterFailure.smartPrediction.learnedFrom).toBe('2026-09-16:32')
+  })
+
   it('drops the answer when her cycles changed while waiting for it', async () => {
     mockGetPeriodCycles.mockResolvedValue({
       predictedCycleLength: 29.6,

@@ -25,6 +25,7 @@ interface SmartPrediction {
   smaPeriodLength: number
   smaCycleLength: number
   serverRange?: ServerRange // last v2 answer; see calendarPrediction
+  learnedFrom?: string // her latest cycle the server has already been sent (cycleEntries format)
 }
 
 type History = Array<{
@@ -56,6 +57,7 @@ export class PredictionState {
     futurePredictionStatus = true,
     actualCurrentStartDate = null,
     serverRange,
+    learnedFrom,
   }: {
     startDate?: Moment
     isActive?: boolean
@@ -67,6 +69,7 @@ export class PredictionState {
     futurePredictionStatus?: boolean
     actualCurrentStartDate?: any
     serverRange?: ServerRange
+    learnedFrom?: string
   }) {
     const state = new PredictionState()
     state.currentCycle = {
@@ -80,6 +83,7 @@ export class PredictionState {
       smaPeriodLength,
       smaCycleLength,
       ...(serverRange && { serverRange }),
+      ...(learnedFrom && { learnedFrom }),
     }
 
     state.isActive = isActive
@@ -98,7 +102,7 @@ export class PredictionState {
     actualCurrentStartDate,
   }: PredictionSerializableState) {
     const { startDate, periodLength, cycleLength } = currentCycle
-    const { smaPeriodLength, smaCycleLength, serverRange } = smartPrediction
+    const { smaPeriodLength, smaCycleLength, serverRange, learnedFrom } = smartPrediction
     // Older builds could persist NaN (saved as null); fall back to fromData defaults
     const finiteOrDefault = (value: number) => (Number.isFinite(value) ? value : undefined)
     const state = PredictionState.fromData({
@@ -117,6 +121,7 @@ export class PredictionState {
       futurePredictionStatus,
       actualCurrentStartDate,
       serverRange,
+      learnedFrom,
     })
 
     state.currentCycle.autoStarted = currentCycle.autoStarted

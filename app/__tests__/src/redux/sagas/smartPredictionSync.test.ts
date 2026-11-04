@@ -136,12 +136,17 @@ describe('smartPredictionSaga sync (v2)', () => {
     expect(dispatched).toContain('SET_PREDICTION_ENGINE_STATE')
   })
 
-  it('on app open without a connection, does not try', async () => {
+  it('on app open without a connection, does not try, then asks once she is back online', async () => {
     mockConnected.mockResolvedValue(false)
     const { channel } = start()
     channel.put({ type: REHYDRATE })
     await afterPause()
     expect(mockGetPeriodCycles).not.toHaveBeenCalled()
+
+    mockConnected.mockResolvedValue(true)
+    mockNetListener({ isConnected: true })
+    await afterPause()
+    expect(mockGetPeriodCycles).toHaveBeenCalledTimes(1)
   })
 
   it('when she comes back to the app, asks again', async () => {

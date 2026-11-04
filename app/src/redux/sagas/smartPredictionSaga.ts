@@ -178,7 +178,11 @@ function* syncSavedPrediction() {
   // An error here must not stop the other sagas the root saga runs
   try {
     // @ts-expect-error TODO:
-    if (!(yield call(fetchNetworkConnectionStatus))) return
+    if (!(yield call(fetchNetworkConnectionStatus))) {
+      // Offline at app open: ask again once she is back online
+      lastSyncFailed = true
+      return
+    }
     // @ts-expect-error TODO:
     const saved = yield select((state) => state.prediction)
     // @ts-expect-error TODO:

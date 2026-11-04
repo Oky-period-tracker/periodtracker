@@ -2,6 +2,7 @@
 import moment from 'moment'
 import { getCalendarInputs, toCalendarDays } from '../../../src/prediction/calendarPrediction'
 import { PredictionState } from '../../../src/prediction/PredictionState'
+import { buildCalendarMarks } from '../../../src/prediction/calendarMarks'
 
 const state = (s: object) => s as unknown as PredictionState
 
@@ -27,6 +28,37 @@ describe('getCalendarInputs', () => {
     )
     expect(r.cycle).toEqual({ mean: 28, lower: 25, upper: 31 })
     expect(r.averagePeriodLength).toBeNull()
+  })
+
+  describe('no period logged yet (isActive false)', () => {
+    const inactive = state({
+      isActive: false,
+      smartPrediction: { smaCycleLength: 28, smaPeriodLength: 5 },
+      currentCycle: { startDate: moment('2026-11-03'), cycleLength: 28 },
+    })
+    const marks = (confirmedDays: string[]) =>
+      buildCalendarMarks({
+        confirmedDays,
+        deniedDays: [],
+        today: '2026-11-03',
+        ...getCalendarInputs(inactive),
+      })
+
+    it('does not use the start the engine made up', () => {
+      expect(getCalendarInputs(inactive).fallbackAnchor).toBeNull()
+    })
+
+    it('no confirmed days: no marks, so the calendar shows the message', () => {
+      const m = marks([])
+      expect(m.days).toEqual({})
+      expect(m.status.kind).toBe('none')
+    })
+
+    it('confirmed days: predicts from them', () => {
+      const m = marks(['2026-11-01'])
+      expect(m.status.kind).toBe('shown')
+      expect(m.days['2026-11-29']).toContain('likelyStart')
+    })
   })
 
   it('empty state: returns nulls instead of throwing', () => {

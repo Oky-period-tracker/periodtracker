@@ -22,7 +22,8 @@ export function getCalendarInputs(
   const averagePeriodLength = state.smartPrediction?.smaPeriodLength || null
   if (!predictionsEnabled) return { cycle: null, averagePeriodLength, fallbackAnchor: null }
   const mean = state.smartPrediction?.smaCycleLength || state.currentCycle?.cycleLength
-  const start = state.currentCycle?.startDate
+  // isActive false (no period logged yet): the saved start is a default or today, never hers
+  const start = state.isActive === false ? null : state.currentCycle?.startDate
   return {
     cycle: mean
       ? { mean, lower: mean - TEMPORARY_HALF_WIDTH, upper: mean + TEMPORARY_HALF_WIDTH }

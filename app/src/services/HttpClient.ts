@@ -102,6 +102,17 @@ export const httpClient = createHttpClient(API_BASE_URL, API_BASE_CMS_URL, {
 export type PredictionResult = {
   predictedCycleLength: number | undefined
   predictedPeriodLength: number | undefined
+  // v2 only, when the server returns the displayed range (brief §6.2, §6.6)
+  serverRange?: ServerRange
+}
+
+export type ServerRange = {
+  mean: number
+  lower: number
+  upper: number
+  useBaseline: boolean
+  samplesTrained: number
+  basedOn?: string[] // her cycles when the server answered; see serverCache
 }
 
 export function createHttpClient(
@@ -410,8 +421,10 @@ export function createHttpClient(
           predictionEndpoint,
           {
             user_id,
-            cycle_history: cycle_lengths,
-            period_history: period_lengths,
+            // Callers pad to ten entries with leading zeros for v1; v2 takes her real cycles only.
+            // Filter both lists by the same index so each cycle keeps its own period length.
+            cycle_history: cycle_lengths?.filter((l, i) => l > 0 && period_lengths?.[i] > 0),
+            period_history: period_lengths?.filter((l, i) => l > 0 && cycle_lengths?.[i] > 0),
             age,
             new_observation,
           },
@@ -422,9 +435,22 @@ export function createHttpClient(
 
         // v2 responds with { prediction: { predicted_cycle_length } } and does
         // not return a period length.
+        // axios leaves some valid bodies unparsed on device (seen with emoji escapes)
+        const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data
+        const prediction = data?.prediction
         return {
-          predictedCycleLength: response.data?.prediction?.predicted_cycle_length,
+          predictedCycleLength: prediction?.predicted_cycle_length,
           predictedPeriodLength: undefined,
+          serverRange:
+            prediction?.display_lower_bound != null && prediction?.display_upper_bound != null
+              ? {
+                  mean: prediction.predicted_cycle_length,
+                  lower: prediction.display_lower_bound,
+                  upper: prediction.display_upper_bound,
+                  useBaseline: !!prediction.should_use_baseline,
+                  samplesTrained: prediction.n_samples_trained ?? 0,
+                }
+              : undefined,
         }
       }
 

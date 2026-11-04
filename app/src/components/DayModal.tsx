@@ -15,9 +15,18 @@ import {
   useCalculatePeriodDates,
 } from '../contexts/PredictionProvider'
 import { useSelector } from '../redux/useSelector'
-import { decisionProcessNonPeriod, decisionProcessPeriod } from '../prediction/predictionLogic'
+import {
+  decisionProcessNonPeriod,
+  decisionProcessPeriod,
+  isLateStart,
+} from '../prediction/predictionLogic'
+import { requestLengths } from '../prediction/predictionRequest'
 import { useDispatch } from 'react-redux'
-import { currentUserSelector, isFuturePredictionSelector } from '../redux/selectors'
+import {
+  currentUserSelector,
+  isFuturePredictionSelector,
+  verifyPeriodDaySelectorWithDate,
+} from '../redux/selectors'
 import { answerVerifyDates, smartPredictionRequest, updateFuturePrediction } from '../redux/actions'
 import { fetchNetworkConnectionStatus } from '../services/network'
 import { User } from '../redux/reducers/authReducer'
@@ -67,6 +76,14 @@ export const DayModal = ({
   // );
 
   const predictionFullState = usePredictionEngineState()
+  const startConfirmed = useSelector(
+    (state) =>
+      !!(
+        verifyPeriodDaySelectorWithDate(state, predictionFullState.currentCycle.startDate) as {
+          periodDay?: boolean
+        }
+      ).periodDay,
+  )
   const [addNewCycleHistory, setNewCycleHistory] = React.useState(false)
   const hasFuturePredictionActive = useSelector(isFuturePredictionSelector)
   const futurePredictionStatus = hasFuturePredictionActive?.futurePredictionStatus
@@ -116,35 +133,15 @@ export const DayModal = ({
   // eslint-disable-next-line
   const getPredictedCycles = (flag: boolean): any => {
     if (flag) {
-      {
-        const tempHistory = [...history]
-        const tempPeriodsCycles = []
-        const tempPeriodsLength = []
-        tempPeriodsCycles.push(predictionFullState.currentCycle.cycleLength)
-        tempPeriodsLength.push(predictionFullState.currentCycle.periodLength)
-        tempHistory.forEach((item) => {
-          tempPeriodsCycles.push(item.cycleLength)
-          tempPeriodsLength.push(item.periodLength)
-        })
-        tempPeriodsCycles.reverse()
-        tempPeriodsLength.reverse()
-        for (let i = 0; i < 10; i++) {
-          if (tempPeriodsCycles.length < 10) {
-            tempPeriodsCycles.unshift(0)
-            tempPeriodsLength.unshift(0)
-          }
-        }
-
-        reduxDispatch(
-          smartPredictionRequest({
-            cycle_lengths: tempPeriodsCycles,
-            period_lengths: tempPeriodsLength,
-            age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
-            predictionFullState,
-            futurePredictionStatus,
-          }),
-        )
-      }
+      reduxDispatch(
+        smartPredictionRequest({
+          // The engine's live history: adding a past cycle replaces the array the hook cached
+          ...requestLengths(predictionFullState.currentCycle, predictionFullState.history),
+          age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
+          predictionFullState,
+          futurePredictionStatus,
+        }),
+      )
     }
     reduxDispatch(
       updateFuturePrediction(Boolean(futurePredictionStatus), predictionFullState.currentCycle),
@@ -169,9 +166,23 @@ export const DayModal = ({
     isActive,
   })
 
+  const lateStart = isLateStart({
+    inputDay,
+    currentCycle: predictionFullState.currentCycle,
+    startConfirmed,
+  })
+
   const checkForDay = () => {
+    if (lateStart) {
+      dispatch({
+        type: 'confirm-late-start',
+        inputDay,
+        errorCallBack,
+        getPredictedCycles,
+      })
+    }
     // For Current day
-    if (moment(inputDayStr).isSame(moment(todayStr))) {
+    else if (moment(inputDayStr).isSame(moment(todayStr))) {
       if (
         !selectedDayInfo.onPeriod &&
         inputDay.diff(moment().startOf('day'), 'days') === 0 &&
@@ -258,7 +269,8 @@ export const DayModal = ({
         onHandleResponse(true, inputDay.format('DD/MM/YYYY')) // Invoke the onHandleResponse method with the response
       }
     } else {
-      if (selectedDayInfo.onPeriod) {
+      // A late period can land inside the period days the engine made up
+      if (selectedDayInfo.onPeriod && !lateStart) {
         reduxDispatch(
           answerVerifyDates({
             userID,

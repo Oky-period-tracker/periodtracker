@@ -3,11 +3,14 @@
 import moment, { Moment } from 'moment'
 import { AppState } from '../redux/reducers/appReducer'
 import CircularBuffer from 'circular-buffer'
+import type { ServerRange } from '../services/HttpClient'
 
 interface CurrentCycle {
   startDate: Moment
   periodLength: number
   cycleLength: number
+  // Started by the engine on the predicted day because her period was late
+  autoStarted?: boolean
 }
 // fpr  user verified period dtaes
 interface UserVerified {
@@ -21,6 +24,8 @@ interface SmartPrediction {
   circularCycleLength: any // CircularBuffer number[] array of number of days
   smaPeriodLength: number
   smaCycleLength: number
+  serverRange?: ServerRange // last v2 answer; see calendarPrediction
+  learnedFrom?: string // her latest cycle the server has already been sent (cycleEntries format)
 }
 
 type History = Array<{
@@ -51,6 +56,8 @@ export class PredictionState {
     history = [],
     futurePredictionStatus = true,
     actualCurrentStartDate = null,
+    serverRange,
+    learnedFrom,
   }: {
     startDate?: Moment
     isActive?: boolean
@@ -61,6 +68,8 @@ export class PredictionState {
     history?: History
     futurePredictionStatus?: boolean
     actualCurrentStartDate?: any
+    serverRange?: ServerRange
+    learnedFrom?: string
   }) {
     const state = new PredictionState()
     state.currentCycle = {
@@ -73,6 +82,8 @@ export class PredictionState {
       circularCycleLength: new CircularBuffer(6),
       smaPeriodLength,
       smaCycleLength,
+      ...(serverRange && { serverRange }),
+      ...(learnedFrom && { learnedFrom }),
     }
 
     state.isActive = isActive
@@ -91,14 +102,16 @@ export class PredictionState {
     actualCurrentStartDate,
   }: PredictionSerializableState) {
     const { startDate, periodLength, cycleLength } = currentCycle
-    const { smaPeriodLength, smaCycleLength } = smartPrediction
+    const { smaPeriodLength, smaCycleLength, serverRange, learnedFrom } = smartPrediction
+    // Older builds could persist NaN (saved as null); fall back to fromData defaults
+    const finiteOrDefault = (value: number) => (Number.isFinite(value) ? value : undefined)
     const state = PredictionState.fromData({
       startDate: moment(startDate),
       isActive,
-      periodLength,
-      cycleLength,
-      smaPeriodLength,
-      smaCycleLength,
+      periodLength: finiteOrDefault(periodLength),
+      cycleLength: finiteOrDefault(cycleLength),
+      smaPeriodLength: finiteOrDefault(smaPeriodLength),
+      smaCycleLength: finiteOrDefault(smaCycleLength),
       history: (history || []).map((entry) => ({
         cycleStartDate: moment(entry.cycleStartDate),
         cycleEndDate: moment(entry.cycleEndDate),
@@ -107,9 +120,12 @@ export class PredictionState {
       })),
       futurePredictionStatus,
       actualCurrentStartDate,
+      serverRange,
+      learnedFrom,
     })
 
-    for (const circularBufferKey in ['circularPeriodLength', 'circularCycleLength']) {
+    state.currentCycle.autoStarted = currentCycle.autoStarted
+    for (const circularBufferKey of ['circularPeriodLength', 'circularCycleLength']) {
       if (!(circularBufferKey in state.smartPrediction)) {
         continue
       }

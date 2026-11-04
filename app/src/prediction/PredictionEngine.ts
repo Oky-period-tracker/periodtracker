@@ -4,6 +4,7 @@
 import _ from 'lodash'
 import moment, { Moment } from 'moment'
 import { PredictionState } from './PredictionState'
+import { cyclesKey } from './serverCache'
 
 export interface PredictionDayInfo {
   onPeriod: boolean
@@ -305,31 +306,39 @@ export class PredictionEngine {
     // what causes the app to crash on every subsequent render/launch, not just
     // once - since components read this same broken state on next app open.
     const stateSnapshot = this.state.toJSON ? this.state.toJSON() : null
+    let askedForPrediction = false
+    const askForPrediction = (flag: boolean) => {
+      askedForPrediction = true
+      return getPredictedCycles(flag)
+    }
     try {
       switch (type) {
         case 'adjust-mens-end':
-          this._adjustMenstruatingHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustMenstruatingHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'start-next-cycle':
-          this._startedEarlyHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._startedEarlyHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'current-start-adjust':
-          this._adjustCurrentStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustCurrentStartDateHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'history-start-adjust':
-          this._adjustHistoryStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustHistoryStartDateHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'adjust-mens-end-history':
-          this._adjustMenstruatingHistoryHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustMenstruatingHistoryHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'future-start-adjust':
-          this._adjustFutureStartDateHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustFutureStartDateHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'adjust-future-mens-end':
-          this._adjustFutureMenstruatingHandler(inputDay, errorCallBack, getPredictedCycles)
+          this._adjustFutureMenstruatingHandler(inputDay, errorCallBack, askForPrediction)
           break
         case 'add-new-cycle-history':
-          this._addNewCycleInHistory(inputDay, errorCallBack, getPredictedCycles)
+          this._addNewCycleInHistory(inputDay, errorCallBack, askForPrediction)
+          break
+        case 'confirm-late-start':
+          this._lateStartHandler(inputDay, askForPrediction)
           break
         default:
           break
@@ -343,6 +352,22 @@ export class PredictionEngine {
       errorCallBack('something_went_wrong')
       this.listener(this.state)
       return
+    }
+    // The engine makes up a start only on launch, never during an edit: once an edit moves her
+    // current start, it is no longer the made-up one (so a later tap is not a late start)
+    if (
+      stateSnapshot &&
+      !moment(stateSnapshot.currentCycle.startDate).isSame(this.state.currentCycle.startDate, 'day')
+    ) {
+      this.state.currentCycle.autoStarted = false
+    }
+    // Some edit branches never ask the server, which would keep its answer for her old history
+    if (
+      !askedForPrediction &&
+      stateSnapshot &&
+      cyclesKey(stateSnapshot) !== cyclesKey(this.state.toJSON())
+    ) {
+      getPredictedCycles(true)
     }
     this.listener(this.state)
   }
@@ -376,6 +401,7 @@ export class PredictionEngine {
         const dayToCheck = this.state.currentCycle.startDate.clone().add(currentCycleLength, 'days')
         const completionDay = this.predictDay(dayToCheck).cycleStart
         this._cycleCompletion(completionDay, null)
+        this.state.currentCycle.autoStarted = true
         return
       }
       const numberOfCyclesAheadOfCurrent = Math.ceil(
@@ -395,6 +421,7 @@ export class PredictionEngine {
         ) {
           const completionDay = this.predictDay(dayToCheck).cycleStart
           this._cycleCompletion(completionDay, numberOfCyclesAheadOfCurrent)
+          this.state.currentCycle.autoStarted = true
         } else {
           this.state.currentCycle = {
             startDate: moment(tempCurrentCycle.cycleStart),
@@ -914,6 +941,12 @@ export class PredictionEngine {
         this.state.currentCycle.startDate = inputDay
         this.state.currentCycle.cycleLength += -daysFromStart
         this.state.currentCycle.periodLength += -daysFromStart
+        // The previous cycle now ends the day before, as in the move-forward branch below
+        this.state.history[0] = {
+          ...this.state.history[0],
+          cycleEndDate: inputDay.clone().subtract(1, 'days'),
+          cycleLength: inputDay.diff(this.state.history[0].cycleStartDate, 'days'),
+        }
       } else {
         if (
           inputDay.diff(this.state.history[0].cycleStartDate, 'days') -
@@ -984,6 +1017,7 @@ export class PredictionEngine {
   }
 
   private async _cycleCompletion(completionDate, getPredictedCycles) {
+    this.state.currentCycle.autoStarted = false
     const adjustedCycleLength = completionDate.diff(this.state.currentCycle.startDate, 'days')
     this.state.history.unshift({
       cycleStartDate: this.state.currentCycle.startDate,
@@ -1010,6 +1044,30 @@ export class PredictionEngine {
     this.state.currentCycle.cycleLength = this.state.smartPrediction.smaCycleLength
     // TODO: this is sometimes null ?
     getPredictedCycles?.(true)
+  }
+
+  // The engine started the current cycle by itself when her period was late, and she has now
+  // confirmed a later day: undo the made-up cycle and complete the real one on that day.
+  private _lateStartHandler(inputDay, getPredictedCycles) {
+    // No made-up cycle left to undo (her history was replaced since): just start the real one
+    if (!this.state.history.length) {
+      this._cycleCompletion(moment(inputDay).startOf('day'), getPredictedCycles)
+      return
+    }
+    const previous = this.state.history.shift()
+    // Undo the auto-start's push; a buffer rebuilt since then can be empty
+    for (const buffer of [
+      this.state.smartPrediction.circularCycleLength,
+      this.state.smartPrediction.circularPeriodLength,
+    ]) {
+      if (buffer.size() > 0) buffer.pop()
+    }
+    this.state.currentCycle = {
+      startDate: previous.cycleStartDate,
+      periodLength: previous.periodLength,
+      cycleLength: previous.cycleLength,
+    }
+    this._cycleCompletion(moment(inputDay).startOf('day'), getPredictedCycles)
   }
 
   // +=+=+=+=+==+=+=+=+= History Adjust Methods +=+=+=+=+=+=+=+=++=+=+=+=+=+=+=+==+=+=+=+=+

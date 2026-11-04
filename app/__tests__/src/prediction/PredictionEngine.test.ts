@@ -186,3 +186,152 @@ describe('PredictionEngine - calculateStatusForDateRange', () => {
     expect(markedDates[dayOne].selectedColor).toBe('#fff')
   })
 })
+
+describe('PredictionEngine - late period', () => {
+  afterEach(() => jest.useRealTimers())
+
+  // Period started Sep 20 (28-day cycles) and today is Oct 23: the engine has
+  // already started a new cycle by itself on the predicted day, Oct 18.
+  function lateEngine() {
+    jest.useFakeTimers().setSystemTime(new Date('2026-10-23T12:00:00'))
+    const state = PredictionState.fromData({
+      startDate: moment('2026-09-20'),
+      periodLength: 5,
+      cycleLength: 28,
+      smaCycleLength: 28,
+      smaPeriodLength: 5,
+      history: [],
+    })
+    return PredictionEngine.fromState(PredictionState.fromJSON(state.toJSON()))
+  }
+
+  it('marks a cycle it started by itself, and keeps the mark across a save and restore', () => {
+    const state = lateEngine().getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-18')
+    expect(state.currentCycle.autoStarted).toBe(true)
+    expect(PredictionState.fromJSON(state.toJSON()).currentCycle.autoStarted).toBe(true)
+  })
+
+  it('replaces the made-up start with the confirmed one and records the real cycle length', () => {
+    const engine = lateEngine()
+    const getPredictedCycles = jest.fn()
+    engine.userInputDispatch({
+      type: 'confirm-late-start',
+      inputDay: moment('2026-10-23'),
+      getPredictedCycles,
+    })
+
+    const state = engine.getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-23')
+    expect(state.currentCycle.autoStarted).toBeFalsy()
+    expect(state.history).toHaveLength(1)
+    expect(state.history[0].cycleStartDate.format('YYYY-MM-DD')).toBe('2026-09-20')
+    expect(state.history[0].cycleLength).toBe(33)
+    expect(state.smartPrediction.circularCycleLength.toarray()).toEqual([33])
+    expect(getPredictedCycles).toHaveBeenCalledWith(true)
+  })
+
+  it('starts the real cycle when no made-up cycle is left in her history', () => {
+    const engine = lateEngine()
+    engine.getPredictorState().history = []
+    engine.userInputDispatch({ type: 'confirm-late-start', inputDay: moment('2026-10-23') })
+    expect(engine.getPredictorState().currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-23')
+  })
+
+  it('clears the mark when she undoes the made-up start, so a later tap cannot merge real cycles', () => {
+    const engine = lateEngine()
+    engine.userInputDispatch({
+      type: 'current-start-adjust',
+      inputDay: moment('2026-10-18'),
+      getPredictedCycles: jest.fn(),
+    })
+    const state = engine.getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-09-20')
+    expect(state.currentCycle.autoStarted).toBe(false)
+  })
+
+  it('keeps the mark after an edit that does not move her current start', () => {
+    const engine = lateEngine()
+    engine.userInputDispatch({
+      type: 'history-start-adjust',
+      inputDay: moment('2026-09-21'),
+      getPredictedCycles: jest.fn(),
+    })
+    const state = engine.getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-18')
+    expect(state.currentCycle.autoStarted).toBe(true)
+  })
+
+  it('still confirms the late start when the six-cycle buffers were emptied since', () => {
+    const engine = lateEngine()
+    const empty = PredictionState.fromData({ startDate: moment('2026-10-18'), history: [] })
+    const { smartPrediction } = engine.getPredictorState()
+    smartPrediction.circularCycleLength = empty.smartPrediction.circularCycleLength
+    smartPrediction.circularPeriodLength = empty.smartPrediction.circularPeriodLength
+    engine.userInputDispatch({ type: 'confirm-late-start', inputDay: moment('2026-10-23') })
+
+    const state = engine.getPredictorState()
+    expect(state.currentCycle.startDate.format('YYYY-MM-DD')).toBe('2026-10-23')
+    expect(state.history[0].cycleLength).toBe(33)
+  })
+})
+
+describe('PredictionEngine - asking for a new prediction after an edit', () => {
+  afterEach(() => jest.useRealTimers())
+
+  function engineWithHistory() {
+    jest.useFakeTimers().setSystemTime(new Date('2026-10-28T12:00:00'))
+    const state = PredictionState.fromData({
+      startDate: moment('2026-10-28'),
+      periodLength: 5,
+      cycleLength: 30,
+      smaCycleLength: 30,
+      history: [
+        {
+          cycleStartDate: moment('2026-09-25'),
+          cycleEndDate: moment('2026-10-27'),
+          periodLength: 5,
+          cycleLength: 33,
+        },
+      ],
+    })
+    return PredictionEngine.fromState(state)
+  }
+
+  it('asks once when an edit moves her cycle start, even if the handler did not', () => {
+    const engine = engineWithHistory()
+    const getPredictedCycles = jest.fn()
+    engine.userInputDispatch({
+      type: 'current-start-adjust',
+      inputDay: moment('2026-10-26'),
+      getPredictedCycles,
+    })
+
+    expect(engine.getPredictorState().currentCycle.startDate.format('YYYY-MM-DD')).toBe(
+      '2026-10-26',
+    )
+    expect(getPredictedCycles).toHaveBeenCalledTimes(1)
+    expect(getPredictedCycles).toHaveBeenCalledWith(true)
+  })
+
+  it('shortens the previous cycle when her current start moves earlier', () => {
+    const engine = engineWithHistory()
+    engine.userInputDispatch({ type: 'current-start-adjust', inputDay: moment('2026-10-26') })
+
+    const previous = engine.getPredictorState().history[0]
+    expect(previous.cycleLength).toBe(31)
+    expect(previous.cycleEndDate.format('YYYY-MM-DD')).toBe('2026-10-25')
+  })
+
+  it('does not ask when nothing about her cycles changed', () => {
+    const engine = engineWithHistory()
+    const getPredictedCycles = jest.fn()
+    engine.userInputDispatch({
+      type: 'future-start-adjust',
+      inputDay: moment('2026-10-29'),
+      getPredictedCycles,
+    })
+
+    expect(getPredictedCycles).not.toHaveBeenCalled()
+  })
+})

@@ -135,7 +135,8 @@ export const DayModal = ({
     if (flag) {
       reduxDispatch(
         smartPredictionRequest({
-          ...requestLengths(predictionFullState.currentCycle, history),
+          // The engine's live history: adding a past cycle replaces the array the hook cached
+          ...requestLengths(predictionFullState.currentCycle, predictionFullState.history),
           age: moment().diff(moment(currentUser.dateOfBirth), 'years'),
           predictionFullState,
           futurePredictionStatus,

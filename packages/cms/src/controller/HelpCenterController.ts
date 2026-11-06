@@ -33,7 +33,11 @@ export class HelpCenterController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.helpCenterRepository.findOne(request.params.id)
+    const helpCenter = await this.helpCenterRepository.findOne(request.params.id, {
+      where: { lang: request.user.lang },
+    })
+    if (!helpCenter) response.status(404).send({ error: 'Help center not found' })
+    return helpCenter
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
@@ -53,9 +57,14 @@ export class HelpCenterController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const helpCenterToUpdate = await this.helpCenterRepository.findOne(request.params.id)
+      const helpCenterToUpdate = await this.helpCenterRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!helpCenterToUpdate) {
-        logger.warn('Help center not found for update', { id: request.params.id })
+        logger.warn('Help center not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Help center not found' })
         return
       }
@@ -76,12 +85,16 @@ export class HelpCenterController {
   async bulkUpdate(request: Request, response: Response, next: NextFunction) {
     try {
       if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
-        return await bulkUpdateRowReorder(this.helpCenterRepository, request.body.rowReorderResult)
+        return await bulkUpdateRowReorder(
+          this.helpCenterRepository,
+          request.body.rowReorderResult,
+          request.user.lang,
+        )
       }
 
       return await this.helpCenterRepository.find({
         where: {
-          lang: request.params.lang,
+          lang: request.user.lang,
         },
         order: {
           sortingKey: 'ASC',
@@ -98,9 +111,14 @@ export class HelpCenterController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const helpCenterToRemove = await this.helpCenterRepository.findOne(request.params.id)
+      const helpCenterToRemove = await this.helpCenterRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!helpCenterToRemove) {
-        logger.warn('Help center not found for removal', { id: request.params.id })
+        logger.warn('Help center not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Help center not found' })
         return
       }

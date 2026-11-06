@@ -19,13 +19,20 @@ export class VideoController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.videoRepository.findOne(request.params.id)
+    const video = await this.videoRepository.findOne({
+      id: request.params.id,
+      lang: request.user.lang,
+    })
+    if (!video) response.status(404).send({ error: 'Video not found' })
+    return video
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
     try {
+      // Only a title in the editor's language is a duplicate
       const videoWithSameTitle = await this.videoRepository.findOne({
         title: request.body.title,
+        lang: request.user.lang,
       })
       if (videoWithSameTitle) {
         return { video: videoWithSameTitle, isExist: true }
@@ -44,25 +51,31 @@ export class VideoController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const videoWithSameTitle = await this.videoRepository.findOne({
-        title: request.body.title,
+      const videoToUpdate = await this.videoRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
       })
-      if (videoWithSameTitle && request.params.id !== videoWithSameTitle.id) {
-        return { video: videoWithSameTitle, isExist: true }
-      }
-
-      const videoToUpdate = await this.videoRepository.findOne(request.params.id)
       if (!videoToUpdate) {
-        logger.warn('Video not found for update', { id: request.params.id })
+        logger.warn('Video not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Video not found' })
         return
+      }
+      // Only a title in the editor's language is a duplicate
+      const videoWithSameTitle = await this.videoRepository.findOne({
+        title: request.body.title,
+        lang: request.user.lang,
+      })
+      if (videoWithSameTitle && videoToUpdate.id !== videoWithSameTitle.id) {
+        return { video: videoWithSameTitle, isExist: true }
       }
       const booleanFromString = request.body.live === 'true'
       videoToUpdate.title = request.body.title
       videoToUpdate.youtubeId = request.body.youtubeId
       videoToUpdate.assetName = request.body.assetName
       videoToUpdate.live = booleanFromString
-      videoToUpdate.lang = request.user.lang
 
       await this.videoRepository.save(videoToUpdate)
       logger.info('Video updated', { id: request.params.id })
@@ -79,9 +92,15 @@ export class VideoController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const itemToRemove = await this.videoRepository.findOne(request.params.id)
+      const itemToRemove = await this.videoRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!itemToRemove) {
-        logger.warn('Video not found for removal', { id: request.params.id })
+        logger.warn('Video not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Video not found' })
         return
       }
@@ -101,12 +120,16 @@ export class VideoController {
   async reorderRows(request: Request, response: Response, next: NextFunction) {
     try {
       if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
-        return await bulkUpdateRowReorder(this.videoRepository, request.body.rowReorderResult)
+        return await bulkUpdateRowReorder(
+          this.videoRepository,
+          request.body.rowReorderResult,
+          request.user.lang,
+        )
       }
 
       return await this.videoRepository.find({
         where: {
-          lang: request.params.lang,
+          lang: request.user.lang,
         },
         order: {
           sortingKey: 'ASC',

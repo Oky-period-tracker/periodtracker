@@ -25,14 +25,22 @@ export class TermsAndConditionsController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.termsAndConditionsRepository.findOne(request.params.id)
+    const termsAndConditions = await this.termsAndConditionsRepository.findOne(request.params.id, {
+      where: { lang: request.user.lang },
+    })
+    if (!termsAndConditions) response.status(404).send({ error: 'Terms and conditions not found' })
+    return termsAndConditions
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToSave = request.body
-      aboutToSave.lang = request.user.lang
-      await this.termsAndConditionsRepository.save(aboutToSave)
+      // Built from the expected fields only: an id in the body would make save()
+      // overwrite that row, whatever its language, instead of creating one
+      const aboutToSave = await this.termsAndConditionsRepository.save({
+        json_dump: request.body.json_dump,
+        timestamp: request.body.timestamp,
+        lang: request.user.lang,
+      })
       logger.info('Terms and conditions saved', { lang: request.user.lang })
       return aboutToSave
     } catch (error) {
@@ -46,14 +54,18 @@ export class TermsAndConditionsController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToUpdate = await this.termsAndConditionsRepository.findOne(request.params.id)
+      const aboutToUpdate = await this.termsAndConditionsRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToUpdate) {
-        logger.warn('Terms and conditions not found for update', { id: request.params.id })
+        logger.warn('Terms and conditions not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Terms and conditions not found' })
         return
       }
       aboutToUpdate.json_dump = request.body.json_dump
-      aboutToUpdate.lang = request.user.lang
       await this.termsAndConditionsRepository.save(aboutToUpdate)
       logger.info('Terms and conditions updated', { id: request.params.id })
       return aboutToUpdate
@@ -69,9 +81,14 @@ export class TermsAndConditionsController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToRemove = await this.termsAndConditionsRepository.findOne(request.params.id)
+      const aboutToRemove = await this.termsAndConditionsRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToRemove) {
-        logger.warn('Terms and conditions not found for removal', { id: request.params.id })
+        logger.warn('Terms and conditions not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Terms and conditions not found' })
         return
       }

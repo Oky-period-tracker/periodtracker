@@ -4,7 +4,6 @@ import { Category } from '../entity/Category'
 import { Subcategory } from '../entity/Subcategory'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
-import { env } from '../env'
 import { bulkUpdateRowReorder } from '../helpers/common'
 import { logger } from '../logger'
 
@@ -14,21 +13,33 @@ export class CategoryController {
   private articleRepository = getRepository(Article)
 
   async all(request: Request, response: Response, next: NextFunction) {
-    return this.categoryRepository.find()
+    return this.categoryRepository.find({ where: { lang: request.user.lang } })
+  }
+
+  // Only a title or emoji in the editor's language is a duplicate
+  private duplicateInLanguage(request: Request) {
+    const lang = request.user.lang
+    return this.categoryRepository.findOne({
+      where: [
+        { title: request.body.title, lang },
+        { primary_emoji: request.body.primary_emoji, lang },
+      ],
+    })
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.categoryRepository.findOne(request.params.id)
+    const category = await this.categoryRepository.findOne({
+      id: request.params.id,
+      lang: request.user.lang,
+    })
+    if (!category) response.status(404).send({ error: 'Category not found' })
+    return category
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
     try {
-      const category = await this.categoryRepository.query(
-        `SELECT * FROM ${env.db.schema}.category WHERE title = $1 or primary_emoji = $2`,
-        [request.body.title, request.body.primary_emoji],
-      )
-      if (category && category.length)
-        return { duplicate: true, category: category[0], body: request.body }
+      const duplicate = await this.duplicateInLanguage(request)
+      if (duplicate) return { duplicate: true, category: duplicate, body: request.body }
       await this.categoryRepository.save({
         id: uuid(),
         title: request.body.title,
@@ -49,22 +60,25 @@ export class CategoryController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const category = await this.categoryRepository.query(
-        `SELECT * FROM ${env.db.schema}.category WHERE title = $1 or primary_emoji = $2`,
-        [request.body.title, request.body.primary_emoji],
-      )
-      if (category && category.length && category[0].id !== request.params.id)
-        return { duplicate: true, category: category[0], body: request.body }
-      const categoryToUpdate = await this.categoryRepository.findOne(request.params.id)
+      // Scoped to the editor's language, which the category keeps: an edit never moves it
+      const categoryToUpdate = await this.categoryRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!categoryToUpdate) {
-        logger.warn('Category not found for update', { id: request.params.id })
+        logger.warn('Category not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Category not found' })
         return
       }
+      const duplicate = await this.duplicateInLanguage(request)
+      if (duplicate && duplicate.id !== categoryToUpdate.id)
+        return { duplicate: true, category: duplicate, body: request.body }
       categoryToUpdate.title = request.body.title
       categoryToUpdate.primary_emoji = request.body.primary_emoji
       categoryToUpdate.primary_emoji_name = request.body.primary_emoji_name
-      categoryToUpdate.lang = request.user.lang
       await this.categoryRepository.save(categoryToUpdate)
       logger.info('Category updated', { id: request.params.id, title: request.body.title })
       return categoryToUpdate
@@ -80,9 +94,15 @@ export class CategoryController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const categoryToRemove = await this.categoryRepository.findOne(request.params.id)
+      const categoryToRemove = await this.categoryRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!categoryToRemove) {
-        logger.warn('Category not found for removal', { id: request.params.id })
+        logger.warn('Category not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Category not found' })
         return
       }
@@ -118,12 +138,16 @@ export class CategoryController {
   async reorderRows(request: Request, response: Response, next: NextFunction) {
     try {
       if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
-        return await bulkUpdateRowReorder(this.categoryRepository, request.body.rowReorderResult)
+        return await bulkUpdateRowReorder(
+          this.categoryRepository,
+          request.body.rowReorderResult,
+          request.user.lang,
+        )
       }
 
       return await this.categoryRepository.find({
         where: {
-          lang: request.params.lang,
+          lang: request.user.lang,
         },
         order: {
           sortingKey: 'ASC',

@@ -17,7 +17,7 @@ export class ArticleVoiceOverController {
     const id = request.query.id as string
     if (typeof id !== 'string') throw new Error('ID is not a string.')
 
-    const article = await this.articleRepository.findOne(id)
+    const article = await this.articleRepository.findOne({ id, lang: request.user.lang })
     if (typeof article === 'undefined') throw new Error('Target not found.')
 
     return article
@@ -32,7 +32,7 @@ export class ArticleVoiceOverController {
       if (typeof id !== 'string') throw new Error('ID is not a string.')
       if (typeof file === 'undefined') throw new Error('No file uploaded.')
 
-      const target = await this.articleRepository.findOne(id)
+      const target = await this.articleRepository.findOne({ id, lang: request.user.lang })
       if (typeof target === 'undefined') throw new Error('Target not found.')
 
       const previousKey = target.voiceOverKey
@@ -101,7 +101,7 @@ export class ArticleVoiceOverController {
       const id = request.body.id
       if (typeof id !== 'string') throw new Error('ID is not a string.')
 
-      const target = await this.articleRepository.findOne(id)
+      const target = await this.articleRepository.findOne({ id, lang: request.user.lang })
       if (typeof target === 'undefined') throw new Error('Target not found.')
 
       if (typeof target.voiceOverKey === 'string' && target.voiceOverKey.length > 0) {

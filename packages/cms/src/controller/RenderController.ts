@@ -394,7 +394,7 @@ export class RenderController {
     try {
       const [categories, subcategories] = await Promise.all([
         this.categoryRepository.find({
-          where: { id: request.params.id },
+          where: { id: request.params.id, lang: request.user.lang },
         }),
         this.subcategoryRepository.query(
           `SELECT sc.id, sc.title, ca.title as parent_category, ca.id as parent_category_id, sc."sortingKey"
@@ -409,6 +409,12 @@ export class RenderController {
         ),
       ])
 
+      if (categories.length === 0) {
+        logger.warn('Category not found', { id: request.params.id, lang: request.user.lang })
+        response.status(404).send('Category not found')
+        return
+      }
+
       this.render(response, 'Category', { categories, subcategories })
     } catch (error) {
       logger.error('RenderController.renderCategoryManagement failed', {
@@ -422,11 +428,11 @@ export class RenderController {
   async renderSubcategoryManagement(request: Request, response: Response, next: NextFunction) {
     try {
       const subcategories = await this.subcategoryRepository.find({
-        where: { id: request.params.id },
+        where: { id: request.params.id, lang: request.user.lang },
       })
 
       if (!subcategories || subcategories.length === 0) {
-        logger.warn('Subcategory not found', { id: request.params.id })
+        logger.warn('Subcategory not found', { id: request.params.id, lang: request.user.lang })
         response.status(404).send('Subcategory not found')
         return
       }

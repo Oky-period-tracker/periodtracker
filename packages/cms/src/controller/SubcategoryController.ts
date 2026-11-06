@@ -4,7 +4,7 @@ import { Category } from '../entity/Category'
 import { Subcategory } from '../entity/Subcategory'
 import { Article } from '../entity/Article'
 import { v4 as uuid } from 'uuid'
-import { bulkUpdateRowReorder } from '../helpers/common'
+import { bulkUpdateRowReorder, isUuid } from '../helpers/common'
 import { logger } from '../logger'
 
 export class SubcategoryController {
@@ -27,6 +27,7 @@ export class SubcategoryController {
 
   // The parent comes from the request, so it must be in the editor's language too
   private async parentInLanguage(request: Request) {
+    if (!isUuid(request.body.parent_category)) return false
     const parent = await this.categoryRepository.findOne({
       id: request.body.parent_category,
       lang: request.user.lang,
@@ -64,11 +65,6 @@ export class SubcategoryController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const sub_category = await this.subCategoryRepository.findOne({
-        title: request.body.title,
-        parent_category: request.body.parent_category,
-      })
-      if (sub_category && sub_category.id !== request.params.id) return { duplicate: true }
       // Scoped to the editor's language, which the subcategory keeps: an edit never moves it
       const subCategoryToUpdate = await this.subCategoryRepository.findOne({
         id: request.params.id,
@@ -86,6 +82,12 @@ export class SubcategoryController {
         response.status(404).send({ error: 'Category not found' })
         return
       }
+      // Checked once the parent is known to be in the editor's language
+      const sub_category = await this.subCategoryRepository.findOne({
+        title: request.body.title,
+        parent_category: request.body.parent_category,
+      })
+      if (sub_category && sub_category.id !== subCategoryToUpdate.id) return { duplicate: true }
       subCategoryToUpdate.title = request.body.title
       subCategoryToUpdate.parent_category = request.body.parent_category
       await this.subCategoryRepository.save(subCategoryToUpdate)

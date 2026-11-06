@@ -5,7 +5,7 @@ import { Category } from '../entity/Category'
 import { Subcategory } from '../entity/Subcategory'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
-import { bulkUpdateRowReorder } from '../helpers/common'
+import { bulkUpdateRowReorder, isUuid } from '../helpers/common'
 import { toLevel } from '../helpers/safeUtils'
 import { withoutDisabledFeatures } from '../helpers/features'
 import { logger } from '../logger'
@@ -15,13 +15,16 @@ export class ArticleController {
   private categoryRepository = getRepository(Category)
   private subcategoryRepository = getRepository(Subcategory)
 
-  // The parents come from the request, so they must be in the editor's language too
+  // The parents come from the request, so they must be in the editor's language too,
+  // and the subcategory must belong to the chosen category
   private async parentsInLanguage(request: Request) {
-    const [category, subcategory] = await Promise.all([
-      this.categoryRepository.findOne({ id: request.body.category, lang: request.user.lang }),
-      this.subcategoryRepository.findOne({ id: request.body.subcategory, lang: request.user.lang }),
+    const { category, subcategory } = request.body
+    if (!isUuid(category) || !isUuid(subcategory)) return false
+    const [parentCategory, parentSubcategory] = await Promise.all([
+      this.categoryRepository.findOne({ id: category, lang: request.user.lang }),
+      this.subcategoryRepository.findOne({ id: subcategory, lang: request.user.lang }),
     ])
-    return !!category && !!subcategory
+    return !!parentCategory && parentSubcategory?.parent_category === parentCategory.id
   }
 
   async all(request: Request, response: Response, next: NextFunction) {
@@ -82,8 +85,10 @@ export class ArticleController {
         response.status(404).send({ error: 'Category or subcategory not found' })
         return
       }
+      // Only a title in the editor's language is a duplicate
       const article = await this.articleRepository.findOne({
         article_heading: request.body.article_heading,
+        lang: request.user.lang,
       })
       if (article) {
         return { article, isExist: true }
@@ -115,12 +120,6 @@ export class ArticleController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const article = await this.articleRepository.findOne({
-        article_heading: request.body.article_heading,
-      })
-      if (article && request.params.id !== article.id) {
-        return { article, isExist: true }
-      }
       const booleanFromString = request.body.live === 'true'
       // Scoped to the editor's language, which the article keeps: an edit never moves it
       const articleToUpdate = await this.articleRepository.findOne({
@@ -134,6 +133,14 @@ export class ArticleController {
         })
         response.status(404).send({ error: 'Article not found' })
         return
+      }
+      // Only a title in the editor's language is a duplicate
+      const article = await this.articleRepository.findOne({
+        article_heading: request.body.article_heading,
+        lang: request.user.lang,
+      })
+      if (article && articleToUpdate.id !== article.id) {
+        return { article, isExist: true }
       }
       if (!(await this.parentsInLanguage(request))) {
         response.status(404).send({ error: 'Category or subcategory not found' })

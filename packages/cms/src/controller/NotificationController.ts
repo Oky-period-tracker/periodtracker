@@ -49,13 +49,15 @@ export class NotificationController {
 
   async savePermanentAlert(request: Request, response: Response, next: NextFunction) {
     try {
-      const permanentNotificationToAdd = request.body
-      const booleanFromStringLive = request.body.live === 'true'
-      const booleanFromStringIsPermanent = request.body.isPermanent === 'true'
-      permanentNotificationToAdd.live = booleanFromStringLive
-      permanentNotificationToAdd.isPermanent = booleanFromStringIsPermanent
-      permanentNotificationToAdd.lang = request.user.lang
-      await this.permanentNotificationRepository.save(permanentNotificationToAdd)
+      // Built from the expected fields only: an id in the body would make save()
+      // overwrite that alert, whatever its language, instead of creating one
+      const permanentNotificationToAdd = await this.permanentNotificationRepository.save({
+        message: request.body.message,
+        versions: request.body.versions,
+        isPermanent: request.body.isPermanent === 'true',
+        live: request.body.live === 'true',
+        lang: request.user.lang,
+      })
       logger.info('Permanent alert saved', { lang: request.user.lang })
       return permanentNotificationToAdd
     } catch (error) {

@@ -30,9 +30,13 @@ export class PrivacyPolicyController {
 
   async save(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToSave = request.body
-      aboutToSave.lang = request.user.lang
-      await this.privacyPolicyRepository.save(aboutToSave)
+      // Built from the expected fields only: an id in the body would make save()
+      // overwrite that row, whatever its language, instead of creating one
+      const aboutToSave = await this.privacyPolicyRepository.save({
+        json_dump: request.body.json_dump,
+        timestamp: request.body.timestamp,
+        lang: request.user.lang,
+      })
       logger.info('Privacy policy saved', { lang: request.user.lang })
       return aboutToSave
     } catch (error) {

@@ -29,8 +29,10 @@ export class VideoController {
 
   async save(request: Request, response: Response, next: NextFunction) {
     try {
+      // Only a title in the editor's language is a duplicate
       const videoWithSameTitle = await this.videoRepository.findOne({
         title: request.body.title,
+        lang: request.user.lang,
       })
       if (videoWithSameTitle) {
         return { video: videoWithSameTitle, isExist: true }
@@ -49,13 +51,6 @@ export class VideoController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const videoWithSameTitle = await this.videoRepository.findOne({
-        title: request.body.title,
-      })
-      if (videoWithSameTitle && request.params.id !== videoWithSameTitle.id) {
-        return { video: videoWithSameTitle, isExist: true }
-      }
-
       const videoToUpdate = await this.videoRepository.findOne({
         id: request.params.id,
         lang: request.user.lang,
@@ -67,6 +62,14 @@ export class VideoController {
         })
         response.status(404).send({ error: 'Video not found' })
         return
+      }
+      // Only a title in the editor's language is a duplicate
+      const videoWithSameTitle = await this.videoRepository.findOne({
+        title: request.body.title,
+        lang: request.user.lang,
+      })
+      if (videoWithSameTitle && videoToUpdate.id !== videoWithSameTitle.id) {
+        return { video: videoWithSameTitle, isExist: true }
       }
       const booleanFromString = request.body.live === 'true'
       videoToUpdate.title = request.body.title

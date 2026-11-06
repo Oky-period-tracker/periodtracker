@@ -34,9 +34,13 @@ export class TermsAndConditionsController {
 
   async save(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToSave = request.body
-      aboutToSave.lang = request.user.lang
-      await this.termsAndConditionsRepository.save(aboutToSave)
+      // Built from the expected fields only: an id in the body would make save()
+      // overwrite that row, whatever its language, instead of creating one
+      const aboutToSave = await this.termsAndConditionsRepository.save({
+        json_dump: request.body.json_dump,
+        timestamp: request.body.timestamp,
+        lang: request.user.lang,
+      })
       logger.info('Terms and conditions saved', { lang: request.user.lang })
       return aboutToSave
     } catch (error) {

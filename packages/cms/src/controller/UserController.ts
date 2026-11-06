@@ -30,6 +30,16 @@ const duplicateUsername = (response: Response, action: string, username: string)
   response.status(409).send({ error: 'username is not unique' })
 }
 
+const keepLastSuperAdmin = (request: Request, response: Response, action: string) => {
+  logger.warn(`User ${action} refused: last superAdmin`, {
+    requestingUser: request.user.id,
+    target: request.params.id,
+  })
+  response
+    .status(409)
+    .send({ error: 'the CMS needs at least one super admin, create another one first' })
+}
+
 const deny = (request: Request, response: Response, action: string) => {
   logger.warn(`User ${action} denied: insufficient permissions`, {
     requestingUser: request.user.id,
@@ -47,6 +57,13 @@ export class UserController {
   private async usernameTaken(username: string, exceptId?: number) {
     const matches = await this.userRepository.find({ where: { username } })
     return matches.some((user) => user.id !== exceptId)
+  }
+
+  // Only a superAdmin can create or promote another one, so a CMS left
+  // without any could only be recovered by hand in the database
+  private async isLastSuperAdmin(user: User) {
+    if (user.type !== 'superAdmin') return false
+    return (await this.userRepository.count({ where: { type: 'superAdmin' } })) <= 1
   }
 
   async all(request: Request, response: Response, next: NextFunction) {
@@ -119,6 +136,10 @@ export class UserController {
         deny(request, response, 'update')
         return
       }
+      if (request.body.type !== 'superAdmin' && (await this.isLastSuperAdmin(userToUpdate))) {
+        keepLastSuperAdmin(request, response, 'update')
+        return
+      }
       if (await this.usernameTaken(request.body.username, userToUpdate.id)) {
         duplicateUsername(response, 'update', request.body.username)
         return
@@ -160,6 +181,10 @@ export class UserController {
       }
       if (!canManage(request.user, userToRemove.type, userToRemove.lang)) {
         deny(request, response, 'removal')
+        return
+      }
+      if (await this.isLastSuperAdmin(userToRemove)) {
+        keepLastSuperAdmin(request, response, 'removal')
         return
       }
       await this.userRepository.remove(userToRemove)

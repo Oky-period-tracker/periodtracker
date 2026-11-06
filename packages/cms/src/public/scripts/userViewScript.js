@@ -45,7 +45,14 @@ $('#btnEditConfirm').on('click', () => {
     },
     error: (error) => {
       console.log(error)
-      $('#errorCat409').show()
+      // Only a taken username is shown under the field, anything else (such as
+      // demoting the last super admin) gets its own message
+      var reason = error.responseJSON && error.responseJSON.error
+      if (error.status === 409 && reason === 'username is not unique') {
+        $('#errorCat409').show()
+      } else {
+        alert(requestErrorMessage('save the user', error))
+      }
     },
   })
 })
@@ -63,6 +70,7 @@ $('.deleteUser').on('click', (event) => {
       },
       error: (error) => {
         console.log(error)
+        alert(requestErrorMessage('delete the user', error))
       },
     })
   }

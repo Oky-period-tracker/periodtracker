@@ -67,6 +67,7 @@ describe('CMS user management authorization', () => {
         const user = users.find((u) => String(u.id) === String(id))
         return user && project(user, options?.select)
       }),
+      count: jest.fn(async ({ where }) => users.filter((user) => user.type === where.type).length),
       save,
       remove,
     })
@@ -324,6 +325,66 @@ describe('CMS user management authorization', () => {
       expect(status).toBe(409)
     })
 
+    describe('last superAdmin', () => {
+      beforeEach(() => {
+        users = users.filter((user) => user.id !== targets.superAdmin)
+      })
+
+      it.each(['admin', 'contentManager'])('cannot demote itself to %s', async (type) => {
+        const id = actors.superAdmin
+        const before = { ...stored(id) }
+        const { status } = await call(
+          'update',
+          'superAdmin',
+          { id },
+          { username: before.username, type, lang: before.lang },
+        )
+
+        expect(status).toBe(409)
+        expect(save).not.toHaveBeenCalled()
+        expect(stored(id)).toEqual(before)
+      })
+
+      it('can still edit itself while staying superAdmin', async () => {
+        const id = actors.superAdmin
+        const { status } = await call(
+          'update',
+          'superAdmin',
+          { id },
+          { username: 'renamed', password: 'new', type: 'superAdmin', lang: 'en' },
+        )
+
+        expect(status).toBe(200)
+        expect(stored(id)).toMatchObject({ username: 'renamed', type: 'superAdmin' })
+      })
+
+      it('can still demote other accounts', async () => {
+        const id = targets.admin
+        const { status } = await call(
+          'update',
+          'superAdmin',
+          { id },
+          { username: 'otherAdmin', type: 'contentManager', lang: 'en' },
+        )
+
+        expect(status).toBe(200)
+        expect(stored(id).type).toBe('contentManager')
+      })
+    })
+
+    it('lets a superAdmin demote itself while another superAdmin remains', async () => {
+      const id = actors.superAdmin
+      const { status } = await call(
+        'update',
+        'superAdmin',
+        { id },
+        { username: 'superAdmin', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(200)
+      expect(stored(id).type).toBe('contentManager')
+    })
+
     it('keeps the stored password when the form sends it empty', async () => {
       const id = targets.contentManager
       await call(
@@ -363,6 +424,33 @@ describe('CMS user management authorization', () => {
         expect(remove).not.toHaveBeenCalled()
         expect(stored(id)).toEqual(before)
       }
+    })
+
+    it('lets a superAdmin delete itself while another superAdmin remains', async () => {
+      const { status } = await call('remove', 'superAdmin', { id: actors.superAdmin })
+
+      expect(status).toBe(200)
+      expect(stored(actors.superAdmin)).toBeUndefined()
+    })
+
+    it('keeps the last superAdmin from deleting itself', async () => {
+      users = users.filter((user) => user.id !== targets.superAdmin)
+      const before = { ...stored(actors.superAdmin) }
+
+      const { status } = await call('remove', 'superAdmin', { id: actors.superAdmin })
+
+      expect(status).toBe(409)
+      expect(remove).not.toHaveBeenCalled()
+      expect(stored(actors.superAdmin)).toEqual(before)
+    })
+
+    it('still lets the last superAdmin delete other accounts', async () => {
+      users = users.filter((user) => user.id !== targets.superAdmin)
+
+      const { status } = await call('remove', 'superAdmin', { id: targets.admin })
+
+      expect(status).toBe(200)
+      expect(stored(targets.admin)).toBeUndefined()
     })
   })
 })

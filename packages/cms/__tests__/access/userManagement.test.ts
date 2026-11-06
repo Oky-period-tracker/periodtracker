@@ -58,12 +58,13 @@ describe('CMS user management authorization', () => {
       return entity
     })
     ;(getRepository as jest.Mock).mockReturnValue({
-      find: jest.fn(async ({ select }) => users.map((user) => project(user, select))),
-      findOne: jest.fn(async (idOrOptions, options) => {
-        const user =
-          typeof idOrOptions === 'object'
-            ? users.find((u) => u.username === idOrOptions.where.username)
-            : users.find((u) => String(u.id) === String(idOrOptions))
+      find: jest.fn(async ({ select, where }) =>
+        users
+          .filter((user) => !where || user.username === where.username)
+          .map((user) => project(user, select)),
+      ),
+      findOne: jest.fn(async (id, options) => {
+        const user = users.find((u) => String(u.id) === String(id))
         return user && project(user, options?.select)
       }),
       save,
@@ -165,6 +166,33 @@ describe('CMS user management authorization', () => {
       )
       expect(status).toBe(403)
     })
+
+    it('refuses a username that is already taken', async () => {
+      const before = users.length
+      const { status } = await call(
+        'save',
+        'admin',
+        {},
+        { username: 'superAdmin', password: 'p', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(409)
+      expect(save).not.toHaveBeenCalled()
+      expect(users).toHaveLength(before)
+    })
+
+    it('answers 409 when the database rejects a username created in the meantime', async () => {
+      save.mockRejectedValueOnce(Object.assign(new Error('duplicate key'), { code: '23505' }))
+
+      const { status } = await call(
+        'save',
+        'admin',
+        {},
+        { username: 'newUser', password: 'p', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(409)
+    })
   })
 
   describe('update', () => {
@@ -236,6 +264,64 @@ describe('CMS user management authorization', () => {
 
       expect(status).toBe(200)
       expect(stored(id).type).toBe('admin')
+    })
+
+    // Login looks the account up by username alone, so a second "superAdmin"
+    // row could sign in as, or instead of, the real one
+    it.each([
+      ['admin', 'superAdmin'],
+      ['admin', 'admin'],
+      ['superAdmin', 'admin'],
+    ])('a %s cannot rename a content manager to the taken username %s', async (actor, username) => {
+      const id = targets.contentManager
+      const before = { ...stored(id) }
+      const { status } = await call(
+        'update',
+        actor,
+        { id },
+        { username, password: 'p', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(409)
+      expect(save).not.toHaveBeenCalled()
+      expect(stored(id)).toEqual(before)
+    })
+
+    it('lets an account keep its own username when edited', async () => {
+      const id = targets.contentManager
+      const { status } = await call(
+        'update',
+        'admin',
+        { id },
+        { username: 'otherCm', password: 'new', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(200)
+      expect(stored(id)).toMatchObject({ username: 'otherCm', password: 'hash:new' })
+    })
+
+    it('refuses the rename before revealing whether a username exists', async () => {
+      const { status } = await call(
+        'update',
+        'contentManager',
+        { id: targets.contentManager },
+        { username: 'superAdmin', password: 'p', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(403)
+    })
+
+    it('answers 409 when the database rejects a username taken in the meantime', async () => {
+      save.mockRejectedValueOnce(Object.assign(new Error('duplicate key'), { code: '23505' }))
+
+      const { status } = await call(
+        'update',
+        'admin',
+        { id: targets.contentManager },
+        { username: 'renamed', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(409)
     })
 
     it('keeps the stored password when the form sends it empty', async () => {

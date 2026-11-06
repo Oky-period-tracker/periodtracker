@@ -21,6 +21,15 @@ const canManage = (actor: User, type: string, lang: string) =>
 const requestedLang = (actor: User, lang: string) =>
   accessControlList.can(actor.type, 'toggleLanguages') ? lang : actor.lang
 
+// Postgres unique_violation, raised by the unique index on user.username when
+// two requests race past the lookup below
+const isUniqueViolation = (error: any) => error?.code === '23505'
+
+const duplicateUsername = (response: Response, action: string, username: string) => {
+  logger.warn(`User ${action} failed: duplicate username`, { username })
+  response.status(409).send({ error: 'username is not unique' })
+}
+
 const deny = (request: Request, response: Response, action: string) => {
   logger.warn(`User ${action} denied: insufficient permissions`, {
     requestingUser: request.user.id,
@@ -32,6 +41,13 @@ const deny = (request: Request, response: Response, action: string) => {
 
 export class UserController {
   private userRepository = getRepository(User)
+
+  // Login looks accounts up by username alone, so two accounts sharing one
+  // would let the wrong one sign in. exceptId is the account being renamed
+  private async usernameTaken(username: string, exceptId?: number) {
+    const matches = await this.userRepository.find({ where: { username } })
+    return matches.some((user) => user.id !== exceptId)
+  }
 
   async all(request: Request, response: Response, next: NextFunction) {
     try {
@@ -63,12 +79,8 @@ export class UserController {
         deny(request, response, 'creation')
         return
       }
-      const user = await this.userRepository.findOne({
-        where: { username: request.body.username },
-      })
-      if (user) {
-        logger.warn('User creation failed: duplicate username', { username: request.body.username })
-        response.status(409).send({ error: 'username is not unique' })
+      if (await this.usernameTaken(request.body.username)) {
+        duplicateUsername(response, 'creation', request.body.username)
         return
       }
       const hash = await bcrypt.hash(request.body.password, saltRounds)
@@ -82,6 +94,10 @@ export class UserController {
       logger.info('CMS user created', { username: request.body.username, type: request.body.type })
       return request.body
     } catch (error) {
+      if (isUniqueViolation(error)) {
+        duplicateUsername(response, 'creation', request.body.username)
+        return
+      }
       logger.error('UserController.save failed', { message: error?.message, stack: error?.stack })
       throw error
     }
@@ -103,6 +119,10 @@ export class UserController {
         deny(request, response, 'update')
         return
       }
+      if (await this.usernameTaken(request.body.username, userToUpdate.id)) {
+        duplicateUsername(response, 'update', request.body.username)
+        return
+      }
       userToUpdate.username = request.body.username
       userToUpdate.lang = lang
       userToUpdate.type = request.body.type
@@ -117,6 +137,10 @@ export class UserController {
       logger.info('CMS user updated', { id: request.params.id, username: request.body.username })
       return userToUpdate
     } catch (error) {
+      if (isUniqueViolation(error)) {
+        duplicateUsername(response, 'update', request.body.username)
+        return
+      }
       logger.error('UserController.update failed', {
         id: request.params.id,
         message: error?.message,

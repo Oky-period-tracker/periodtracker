@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm'
 
+// Login resolves an account by username alone, so it has to identify one row
+@Index('idx_user_username', ['username'], { unique: true })
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()

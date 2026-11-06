@@ -130,6 +130,9 @@ describe('Session revocation', () => {
     }
     ;(typeorm.getRepository as jest.Mock).mockReturnValue({
       findOne: jest.fn(async (id: number) => users[id] && { ...users[id] }),
+      find: jest.fn(async ({ where }) =>
+        Object.values(users).filter((user) => user.username === where.username),
+      ),
       increment: jest.fn(async ({ id }, column: string, value: number) => {
         users[id][column] += value
       }),

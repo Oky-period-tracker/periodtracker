@@ -32,9 +32,13 @@ $('#btnEditConfirm').on('click', () => {
   const userID = $('#itemID').text()
   const data = {
     username: $('#col0TableModal').val(),
-    password: userID === '0' ? $('#col1TableModal').val() : '',
     type: $('#col2TableModal').val(),
     lang: 'en',
+  }
+  // Only a new user gets a password from this form. An edit never sends one,
+  // so the server keeps the stored password
+  if (userID === '0') {
+    data.password = $('#col1TableModal').val()
   }
   // if the article ID is 0 we are creating a new entry
   $.ajax({

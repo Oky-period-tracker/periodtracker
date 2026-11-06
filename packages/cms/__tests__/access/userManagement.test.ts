@@ -179,6 +179,35 @@ describe('CMS user management authorization', () => {
       expect(status).toBe(403)
     })
 
+    it.each([
+      ['an empty', { password: '' }],
+      ['a whitespace-only', { password: '   ' }],
+      ['a missing', {}],
+    ])('refuses %s password', async (_label, password) => {
+      const before = users.length
+      const { status, body } = await call(
+        'save',
+        'admin',
+        {},
+        { username: 'newUser', type: 'contentManager', lang: 'en', ...password },
+      )
+
+      expect(status).toBe(400)
+      expect(body).toEqual({ error: 'Password cannot be empty' })
+      expect(save).not.toHaveBeenCalled()
+      expect(users).toHaveLength(before)
+    })
+
+    it('refuses before checking the password', async () => {
+      const { status } = await call(
+        'save',
+        'contentManager',
+        {},
+        { username: 'newUser', password: '', type: 'contentManager', lang: 'en' },
+      )
+      expect(status).toBe(403)
+    })
+
     it('refuses a username that is already taken', async () => {
       const before = users.length
       const { status } = await call(
@@ -397,16 +426,51 @@ describe('CMS user management authorization', () => {
       expect(stored(id).type).toBe('contentManager')
     })
 
-    it('keeps the stored password when the form sends it empty', async () => {
+    it('keeps the stored password on an edit that does not send one', async () => {
       const id = targets.contentManager
-      await call(
+      const { status } = await call(
+        'update',
+        'superAdmin',
+        { id },
+        { username: 'renamedCm', type: 'admin', lang: 'fr' },
+      )
+
+      expect(status).toBe(200)
+      expect(stored(id)).toMatchObject({
+        username: 'renamedCm',
+        type: 'admin',
+        lang: 'fr',
+        password: 'hash:x',
+      })
+    })
+
+    it('replaces the password when the edit sends a new one', async () => {
+      const id = targets.contentManager
+      const { status } = await call(
         'update',
         'admin',
         { id },
-        { username: 'otherCm', password: '', type: 'contentManager', lang: 'en' },
+        { username: 'otherCm', password: 'new-secret', type: 'contentManager', lang: 'en' },
       )
 
-      expect(stored(id).password).toBe('hash:x')
+      expect(status).toBe(200)
+      expect(stored(id).password).toBe('hash:new-secret')
+    })
+
+    it.each(['', '   '])('refuses %p as a replacement password', async (password) => {
+      const id = targets.contentManager
+      const before = { ...stored(id) }
+      const { status, body } = await call(
+        'update',
+        'admin',
+        { id },
+        { username: 'renamed', password, type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(400)
+      expect(body).toEqual({ error: 'Password cannot be empty' })
+      expect(save).not.toHaveBeenCalled()
+      expect(stored(id)).toEqual(before)
     })
 
     it('keeps an admin from moving a content manager to another language', async () => {

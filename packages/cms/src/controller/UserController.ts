@@ -35,6 +35,17 @@ const duplicateUsername = (response: Response, action: string, username: string)
   response.status(409).send({ error: 'username is not unique' })
 }
 
+// A blank password cannot be typed at login, so storing one locks the account
+const isBlankPassword = (password: unknown) => typeof password !== 'string' || !password.trim()
+
+const blankPassword = (request: Request, response: Response, action: string) => {
+  logger.warn(`User ${action} rejected: empty password`, {
+    requestingUser: request.user.id,
+    target: request.params.id,
+  })
+  response.status(400).send({ error: 'Password cannot be empty' })
+}
+
 const keepLastSuperAdmin = (request: Request, response: Response, action: string) => {
   logger.warn(`User ${action} refused: last superAdmin`, {
     requestingUser: request.user.id,
@@ -101,6 +112,10 @@ export class UserController {
         deny(request, response, 'creation')
         return
       }
+      if (isBlankPassword(request.body.password)) {
+        blankPassword(request, response, 'creation')
+        return
+      }
       if (await this.usernameTaken(request.body.username)) {
         duplicateUsername(response, 'creation', request.body.username)
         return
@@ -145,6 +160,14 @@ export class UserController {
         keepLastSuperAdmin(request, response, 'update')
         return
       }
+      // The password only changes when the request carries a replacement on
+      // purpose: the edit form sends none, and a blank one is refused
+      const { password } = request.body
+      const changesPassword = password !== undefined
+      if (changesPassword && isBlankPassword(password)) {
+        blankPassword(request, response, 'update')
+        return
+      }
       if (await this.usernameTaken(request.body.username, userToUpdate.id)) {
         duplicateUsername(response, 'update', request.body.username)
         return
@@ -152,10 +175,8 @@ export class UserController {
       userToUpdate.username = request.body.username
       userToUpdate.lang = lang
       userToUpdate.type = request.body.type
-      // The edit form has no password field and sends it empty, which used to
-      // overwrite the stored hash and lock the account out
-      if (request.body.password) {
-        userToUpdate.password = await bcrypt.hash(request.body.password, saltRounds)
+      if (changesPassword) {
+        userToUpdate.password = await bcrypt.hash(password, saltRounds)
       }
       // New password, username or role: log the user out everywhere
       userToUpdate.sessionVersion += 1

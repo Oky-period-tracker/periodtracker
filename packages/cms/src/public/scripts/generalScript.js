@@ -23,3 +23,39 @@ $(document).on('click', '.history-back', (event) => {
     window.history.back()
   }
 })
+
+// Builds the message shown to editors when a request fails, so errors such as
+// a 403 are not only logged to the console. Called from the page scripts.
+function requestErrorMessage(action, xhr) {
+  if (xhr.status === 0) {
+    return (
+      'Could not ' + action + ': the CMS could not be reached. Check your connection and try again.'
+    )
+  }
+  var reason
+  if (xhr.status === 401 || xhr.status === 403) {
+    reason =
+      'the request was refused. Log out and log back in, and if it still fails ask an admin to check your access.'
+  } else if (xhr.responseJSON && xhr.responseJSON.error) {
+    reason = xhr.responseJSON.error + '.'
+  } else {
+    reason = 'the server returned an error.'
+  }
+  return 'Could not ' + action + ': ' + reason + ' (HTTP ' + xhr.status + ')'
+}
+
+// Selects a content filter or age restriction level in the article modal.
+// Older articles store null, which means level 0. A stored level that is not
+// among the options leaves the dropdown empty instead of showing another level.
+function selectLevel(dropdown, level) {
+  dropdown.val(String(level == null ? 0 : level))
+}
+
+// Adds the article modal's levels to the request data. An empty dropdown is
+// left out, so the server keeps the stored level instead of saving level 0.
+function addSelectedLevels(data) {
+  var contentFilter = $('#contentFilterDropdownForm').val()
+  var ageRestrictionLevel = $('#ageRestrictionLevelForm').val()
+  if (contentFilter != null) data.contentFilter = contentFilter
+  if (ageRestrictionLevel != null) data.ageRestrictionLevel = ageRestrictionLevel
+}

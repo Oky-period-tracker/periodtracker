@@ -108,17 +108,18 @@ export class DataController {
         latestAbout,
       ] = await Promise.all([
         this.quizRepository.find({
-          where: { lang: request.user.lang, live },
+          where: { lang: request.user.lang, ...(live && { live: true }) },
           order: { topic: 'ASC' },
         }),
         this.didYouKnowRepository.find({
-          where: { lang: request.user.lang, live },
+          where: { lang: request.user.lang, ...(live && { live: true }) },
         }),
+        // Help centers have no `live` column; their publish toggle is `isActive`.
         this.helpCenterRepository.find({
-          where: { lang: request.user.lang },
+          where: { lang: request.user.lang, ...(live && { isActive: true }) },
         }),
         this.avatarMessagesRepository.find({
-          where: { lang: request.user.lang, live },
+          where: { lang: request.user.lang, ...(live && { live: true }) },
         }),
         this.privacyPolicyRepository.findOne({
           where: { lang: request.user.lang },

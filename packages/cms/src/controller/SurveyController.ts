@@ -33,7 +33,7 @@ export class SurveyController {
   async all(request: Request, response: Response, next: NextFunction) {
     return await createQueryBuilder('survey')
       .from(Survey, 'survey')
-      .where({ lang: request.params.lang })
+      .where({ lang: request.user.lang })
       .leftJoinAndMapMany('survey.questions', Question, 'question', 'question.surveyId = survey.id')
       .select(['survey', 'question'])
       .getMany()
@@ -92,7 +92,12 @@ export class SurveyController {
     return withoutDisabledFeatures(surveys)
   }
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.surveyRepository.findOne(request.params.id)
+    const survey = await this.surveyRepository.findOne({
+      id: request.params.id,
+      lang: request.user.lang,
+    })
+    if (!survey) response.status(404).send({ error: 'Survey not found' })
+    return survey
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
@@ -152,9 +157,10 @@ export class SurveyController {
       const updated = await getManager().transaction(async (manager) => {
         const surveys = manager.getRepository(Survey)
         const questionRepository = manager.getRepository(Question)
-        const survey = await surveys.findOne(request.params.id, {
-          lock: { mode: 'pessimistic_write' },
-        })
+        const survey = await surveys.findOne(
+          { id: request.params.id, lang: request.user.lang },
+          { lock: { mode: 'pessimistic_write' } },
+        )
         if (!survey) return false
         for (const question of questions) {
           if (!question.id) {
@@ -190,7 +196,6 @@ export class SurveyController {
           }
           await questionRepository.remove(question)
         }
-        survey.lang = request.user.lang
         if (request.body.live) survey.live = request.body.live === 'true'
         if (request.body.isAgeRestricted)
           survey.isAgeRestricted = request.body.isAgeRestricted === 'true'
@@ -218,9 +223,10 @@ export class SurveyController {
       const removed = await getManager().transaction(async (manager) => {
         const surveys = manager.getRepository(Survey)
         const questions = manager.getRepository(Question)
-        const survey = await surveys.findOne(request.params.id, {
-          lock: { mode: 'pessimistic_write' },
-        })
+        const survey = await surveys.findOne(
+          { id: request.params.id, lang: request.user.lang },
+          { lock: { mode: 'pessimistic_write' } },
+        )
         if (!survey) return undefined
         const children = await questions.find({ where: { surveyId: survey.id } })
         await questions.remove(children)

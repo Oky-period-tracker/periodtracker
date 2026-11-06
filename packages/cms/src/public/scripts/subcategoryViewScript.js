@@ -13,6 +13,8 @@ $('#articleModal').on('show.bs.modal', (event) => {
     $('#col1TableModal').val('')
     $('#col2TableModal').val('')
     $('#col3TableModal').val('')
+    selectLevel($('#contentFilterDropdownForm'), 0)
+    selectLevel($('#ageRestrictionLevelForm'), 0)
     $('#col4TableModal').prop('checked', false)
     $('#itemID').text(0)
     $('#countdown2').text(70 + ' characters remaining.')
@@ -29,6 +31,8 @@ $('#articleModal').on('show.bs.modal', (event) => {
   $('#col1TableModal').val(articleInfo.subcategory_id)
   $('#col2TableModal').val(articleInfo.article_heading)
   $('#col3TableModal').val(articleInfo.article_text)
+  selectLevel($('#contentFilterDropdownForm'), articleInfo.contentFilter)
+  selectLevel($('#ageRestrictionLevelForm'), articleInfo.ageRestrictionLevel)
   $('#col4TableModal').prop('checked', articleInfo.live)
   $('#itemID').text(articleId)
   $('#countdown2').text(70 - articleInfo.article_heading.length + ' characters remaining.')
@@ -94,6 +98,7 @@ $('#btnArticleEditConfirm').on('click', () => {
     article_text: $('#col3TableModal').val(),
     live: $('#col4TableModal').prop('checked'),
   }
+  addSelectedLevels(data)
 
   if (
     !data.category ||
@@ -121,8 +126,9 @@ $('#btnArticleEditConfirm').on('click', () => {
         setTimeout(() => location.reload(), 1500)
       }
     },
-    error: (error) => {
-      console.log(error)
+    error: (xhr) => {
+      console.error('Article save failed', xhr.status, xhr.responseText)
+      alert(requestErrorMessage('save the article', xhr))
     },
   })
 })
@@ -180,30 +186,30 @@ $('#btnSubcategoryConfirm').on('click', () => {
 })
 
 // ==================== Live check =============================
-$(document).on('click', '.liveCheckbox', () => {
-  var button = $(event.target) // Button that triggered the modal
-  var articleId = button.data('value') // Extract info from data-* attributes
-  var articles = JSON.parse($('#articlesJSON').text())
-  var articleInfo = articles.find((item) => {
-    return item.id === articleId
-  })
-  const data = {
-    category: articleInfo.category,
-    subcategory: articleInfo.subcategory,
-    article_heading: articleInfo.article_heading,
-    article_text: articleInfo.article_text,
-    live: button.prop('checked'),
-  }
-  // if the ID is 0 we are creating a new entry
+$(document).on('change', '.liveCheckbox', (event) => {
+  var checkbox = $(event.currentTarget)
+  var live = checkbox.prop('checked')
+  // Locked until the server answers, so quick clicks can't race each other
+  checkbox.prop('disabled', true)
   $.ajax({
-    url: '/articles/' + articleId,
+    url: '/articles/' + checkbox.data('value') + '/live',
     type: 'PUT',
-    data: data,
+    data: { live: live },
     success: (result) => {
-      location.reload()
+      // No reload, so the editor keeps their scroll and filters. The edit modal reads
+      // #articlesJSON, so it gets the stored status too or saving the modal would undo it
+      checkbox.prop('checked', result.live).prop('disabled', false)
+      var articles = JSON.parse($('#articlesJSON').text())
+      articles.forEach((item) => {
+        if (item.id === result.id) item.live = result.live
+      })
+      $('#articlesJSON').text(JSON.stringify(articles))
     },
-    error: (error) => {
-      console.log(error)
+    error: (xhr) => {
+      console.error('Article live update failed', xhr.status, xhr.responseText)
+      // Nothing was saved: put the switch back to the stored status
+      checkbox.prop('checked', !live).prop('disabled', false)
+      alert(requestErrorMessage('update the live status', xhr))
     },
   })
 })
@@ -218,8 +224,9 @@ function deleteArticle(id) {
       success: (result) => {
         location.reload()
       },
-      error: (error) => {
-        console.log(error)
+      error: (xhr) => {
+        console.error('Article delete failed', xhr.status, xhr.responseText)
+        alert(requestErrorMessage('delete the article', xhr))
       },
     })
   }

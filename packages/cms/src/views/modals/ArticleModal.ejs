@@ -64,7 +64,7 @@
             <td>
               <select 
                 id="contentFilterDropdownForm"
-                class="contentFilterDropdown"
+                class="contentFilterDropdown custom-select w-auto"
                 data-source="article"
               >
               <% contentFilterOptions.forEach((item) =>{ %>
@@ -75,7 +75,7 @@
           <% } %>
           <% if (features.ageRestrictionLevels) { %>
           <td>
-            <select class="ageRestrictionLevel" id="ageRestrictionLevelForm" data-source="article">
+            <select class="ageRestrictionLevel custom-select w-auto" id="ageRestrictionLevelForm" data-source="article">
                 <% ageRestrictionOptions.forEach((item) =>{ %>
                   <option value="<%-item.value%>"><%-item.description%></option>
                 <% }) %>

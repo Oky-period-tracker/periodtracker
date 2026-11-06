@@ -29,7 +29,7 @@ export class ContentFilterController {
 
       const repo = repoMap[source]
 
-      const item = await repo.findOne(id)
+      const item = await repo.findOne({ id, lang: request.user.lang })
       if (!item) {
         logger.warn('Item not found for content filter update', { id, source })
         response.status(404).send({ error: 'Item not found' })

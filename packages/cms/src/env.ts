@@ -17,6 +17,8 @@ export const env = {
   isDevelopment: process.env.NODE_ENV === 'development',
   app: {
     secret: process.env.PASSPORT_SECRET,
+    // Number of proxies in front of the CMS, see .env.dist
+    trustProxy: parseInt(process.env.TRUST_PROXY || '1', 10),
   },
   db: {
     type: process.env.DATABASE_TYPE,

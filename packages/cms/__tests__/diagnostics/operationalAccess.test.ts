@@ -60,15 +60,19 @@ jest.mock('../../src/env', () => ({
     logging: {},
   },
 }))
-jest.mock('../../src/controller/DataController', () => ({
-  DataController: class {
-    uploadContentSheet = jest.fn()
-    uploadAppTranslationsSheet = jest.fn()
-    uploadCmsTranslationsSheet = jest.fn()
-    uploadCountriesSheet = jest.fn()
-    uploadProvincesSheet = jest.fn()
-  },
-}))
+jest.mock('../../src/controller/DataController', () => {
+  // What the real handlers do when the sheet is invalid, e.g. no Quizzes tab
+  const rejects = () => jest.fn().mockRejectedValue(new Error('Invalid spreadsheet'))
+  return {
+    DataController: class {
+      uploadContentSheet = rejects()
+      uploadAppTranslationsSheet = rejects()
+      uploadCmsTranslationsSheet = rejects()
+      uploadCountriesSheet = rejects()
+      uploadProvincesSheet = rejects()
+    },
+  }
+})
 jest.mock('../../src/controller/ArticleVoiceOverController', () => ({
   ArticleVoiceOverController: class {
     upload = jest.fn()
@@ -145,6 +149,51 @@ describe('production operational route access', () => {
       .timeout({ response: 1000, deadline: 2000 })
     expect(response.status).toBe(200)
     expect(response.body).toEqual([{ affected: 1 }])
+  })
+
+  it('checks the login before reading a body, then limits its size', async () => {
+    const body = { rowReorderResult: [{ id: 'x'.repeat(2 * 1024 * 1024), sortingKey: 1 }] }
+    role = undefined
+    const anonymous = await request(app).put('/test/reorder').send(body)
+    expect(anonymous.status).toBe(302)
+    expect(anonymous.headers.location).toBe('/login')
+    role = 'superAdmin'
+    expect((await request(app).put('/test/reorder').send(body)).status).toBe(413)
+  })
+
+  it('answers 413 to a spreadsheet over the upload limit', async () => {
+    role = 'superAdmin'
+    const response = await request(app)
+      .post('/data/upload-content-sheet')
+      .attach('spreadsheet', Buffer.alloc(10 * 1024 * 1024 + 1), 'content.xlsx')
+    expect(response.status).toBe(413)
+  })
+
+  it('rate limits public suggestions', async () => {
+    role = undefined
+    for (let i = 0; i < 10; i++) {
+      expect((await request(app).post('/mobile/suggestions').send({})).status).not.toBe(429)
+    }
+    const limited = await request(app).post('/mobile/suggestions').send({})
+    expect(limited.status).toBe(429)
+    expect(limited.headers['retry-after']).toBe('900')
+  })
+
+  it.each([
+    '/data/upload-content-sheet',
+    '/data/upload-app-translations-sheet',
+    '/data/upload-cms-translations-sheet',
+    '/data/upload-countries-sheet',
+    '/data/upload-provinces-sheet',
+  ])('answers a failed %s upload at once instead of timing out', async (url) => {
+    role = 'superAdmin'
+    // The request timeout is 60s: a response within 1s comes from the error middleware
+    const response = await request(app)
+      .post(url)
+      .attach('spreadsheet', Buffer.from('not a spreadsheet'), 'sheet.xlsx')
+      .timeout({ response: 1000, deadline: 2000 })
+    expect(response.status).toBe(500)
+    expect(response.text).toBe('Internal server error')
   })
 
   it.each(paths)('rejects anonymous access to %s', async (url) => {

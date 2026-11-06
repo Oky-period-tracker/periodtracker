@@ -106,20 +106,27 @@ export class ArticleVoiceOverController {
       if (typeof target === 'undefined') throw new Error('Target not found.')
 
       const previousKey = target.voiceOverKey
-      const newTarget = {
-        ...target,
-        voiceOverKey: null,
+      const withoutVoiceOver = { ...target, voiceOverKey: null }
+      if (typeof previousKey !== 'string' || previousKey.length === 0) return withoutVoiceOver
+
+      // Clear the reference before touching storage. If this fails, the article still points
+      // to audio that exists. Only the key read above is cleared, and nothing else is written:
+      // an upload that landed in between keeps its audio.
+      const { affected } = await this.articleRepository.update(
+        { id: target.id, voiceOverKey: previousKey },
+        { voiceOverKey: null },
+      )
+      if (affected !== 1) {
+        logger.warn('Voice-over changed during its removal, nothing removed', { articleId: id })
+        const current = await this.articleRepository.findOne({ id, lang: request.user.lang })
+        if (typeof current === 'undefined') throw new Error('Target not found.')
+        return current
       }
+      // The key is logged here so the file can be found if the cleanup never completes
+      logger.info('Voice-over removed from article', { articleId: id, key: previousKey })
+      this.deleteUnusedFile(previousKey)
 
-      // Clear the reference before touching storage. If the save fails, the article still points to audio that exists.
-      await this.articleRepository.save(newTarget)
-      logger.info('Voice-over removed from article', { articleId: id })
-
-      if (typeof previousKey === 'string' && previousKey.length > 0) {
-        this.deleteUnusedFile(previousKey)
-      }
-
-      return newTarget
+      return withoutVoiceOver
     } catch (error) {
       logger.error('ArticleVoiceOverController.remove failed', {
         message: error?.message,
@@ -139,11 +146,10 @@ export class ArticleVoiceOverController {
           DEFAULT_EXTERNAL_TIMEOUT,
           'Voice-over cleanup',
         ),
-      { maxRetries: 2, label: 'Voice-over cleanup' },
+      // withRetry logs every failed attempt and the final failure under this label
+      { maxRetries: 2, label: `Voice-over cleanup of ${key}` },
     )
       .then(() => logger.info('Deleted voice-over file', { key }))
-      .catch((error) => {
-        logger.error('Failed to delete unused voice-over file', { key, message: error?.message })
-      })
+      .catch(() => undefined)
   }
 }

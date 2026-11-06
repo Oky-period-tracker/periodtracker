@@ -13,10 +13,10 @@ jest.mock('../../src/logger', () => ({
 describe('voice-over removal', () => {
   const key = 'article-audio.mp3'
   let storedKey: string | null
-  let save: jest.Mock
+  let update: jest.Mock
   let deleteFile: jest.Mock
   let controller: ArticleVoiceOverController
-  const request = { body: { id: 'article' } }
+  const request = { body: { id: 'article' }, user: { lang: 'en' } }
   const response: any = {}
   const next = jest.fn()
 
@@ -24,14 +24,16 @@ describe('voice-over removal', () => {
     jest.useFakeTimers()
     jest.clearAllMocks()
     storedKey = key
-    save = jest.fn(async (article) => {
-      storedKey = article.voiceOverKey
-      return article
+    // Like the database, only clears the key the caller read
+    update = jest.fn(async (criteria, changes) => {
+      if (criteria.voiceOverKey !== storedKey) return { affected: 0 }
+      storedKey = changes.voiceOverKey
+      return { affected: 1 }
     })
     deleteFile = jest.fn(async () => undefined)
     ;(getRepository as jest.Mock).mockReturnValue({
       findOne: async () => ({ id: 'article', voiceOverKey: storedKey }),
-      save,
+      update,
     })
     ;((storage as unknown) as jest.Mock).mockReturnValue({
       bucket: () => ({ file: () => ({ delete: deleteFile }) }),
@@ -42,7 +44,7 @@ describe('voice-over removal', () => {
   afterEach(() => jest.useRealTimers())
 
   it('keeps the audio if clearing the database reference fails', async () => {
-    save.mockRejectedValue(new Error('Database unavailable'))
+    update.mockRejectedValue(new Error('Database unavailable'))
     await expect(controller.remove(request as any, response, next)).rejects.toThrow(
       'Database unavailable',
     )
@@ -51,24 +53,51 @@ describe('voice-over removal', () => {
     expect(deleteFile).not.toHaveBeenCalled()
   })
 
-  it('deletes the audio only after the cleared reference is saved', async () => {
+  it('deletes the audio only after the reference is cleared', async () => {
     const result = await controller.remove(request as any, response, next)
     await jest.runAllTimersAsync()
     expect(result.voiceOverKey).toBeNull()
     expect(storedKey).toBeNull()
+    expect(update).toHaveBeenCalledWith(
+      { id: 'article', voiceOverKey: key },
+      { voiceOverKey: null },
+    )
     expect(deleteFile).toHaveBeenCalledTimes(1)
-    expect(save.mock.invocationCallOrder[0]).toBeLessThan(deleteFile.mock.invocationCallOrder[0])
+    expect(update.mock.invocationCallOrder[0]).toBeLessThan(deleteFile.mock.invocationCallOrder[0])
   })
 
-  it('retries a failed cleanup and logs the key without failing the removal', async () => {
+  it('keeps a voice-over uploaded while the removal was running', async () => {
+    const uploadedKey = 'article-new-audio.mp3'
+    update.mockImplementationOnce(async () => {
+      storedKey = uploadedKey
+      return { affected: 0 }
+    })
+    const result = await controller.remove(request as any, response, next)
+    await jest.runAllTimersAsync()
+    expect(result.voiceOverKey).toBe(uploadedKey)
+    expect(storedKey).toBe(uploadedKey)
+    expect(deleteFile).not.toHaveBeenCalled()
+  })
+
+  it('writes and deletes nothing for an article without a voice-over', async () => {
+    storedKey = null
+    const result = await controller.remove(request as any, response, next)
+    await jest.runAllTimersAsync()
+    expect(result.voiceOverKey).toBeNull()
+    expect(update).not.toHaveBeenCalled()
+    expect(deleteFile).not.toHaveBeenCalled()
+  })
+
+  it('retries a failed cleanup and logs the key once without failing the removal', async () => {
     deleteFile.mockRejectedValue(new Error('Storage unavailable'))
     const result = await controller.remove(request as any, response, next)
     expect(result.voiceOverKey).toBeNull()
     await jest.runAllTimersAsync()
     expect(deleteFile).toHaveBeenCalledTimes(3)
+    expect(logger.error).toHaveBeenCalledTimes(1)
     expect(logger.error).toHaveBeenCalledWith(
-      'Failed to delete unused voice-over file',
-      expect.objectContaining({ key }),
+      expect.stringContaining(key),
+      expect.objectContaining({ message: 'Storage unavailable' }),
     )
   })
 })

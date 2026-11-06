@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import passport from 'passport'
+import { Authentication } from '../access/authentication'
 import { logger } from '../logger'
 
 export class AccessController {
@@ -20,6 +21,11 @@ export class AccessController {
     // installed @types/passport ships 0.6 signatures that require a callback, so
     // we cast to the actual 0.5.x signature to avoid a false type error.
     ;((request.logout as unknown) as () => void)()
+    // Clearing this browser's cookie is not enough: a copy of it would still
+    // be signed and valid
+    if (userId) {
+      await Authentication.revokeSessions(userId)
+    }
     response.redirect('/login')
   }
 }

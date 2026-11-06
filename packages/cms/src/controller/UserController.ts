@@ -111,6 +111,8 @@ export class UserController {
       if (request.body.password) {
         userToUpdate.password = await bcrypt.hash(request.body.password, saltRounds)
       }
+      // New password, username or role: log the user out everywhere
+      userToUpdate.sessionVersion += 1
       await this.userRepository.save(userToUpdate)
       logger.info('CMS user updated', { id: request.params.id, username: request.body.username })
       return userToUpdate

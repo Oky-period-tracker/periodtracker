@@ -32,17 +32,27 @@ export class Authentication {
   }
 
   // Runs on every req.logIn, whatever the login path, so it starts the clock
-  // sessionExpiry checks every request against
+  // sessionExpiry checks every request against and records which
+  // sessionVersion deserializeUser expects
   static async serializeUser(request: Request, user: any, done: any) {
     request.session.loginAt = Date.now()
+    request.session.sessionVersion = user.sessionVersion
     done(null, user.id)
   }
 
-  static async deserializeUser(id: string, done: any) {
+  // The signed cookie only proves the user once logged in. A copy of it must
+  // stop working after logout or an account change, which bump the user's
+  // sessionVersion (revokeSessions).
+  static async deserializeUser(request: Request, id: number, done: any) {
     try {
       const user = await getRepository(User).findOne(id)
       if (!user) {
         logger.warn('Deserialize failed: user not found', { userId: id })
+        return done(null, false)
+      }
+      if (user.sessionVersion !== request.session.sessionVersion) {
+        logger.info('Session revoked', { userId: id })
+        return done(null, false)
       }
       done(null, user)
     } catch (error) {
@@ -53,6 +63,11 @@ export class Authentication {
       })
       done(error)
     }
+  }
+
+  // Logs the user out everywhere: every session issued so far is rejected
+  static async revokeSessions(userId: number) {
+    await getRepository(User).increment({ id: userId }, 'sessionVersion', 1)
   }
 
   static isLoggedIn(request: Request, response: Response, next: NextFunction) {

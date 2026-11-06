@@ -34,7 +34,10 @@ export class SuggestionController {
 
   async updateStatus(request: Request, response: Response, next: NextFunction) {
     try {
-      const suggestionToUpdate = await this.suggestionRepository.findOne(request.body.id)
+      const suggestionToUpdate = await this.suggestionRepository.findOne({
+        id: request.body.id,
+        lang: request.user.lang,
+      })
       if (!suggestionToUpdate) {
         logger.warn('Suggestion not found for status update', { id: request.body.id })
         response.status(404).send({ error: 'Suggestion not found' })
@@ -59,9 +62,15 @@ export class SuggestionController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const surveyToRemove = await this.suggestionRepository.findOne(request.params.id)
+      const surveyToRemove = await this.suggestionRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!surveyToRemove) {
-        logger.warn('Suggestion not found for removal', { id: request.params.id })
+        logger.warn('Suggestion not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Suggestion not found' })
         return
       }

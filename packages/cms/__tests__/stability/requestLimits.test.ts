@@ -118,6 +118,26 @@ describe('upload limit', () => {
     expect(res.status).toBe(500)
     expect(res.text).toBe('Unexpected field')
   })
+
+  it('leaves a part without a field name to the next error handler', async () => {
+    const res = await request(app)
+      .post('/data/upload-content-sheet')
+      .set('Content-Type', 'multipart/form-data; boundary=x')
+      .send('--x\r\nContent-Disposition: form-data\r\n\r\nvalue\r\n--x--\r\n')
+
+    expect(res.status).toBe(500)
+    expect(res.text).toBe('Field name missing')
+  })
+
+  it('answers 413 to a field value over the limit', async () => {
+    const res = await request(app)
+      .post('/data/upload-content-sheet')
+      .field('locale', 'x'.repeat(10 * 1024 + 1))
+      .attach('spreadsheet', Buffer.alloc(10), 'content.xlsx')
+
+    expect(res.status).toBe(413)
+    expect(handler).not.toHaveBeenCalled()
+  })
 })
 
 describe('rateLimit', () => {

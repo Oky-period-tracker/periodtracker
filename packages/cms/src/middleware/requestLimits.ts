@@ -30,6 +30,17 @@ export const singleFileUpload = (maxBytes: number) =>
     limits: { fileSize: maxBytes, files: 1, fields: 10, fieldSize: 10 * 1024 },
   })
 
+// The limits of singleFileUpload. multer's other errors (a file in an
+// unexpected field, a part without a name) are malformed requests, not large ones
+const UPLOAD_LIMIT_CODES = new Set([
+  'LIMIT_PART_COUNT',
+  'LIMIT_FILE_SIZE',
+  'LIMIT_FILE_COUNT',
+  'LIMIT_FIELD_KEY',
+  'LIMIT_FIELD_VALUE',
+  'LIMIT_FIELD_COUNT',
+])
+
 /**
  * Answers 413 when a body or upload goes over its limit. Without it a multer
  * limit ends as a 500 and both are recorded as crashes.
@@ -38,7 +49,7 @@ export function payloadTooLarge(err: any, req: Request, res: Response, next: Nex
   const tooLarge =
     err?.type === 'entity.too.large' ||
     err?.type === 'parameters.too.many' ||
-    (err instanceof multer.MulterError && err.code !== 'LIMIT_UNEXPECTED_FILE')
+    (err instanceof multer.MulterError && UPLOAD_LIMIT_CODES.has(err.code))
   if (!tooLarge || res.headersSent) {
     return next(err)
   }

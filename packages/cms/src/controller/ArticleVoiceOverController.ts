@@ -4,6 +4,7 @@ import { Article } from '../entity/Article'
 import { storage } from 'firebase-admin'
 import { logger } from '../logger'
 import { withTimeout, DEFAULT_EXTERNAL_TIMEOUT } from '../helpers/timeout'
+import { withRetry } from '../helpers/retry'
 import { v4 as uuid } from 'uuid'
 
 export class ArticleVoiceOverController {
@@ -104,29 +105,28 @@ export class ArticleVoiceOverController {
       const target = await this.articleRepository.findOne({ id, lang: request.user.lang })
       if (typeof target === 'undefined') throw new Error('Target not found.')
 
-      if (typeof target.voiceOverKey === 'string' && target.voiceOverKey.length > 0) {
-        const existingFile = storage().bucket().file(target.voiceOverKey)
-        try {
-          await existingFile.delete()
-          logger.info('Deleted voice-over file', { key: target.voiceOverKey })
-        } catch (error) {
-          logger.error('Failed to delete voice-over file', {
-            key: target.voiceOverKey,
-            message: error?.message,
-            stack: error?.stack,
-          })
-        }
+      const previousKey = target.voiceOverKey
+      const withoutVoiceOver = { ...target, voiceOverKey: null }
+      if (typeof previousKey !== 'string' || previousKey.length === 0) return withoutVoiceOver
+
+      // Clear the reference before touching storage. If this fails, the article still points
+      // to audio that exists. Only the key read above is cleared, and nothing else is written:
+      // an upload that landed in between keeps its audio.
+      const { affected } = await this.articleRepository.update(
+        { id: target.id, voiceOverKey: previousKey },
+        { voiceOverKey: null },
+      )
+      if (affected !== 1) {
+        logger.warn('Voice-over changed during its removal, nothing removed', { articleId: id })
+        const current = await this.articleRepository.findOne({ id, lang: request.user.lang })
+        if (typeof current === 'undefined') throw new Error('Target not found.')
+        return current
       }
+      // The key is logged here so the file can be found if the cleanup never completes
+      logger.info('Voice-over removed from article', { articleId: id, key: previousKey })
+      this.deleteUnusedFile(previousKey)
 
-      const newTarget = {
-        ...target,
-        voiceOverKey: null,
-      }
-
-      await this.articleRepository.save(newTarget)
-      logger.info('Voice-over removed from article', { articleId: id })
-
-      return newTarget
+      return withoutVoiceOver
     } catch (error) {
       logger.error('ArticleVoiceOverController.remove failed', {
         message: error?.message,
@@ -134,5 +134,22 @@ export class ArticleVoiceOverController {
       })
       throw error
     }
+  }
+
+  // Runs in the background: no article uses this object any more, so a failure only leaves an orphan to delete by hand.
+  private deleteUnusedFile(key: string) {
+    withRetry(
+      () =>
+        withTimeout(
+          // A timed-out attempt can still finish, so a retry may find the object already gone.
+          storage().bucket().file(key).delete({ ignoreNotFound: true }),
+          DEFAULT_EXTERNAL_TIMEOUT,
+          'Voice-over cleanup',
+        ),
+      // withRetry logs every failed attempt and the final failure under this label
+      { maxRetries: 2, label: `Voice-over cleanup of ${key}` },
+    )
+      .then(() => logger.info('Deleted voice-over file', { key }))
+      .catch(() => undefined)
   }
 }

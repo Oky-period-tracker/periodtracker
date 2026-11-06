@@ -93,8 +93,10 @@ export class CategoryController {
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
       // One transaction for the whole hierarchy: if any delete fails, the category,
-      // its subcategories and its articles all survive. The row lock makes concurrent
-      // edits or deletes of this category wait until the removal commits or rolls back.
+      // its subcategories and its articles all survive. The row lock makes a concurrent
+      // removal of this category wait until this one commits or rolls back. It does not
+      // cover a concurrent edit: update reads without a lock, and its save can re-insert
+      // a category removed in the meantime.
       const removed = await getManager().transaction(async (manager) => {
         const categories = manager.getRepository(Category)
         // Scoped to the editor's language: another language's category answers 404

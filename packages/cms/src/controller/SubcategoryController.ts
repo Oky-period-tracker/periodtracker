@@ -105,7 +105,8 @@ export class SubcategoryController {
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
       // Same contract as CategoryController.remove: the subcategory and its articles are
-      // deleted together or not at all, with the row locked against concurrent edits.
+      // deleted together or not at all, with the row locked against a concurrent removal
+      // only. A concurrent edit is not covered.
       const removed = await getManager().transaction(async (manager) => {
         const subcategories = manager.getRepository(Subcategory)
         // Scoped to the editor's language: another language's subcategory answers 404

@@ -27,7 +27,6 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
       return helpCenterPayload
     }
 
-    helpCenterPayload.lang = req.user.lang
     helpCenterPayload.title = title
     helpCenterPayload.caption = caption
     helpCenterPayload.contactOne = contactOne

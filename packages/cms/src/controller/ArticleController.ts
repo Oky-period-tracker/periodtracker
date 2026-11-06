@@ -1,15 +1,31 @@
 import { getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { Article } from '../entity/Article'
+import { Category } from '../entity/Category'
+import { Subcategory } from '../entity/Subcategory'
 import { v4 as uuid } from 'uuid'
 import { env } from '../env'
-import { bulkUpdateRowReorder } from '../helpers/common'
+import { bulkUpdateRowReorder, isUuid } from '../helpers/common'
 import { toLevel } from '../helpers/safeUtils'
 import { withoutDisabledFeatures } from '../helpers/features'
 import { logger } from '../logger'
 
 export class ArticleController {
   private articleRepository = getRepository(Article)
+  private categoryRepository = getRepository(Category)
+  private subcategoryRepository = getRepository(Subcategory)
+
+  // The parents come from the request, so they must be in the editor's language too,
+  // and the subcategory must belong to the chosen category
+  private async parentsInLanguage(request: Request) {
+    const { category, subcategory } = request.body
+    if (!isUuid(category) || !isUuid(subcategory)) return false
+    const [parentCategory, parentSubcategory] = await Promise.all([
+      this.categoryRepository.findOne({ id: category, lang: request.user.lang }),
+      this.subcategoryRepository.findOne({ id: subcategory, lang: request.user.lang }),
+    ])
+    return !!parentCategory && parentSubcategory?.parent_category === parentCategory.id
+  }
 
   async all(request: Request, response: Response, next: NextFunction) {
     try {
@@ -55,7 +71,12 @@ export class ArticleController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.articleRepository.findOne(request.params.id)
+    const article = await this.articleRepository.findOne({
+      id: request.params.id,
+      lang: request.user.lang,
+    })
+    if (!article) response.status(404).send({ error: 'Article not found' })
+    return article
   }
 
   // The Encyclopedia page and the mobile API only list articles whose category and
@@ -78,8 +99,14 @@ export class ArticleController {
       if (!this.hasCategoryAndSubcategory(request, response)) {
         return
       }
+      if (!(await this.parentsInLanguage(request))) {
+        response.status(404).send({ error: 'Category or subcategory not found' })
+        return
+      }
+      // Only a title in the editor's language is a duplicate
       const article = await this.articleRepository.findOne({
         article_heading: request.body.article_heading,
+        lang: request.user.lang,
       })
       if (article) {
         return { article, isExist: true }
@@ -114,17 +141,30 @@ export class ArticleController {
       if (!this.hasCategoryAndSubcategory(request, response)) {
         return
       }
+      const booleanFromString = request.body.live === 'true'
+      // Scoped to the editor's language, which the article keeps: an edit never moves it
+      const articleToUpdate = await this.articleRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
+      if (!articleToUpdate) {
+        logger.warn('Article not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
+        response.status(404).send({ error: 'Article not found' })
+        return
+      }
+      // Only a title in the editor's language is a duplicate
       const article = await this.articleRepository.findOne({
         article_heading: request.body.article_heading,
+        lang: request.user.lang,
       })
-      if (article && request.params.id !== article.id) {
+      if (article && articleToUpdate.id !== article.id) {
         return { article, isExist: true }
       }
-      const booleanFromString = request.body.live === 'true'
-      const articleToUpdate = await this.articleRepository.findOne(request.params.id)
-      if (!articleToUpdate) {
-        logger.warn('Article not found for update', { id: request.params.id })
-        response.status(404).send({ error: 'Article not found' })
+      if (!(await this.parentsInLanguage(request))) {
+        response.status(404).send({ error: 'Category or subcategory not found' })
         return
       }
       articleToUpdate.category = request.body.category
@@ -141,7 +181,6 @@ export class ArticleController {
         articleToUpdate.isAgeRestricted = articleToUpdate.ageRestrictionLevel > 0
       }
       articleToUpdate.live = booleanFromString
-      articleToUpdate.lang = request.user.lang
       await this.articleRepository.save(articleToUpdate)
       logger.info('Article updated', { id: request.params.id })
       return articleToUpdate
@@ -197,9 +236,15 @@ export class ArticleController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const articleToRemove = await this.articleRepository.findOne(request.params.id)
+      const articleToRemove = await this.articleRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
       if (!articleToRemove) {
-        logger.warn('Article not found for removal', { id: request.params.id })
+        logger.warn('Article not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Article not found' })
         return
       }
@@ -218,12 +263,16 @@ export class ArticleController {
 
   async reorderRows(request: Request, response: Response, next: NextFunction) {
     if (request.body.rowReorderResult && request.body.rowReorderResult.length) {
-      return await bulkUpdateRowReorder(this.articleRepository, request.body.rowReorderResult)
+      return await bulkUpdateRowReorder(
+        this.articleRepository,
+        request.body.rowReorderResult,
+        request.user.lang,
+      )
     }
 
     return await this.articleRepository.find({
       where: {
-        lang: request.params.lang,
+        lang: request.user.lang,
       },
       order: {
         sortingKey: 'ASC',

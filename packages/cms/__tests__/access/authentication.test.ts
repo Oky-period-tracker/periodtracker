@@ -118,9 +118,21 @@ describe('Session revocation', () => {
   let users: Record<number, any>
 
   beforeEach(() => {
-    users = { 1: { id: 1, username: 'john', password: 'hashed_password', sessionVersion: 0 } }
+    users = {
+      1: {
+        id: 1,
+        username: 'john',
+        password: 'hashed_password',
+        type: 'superAdmin',
+        lang: 'en',
+        sessionVersion: 0,
+      },
+    }
     ;(typeorm.getRepository as jest.Mock).mockReturnValue({
       findOne: jest.fn(async (id: number) => users[id] && { ...users[id] }),
+      find: jest.fn(async ({ where }) =>
+        Object.values(users).filter((user) => user.username === where.username),
+      ),
       increment: jest.fn(async ({ id }, column: string, value: number) => {
         users[id][column] += value
       }),
@@ -197,8 +209,10 @@ describe('Session revocation', () => {
     const app = createApp()
     const cookie = await copiedSessionCookie(app)
 
+    // Only a logged-in user allowed to manage the account can edit it
     await request(app)
       .put('/user/1')
+      .set('Cookie', cookie)
       .send({ username: 'john', password: 'new_password', lang: 'en', type: 'superAdmin' })
       .expect(204)
 

@@ -9,6 +9,11 @@ import { logger } from '../logger'
 const saltRounds = 10
 const publicFields: Array<keyof User> = ['id', 'username', 'type', 'lang']
 
+// What the user endpoints answer with, whatever the entity holds: never the
+// password, hashed or not, nor a column added to User later
+const toPublic = (user: Partial<User>) =>
+  Object.fromEntries(publicFields.map((field) => [field, user[field]]))
+
 // Same hierarchy as the user management page: an account can only be managed
 // by someone allowed to create its role, and only superAdmins work across
 // languages. Checked against the stored account and against the requested
@@ -21,6 +26,36 @@ const canManage = (actor: User, type: string, lang: string) =>
 const requestedLang = (actor: User, lang: string) =>
   accessControlList.can(actor.type, 'toggleLanguages') ? lang : actor.lang
 
+// Postgres unique_violation, raised by the unique index on user.username when
+// two requests race past the lookup below
+const isUniqueViolation = (error: any) => error?.code === '23505'
+
+const duplicateUsername = (response: Response, action: string, username: string) => {
+  logger.warn(`User ${action} failed: duplicate username`, { username })
+  response.status(409).send({ error: 'username is not unique' })
+}
+
+// A blank password cannot be typed at login, so storing one locks the account
+const isBlankPassword = (password: unknown) => typeof password !== 'string' || !password.trim()
+
+const blankPassword = (request: Request, response: Response, action: string) => {
+  logger.warn(`User ${action} rejected: empty password`, {
+    requestingUser: request.user.id,
+    target: request.params.id,
+  })
+  response.status(400).send({ error: 'Password cannot be empty' })
+}
+
+const keepLastSuperAdmin = (request: Request, response: Response, action: string) => {
+  logger.warn(`User ${action} refused: last superAdmin`, {
+    requestingUser: request.user.id,
+    target: request.params.id,
+  })
+  response
+    .status(409)
+    .send({ error: 'the CMS needs at least one super admin, create another one first' })
+}
+
 const deny = (request: Request, response: Response, action: string) => {
   logger.warn(`User ${action} denied: insufficient permissions`, {
     requestingUser: request.user.id,
@@ -32,6 +67,20 @@ const deny = (request: Request, response: Response, action: string) => {
 
 export class UserController {
   private userRepository = getRepository(User)
+
+  // Login looks accounts up by username alone, so two accounts sharing one
+  // would let the wrong one sign in. exceptId is the account being renamed
+  private async usernameTaken(username: string, exceptId?: number) {
+    const matches = await this.userRepository.find({ where: { username } })
+    return matches.some((user) => user.id !== exceptId)
+  }
+
+  // Only a superAdmin can create or promote another one, so a CMS left
+  // without any could only be recovered by hand in the database
+  private async isLastSuperAdmin(user: User) {
+    if (user.type !== 'superAdmin') return false
+    return (await this.userRepository.count({ where: { type: 'superAdmin' } })) <= 1
+  }
 
   async all(request: Request, response: Response, next: NextFunction) {
     try {
@@ -53,7 +102,7 @@ export class UserController {
       deny(request, response, 'read')
       return
     }
-    return user
+    return toPublic(user)
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
@@ -63,16 +112,16 @@ export class UserController {
         deny(request, response, 'creation')
         return
       }
-      const user = await this.userRepository.findOne({
-        where: { username: request.body.username },
-      })
-      if (user) {
-        logger.warn('User creation failed: duplicate username', { username: request.body.username })
-        response.status(409).send({ error: 'username is not unique' })
+      if (isBlankPassword(request.body.password)) {
+        blankPassword(request, response, 'creation')
+        return
+      }
+      if (await this.usernameTaken(request.body.username)) {
+        duplicateUsername(response, 'creation', request.body.username)
         return
       }
       const hash = await bcrypt.hash(request.body.password, saltRounds)
-      await this.userRepository.save({
+      const created = await this.userRepository.save({
         username: request.body.username,
         password: hash,
         lang,
@@ -80,8 +129,12 @@ export class UserController {
         type: request.body.type,
       })
       logger.info('CMS user created', { username: request.body.username, type: request.body.type })
-      return request.body
+      return toPublic(created)
     } catch (error) {
+      if (isUniqueViolation(error)) {
+        duplicateUsername(response, 'creation', request.body.username)
+        return
+      }
       logger.error('UserController.save failed', { message: error?.message, stack: error?.stack })
       throw error
     }
@@ -103,13 +156,20 @@ export class UserController {
         deny(request, response, 'update')
         return
       }
+      if (request.body.type !== 'superAdmin' && (await this.isLastSuperAdmin(userToUpdate))) {
+        keepLastSuperAdmin(request, response, 'update')
+        return
+      }
       // The password only changes when the request carries a replacement on
-      // purpose; a blank one is refused instead of locking the account out
+      // purpose: the edit form sends none, and a blank one is refused
       const { password } = request.body
       const changesPassword = password !== undefined
-      if (changesPassword && (typeof password !== 'string' || !password.trim())) {
-        logger.warn('User update rejected: empty password', { id: request.params.id })
-        response.status(400).send({ error: 'Password cannot be empty' })
+      if (changesPassword && isBlankPassword(password)) {
+        blankPassword(request, response, 'update')
+        return
+      }
+      if (await this.usernameTaken(request.body.username, userToUpdate.id)) {
+        duplicateUsername(response, 'update', request.body.username)
         return
       }
       userToUpdate.username = request.body.username
@@ -118,10 +178,16 @@ export class UserController {
       if (changesPassword) {
         userToUpdate.password = await bcrypt.hash(password, saltRounds)
       }
+      // New password, username or role: log the user out everywhere
+      userToUpdate.sessionVersion += 1
       await this.userRepository.save(userToUpdate)
       logger.info('CMS user updated', { id: request.params.id, username: request.body.username })
-      return userToUpdate
+      return toPublic(userToUpdate)
     } catch (error) {
+      if (isUniqueViolation(error)) {
+        duplicateUsername(response, 'update', request.body.username)
+        return
+      }
       logger.error('UserController.update failed', {
         id: request.params.id,
         message: error?.message,
@@ -143,9 +209,15 @@ export class UserController {
         deny(request, response, 'removal')
         return
       }
+      if (await this.isLastSuperAdmin(userToRemove)) {
+        keepLastSuperAdmin(request, response, 'removal')
+        return
+      }
+      // Read before removing, which clears the id on the entity
+      const removed = toPublic(userToRemove)
       await this.userRepository.remove(userToRemove)
       logger.info('CMS user removed', { id: request.params.id })
-      return userToRemove
+      return removed
     } catch (error) {
       logger.error('UserController.remove failed', {
         id: request.params.id,

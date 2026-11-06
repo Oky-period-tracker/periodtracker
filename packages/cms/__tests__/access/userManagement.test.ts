@@ -49,23 +49,28 @@ describe('CMS user management authorization', () => {
     users = seed()
     save = jest.fn(async (entity) => {
       const index = users.findIndex((user) => user.id === entity.id)
-      if (index === -1) users.push({ id: users.length + 100, ...entity })
-      else users[index] = { ...entity }
-      return entity
+      if (index === -1) {
+        entity = { id: users.length + 100, ...entity }
+        users.push(entity)
+      } else users[index] = { ...entity }
+      return { ...entity }
     })
     remove = jest.fn(async (entity) => {
       users = users.filter((user) => user.id !== entity.id)
+      delete entity.id
       return entity
     })
     ;(getRepository as jest.Mock).mockReturnValue({
-      find: jest.fn(async ({ select }) => users.map((user) => project(user, select))),
-      findOne: jest.fn(async (idOrOptions, options) => {
-        const user =
-          typeof idOrOptions === 'object'
-            ? users.find((u) => u.username === idOrOptions.where.username)
-            : users.find((u) => String(u.id) === String(idOrOptions))
+      find: jest.fn(async ({ select, where }) =>
+        users
+          .filter((user) => !where || user.username === where.username)
+          .map((user) => project(user, select)),
+      ),
+      findOne: jest.fn(async (id, options) => {
+        const user = users.find((u) => String(u.id) === String(id))
         return user && project(user, options?.select)
       }),
+      count: jest.fn(async ({ where }) => users.filter((user) => user.type === where.type).length),
       save,
       remove,
     })
@@ -86,6 +91,12 @@ describe('CMS user management authorization', () => {
   }
 
   const stored = (id: number) => users.find((user) => user.id === id)
+
+  // Neither the hash nor the password the form sent may come back
+  const expectPublic = (body, expected) => {
+    expect(body).toEqual(expected)
+    expect(JSON.stringify(body)).not.toMatch(/password|hash:|secret|taken-over/)
+  }
 
   describe('list', () => {
     it.each([
@@ -126,7 +137,7 @@ describe('CMS user management authorization', () => {
       ),
     )('%s creating a %s -> allowed: %p', async (actor, type, allowed) => {
       const before = users.length
-      const { status } = await call(
+      const { status, body } = await call(
         'save',
         actor as string,
         {},
@@ -135,7 +146,9 @@ describe('CMS user management authorization', () => {
 
       if (allowed) {
         expect(status).toBe(200)
-        expect(users.find((user) => user.username === 'newUser')).toMatchObject({ type })
+        const created = users.find((user) => user.username === 'newUser')
+        expect(created).toMatchObject({ type, password: 'hash:secret' })
+        expectPublic(body, { id: created.id, username: 'newUser', type, lang: 'en' })
       } else {
         expect(status).toBe(403)
         expect(save).not.toHaveBeenCalled()
@@ -165,13 +178,69 @@ describe('CMS user management authorization', () => {
       )
       expect(status).toBe(403)
     })
+
+    it.each([
+      ['an empty', { password: '' }],
+      ['a whitespace-only', { password: '   ' }],
+      ['a missing', {}],
+    ])('refuses %s password', async (_label, password) => {
+      const before = users.length
+      const { status, body } = await call(
+        'save',
+        'admin',
+        {},
+        { username: 'newUser', type: 'contentManager', lang: 'en', ...password },
+      )
+
+      expect(status).toBe(400)
+      expect(body).toEqual({ error: 'Password cannot be empty' })
+      expect(save).not.toHaveBeenCalled()
+      expect(users).toHaveLength(before)
+    })
+
+    it('refuses before checking the password', async () => {
+      const { status } = await call(
+        'save',
+        'contentManager',
+        {},
+        { username: 'newUser', password: '', type: 'contentManager', lang: 'en' },
+      )
+      expect(status).toBe(403)
+    })
+
+    it('refuses a username that is already taken', async () => {
+      const before = users.length
+      const { status } = await call(
+        'save',
+        'admin',
+        {},
+        { username: 'superAdmin', password: 'p', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(409)
+      expect(save).not.toHaveBeenCalled()
+      expect(users).toHaveLength(before)
+    })
+
+    it('answers 409 when the database rejects a username created in the meantime', async () => {
+      save.mockRejectedValueOnce(Object.assign(new Error('duplicate key'), { code: '23505' }))
+
+      const { status } = await call(
+        'save',
+        'admin',
+        {},
+        { username: 'newUser', password: 'p', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(409)
+    })
   })
 
   describe('update', () => {
     it.each(matrix)('%s editing a %s -> allowed: %p', async (actor, target, allowed) => {
       const id = targets[target as string]
       const before = { ...stored(id) }
-      const { status } = await call(
+      const { status, body } = await call(
         'update',
         actor as string,
         { id },
@@ -181,6 +250,7 @@ describe('CMS user management authorization', () => {
       if (allowed) {
         expect(status).toBe(200)
         expect(stored(id)).toMatchObject({ username: 'renamed', password: 'hash:taken-over' })
+        expectPublic(body, { id, username: 'renamed', type: before.type, lang: before.lang })
       } else {
         expect(status).toBe(403)
         expect(save).not.toHaveBeenCalled()
@@ -238,6 +308,124 @@ describe('CMS user management authorization', () => {
       expect(stored(id).type).toBe('admin')
     })
 
+    // Login looks the account up by username alone, so a second "superAdmin"
+    // row could sign in as, or instead of, the real one
+    it.each([
+      ['admin', 'superAdmin'],
+      ['admin', 'admin'],
+      ['superAdmin', 'admin'],
+    ])('a %s cannot rename a content manager to the taken username %s', async (actor, username) => {
+      const id = targets.contentManager
+      const before = { ...stored(id) }
+      const { status } = await call(
+        'update',
+        actor,
+        { id },
+        { username, password: 'p', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(409)
+      expect(save).not.toHaveBeenCalled()
+      expect(stored(id)).toEqual(before)
+    })
+
+    it('lets an account keep its own username when edited', async () => {
+      const id = targets.contentManager
+      const { status } = await call(
+        'update',
+        'admin',
+        { id },
+        { username: 'otherCm', password: 'new', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(200)
+      expect(stored(id)).toMatchObject({ username: 'otherCm', password: 'hash:new' })
+    })
+
+    it('refuses the rename before revealing whether a username exists', async () => {
+      const { status } = await call(
+        'update',
+        'contentManager',
+        { id: targets.contentManager },
+        { username: 'superAdmin', password: 'p', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(403)
+    })
+
+    it('answers 409 when the database rejects a username taken in the meantime', async () => {
+      save.mockRejectedValueOnce(Object.assign(new Error('duplicate key'), { code: '23505' }))
+
+      const { status } = await call(
+        'update',
+        'admin',
+        { id: targets.contentManager },
+        { username: 'renamed', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(409)
+    })
+
+    describe('last superAdmin', () => {
+      beforeEach(() => {
+        users = users.filter((user) => user.id !== targets.superAdmin)
+      })
+
+      it.each(['admin', 'contentManager'])('cannot demote itself to %s', async (type) => {
+        const id = actors.superAdmin
+        const before = { ...stored(id) }
+        const { status } = await call(
+          'update',
+          'superAdmin',
+          { id },
+          { username: before.username, type, lang: before.lang },
+        )
+
+        expect(status).toBe(409)
+        expect(save).not.toHaveBeenCalled()
+        expect(stored(id)).toEqual(before)
+      })
+
+      it('can still edit itself while staying superAdmin', async () => {
+        const id = actors.superAdmin
+        const { status } = await call(
+          'update',
+          'superAdmin',
+          { id },
+          { username: 'renamed', password: 'new', type: 'superAdmin', lang: 'en' },
+        )
+
+        expect(status).toBe(200)
+        expect(stored(id)).toMatchObject({ username: 'renamed', type: 'superAdmin' })
+      })
+
+      it('can still demote other accounts', async () => {
+        const id = targets.admin
+        const { status } = await call(
+          'update',
+          'superAdmin',
+          { id },
+          { username: 'otherAdmin', type: 'contentManager', lang: 'en' },
+        )
+
+        expect(status).toBe(200)
+        expect(stored(id).type).toBe('contentManager')
+      })
+    })
+
+    it('lets a superAdmin demote itself while another superAdmin remains', async () => {
+      const id = actors.superAdmin
+      const { status } = await call(
+        'update',
+        'superAdmin',
+        { id },
+        { username: 'superAdmin', type: 'contentManager', lang: 'en' },
+      )
+
+      expect(status).toBe(200)
+      expect(stored(id).type).toBe('contentManager')
+    })
+
     it('keeps the stored password on an edit that does not send one', async () => {
       const id = targets.contentManager
       const { status } = await call(
@@ -272,7 +460,7 @@ describe('CMS user management authorization', () => {
     it.each(['', '   '])('refuses %p as a replacement password', async (password) => {
       const id = targets.contentManager
       const before = { ...stored(id) }
-      const { status } = await call(
+      const { status, body } = await call(
         'update',
         'admin',
         { id },
@@ -280,6 +468,7 @@ describe('CMS user management authorization', () => {
       )
 
       expect(status).toBe(400)
+      expect(body).toEqual({ error: 'Password cannot be empty' })
       expect(save).not.toHaveBeenCalled()
       expect(stored(id)).toEqual(before)
     })
@@ -301,16 +490,49 @@ describe('CMS user management authorization', () => {
     it.each(matrix)('%s deleting a %s -> allowed: %p', async (actor, target, allowed) => {
       const id = targets[target as string]
       const before = { ...stored(id) }
-      const { status } = await call('remove', actor as string, { id })
+      const { status, body } = await call('remove', actor as string, { id })
 
       if (allowed) {
         expect(status).toBe(200)
         expect(stored(id)).toBeUndefined()
+        expectPublic(body, {
+          id,
+          username: before.username,
+          type: before.type,
+          lang: before.lang,
+        })
       } else {
         expect(status).toBe(403)
         expect(remove).not.toHaveBeenCalled()
         expect(stored(id)).toEqual(before)
       }
+    })
+
+    it('lets a superAdmin delete itself while another superAdmin remains', async () => {
+      const { status } = await call('remove', 'superAdmin', { id: actors.superAdmin })
+
+      expect(status).toBe(200)
+      expect(stored(actors.superAdmin)).toBeUndefined()
+    })
+
+    it('keeps the last superAdmin from deleting itself', async () => {
+      users = users.filter((user) => user.id !== targets.superAdmin)
+      const before = { ...stored(actors.superAdmin) }
+
+      const { status } = await call('remove', 'superAdmin', { id: actors.superAdmin })
+
+      expect(status).toBe(409)
+      expect(remove).not.toHaveBeenCalled()
+      expect(stored(actors.superAdmin)).toEqual(before)
+    })
+
+    it('still lets the last superAdmin delete other accounts', async () => {
+      users = users.filter((user) => user.id !== targets.superAdmin)
+
+      const { status } = await call('remove', 'superAdmin', { id: targets.admin })
+
+      expect(status).toBe(200)
+      expect(stored(targets.admin)).toBeUndefined()
     })
   })
 })

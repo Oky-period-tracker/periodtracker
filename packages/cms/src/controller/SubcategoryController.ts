@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm'
+import { getManager, getRepository } from 'typeorm'
 import { NextFunction, Request, Response } from 'express'
 import { Category } from '../entity/Category'
 import { Subcategory } from '../entity/Subcategory'
@@ -10,7 +10,6 @@ import { logger } from '../logger'
 export class SubcategoryController {
   private categoryRepository = getRepository(Category)
   private subCategoryRepository = getRepository(Subcategory)
-  private articleRepository = getRepository(Article)
 
   async all(request: Request, response: Response, next: NextFunction) {
     return this.subCategoryRepository.find({ where: { lang: request.user.lang } })
@@ -105,11 +104,24 @@ export class SubcategoryController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const subCategoryToRemove = await this.subCategoryRepository.findOne({
-        id: request.params.id,
-        lang: request.user.lang,
+      // Same contract as CategoryController.remove: the subcategory and its articles are
+      // deleted together or not at all, with the row locked against a concurrent removal
+      // only. A concurrent edit is not covered.
+      const removed = await getManager().transaction(async (manager) => {
+        const subcategories = manager.getRepository(Subcategory)
+        // Scoped to the editor's language: another language's subcategory answers 404
+        const subcategory = await subcategories.findOne({
+          where: { id: request.params.id, lang: request.user.lang },
+          lock: { mode: 'pessimistic_write' },
+        })
+        if (!subcategory) return undefined
+        const articles = await manager
+          .getRepository(Article)
+          .delete({ subcategory: subcategory.id })
+        await subcategories.remove(subcategory)
+        return { subcategory, articlesRemoved: articles.affected }
       })
-      if (!subCategoryToRemove) {
+      if (!removed) {
         logger.warn('Subcategory not found for removal', {
           id: request.params.id,
           lang: request.user.lang,
@@ -117,18 +129,11 @@ export class SubcategoryController {
         response.status(404).send({ error: 'Subcategory not found' })
         return
       }
-      const articlesToRemove = await this.articleRepository.find({
-        where: {
-          subcategory: subCategoryToRemove.id,
-        },
-      })
-      await this.subCategoryRepository.remove(subCategoryToRemove)
-      await this.articleRepository.remove(articlesToRemove)
       logger.info('Subcategory removed with cascade', {
         id: request.params.id,
-        articlesRemoved: articlesToRemove.length,
+        articlesRemoved: removed.articlesRemoved,
       })
-      return subCategoryToRemove
+      return removed.subcategory
     } catch (error) {
       logger.error('SubcategoryController.remove failed', {
         id: request.params.id,

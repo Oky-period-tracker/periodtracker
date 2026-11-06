@@ -1,4 +1,4 @@
-import { getRepository } from 'typeorm'
+import { getManager, getRepository } from 'typeorm'
 import { CategoryController } from '../../src/controller/CategoryController'
 import { SubcategoryController } from '../../src/controller/SubcategoryController'
 import { ArticleController } from '../../src/controller/ArticleController'
@@ -9,7 +9,7 @@ import { TermsAndConditionsController } from '../../src/controller/TermsAndCondi
 import { NotificationController } from '../../src/controller/NotificationController'
 import { VideoController } from '../../src/controller/VideoController'
 
-jest.mock('typeorm', () => ({ getRepository: jest.fn() }))
+jest.mock('typeorm', () => ({ getRepository: jest.fn(), getManager: jest.fn() }))
 jest.mock('../../src/entity/Category', () => ({ Category: class Category {} }))
 jest.mock('../../src/entity/Subcategory', () => ({ Subcategory: class Subcategory {} }))
 jest.mock('../../src/entity/Article', () => ({ Article: class Article {} }))
@@ -133,6 +133,10 @@ describe('content language scope', () => {
       AboutBanner: [{ id: 2, image: '/es.png', lang: 'es' }],
     }
     ;(getRepository as jest.Mock).mockImplementation((entity) => repository(tables[entity.name]))
+    // Category and subcategory removal runs in a transaction, on the same tables
+    ;(getManager as jest.Mock).mockReturnValue({
+      transaction: (run: any) => run({ getRepository }),
+    })
     response = { status: jest.fn().mockReturnThis(), send: jest.fn() }
   })
 

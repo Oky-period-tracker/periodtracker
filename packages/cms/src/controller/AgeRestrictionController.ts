@@ -29,7 +29,7 @@ export class AgeRestrictionController {
 
       const repo = repoMap[source]
 
-      const item = await repo.findOne(id)
+      const item = await repo.findOne({ id, lang: request.user.lang })
       if (!item) {
         logger.warn('Item not found for age restriction update', { id, source })
         response.status(404).send({ error: 'Item not found' })

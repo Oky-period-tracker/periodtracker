@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { randomBytes } from 'crypto'
 import { safeRequestPath } from './helpers/safeUtils'
 import { createConnection, getConnection } from 'typeorm'
-import express, { Request, Response } from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import * as bodyParser from 'body-parser'
 import { Routes } from './routes'
 import passport from 'passport'
@@ -215,20 +215,37 @@ withRetry(() => createConnection(ormconfig), {
     // ============================ Upload  =======================================
 
     const spreadsheetUpload = singleFileUpload(SPREADSHEET_MAX_BYTES).single('spreadsheet')
+    // Express 4 ignores the promise an async handler returns: hand its
+    // rejection to the error middleware, or the request hangs until the timeout
+    const forwardErrors = (
+      handler: (req: Request, res: Response, next: NextFunction) => Promise<unknown>,
+    ) => (req: Request, res: Response, next: NextFunction) => handler(req, res, next).catch(next)
     const dataController = new DataController()
-    app.post('/data/upload-content-sheet', spreadsheetUpload, dataController.uploadContentSheet)
+    app.post(
+      '/data/upload-content-sheet',
+      spreadsheetUpload,
+      forwardErrors(dataController.uploadContentSheet),
+    )
     app.post(
       '/data/upload-app-translations-sheet',
       spreadsheetUpload,
-      dataController.uploadAppTranslationsSheet,
+      forwardErrors(dataController.uploadAppTranslationsSheet),
     )
     app.post(
       '/data/upload-cms-translations-sheet',
       spreadsheetUpload,
-      dataController.uploadCmsTranslationsSheet,
+      forwardErrors(dataController.uploadCmsTranslationsSheet),
     )
-    app.post('/data/upload-countries-sheet', spreadsheetUpload, dataController.uploadCountriesSheet)
-    app.post('/data/upload-provinces-sheet', spreadsheetUpload, dataController.uploadProvincesSheet)
+    app.post(
+      '/data/upload-countries-sheet',
+      spreadsheetUpload,
+      forwardErrors(dataController.uploadCountriesSheet),
+    )
+    app.post(
+      '/data/upload-provinces-sheet',
+      spreadsheetUpload,
+      forwardErrors(dataController.uploadProvincesSheet),
+    )
 
     const voiceOverController = new ArticleVoiceOverController()
 
@@ -236,7 +253,7 @@ withRetry(() => createConnection(ormconfig), {
     app.post(
       '/api/voice-over/article/upload',
       singleFileUpload(VOICE_OVER_MAX_BYTES).single('file'),
-      voiceOverController.upload,
+      forwardErrors(voiceOverController.upload),
     )
 
     // ============================ Routes  =======================================

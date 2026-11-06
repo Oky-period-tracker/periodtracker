@@ -21,14 +21,22 @@ export class PrivacyPolicyController {
   }
 
   async one(request: Request, response: Response, next: NextFunction) {
-    return this.privacyPolicyRepository.findOne(request.params.id)
+    const privacyPolicy = await this.privacyPolicyRepository.findOne(request.params.id, {
+      where: { lang: request.user.lang },
+    })
+    if (!privacyPolicy) response.status(404).send({ error: 'Privacy policy not found' })
+    return privacyPolicy
   }
 
   async save(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToSave = request.body
-      aboutToSave.lang = request.user.lang
-      await this.privacyPolicyRepository.save(aboutToSave)
+      // Built from the expected fields only: an id in the body would make save()
+      // overwrite that row, whatever its language, instead of creating one
+      const aboutToSave = await this.privacyPolicyRepository.save({
+        json_dump: request.body.json_dump,
+        timestamp: request.body.timestamp,
+        lang: request.user.lang,
+      })
       logger.info('Privacy policy saved', { lang: request.user.lang })
       return aboutToSave
     } catch (error) {
@@ -42,14 +50,18 @@ export class PrivacyPolicyController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToUpdate = await this.privacyPolicyRepository.findOne(request.params.id)
+      const aboutToUpdate = await this.privacyPolicyRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToUpdate) {
-        logger.warn('Privacy policy not found for update', { id: request.params.id })
+        logger.warn('Privacy policy not found for update', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Privacy policy not found' })
         return
       }
       aboutToUpdate.json_dump = request.body.json_dump
-      aboutToUpdate.lang = request.user.lang
       await this.privacyPolicyRepository.save(aboutToUpdate)
       logger.info('Privacy policy updated', { id: request.params.id })
       return aboutToUpdate
@@ -65,9 +77,14 @@ export class PrivacyPolicyController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToRemove = await this.privacyPolicyRepository.findOne(request.params.id)
+      const aboutToRemove = await this.privacyPolicyRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToRemove) {
-        logger.warn('Privacy policy not found for removal', { id: request.params.id })
+        logger.warn('Privacy policy not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'Privacy policy not found' })
         return
       }

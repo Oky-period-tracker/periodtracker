@@ -13,6 +13,16 @@ import {
   DEFAULT_EXTERNAL_TIMEOUT,
 } from '../../src/helpers/timeout'
 
+// A promise that settles long after the timeouts under test. Its timer is
+// cancelled once the test is over, or Jest reports it as an open handle.
+const slowPromise = () => {
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const promise = new Promise((resolve) => {
+    timer = setTimeout(() => resolve('late'), 2000)
+  })
+  return { promise, cancel: () => clearTimeout(timer) }
+}
+
 describe('withTimeout', () => {
   it('resolves when promise completes before timeout', async () => {
     const result = await withTimeout(Promise.resolve('done'), 1000)
@@ -20,8 +30,11 @@ describe('withTimeout', () => {
   })
 
   it('rejects when promise exceeds timeout', async () => {
-    const slow = new Promise((resolve) => setTimeout(() => resolve('late'), 2000))
-    await expect(withTimeout(slow, 50, 'TestOp')).rejects.toThrow('TestOp timed out after 50ms')
+    const slow = slowPromise()
+    await expect(withTimeout(slow.promise, 50, 'TestOp')).rejects.toThrow(
+      'TestOp timed out after 50ms',
+    )
+    slow.cancel()
   })
 
   it('propagates original error when promise rejects before timeout', async () => {
@@ -30,8 +43,9 @@ describe('withTimeout', () => {
   })
 
   it('uses default label in timeout message', async () => {
-    const slow = new Promise((resolve) => setTimeout(() => resolve('late'), 2000))
-    await expect(withTimeout(slow, 50)).rejects.toThrow('Operation timed out after 50ms')
+    const slow = slowPromise()
+    await expect(withTimeout(slow.promise, 50)).rejects.toThrow('Operation timed out after 50ms')
+    slow.cancel()
   })
 
   it('clears timer on success so it does not leak', async () => {

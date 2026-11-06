@@ -99,12 +99,13 @@ $('#btnArticleEditConfirm').on('click', () => {
     live: $('#col4TableModal').prop('checked'),
   }
   addSelectedLevels(data)
+  // An unselected dropdown gives null, not '', so empty values are checked as falsy
   if (
-    data.category === '' ||
-    data.subcategory === '' ||
-    data.article_heading === '' ||
+    !data.category ||
+    !data.subcategory ||
+    !data.article_heading ||
     data.article_heading.length > 70 ||
-    data.article_text === ''
+    !data.article_text
   ) {
     $('#error1').show()
     $('#error2').show()
@@ -125,8 +126,9 @@ $('#btnArticleEditConfirm').on('click', () => {
         setTimeout(() => location.reload(), 1500)
       }
     },
-    error: (error) => {
-      console.log(error)
+    error: (xhr) => {
+      console.error('Article save failed', xhr.status, xhr.responseText)
+      alert(requestErrorMessage('save the article', xhr))
     },
   })
 })

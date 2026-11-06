@@ -21,32 +21,42 @@ describe('CMS user password hash', () => {
 
   describe('user management responses', () => {
     const superAdmin = { id: 1, username: 'superAdmin', type: 'superAdmin', lang: 'en' }
-    const form = { username: 'cm', password: 'plain-secret', type: 'contentManager', lang: 'en' }
+    const stored = {
+      id: 7,
+      username: 'cm',
+      password: 'hash:old',
+      type: 'contentManager',
+      lang: 'en',
+      date_created: '2026-01-01T00:00:00.000Z',
+      sessionVersion: 3,
+    }
+    const form = { username: 'renamed', password: 'plain-secret', type: 'admin', lang: 'fr' }
+    const fromForm = { username: 'renamed', type: 'admin', lang: 'fr' }
+    const fromStored = { id: 7, username: 'cm', type: 'contentManager', lang: 'en' }
 
     beforeEach(() => {
-      const stored = {
-        id: 7,
-        username: 'cm',
-        password: 'hash:old',
-        type: 'contentManager',
-        lang: 'en',
-      }
-      // Hands the hash back as if it had been selected, so only the controller
-      // stands between it and the response
+      // Hands every column back, hash included, whatever select asks for, so
+      // only the controller stands between them and the response
       ;(getRepository as jest.Mock).mockReturnValue({
-        findOne: jest.fn(async (idOrOptions) =>
-          typeof idOrOptions === 'object' ? undefined : { ...stored },
+        findOne: jest.fn(async () => ({ ...stored })),
+        find: jest.fn(async ({ where }) =>
+          where.username === stored.username ? [{ ...stored }] : [],
         ),
         save: jest.fn(async (entity) => ({ id: 8, ...entity })),
-        remove: jest.fn(async (entity) => entity),
+        // Like TypeORM, which clears the primary key of the entity it removed
+        remove: jest.fn(async (entity) => {
+          delete entity.id
+          return entity
+        }),
       })
     })
 
     it.each([
-      ['save', {}],
-      ['update', { id: 7 }],
-      ['remove', { id: 7 }],
-    ])('%s answers with the public fields only', async (action, params) => {
+      ['one', { id: 7 }, fromStored],
+      ['save', {}, { id: 8, ...fromForm }],
+      ['update', { id: 7 }, { id: 7, ...fromForm }],
+      ['remove', { id: 7 }, fromStored],
+    ])('%s answers with the public fields only', async (action, params, expected) => {
       const response: any = { status: jest.fn().mockReturnThis(), send: jest.fn() }
       const result = await (new UserController() as any)[action](
         { user: superAdmin, params, body: form },
@@ -55,13 +65,9 @@ describe('CMS user password hash', () => {
       )
 
       expect(response.status).not.toHaveBeenCalled()
-      expect(result).toEqual({
-        id: expect.any(Number),
-        username: 'cm',
-        type: 'contentManager',
-        lang: 'en',
-      })
-      expect(JSON.stringify(result)).not.toMatch(/password|hash:|plain-secret/)
+      expect(result).toEqual(expected)
+      expect(Object.keys(result).sort()).toEqual(['id', 'lang', 'type', 'username'])
+      expect(JSON.stringify(result)).not.toMatch(/password|hash:|plain-secret|sessionVersion/)
     })
   })
 })

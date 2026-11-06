@@ -217,7 +217,7 @@ describe('content language scope', () => {
   })
 
   it.each([
-    ['a category that is not a uuid', { category: '', subcategory: SUB_EN }],
+    ['a category that is not a uuid', { category: 'nope', subcategory: SUB_EN }],
     ['a subcategory that is not a uuid', { category: CAT_EN, subcategory: 'nope' }],
     ['a subcategory of another category', { category: CAT_EN, subcategory: SUB_EN_OTHER }],
   ])('refuses an article with %s', async (_, parents) => {
@@ -363,7 +363,12 @@ describe('content language scope', () => {
     // The title matches a row of the target's own language: the answer must stay a
     // 404 rather than hand that row over
     it.each([
-      ['article', () => new ArticleController(), ART_ES, { article_heading: 'Heading' }],
+      [
+        'article',
+        () => new ArticleController(),
+        ART_ES,
+        { article_heading: 'Heading', category: CAT_EN, subcategory: SUB_EN },
+      ],
       ['category', () => new CategoryController(), CAT_ES, { title: 'Body' }],
       ['video', () => new VideoController(), VID_ES, { title: 'Video' }],
     ])(

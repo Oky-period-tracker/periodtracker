@@ -79,8 +79,26 @@ export class ArticleController {
     return article
   }
 
+  // The Encyclopedia page and the mobile API only list articles whose category and
+  // subcategory exist, so an article saved without them would be stored but never shown
+  private hasCategoryAndSubcategory(request: Request, response: Response) {
+    if (request.body.category && request.body.subcategory) {
+      return true
+    }
+    logger.warn('Article rejected without a category or subcategory', {
+      id: request.params.id,
+      category: request.body.category,
+      subcategory: request.body.subcategory,
+    })
+    response.status(400).send({ error: 'Choose a category and a subcategory' })
+    return false
+  }
+
   async save(request: Request, response: Response, next: NextFunction) {
     try {
+      if (!this.hasCategoryAndSubcategory(request, response)) {
+        return
+      }
       if (!(await this.parentsInLanguage(request))) {
         response.status(404).send({ error: 'Category or subcategory not found' })
         return
@@ -120,6 +138,9 @@ export class ArticleController {
 
   async update(request: Request, response: Response, next: NextFunction) {
     try {
+      if (!this.hasCategoryAndSubcategory(request, response)) {
+        return
+      }
       const booleanFromString = request.body.live === 'true'
       // Scoped to the editor's language, which the article keeps: an edit never moves it
       const articleToUpdate = await this.articleRepository.findOne({

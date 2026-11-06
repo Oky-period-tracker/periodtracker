@@ -49,12 +49,15 @@ describe('CMS user management authorization', () => {
     users = seed()
     save = jest.fn(async (entity) => {
       const index = users.findIndex((user) => user.id === entity.id)
-      if (index === -1) users.push({ id: users.length + 100, ...entity })
-      else users[index] = { ...entity }
-      return entity
+      if (index === -1) {
+        entity = { id: users.length + 100, ...entity }
+        users.push(entity)
+      } else users[index] = { ...entity }
+      return { ...entity }
     })
     remove = jest.fn(async (entity) => {
       users = users.filter((user) => user.id !== entity.id)
+      delete entity.id
       return entity
     })
     ;(getRepository as jest.Mock).mockReturnValue({
@@ -88,6 +91,12 @@ describe('CMS user management authorization', () => {
   }
 
   const stored = (id: number) => users.find((user) => user.id === id)
+
+  // Neither the hash nor the password the form sent may come back
+  const expectPublic = (body, expected) => {
+    expect(body).toEqual(expected)
+    expect(JSON.stringify(body)).not.toMatch(/password|hash:|secret|taken-over/)
+  }
 
   describe('list', () => {
     it.each([
@@ -128,7 +137,7 @@ describe('CMS user management authorization', () => {
       ),
     )('%s creating a %s -> allowed: %p', async (actor, type, allowed) => {
       const before = users.length
-      const { status } = await call(
+      const { status, body } = await call(
         'save',
         actor as string,
         {},
@@ -137,7 +146,9 @@ describe('CMS user management authorization', () => {
 
       if (allowed) {
         expect(status).toBe(200)
-        expect(users.find((user) => user.username === 'newUser')).toMatchObject({ type })
+        const created = users.find((user) => user.username === 'newUser')
+        expect(created).toMatchObject({ type, password: 'hash:secret' })
+        expectPublic(body, { id: created.id, username: 'newUser', type, lang: 'en' })
       } else {
         expect(status).toBe(403)
         expect(save).not.toHaveBeenCalled()
@@ -200,7 +211,7 @@ describe('CMS user management authorization', () => {
     it.each(matrix)('%s editing a %s -> allowed: %p', async (actor, target, allowed) => {
       const id = targets[target as string]
       const before = { ...stored(id) }
-      const { status } = await call(
+      const { status, body } = await call(
         'update',
         actor as string,
         { id },
@@ -210,6 +221,7 @@ describe('CMS user management authorization', () => {
       if (allowed) {
         expect(status).toBe(200)
         expect(stored(id)).toMatchObject({ username: 'renamed', password: 'hash:taken-over' })
+        expectPublic(body, { id, username: 'renamed', type: before.type, lang: before.lang })
       } else {
         expect(status).toBe(403)
         expect(save).not.toHaveBeenCalled()
@@ -414,11 +426,17 @@ describe('CMS user management authorization', () => {
     it.each(matrix)('%s deleting a %s -> allowed: %p', async (actor, target, allowed) => {
       const id = targets[target as string]
       const before = { ...stored(id) }
-      const { status } = await call('remove', actor as string, { id })
+      const { status, body } = await call('remove', actor as string, { id })
 
       if (allowed) {
         expect(status).toBe(200)
         expect(stored(id)).toBeUndefined()
+        expectPublic(body, {
+          id,
+          username: before.username,
+          type: before.type,
+          lang: before.lang,
+        })
       } else {
         expect(status).toBe(403)
         expect(remove).not.toHaveBeenCalled()

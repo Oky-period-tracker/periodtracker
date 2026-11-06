@@ -9,6 +9,10 @@ import { logger } from '../logger'
 const saltRounds = 10
 const publicFields: Array<keyof User> = ['id', 'username', 'type', 'lang']
 
+// What the user endpoints answer with: never the password, hashed or not
+const toPublic = (user: Partial<User>) =>
+  Object.fromEntries(publicFields.map((field) => [field, user[field]]))
+
 // Same hierarchy as the user management page: an account can only be managed
 // by someone allowed to create its role, and only superAdmins work across
 // languages. Checked against the stored account and against the requested
@@ -101,7 +105,7 @@ export class UserController {
         return
       }
       const hash = await bcrypt.hash(request.body.password, saltRounds)
-      await this.userRepository.save({
+      const created = await this.userRepository.save({
         username: request.body.username,
         password: hash,
         lang,
@@ -109,7 +113,7 @@ export class UserController {
         type: request.body.type,
       })
       logger.info('CMS user created', { username: request.body.username, type: request.body.type })
-      return request.body
+      return toPublic(created)
     } catch (error) {
       if (isUniqueViolation(error)) {
         duplicateUsername(response, 'creation', request.body.username)
@@ -156,7 +160,7 @@ export class UserController {
       userToUpdate.sessionVersion += 1
       await this.userRepository.save(userToUpdate)
       logger.info('CMS user updated', { id: request.params.id, username: request.body.username })
-      return userToUpdate
+      return toPublic(userToUpdate)
     } catch (error) {
       if (isUniqueViolation(error)) {
         duplicateUsername(response, 'update', request.body.username)
@@ -187,9 +191,11 @@ export class UserController {
         keepLastSuperAdmin(request, response, 'removal')
         return
       }
+      // Read before removing, which clears the id on the entity
+      const removed = toPublic(userToRemove)
       await this.userRepository.remove(userToRemove)
       logger.info('CMS user removed', { id: request.params.id })
-      return userToRemove
+      return removed
     } catch (error) {
       logger.error('UserController.remove failed', {
         id: request.params.id,

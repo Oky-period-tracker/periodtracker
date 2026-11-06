@@ -9,7 +9,8 @@ import { logger } from '../logger'
 const saltRounds = 10
 const publicFields: Array<keyof User> = ['id', 'username', 'type', 'lang']
 
-// What the user endpoints answer with: never the password, hashed or not
+// What the user endpoints answer with, whatever the entity holds: never the
+// password, hashed or not, nor a column added to User later
 const toPublic = (user: Partial<User>) =>
   Object.fromEntries(publicFields.map((field) => [field, user[field]]))
 
@@ -90,7 +91,7 @@ export class UserController {
       deny(request, response, 'read')
       return
     }
-    return user
+    return toPublic(user)
   }
 
   async save(request: Request, response: Response, next: NextFunction) {

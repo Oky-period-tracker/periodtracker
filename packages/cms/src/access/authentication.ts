@@ -9,7 +9,12 @@ export class Authentication {
   static async authenticate(username: string, password: string, done: any) {
     try {
       const userRepository = getRepository(User)
-      const user = await userRepository.findOne({ where: { username } })
+      // The hash is not selected by default (see User.password)
+      const user = await userRepository
+        .createQueryBuilder('user')
+        .addSelect('user.password')
+        .where('user.username = :username', { username })
+        .getOne()
       if (!user) {
         logger.warn('Login failed: user not found', { username })
         return done(null, false, { message: 'No user registered' })

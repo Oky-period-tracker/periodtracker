@@ -1,34 +1,29 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Notifications from 'expo-notifications'
-import moment, { Moment } from 'moment'
+import { Moment } from 'moment'
 import { IS_ANDROID } from './device'
-import {
-  ReminderFrequency,
-  calculateReminderDate,
-  getRandomNotificationMessage,
-} from './notificationScheduler'
 
-const PERIOD_REMINDER_NOTIFICATION_ID_KEY = 'period_reminder_local_notification_id'
 const PERIOD_REMINDER_CHANNEL_ID = 'period-reminder'
-const PERIOD_REMINDER_HOUR = 8
+// Identifiers look like `period-reminder:<userId>:<n>`, so every account on the device owns its
+// own reminders and one account's sync never cancels another's.
+const PERIOD_REMINDER_ID_PREFIX = 'period-reminder:'
 
-interface SyncPeriodReminderNotificationParams {
-  isEnabled: boolean
-  reminderFrequency: ReminderFrequency
-  predictedPeriodDate: Moment | Date | string | null
+const userIdPrefix = (userId: string) => `${PERIOD_REMINDER_ID_PREFIX}${userId}:`
+
+export interface PeriodReminderContent {
+  title: string
+  body: string
+  channelName: string
 }
 
-const ensureAndroidNotificationChannel = async () => {
-  if (!IS_ANDROID) {
-    return
-  }
-
-  await Notifications.setNotificationChannelAsync(PERIOD_REMINDER_CHANNEL_ID, {
-    name: 'Period reminders',
-    importance: Notifications.AndroidImportance.HIGH,
-    vibrationPattern: [0, 250, 250, 250],
-    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-  })
+// Serialize syncs so a quick enable/disable can't interleave its cancel and schedule calls.
+let syncChain: Promise<unknown> = Promise.resolve()
+function enqueue<T>(fn: () => Promise<T>): Promise<T> {
+  const run = syncChain.then(fn, fn)
+  syncChain = run.then(
+    () => undefined,
+    () => undefined,
+  )
+  return run
 }
 
 export const requestAppNotificationPermission = async () => {
@@ -42,98 +37,78 @@ export const requestAppNotificationPermission = async () => {
   return requestedPermissions.granted
 }
 
-const buildReminderDateAtMorning = (
-  predictedPeriodDate: Moment | Date | string,
-  reminderFrequency: ReminderFrequency,
-) => {
-  const reminderDate = calculateReminderDate(predictedPeriodDate, reminderFrequency)
-    .hour(PERIOD_REMINDER_HOUR)
-    .minute(0)
-    .second(0)
-    .millisecond(0)
-
-  return reminderDate
+const cancelUserReminders = async (userId: string) => {
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync()
+  await Promise.all(
+    scheduled
+      .filter(({ identifier }) => identifier.startsWith(userIdPrefix(userId)))
+      .map(({ identifier }) => Notifications.cancelScheduledNotificationAsync(identifier)),
+  )
 }
 
-const persistScheduledNotificationId = async (notificationId: string | null) => {
-  if (!notificationId) {
-    await AsyncStorage.removeItem(PERIOD_REMINDER_NOTIFICATION_ID_KEY)
-    return
-  }
+export const cancelPeriodReminders = (userId: string) =>
+  enqueue(() => cancelUserReminders(userId))
 
-  await AsyncStorage.setItem(PERIOD_REMINDER_NOTIFICATION_ID_KEY, notificationId)
-}
+// Replace this user's scheduled reminders with one notification per date. Never asks for
+// permission: this runs on every Home focus, so asking is left to the Settings modal.
+export const syncPeriodReminders = (
+  userId: string,
+  reminderDates: Moment[],
+  content: PeriodReminderContent,
+) =>
+  enqueue(async () => {
+    await cancelUserReminders(userId)
 
-const getPersistedScheduledNotificationId = async () => {
-  return AsyncStorage.getItem(PERIOD_REMINDER_NOTIFICATION_ID_KEY)
-}
-
-export const cancelScheduledPeriodReminderNotification = async () => {
-  const existingNotificationId = await getPersistedScheduledNotificationId()
-
-  if (existingNotificationId) {
-    try {
-      await Notifications.cancelScheduledNotificationAsync(existingNotificationId)
-    } catch (error) {
-      // Ignore stale IDs; clear local state either way.
+    if (!reminderDates.length) {
+      return
     }
-  }
 
-  await persistScheduledNotificationId(null)
-}
+    const { granted } = await Notifications.getPermissionsAsync()
+    if (!granted) {
+      return
+    }
 
-const schedulePeriodReminderNotification = async (
-  predictedPeriodDate: Moment | Date | string,
-  reminderFrequency: Exclude<ReminderFrequency, null>,
-) => {
-  const hasPermission = await requestAppNotificationPermission()
+    if (IS_ANDROID) {
+      await Notifications.setNotificationChannelAsync(PERIOD_REMINDER_CHANNEL_ID, {
+        name: content.channelName,
+        importance: Notifications.AndroidImportance.HIGH,
+        vibrationPattern: [0, 250, 250, 250],
+        lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      })
+    }
 
-  if (!hasPermission) {
-    return null
-  }
-
-  await ensureAndroidNotificationChannel()
-
-  const reminderDate = buildReminderDateAtMorning(predictedPeriodDate, reminderFrequency)
-
-  if (reminderDate.isSameOrBefore(moment())) {
-    return null
-  }
-
-  const trigger: Notifications.NotificationTriggerInput = {
-    type: Notifications.SchedulableTriggerInputTypes.DATE,
-    date: reminderDate.valueOf(),
-  }
-
-  const notificationId = await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Oky',
-      body: getRandomNotificationMessage(),
-      data: {
-        type: 'period_reminder_outer',
-      },
-    },
-    trigger,
+    await Promise.all(
+      reminderDates.map((date, index) =>
+        Notifications.scheduleNotificationAsync({
+          identifier: `${userIdPrefix(userId)}${index}`,
+          content: {
+            title: content.title,
+            body: content.body,
+            data: { type: 'period_reminder', userId },
+          },
+          trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: date.valueOf(),
+            channelId: PERIOD_REMINDER_CHANNEL_ID,
+          },
+        }),
+      ),
+    )
   })
 
-  return notificationId
-}
+const getOpenedReminderIdentifier = () =>
+  Notifications.getLastNotificationResponse()?.notification.request.identifier ?? null
 
-export const syncPeriodReminderLocalNotification = async ({
-  isEnabled,
-  reminderFrequency,
-  predictedPeriodDate,
-}: SyncPeriodReminderNotificationParams) => {
-  await cancelScheduledPeriodReminderNotification()
-
-  if (!isEnabled || !reminderFrequency || !predictedPeriodDate) {
-    return
+// Clear this user's reminders once they are back in the app: the ones still in the notification
+// tray, and the one they tapped to open the app.
+export const dismissPeriodReminders = async (userId: string) => {
+  if (getOpenedReminderIdentifier()?.startsWith(userIdPrefix(userId))) {
+    Notifications.clearLastNotificationResponse()
   }
-
-  const notificationId = await schedulePeriodReminderNotification(
-    predictedPeriodDate,
-    reminderFrequency,
+  const presented = await Notifications.getPresentedNotificationsAsync()
+  await Promise.all(
+    presented
+      .filter(({ request }) => request.identifier.startsWith(userIdPrefix(userId)))
+      .map(({ request }) => Notifications.dismissNotificationAsync(request.identifier)),
   )
-
-  await persistScheduledNotificationId(notificationId)
 }

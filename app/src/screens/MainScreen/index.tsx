@@ -15,7 +15,7 @@ import { TutorialProvider, useTutorial } from './TutorialContext'
 import { TutorialTextbox } from './components/TutorialTextbox'
 import { TutorialArrow } from './components/TutorialArrow'
 import { TutorialFeature } from './components/TutorialFeature'
-import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useIsFocused } from '@react-navigation/native'
 import { useFetchSurvey } from '../../hooks/useFetchSurvey'
 import { useLoading, useStopLoadingEffect } from '../../contexts/LoadingProvider'
 import { AvatarMessageProvider } from '../../contexts/AvatarMessageContext'
@@ -24,15 +24,20 @@ import { httpClient } from '../../services/HttpClient'
 import { User } from '../../types'
 import { editUser } from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
-import { appTokenSelector, currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
+import {
+  appTokenSelector,
+  currentLocaleSelector,
+  currentUserSelector,
+  cyclesNumberSelector,
+  notificationReminderFrequencySelector,
+} from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
 import { usePeriodDateUpdate } from '../../hooks/usePeriodDateUpdate'
 import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
 import { PeriodReminderModal } from './components/PeriodReminderModal'
-import { getNextPredictedPeriodDate, isReminderDay } from '../../services/notificationScheduler'
-import { notificationsEnabledSelector, notificationReminderFrequencySelector } from '../../redux/selectors'
-import { syncPeriodReminderLocalNotification } from '../../services/periodReminderLocalNotification'
+import { isReminderDay } from '../../services/notificationScheduler'
+import { usePeriodReminderSync } from '../../hooks/usePeriodReminderSync'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -65,14 +70,14 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const currentUser = useSelector(currentUserSelector) as User
   const cyclesNumber = useSelector(cyclesNumberSelector)
   const appToken = useSelector(appTokenSelector)
-  const notificationsEnabled = useSelector(notificationsEnabledSelector)
   const reminderFrequency = useSelector(notificationReminderFrequencySelector)
+  const locale = useSelector(currentLocaleSelector)
   const reduxDispatch = useDispatch()
   const { handleDayModalResponse, initPeriodDatesIfEmpty } = usePeriodDateUpdate()
   const predictionFullState = usePredictionEngineState()
   const isAvatarCustomizationEnabled = useAvatarCustomization()
   const isFocused = useIsFocused()
-  const screenNavigation = useNavigation()
+  const syncPeriodReminders = usePeriodReminderSync()
   const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
   const [reminderModalVisible, setReminderModalVisible] = React.useState(false)
   const friendUnlockModalShownRef = React.useRef(false)
@@ -111,48 +116,21 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     }
   }, [shouldShowFriendUnlockModal, isFocused])
 
-  // Check when to trigger the period reminder modal
-  const shouldShowReminderModal = React.useMemo(() => {
-    try {
-      // Don't check until prediction data is loaded
-      if (!notificationsEnabled) return false
-      if (!reminderFrequency) return false
+  // Show the in-app period reminder on the reminder day
+  const shouldShowReminderModal = React.useMemo(
+    () => !!reminderFrequency && isReminderDay(predictionFullState, reminderFrequency),
+    [reminderFrequency, predictionFullState],
+  )
 
-      const nextPeriodDate = getNextPredictedPeriodDate(predictionFullState)
-
-      if (!nextPeriodDate) return false
-
-      return isReminderDay(nextPeriodDate, reminderFrequency)
-    } catch (error) {
-      console.error('Error calculating reminder modal:', error)
-      return false
-    }
-  }, [notificationsEnabled, reminderFrequency, predictionFullState])
-
+  // Keep this account's scheduled reminders in line with its latest prediction, language and name
   React.useEffect(() => {
-    const reconcileOuterPeriodReminder = async () => {
-      if (!isFocused) {
-        return
-      }
-
-      const nextPeriodDate = getNextPredictedPeriodDate(predictionFullState)
-
-      await syncPeriodReminderLocalNotification({
-        isEnabled: notificationsEnabled,
-        reminderFrequency,
-        predictedPeriodDate: nextPeriodDate,
-      })
+    if (!isFocused) {
+      return
     }
-
-    reconcileOuterPeriodReminder()
-  }, [
-    isFocused,
-    notificationsEnabled,
-    reminderFrequency,
-    predictionFullState?.isActive,
-    predictionFullState?.currentCycle?.startDate,
-    predictionFullState?.currentCycle?.cycleLength,
-  ])
+    syncPeriodReminders(reminderFrequency).catch(() => {
+      // best effort, retried on the next focus
+    })
+  }, [isFocused, reminderFrequency, predictionFullState, locale, currentUser?.name])
 
   React.useEffect(() => {
     if (shouldShowReminderModal && isFocused && !reminderModalShownRef.current) {
@@ -190,7 +168,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   const handleReminderNavigateToEncyclopedia = () => {
     setReminderModalVisible(false)
-    screenNavigation.navigate('encyclopedia' as never)
+    navigation.navigate('encyclopedia' as never)
   }
 
   const avatarHidden = state.isPlaying && step !== 'avatar'

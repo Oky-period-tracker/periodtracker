@@ -18,6 +18,7 @@ import { reduxMigrations, reduxStoreVersion } from '../optional/reduxMigrations'
 import { setHttpClientStore } from '../services/HttpClient'
 import { getEncryptionKey, EncryptionKeyUnavailableError } from '../services/auth/encryptionKeys'
 import { saveSyncSnapshot } from '../services/sync/syncSnapshot'
+import { cancelPeriodReminders } from '../services/periodReminderLocalNotification'
 import {
   userDataConfigKey,
   userDataStorageKey,
@@ -218,8 +219,9 @@ export function switchToUser(userId: string): Promise<StoreBundle> {
   })
 }
 
-// Delete a user's persisted store blob. Tears down the active store first if it belongs to
-// that user. Called by registry.removeUser (lazy-required there to avoid an import cycle).
+// Delete a user's persisted store blob and cancel their scheduled period reminders. Tears down the
+// active store first if it belongs to that user. Called by registry.removeUser (lazy-required
+// there to avoid an import cycle) and by the queued-delete paths.
 export function purgeUserStorage(userId: string): Promise<void> {
   return enqueue(async () => {
     if (active && active.userId === userId) {
@@ -229,6 +231,11 @@ export function purgeUserStorage(userId: string): Promise<void> {
       await AsyncStorage.removeItem(userDataStorageKey(userId))
     } catch {
       // already gone
+    }
+    try {
+      await cancelPeriodReminders(userId)
+    } catch {
+      // nothing scheduled, or notifications unavailable
     }
   })
 }

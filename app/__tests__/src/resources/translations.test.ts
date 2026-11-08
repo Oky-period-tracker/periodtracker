@@ -17,4 +17,14 @@ describe('account feedback translations', () => {
       expect(translations.cloud_icon_explainer_offline).toBeTruthy()
     })
   })
+
+  it('bundles period reminder strings in every locale', () => {
+    Object.values(appTranslations).forEach((translations) => {
+      expect(translations.period_reminder_notification_title).toBeTruthy()
+      expect(translations.period_reminder_notification_body).toContain('{name}')
+      expect(translations.period_reminder_channel_name).toBeTruthy()
+      expect(translations.period_reminder_modal_message).toBeTruthy()
+      expect(translations.period_reminder_waiting).toBeTruthy()
+    })
+  })
 })

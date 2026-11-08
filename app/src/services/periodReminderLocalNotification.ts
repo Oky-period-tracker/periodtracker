@@ -9,6 +9,15 @@ const PERIOD_REMINDER_ID_PREFIX = 'period-reminder:'
 
 const userIdPrefix = (userId: string) => `${PERIOD_REMINDER_ID_PREFIX}${userId}:`
 
+export const getPeriodReminderUserId = (identifier: string): string | null => {
+  if (!identifier.startsWith(PERIOD_REMINDER_ID_PREFIX)) {
+    return null
+  }
+  const rest = identifier.slice(PERIOD_REMINDER_ID_PREFIX.length)
+  const end = rest.lastIndexOf(':')
+  return end > 0 ? rest.slice(0, end) : null
+}
+
 export interface PeriodReminderContent {
   title: string
   body: string
@@ -111,4 +120,29 @@ export const dismissPeriodReminders = async (userId: string) => {
       .filter(({ request }) => request.identifier.startsWith(userIdPrefix(userId)))
       .map(({ request }) => Notifications.dismissNotificationAsync(request.identifier)),
   )
+}
+
+// Accounts with a reminder waiting for them, shown as a dot on the login screen: still in the
+// tray, or tapped to open the app (tapping removes it from the tray).
+export const getUsersWithPeriodReminders = async (): Promise<Set<string>> => {
+  const presented = await Notifications.getPresentedNotificationsAsync()
+  const identifiers = presented.map(({ request }) => request.identifier)
+  const opened = getOpenedReminderIdentifier()
+  if (opened) {
+    identifiers.push(opened)
+  }
+
+  const userIds = new Set<string>()
+  identifiers.forEach((identifier) => {
+    const userId = getPeriodReminderUserId(identifier)
+    if (userId) {
+      userIds.add(userId)
+    }
+  })
+  return userIds
+}
+
+export const subscribeToNotificationTaps = (listener: () => void) => {
+  const subscription = Notifications.addNotificationResponseReceivedListener(listener)
+  return () => subscription.remove()
 }

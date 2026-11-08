@@ -2,9 +2,14 @@ import React from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { useAuthMode } from '../AuthModeContext'
 import { Text } from '../../../components/Text'
+import { NotificationDot } from '../../../components/NotificationDot'
+import { useTranslate } from '../../../hooks/useTranslate'
+import { useUsersWithPeriodReminders } from '../../../hooks/useUsersWithPeriodReminders'
 
 export const AuthLinks = () => {
   const { setAuthMode } = useAuthMode()
+  const translate = useTranslate()
+  const usersWithReminders = useUsersWithPeriodReminders()
 
   const goToForgot = () => {
     setAuthMode('forgot_password')
@@ -26,8 +31,14 @@ export const AuthLinks = () => {
         <Text style={styles.text}>delete_account</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={goToManageUsers} style={styles.link}>
+      <TouchableOpacity onPress={goToManageUsers} style={[styles.link, styles.linkWithDot]}>
         <Text style={styles.text}>manage_users</Text>
+        {usersWithReminders.size > 0 && (
+          <NotificationDot
+            style={styles.reminderDot}
+            accessibilityLabel={translate('period_reminder_waiting')}
+          />
+        )}
       </TouchableOpacity>
     </View>
   )
@@ -42,6 +53,13 @@ const styles = StyleSheet.create({
   },
   link: {
     marginBottom: 4,
+  },
+  linkWithDot: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reminderDot: {
+    marginLeft: 6,
   },
   text: {
     textDecorationLine: 'underline',

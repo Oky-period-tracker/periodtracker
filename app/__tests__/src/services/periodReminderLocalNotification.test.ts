@@ -3,6 +3,8 @@ import * as Notifications from 'expo-notifications'
 import {
   cancelPeriodReminders,
   dismissPeriodReminders,
+  getPeriodReminderUserId,
+  getUsersWithPeriodReminders,
   syncPeriodReminders,
 } from '../../../src/services/periodReminderLocalNotification'
 
@@ -17,6 +19,7 @@ jest.mock('expo-notifications', () => ({
   dismissNotificationAsync: jest.fn(),
   getLastNotificationResponse: jest.fn(),
   clearLastNotificationResponse: jest.fn(),
+  addNotificationResponseReceivedListener: jest.fn(),
   AndroidImportance: { HIGH: 4 },
   AndroidNotificationVisibility: { PUBLIC: 1 },
   SchedulableTriggerInputTypes: { DATE: 'date' },
@@ -85,6 +88,24 @@ describe('periodReminderLocalNotification', () => {
     await cancelPeriodReminders('zoe')
 
     expect(mocked.cancelScheduledNotificationAsync.mock.calls).toEqual([['period-reminder:zoe:0']])
+  })
+
+  it('reads the account id back from a reminder identifier', () => {
+    expect(getPeriodReminderUserId('period-reminder:ana:11')).toBe('ana')
+    expect(getPeriodReminderUserId('period-reminder:a1b2-c3:0')).toBe('a1b2-c3')
+    expect(getPeriodReminderUserId('something-else')).toBeNull()
+  })
+
+  it('finds accounts with a reminder in the tray or the one that opened the app', async () => {
+    mocked.getPresentedNotificationsAsync.mockResolvedValue([
+      request('period-reminder:ana:0'),
+      request('something-else'),
+    ] as never)
+    mocked.getLastNotificationResponse.mockReturnValue({
+      notification: request('period-reminder:zoe:3'),
+    } as never)
+
+    expect(await getUsersWithPeriodReminders()).toEqual(new Set(['ana', 'zoe']))
   })
 
   it('dismisses only this account’s reminders once it is back in the app', async () => {

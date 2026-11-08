@@ -1,28 +1,20 @@
 import { Actions } from '../types'
-import { RehydrateAction, REHYDRATE } from 'redux-persist'
-import { ReminderFrequency } from '../actions/notificationActions'
+import { ReminderFrequency } from '../../services/notificationScheduler'
 
 export interface NotificationState {
-  isEnabled: boolean
-  reminderFrequency: ReminderFrequency
+  // null when period reminders are off
+  reminderFrequency: ReminderFrequency | null
 }
 
 const initialState: NotificationState = {
-  isEnabled: false,
   reminderFrequency: null,
 }
 
 export function notificationReducer(
   state = initialState,
-  action: Actions | RehydrateAction,
+  action: Actions,
 ): NotificationState {
   switch (action.type) {
-    case REHYDRATE: {
-      return {
-        ...state,
-        ...(action.payload && action.payload.notification),
-      }
-    }
     case 'REFRESH_STORE': {
       if (!action?.payload?.notification) {
         return state
@@ -36,11 +28,6 @@ export function notificationReducer(
       return {
         ...state,
         reminderFrequency: action.payload.reminderFrequency,
-      }
-    case 'SET_NOTIFICATIONS_ENABLED':
-      return {
-        ...state,
-        isEnabled: action.payload.isEnabled,
       }
     default:
       return state

@@ -49,6 +49,7 @@ function handleTokenTooLarge() {
             prediction: state.prediction,
             verifiedDates: state.answer?.[user.id]?.verifiedDates,
             helpCenters: state.helpCenters,
+            notification: state.notification,
           },
         },
         editInfo: {

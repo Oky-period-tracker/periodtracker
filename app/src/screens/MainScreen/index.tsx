@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { AppState, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { Carousel } from './components/Carousel'
 import { CenterCard } from './components/CenterCard'
@@ -122,6 +122,17 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     [reminderFrequency, predictionFullState],
   )
 
+  // Opening the app from the background doesn't change navigation focus, so track it separately
+  const [foregroundedAt, setForegroundedAt] = React.useState(0)
+  React.useEffect(() => {
+    const subscription = AppState.addEventListener('change', (appState) => {
+      if (appState === 'active') {
+        setForegroundedAt(Date.now())
+      }
+    })
+    return () => subscription.remove()
+  }, [])
+
   // Keep this account's scheduled reminders in line with its latest prediction, language and name
   React.useEffect(() => {
     if (!isFocused) {
@@ -130,7 +141,7 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     syncPeriodReminders(reminderFrequency).catch(() => {
       // best effort, retried on the next focus
     })
-  }, [isFocused, reminderFrequency, predictionFullState, locale, currentUser?.name])
+  }, [isFocused, foregroundedAt, reminderFrequency, predictionFullState, locale, currentUser?.name])
 
   React.useEffect(() => {
     if (shouldShowReminderModal && isFocused && !reminderModalShownRef.current) {

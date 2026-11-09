@@ -55,9 +55,6 @@ const cancelUserReminders = async (userId: string) => {
   )
 }
 
-export const cancelPeriodReminders = (userId: string) =>
-  enqueue(() => cancelUserReminders(userId))
-
 // Replace this user's scheduled reminders with one notification per date. Never asks for
 // permission: this runs on every Home focus, so asking is left to the Settings modal.
 export const syncPeriodReminders = (
@@ -121,6 +118,14 @@ export const dismissPeriodReminders = async (userId: string) => {
       .map(({ request }) => Notifications.dismissNotificationAsync(request.identifier)),
   )
 }
+
+// Remove everything a deleted account leaves behind: its scheduled reminders, and the delivered
+// ones, which would otherwise keep a dot on the login screen with no account left to carry it.
+export const removePeriodReminders = (userId: string) =>
+  enqueue(async () => {
+    await cancelUserReminders(userId)
+    await dismissPeriodReminders(userId)
+  })
 
 // Accounts with a reminder waiting for them, shown as a dot on the login screen: still in the
 // tray, or tapped to open the app (tapping removes it from the tray).

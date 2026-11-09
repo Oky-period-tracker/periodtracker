@@ -1,10 +1,10 @@
 import moment from 'moment'
 import * as Notifications from 'expo-notifications'
 import {
-  cancelPeriodReminders,
   dismissPeriodReminders,
   getPeriodReminderUserId,
   getUsersWithPeriodReminders,
+  removePeriodReminders,
   syncPeriodReminders,
 } from '../../../src/services/periodReminderLocalNotification'
 
@@ -84,10 +84,20 @@ describe('periodReminderLocalNotification', () => {
     expect(mocked.scheduleNotificationAsync).not.toHaveBeenCalled()
   })
 
-  it('cancels a deleted account’s reminders without touching the others', async () => {
-    await cancelPeriodReminders('zoe')
+  it('removes a deleted account’s scheduled and delivered reminders without touching the others', async () => {
+    mocked.getPresentedNotificationsAsync.mockResolvedValue([
+      request('period-reminder:ana:0'),
+      request('period-reminder:zoe:1'),
+    ] as never)
+    mocked.getLastNotificationResponse.mockReturnValue({
+      notification: request('period-reminder:zoe:3'),
+    } as never)
+
+    await removePeriodReminders('zoe')
 
     expect(mocked.cancelScheduledNotificationAsync.mock.calls).toEqual([['period-reminder:zoe:0']])
+    expect(mocked.dismissNotificationAsync.mock.calls).toEqual([['period-reminder:zoe:1']])
+    expect(mocked.clearLastNotificationResponse).toHaveBeenCalledTimes(1)
   })
 
   it('reads the account id back from a reminder identifier', () => {

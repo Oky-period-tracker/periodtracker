@@ -35,6 +35,22 @@ function enqueue<T>(fn: () => Promise<T>): Promise<T> {
   return run
 }
 
+// By default nothing is shown for a notification that arrives while the app is on screen. Show
+// period reminders there too; anything else keeps that default.
+export const showPeriodRemindersInForeground = () => {
+  Notifications.setNotificationHandler({
+    handleNotification: async (notification) => {
+      const isPeriodReminder = getPeriodReminderUserId(notification.request.identifier) !== null
+      return {
+        shouldShowBanner: isPeriodReminder,
+        shouldShowList: isPeriodReminder,
+        shouldPlaySound: isPeriodReminder,
+        shouldSetBadge: false,
+      }
+    },
+  })
+}
+
 export const requestAppNotificationPermission = async () => {
   const existingPermissions = await Notifications.getPermissionsAsync()
 
@@ -55,6 +71,38 @@ const cancelUserReminders = async (userId: string) => {
   )
 }
 
+const ensureReminderChannel = async (content: PeriodReminderContent) => {
+  if (!IS_ANDROID) {
+    return
+  }
+  await Notifications.setNotificationChannelAsync(PERIOD_REMINDER_CHANNEL_ID, {
+    name: content.channelName,
+    importance: Notifications.AndroidImportance.HIGH,
+    vibrationPattern: [0, 250, 250, 250],
+    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+  })
+}
+
+const scheduleReminder = (
+  userId: string,
+  suffix: string,
+  timestamp: number,
+  content: PeriodReminderContent,
+) =>
+  Notifications.scheduleNotificationAsync({
+    identifier: `${userIdPrefix(userId)}${suffix}`,
+    content: {
+      title: content.title,
+      body: content.body,
+      data: { type: 'period_reminder', userId },
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DATE,
+      date: timestamp,
+      channelId: PERIOD_REMINDER_CHANNEL_ID,
+    },
+  })
+
 // Replace this user's scheduled reminders with one notification per date. Never asks for
 // permission: this runs on every Home focus, so asking is left to the Settings modal.
 export const syncPeriodReminders = (
@@ -74,32 +122,29 @@ export const syncPeriodReminders = (
       return
     }
 
-    if (IS_ANDROID) {
-      await Notifications.setNotificationChannelAsync(PERIOD_REMINDER_CHANNEL_ID, {
-        name: content.channelName,
-        importance: Notifications.AndroidImportance.HIGH,
-        vibrationPattern: [0, 250, 250, 250],
-        lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-      })
-    }
-
+    await ensureReminderChannel(content)
     await Promise.all(
       reminderDates.map((date, index) =>
-        Notifications.scheduleNotificationAsync({
-          identifier: `${userIdPrefix(userId)}${index}`,
-          content: {
-            title: content.title,
-            body: content.body,
-            data: { type: 'period_reminder', userId },
-          },
-          trigger: {
-            type: Notifications.SchedulableTriggerInputTypes.DATE,
-            date: date.valueOf(),
-            channelId: PERIOD_REMINDER_CHANNEL_ID,
-          },
-        }),
+        scheduleReminder(userId, String(index), date.valueOf(), content),
       ),
     )
+  })
+
+// Debugging aid: one extra reminder for this user, identical to a real one, due in a few seconds.
+// The next sync replaces it like any other reminder. Returns false without permission.
+export const scheduleTestPeriodReminder = (
+  userId: string,
+  content: PeriodReminderContent,
+  delaySeconds: number,
+) =>
+  enqueue(async () => {
+    const { granted } = await Notifications.getPermissionsAsync()
+    if (!granted) {
+      return false
+    }
+    await ensureReminderChannel(content)
+    await scheduleReminder(userId, 'test', Date.now() + delaySeconds * 1000, content)
+    return true
   })
 
 const getOpenedReminderIdentifier = () =>

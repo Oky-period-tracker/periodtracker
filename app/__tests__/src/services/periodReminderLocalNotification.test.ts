@@ -5,6 +5,8 @@ import {
   getPeriodReminderUserId,
   getUsersWithPeriodReminders,
   removePeriodReminders,
+  scheduleTestPeriodReminder,
+  showPeriodRemindersInForeground,
   syncPeriodReminders,
 } from '../../../src/services/periodReminderLocalNotification'
 
@@ -20,6 +22,7 @@ jest.mock('expo-notifications', () => ({
   getLastNotificationResponse: jest.fn(),
   clearLastNotificationResponse: jest.fn(),
   addNotificationResponseReceivedListener: jest.fn(),
+  setNotificationHandler: jest.fn(),
   AndroidImportance: { HIGH: 4 },
   AndroidNotificationVisibility: { PUBLIC: 1 },
   SchedulableTriggerInputTypes: { DATE: 'date' },
@@ -61,7 +64,11 @@ describe('periodReminderLocalNotification', () => {
     expect(mocked.scheduleNotificationAsync.mock.calls.map(([input]) => input)).toEqual(
       dates.map((date, index) => ({
         identifier: `period-reminder:ana:${index}`,
-        content: { title: 'Oky', body: 'Hi Ana', data: { type: 'period_reminder', userId: 'ana' } },
+        content: {
+          title: 'Oky',
+          body: 'Hi Ana',
+          data: { type: 'period_reminder', userId: 'ana' },
+        },
         trigger: { type: 'date', date: date.valueOf(), channelId: 'period-reminder' },
       })),
     )
@@ -98,6 +105,56 @@ describe('periodReminderLocalNotification', () => {
     expect(mocked.cancelScheduledNotificationAsync.mock.calls).toEqual([['period-reminder:zoe:0']])
     expect(mocked.dismissNotificationAsync.mock.calls).toEqual([['period-reminder:zoe:1']])
     expect(mocked.clearLastNotificationResponse).toHaveBeenCalledTimes(1)
+  })
+
+  it('schedules a test reminder that looks like a real one for this account', async () => {
+    jest.spyOn(Date, 'now').mockReturnValue(1_000_000)
+
+    expect(await scheduleTestPeriodReminder('ana', content, 10)).toBe(true)
+
+    expect(mocked.scheduleNotificationAsync.mock.calls).toEqual([
+      [
+        {
+          identifier: 'period-reminder:ana:test',
+          content: {
+            title: 'Oky',
+            body: 'Hi Ana',
+            data: { type: 'period_reminder', userId: 'ana' },
+          },
+          trigger: { type: 'date', date: 1_010_000, channelId: 'period-reminder' },
+        },
+      ],
+    ])
+    expect(mocked.cancelScheduledNotificationAsync).not.toHaveBeenCalled()
+    expect(getPeriodReminderUserId('period-reminder:ana:test')).toBe('ana')
+    jest.restoreAllMocks()
+  })
+
+  it('does not schedule a test reminder without permission', async () => {
+    mocked.getPermissionsAsync.mockResolvedValue({ granted: false } as never)
+
+    expect(await scheduleTestPeriodReminder('ana', content, 10)).toBe(false)
+    expect(mocked.scheduleNotificationAsync).not.toHaveBeenCalled()
+  })
+
+  it('shows period reminders while the app is open, and nothing else', async () => {
+    showPeriodRemindersInForeground()
+    const handler = mocked.setNotificationHandler.mock.calls[0][0]
+    const behaviour = (identifier: string) =>
+      handler?.handleNotification({ request: { identifier } } as never)
+
+    expect(await behaviour('period-reminder:ana:3')).toEqual({
+      shouldShowBanner: true,
+      shouldShowList: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    })
+    expect(await behaviour('something-else')).toEqual({
+      shouldShowBanner: false,
+      shouldShowList: false,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    })
   })
 
   it('reads the account id back from a reminder identifier', () => {

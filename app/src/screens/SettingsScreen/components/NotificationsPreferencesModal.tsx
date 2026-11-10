@@ -1,5 +1,13 @@
 import React from 'react'
-import { View, StyleSheet, Modal, TouchableOpacity, Switch as RNSwitch, Alert, Linking } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Switch as RNSwitch,
+  Alert,
+  Linking,
+} from 'react-native'
 import { Text } from '../../../components/Text'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useDispatch } from 'react-redux'
@@ -8,9 +16,14 @@ import { useTranslate } from '../../../hooks/useTranslate'
 import { useSelector } from '../../../redux/useSelector'
 import { setNotificationReminder } from '../../../redux/actions'
 import { notificationReminderFrequencySelector } from '../../../redux/selectors'
-import { usePeriodReminderSync } from '../../../hooks/usePeriodReminderSync'
+import { usePeriodReminderSync, useTestPeriodReminder } from '../../../hooks/usePeriodReminderSync'
 import { ReminderFrequency } from '../../../services/notificationScheduler'
 import { requestAppNotificationPermission } from '../../../services/periodReminderLocalNotification'
+import { ENV } from '../../../config/env'
+
+// Debugging aid, never shown in production builds
+const SHOW_TEST_REMINDER = ENV !== 'production'
+const TEST_REMINDER_DELAY_SECONDS = 10
 
 interface NotificationsPreferencesModalProps {
   visible: boolean
@@ -26,6 +39,7 @@ export const NotificationsPreferencesModal = ({
   const { palette, backgroundColor, color } = useColor()
   const savedReminderFrequency = useSelector(notificationReminderFrequencySelector)
   const syncPeriodReminders = usePeriodReminderSync()
+  const testPeriodReminder = useTestPeriodReminder()
 
   const [selectedReminder, setSelectedReminder] = React.useState<ReminderFrequency | null>(
     savedReminderFrequency,
@@ -76,6 +90,21 @@ export const NotificationsPreferencesModal = ({
     } finally {
       onClose()
     }
+  }
+
+  // Delayed to leave time to close the app, or to log out and check the dot on the login screen.
+  // Going back to the Home tab first resyncs the reminders, which replaces this one.
+  const handleTestReminder = async () => {
+    const scheduled =
+      (await requestAppNotificationPermission()) &&
+      (await testPeriodReminder(TEST_REMINDER_DELAY_SECONDS))
+
+    Alert.alert(
+      'Test reminder',
+      scheduled
+        ? `Arrives in ${TEST_REMINDER_DELAY_SECONDS} seconds, whether Oky is open or closed.`
+        : 'Not scheduled: notifications are not allowed for Oky on this device.',
+    )
   }
 
   return (
@@ -134,9 +163,7 @@ export const NotificationsPreferencesModal = ({
               onPress={handleSetNotifications}
               disabled={isSetNotificationDisabled}
             >
-              <Text style={[styles.buttonText, { color: backgroundColor }]}>
-                notifications_set
-              </Text>
+              <Text style={[styles.buttonText, { color: backgroundColor }]}>notifications_set</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -148,6 +175,14 @@ export const NotificationsPreferencesModal = ({
               </Text>
             </TouchableOpacity>
           </View>
+
+          {SHOW_TEST_REMINDER && (
+            <TouchableOpacity style={styles.testButton} onPress={handleTestReminder}>
+              <Text style={[styles.testButtonText, { color }]} enableTranslate={false}>
+                {`Debug: send a test reminder in ${TEST_REMINDER_DELAY_SECONDS} s`}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </Modal>
@@ -244,5 +279,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  testButton: {
+    marginTop: 12,
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  testButtonText: {
+    fontSize: 12,
+    textDecorationLine: 'underline',
   },
 })

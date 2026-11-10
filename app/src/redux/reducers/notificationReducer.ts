@@ -10,10 +10,7 @@ const initialState: NotificationState = {
   reminderFrequency: null,
 }
 
-export function notificationReducer(
-  state = initialState,
-  action: Actions,
-): NotificationState {
+export function notificationReducer(state = initialState, action: Actions): NotificationState {
   switch (action.type) {
     case 'REFRESH_STORE': {
       if (!action?.payload?.notification) {

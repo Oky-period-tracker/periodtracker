@@ -27,7 +27,7 @@ export const PeriodReminderModal = ({
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={styles.modal}>
+        <View style={[styles.modal, { backgroundColor: palette.neutral.base }]}>
           {/* Close Button */}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <FontAwesome name="times" size={24} color={palette.primary.base} />
@@ -36,8 +36,7 @@ export const PeriodReminderModal = ({
           {/* Content */}
           <View style={styles.content}>
             <Text style={[styles.message, { color: palette.basic.text }]}>
-              Your period may start soon. It may come earlier or later and that is okay. Oky is
-              here for you. Want to know more? Visit the encyclopedia for simple tips and advice.
+              period_reminder_modal_message
             </Text>
           </View>
 
@@ -46,7 +45,7 @@ export const PeriodReminderModal = ({
             style={[styles.encyclopediaButton, { backgroundColor: palette.secondary.base }]}
             onPress={handleEncyclopediaPress}
           >
-            <FontAwesome name="arrow-right" size={20} color="white" />
+            <FontAwesome name="arrow-right" size={20} color={palette.basic.highlight} />
           </TouchableOpacity>
         </View>
       </View>
@@ -67,7 +66,6 @@ const styles = StyleSheet.create({
     width: '85%',
     maxHeight: '70%',
     position: 'relative',
-    backgroundColor: 'rgba(173, 216, 230, 0.7)',
     marginBottom: 280,
   },
   closeButton: {
@@ -79,7 +77,7 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 32,
-    marginBottom: 24,
+    marginBottom: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -89,10 +87,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
+  // Below the message rather than over it, so longer translations never get covered
   encyclopediaButton: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
+    alignSelf: 'flex-end',
     width: 50,
     height: 50,
     borderRadius: 25,

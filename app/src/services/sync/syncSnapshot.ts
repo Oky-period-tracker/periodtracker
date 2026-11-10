@@ -15,6 +15,7 @@ export interface SyncSnapshot {
     prediction: ReduxState['prediction']
     verifiedDates: unknown
     helpCenters: ReduxState['helpCenters']
+    notification: ReduxState['notification']
   }
 }
 
@@ -37,6 +38,7 @@ export function saveSyncSnapshot(userId: string, state: ReduxState): Promise<voi
         prediction: state.prediction,
         verifiedDates: state.answer[user.id]?.verifiedDates ?? {},
         helpCenters: state.helpCenters,
+        notification: state.notification,
       },
     }
     const key = await getEncryptionKey(userId)

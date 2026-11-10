@@ -12,4 +12,5 @@ export interface PartialStateSnapshot {
   verifiedDates?: VerifiedDates // Not stored top level in redux
   // Optional
   helpCenters?: ReduxState['helpCenters']
+  notification?: ReduxState['notification']
 }

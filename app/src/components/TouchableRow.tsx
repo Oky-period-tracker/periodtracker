@@ -20,11 +20,12 @@ export const TouchableRow = ({
 }: TouchableRowProps) => {
   const { UIConfig } = useResponsive()
   const padding = UIConfig.misc.touchableRowPadding
-  const height = UIConfig.misc.touchableRowHeight
+  // A minimum, not a fixed height: longer translations wrap and the row grows to fit them
+  const minHeight = UIConfig.misc.touchableRowHeight
 
   return (
     <TouchableOpacity
-      style={[styles.row, { height, padding }]}
+      style={[styles.row, { minHeight, padding }]}
       onPress={onPress}
       disabled={disabled}
     >
@@ -39,7 +40,7 @@ export const TouchableRow = ({
 
 const styles = StyleSheet.create({
   row: {
-    height: 100,
+    minHeight: 100,
     width: '100%',
     flexDirection: 'row',
     padding: 24,

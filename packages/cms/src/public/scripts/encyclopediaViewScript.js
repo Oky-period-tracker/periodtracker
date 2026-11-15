@@ -216,7 +216,9 @@ $(document).on('change', '.liveCheckbox', (event) => {
 
 // ==================== Deletion =============================
 
-$('.deleteArticle').on('click', (event) => {
+// Listened to on the table body: filtering takes the rows out of the page, and
+// jQuery drops the handlers of the rows it removes
+$('#articles').on('click', '.deleteArticle', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var articleId = button.data('value') // Extract info from data-* attributes
   var result = confirm('Are you sure? This will permanently delete the item')

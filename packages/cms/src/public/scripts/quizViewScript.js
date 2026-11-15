@@ -100,45 +100,51 @@ $('#btnEditConfirm').on('click', () => {
   })
 })
 
-$('.liveCheckbox').on('click', () => {
-  var button = $(event.currentTarget) // Button that triggered
-  var quizId = button.data('value') // Extract info from data-* attributes
-  changeRelevantQuiz(quizId, 'live', button.prop('checked'))
+// ==================== Live and Age Restricted switches =============================
+// Row clicks are listened to on the table body: filtering takes the rows out of the
+// page, and jQuery drops the handlers of the rows it removes
+$('#quizzesContainer').on('change', '.liveCheckbox', (event) => {
+  saveQuizSwitch($(event.currentTarget), 'live', 'live', 'update the live status')
 })
 
-$('.ageRestrictionCheckbox').on('click', () => {
-  var button = $(event.currentTarget) // Button that triggered
-  var quizId = button.data('value') // Extract info from data-* attributes
-  changeRelevantQuiz(quizId, 'age', button.prop('checked'))
+$('#quizzesContainer').on('change', '.ageRestrictionCheckbox', (event) => {
+  saveQuizSwitch(
+    $(event.currentTarget),
+    'age-restricted',
+    'isAgeRestricted',
+    'update the age restriction',
+  )
 })
 
-function changeRelevantQuiz(quizId, key, value) {
-  var quizzes = JSON.parse($('#quizzesJSON').text())
-  var quizInfo = quizzes.find((item) => {
-    return item.id === quizId
-  })
-  const data = {
-    topic: quizInfo.topic,
-    question: quizInfo.question,
-    option1: quizInfo.option1,
-    option2: quizInfo.option2,
-    option3: quizInfo.option3,
-    right_answer: quizInfo.right_answer,
-    wrong_answer_response: quizInfo.wrong_answer_response,
-    right_answer_response: quizInfo.right_answer_response,
-    isAgeRestricted: key === 'age' ? value : quizInfo.isAgeRestricted,
-    live: key === 'live' ? value : quizInfo.live,
-  }
-  // if the ID is 0 we are creating a new entry
+function saveQuizSwitch(checkbox, path, field, action) {
+  var value = checkbox.prop('checked')
+  // Locked until the server answers, so quick clicks can't race each other
+  checkbox.prop('disabled', true)
   $.ajax({
-    url: '/quiz/' + quizId,
+    url: '/quiz/' + checkbox.data('value') + '/' + path,
     type: 'PUT',
-    data: data,
+    data: { [field]: value },
     success: (result) => {
-      location.reload()
+      // No reload, so the editor keeps their scroll and filter. The edit modal reads
+      // #quizzesJSON, so it gets the stored value too or saving the modal would undo it
+      checkbox.prop('checked', result[field]).prop('disabled', false)
+      var quizzes = JSON.parse($('#quizzesJSON').text())
+      quizzes.forEach((item) => {
+        if (item.id === result.id) item[field] = result[field]
+      })
+      $('#quizzesJSON').text(JSON.stringify(quizzes))
+      if (field === 'live') {
+        var row = checkbox.closest('tr')
+        row.toggleClass('inactiveRow', !result.live)
+        row.find('.inactiveBadge').prop('hidden', result.live)
+        updateLiveAll()
+      }
     },
-    error: (error) => {
-      console.log(error)
+    error: (xhr) => {
+      console.error('Quiz ' + field + ' update failed', xhr.status, xhr.responseText)
+      // Nothing was saved: put the switch back to the stored value
+      checkbox.prop('checked', !value).prop('disabled', false)
+      alert(requestErrorMessage(action, xhr))
     },
   })
 }
@@ -176,7 +182,7 @@ $('#graphModal').on('hide.bs.modal', (event) => {
   !!chartTwo ? chartTwo.dispose() : null
 })
 
-$('.deleteQuiz').on('click', (event) => {
+$('#quizzesContainer').on('click', '.deleteQuiz', (event) => {
   var button = $(event.currentTarget) // currentTarget is the outer
   var quizId = button.data('value') // Extract info from data-* attributes
   var result = confirm('Are you sure? This will permanently delete the item')
@@ -187,8 +193,9 @@ $('.deleteQuiz').on('click', (event) => {
       success: (result) => {
         location.reload()
       },
-      error: (error) => {
-        console.log(error)
+      error: (xhr) => {
+        console.error('Quiz delete failed', xhr.status, xhr.responseText)
+        alert(requestErrorMessage('delete the quiz', xhr))
       },
     })
   }
@@ -314,18 +321,22 @@ var filterButton = $('#filterButton')
 var filterList = $('#quizzesContainer')
 var items = filterList.children()
 
+var filteredItems = false
+
 filterButton.click((e) => {
   e.preventDefault()
   var filterText = $('#filterInput').val().toLowerCase().trim()
-  var filtered = items.filter((index, elem) =>
+  // Kept so sorting reorders only the filtered rows instead of bringing the others back
+  filteredItems = items.filter((index, elem) =>
     elem.children[0].innerText.toLowerCase().includes(filterText),
   )
-  filterList.empty().prepend(filtered)
+  filterList.empty().prepend(filteredItems)
 })
 
 $('#clearFilter').click((e) => {
   $('#filterInput').val('')
   filterList.empty().prepend(items)
+  filteredItems = false
 })
 
 //================= Sorting =======================================
@@ -333,75 +344,36 @@ $('#clearFilter').click((e) => {
 var sortDateStatus = false
 var sortAlphabetStatus = false
 var sortAgeStatus = false
-var filteredItems = false
 
-var sortAge = function ({ column }) {
-  filteredItems = filteredItems ? filteredItems : items
-  if (!sortAgeStatus) {
-    var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function (a, b) {
-      var aText = a.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
-      var bText = b.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
-      if (aText < bText) {
-        return -1
-      }
-      if (aText > bText) {
-        return 1
-      }
-      return 0
-    })
-    sortAgeStatus = true
-  } else {
-    var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function (a, b) {
-      var aText = a.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
-      var bText = b.children[column].firstElementChild.firstElementChild.checked ? 1 : 0
-      if (aText > bText) {
-        return -1
-      }
-      if (aText < bText) {
-        return 1
-      }
-      return 0
-    })
-    sortAgeStatus = false
-  }
-  filterList.append(filteredItems)
+// Cells are looked up by class: their column index shifts whenever the table
+// gains columns (content filter, one per age restriction level).
+var createdTime = function (row) {
+  var cell = row.querySelector('td.date-created')
+  var time = cell ? new Date(cell.textContent.trim()).getTime() : NaN
+  return isNaN(time) ? 0 : time
+}
+var ageRestricted = function (row) {
+  var checkbox = row.querySelector('.ageRestrictionCheckbox')
+  return checkbox && checkbox.checked ? 1 : 0
+}
+var sortByValue = function (value, ascending) {
+  var rows = filteredItems ? filteredItems : items
+  var direction = ascending ? 1 : -1
+  var sortList = Array.prototype.sort.bind(rows)
+  sortList(function (a, b) {
+    return (value(a) - value(b)) * direction
+  })
+  filterList.append(rows)
 }
 
-var sortDate = function ({ column }) {
-  filteredItems = filteredItems ? filteredItems : items
+var sortAge = function () {
+  sortAgeStatus = !sortAgeStatus
+  sortByValue(ageRestricted, sortAgeStatus)
+}
 
-  if (!sortDateStatus) {
-    var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function (a, b) {
-      var aText = new Date(a.children[column].innerHTML)
-      var bText = new Date(b.children[column].innerHTML)
-      if (aText < bText) {
-        return -1
-      }
-      if (aText > bText) {
-        return 1
-      }
-      return 0
-    })
-    sortDateStatus = true
-  } else {
-    var sortList = Array.prototype.sort.bind(filteredItems)
-    sortList(function (a, b) {
-      var aText = new Date(a.children[column].innerHTML)
-      var bText = new Date(b.children[column].innerHTML)
-      if (aText > bText) {
-        return -1
-      }
-      if (aText < bText) {
-        return 1
-      }
-      return 0
-    })
-    sortDateStatus = false
-  }
-  filterList.append(filteredItems)
+var sortDate = function () {
+  sortDateStatus = !sortDateStatus
+  sortByValue(createdTime, sortDateStatus)
 }
 
 var sortAlphabetically = function ({ column }) {
@@ -438,30 +410,40 @@ var sortAlphabetically = function ({ column }) {
   }
   filterList.append(filteredItems)
 }
-$('#dateSort').click(() => sortDate({ column: 13 }))
-$('#ageRestricted').click(() => sortAge({ column: 11 }))
+$('#dateSort').click(() => sortDate())
+$('#ageRestricted').click(() => sortAge())
 $('#quizTopic').click(() => sortAlphabetically({ column: 0 }))
 $('#quizQuestion').click(() => sortAlphabetically({ column: 1 }))
 
 //==================== Live All Button =============================
 
 var liveAllCheckbox = $('.liveAllCheckbox')
-var isAllLive = true
 
-items.map((index, elem) => {
-  if (!elem.children[12].firstElementChild.firstElementChild.checked) {
-    isAllLive = false
-  }
-})
-liveAllCheckbox.prop('checked', isAllLive)
+// ON only while every quiz is live, the filtered-out ones included
+function updateLiveAll() {
+  var switches = items.find('.liveCheckbox')
+  var notLive = switches.filter((index, elem) => !elem.checked)
+  liveAllCheckbox.prop('checked', switches.length > 0 && notLive.length === 0)
+}
+updateLiveAll()
 
-$('.liveAllCheckbox').on('click', () => {
-  var checkBoxVal = liveAllCheckbox.prop('checked')
-  if (!checkBoxVal) {
-    $('.liveCheckbox:checked').trigger('click')
-  } else {
-    $('.liveCheckbox:not(:checked)').trigger('click')
-  }
+// Switches every quiz of the language in one request, then reloads once
+liveAllCheckbox.on('change', () => {
+  var live = liveAllCheckbox.prop('checked')
+  liveAllCheckbox.prop('disabled', true)
+  $.ajax({
+    url: '/quiz/live',
+    type: 'PUT',
+    data: { live: live },
+    success: () => {
+      location.reload()
+    },
+    error: (xhr) => {
+      console.error('Quiz live all update failed', xhr.status, xhr.responseText)
+      liveAllCheckbox.prop('checked', !live).prop('disabled', false)
+      alert(requestErrorMessage('update the live status of every quiz', xhr))
+    },
+  })
 })
 
 //==================== Countdown logic =============================

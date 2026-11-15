@@ -114,6 +114,8 @@ export class ArticleController {
       const articleToSave = request.body
       articleToSave.lang = request.user.lang
       articleToSave.id = uuid()
+      // The form sends live as the text "true", which TypeORM would store as false
+      articleToSave.live = String(request.body.live) === 'true'
       articleToSave.contentFilter = env.features.contentFilter
         ? toLevel(request.body.contentFilter)
         : 0

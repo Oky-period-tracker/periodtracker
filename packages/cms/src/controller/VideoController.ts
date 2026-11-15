@@ -40,6 +40,8 @@ export class VideoController {
       const itemToSave = request.body
       itemToSave.lang = request.user.lang
       itemToSave.id = uuid()
+      // The form sends live as the text "true", which TypeORM would store as false
+      itemToSave.live = String(request.body.live) === 'true'
       await this.videoRepository.save(itemToSave)
       logger.info('Video created', { id: itemToSave.id, title: itemToSave.title })
       return itemToSave

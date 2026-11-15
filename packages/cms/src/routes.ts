@@ -374,11 +374,30 @@ export const Routes = [
     controller: QuizController,
     action: 'save',
   },
+  // Before '/quiz/:id', which would otherwise take 'live' as a quiz id
+  {
+    method: 'put',
+    route: '/quiz/live',
+    controller: QuizController,
+    action: 'updateLiveAll',
+  },
   {
     method: 'put',
     route: '/quiz/:id',
     controller: QuizController,
     action: 'update',
+  },
+  {
+    method: 'put',
+    route: '/quiz/:id/live',
+    controller: QuizController,
+    action: 'updateLive',
+  },
+  {
+    method: 'put',
+    route: '/quiz/:id/age-restricted',
+    controller: QuizController,
+    action: 'updateAgeRestricted',
   },
   {
     method: 'delete',

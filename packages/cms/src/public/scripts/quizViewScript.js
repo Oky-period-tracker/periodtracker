@@ -141,7 +141,7 @@ function saveQuizSwitch(checkbox, path, field, action) {
       }
     },
     error: (xhr) => {
-      console.error('Quiz ' + field + ' update failed', xhr.status, xhr.responseText)
+      console.error('Quiz switch update failed', field, xhr.status, xhr.responseText)
       // Nothing was saved: put the switch back to the stored value
       checkbox.prop('checked', !value).prop('disabled', false)
       alert(requestErrorMessage(action, xhr))

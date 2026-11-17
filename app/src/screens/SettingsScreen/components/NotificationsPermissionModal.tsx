@@ -22,7 +22,7 @@ export const NotificationsPermissionModal = ({
         <View style={[styles.modal, { backgroundColor }]}>
           <View style={styles.textContainer}>
             <Text style={[styles.title, { color }]}>notifications_permission_prompt_title</Text>
-            <Text style={[styles.subtitle, { color } ]}>
+            <Text style={[styles.subtitle, { color }]}>
               notifications_permission_prompt_description
             </Text>
           </View>

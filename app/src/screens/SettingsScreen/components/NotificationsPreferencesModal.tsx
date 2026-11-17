@@ -1,20 +1,24 @@
 import React from 'react'
-import { View, StyleSheet, Modal, TouchableOpacity, Switch as RNSwitch, Alert, Linking } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Modal,
+  TouchableOpacity,
+  Switch as RNSwitch,
+  Alert,
+  Linking,
+} from 'react-native'
 import { Text } from '../../../components/Text'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { useDispatch } from 'react-redux'
 import { useColor } from '../../../hooks/useColor'
 import { useTranslate } from '../../../hooks/useTranslate'
 import { useSelector } from '../../../redux/useSelector'
-import { setNotificationReminder, setNotificationsEnabled } from '../../../redux/actions'
+import { setNotificationReminder } from '../../../redux/actions'
 import { notificationReminderFrequencySelector } from '../../../redux/selectors'
-import { usePredictionEngineState } from '../../../contexts/PredictionProvider'
-import { getNextPredictedPeriodDate } from '../../../services/notificationScheduler'
-import {
-  cancelScheduledPeriodReminderNotification,
-  requestAppNotificationPermission,
-  syncPeriodReminderLocalNotification,
-} from '../../../services/periodReminderLocalNotification'
+import { usePeriodReminderSync } from '../../../hooks/usePeriodReminderSync'
+import { ReminderFrequency } from '../../../services/notificationScheduler'
+import { requestAppNotificationPermission } from '../../../services/periodReminderLocalNotification'
 
 interface NotificationsPreferencesModalProps {
   visible: boolean
@@ -29,9 +33,9 @@ export const NotificationsPreferencesModal = ({
   const translate = useTranslate()
   const { palette, backgroundColor, color } = useColor()
   const savedReminderFrequency = useSelector(notificationReminderFrequencySelector)
-  const predictionFullState = usePredictionEngineState()
+  const syncPeriodReminders = usePeriodReminderSync()
 
-  const [selectedReminder, setSelectedReminder] = React.useState<'fiveDays' | 'threeDays' | 'oneDay' | null>(
+  const [selectedReminder, setSelectedReminder] = React.useState<ReminderFrequency | null>(
     savedReminderFrequency,
   )
 
@@ -39,7 +43,7 @@ export const NotificationsPreferencesModal = ({
     setSelectedReminder(savedReminderFrequency)
   }, [savedReminderFrequency, visible])
 
-  const handleReminderToggle = (key: 'fiveDays' | 'threeDays' | 'oneDay') => {
+  const handleReminderToggle = (key: ReminderFrequency) => {
     setSelectedReminder(key)
   }
 
@@ -62,28 +66,24 @@ export const NotificationsPreferencesModal = ({
       return
     }
 
-    dispatch(setNotificationsEnabled(true))
     dispatch(setNotificationReminder(selectedReminder))
 
-    const nextPredictedPeriodDate = getNextPredictedPeriodDate(predictionFullState)
-
     try {
-      await syncPeriodReminderLocalNotification({
-        isEnabled: true,
-        reminderFrequency: selectedReminder,
-        predictedPeriodDate: nextPredictedPeriodDate,
-      })
+      await syncPeriodReminders(selectedReminder)
     } finally {
       onClose()
     }
   }
 
   const handleDisableNotifications = async () => {
-    dispatch(setNotificationsEnabled(false))
     dispatch(setNotificationReminder(null))
 
-    await cancelScheduledPeriodReminderNotification()
-    onClose()
+    try {
+      // Cancels only this account's reminders
+      await syncPeriodReminders(null)
+    } finally {
+      onClose()
+    }
   }
 
   return (
@@ -142,9 +142,7 @@ export const NotificationsPreferencesModal = ({
               onPress={handleSetNotifications}
               disabled={isSetNotificationDisabled}
             >
-              <Text style={[styles.buttonText, { color: backgroundColor }]}>
-                notifications_set
-              </Text>
+              <Text style={[styles.buttonText, { color: backgroundColor }]}>notifications_set</Text>
             </TouchableOpacity>
 
             <TouchableOpacity

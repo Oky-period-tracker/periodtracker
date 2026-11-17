@@ -16,6 +16,12 @@ export interface AppTranslations {
   notifications_one_day_before: string
   notifications_set: string
   notifications_disable: string
+  period_reminder_notification_title: string
+  // {name} is replaced with the account's username
+  period_reminder_notification_body: string
+  period_reminder_channel_name: string
+  period_reminder_modal_message: string
+  period_reminder_waiting: string
   accept_conditions_1: string
   accept_conditions_2: string
   accept_conditions_3: string

@@ -1,6 +1,21 @@
 export interface AppTranslations {
   about: string
   about_info: string
+  period_notification_reminder: string
+  period_notification_reminder_info: string
+  notifications_permission_prompt_title: string
+  notifications_permission_prompt_description: string
+  proceed: string
+  notifications_permission_required: string
+  notifications_enable_in_device_settings: string
+  open_settings: string
+  notifications_choose_reminder_title: string
+  notifications_set_reminders_for: string
+  notifications_five_days_before: string
+  notifications_three_days_before: string
+  notifications_one_day_before: string
+  notifications_set: string
+  notifications_disable: string
   accept_conditions_1: string
   accept_conditions_2: string
   accept_conditions_3: string

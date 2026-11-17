@@ -1524,17 +1524,6 @@
     dotenv-expand "~11.0.6"
     getenv "^2.0.0"
 
-"@expo/env@~2.0.8":
-  version "2.0.11"
-  resolved "https://registry.npmjs.org/@expo/env/-/env-2.0.11.tgz"
-  integrity sha512-xV+ps6YCW7XIPVUwFVCRN2nox09dnRwy8uIjwHWTODu0zFw4kp4omnVkl0OOjuu2XOe7tdgAHxikrkJt9xB/7Q==
-  dependencies:
-    chalk "^4.0.0"
-    debug "^4.3.4"
-    dotenv "~16.4.5"
-    dotenv-expand "~11.0.6"
-    getenv "^2.0.0"
-
 "@expo/fingerprint@0.15.5":
   version "0.15.5"
   resolved "https://registry.npmjs.org/@expo/fingerprint/-/fingerprint-0.15.5.tgz"
@@ -5124,15 +5113,7 @@ expo-build-properties@~1.0.10:
     ajv "^8.11.0"
     semver "^7.6.0"
 
-expo-constants@~18.0.13:
-  version "18.0.13"
-  resolved "https://registry.npmjs.org/expo-constants/-/expo-constants-18.0.13.tgz"
-  integrity sha512-FnZn12E1dRYKDHlAdIyNFhBurKTS3F9CrfrBDJI5m3D7U17KBHMQ6JEfYlSj7LG7t+Ulr+IKaj58L1k5gBwTcQ==
-  dependencies:
-    "@expo/config" "~12.0.13"
-    "@expo/env" "~2.0.8"
-
-expo-constants@~18.0.14:
+expo-constants@~18.0.13, expo-constants@~18.0.14:
   version "18.0.14"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-18.0.14.tgz#fb60b93f498d76ebf0a42e0e6e55a2b2d84ede76"
   integrity sha512-BUZm9mkl/TX7zNaN0N4C83ws7mEnesCFiKhqK+rMZwTD2+Q4wWB2kBltqnC/LrCRaMyRi40XxhCRVwuKnJkxXQ==

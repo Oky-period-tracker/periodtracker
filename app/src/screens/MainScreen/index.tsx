@@ -38,6 +38,7 @@ import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
 import { PeriodReminderModal } from './components/PeriodReminderModal'
 import { isReminderDay } from '../../services/notificationScheduler'
 import { usePeriodReminderSync } from '../../hooks/usePeriodReminderSync'
+import { subscribeToNotificationTaps } from '../../services/periodReminderLocalNotification'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -122,26 +123,51 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     [reminderFrequency, predictionFullState],
   )
 
-  // Opening the app from the background doesn't change navigation focus, so track it separately
-  const [foregroundedAt, setForegroundedAt] = React.useState(0)
+  // Opening the app from the background or tapping a notification doesn't change navigation
+  // focus, so track those separately
+  const [reminderCheckAt, setReminderCheckAt] = React.useState(0)
   React.useEffect(() => {
+    const check = () => setReminderCheckAt(Date.now())
     const subscription = AppState.addEventListener('change', (appState) => {
       if (appState === 'active') {
-        setForegroundedAt(Date.now())
+        check()
       }
     })
-    return () => subscription.remove()
+    const unsubscribeTaps = subscribeToNotificationTaps(check)
+    return () => {
+      subscription.remove()
+      unsubscribeTaps()
+    }
   }, [])
 
-  // Keep this account's scheduled reminders in line with its latest prediction, language and name
+  // Keep this account's scheduled reminders in line with its latest prediction, language and
+  // name, and show the in-app reminder when one of its notifications was waiting for it
   React.useEffect(() => {
     if (!isFocused) {
       return
     }
-    syncPeriodReminders(reminderFrequency).catch(() => {
-      // best effort, retried on the next focus
-    })
-  }, [isFocused, foregroundedAt, reminderFrequency, predictionFullState, locale, currentUser?.name])
+    let cancelled = false
+    syncPeriodReminders(reminderFrequency)
+      .then((hadReminder) => {
+        if (hadReminder && !cancelled) {
+          reminderModalShownRef.current = true
+          setReminderModalVisible(true)
+        }
+      })
+      .catch(() => {
+        // best effort, retried on the next focus
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [
+    isFocused,
+    reminderCheckAt,
+    reminderFrequency,
+    predictionFullState,
+    locale,
+    currentUser?.name,
+  ])
 
   React.useEffect(() => {
     if (shouldShowReminderModal && isFocused && !reminderModalShownRef.current) {

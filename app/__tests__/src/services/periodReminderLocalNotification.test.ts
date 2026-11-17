@@ -184,11 +184,27 @@ describe('periodReminderLocalNotification', () => {
       notification: request('period-reminder:zoe:3'),
     } as never)
 
-    await dismissPeriodReminders('ana')
+    expect(await dismissPeriodReminders('ana')).toBe(true)
     expect(mocked.dismissNotificationAsync.mock.calls).toEqual([['period-reminder:ana:0']])
     expect(mocked.clearLastNotificationResponse).not.toHaveBeenCalled()
 
-    await dismissPeriodReminders('zoe')
+    expect(await dismissPeriodReminders('zoe')).toBe(true)
     expect(mocked.clearLastNotificationResponse).toHaveBeenCalledTimes(1)
+  })
+
+  it('reports a reminder still in the tray when the app was opened another way', async () => {
+    mocked.getPresentedNotificationsAsync.mockResolvedValue([
+      request('period-reminder:zoe:1'),
+    ] as never)
+
+    expect(await dismissPeriodReminders('zoe')).toBe(true)
+  })
+
+  it('reports nothing when no reminder was waiting for this account', async () => {
+    mocked.getPresentedNotificationsAsync.mockResolvedValue([
+      request('period-reminder:ana:0'),
+    ] as never)
+
+    expect(await dismissPeriodReminders('zoe')).toBe(false)
   })
 })

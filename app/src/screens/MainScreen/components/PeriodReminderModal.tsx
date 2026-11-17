@@ -2,6 +2,7 @@ import React from 'react'
 import { View, StyleSheet, Modal, TouchableOpacity } from 'react-native'
 import { Text } from '../../../components/Text'
 import { useColor } from '../../../hooks/useColor'
+import { globalStyles } from '../../../config/theme'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 
 interface PeriodReminderModalProps {
@@ -15,7 +16,7 @@ export const PeriodReminderModal = ({
   onClose,
   onNavigateToEncyclopedia,
 }: PeriodReminderModalProps) => {
-  const { palette } = useColor()
+  const { palette, backgroundColor } = useColor()
 
   const handleEncyclopediaPress = () => {
     if (onNavigateToEncyclopedia) {
@@ -27,7 +28,7 @@ export const PeriodReminderModal = ({
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={[styles.modal, { backgroundColor: palette.neutral.base }]}>
+        <View style={[styles.modal, { backgroundColor }, globalStyles.shadow]}>
           {/* Close Button */}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <FontAwesome name="times" size={24} color={palette.primary.base} />
@@ -35,9 +36,7 @@ export const PeriodReminderModal = ({
 
           {/* Content */}
           <View style={styles.content}>
-            <Text style={[styles.message, { color: palette.basic.text }]}>
-              period_reminder_modal_message
-            </Text>
+            <Text style={styles.message}>period_reminder_modal_message</Text>
           </View>
 
           {/* Encyclopedia Arrow Button */}

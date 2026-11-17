@@ -151,17 +151,20 @@ const getOpenedReminderIdentifier = () =>
   Notifications.getLastNotificationResponse()?.notification.request.identifier ?? null
 
 // Clear this user's reminders once they are back in the app: the ones still in the notification
-// tray, and the one they tapped to open the app.
+// tray, and the one they tapped to open the app. Resolves to true when one was waiting for them
+// either way, exactly once per reminder, so the caller can react to it.
 export const dismissPeriodReminders = async (userId: string) => {
-  if (getOpenedReminderIdentifier()?.startsWith(userIdPrefix(userId))) {
+  const tapped = !!getOpenedReminderIdentifier()?.startsWith(userIdPrefix(userId))
+  if (tapped) {
     Notifications.clearLastNotificationResponse()
   }
-  const presented = await Notifications.getPresentedNotificationsAsync()
-  await Promise.all(
-    presented
-      .filter(({ request }) => request.identifier.startsWith(userIdPrefix(userId)))
-      .map(({ request }) => Notifications.dismissNotificationAsync(request.identifier)),
+  const presented = (await Notifications.getPresentedNotificationsAsync()).filter(({ request }) =>
+    request.identifier.startsWith(userIdPrefix(userId)),
   )
+  await Promise.all(
+    presented.map(({ request }) => Notifications.dismissNotificationAsync(request.identifier)),
+  )
+  return tapped || presented.length > 0
 }
 
 // Remove everything a deleted account leaves behind: its scheduled reminders, and the delivered

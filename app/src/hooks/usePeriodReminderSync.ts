@@ -36,7 +36,8 @@ const usePeriodReminderContent = () => {
 }
 
 // Bring the active account's reminders up to date: reschedule them from its latest prediction,
-// in its current language and with its name, and clear any it already has in the tray.
+// in its current language and with its name, and clear any it already has in the tray. Resolves
+// to true when a reminder was waiting for the account: in the tray, or tapped to get here.
 export const usePeriodReminderSync = () => {
   const getContent = usePeriodReminderContent()
   const prediction = usePredictionEngineState()
@@ -44,7 +45,7 @@ export const usePeriodReminderSync = () => {
   return async (frequency: ReminderFrequency | null) => {
     const userId = getReminderUserId()
     if (!userId) {
-      return
+      return false
     }
 
     const reminderDates = frequency
@@ -52,7 +53,7 @@ export const usePeriodReminderSync = () => {
       : []
 
     await syncPeriodReminders(userId, reminderDates, getContent())
-    await dismissPeriodReminders(userId)
+    return dismissPeriodReminders(userId)
   }
 }
 

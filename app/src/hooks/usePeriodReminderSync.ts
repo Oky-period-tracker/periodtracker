@@ -11,7 +11,6 @@ import {
 import {
   PeriodReminderContent,
   dismissPeriodReminders,
-  scheduleTestPeriodReminder,
   syncPeriodReminders,
 } from '../services/periodReminderLocalNotification'
 import { useTranslate } from './useTranslate'
@@ -54,19 +53,5 @@ export const usePeriodReminderSync = () => {
 
     await syncPeriodReminders(userId, reminderDates, getContent())
     return dismissPeriodReminders(userId)
-  }
-}
-
-// Debugging aid: fire the active account's real reminder in a few seconds. Resolves to false when
-// there is no account or no notification permission.
-export const useTestPeriodReminder = () => {
-  const getContent = usePeriodReminderContent()
-
-  return async (delaySeconds: number) => {
-    const userId = getReminderUserId()
-    if (!userId) {
-      return false
-    }
-    return scheduleTestPeriodReminder(userId, getContent(), delaySeconds)
   }
 }

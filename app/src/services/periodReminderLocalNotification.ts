@@ -130,23 +130,6 @@ export const syncPeriodReminders = (
     )
   })
 
-// Debugging aid: one extra reminder for this user, identical to a real one, due in a few seconds.
-// The next sync replaces it like any other reminder. Returns false without permission.
-export const scheduleTestPeriodReminder = (
-  userId: string,
-  content: PeriodReminderContent,
-  delaySeconds: number,
-) =>
-  enqueue(async () => {
-    const { granted } = await Notifications.getPermissionsAsync()
-    if (!granted) {
-      return false
-    }
-    await ensureReminderChannel(content)
-    await scheduleReminder(userId, 'test', Date.now() + delaySeconds * 1000, content)
-    return true
-  })
-
 const getOpenedReminderIdentifier = () =>
   Notifications.getLastNotificationResponse()?.notification.request.identifier ?? null
 

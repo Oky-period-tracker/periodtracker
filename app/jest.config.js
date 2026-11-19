@@ -21,6 +21,7 @@ const esModules = [
   'expo-constants',
   'expo-device',
   'expo-application',
+  'expo-notifications',
 ].join('|')
 
 module.exports = {

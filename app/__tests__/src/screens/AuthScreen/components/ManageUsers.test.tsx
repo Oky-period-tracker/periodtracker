@@ -6,6 +6,7 @@ import { listUsers } from '../../../../../src/services/userMetadata/registry'
 
 const mockSetAuthMode = jest.fn()
 const mockSetLoginName = jest.fn()
+const mockUsersWithReminders = new Set<string>()
 
 jest.mock('../../../../../src/screens/AuthScreen/AuthModeContext', () => ({
   useAuthMode: () => ({ setAuthMode: mockSetAuthMode, setLoginName: mockSetLoginName }),
@@ -17,15 +18,25 @@ jest.mock('../../../../../src/services/userMetadata/registry', () => ({ listUser
 jest.mock('../../../../../src/hooks/useColor', () => ({
   useColor: () => ({
     color: '#111111',
-    palette: { secondary: { base: '#FF8C00' }, neutral: { base: '#91D9E2' } },
+    palette: {
+      secondary: { base: '#FF8C00' },
+      neutral: { base: '#91D9E2' },
+      danger: { base: '#E3629B' },
+    },
   }),
 }))
 jest.mock('../../../../../src/hooks/useTranslate', () => ({
   useTranslate: () => (key: string) => key,
 }))
+jest.mock('../../../../../src/hooks/useUsersWithPeriodReminders', () => ({
+  useUsersWithPeriodReminders: () => mockUsersWithReminders,
+}))
 
 describe('<ManageUsers />', () => {
-  beforeEach(() => jest.clearAllMocks())
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockUsersWithReminders.clear()
+  })
 
   it('shows the device empty state', async () => {
     ;(listUsers as jest.Mock).mockResolvedValue([])
@@ -68,5 +79,17 @@ describe('<ManageUsers />', () => {
     ).toBe(true)
     expect(screen.getByText('cloud_icon_explainer_synced')).toBeTruthy()
     expect(screen.getByText('cloud_icon_explainer_offline')).toBeTruthy()
+  })
+
+  it('marks only the accounts with a period reminder waiting', async () => {
+    mockUsersWithReminders.add('2')
+    ;(listUsers as jest.Mock).mockResolvedValue([
+      { id: '1', name: 'Zoe', isPendingSync: false },
+      { id: '2', name: 'Ana', isPendingSync: false },
+    ])
+    render(<ManageUsers />)
+
+    await screen.findByText('Ana')
+    expect(screen.getAllByLabelText('period_reminder_waiting')).toHaveLength(1)
   })
 })

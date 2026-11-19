@@ -18,6 +18,10 @@ import { analytics } from './src/services/firebase'
 import { ReducedMotionConfig, ReduceMotion } from 'react-native-reanimated'
 import { SoundProvider } from './src/contexts/SoundProvider'
 import { startSyncWatcher } from './src/services/sync/syncManager'
+import { showPeriodRemindersInForeground } from './src/services/periodReminderLocalNotification'
+
+// Registered before anything renders, so a reminder arriving during startup is handled too
+showPeriodRemindersInForeground()
 
 function App() {
   useOrientationLock()

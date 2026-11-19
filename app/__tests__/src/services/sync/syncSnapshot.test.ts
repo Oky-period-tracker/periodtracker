@@ -30,6 +30,22 @@ describe('sync snapshots', () => {
     expect((await AsyncStorage.getItem('metadata:oky:sync:u1'))).not.toContain('2026-08-01')
   })
 
+  it('uploads the period reminder setting so another device can restore it', async () => {
+    const state = {
+      auth: { user: { id: 'u1', name: 'Ana' } },
+      app: {},
+      prediction: {},
+      answer: { u1: { verifiedDates: {} } },
+      helpCenters: {},
+      notification: { reminderFrequency: 'threeDays' },
+    }
+    await saveSyncSnapshot('u1', state as never)
+
+    expect((await loadSyncSnapshot('u1'))?.appState.notification).toEqual({
+      reminderFrequency: 'threeDays',
+    })
+  })
+
   it('does not clear a newer snapshot after an older upload finishes', async () => {
     const now = jest.spyOn(Date, 'now').mockReturnValueOnce(1).mockReturnValueOnce(2)
     const state = {

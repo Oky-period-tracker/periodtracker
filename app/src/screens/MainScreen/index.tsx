@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { AppState, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { ScreenComponent } from '../../navigation/RootNavigator'
 import { Carousel } from './components/Carousel'
 import { CenterCard } from './components/CenterCard'
@@ -24,11 +24,21 @@ import { httpClient } from '../../services/HttpClient'
 import { User } from '../../types'
 import { editUser } from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
-import { appTokenSelector, currentUserSelector, cyclesNumberSelector } from '../../redux/selectors'
+import {
+  appTokenSelector,
+  currentLocaleSelector,
+  currentUserSelector,
+  cyclesNumberSelector,
+  notificationReminderFrequencySelector,
+} from '../../redux/selectors'
 import { generatePeriodDates } from '../../prediction/predictionLogic'
 import { usePredictionEngineState } from '../../contexts/PredictionProvider'
 import { usePeriodDateUpdate } from '../../hooks/usePeriodDateUpdate'
 import { useAvatarCustomization } from '../../hooks/useAvatarCustomization'
+import { PeriodReminderModal } from './components/PeriodReminderModal'
+import { isReminderDay } from '../../services/notificationScheduler'
+import { usePeriodReminderSync } from '../../hooks/usePeriodReminderSync'
+import { subscribeToNotificationTaps } from '../../services/periodReminderLocalNotification'
 
 const MainScreen: ScreenComponent<'Home'> = (props) => {
   const { setLoading } = useLoading()
@@ -61,13 +71,18 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
   const currentUser = useSelector(currentUserSelector) as User
   const cyclesNumber = useSelector(cyclesNumberSelector)
   const appToken = useSelector(appTokenSelector)
+  const reminderFrequency = useSelector(notificationReminderFrequencySelector)
+  const locale = useSelector(currentLocaleSelector)
   const reduxDispatch = useDispatch()
   const { handleDayModalResponse, initPeriodDatesIfEmpty } = usePeriodDateUpdate()
   const predictionFullState = usePredictionEngineState()
   const isAvatarCustomizationEnabled = useAvatarCustomization()
   const isFocused = useIsFocused()
+  const syncPeriodReminders = usePeriodReminderSync()
   const [friendUnlockModalVisible, setFriendUnlockModalVisible] = React.useState(false)
+  const [reminderModalVisible, setReminderModalVisible] = React.useState(false)
   const friendUnlockModalShownRef = React.useRef(false)
+  const reminderModalShownRef = React.useRef(false)
 
   // Check if friend unlock modal should be shown
   const shouldShowFriendUnlockModal = React.useMemo(() => {
@@ -102,6 +117,65 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
     }
   }, [shouldShowFriendUnlockModal, isFocused])
 
+  // Show the in-app period reminder on the reminder day
+  const shouldShowReminderModal = React.useMemo(
+    () => !!reminderFrequency && isReminderDay(predictionFullState, reminderFrequency),
+    [reminderFrequency, predictionFullState],
+  )
+
+  // Opening the app from the background or tapping a notification doesn't change navigation
+  // focus, so track those separately
+  const [reminderCheckAt, setReminderCheckAt] = React.useState(0)
+  React.useEffect(() => {
+    const check = () => setReminderCheckAt(Date.now())
+    const subscription = AppState.addEventListener('change', (appState) => {
+      if (appState === 'active') {
+        check()
+      }
+    })
+    const unsubscribeTaps = subscribeToNotificationTaps(check)
+    return () => {
+      subscription.remove()
+      unsubscribeTaps()
+    }
+  }, [])
+
+  // Keep this account's scheduled reminders in line with its latest prediction, language and
+  // name, and show the in-app reminder when one of its notifications was waiting for it
+  React.useEffect(() => {
+    if (!isFocused) {
+      return
+    }
+    let cancelled = false
+    syncPeriodReminders(reminderFrequency)
+      .then((hadReminder) => {
+        if (hadReminder && !cancelled) {
+          reminderModalShownRef.current = true
+          setReminderModalVisible(true)
+        }
+      })
+      .catch(() => {
+        // best effort, retried on the next focus
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [
+    isFocused,
+    reminderCheckAt,
+    reminderFrequency,
+    predictionFullState,
+    locale,
+    currentUser?.name,
+  ])
+
+  React.useEffect(() => {
+    if (shouldShowReminderModal && isFocused && !reminderModalShownRef.current) {
+      reminderModalShownRef.current = true
+      setReminderModalVisible(true)
+    }
+  }, [shouldShowReminderModal, isFocused])
+
   React.useEffect(() => {
     if (!currentUser?.metadata?.periodDates?.length) {
       const data = generatePeriodDates(predictionFullState)
@@ -123,6 +197,15 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
 
   const editUserReduxState = (changes: Partial<User>) => {
     reduxDispatch(editUser(changes))
+  }
+
+  const handleReminderModalClose = () => {
+    setReminderModalVisible(false)
+  }
+
+  const handleReminderNavigateToEncyclopedia = () => {
+    setReminderModalVisible(false)
+    navigation.navigate('encyclopedia' as never)
   }
 
   const avatarHidden = state.isPlaying && step !== 'avatar'
@@ -186,6 +269,13 @@ const MainScreenInner: ScreenComponent<'Home'> = ({ navigation, route }) => {
         <FriendUnlockModal
           visible={friendUnlockModalVisible && isFocused}
           toggleVisible={() => setFriendUnlockModalVisible(false)}
+        />
+      </View>
+      <View>
+        <PeriodReminderModal
+          visible={reminderModalVisible && isFocused}
+          onClose={handleReminderModalClose}
+          onNavigateToEncyclopedia={handleReminderNavigateToEncyclopedia}
         />
       </View>
     </>

@@ -4,10 +4,12 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { AuthHeader } from './AuthHeader'
 import { AuthCardBody } from './AuthCardBody'
 import { Text } from '../../../components/Text'
+import { NotificationDot } from '../../../components/NotificationDot'
 import { listUsers } from '../../../services/userMetadata/registry'
 import { RegisteredUser } from '../../../services/userMetadata/types'
 import { useColor } from '../../../hooks/useColor'
 import { useTranslate } from '../../../hooks/useTranslate'
+import { useUsersWithPeriodReminders } from '../../../hooks/useUsersWithPeriodReminders'
 import { useAuthMode } from '../AuthModeContext'
 
 export const ManageUsers = () => {
@@ -16,6 +18,7 @@ export const ManageUsers = () => {
   const { color, palette } = useColor()
   const translate = useTranslate()
   const { setAuthMode, setLoginName } = useAuthMode()
+  const usersWithReminders = useUsersWithPeriodReminders()
 
   const loadAccounts = React.useCallback(async () => {
     try {
@@ -56,6 +59,12 @@ export const ManageUsers = () => {
                       <Text style={styles.userName} enableTranslate={false}>
                         {account.name}
                       </Text>
+                      {usersWithReminders.has(account.id) && (
+                        <NotificationDot
+                          style={styles.reminderDot}
+                          accessibilityLabel={translate('period_reminder_waiting')}
+                        />
+                      )}
                     </View>
                     <FontAwesome
                       name={account.isPendingSync ? 'cloud-upload' : 'cloud'}
@@ -134,6 +143,9 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  reminderDot: {
+    marginLeft: 8,
   },
   syncIcon: {
     marginHorizontal: 12,

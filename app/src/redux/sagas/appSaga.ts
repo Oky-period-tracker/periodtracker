@@ -32,6 +32,7 @@ function* syncAppState() {
       verifiedDates: state.answer[currentUser?.id]?.verifiedDates,
       // optional
       helpCenters: state.helpCenters,
+      notification: state.notification,
     }
 
     if (_.isEqual(appState, lastAppState)) {

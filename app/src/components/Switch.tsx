@@ -61,9 +61,9 @@ export const Switch = () => {
 }
 
 const styles = StyleSheet.create({
+  // No percentage height: the settings row sizes itself from its content and centres this
   container: {
     width: 100,
-    height: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',

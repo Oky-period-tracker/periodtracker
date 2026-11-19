@@ -37,5 +37,11 @@ export const useFormatDate = () => {
     return `${date.format('DD')} ${monthName} ${momentDate.format('YYYY')}`
   }
 
-  return { formatMomentDayMonth, formatMonthYear, formatDayMonthYear }
+  // `D MMMM` with the month name in her language
+  const formatDayFullMonth = (date: string) => {
+    const momentDate = moment(date)
+    return `${momentDate.date()} ${translations.monthNames[momentDate.month()]}`
+  }
+
+  return { formatMomentDayMonth, formatMonthYear, formatDayMonthYear, formatDayFullMonth }
 }

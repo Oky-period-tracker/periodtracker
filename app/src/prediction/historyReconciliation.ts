@@ -77,7 +77,7 @@ export function buildPredictionFromVerifiedDates(
   existingState?: Partial<
     Pick<
       PredictionSerializableState,
-      'isActive' | 'futurePredictionStatus' | 'actualCurrentStartDate'
+      'isActive' | 'futurePredictionStatus' | 'actualCurrentStartDate' | 'smartPrediction'
     >
   >,
 ): PredictionState | null {
@@ -115,6 +115,10 @@ export function buildPredictionFromVerifiedDates(
 
   const state = PredictionState.fromData({
     isActive: existingState && existingState.isActive !== undefined ? existingState.isActive : true,
+    // Keep what the server already learned, so her latest cycle is not counted twice
+    learnedFrom:
+      existingState?.smartPrediction?.learnedFrom ??
+      existingState?.smartPrediction?.serverRange?.basedOn?.[0],
     startDate: lastCluster.start.clone(),
     periodLength: lastCluster.length,
     cycleLength: avgCycleLength,

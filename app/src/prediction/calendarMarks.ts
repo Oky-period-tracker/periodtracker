@@ -34,6 +34,7 @@ export interface CalendarMarksInput {
   averagePeriodLength: number | null
   cycle: CycleRange | null
   fallbackAnchor: string | null
+  irregular?: boolean // brief §6.6: show the message instead of a range
   today: string
   config?: CalendarConfig
 }
@@ -100,6 +101,7 @@ export function buildCalendarMarks(input: CalendarMarksInput): CalendarMarks {
     : input.fallbackAnchor
       ? toDayIndex(input.fallbackAnchor)
       : null
+  if (input.irregular) return { days, status: { kind: 'paused' } }
   if (anchor === null || !input.cycle) return { days, status: { kind: 'none' } }
 
   // Round once, so a fractional mean never widens the window to 8 days.

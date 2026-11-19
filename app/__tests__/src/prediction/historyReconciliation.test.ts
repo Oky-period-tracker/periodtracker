@@ -113,6 +113,20 @@ describe('shouldReconcileHistory and reconcileHistoryWithVerifiedDates', () => {
       actualCurrentStartDate: null,
     }
     expect(shouldReconcileHistory(sparseState, verified)).toBe(true)
+    expect(
+      reconcileHistoryWithVerifiedDates(
+        { ...sparseState, smartPrediction: { ...sparseState.smartPrediction, learnedFrom: '2025-10-28:30' } },
+        verified,
+      )?.smartPrediction.learnedFrom,
+    ).toBe('2025-10-28:30')
+    // Saved before learnedFrom existed: fall back to the cycles the last answer was based on
+    const range = { mean: 30, lower: 27, upper: 33, useBaseline: false, samplesTrained: 4, basedOn: ['2025-10-28:30'] }
+    expect(
+      reconcileHistoryWithVerifiedDates(
+        { ...sparseState, smartPrediction: { ...sparseState.smartPrediction, serverRange: range } },
+        verified,
+      )?.smartPrediction.learnedFrom,
+    ).toBe('2025-10-28:30')
 
     const rebuilt = reconcileHistoryWithVerifiedDates(sparseState, verified)
     expect(rebuilt).not.toBeNull()

@@ -9,6 +9,12 @@
     <div class="homeTopTextContainer">
       <h2><%= __('Data Management')%></h2>
     </div>
+    <%# Why the last spreadsheet upload was refused, see acceptUpload in DataController %>
+    <% if (globalErrors.length > 0) { %>
+    <div class="alert alert-danger" role="alert">
+      <%= globalErrors.join(' ') %>
+    </div>
+    <% } %>
     <div class="dataManagementRows">
       <!-- ---------------------------------------------------------------------- -->
       <hr>

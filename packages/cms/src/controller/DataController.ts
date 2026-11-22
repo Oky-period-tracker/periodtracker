@@ -8,8 +8,18 @@ import { About } from '../entity/About'
 import { AvatarMessages } from '../entity/AvatarMessages'
 import { TermsAndConditions } from '../entity/TermsAndConditions'
 import { PrivacyPolicy } from '../entity/PrivacyPolicy'
-import { safeJsonParse } from '../helpers/safeUtils'
-import xlsx from 'xlsx'
+import { safeJsonParse, safeRequestPath } from '../helpers/safeUtils'
+import {
+  CONTENT_SHEETS,
+  NO_FILE,
+  RefusedUpload,
+  checkContentSheet,
+  checkCountriesSheet,
+  checkProvincesSheet,
+  checkTranslationsSheet,
+  readWorkbook,
+} from '../helpers/spreadsheetUpload'
+import xlsx, { WorkBook } from 'xlsx'
 import { v4 as uuidv4 } from 'uuid'
 
 import {
@@ -54,6 +64,38 @@ const sendDownload = (
   response.setHeader('Content-Type', contentType)
   response.setHeader('X-Content-Type-Options', 'nosniff')
   response.send(content)
+}
+
+/**
+ * Reads the uploaded spreadsheet and checks it against its template. A refused
+ * file sends the editor back to Data Management with the reason, and null is
+ * returned so the upload handler stops there.
+ */
+const acceptUpload = (
+  request: Request,
+  response: Response,
+  checkTemplate: (workbook: WorkBook) => void,
+): WorkBook | null => {
+  try {
+    if (!request.file || !request.file.buffer) {
+      throw new RefusedUpload(NO_FILE)
+    }
+    const workbook = readWorkbook(request.file.buffer)
+    checkTemplate(workbook)
+    return workbook
+  } catch (error) {
+    if (!(error instanceof RefusedUpload)) {
+      throw error
+    }
+    logger.warn('Spreadsheet upload refused', {
+      url: safeRequestPath(request.originalUrl),
+      reason: error.message,
+    })
+    // @ts-ignore
+    request.flash('error', error.message)
+    response.redirect('/data')
+    return null
+  }
 }
 
 export class DataController {
@@ -473,25 +515,14 @@ export class DataController {
 
   async uploadContentSheet(request: Request, response: Response, next: NextFunction) {
     try {
-      // Ensure a file was uploaded
-      if (!request.file || !request.file.buffer) {
-        return response.status(400).send('No file was uploaded.')
+      const workbook = acceptUpload(request, response, checkContentSheet)
+      if (!workbook) {
+        return
       }
 
       const locale = request.body.locale?.length ? request.body.locale : request.user.lang
 
-      // Create a workbook from the xlsx data
-      const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
-
-      const otherSheetNames = [
-        'Quizzes',
-        'Did you know',
-        'Help',
-        'Avatars',
-        'Privacy',
-        'Terms',
-        'About',
-      ]
+      const otherSheetNames = CONTENT_SHEETS
 
       const encyclopediaSheetNames = workbook.SheetNames.filter(
         (name) => !otherSheetNames.includes(name),
@@ -614,14 +645,14 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
   // }
 
   async uploadAppTranslationsSheet(request: Request, response: Response, next: NextFunction) {
-    // Ensure a file was uploaded
-    if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+    const workbook = acceptUpload(request, response, checkTranslationsSheet)
+    if (!workbook) {
+      return
     }
 
     const locale = request.body.locale?.length ? request.body.locale : request.user.lang
 
-    const sheetData = getSimpleSheetData(request.file.buffer)
+    const sheetData = getSimpleSheetData(workbook)
 
     const fileContent = `
     // THIS FILE IS AUTO GENERATED. DO NOT EDIT MANUALLY
@@ -639,14 +670,14 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
   }
 
   async uploadCmsTranslationsSheet(request: Request, response: Response, next: NextFunction) {
-    // Ensure a file was uploaded
-    if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+    const workbook = acceptUpload(request, response, checkTranslationsSheet)
+    if (!workbook) {
+      return
     }
 
     const locale = request.body.locale?.length ? request.body.locale : request.user.lang
 
-    const sheetData = getSimpleSheetData(request.file.buffer)
+    const sheetData = getSimpleSheetData(workbook)
 
     const fileContent = JSON.stringify(sheetData)
 
@@ -694,12 +725,11 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
   }
 
   async uploadCountriesSheet(request: Request, response: Response, next: NextFunction) {
-    // Ensure a file was uploaded
-    if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+    const workbook = acceptUpload(request, response, checkCountriesSheet)
+    if (!workbook) {
+      return
     }
 
-    const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
     const worksheet = workbook.Sheets[workbook.SheetNames[0]]
 
     // Convert the worksheet to JSON
@@ -749,12 +779,11 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
   }
 
   async uploadProvincesSheet(request: Request, response: Response, next: NextFunction) {
-    // Ensure a file was uploaded
-    if (!request.file || !request.file.buffer) {
-      return response.status(400).send('No file was uploaded.')
+    const workbook = acceptUpload(request, response, checkProvincesSheet)
+    if (!workbook) {
+      return
     }
 
-    const workbook = xlsx.read(request.file.buffer, { type: 'buffer' })
     const worksheet = workbook.Sheets[workbook.SheetNames[0]]
 
     // Convert the worksheet to JSON
@@ -802,10 +831,7 @@ async generateAppTranslationsSheet(request: Request, response: Response, next: N
   }
 }
 
-const getSimpleSheetData = (buffer, flatten = true) => {
-  // Create a workbook from the xlsx data
-  const workbook = xlsx.read(buffer, { type: 'buffer' })
-
+const getSimpleSheetData = (workbook: WorkBook, flatten = true) => {
   // Initialize the output object
   const output: Record<string, unknown> = {}
 

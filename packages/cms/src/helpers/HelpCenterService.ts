@@ -4,6 +4,9 @@ import { Request } from 'express'
 // import * as fuzz from 'fuzzball'
 // import { HelpCenterAttribute } from '@oky/core'
 
+// The form sends 'true' or 'false'. Anything else is inactive, so nothing goes live by accident
+const isTrue = (value: unknown) => value === true || value === 'true'
+
 export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) => {
   const {
     title,
@@ -22,7 +25,7 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
 
   if (helpCenterPayload) {
     if (Number(req.body.toggleOnly) > 0) {
-      helpCenterPayload.isActive = isActive === 'true' ? true : false
+      helpCenterPayload.isActive = isTrue(isActive)
 
       return helpCenterPayload
     }
@@ -37,7 +40,10 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     helpCenterPayload.isAvailableNationwide = isAvailableNationwide ? true : false
     helpCenterPayload.primaryAttributeId = primaryAttribute
     helpCenterPayload.otherAttributes = otherAttributes
-    helpCenterPayload.isActive = isActive === 'true' ? true : false
+    // An edit that doesn't send the switch keeps the stored state
+    if (isActive !== undefined) {
+      helpCenterPayload.isActive = isTrue(isActive)
+    }
     helpCenterPayload.website = website
 
     return helpCenterPayload
@@ -53,7 +59,7 @@ export const getFormContents = (req: Request, helpCenterPayload?: HelpCenter) =>
     isAvailableNationwide: isAvailableNationwide ? true : false,
     primaryAttributeId: Number(primaryAttribute),
     otherAttributes,
-    isActive: isActive ? true : false,
+    isActive: isTrue(isActive),
     lang: req.user.lang,
     region,
     subRegion,

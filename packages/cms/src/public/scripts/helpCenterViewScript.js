@@ -142,6 +142,9 @@ $('#help-center-form').on('submit', (event) => {
       return acc
     }, [])
 
+  // An unchecked box is left out of the form data, so the switch is always sent
+  output.push({ name: 'isActive', value: String($('#isActive').prop('checked')) })
+
   const helpCenter = output.find((element) => element.name === 'helpCenterId')
 
   let data = output
@@ -497,7 +500,7 @@ const prepareEdit = (id) => {
         }
 
         if (key == 'isActive') {
-          $('#isActive').attr('checked', !!result[key])
+          $('#isActive').prop('checked', !!result[key])
         }
 
         if (key == 'website') {
@@ -544,6 +547,8 @@ const prepareEdit = (id) => {
 // store original modal form values
 $('#helpCenterModal').on('hidden.bs.modal', function () {
   $('#formhelpCenterId').val('0')
+  // A new entry starts inactive: it only goes live when the editor turns the switch on
+  $('#isActive').prop('checked', false)
   const keys = [
     'address',
     'caption',

@@ -159,11 +159,22 @@
 
           <input type="number" hidden name="helpCenterId" value="0" id="formhelpCenterId"/>
 
-          <input type="checkbox" value="0" class="form-check-input" id="isActive" name="isActive">
-
           <div class="row" id="other-attributes-container">
             <div class="col-md-12">
               <label class="form-label">Other attributes</label>
+            </div>
+          </div>
+
+          <%# No name: the page script sends the switch state itself, on or off %>
+          <div class="mb-3">
+            <div class="row">
+              <div class="col-md-12 d-flex align-items-center">
+                <label class="switch mb-0 mr-2">
+                  <input type="checkbox" id="isActive">
+                  <span class="slider round"></span>
+                </label>
+                <label for="isActive" class="form-label mb-0">Active (shown in the app)</label>
+              </div>
             </div>
           </div>
 

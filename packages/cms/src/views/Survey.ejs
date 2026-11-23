@@ -120,7 +120,7 @@ errors: ['','max 65 characters', 'max 20 characters','max 20 characters','max 20
             <td <% if (!features.contentFilter) { %>hidden<% } %>>
               <% if (features.contentFilter) { %>
               <select 
-                class="content-filter-dropdown"
+                class="content-filter-dropdown custom-select custom-select-sm w-auto"
                 data-source="survey"
                 data-id="<%= item.id %>"
                 data-level="<%= item.contentFilter %>"

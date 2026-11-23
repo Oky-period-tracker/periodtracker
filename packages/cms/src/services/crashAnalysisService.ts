@@ -1,4 +1,5 @@
 import os from 'os'
+import v8 from 'v8'
 import { getConnection } from 'typeorm'
 import { logger } from '../logger'
 
@@ -199,10 +200,18 @@ class CrashAnalysisService {
 
   // ─── Memory tracking ────────────────────────────────────────────
 
+  /**
+   * Heap usage as a share of the V8 heap limit. heapTotal is only what V8 has
+   * committed so far and grows on demand, so it must not be the denominator.
+   */
+  private getHeapUsedPercent(mem: NodeJS.MemoryUsage): number {
+    return Math.round((mem.heapUsed / v8.getHeapStatistics().heap_size_limit) * 100)
+  }
+
   /** Take a memory usage snapshot */
   private takeMemorySnapshot() {
     const mem = process.memoryUsage()
-    const heapUsedPercent = Math.round((mem.heapUsed / mem.heapTotal) * 100)
+    const heapUsedPercent = this.getHeapUsedPercent(mem)
 
     const snapshot: MemorySnapshot = {
       timestamp: new Date().toISOString(),
@@ -233,7 +242,7 @@ class CrashAnalysisService {
   /** Get current memory state */
   getCurrentMemory(): MemorySnapshot {
     const mem = process.memoryUsage()
-    const heapUsedPercent = Math.round((mem.heapUsed / mem.heapTotal) * 100)
+    const heapUsedPercent = this.getHeapUsedPercent(mem)
     return {
       timestamp: new Date().toISOString(),
       rss: mem.rss,

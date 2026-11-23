@@ -200,6 +200,12 @@ export const Routes = [
     action: 'update',
   },
   {
+    method: 'put',
+    route: '/articles/:id/live',
+    controller: ArticleController,
+    action: 'updateLive',
+  },
+  {
     method: 'delete',
     route: '/articles/:id',
     controller: ArticleController,

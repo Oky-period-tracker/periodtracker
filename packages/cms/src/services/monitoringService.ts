@@ -1,4 +1,5 @@
 import os from 'os'
+import v8 from 'v8'
 import { getConnection } from 'typeorm'
 import { logger } from '../logger'
 import { withTimeout } from '../helpers/timeout'
@@ -83,7 +84,10 @@ class MonitoringService {
   /** Full health check with all subsystem statuses */
   async getHealthStatus(): Promise<HealthStatus> {
     const memoryUsage = process.memoryUsage()
-    const heapUsedPercent = Math.round((memoryUsage.heapUsed / memoryUsage.heapTotal) * 100)
+    // Measured against the V8 heap limit: heapTotal is only what V8 has committed so far
+    const heapUsedPercent = Math.round(
+      (memoryUsage.heapUsed / v8.getHeapStatistics().heap_size_limit) * 100,
+    )
     const dbCheck = await this.checkDatabase()
 
     let status: 'healthy' | 'degraded' | 'unhealthy' = 'healthy'

@@ -72,9 +72,13 @@ export class AboutBannerController {
         aboutToUpdate.image = request.body.image
         aboutToUpdate.timestamp = new Date()
       } else {
-        aboutToUpdate = request.body
-        aboutToUpdate.lang = request.user.lang
-        aboutToUpdate.timestamp = new Date()
+        // Built from the expected fields only: an id in the body would make save()
+        // overwrite another language's banner instead of creating one
+        aboutToUpdate = this.aboutBannerRepository.create({
+          image: request.body.image,
+          lang: request.user.lang,
+          timestamp: new Date(),
+        })
       }
       await this.aboutBannerRepository.save(aboutToUpdate)
       logger.info('About banner saved/updated', { lang: request.user.lang })
@@ -90,9 +94,14 @@ export class AboutBannerController {
 
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
-      const aboutToRemove = await this.aboutBannerRepository.findOne(request.params.id)
+      const aboutToRemove = await this.aboutBannerRepository.findOne(request.params.id, {
+        where: { lang: request.user.lang },
+      })
       if (!aboutToRemove) {
-        logger.warn('About banner not found for removal', { id: request.params.id })
+        logger.warn('About banner not found for removal', {
+          id: request.params.id,
+          lang: request.user.lang,
+        })
         response.status(404).send({ error: 'About banner not found' })
         return
       }

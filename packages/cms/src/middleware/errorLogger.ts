@@ -2,6 +2,9 @@ import { safeRequestPath } from '../helpers/safeUtils'
 import { Request, Response, NextFunction } from 'express'
 import { logger } from '../logger'
 
+export const isApiRequest = (req: Request) =>
+  req.get('accept')?.includes('application/json') || req.originalUrl.startsWith('/mobile')
+
 export function errorLogger(err: Error, req: Request, res: Response, next: NextFunction) {
   logger.error('Unhandled error', {
     message: err.message,
@@ -16,11 +19,9 @@ export function errorLogger(err: Error, req: Request, res: Response, next: NextF
     return next(err)
   }
 
-  const isApiRequest =
-    req.get('accept')?.includes('application/json') || req.originalUrl.startsWith('/mobile')
   const statusCode = (err as any).statusCode || 500
 
-  if (isApiRequest) {
+  if (isApiRequest(req)) {
     res.status(statusCode).json({ error: 'Internal server error' })
   } else {
     res.status(statusCode).send('Internal server error')

@@ -290,7 +290,7 @@ For `memory-check` and `full-diagnostic`, the CLI prompts for your CMS username 
 npx ts-node src/utils/crashReproduction.ts memory-check --base-url=https://cms.example.com
 ```
 
-For non-interactive scripts, `CMS_SESSION_COOKIE` remains available: supply the complete `Cookie` header from a valid super-admin session, including `session` and `session.sig`. Without a terminal or an existing cookie, diagnostic commands fail with instructions.
+For non-interactive scripts, `CMS_SESSION_COOKIE` remains available: supply the complete `Cookie` header from a valid super-admin session, including `session` and `session.sig`. The cookie stops working 8 hours after that browser login (diagnostics then answer HTTP 401), so copy a fresh one from a new login. Without a terminal or an existing cookie, diagnostic commands fail with instructions.
 
 Remote login and diagnostics require HTTPS; HTTP is allowed for localhost. Cookies are sent only to `/diagnostics/*`, not health checks or error-generation requests. Failed login, HTTP 401/403, and other failed diagnostic requests exit with code 1.
 

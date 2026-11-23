@@ -369,3 +369,8 @@ ADD "contentFilter" integer DEFAULT NULL;
 ALTER TABLE "periodtracker"."did_you_know"
 ADD "ageRestrictionLevel" integer DEFAULT NULL,
 ADD "contentFilter" integer DEFAULT NULL;
+
+ALTER TABLE "periodtracker"."user"
+ADD COLUMN IF NOT EXISTS "sessionVersion" integer NOT NULL DEFAULT 0;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_user_username ON "periodtracker"."user" (username);

@@ -69,7 +69,7 @@
               <th style="width: 2.5%" class="pointer ageRestrictionLevel"><%= option.description %></th>
             <% }) %>
             <% } else { %>
-            <th style="width: 2.5%"><%= __('Age Restricted')%></th>
+            <th style="width: 2.5%" class="pointer" id="ageRestricted"><%= __('Age Restricted')%></th>
             <% } %>
 
             <th style="width: 2.5%"><%= __('Live')%></th>
@@ -156,11 +156,10 @@
                 />
                 <span class="slider round"></span>
               </label>
-              <% if (!quiz.live) { %>
-              <span class="badge badge-secondary inactiveBadge"><%= __('Deactivated')%></span>
-              <% } %>
+              <%# Always rendered, so the Live switch can show or hide it without a reload %>
+              <span class="badge badge-secondary inactiveBadge" <% if (quiz.live) { %>hidden<% } %>><%= __('Deactivated')%></span>
             </td>
-            <td hidden><%= quiz.date_created %></td>
+            <td hidden class="date-created"><%= quiz.date_created %></td>
           </tr>
           <% }) %>
         </tbody>

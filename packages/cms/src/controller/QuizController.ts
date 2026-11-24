@@ -94,6 +94,83 @@ export class QuizController {
     }
   }
 
+  async updateLive(request: Request, response: Response, next: NextFunction) {
+    return this.updateSwitch(request, response, 'live')
+  }
+
+  async updateAgeRestricted(request: Request, response: Response, next: NextFunction) {
+    return this.updateSwitch(request, response, 'isAgeRestricted')
+  }
+
+  // Saves one switch of the quiz list and leaves the rest of the quiz as stored
+  private async updateSwitch(
+    request: Request,
+    response: Response,
+    field: 'live' | 'isAgeRestricted',
+  ) {
+    try {
+      const value = request.body[field]
+      if (![true, false, 'true', 'false'].includes(value)) {
+        response.status(400).send({ error: `${field} must be true or false` })
+        return
+      }
+      // Scoped to the editor's language: the page only lists those quizzes, so a
+      // quiz in another language is treated as not found
+      const quizToUpdate = await this.quizRepository.findOne({
+        id: request.params.id,
+        lang: request.user.lang,
+      })
+      if (!quizToUpdate) {
+        logger.warn('Quiz not found for switch update', {
+          id: request.params.id,
+          lang: request.user.lang,
+          field,
+        })
+        response.status(404).send({ error: 'Quiz not found' })
+        return
+      }
+      quizToUpdate[field] = String(value) === 'true'
+      await this.quizRepository.save(quizToUpdate)
+      logger.info('Quiz switch updated', { id: request.params.id, [field]: quizToUpdate[field] })
+      return { id: quizToUpdate.id, [field]: quizToUpdate[field] }
+    } catch (error) {
+      logger.error('QuizController.updateSwitch failed', {
+        id: request.params.id,
+        field,
+        message: error?.message,
+        stack: error?.stack,
+      })
+      throw error
+    }
+  }
+
+  // Live All: one statement for every quiz of the editor's language, so the list
+  // never ends up half switched
+  async updateLiveAll(request: Request, response: Response, next: NextFunction) {
+    try {
+      const { live } = request.body
+      if (![true, false, 'true', 'false'].includes(live)) {
+        response.status(400).send({ error: 'live must be true or false' })
+        return
+      }
+      const isLive = String(live) === 'true'
+      const result = await this.quizRepository.update({ lang: request.user.lang }, { live: isLive })
+      logger.info('Quiz live status updated for every quiz', {
+        lang: request.user.lang,
+        live: isLive,
+        updated: result.affected,
+      })
+      return { live: isLive, updated: result.affected }
+    } catch (error) {
+      logger.error('QuizController.updateLiveAll failed', {
+        lang: request.user?.lang,
+        message: error?.message,
+        stack: error?.stack,
+      })
+      throw error
+    }
+  }
+
   async remove(request: Request, response: Response, next: NextFunction) {
     try {
       const quizToRemove = await this.quizRepository.findOne({

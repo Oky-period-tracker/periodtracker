@@ -62,7 +62,9 @@ $('#btnEditConfirm').on('click', () => {
   })
 })
 
-$('.deleteUser').on('click', (event) => {
+// Listened to on the table body: clearing the filter takes the rows out of the
+// page, and jQuery drops the handlers of the rows it removes
+$('#users').on('click', '.deleteUser', (event) => {
   var button = $(event.currentTarget)
   var userID = button.data('value')
   var result = confirm('Are you sure? This will permanently delete the item')

@@ -69,6 +69,20 @@ describe('article save and update', () => {
     expect(result).toMatchObject({ category: CATEGORY, subcategory: SUBCATEGORY, lang: 'en' })
   })
 
+  // jQuery sends the form's Live checkbox as the text "true" or "false"
+  it.each([
+    ['true', true],
+    [true, true],
+    ['false', false],
+    [false, false],
+    [undefined, false],
+    ['on', false],
+  ])('creates an article with live=%p as %p', async (live, expected) => {
+    await controller.save(request({ live }), response, jest.fn())
+
+    expect(save).toHaveBeenCalledWith(expect.objectContaining({ live: expected }))
+  })
+
   // jQuery sends an unselected dropdown (null) as an empty string
   it.each([
     [{ category: '', subcategory: '' }],

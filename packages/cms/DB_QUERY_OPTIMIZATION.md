@@ -8,9 +8,11 @@ This document describes the database query optimizations applied to the CMS back
 
 ## 1. Database Indexes
 
-Indexes are defined directly on the TypeORM entities using `@Index()` decorators
-(see `src/entity/`). There is no standalone SQL migration file — the index
-definitions live with the entity classes and are the single source of truth.
+The indexes are created by SQL: `sql/initial-setup.sql` creates them on a fresh
+database, and `sql/1742860800000-add-indexes.sql` adds them to an existing one
+(see [Applying the Indexes](#7-applying-the-indexes)). The TypeORM entities also
+carry `@Index()` decorators (see `src/entity/`), listed below, but those are only
+applied when schema synchronization is on, and they are not identical to the SQL set.
 
 ### Entity-Level Index Decorators
 
@@ -55,10 +57,8 @@ These indexes are created by TypeORM only when schema synchronization is
 enabled. Synchronization is controlled by the `DATABASE_SYNCHRONIZE` environment
 variable (read in `src/env.ts` and passed to `ormconfig.ts` as
 `env.db.synchronize`). The default in `.env.dist` is
-`DATABASE_SYNCHRONIZE=false`, so indexes are **not** auto-created by default.
-To have TypeORM apply the entity indexes against the database, set
-`DATABASE_SYNCHRONIZE=true` (typically only in a controlled environment), or
-create the indexes manually to match the decorators above.
+`DATABASE_SYNCHRONIZE=false`, and it is off locally, on DEV and in production,
+so the decorators create nothing. Use the SQL files in section 7 instead.
 
 ---
 
@@ -198,12 +198,41 @@ const parsed = safeJsonParse(aboutContent, {}, 'About content')
 
 ## 7. Applying the Indexes
 
-Apply `sql/1742860800000-add-indexes.sql` manually when
-`DATABASE_SYNCHRONIZE=false` (the default). The script explicitly targets the
-`periodtracker` schema, regardless of the session's `search_path`. For a custom
-`DATABASE_SCHEMA`, replace the `periodtracker` qualifiers before applying it.
-Run with `psql -v ON_ERROR_STOP=1 --single-transaction -f <script>` using your
-normal database connection options. Reapplying the script skips existing indexes.
+**Fresh database.** `sql/initial-setup.sql` (what `yarn db:init` applies)
+already creates the indexes. Nothing else to run.
+
+**Existing database.** Apply `sql/1742860800000-add-indexes.sql` with psql. Pass
+the database's `DATABASE_SCHEMA` as the `schema` variable. Without it, the script
+uses `periodtracker`. It names the schema explicitly, so the result does not depend
+on the session's `search_path`.
+
+```bash
+# DEV (DATABASE_SCHEMA=oky_en), with your normal connection options
+psql -v ON_ERROR_STOP=1 -v schema=oky_en --single-transaction \
+  -f sql/1742860800000-add-indexes.sql
+
+# Local Docker database (schema periodtracker)
+docker compose exec -T postgres psql -U periodtracker -d periodtracker \
+  -v ON_ERROR_STOP=1 -v schema=periodtracker --single-transaction -f - \
+  < sql/1742860800000-add-indexes.sql
+```
+
+The script uses psql meta-commands (`\set`, `\gset`), so run it with psql and not
+from a web SQL console such as Adminer. Every statement is `CREATE INDEX IF NOT
+EXISTS`, so running it again skips the indexes that already exist and creates
+nothing new.
+
+**Check.** List the indexes of a table, for example:
+
+```sql
+SELECT indexname FROM pg_indexes
+WHERE schemaname = 'oky_en' AND tablename = 'article';
+```
+
+With the indexes in place, `article` lists five `idx_article_*` entries next to
+its primary key. The script creates 42 indexes in all. Don't check with
+`EXPLAIN` on a small table: with a few hundred rows Postgres reads the whole
+table even when an index exists.
 
 The entity `@Index()` decorators also create indexes when synchronization is
 enabled; use `DATABASE_SYNCHRONIZE=true` only in controlled non-production environments.
